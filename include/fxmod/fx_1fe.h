@@ -8,9 +8,9 @@
 
 /* fx_1fe effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_PHOENIX_MODEL_2          0x2 /* 'so' model: flat dome, flame texture (byte-identical to fx_0d3 entry 0xD) */
-#define FX_PHOENIX_MODEL_3          0xD /* 'so' model: dome with a hole, flame texture (byte-identical to fx_0d3 entry 0xC) */
-#define FX_PHOENIX_MODEL_4          0xF /* 'so' model: arc band, smoke texture (byte-identical to fx_0d3 entry 0xE) */
+#define FX_PHOENIX_FIRE_DISC 0x2 /* 'so' model: flat disc with a fire texture (byte-identical to fx_0d3 entry 0xD) */
+#define FX_PHOENIX_FIRE_DOME 0xD /* 'so' model: dome with a hole, fire texture (byte-identical to fx_0d3 entry 0xC) */
+#define FX_PHOENIX_SMOKE_ARC 0xF /* 'so' model: thin arc band with a grey smoke texture (byte-identical to fx_0d3 entry 0xE) */
 #define FX_PHOENIX_FIRE_FEATHERS    0x10 /* emitter: orbiting fire-textured trails and flame-feather quads (same call site as fx_0d3 entry 0x10, same kind) */
 #define FX_PHOENIX_PINK_RINGS       0x11 /* emitter: white / pink / copper gouraud rings (byte-identical to fx_0d3 entry 0x11) */
 #define FX_PHOENIX_GOLD_FEATHERS    0x12 /* emitter: golden feather quads (same call site as fx_0d3 entry 0x12, same kind) */

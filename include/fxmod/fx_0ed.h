@@ -8,17 +8,17 @@
 
 /* fx_0ed effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ROULETTE_SUMMON_MODEL_DATA 0x2 /* model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL */
+#define FX_ROULETTE_MODEL_DATA 0x2 /* model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL */
 #define FX_ROULETTE_BACKDROP          0x4 /* table: background layers for btlfx_drawBackdrop */
 #define FX_ROULETTE_TARGET_RING       0x6 /* sprite: white ring outline on the chosen target */
-#define FX_ROULETTE_HORNED_FIGURE     0x7 /* 'so' summon model (btlfx_registerSummonModel): brown armoured figure with a horned face texture */
-#define FX_ROULETTE_HORNED_FIGURE_2   0x8 /* 'so' model: the same horned figure in another pose (same textures, 354 polys) */
-#define FX_ROULETTE_BLUE_BEAM         0xA /* emitter: spiralling blue light-beam trail */
-#define FX_ROULETTE_GLOW_RINGS        0xB /* emitter: green glows + white-salmon-violet rings */
-#define FX_ROULETTE_RED_SPARKS        0xC /* emitter: pink-red spark sprites + white-red rings */
-#define FX_ROULETTE_WHITE_GLOW        0x10 /* emitter: white glow puffs */
-#define FX_ROULETTE_BLUE_BUBBLES      0x11 /* emitter: blue bubbles */
-#define FX_ROULETTE_BLUE_BEAM_2       0x1D /* emitter: spiralling blue light-beam trail */
+#define FX_ROULETTE_REAPER 0x7 /* 'so' summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe (byte-identical to fx_05e entry 0x6, same render) */
+#define FX_ROULETTE_REAPER_2 0x8 /* 'so' model: the robed skull reaper with the scythe in another pose (same textures, 354 polys; byte-identical to fx_05e entry 0x1C, same render) */
+#define FX_ROULETTE_BLUE_TRAIL 0xA /* emitter: spiralling blue light-beam trail */
+#define FX_ROULETTE_GREEN_ORB 0xB /* emitter: green glows + white-salmon-violet rings */
+#define FX_ROULETTE_RED_RINGS 0xC /* emitter: pink-red spark sprites + white-red rings */
+#define FX_ROULETTE_SMOKE 0x10 /* emitter: grey-white smoke puffs (byte-identical to fx_05e entry 0x10, same render) */
+#define FX_ROULETTE_SOUL_ORBS 0x11 /* emitter: blue bubbles */
+#define FX_ROULETTE_BLUE_TRAIL_2 0x1D /* emitter: spiralling blue light-beam trail */
 
 typedef struct {
     s32 state0; /* state */

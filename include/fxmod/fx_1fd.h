@@ -9,8 +9,8 @@
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_FENRIR_RIBBON_PATHS_A   0x3 /* table: position paths of ribbon 0 (byte-identical to fx_0e2 entry 0x9) */
 #define FX_FENRIR_RIBBON_PATHS_B   0x4 /* table: position paths of ribbon 1 (byte-identical to fx_0e2 entry 0xC) */
-#define FX_FENRIR_EFFECT_MODEL     0x5 /* 'so' model (op84) (byte-identical to fx_0e2 entry 0x11) (look pending) */
-#define FX_FENRIR_EFFECT_MODEL_2   0x6 /* 'so' model (op84) (byte-identical to fx_0e2 entry 0x1D) (look pending) */
+#define FX_FENRIR_WIND_RING 0x5 /* 'so' model (op84): flat ring with a green wind texture (byte-identical to fx_0e2 entry 0x11) */
+#define FX_FENRIR_WIND_RING_2 0x6 /* 'so' model (op84): flat ring with a green wind texture (byte-identical to fx_0e2 entry 0x1D) */
 #define FX_FENRIR_GREEN_RINGS_2    0x8 /* emitter: white-green / pale green gouraud rings (byte-identical to fx_0e2 entry 0x10) */
 #define FX_FENRIR_CAM_TRACK_1      0xE /* table: camera key track, channel 1 (fxm_camChanAdd) */
 #define FX_FENRIR_CAM_TRACK_2      0xF /* table: camera key track, channel 2 (fxm_camChanAdd) */

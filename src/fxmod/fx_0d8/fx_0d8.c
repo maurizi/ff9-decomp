@@ -101,7 +101,7 @@ static void fx_0d8_op83ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, S
     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_LENS_FLARES), pos, &elemRot, *scale * 5 / 2, frame, 1, fade, 0, 0);
     spriteScale = (frame << 12) / n + 0x1800;
     ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_SPARKS), pos, &elemRot, spriteScale, frame, 1, *alpha);
-    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_SPARKS_2), pos, &elemRot, spriteScale, frame, 1, *alpha);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_DOTS), pos, &elemRot, spriteScale, frame, 1, *alpha);
 }
 
 static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -128,7 +128,7 @@ static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk8
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18, part->branchAt12, fade, (0x1000 - t) >> 6, part->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18 + 3, part->branchAt13, fade, (0x1000 - t) >> 6, part->kind14);
             if (frame == 0) {
-                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SPARKS), (s32)&part->pos0);
+                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SPARK_DOTS), (s32)&part->pos0);
                 if (part->emit1C != NULL) {
                     part->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
@@ -154,7 +154,7 @@ static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk8
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18, part->branchAt12, fade, (0x1000 - t) >> 6, part->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18 + 3, part->branchAt13, fade, (0x1000 - t) >> 6, part->kind14);
             if (frame == 0) {
-                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SPARKS), (s32)&part->pos0);
+                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SPARK_DOTS), (s32)&part->pos0);
                 if (part->emit1C != NULL) {
                     part->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }

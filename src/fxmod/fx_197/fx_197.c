@@ -456,8 +456,8 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_197_env = env;
         ex->btlfx_initEffModels(fx_197_effModels, 0x20);
-        fx_197_model1 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_SHARD), 0);
-        fx_197_model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_SHARD_2), 1);
+        fx_197_model1 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICICLE), 0);
+        fx_197_model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICICLE_2), 1);
         for (i = 0; i < 6; i++) {
             for (j = 0; j < 3; j++) {
                 work->model18[i][j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_197_pieceModelFileIds[i][j]), 0);

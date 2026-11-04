@@ -27,7 +27,7 @@
 #define FX_CARBUNCLE_GLOW_RING        0x39 /* emitter: white glow fans and a white / pale green gouraud ring (same call site as fx_0b1 entry 0xC, same kind) */
 #define FX_CARBUNCLE_RING_BURST       0x3A /* emitter: cone of white-yellow, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x11, same kind) */
 #define FX_CARBUNCLE_LENS_FLARE       0x3B /* emitter: orbiting white glow trail with a blue lens streak (same call site as fx_0b1 entry 0x9, same kind) */
-#define FX_CARBUNCLE_FAN_EMITTER      0x3C /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
+#define FX_CARBUNCLE_WHITE_LIGHT_STREAK 0x3C /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
 
 typedef struct {
     u8 pad0[0x180];

@@ -21,9 +21,9 @@
 #define FX_SWDMAG_FIRAGA_GOLD_SPARKS   0x14 /* emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) */
 #define FX_SWDMAG_FIRAGA_SMOKE_BURST   0x15 /* emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) */
 #define FX_SWDMAG_FIRAGA_CONE_GLOW     0x16 /* emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) (look pending) */
-#define FX_SWDMAG_FIRAGA_EMBER_SPARKS  0x17 /* emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) */
+#define FX_SWDMAG_FIRAGA_EMBER_CONE 0x17 /* emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) */
 #define FX_SWDMAG_FIRAGA_SWORD_GLINT   0x18 /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
-#define FX_SWDMAG_FIRAGA_SWORD_GLINT_2 0x19 /* rings: white gouraud ring flash at the sword, rotated */
+#define FX_SWDMAG_FIRAGA_SWORD_FLASH 0x19 /* rings: white 8-segment rings flashed rotating at the sword (byte-identical to the SWORD_FLASH of every Sword Magic module) */
 #define FX_SWDMAG_FIRAGA_FLAME_RIBBON_1 0x1B /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x17) */
 #define FX_SWDMAG_FIRAGA_FLAME_RIBBON_0 0x1C /* 'so' model: twisted flame ribbon with a fire texture, drawn coiled 18 times (byte-identical to fx_007 entry 0x16) */
 #define FX_SWDMAG_FIRAGA_FLAME_RIBBON_2 0x1D /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x18) */

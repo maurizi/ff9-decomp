@@ -16,14 +16,14 @@
 #define FX_ULTIMA_COLOR_RING     0x8 /* emitter: yellow, lilac, violet and magenta gouraud rings (byte-identical to fx_180 entry 0x7) */
 #define FX_ULTIMA_ROCK_DEBRIS_2  0x9 /* emitter: spiral of grey rock chunks (byte-identical to fx_180 entry 0x8) */
 #define FX_ULTIMA_PATH_SET_2     0xB /* table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 (byte-identical to fx_180 entry 0x1A) */
-#define FX_ULTIMA_SO_MODEL       0xD /* 'so' model (not drawn by the tool), drawn with FX_ULTIMA_GLOW_DOME (byte-identical to fx_180 entry 0x17) (look pending) */
+#define FX_ULTIMA_SPIKE_CROWN 0xD /* 'so' model: ring crown of red-pink spikes, drawn with FX_ULTIMA_GLOW_DOME (byte-identical to fx_180 entry 0x17) */
 #define FX_ULTIMA_GLOW_DOME      0xE /* model: gouraud octagonal dome (20 polys) (byte-identical to fx_180 entry 0x1) */
 #define FX_ULTIMA_GREY_TRAIL_2   0xF /* emitter: wobbling screen trail with a grey streak texture (byte-identical to fx_180 entry 0xB) */
 #define FX_ULTIMA_BLAST_RINGS    0x10 /* emitter: white-pink, lilac and yellow-red gouraud rings, pink glows (byte-identical to fx_180 entry 0xC) */
 #define FX_ULTIMA_PINK_SPARKS    0x11 /* emitter: sparse pink spark sprites (byte-identical to fx_180 entry 0xE) */
 #define FX_ULTIMA_NOISE_RING_2   0x12 /* emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings (byte-identical to fx_180 entry 0xF) (look pending) */
 #define FX_ULTIMA_RED_FLARE      0x13 /* emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x10) */
-#define FX_ULTIMA_FAN_EMITTER    0x14 /* emitter: orbiting fan, pale pink light streaks (byte-identical to fx_180 entry 0x11) */
+#define FX_ULTIMA_CRIMSON_STREAK 0x14 /* emitter: orbiting fan, a white-to-crimson light streak (byte-identical to fx_180 entry 0x11, same render) */
 #define FX_ULTIMA_PINK_TRAIL     0x15 /* emitter: pink screen trail (byte-identical to fx_180 entry 0x12) */
 #define FX_ULTIMA_PINK_TRAIL_2   0x16 /* emitter: orbiting pink screen trail (byte-identical to fx_180 entry 0x13) */
 #define FX_ULTIMA_PINK_ORB_BURST 0x17 /* emitter: pink orb and blade particles, sparks, white-yellow-red gouraud rings (byte-identical to fx_180 entry 0x16) */

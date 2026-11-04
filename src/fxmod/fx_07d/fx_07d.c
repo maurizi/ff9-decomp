@@ -355,7 +355,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                          0x3E83, 0, 0);
                 work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FLARE_CLOUD_SPHERE), 0x13C,
                                                          0xFFFF, 0x10, 0x80);
-                work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FLARE_RING_DISC));
+                work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FLARE_RED_HALO));
             }
                 break;
         case 1:

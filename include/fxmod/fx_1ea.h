@@ -15,10 +15,10 @@
 #define FX_DRAGONS_CREST_GREEN_RINGS    0x6 /* emitter: dark-to-light green gouraud rings */
 #define FX_DRAGONS_CREST_DUST_RINGS     0x7 /* emitter: grey-brown to white gouraud rings */
 #define FX_DRAGONS_CREST_ROT_PATH_KEYS  0xB /* table: rotation / position path keys for fxm_rotPosPathInit */
-#define FX_DRAGONS_CREST_FAN_EMITTER    0x13 /* emitter: fan, green light streaks (byte-identical to fx_03d entry 0x10) */
+#define FX_DRAGONS_CREST_LIGHT_STREAK 0x13 /* emitter: fan drawn as a thin green to violet horizontal light streak (byte-identical to fx_03d entry 0x10) */
 #define FX_DRAGONS_CREST_SPARKLE_CIRCLE 0x14 /* emitter: circle of gold / white sparkle quads + blue-green specks (byte-identical to fx_03d entry 0x11) */
 #define FX_DRAGONS_CREST_VIOLET_ENERGY  0x1C /* emitter: violet crackling energy shapes + violet sub-sparks */
-#define FX_DRAGONS_CREST_FAN_EMITTER_2  0x1D /* emitter: two fans, white / green light streaks */
+#define FX_DRAGONS_CREST_WHITE_GREEN_STREAKS 0x1D /* emitter: two fans, white / green light streaks */
 #define FX_DRAGONS_CREST_DRAGON_TRAIL   0x20 /* trail: orange dragon-scale strip */
 #define FX_DRAGONS_CREST_DRAGON_TRAIL_2 0x21 /* trail: orange dragon-scale strip */
 #define FX_DRAGONS_CREST_ROCK_DEBRIS_3  0x22 /* emitter: spiral of grey rock chunks and a grey glow */

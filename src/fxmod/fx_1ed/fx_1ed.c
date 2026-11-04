@@ -168,7 +168,7 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         case 1:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_RING_BURST), (s32)&fx_1ed_emitPos0);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_CRYSTAL_SPARKLES), (s32)&fx_1ed_emitPos0);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_FAN_EMITTER), (s32)&fx_1ed_emitPos0);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_WHITE_LIGHT_STREAK), (s32)&fx_1ed_emitPos0);
             fx_1ed_timers[5] = 0x10;
             break;
         case 9:

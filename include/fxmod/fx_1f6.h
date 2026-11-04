@@ -7,11 +7,11 @@
 
 /* fx_1f6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_AERA_MODEL_3      0x1 /* 'so' model (byte-identical to fx_0cd entry 0x1) (look pending) */
-#define FX_AERA_MODEL_2      0x3 /* 'so' model (byte-identical to fx_0cd entry 0x3) (look pending) */
+#define FX_AERA_GREEN_WIND_RING 0x1 /* 'so' model: ring of green wind streaks (grass-fringe cylinder) (byte-identical to fx_0cd entry 0x1) */
+#define FX_AERA_GREY_ARC 0x3 /* 'so' model: open grey arc band (byte-identical to fx_0cd entry 0x3) */
 #define FX_AERA_GREEN_RING   0x4 /* emitter: green gouraud rings (byte-identical to fx_0cd entry 0x4) */
 #define FX_AERA_WIND_RING    0x5 /* emitter: orbiting white wind-ring particle (byte-identical to fx_0cd entry 0x5) */
-#define FX_AERA_MODEL        0x6 /* 'so' model (byte-identical to fx_0cd entry 0xD) (look pending) */
+#define FX_AERA_GREEN_TORNADO 0x6 /* 'so' model: twisted green column with a smoke texture (tornado) (byte-identical to fx_0cd entry 0xD) */
 #define FX_AERA_GREEN_BURST  0x7 /* emitter: green gust puffs (byte-identical to fx_0cd entry 0x7) */
 #define FX_AERA_WIND_STREAKS 0x8 /* emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) (byte-identical to fx_0cd entry 0x8) (look pending) */
 #define FX_AERA_GUST_RINGS   0xA /* emitter: cyan-green gouraud rings (byte-identical to fx_0cd entry 0xA) */

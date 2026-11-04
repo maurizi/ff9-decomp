@@ -8,7 +8,7 @@
 
 /* fx_0fa effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_DETECT_SPHERE      0x1 /* model: 12-sided sphere, bronze riveted-metal texture in the render */
+#define FX_DETECT_METAL_SPHERE 0x1 /* model: 12-sided sphere, bronze riveted-metal texture in the render */
 #define FX_DETECT_BLUE_SPIKES 0x2 /* emitter: two fans, blue light spikes */
 #define FX_DETECT_GLYPH_TEXT  0x3 /* emitter: blocks of scrolling script glyphs (blue, green, purple, orange) */
 

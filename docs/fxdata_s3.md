@@ -41,7 +41,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x22 | `FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS_2` | render (fxdata d6121033) | emitter: four fans of cyan / blue zigzag lightning arcs (byte-identical to fx_018 entry 0x22) |
 | 0x25 | `FX_SWDMAG_THUNDAGA_IMPACT_FLASH` | render, byte-identical | emitter: four-point star flash (byte-identical to fx_018 entry 0x25) |
 | 0x26 | `FX_SWDMAG_THUNDAGA_CONE_EMITTER` | kind/usage (look pending) | emitter: cone of sprites; the render is still all transparent (byte-identical to fx_018 entry 0x26) |
-| 0x27 | `FX_SWDMAG_THUNDAGA_SPARKS` | render (fxdata d6121033) | emitter: white and yellow dot sparks (byte-identical to fx_018 entry 0x27) |
+| 0x27 | `FX_SWDMAG_THUNDAGA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white and yellow dot sparks (byte-identical to fx_018 entry 0x27) |
 | 0x28 | `FX_SWDMAG_THUNDAGA_SWORD_GLINT` | render | rings: white 6-segment rings flashed at the sword (op84, first draw) |
 | 0x29 | `FX_SWDMAG_THUNDAGA_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
 
@@ -113,14 +113,14 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x1 | `FX_SWDMAG_BIO_BUBBLE_PATH` | usage | table: rotation/position keys of the morphing bubble (fxm_rotPosTrackInit) |
-| 0x2 | `FX_SWDMAG_BIO_BUBBLE_SCALE` | usage | table: scale keys of the morphing bubble (fxm_vecTrackInit) |
-| 0xF | `FX_SWDMAG_BIO_BUBBLE_SCALE_2` | usage | table: scale keys of the second bubble pass (fxm_vecTrackInit) |
-| 0x10 | `FX_SWDMAG_BIO_BUBBLE_PATH_2` | usage | table: rotation/position keys of the second bubble pass |
+| 0x1 | `FX_SWDMAG_BIO_PATH` | usage | table: rotation/position keys of the morphing bubble (fxm_rotPosTrackInit) |
+| 0x2 | `FX_SWDMAG_BIO_SCALE_TRACK` | usage | table: scale keys of the morphing bubble (fxm_vecTrackInit) |
+| 0xF | `FX_SWDMAG_BIO_SCALE_TRACK_2` | usage | table: scale keys of the second bubble pass (fxm_vecTrackInit) |
+| 0x10 | `FX_SWDMAG_BIO_PATH_2` | usage | table: rotation/position keys of the second bubble pass |
 | 0x11 | `FX_SWDMAG_BIO_SCREEN_TRAIL` | kind/usage (look pending) | emitter: orbiting screen-space trail; the render is still black (texture not in the file) |
-| 0x12 | `FX_SWDMAG_BIO_GREEN_WISPS` | render | emitter: teal-green wisp rings |
-| 0x13 | `FX_SWDMAG_BIO_GREEN_CLOUD` | render | emitter: green gas cloud + grey haze |
-| 0x14 | `FX_SWDMAG_BIO_RED_CELLS` | render | emitter: red cell-mesh balls with a crimson glow |
+| 0x12 | `FX_SWDMAG_BIO_TEAL_RING` | render | emitter: teal-green wisp rings |
+| 0x13 | `FX_SWDMAG_BIO_TOXIC_CLOUD` | render | emitter: green gas cloud + grey haze |
+| 0x14 | `FX_SWDMAG_BIO_RED_ORB` | render | emitter: red cell-mesh balls with a crimson glow |
 | 0x15 | `FX_SWDMAG_BIO_SWORD_GLINT` | render | rings: white 6-segment rings flashed at the sword (op84, first draw) |
 | 0x16 | `FX_SWDMAG_BIO_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
 
@@ -128,16 +128,16 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x1 | `FX_SWDMAG_WATER_DROPLETS` | render | emitter: water blobs, blue glow and glints |
-| 0x2 | `FX_SWDMAG_WATER_WATER_BALL_1` | render | model: water funnel rising, morph stage 1 |
-| 0x3 | `FX_SWDMAG_WATER_WATER_BALL_2` | render | model: water vase shape, morph stage 2 |
-| 0x4 | `FX_SWDMAG_WATER_WATER_BALL_3` | render | model: water bulb closing, morph stage 3 |
-| 0x5 | `FX_SWDMAG_WATER_WATER_BALL_0` | render | model: flat water pool (water texture), morph stage 0 |
-| 0x6 | `FX_SWDMAG_WATER_SPRAY_FUNNEL` | render | model: swirling funnel, mist texture, morph end of the spray |
-| 0x7 | `FX_SWDMAG_WATER_SPRAY_COLUMN` | render | model: open cylinder, mist texture, morph start of the spray |
-| 0x8 | `FX_SWDMAG_WATER_WATER_SURFACE` | render | model: flat disc, water texture |
+| 0x1 | `FX_SWDMAG_WATER_SPLASH_DROPS` | render | emitter: water blobs, blue glow and glints |
+| 0x2 | `FX_SWDMAG_WATER_GLOBE_1` | render | model: water funnel rising, morph stage 1 |
+| 0x3 | `FX_SWDMAG_WATER_GLOBE_2` | render | model: water vase shape, morph stage 2 |
+| 0x4 | `FX_SWDMAG_WATER_GLOBE_3` | render | model: water bulb closing, morph stage 3 |
+| 0x5 | `FX_SWDMAG_WATER_GLOBE_0` | render | model: flat water pool (water texture), morph stage 0 |
+| 0x6 | `FX_SWDMAG_WATER_SPLASH_FUNNEL` | render | model: swirling funnel, mist texture, morph end of the spray |
+| 0x7 | `FX_SWDMAG_WATER_SPLASH_COLUMN` | render | model: open cylinder, mist texture, morph start of the spray |
+| 0x8 | `FX_SWDMAG_WATER_BASE_DISC` | render | model: flat disc, water texture |
 | 0x9 | `FX_SWDMAG_WATER_BLUE_RING` | render | emitter: white-blue gouraud rings |
-| 0xD | `FX_SWDMAG_WATER_WATER_BALL` | render | model: closed water sphere, morph end |
+| 0xD | `FX_SWDMAG_WATER_GLOBE` | render | model: closed water sphere, morph end |
 | 0xE | `FX_SWDMAG_WATER_SWORD_GLINT` | render | rings: white 6-segment rings flashed at the sword (op84, first draw) |
 | 0xF | `FX_SWDMAG_WATER_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
 
@@ -148,21 +148,21 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x3 | `FX_SWDMAG_FLARE_RED_RINGS` | render | rings: white-pink-red gouraud rings |
 | 0x4 | `FX_SWDMAG_FLARE_BLAST_RINGS` | render | rings: white-cyan-orange-red gouraud rings, the blast |
 | 0x5 | `FX_SWDMAG_FLARE_FIRE_DOME` | render | model: dome with a fire texture |
-| 0x6 | `FX_SWDMAG_FLARE_EMBERS` | render | emitter: red ember sprites + orange glow |
-| 0x8 | `FX_SWDMAG_FLARE_SHOCK_RINGS` | render | emitter: white-crimson / white-violet gouraud rings |
-| 0x9 | `FX_SWDMAG_FLARE_FAN_EMITTER` | kind/usage (look pending) | emitter: two fans; the render shows only yellow glow dots on a dark strip (texture mostly outside the file) |
+| 0x6 | `FX_SWDMAG_FLARE_SPARK_GLOW` | render | emitter: red ember sprites + orange glow |
+| 0x8 | `FX_SWDMAG_FLARE_RED_VIOLET_RINGS` | render | emitter: white-crimson / white-violet gouraud rings |
+| 0x9 | `FX_SWDMAG_FLARE_GOLDEN_GLOWS` | render (byte-identical twin, consistency pass) | emitter: two fans drawn as small golden glow spots (byte-identical to fx_07d entry 0x1B, same render) |
 | 0xB | `FX_SWDMAG_FLARE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
-| 0xC | `FX_SWDMAG_FLARE_SMOKE_SPHERE` | render (fxdata d6121033) | model: sphere with a grey smoke texture (page 0x13C) |
+| 0xC | `FX_SWDMAG_FLARE_CLOUD_SPHERE` | render (fxdata d6121033) | model: sphere with a grey smoke texture (page 0x13C) |
 | 0xD | `FX_SWDMAG_FLARE_RED_HALO` | render (fxdata d6121033) | model: flat red-orange gouraud halo ring |
 | 0xE | `FX_SWDMAG_FLARE_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop |
-| 0x10 | `FX_SWDMAG_FLARE_GLOW` | render | particles: orange glow with a white core |
+| 0x10 | `FX_SWDMAG_FLARE_ORANGE_GLOW` | render | particles: orange glow with a white core |
 | 0x11 | `FX_SWDMAG_FLARE_EMBERS_2` | render | emitter: red ember sprites |
 | 0x12 | `FX_SWDMAG_FLARE_ARCH` | render (fxdata d6121033) | model: grey arch, 15-bit texture page 0x139 (white in the render) |
 | 0x13 | `FX_SWDMAG_FLARE_WHITE_RINGS` | render | rings: white-cream gouraud rings |
 | 0x18 | `FX_SWDMAG_FLARE_BACKDROP_3` | usage | table: background layers for btlfx_drawBackdrop |
 | 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
 | 0x1A | `FX_SWDMAG_FLARE_TEX_RING_2` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
-| 0x1B | `FX_SWDMAG_FLARE_BLUE_BOLT` | render | trail: blue lightning strip (fxm_drawOffsetTrail) |
+| 0x1B | `FX_SWDMAG_FLARE_BLUE_LIGHTNING` | render | trail: blue lightning strip (fxm_drawOffsetTrail) |
 | 0x1E | `FX_SWDMAG_FLARE_SWORD_GLINT` | render | rings: white 6-segment rings flashed at the sword (op84, first draw) |
 | 0x1F | `FX_SWDMAG_FLARE_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
 
@@ -170,20 +170,20 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x8 | `FX_SWDMAG_DOOMSDAY_ROCK` | render | model: polyhedral rock (rock texture) |
-| 0x9 | `FX_SWDMAG_DOOMSDAY_DUST_RING` | render | rings: white ring fading through cream to grey, 8 frames |
+| 0x8 | `FX_SWDMAG_DOOMSDAY_METEOR` | render | model: polyhedral rock (rock texture) |
+| 0x9 | `FX_SWDMAG_DOOMSDAY_WHITE_RING` | render | rings: white ring fading through cream to grey, 8 frames |
 | 0xA | `FX_SWDMAG_DOOMSDAY_FIRE_RING` | render | rings: white-orange / yellow rings, 16 frames |
-| 0xB | `FX_SWDMAG_DOOMSDAY_BOULDER` | render | model: egg-shaped boulder (rock texture) |
+| 0xB | `FX_SWDMAG_DOOMSDAY_BIG_METEOR` | render | model: egg-shaped boulder (rock texture) |
 | 0xD | `FX_SWDMAG_DOOMSDAY_EMBERS` | render | emitter: spiral of tiny orange sprites |
-| 0x11 | `FX_SWDMAG_DOOMSDAY_STAR_FUNNEL` | render | model: three-bladed funnel with a starfield texture |
-| 0x12 | `FX_SWDMAG_DOOMSDAY_STAR_DOME` | render | model: arch / dome with a starfield texture |
+| 0x11 | `FX_SWDMAG_DOOMSDAY_STAR_TUNNEL` | render | model: three-bladed funnel with a starfield texture |
+| 0x12 | `FX_SWDMAG_DOOMSDAY_STAR_ARCH` | render | model: arch / dome with a starfield texture |
 | 0x13 | `FX_SWDMAG_DOOMSDAY_RED_DOME` | render (fxdata d6121033) | model: shallow dark-red gouraud dome with a white centre |
 | 0x14 | `FX_SWDMAG_DOOMSDAY_BOULDER_2` | render | model: rough egg-shaped boulder (rock texture) |
-| 0x19 | `FX_SWDMAG_DOOMSDAY_SMOKE_CYLINDER` | render (fxdata d6121033) | model: open cylinder with a grey-white smoke texture |
+| 0x19 | `FX_SWDMAG_DOOMSDAY_LIGHT_CONE` | render (fxdata d6121033) | model: open cylinder with a grey-white smoke texture |
 | 0x1A | `FX_SWDMAG_DOOMSDAY_LILAC_RINGS` | render | rings: white-lilac gouraud rings at the centre |
 | 0x1B | `FX_SWDMAG_DOOMSDAY_BLUE_RINGS` | render | rings: white-cyan-blue gouraud rings at the centre |
 | 0x1C | `FX_SWDMAG_DOOMSDAY_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
-| 0x1D | `FX_SWDMAG_DOOMSDAY_PURPLE_BOLT` | render | trail: purple lightning strip (fxm_drawOffsetTrail) |
+| 0x1D | `FX_SWDMAG_DOOMSDAY_PURPLE_STREAK` | render | trail: purple lightning strip (fxm_drawOffsetTrail) |
 | 0x20 | `FX_SWDMAG_DOOMSDAY_PEBBLES` | render | emitter: spiral of small grey pebble sprites |
 | 0x21 | `FX_SWDMAG_DOOMSDAY_ROCK_DEBRIS` | render (fxdata d6121033) | emitter: four particle elements, tumbling grey-blue rock debris |
 | 0x22 | `FX_SWDMAG_DOOMSDAY_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
@@ -273,12 +273,12 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x2 | `FX_BAHAMUT_PURPLE_BOLT` | render | trail: purple energy strip (fxm_drawOffsetTrail1) |
 | 0x3 | `FX_BAHAMUT_TEAL_PUFF` | kind/usage (look pending) | particles: teal puff (pool task); the render still reads garbled teal texels (texture partly outside the file) |
 | 0x5 | `FX_BAHAMUT_BLUE_RINGS` | render | emitter: dark-to-light blue gouraud rings |
-| 0x7 | `FX_BAHAMUT_CORE_MODEL` | kind/usage (look pending) | 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise |
+| 0x7 | `FX_BAHAMUT_CORE_GRID` | kind/usage (look pending) | 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise |
 | 0x8 | `FX_BAHAMUT_WHITE_BOLT` | kind/usage (look pending) | trail: faint white strip (fxm_drawOffsetTrail0); the render is still almost empty |
 | 0xA | `FX_BAHAMUT_FIRE_SPARKS` | render | emitter: orange flame glows + spark sprites |
-| 0xB | `FX_BAHAMUT_GLOW_MODEL` | kind/usage (look pending) | 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels |
+| 0xB | `FX_BAHAMUT_TILE_RING` | kind/usage (look pending) | 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels |
 | 0xC | `FX_BAHAMUT_WHITE_RINGS` | render | rings: grey-white gouraud rings |
-| 0x82 | `FX_BAHAMUT_PILLAR_MODEL` | kind/usage (look pending) | summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise |
+| 0x82 | `FX_BAHAMUT_PILLAR_STRIP` | kind/usage (look pending) | summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise |
 | 0x83 | `FX_BAHAMUT_BLUE_SPARKS` | render | summon data: emitter, blue-white spark sprites |
 | 0x85 | `FX_BAHAMUT_CLOUD_SPHERE` | render (fxdata d6121033) | summon data: 'so' model, sphere with a blue-white cloud texture, drawn fading at the end |
 | 0x86 | `FX_BAHAMUT_SMOKE_ARC` | render (fxdata d6121033) | summon data: 'so' model, curved band with a grey smoke texture, stacked nine times as a cone |
@@ -299,7 +299,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0xC | `FX_BAHAMUT_BLUE_SPARKS_2` | render | emitter: blue-white spark sprites falling |
 | 0xD | `FX_BAHAMUT_FLAME_STRIP` | render (fxdata d6121033) | 'so' model: flat gouraud strip, purple-red-yellow gradient, drawn with BLAST_MODEL |
 | 0xE | `FX_BAHAMUT_ORANGE_STREAKS` | render (fxdata d6121033) | emitter: two fans, thin orange-white rising streaks |
-| 0xF | `FX_BAHAMUT_BLAST_MODEL` | kind/usage (look pending) | 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) |
+| 0xF | `FX_BAHAMUT_BLAST_PLATE` | kind/usage (look pending) | 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) |
 | 0x11 | `FX_BAHAMUT_WHITE_BOLT_2` | kind/usage (look pending) | trail: faint white strip (fxm_drawOffsetTrail1); the render is still almost empty |
 | 0x12 | `FX_BAHAMUT_SPIN_RING` | render | rings: white-blue gouraud rings, spinning |
 | 0x14 | `FX_BAHAMUT_BLUE_RINGS` | render | rings: dark-to-light blue gouraud rings |
@@ -389,10 +389,10 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x1 | `FX_PSYCHOKINESIS_WHITE_RING` | render | emitter: white gouraud rings |
-| 0x2 | `FX_PSYCHOKINESIS_WHITE_RING_2` | render | emitter: white gouraud rings |
+| 0x1 | `FX_PSYCHOKINESIS_WHITE_RINGS_2` | render | emitter: white gouraud rings (byte-identical to fx_023 entry 0x3) |
+| 0x2 | `FX_PSYCHOKINESIS_WHITE_RINGS` | render | emitter: white gouraud rings (byte-identical to fx_023 entry 0x1) |
 | 0x3 | `FX_PSYCHOKINESIS_PSYCHIC_ORBS` | render | emitter: homing violet-to-pink orbs |
-| 0x7 | `FX_PSYCHOKINESIS_SHOCK_RING` | render | emitter: white-to-grey gouraud rings, 8 frames |
+| 0x7 | `FX_PSYCHOKINESIS_GREY_RINGS` | render | emitter: white-to-grey gouraud rings, 8 frames |
 | 0x8 | `FX_PSYCHOKINESIS_DARK_BUBBLES` | render | emitter: dark bubble screen trails |
 
 ### fx_0ec: Doom (FX_DOOM_)
@@ -419,17 +419,17 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x2 | `FX_ROULETTE_SUMMON_MODEL_DATA` | usage | model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL |
+| 0x2 | `FX_ROULETTE_MODEL_DATA` | usage | model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL |
 | 0x4 | `FX_ROULETTE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | 0x6 | `FX_ROULETTE_TARGET_RING` | render | sprite: white ring outline on the chosen target |
-| 0x7 | `FX_ROULETTE_HORNED_FIGURE` | render (fxdata d6121033) | 'so' summon model (btlfx_registerSummonModel): brown armoured figure with a horned face texture |
-| 0x8 | `FX_ROULETTE_HORNED_FIGURE_2` | render (fxdata d6121033) | 'so' model: the same horned figure in another pose (same textures, 354 polys) |
-| 0xA | `FX_ROULETTE_BLUE_BEAM` | render | emitter: spiralling blue light-beam trail |
-| 0xB | `FX_ROULETTE_GLOW_RINGS` | render | emitter: green glows + white-salmon-violet rings |
-| 0xC | `FX_ROULETTE_RED_SPARKS` | render | emitter: pink-red spark sprites + white-red rings |
-| 0x10 | `FX_ROULETTE_WHITE_GLOW` | render | emitter: white glow puffs |
-| 0x11 | `FX_ROULETTE_BLUE_BUBBLES` | render | emitter: blue bubbles |
-| 0x1D | `FX_ROULETTE_BLUE_BEAM_2` | render | emitter: spiralling blue light-beam trail |
+| 0x7 | `FX_ROULETTE_REAPER` | render (fxdata d6121033) | 'so' summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe (byte-identical to fx_05e entry 0x6, same render) |
+| 0x8 | `FX_ROULETTE_REAPER_2` | render (fxdata d6121033) | 'so' model: the robed skull reaper with the scythe in another pose (same textures, 354 polys; byte-identical to fx_05e entry 0x1C, same render) |
+| 0xA | `FX_ROULETTE_BLUE_TRAIL` | render | emitter: spiralling blue light-beam trail |
+| 0xB | `FX_ROULETTE_GREEN_ORB` | render | emitter: green glows + white-salmon-violet rings |
+| 0xC | `FX_ROULETTE_RED_RINGS` | render | emitter: pink-red spark sprites + white-red rings |
+| 0x10 | `FX_ROULETTE_SMOKE` | render | emitter: grey-white smoke puffs (byte-identical to fx_05e entry 0x10, same render) |
+| 0x11 | `FX_ROULETTE_SOUL_ORBS` | render | emitter: blue bubbles |
+| 0x1D | `FX_ROULETTE_BLUE_TRAIL_2` | render | emitter: spiralling blue light-beam trail |
 
 ### fx_0ee: enemy Mirror (FX_MIRROR_)
 
@@ -485,7 +485,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | fx_0d9 | 0xd | `FX_SWDMAG_THUNDAGA_DISC` | model: flat octagon on 15-bit texture page 0x119, which the file does not fill (drawn at run time) (byte-identical to fx_018 entry 0x10) |
 | fx_0d9 | 0x26 | `FX_SWDMAG_THUNDAGA_CONE_EMITTER` | emitter: cone of sprites; the render is still all transparent (byte-identical to fx_018 entry 0x26) |
 | fx_0dd | 0x11 | `FX_SWDMAG_BIO_SCREEN_TRAIL` | emitter: orbiting screen-space trail; the render is still black (texture not in the file) |
-| fx_0df | 0x9 | `FX_SWDMAG_FLARE_FAN_EMITTER` | emitter: two fans; the render shows only yellow glow dots on a dark strip (texture mostly outside the file) |
+| fx_0df | 0x9 | `FX_SWDMAG_FLARE_GOLDEN_GLOWS` | emitter: two fans; the render shows only yellow glow dots on a dark strip (texture mostly outside the file) |
 | fx_0df | 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
 | fx_0df | 0x1a | `FX_SWDMAG_FLARE_TEX_RING_2` | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
 | fx_0e1_0 | 0x80 | `FX_REBIRTH_FLAME_MORPH_2` | summon data: 'so' model, morph end, then drawn fading; the render's UVs land on a mixed sprite sheet, so the look is not readable |
@@ -493,12 +493,12 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | fx_0e1_0 | 0x82 | `FX_REBIRTH_FLAME_MORPH_0` | summon data: 'so' model, morph start; the render's UVs land on a mixed sprite sheet, so the look is not readable |
 | fx_0e1_1 | 0x1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file) |
 | fx_0e3_0 | 0x3 | `FX_BAHAMUT_TEAL_PUFF` | particles: teal puff (pool task); the render still reads garbled teal texels (texture partly outside the file) |
-| fx_0e3_0 | 0x7 | `FX_BAHAMUT_CORE_MODEL` | 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise |
+| fx_0e3_0 | 0x7 | `FX_BAHAMUT_CORE_GRID` | 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise |
 | fx_0e3_0 | 0x8 | `FX_BAHAMUT_WHITE_BOLT` | trail: faint white strip (fxm_drawOffsetTrail0); the render is still almost empty |
-| fx_0e3_0 | 0xb | `FX_BAHAMUT_GLOW_MODEL` | 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels |
-| fx_0e3_0 | 0x82 | `FX_BAHAMUT_PILLAR_MODEL` | summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise |
+| fx_0e3_0 | 0xb | `FX_BAHAMUT_TILE_RING` | 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels |
+| fx_0e3_0 | 0x82 | `FX_BAHAMUT_PILLAR_STRIP` | summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise |
 | fx_0e3_1 | 0x7 | `FX_BAHAMUT_FLARE_LINE` | sprite line; the render still reads garbled green / orange rings (texture not in the file) |
-| fx_0e3_1 | 0xf | `FX_BAHAMUT_BLAST_MODEL` | 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) |
+| fx_0e3_1 | 0xf | `FX_BAHAMUT_BLAST_PLATE` | 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) |
 | fx_0e3_1 | 0x11 | `FX_BAHAMUT_WHITE_BOLT_2` | trail: faint white strip (fxm_drawOffsetTrail1); the render is still almost empty |
 | fx_0e3_1 | 0x15 | `FX_BAHAMUT_WHITE_BOLT` | trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8); the render is still almost empty |
 | fx_0ec | 0x6 | `FX_DOOM_PARTICLES` | particles; the render still reads garbled blue texels (texture not in the file) |

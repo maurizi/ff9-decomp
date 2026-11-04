@@ -8,8 +8,8 @@
 
 /* fx_0b9 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SANDSTORM_SAND_STREAK   0x1 /* emitter: grey sand streak (screen trail) */
-#define FX_SANDSTORM_SAND_STREAK_2 0x2 /* emitter: grey sand streak (homing 3D trail) */
+#define FX_SANDSTORM_SAND_TRAIL_2 0x1 /* emitter: screen trail with a grey sand streak strip (byte-identical to fx_04b entry 0x3) */
+#define FX_SANDSTORM_SAND_TRAIL 0x2 /* emitter: homing trail with a grey sand streak strip (byte-identical to fx_04b entry 0x2) */
 #define FX_SANDSTORM_SAND_CLOUD    0x3 /* emitter: grainy grey sand clouds */
 
 typedef struct {

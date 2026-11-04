@@ -9,7 +9,7 @@
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_TRANCE_BLUE_RING      0x1 /* rings: navy-white gouraud rings */
 #define FX_TRANCE_AURA_CYLINDER  0x3 /* model: open cylinder, blue-green cloud texture (byte-identical to fx_101 entry 0x3) */
-#define FX_TRANCE_FAN_EMITTER    0x5 /* emitter: two fan elements, thin blue-white light streaks (byte-identical to fx_101 entry 0x5) */
+#define FX_TRANCE_THIN_STREAKS 0x5 /* emitter: two fans, thin orange and blue light streaks (byte-identical to fx_101 entry 0x5) */
 #define FX_TRANCE_VIOLET_TRAIL   0x8 /* trail: violet sparkle strip, 12 frames */
 #define FX_TRANCE_LILAC_RINGS    0x9 /* rings: white / lilac / blue gouraud rings (byte-identical to fx_101 entry 0x9) */
 #define FX_TRANCE_WHITE_RINGS    0xA /* rings: white-blue gouraud rings */

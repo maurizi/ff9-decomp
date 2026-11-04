@@ -20,7 +20,7 @@
 #define FX_DOOMSDAY_EMBERS        0xD /* emitter: small orange ember sprites (pool task) */
 #define FX_DOOMSDAY_STAR_TUNNEL   0x11 /* model: tube with a star texture, a warp tunnel */
 #define FX_DOOMSDAY_STAR_ARCH     0x12 /* model: arch with a star texture */
-#define FX_DOOMSDAY_GLOW_DISC     0x13 /* model: gouraud disc (46 polys) */
+#define FX_DOOMSDAY_RED_DOME 0x13 /* model: shallow dark-red gouraud dome with a white centre (46 polys; byte-identical to fx_0e0 entry 0x13) */
 #define FX_DOOMSDAY_BIG_METEOR_2  0x14 /* model: large rock ellipsoid (324 polys, 15-bit rock texture) */
 #define FX_DOOMSDAY_EMBERS_2      0x15 /* emitter: small yellow ember sprites */
 #define FX_DOOMSDAY_FLAME_BURST   0x16 /* emitter: orange flame puffs */
@@ -31,7 +31,7 @@
 #define FX_DOOMSDAY_PURPLE_STREAK 0x1E /* trail: purple streak (fxm_drawOffsetTrail) */
 #define FX_DOOMSDAY_SPACE_LAYER   0x1F /* sprite: purple-blue starry nebula strip (space background layer) */
 #define FX_DOOMSDAY_RED_PLANET    0x20 /* sprite: small red planet */
-#define FX_DOOMSDAY_GREY_SPARKS   0x21 /* emitter: small grey spark sprites */
+#define FX_DOOMSDAY_PEBBLES 0x21 /* emitter: spiral of small grey pebble sprites (byte-identical to fx_0e0 entry 0x20) */
 #define FX_DOOMSDAY_ROCK_DEBRIS   0x22 /* emitter: grey rock chunks */
 #define FX_DOOMSDAY_BACKDROP_2    0x30 /* table: background layers for btlfx_drawBackdrop */
 #define FX_DOOMSDAY_BACKDROP_3    0x31 /* table: background layers for btlfx_drawBackdrop */

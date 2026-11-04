@@ -11,8 +11,8 @@
 #define FX_DRAGON_BREATH_VALUE_PATH    0x3 /* table: value path (fxm_valuePathInit) */
 #define FX_DRAGON_BREATH_VIOLET_RINGS  0x8 /* emitter: violet and blue-white gouraud rings */
 #define FX_DRAGON_BREATH_DRAGON        0xB /* 'so' model: teal-green dragon */
-#define FX_DRAGON_BREATH_COLOR_LINES   0x15 /* emitter: spiralling fan of thin green and violet light lines */
-#define FX_DRAGON_BREATH_GOLD_SPARKLES 0x16 /* emitter: gold and white sparkles + teal specks */
+#define FX_DRAGON_BREATH_LIGHT_STREAK 0x15 /* emitter: fan drawn as a thin green to violet horizontal light streak (byte-identical to fx_03d entry 0x10) */
+#define FX_DRAGON_BREATH_SPARKLE_CIRCLE 0x16 /* emitter: circle of gold / white sparkle quads + teal specks (byte-identical to fx_03d entry 0x11) */
 #define FX_DRAGON_BREATH_BUBBLES       0x17 /* emitter: gold sparkles + teal bubbles */
 #define FX_DRAGON_BREATH_BUBBLES_2     0x18 /* emitter: gold sparkles + green bubbles spiralling */
 #define FX_DRAGON_BREATH_DRAGON_2      0x1F /* 'so' model: the second teal-green dragon */

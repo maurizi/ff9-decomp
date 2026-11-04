@@ -64,7 +64,7 @@ still render black.
 - fx_04e 0x9 `FX_SLEEP_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (same call site and look as fx_01a entry 0x1)
 - fx_04f 0xA `FX_REFLECT_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
 - fx_04f 0xD `FX_REFLECT_BACKDROP_2`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
-- fx_052 0x7 `FX_LIMIT_GLOVE_SO_MODEL`: 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80
+- fx_052 0x7 `FX_LIMIT_GLOVE_SPHERE`: 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80
 - fx_052 0xC `FX_LIMIT_GLOVE_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
 - fx_057 0x3 `FX_HOLY_BACKDROP_3`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
 - fx_057 0x6 `FX_HOLY_TRAIL`: trail drawn by the emitter callback; the strip reads unrelated multicoloured VRAM, filled at run time
@@ -87,10 +87,10 @@ still render black.
 | fx_001 | 0x6 | `FX_DAGGERS_MAGIC_STAR_FLARES` | render | emitter: yellow-green and violet star flares, faint glow |
 | fx_001 | 0x7 | `FX_DAGGERS_MAGIC_BLUE_SWIRL` | render | emitter: blue swirl-textured trail + green/yellow/white sparkle sprites |
 | fx_001 | 0xD | `FX_DAGGERS_MAGIC_SPARKLE_SHOWER` | render | emitter: green/yellow/white sparkle sprites (at pos4C) |
-| fx_001 | 0xE | `FX_DAGGERS_MAGIC_LIGHT_SPIRES` | render | model: spiky spire shapes, green light-arc texture |
+| fx_001 | 0xE | `FX_DAGGERS_MAGIC_LIGHT_FOUNTAIN` | render | model: tall spiky funnel with a green light-fountain texture (byte-identical to fx_08e entry 0xE) |
 | fx_001 | 0xF | `FX_DAGGERS_MAGIC_LIGHT_RING` | render | model: ring, green light-arc texture |
 | fx_001 | 0x10 | `FX_DAGGERS_MAGIC_SPARKLE_BURST` | render | emitter: white/yellow/green sparkle sprites |
-| fx_00a | 0x2 | `FX_VENOM_POWDER_POWDER_CLOUD` | render | emitter: purple powder clouds + purple droplet sprites |
+| fx_00a | 0x2 | `FX_VENOM_POWDER_VENOM_SPLASH` | render | emitter: purple powder / venom blobs + droplet splash (byte-identical to fx_0ae entry 0x2, same render) |
 | fx_00b | 0x7 | `FX_ESUNA_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
 | fx_00b | 0x8 | `FX_ESUNA_LIGHT_SHOWER` | render | emitter: rainbow halo + blue ripple, falling golden streaks with white glints, lens flare |
 | fx_00c | 0x7 | `FX_PANACEA_GREEN_RINGS` | render | emitter: yellow-green and white-violet gouraud rings |
@@ -225,7 +225,7 @@ still render black.
 | fx_02e | 0x2 | `FX_MAGIC_BREAK_RED_ORB` | render | emitter: red sphere with a white flame inside |
 | fx_02e | 0x3 | `FX_MAGIC_BREAK_VIOLET_WAVES` | render (fxdata d6121033) | emitter: fan drawn as wavy violet energy bolts |
 | fx_02e | 0x4 | `FX_MAGIC_BREAK_RUNE_RING` | render | emitter: violet circuit-pattern ring + red sphere |
-| fx_02f | 0x5 | `FX_FLAME_FIREBALL` | render | emitter: expanding red-orange fireballs + flame tongues (one per target) |
+| fx_02f | 0x5 | `FX_FLAME_FLAME_BURST` | render | emitter: flame explosion with expanding red-orange fireballs and flame tongues, at each target (byte-identical to fx_137 entry 0x5) |
 | fx_02f | 0x6 | `FX_FLAME_FLAME_STREAK` | render | emitter: screen trail with a flame-streak strip |
 | fx_030 | 0x1 | `FX_POLLEN_POLLEN_DOTS` | render (fxdata d6121033) | emitter: faint pollen dots (btlfx_emitDots) |
 | fx_030 | 0x2 | `FX_POLLEN_DUST_PUFF` | render | emitter: grey dust puff + dim specks |
@@ -351,7 +351,7 @@ still render black.
 | fx_04f | 0xD | `FX_REFLECT_BACKDROP_2` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
 | fx_051 | 0x7 | `FX_MIGHTY_GUARD_CRYSTAL_SPECKS` | render | emitter: two fans + white / cyan / grey square specks |
 | fx_051 | 0x8 | `FX_MIGHTY_GUARD_GOLD_HALO` | render | emitter: golden ring glow with golden dots, blue orb, yellow and pale blue rings |
-| fx_052 | 0x7 | `FX_LIMIT_GLOVE_SO_MODEL` | kind/usage (look pending) | 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80 |
+| fx_052 | 0x7 | `FX_LIMIT_GLOVE_SPHERE` | kind/usage (look pending) | 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80 |
 | fx_052 | 0x8 | `FX_LIMIT_GLOVE_GOLD_SPARKLES` | render | emitter: rings of golden sparkles |
 | fx_052 | 0x9 | `FX_LIMIT_GLOVE_GOLD_GLOW` | render | emitter: golden glow, red streak trail, pink dots |
 | fx_052 | 0xA | `FX_LIMIT_GLOVE_GOLD_GLOW_2` | render | emitter: golden glow, red streak trail, pink dots |
@@ -425,7 +425,7 @@ still render black.
 | fx_05d | 0x12 | `FX_BIO_TEAL_RING` | render | emitter: ring with a teal glow texture |
 | fx_05d | 0x13 | `FX_BIO_TOXIC_CLOUD` | render | emitter: green toxic cloud + grey glow |
 | fx_05d | 0x14 | `FX_BIO_RED_ORB` | render | emitter: red-veined orbs + crimson glow |
-| fx_05e | 0x2 | `FX_DEATH_SUMMON_TEXTURES` | kind/usage | table: texture block passed with the summon model (btlfx_registerSummonModel) |
+| fx_05e | 0x2 | `FX_DEATH_MODEL_DATA` | kind/usage | table: texture block passed with the summon model (btlfx_registerSummonModel) |
 | fx_05e | 0x4 | `FX_DEATH_GREEN_ORB` | render | emitter: fan + pale green orb sprites, white-salmon-violet gouraud rings |
 | fx_05e | 0x5 | `FX_DEATH_RED_RINGS` | render | emitter: pink spark sprites + white-red gouraud rings |
 | fx_05e | 0x6 | `FX_DEATH_REAPER` | render (fxdata d6121033) | summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe |

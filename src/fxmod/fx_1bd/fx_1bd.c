@@ -302,7 +302,7 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->posF4.vx = work->xform20.pos8.vx;
             work->posF4.vy = work->xform20.pos8.vy;
             work->posF4.vz = work->xform20.pos8.vz;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FAN_EMITTER_2), (s32)&work->posF4);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_RED_GLOW), (s32)&work->posF4);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_BURST), (s32)&work->posF4);
             break;
         case 3:

@@ -52,7 +52,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0x10) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_FIREBALL), (s32)&fx_02f_targetPos[i]);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_FLAME_BURST), (s32)&fx_02f_targetPos[i]);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x40);
                 }

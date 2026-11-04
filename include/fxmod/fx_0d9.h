@@ -21,7 +21,7 @@
 #define FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS_2 0x22 /* emitter: four fans of cyan / blue zigzag lightning arcs (byte-identical to fx_018 entry 0x22) */
 #define FX_SWDMAG_THUNDAGA_IMPACT_FLASH   0x25 /* emitter: four-point star flash (byte-identical to fx_018 entry 0x25) */
 #define FX_SWDMAG_THUNDAGA_CONE_EMITTER   0x26 /* emitter: cone of sprites; the render is still all transparent (byte-identical to fx_018 entry 0x26) (look pending) */
-#define FX_SWDMAG_THUNDAGA_SPARKS         0x27 /* emitter: white and yellow dot sparks (byte-identical to fx_018 entry 0x27) */
+#define FX_SWDMAG_THUNDAGA_SPARK_DOTS 0x27 /* emitter: white and yellow dot sparks (byte-identical to fx_018 entry 0x27) */
 #define FX_SWDMAG_THUNDAGA_SWORD_GLINT    0x28 /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_THUNDAGA_SWORD_FLASH    0x29 /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 

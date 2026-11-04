@@ -8,7 +8,7 @@
 
 /* fx_05e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_DEATH_SUMMON_TEXTURES 0x2 /* table: texture block passed with the summon model (btlfx_registerSummonModel) */
+#define FX_DEATH_MODEL_DATA 0x2 /* table: texture block passed with the summon model (btlfx_registerSummonModel) */
 #define FX_DEATH_GREEN_ORB       0x4 /* emitter: fan + pale green orb sprites, white-salmon-violet gouraud rings */
 #define FX_DEATH_RED_RINGS       0x5 /* emitter: pink spark sprites + white-red gouraud rings */
 #define FX_DEATH_REAPER          0x6 /* summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe */

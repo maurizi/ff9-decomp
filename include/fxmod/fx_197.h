@@ -13,8 +13,8 @@
 #define FX_SHIVA_ICE_DEBRIS    0xE /* emitter: small ice chunk sprites (byte-identical to fx_026 entry 0x20) */
 #define FX_SHIVA_CYAN_RING     0xF /* emitter: cyan-white gouraud ring (byte-identical to fx_026 entry 0x22) */
 #define FX_SHIVA_ICE_CHUNKS    0x1A /* emitter: falling ice chunk sprites, faint sparkles (byte-identical to fx_026 entry 0x6) */
-#define FX_SHIVA_ICE_SHARD     0xD8 /* 'so' model: long ice shard, pale cracked-ice texture (0xC0+ = battle load buffer, entry 0x18) */
-#define FX_SHIVA_ICE_SHARD_2   0xD9 /* 'so' model: long ice shard, dark cracked-ice texture (0xC0+ = battle load buffer, entry 0x19) */
+#define FX_SHIVA_ICICLE 0xD8 /* 'so' model: long ice shard, pale cracked-ice texture (0xC0+ = battle load buffer, entry 0x18) */
+#define FX_SHIVA_ICICLE_2 0xD9 /* 'so' model: long ice shard, dark cracked-ice texture (0xC0+ = battle load buffer, entry 0x19) */
 
 typedef struct {
     SVECTOR vert0; /* pad: already split off */

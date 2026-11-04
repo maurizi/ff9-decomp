@@ -8,10 +8,10 @@
 
 /* fx_0eb effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_PSYCHOKINESIS_WHITE_RING   0x1 /* emitter: white gouraud rings */
-#define FX_PSYCHOKINESIS_WHITE_RING_2 0x2 /* emitter: white gouraud rings */
+#define FX_PSYCHOKINESIS_WHITE_RINGS_2 0x1 /* emitter: white gouraud rings (byte-identical to fx_023 entry 0x3) */
+#define FX_PSYCHOKINESIS_WHITE_RINGS 0x2 /* emitter: white gouraud rings (byte-identical to fx_023 entry 0x1) */
 #define FX_PSYCHOKINESIS_PSYCHIC_ORBS 0x3 /* emitter: homing violet-to-pink orbs */
-#define FX_PSYCHOKINESIS_SHOCK_RING   0x7 /* emitter: white-to-grey gouraud rings, 8 frames */
+#define FX_PSYCHOKINESIS_GREY_RINGS 0x7 /* emitter: white-to-grey gouraud rings, 8 frames */
 #define FX_PSYCHOKINESIS_DARK_BUBBLES 0x8 /* emitter: dark bubble screen trails */
 
 typedef struct {

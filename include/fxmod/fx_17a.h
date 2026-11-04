@@ -9,16 +9,16 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_MADEEN_BLUE_RING     0x1 /* rings: black-to-blue gouraud rings */
 #define FX_MADEEN_BLUE_GLOW     0x2 /* particles: blue glow (pool task) */
-#define FX_MADEEN_WHITE_RING    0x3 /* rings: white-blue gouraud rings */
+#define FX_MADEEN_BLUE_RINGS 0x3 /* rings: white-blue gouraud rings */
 #define FX_MADEEN_VIOLET_RING   0x4 /* rings: white-cyan-violet gouraud rings, four segments */
 #define FX_MADEEN_TEXTURED_RING 0x5 /* rings: ring with a pink-green noise texture */
 #define FX_MADEEN_TEAL_RING     0x6 /* rings: black-blue-teal gouraud rings */
 #define FX_MADEEN_RAINBOW_ARCH  0x7 /* model: arch with a rainbow aura texture */
 #define FX_MADEEN_WINGS         0x8 /* model: three-armed wing shape with a grey feather texture */
-#define FX_MADEEN_INFINITY_LOOP 0x9 /* model: figure-eight band (its 15-bit texture page 0x138 holds a handwritten placeholder in the file) */
-#define FX_MADEEN_RAINBOW_DOME  0xA /* model: banded dome with a rainbow strip texture */
-#define FX_MADEEN_GLOW_LINE     0xB /* sprite line: green, red, orange and blue ring glows */
-#define FX_MADEEN_GLOW_LINE_2   0xC /* sprite line: green, red, orange and blue ring glows */
+#define FX_MADEEN_LOOP_RIBBON 0x9 /* model: figure-eight band (its 15-bit texture page 0x138 holds a handwritten placeholder in the file) */
+#define FX_MADEEN_RAINBOW_SPHERE 0xA /* model: sphere wrapped in red-green-blue rainbow stripe bands (byte-identical to fx_0fb_1 summon entry 0x89) */
+#define FX_MADEEN_LENS_FLARES_2 0xB /* sprite line: green / red / orange lens-flare rings (byte-identical to fx_0fb_1 entry 0x17) */
+#define FX_MADEEN_LENS_FLARES 0xC /* sprite line: green / red / orange lens-flare rings (byte-identical to fx_0fb_1 entry 0xC) */
 #define FX_MADEEN_VIOLET_GLOW   0xD /* emitter: three fans, a horizontal violet-white glow */
 #define FX_MADEEN_WHITE_GLOW    0xE /* particles: white-blue glow */
 #define FX_MADEEN_BLUE_SPARKLES 0xF /* emitter: blue square sparkles and gold sprites */

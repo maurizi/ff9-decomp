@@ -229,11 +229,11 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (frame == 28) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
-                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_GREEN_GLOW), (s32)&work->pos14);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_GREEN_ORB), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
                 }
-                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_RED_BURST), (s32)&work->pos14);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_RED_RINGS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
                 }
@@ -256,7 +256,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->trailStride = 0x44;
                     emitter->otZ = 0x40;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_GREY_SMOKE), (s32)&work->pos24);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_SMOKE), (s32)&work->pos24);
             }
             work->scale3C[0] = work->scale3C[2] = ((0x1000 - ex->math_sin(fade >> 2)) << 12) >> 12;
             pos.vx = work->pos24.vx;

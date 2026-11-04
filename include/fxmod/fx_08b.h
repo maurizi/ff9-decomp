@@ -10,10 +10,10 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_AERIAL_SLASH_CRESCENT        0x1 /* emitter: fan drawn as a pale green-white crescent slash + dim green specks */
 #define FX_AERIAL_SLASH_CRESCENT_2      0x2 /* emitter: fan drawn as a pale green-white crescent slash + dim green specks */
-#define FX_AERIAL_SLASH_VIOLET_PUFFS    0x6 /* emitter: violet cloud puffs + green glint */
+#define FX_AERIAL_SLASH_DUST_CLOUD 0x6 /* emitter: violet cloud puffs + green glint */
 #define FX_AERIAL_SLASH_BLUE_GUST       0x8 /* emitter: fan drawn as a blue crescent gust + blue specks */
-#define FX_AERIAL_SLASH_SPARKLE_CURTAIN 0xE /* emitter: violet sparkle curtain ring + violet-white rings */
-#define FX_AERIAL_SLASH_SMOKE_RING      0xF /* emitter: ring textured with grey smoke */
+#define FX_AERIAL_SLASH_WIND_RINGS 0xE /* emitter: violet sparkle curtain ring + violet-white rings */
+#define FX_AERIAL_SLASH_DUST_RING 0xF /* emitter: ring textured with grey smoke */
 
 typedef struct {
     Pool6CEntry *emit0;

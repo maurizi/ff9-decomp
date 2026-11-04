@@ -12,7 +12,7 @@
 #define FX_SWDMAG_FIRE_FLAME_BURST   0x2 /* emitter: flame explosion (burst, smoke, embers) rising around the target (byte-identical to fx_000 entry 0x6) */
 #define FX_SWDMAG_FIRE_HEAT_RING     0x9 /* emitter: white-red gouraud rings at the target's feet (byte-identical to fx_000 entry 0x7) */
 #define FX_SWDMAG_FIRE_SWORD_GLINT   0xB /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
-#define FX_SWDMAG_FIRE_SWORD_GLINT_2 0xC /* rings: white gouraud ring flash at the sword, rotated */
+#define FX_SWDMAG_FIRE_SWORD_FLASH 0xC /* rings: white 8-segment rings flashed rotating at the sword (byte-identical to the SWORD_FLASH of every Sword Magic module) */
 
 typedef struct {
     s32 state0; /* state */

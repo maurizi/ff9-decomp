@@ -29,10 +29,10 @@ Notes:
   placeholder page carrying the kana labels "up / left / right / down" (an orientation test texture).
 - fx_1f2 (Grand Cross) and fx_1bf_1 use summon data (0x80+): Grand Cross's planets, moon, earth globe, vortices;
   Ark short's beam, tori, rocks and flame pieces, all named by the new 'so' model renders.
-- Some names carried from other slices were "(look pending)" there and the new tool now draws them (fx_1ec
-  `FX_ULTIMA_SO_MODEL`: dome with a red spike texture; fx_1f6 `FX_AERA_MODEL*`; fx_1fd `FX_FENRIR_EFFECT_MODEL*`;
-  fx_1fe `FX_PHOENIX_MODEL_2/3/4`: flat flame dome, flame dome with a hole, smoke arc). The names were kept for
-  the carry-over; renaming them belongs with their source modules (fx_180, fx_0cd, fx_0e2, fx_0d3).
+- Some names carried from other slices were "(look pending)" there and the new tool now draws them; the
+  consistency pass (`docs/fxdata.md`) gave them their source modules' look names (fx_1ec `FX_ULTIMA_SPIKE_CROWN`,
+  fx_1f6 `FX_AERA_GREEN_WIND_RING` / `GREY_ARC` / `GREEN_TORNADO`, fx_1fd `FX_FENRIR_WIND_RING(_2)`, fx_1fe
+  `FX_PHOENIX_FIRE_DISC` / `FIRE_DOME` / `SMOKE_ARC`).
 
 ## Open questions (emulator)
 
@@ -40,10 +40,9 @@ Notes:
 |---|---|---|---|
 | fx_1e6 | 0x4 | `FX_CORRECT_SPARKLES` | the tube particle element renders black (texture not in the file) |
 | fx_1ec | 0x2, 0x12, 0x27 | `FX_ULTIMA_NOISE_RING(_2/_3)` | ring texture not resolved (noise) |
-| fx_1ec | 0xD | `FX_ULTIMA_SO_MODEL` | carried from fx_180; now drawn as a dome with a red spike texture, a better name wanted |
 | fx_1f0 | 0x4 | `FX_APPEARANCE_SPRITES` | sprites render empty |
-| fx_1f6 | 0x1, 0x3, 0x6, 0x8, 0xC | `FX_AERA_*` | carried from fx_0cd with their pending state |
-| fx_1fd | 0x5, 0x6, 0x16 | `FX_FENRIR_EFFECT_MODEL(_2)`, `FX_FENRIR_SPARKS` | carried from fx_0e2 with their pending state |
+| fx_1f6 | 0x8, 0xC | `FX_AERA_WIND_STREAKS`, `FX_AERA_SPRITE_BURST` | carried from fx_0cd with their pending state |
+| fx_1fd | 0x16 | `FX_FENRIR_SPARKS` | carried from fx_0e2 with its pending state |
 | fx_1fe | 0x16 | `FX_PHOENIX_EMBERS` | sprites render empty here; named after fx_0d3 entry 0xF (same call site and kind) |
 
 ## Table
@@ -90,7 +89,7 @@ Notes:
 | fx_1e7 | 0x14 | `FX_WRONG_PATH_KEYS_2` | usage | table: position path keys for fxm_posPathInit (fx_1e7_posPath) |
 | fx_1e9 | 0x1 | `FX_TRANCE_BLUE_RING` | render | rings: navy-white gouraud rings |
 | fx_1e9 | 0x3 | `FX_TRANCE_AURA_CYLINDER` | render | model: open cylinder, blue-green cloud texture (byte-identical to fx_101 entry 0x3) |
-| fx_1e9 | 0x5 | `FX_TRANCE_FAN_EMITTER` | render | emitter: two fan elements, thin blue-white light streaks (byte-identical to fx_101 entry 0x5) |
+| fx_1e9 | 0x5 | `FX_TRANCE_THIN_STREAKS` | render | emitter: two fans, thin orange and blue light streaks (byte-identical to fx_101 entry 0x5) |
 | fx_1e9 | 0x8 | `FX_TRANCE_VIOLET_TRAIL` | render | trail: violet sparkle strip, 12 frames |
 | fx_1e9 | 0x9 | `FX_TRANCE_LILAC_RINGS` | render | rings: white / lilac / blue gouraud rings (byte-identical to fx_101 entry 0x9) |
 | fx_1e9 | 0xA | `FX_TRANCE_WHITE_RINGS` | render | rings: white-blue gouraud rings |
@@ -104,10 +103,10 @@ Notes:
 | fx_1ea | 0x6 | `FX_DRAGONS_CREST_GREEN_RINGS` | render | emitter: dark-to-light green gouraud rings |
 | fx_1ea | 0x7 | `FX_DRAGONS_CREST_DUST_RINGS` | render | emitter: grey-brown to white gouraud rings |
 | fx_1ea | 0xB | `FX_DRAGONS_CREST_ROT_PATH_KEYS` | usage | table: rotation / position path keys for fxm_rotPosPathInit |
-| fx_1ea | 0x13 | `FX_DRAGONS_CREST_FAN_EMITTER` | render | emitter: fan, green light streaks (byte-identical to fx_03d entry 0x10) |
+| fx_1ea | 0x13 | `FX_DRAGONS_CREST_LIGHT_STREAK` | render | emitter: fan drawn as a thin green to violet horizontal light streak (byte-identical to fx_03d entry 0x10) |
 | fx_1ea | 0x14 | `FX_DRAGONS_CREST_SPARKLE_CIRCLE` | render | emitter: circle of gold / white sparkle quads + blue-green specks (byte-identical to fx_03d entry 0x11) |
 | fx_1ea | 0x1C | `FX_DRAGONS_CREST_VIOLET_ENERGY` | render | emitter: violet crackling energy shapes + violet sub-sparks |
-| fx_1ea | 0x1D | `FX_DRAGONS_CREST_FAN_EMITTER_2` | render | emitter: two fans, white / green light streaks |
+| fx_1ea | 0x1D | `FX_DRAGONS_CREST_WHITE_GREEN_STREAKS` | render | emitter: two fans, white / green light streaks |
 | fx_1ea | 0x20 | `FX_DRAGONS_CREST_DRAGON_TRAIL` | render | trail: orange dragon-scale strip |
 | fx_1ea | 0x21 | `FX_DRAGONS_CREST_DRAGON_TRAIL_2` | render | trail: orange dragon-scale strip |
 | fx_1ea | 0x22 | `FX_DRAGONS_CREST_ROCK_DEBRIS_3` | render | emitter: spiral of grey rock chunks and a grey glow |
@@ -120,7 +119,7 @@ Notes:
 | fx_1eb | 0x7 | `FX_SIX_DRAGONS_VALUE_PATH` | usage | table: value path keys for fxm_valuePathInit |
 | fx_1eb | 0x8 | `FX_SIX_DRAGONS_STONE_TRAIL` | render | emitter: spiralling 3D trail with a rock texture, small spark sprites |
 | fx_1eb | 0x14 | `FX_SIX_DRAGONS_SPARKLE_CIRCLE` | render | emitter: circle of gold / white sparkle quads + blue-green specks (byte-identical to fx_03d entry 0x11) |
-| fx_1eb | 0x15 | `FX_SIX_DRAGONS_FAN_EMITTER` | render | emitter: fan, green light streaks (byte-identical to fx_03d entry 0x10) |
+| fx_1eb | 0x15 | `FX_SIX_DRAGONS_LIGHT_STREAK` | render | emitter: fan drawn as a thin green to violet horizontal light streak (byte-identical to fx_03d entry 0x10) |
 | fx_1eb | 0x1D | `FX_SIX_DRAGONS_WHITE_RINGS_2` | render | emitter: white gouraud rings, 45 frames |
 | fx_1eb | 0x1E | `FX_SIX_DRAGONS_SMOKE` | render | emitter: green-to-pink smoke puffs |
 | fx_1ec | 0x1 | `FX_ULTIMA_RED_FLARE_2` | render | emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x18) |
@@ -132,14 +131,14 @@ Notes:
 | fx_1ec | 0x8 | `FX_ULTIMA_COLOR_RING` | render | emitter: yellow, lilac, violet and magenta gouraud rings (byte-identical to fx_180 entry 0x7) |
 | fx_1ec | 0x9 | `FX_ULTIMA_ROCK_DEBRIS_2` | render | emitter: spiral of grey rock chunks (byte-identical to fx_180 entry 0x8) |
 | fx_1ec | 0xB | `FX_ULTIMA_PATH_SET_2` | usage | table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 (byte-identical to fx_180 entry 0x1A) |
-| fx_1ec | 0xD | `FX_ULTIMA_SO_MODEL` | kind/usage (look pending) | 'so' model (not drawn by the tool), drawn with FX_ULTIMA_GLOW_DOME (byte-identical to fx_180 entry 0x17) |
+| fx_1ec | 0xD | `FX_ULTIMA_SPIKE_CROWN` | render (byte-identical twin, consistency pass) | 'so' model: ring crown of red-pink spikes, drawn with FX_ULTIMA_GLOW_DOME (byte-identical to fx_180 entry 0x17) |
 | fx_1ec | 0xE | `FX_ULTIMA_GLOW_DOME` | render | model: gouraud octagonal dome (20 polys) (byte-identical to fx_180 entry 0x1) |
 | fx_1ec | 0xF | `FX_ULTIMA_GREY_TRAIL_2` | render | emitter: wobbling screen trail with a grey streak texture (byte-identical to fx_180 entry 0xB) |
 | fx_1ec | 0x10 | `FX_ULTIMA_BLAST_RINGS` | render | emitter: white-pink, lilac and yellow-red gouraud rings, pink glows (byte-identical to fx_180 entry 0xC) |
 | fx_1ec | 0x11 | `FX_ULTIMA_PINK_SPARKS` | render | emitter: sparse pink spark sprites (byte-identical to fx_180 entry 0xE) |
 | fx_1ec | 0x12 | `FX_ULTIMA_NOISE_RING_2` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings (byte-identical to fx_180 entry 0xF) |
 | fx_1ec | 0x13 | `FX_ULTIMA_RED_FLARE` | render | emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x10) |
-| fx_1ec | 0x14 | `FX_ULTIMA_FAN_EMITTER` | render | emitter: orbiting fan, pale pink light streaks (byte-identical to fx_180 entry 0x11) |
+| fx_1ec | 0x14 | `FX_ULTIMA_CRIMSON_STREAK` | render | emitter: orbiting fan, a white-to-crimson light streak (byte-identical to fx_180 entry 0x11, same render) |
 | fx_1ec | 0x15 | `FX_ULTIMA_PINK_TRAIL` | render | emitter: pink screen trail (byte-identical to fx_180 entry 0x12) |
 | fx_1ec | 0x16 | `FX_ULTIMA_PINK_TRAIL_2` | render | emitter: orbiting pink screen trail (byte-identical to fx_180 entry 0x13) |
 | fx_1ec | 0x17 | `FX_ULTIMA_PINK_ORB_BURST` | render | emitter: pink orb and blade particles, sparks, white-yellow-red gouraud rings (byte-identical to fx_180 entry 0x16) |
@@ -169,7 +168,7 @@ Notes:
 | fx_1ed | 0x18 | `FX_CARBUNCLE_ORBIT_GLOW_2` | render | emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x16, same kind) |
 | fx_1ed | 0x19 | `FX_CARBUNCLE_RING_BURST` | render | emitter: cone of white-yellow, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x11, same kind) |
 | fx_1ed | 0x1A | `FX_CARBUNCLE_CRYSTAL_SPARKLES` | render | emitter: white crystal-flake sprites and blue sparkles, fans (same call site as fx_0b1 entry 0x12, same kind) |
-| fx_1ed | 0x1B | `FX_CARBUNCLE_FAN_EMITTER` | render | emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) |
+| fx_1ed | 0x1B | `FX_CARBUNCLE_WHITE_LIGHT_STREAK` | render | emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) |
 | fx_1ed | 0x1D | `FX_CARBUNCLE_LIGHT_BEAM` | render | trail: blue-white light beam, drawn twice (same call site as fx_0b1 entry 0x10, same kind) |
 | fx_1ee | 0x2 | `FX_CARBUNCLE_YELLOW_RED_RINGS` | render | emitter: white-yellow and white-red gouraud rings at each target |
 | fx_1ee | 0x13 | `FX_CARBUNCLE_VIOLET_RINGS` | render | emitter: white / pale blue / violet gouraud rings, 24 frames |
@@ -191,7 +190,7 @@ Notes:
 | fx_1ee | 0x39 | `FX_CARBUNCLE_GLOW_RING` | render | emitter: white glow fans and a white / pale green gouraud ring (same call site as fx_0b1 entry 0xC, same kind) |
 | fx_1ee | 0x3A | `FX_CARBUNCLE_RING_BURST` | render | emitter: cone of white-yellow, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x11, same kind) |
 | fx_1ee | 0x3B | `FX_CARBUNCLE_LENS_FLARE` | render | emitter: orbiting white glow trail with a blue lens streak (same call site as fx_0b1 entry 0x9, same kind) |
-| fx_1ee | 0x3C | `FX_CARBUNCLE_FAN_EMITTER` | render | emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) |
+| fx_1ee | 0x3C | `FX_CARBUNCLE_WHITE_LIGHT_STREAK` | render | emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) |
 | fx_1ef | 0x3 | `FX_CARBUNCLE_WHITE_STREAK` | render | emitter: orbiting sprite (blank) + screen trail with a white light-streak texture |
 | fx_1ef | 0x4 | `FX_CARBUNCLE_LENS_FLARE` | render | emitter: orbiting white glow trail with a blue lens streak (same call site as fx_0b1 entry 0x9, same kind) |
 | fx_1ef | 0x5 | `FX_CARBUNCLE_RING_BURST_2` | render | emitter: cone of white, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x1, same kind) |
@@ -205,7 +204,7 @@ Notes:
 | fx_1ef | 0xD | `FX_CARBUNCLE_GOLD_GLOW` | render | emitter: golden glow sprite + pale yellow gouraud rings |
 | fx_1ef | 0xE | `FX_CARBUNCLE_FLAME_GLINT` | render | emitter: orange-blue flame-shaped glints, gouraud rings, fans (same call site as fx_0b1 entry 0x13, same kind) |
 | fx_1ef | 0xF | `FX_CARBUNCLE_ORBIT_GLOW_3` | render | emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x24, same kind) |
-| fx_1ef | 0x10 | `FX_CARBUNCLE_FAN_EMITTER` | render | emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) |
+| fx_1ef | 0x10 | `FX_CARBUNCLE_WHITE_LIGHT_STREAK` | render | emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) |
 | fx_1ef | 0x11 | `FX_CARBUNCLE_GLOW_RING` | render | emitter: white glow fans and a white / pale green gouraud ring (same call site as fx_0b1 entry 0xC, same kind) |
 | fx_1ef | 0x12 | `FX_CARBUNCLE_LIGHT_BEAM` | render | trail: blue-white light beam, drawn twice (same call site as fx_0b1 entry 0x10, same kind) |
 | fx_1ef | 0x13 | `FX_CARBUNCLE_CAMERA_KEYS` | usage | table: camera key path for fxm_camKeyAdd (target 1) (same call site as fx_0b1 entry 0xF, same kind) |
@@ -289,11 +288,11 @@ Notes:
 | fx_1f5 | 0x1 | `FX_NIGHT_MOON_CLOUDS` | render | emitter: dark clouds and a full moon |
 | fx_1f5 | 0x5 | `FX_NIGHT_PINK_GLOW_SWIRL` | render | emitter: helix of white screen trails with pink glows |
 | fx_1f5 | 0x6 | `FX_NIGHT_PINK_WISPS` | render | emitter: pink wisp sprites |
-| fx_1f6 | 0x1 | `FX_AERA_MODEL_3` | kind/usage (look pending) | 'so' model (byte-identical to fx_0cd entry 0x1) |
-| fx_1f6 | 0x3 | `FX_AERA_MODEL_2` | kind/usage (look pending) | 'so' model (byte-identical to fx_0cd entry 0x3) |
+| fx_1f6 | 0x1 | `FX_AERA_GREEN_WIND_RING` | render (byte-identical twin, consistency pass) | 'so' model: ring of green wind streaks (grass-fringe cylinder) (byte-identical to fx_0cd entry 0x1) |
+| fx_1f6 | 0x3 | `FX_AERA_GREY_ARC` | render (byte-identical twin, consistency pass) | 'so' model: open grey arc band (byte-identical to fx_0cd entry 0x3) |
 | fx_1f6 | 0x4 | `FX_AERA_GREEN_RING` | render | emitter: green gouraud rings (byte-identical to fx_0cd entry 0x4) |
 | fx_1f6 | 0x5 | `FX_AERA_WIND_RING` | render | emitter: orbiting white wind-ring particle (byte-identical to fx_0cd entry 0x5) |
-| fx_1f6 | 0x6 | `FX_AERA_MODEL` | kind/usage (look pending) | 'so' model (byte-identical to fx_0cd entry 0xD) |
+| fx_1f6 | 0x6 | `FX_AERA_GREEN_TORNADO` | render (byte-identical twin, consistency pass) | 'so' model: twisted green column with a smoke texture (tornado) (byte-identical to fx_0cd entry 0xD) |
 | fx_1f6 | 0x7 | `FX_AERA_GREEN_BURST` | render | emitter: green gust puffs (byte-identical to fx_0cd entry 0x7) |
 | fx_1f6 | 0x8 | `FX_AERA_WIND_STREAKS` | kind/usage (look pending) | emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) (byte-identical to fx_0cd entry 0x8) |
 | fx_1f6 | 0xA | `FX_AERA_GUST_RINGS` | render | emitter: cyan-green gouraud rings (byte-identical to fx_0cd entry 0xA) |
@@ -317,8 +316,8 @@ Notes:
 | fx_1fc | 0x1B | `FX_FENRIR_MORPH_CURVE_2` | usage | table: alternative value path (fx_0d2_morphCurve2) (byte-identical to fx_0d2 entry 0x1A) |
 | fx_1fd | 0x3 | `FX_FENRIR_RIBBON_PATHS_A` | usage | table: position paths of ribbon 0 (byte-identical to fx_0e2 entry 0x9) |
 | fx_1fd | 0x4 | `FX_FENRIR_RIBBON_PATHS_B` | usage | table: position paths of ribbon 1 (byte-identical to fx_0e2 entry 0xC) |
-| fx_1fd | 0x5 | `FX_FENRIR_EFFECT_MODEL` | kind/usage (look pending) | 'so' model (op84) (byte-identical to fx_0e2 entry 0x11) |
-| fx_1fd | 0x6 | `FX_FENRIR_EFFECT_MODEL_2` | kind/usage (look pending) | 'so' model (op84) (byte-identical to fx_0e2 entry 0x1D) |
+| fx_1fd | 0x5 | `FX_FENRIR_WIND_RING` | render (byte-identical twin, consistency pass) | 'so' model (op84): flat ring with a green wind texture (byte-identical to fx_0e2 entry 0x11) |
+| fx_1fd | 0x6 | `FX_FENRIR_WIND_RING_2` | render (byte-identical twin, consistency pass) | 'so' model (op84): flat ring with a green wind texture (byte-identical to fx_0e2 entry 0x1D) |
 | fx_1fd | 0x8 | `FX_FENRIR_GREEN_RINGS_2` | render | emitter: white-green / pale green gouraud rings (byte-identical to fx_0e2 entry 0x10) |
 | fx_1fd | 0xE | `FX_FENRIR_CAM_TRACK_1` | usage | table: camera key track, channel 1 (fxm_camChanAdd) |
 | fx_1fd | 0xF | `FX_FENRIR_CAM_TRACK_2` | usage | table: camera key track, channel 2 (fxm_camChanAdd) |
@@ -329,9 +328,9 @@ Notes:
 | fx_1fd | 0x14 | `FX_FENRIR_SAND_RINGS` | render | emitter: brown-salmon gouraud rings + spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0xD) |
 | fx_1fd | 0x15 | `FX_FENRIR_RIBBON_PATHS_D` | usage | table: position paths of ribbons 2/3 (other branch) (byte-identical to fx_0e2 entry 0xF) |
 | fx_1fd | 0x16 | `FX_FENRIR_SPARKS` | kind/usage (look pending) | emitter: spiral of spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0x12) |
-| fx_1fe | 0x2 | `FX_PHOENIX_MODEL_2` | render | 'so' model: flat dome, flame texture (byte-identical to fx_0d3 entry 0xD) |
-| fx_1fe | 0xD | `FX_PHOENIX_MODEL_3` | render | 'so' model: dome with a hole, flame texture (byte-identical to fx_0d3 entry 0xC) |
-| fx_1fe | 0xF | `FX_PHOENIX_MODEL_4` | render | 'so' model: arc band, smoke texture (byte-identical to fx_0d3 entry 0xE) |
+| fx_1fe | 0x2 | `FX_PHOENIX_FIRE_DISC` | render | 'so' model: flat disc with a fire texture (byte-identical to fx_0d3 entry 0xD) |
+| fx_1fe | 0xD | `FX_PHOENIX_FIRE_DOME` | render | 'so' model: dome with a hole, fire texture (byte-identical to fx_0d3 entry 0xC) |
+| fx_1fe | 0xF | `FX_PHOENIX_SMOKE_ARC` | render | 'so' model: thin arc band with a grey smoke texture (byte-identical to fx_0d3 entry 0xE) |
 | fx_1fe | 0x10 | `FX_PHOENIX_FIRE_FEATHERS` | render | emitter: orbiting fire-textured trails and flame-feather quads (same call site as fx_0d3 entry 0x10, same kind) |
 | fx_1fe | 0x11 | `FX_PHOENIX_PINK_RINGS` | render | emitter: white / pink / copper gouraud rings (byte-identical to fx_0d3 entry 0x11) |
 | fx_1fe | 0x12 | `FX_PHOENIX_GOLD_FEATHERS` | render | emitter: golden feather quads (same call site as fx_0d3 entry 0x12, same kind) |
@@ -342,7 +341,7 @@ Notes:
 | fx_1bf_0 | 0xA | `FX_ARK_RED_FLASH_RING` | render | rings: red-white flat flash ring |
 | fx_1bf_0 | 0x1C | `FX_ARK_RED_RING` | render | rings: white-pink-red gouraud rings (byte-identical to fx_17d_4 entry 0x3) |
 | fx_1bf_0 | 0x1D | `FX_ARK_STRAND_POINTS` | usage | table: offset table of the 18 strand point lists per layer (drawStrands) |
-| fx_1bf_1 | 0x1 | `FX_ARK_FAN_EMITTER` | render | emitter: two fans, white / orange light streaks (byte-identical to fx_17d_7 entry 0x2) |
+| fx_1bf_1 | 0x1 | `FX_ARK_LIGHT_STREAKS` | render | emitter: two fans, thin pale orange light streaks (byte-identical to fx_17d_7 entry 0x2) |
 | fx_1bf_1 | 0x3 | `FX_ARK_ROCK_DEBRIS_2` | render | emitter: grey-blue rock chunks (byte-identical to fx_17d_7 entry 0x4) |
 | fx_1bf_1 | 0x5 | `FX_ARK_PALE_RING` | render | emitter: white-cream-violet and white-peach-mauve gouraud rings (byte-identical to fx_17d_7 entry 0x6) |
 | fx_1bf_1 | 0x6 | `FX_ARK_VIOLET_RING` | render | emitter: white-cream-violet and white-purple-blue gouraud rings (byte-identical to fx_17d_7 entry 0x7) |
@@ -350,26 +349,26 @@ Notes:
 | fx_1bf_1 | 0xC | `FX_ARK_PEACH_RING` | render | rings: white-peach-mauve gouraud rings (byte-identical to fx_17d_6 entry 0xB) |
 | fx_1bf_1 | 0xE | `FX_ARK_ROCK_DEBRIS` | render | emitter: grey-blue rock chunks (byte-identical to fx_17d_7 entry 0x1) |
 | fx_1bf_1 | 0xF | `FX_ARK_ORANGE_RING` | render | emitter: two fans (not rendered) + white-orange gouraud rings (byte-identical to fx_17d_7 entry 0xD) |
-| fx_1bf_1 | 0x86 | `FX_ARK_RED_BEAM` | render | summon data: 'so' model, glowing red-orange beam bar |
-| fx_1bf_1 | 0x88 | `FX_ARK_GREEN_CRATER` | render | summon data: 'so' model, dark green rippled crater ring |
-| fx_1bf_1 | 0x89 | `FX_ARK_FIRE_DISC` | render | summon data: 'so' model, flat ring disc with an orange flame texture |
+| fx_1bf_1 | 0x86 | `FX_ARK_ORANGE_BEAM` | render | summon data: 'so' model, glowing red-orange beam bar |
+| fx_1bf_1 | 0x88 | `FX_ARK_TEAL_RING` | render | summon data: 'so' model, dark green rippled crater ring |
+| fx_1bf_1 | 0x89 | `FX_ARK_FLAME_TEX_RING` | render | summon data: 'so' model, flat ring disc with an orange flame texture |
 | fx_1bf_1 | 0x8A | `FX_ARK_SMOKE_BOWL` | render | summon data: 'so' model, bowl with a dark cloud texture |
 | fx_1bf_1 | 0x8C | `FX_ARK_GREY_TORUS` | render | summon data: 'so' model, grey gouraud torus |
-| fx_1bf_1 | 0x8D | `FX_ARK_ROCK_TORUS` | render | summon data: 'so' model, torus with a brown rock texture |
-| fx_1bf_1 | 0x8E | `FX_ARK_GOLD_TORUS` | render | summon data: 'so' model, gold gouraud torus |
-| fx_1bf_1 | 0x8F | `FX_ARK_BLUE_SWIRL_BOWL` | render | summon data: 'so' model, bowl with a twisted blue cloud texture |
+| fx_1bf_1 | 0x8D | `FX_ARK_EMBER_RING` | render | summon data: 'so' model, torus with a brown rock texture |
+| fx_1bf_1 | 0x8E | `FX_ARK_GOLD_RING` | render | summon data: 'so' model, gold gouraud torus |
+| fx_1bf_1 | 0x8F | `FX_ARK_BLUE_CLOUD_RING` | render | summon data: 'so' model, bowl with a twisted blue cloud texture |
 | fx_1bf_1 | 0x90 | `FX_ARK_ROCK` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x91 | `FX_ARK_FIRE_CONE` | render | summon data: 'so' model, open cone with a dark flame texture |
 | fx_1bf_1 | 0x92 | `FX_ARK_ROCK_2` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x93 | `FX_ARK_ROCK_3` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x94 | `FX_ARK_FIRE_ARC` | render | summon data: 'so' model, curved band with an orange flame texture |
 | fx_1bf_2 | 0x1 | `FX_ARK_ORANGE_BEAM` | render | 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) |
-| fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band; its texture is a placeholder with the kana labels up / left / right / down (byte-identical to fx_17d_8 entry 0x6) |
+| fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6) |
 | fx_1bf_2 | 0x3 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_17d_8 entry 0x7) |
-| fx_1bf_2 | 0x5 | `FX_ARK_GREY_STAR_DISC` | render | 'so' model: shallow dish with a grey cloud texture (byte-identical to fx_17d_8 entry 0x9) |
+| fx_1bf_2 | 0x5 | `FX_ARK_GREY_STAR_DISC` | render | 'so' model: shallow dish with a grey radial cloud texture (byte-identical to fx_17d_8 entry 0x9) |
 | fx_1bf_2 | 0x7 | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) |
 | fx_1bf_2 | 0xB | `FX_ARK_STARFIELD` | render | sprite: faint starfield drawn on screen (byte-identical to fx_17d_8 entry 0x10) |
 | fx_1bf_2 | 0xD | `FX_ARK_PLANET` | render | 'so' model: hemisphere with an earth-globe texture (byte-identical to fx_17d_8 entry 0x1) |
-| fx_1bf_2 | 0xF | `FX_ARK_RED_GLOW_DOME` | render (type 10 split fix) | 'so' model: shallow red-orange gouraud glow dome (byte-identical to fx_17d_8 entry 0x2) |
-| fx_1bf_2 | 0x10 | `FX_ARK_DARK_BLUE_RING` | render (type 10 split fix) | 'so' model: flat ring with a dark blue texture (byte-identical to fx_17d_8 entry 0x4) |
-| fx_1bf_2 | 0x11 | `FX_ARK_FIRE_RING` | render (type 10 split fix) | rings: white-yellow-red gouraud rings (byte-identical to fx_17d_8 entry 0x5) |
+| fx_1bf_2 | 0xF | `FX_ARK_RED_GLOW_DOME` | render (type 10 split fix) | 'so' model: shallow red-orange gouraud glow dome (byte-identical to fx_17d_8 entry 0x2; type 10 data below the group's slot) |
+| fx_1bf_2 | 0x10 | `FX_ARK_DARK_BLUE_RING` | render (type 10 split fix) | 'so' model: flat ring with a dark blue texture (byte-identical to fx_17d_8 entry 0x4; type 10 data below the group's slot) |
+| fx_1bf_2 | 0x11 | `FX_ARK_FIRE_RING` | render (type 10 split fix) | rings: white-yellow-red gouraud rings (byte-identical to fx_17d_8 entry 0x5; type 10 data below the group's slot) |

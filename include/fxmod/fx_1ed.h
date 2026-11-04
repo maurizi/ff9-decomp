@@ -23,7 +23,7 @@
 #define FX_CARBUNCLE_ORBIT_GLOW_2     0x18 /* emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x16, same kind) */
 #define FX_CARBUNCLE_RING_BURST       0x19 /* emitter: cone of white-yellow, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x11, same kind) */
 #define FX_CARBUNCLE_CRYSTAL_SPARKLES 0x1A /* emitter: white crystal-flake sprites and blue sparkles, fans (same call site as fx_0b1 entry 0x12, same kind) */
-#define FX_CARBUNCLE_FAN_EMITTER      0x1B /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
+#define FX_CARBUNCLE_WHITE_LIGHT_STREAK 0x1B /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
 #define FX_CARBUNCLE_LIGHT_BEAM       0x1D /* trail: blue-white light beam, drawn twice (same call site as fx_0b1 entry 0x10, same kind) */
 
 typedef struct {

@@ -6,7 +6,7 @@
 
 /* fx_00a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_VENOM_POWDER_POWDER_CLOUD 0x2 /* emitter: purple powder clouds + purple droplet sprites */
+#define FX_VENOM_POWDER_VENOM_SPLASH 0x2 /* emitter: purple powder / venom blobs + droplet splash (byte-identical to fx_0ae entry 0x2, same render) */
 
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */

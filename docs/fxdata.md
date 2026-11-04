@@ -100,6 +100,39 @@ files mostly share entries byte for byte (Firaga, Blizzaga, Thundara, Thundaga) 
 indices; fx_03e shows that the same call site can play different data (its "flares" site plays fx_006's other
 flare emitter), so names follow the content, not the site.
 
+## Consistency pass (all 380 modules)
+
+Every data entry of every effect file was hashed (8274 entries, the summon data and load buffer included) and
+each group of byte-identical entries used by several modules was compared by name and by render (the entry's
+PNGs from `fxdata.py --render`, byte for byte, then by eye where only the UV box or a stray texel differed).
+Where the renders agree, the `<WHAT>` part now agrees; the game-name prefix still follows the module. The
+direction: the spell's own module over its Sword Magic twin; the long summon over its short form; the look name
+over a generic or carried pending one (`SO_MODEL`, `MODEL_n`, `FAN_EMITTER`, `EFFECT_MODEL`), which also
+settled 19 "(look pending)" names. 161 renames in 61 modules, among them:
+
+- Sword Magic: fx_0d4 .. fx_0e0 take the spells' names (`FX_SWDMAG_WATER_GLOBE_n`, `..._SPLASH_FUNNEL`,
+  `FX_SWDMAG_BIO_PATH`, `FX_SWDMAG_FLARE_RED_VIOLET_RINGS`, `FX_SWDMAG_DOOMSDAY_METEOR`, `..._SPARK_DOTS`);
+  the shared rotating sword ring is `*_SWORD_FLASH` in all eight.
+- Short forms and carried names: Ramuh (fx_19f), Aera (fx_1f6), Fenrir (fx_1fd), Phoenix (fx_1fe), Ultima (fx_1ec),
+  Atomos (fx_1be), Ifrit (fx_1bd), Trance (fx_1e9), Bahamut (fx_195), Ark (fx_1bf_1, fx_1bf_2), Carbuncle
+  (fx_1ed .. fx_1ef `FX_CARBUNCLE_WHITE_LIGHT_STREAK`), Shiva / Diamond Dust (fx_197 `FX_SHIVA_ICICLE(_2)`).
+- Enemy twins: Curaga (fx_08e, and fx_090 which runs the same C) takes enemy Dagger's magic's (fx_001) names;
+  Roulette's model is Death's reaper (`FX_ROULETTE_REAPER`); Earthquake's two modules share `ROCK_CHUNK_n`;
+  Luna's fan and sparkle circle are `LIGHT_STREAK` / `SPARKLE_CIRCLE` in all seven modules that carry them;
+  the Throw impact is `FX_THROW_IMPACT` in all eight weapon modules.
+- Generic names with a drawn shape (still pending where the texture is not settled): `FX_ARK_NOISE_SPHERE`,
+  `FX_LIMIT_GLOVE_SPHERE`, `FX_BAHAMUT_CORE_GRID` / `TILE_RING` / `PILLAR_STRIP` / `BLAST_PLATE`,
+  `FX_LUCKY_SEVEN_SLOT_STRIPS`, `FX_MOONLIGHT_SLASH_SPIKED_SHAPE`, `FX_6_LEGS_POD`.
+
+Left different on purpose (byte-identical, but drawn differently in context: other CLUTs or texture pages):
+Magic / Armor / Mental Break orbs (red / blue / pink), Reflect's star (sketch placeholder page) vs Carbuncle's
+star crystal, Holy's blue cloud arch vs Holy (Lv4)'s rainbow arch, Aero (breath) swirl vs Rainbow Wind ring,
+Psychokinesis' screen trails (black in fx_023, dark bubbles in fx_0eb), Bahamut's blast plate (page 0x119) vs
+the short form's smoke arc, Madeen's Y frame vs the short form's feather wings, Thievery's lens flares vs Lucky
+Seven's nearly empty sprite line. No module defines a name twice or two names for one index; the remaining
+generic names (`*_CYL_EMITTER`, `*_CALLBACK_EMITTER`, `*_FAN_EMITTER` of fans the render does not show) are
+all still pending. The helper scripts were throw-away (hash every entry with `FxFile.entries`, group by sha1).
+
 ## Open questions (emulator)
 
 Each wants one screenshot of the effect at the frame the C starts the entry (save state: battle, cast the

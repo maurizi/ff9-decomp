@@ -18,7 +18,7 @@
 #define FX_BAHAMUT_BLUE_SPARKS_2      0xC /* emitter: blue-white spark sprites falling */
 #define FX_BAHAMUT_FLAME_STRIP        0xD /* 'so' model: flat gouraud strip, purple-red-yellow gradient, drawn with BLAST_MODEL */
 #define FX_BAHAMUT_ORANGE_STREAKS     0xE /* emitter: two fans, thin orange-white rising streaks */
-#define FX_BAHAMUT_BLAST_MODEL        0xF /* 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) (look pending) */
+#define FX_BAHAMUT_BLAST_PLATE 0xF /* 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) (look pending) */
 #define FX_BAHAMUT_WHITE_BOLT_2       0x11 /* trail: faint white strip (fxm_drawOffsetTrail1); the render is still almost empty (look pending) */
 #define FX_BAHAMUT_SPIN_RING          0x12 /* rings: white-blue gouraud rings, spinning */
 #define FX_BAHAMUT_BLUE_RINGS         0x14 /* rings: dark-to-light blue gouraud rings */

@@ -127,8 +127,8 @@ Notes:
 | fx_0b8 | 0x8C | `FX_ATOMOS_WHITE_DROP_2` | render (fxdata d6121033) | summon data entry 12: textured model, white teardrop |
 | fx_0b8 | 0x8D | `FX_ATOMOS_WHITE_DROP_3` | render (fxdata d6121033) | summon data entry 13: textured model, slim white teardrop |
 | fx_0b8 | 0x8E | `FX_ATOMOS_WHITE_DROP_4` | render (fxdata d6121033) | summon data entry 14: textured model, wide white teardrop |
-| fx_0b9 | 0x1 | `FX_SANDSTORM_SAND_STREAK` | render | emitter: grey sand streak (screen trail) |
-| fx_0b9 | 0x2 | `FX_SANDSTORM_SAND_STREAK_2` | render | emitter: grey sand streak (homing 3D trail) |
+| fx_0b9 | 0x1 | `FX_SANDSTORM_SAND_TRAIL_2` | render | emitter: screen trail with a grey sand streak strip (byte-identical to fx_04b entry 0x3) |
+| fx_0b9 | 0x2 | `FX_SANDSTORM_SAND_TRAIL` | render | emitter: homing trail with a grey sand streak strip (byte-identical to fx_04b entry 0x2) |
 | fx_0b9 | 0x3 | `FX_SANDSTORM_SAND_CLOUD` | render | emitter: grainy grey sand clouds |
 | fx_0ba | 0x4 | `FX_RAMUH_STAFF` | render (fxdata d6121033) | 'so' model: gold gouraud staff with a hooked head (Ramuh's staff) |
 | fx_0ba | 0x5 | `FX_RAMUH_LIGHTNING_RIBBON` | render (fxdata d6121033) | trail: ribbon of blue-white electric glow drawn between key points |
@@ -323,7 +323,7 @@ Notes:
 | fx_0d4 | 0x2 | `FX_SWDMAG_FIRE_FLAME_BURST` | render | emitter: flame explosion (burst, smoke, embers) rising around the target (byte-identical to fx_000 entry 0x6) |
 | fx_0d4 | 0x9 | `FX_SWDMAG_FIRE_HEAT_RING` | render | emitter: white-red gouraud rings at the target's feet (byte-identical to fx_000 entry 0x7) |
 | fx_0d4 | 0xB | `FX_SWDMAG_FIRE_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
-| fx_0d4 | 0xC | `FX_SWDMAG_FIRE_SWORD_GLINT_2` | render | rings: white gouraud ring flash at the sword, rotated |
+| fx_0d4 | 0xC | `FX_SWDMAG_FIRE_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (byte-identical to the SWORD_FLASH of every Sword Magic module) |
 | fx_0d5 | 0x1 | `FX_SWDMAG_FIRA_FLAME_BURST` | render | emitter: flame explosion with ember sparks, at the target body (byte-identical to fx_002 entry 0x4) |
 | fx_0d5 | 0x2 | `FX_SWDMAG_FIRA_SMOKE` | render | emitter: grey smoke puffs (byte-identical to fx_002 entry 0x5) |
 | fx_0d5 | 0x4 | `FX_SWDMAG_FIRA_FLAME_BURST_2` | render | emitter: second flame explosion (embers, red-tinted burst) (byte-identical to fx_002 entry 0x7) |
@@ -346,9 +346,9 @@ Notes:
 | fx_0d6 | 0x14 | `FX_SWDMAG_FIRAGA_GOLD_SPARKS` | render | emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) |
 | fx_0d6 | 0x15 | `FX_SWDMAG_FIRAGA_SMOKE_BURST` | render | emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) |
 | fx_0d6 | 0x16 | `FX_SWDMAG_FIRAGA_CONE_GLOW` | kind/usage (look pending) | emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) |
-| fx_0d6 | 0x17 | `FX_SWDMAG_FIRAGA_EMBER_SPARKS` | render (fxdata d6121033) | emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) |
+| fx_0d6 | 0x17 | `FX_SWDMAG_FIRAGA_EMBER_CONE` | render (fxdata d6121033) | emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) |
 | fx_0d6 | 0x18 | `FX_SWDMAG_FIRAGA_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
-| fx_0d6 | 0x19 | `FX_SWDMAG_FIRAGA_SWORD_GLINT_2` | render | rings: white gouraud ring flash at the sword, rotated |
+| fx_0d6 | 0x19 | `FX_SWDMAG_FIRAGA_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (byte-identical to the SWORD_FLASH of every Sword Magic module) |
 | fx_0d6 | 0x1B | `FX_SWDMAG_FIRAGA_FLAME_RIBBON_1` | render (fxdata d6121033) | 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x17) |
 | fx_0d6 | 0x1C | `FX_SWDMAG_FIRAGA_FLAME_RIBBON_0` | render (fxdata d6121033) | 'so' model: twisted flame ribbon with a fire texture, drawn coiled 18 times (byte-identical to fx_007 entry 0x16) |
 | fx_0d6 | 0x1D | `FX_SWDMAG_FIRAGA_FLAME_RIBBON_2` | render (fxdata d6121033) | 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x18) |
@@ -361,11 +361,11 @@ Notes:
 | fx_0d8 | 0x2 | `FX_SWDMAG_THUNDARA_IMPACT_FLASH` | render | emitter: four-point star flash, white rings, sparks (byte-identical to fx_005 entry 0x17) |
 | fx_0d8 | 0x14 | `FX_SWDMAG_THUNDARA_ORB_EMITTER` | render | emitter: helix whose callback element draws the orb (0x19-0x1D here) (byte-identical to fx_005 entry 0x1a) |
 | fx_0d8 | 0x17 | `FX_SWDMAG_THUNDARA_IMPACT_RING` | render | emitter: white-cyan gouraud rings (byte-identical to fx_005 entry 0x19) |
-| fx_0d8 | 0x18 | `FX_SWDMAG_THUNDARA_SPARKS` | render (fxdata d6121033) | emitter: white dot sparks (byte-identical to fx_005 entry 0x7) |
+| fx_0d8 | 0x18 | `FX_SWDMAG_THUNDARA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white dot sparks (byte-identical to fx_005 entry 0x7) |
 | fx_0d8 | 0x19 | `FX_SWDMAG_THUNDARA_ORB_FADE` | render | particles: blue energy sphere fading to orange (FX_THUNDARA_ORB_FADE's draw slot in fx_005) |
 | fx_0d8 | 0x1A | `FX_SWDMAG_THUNDARA_ORB` | render | particles: bright blue energy sphere (byte-identical to fx_005 entry 0x1d) |
 | fx_0d8 | 0x1B | `FX_SWDMAG_THUNDARA_ORB_SPARKS` | kind/usage (look pending) | sprites: sparks around the orb; the render is still black (page (0x1C0, 0x100) blank in the file's upload, filled at run time) (byte-identical to fx_005 entry 0x1e) |
-| fx_0d8 | 0x1C | `FX_SWDMAG_THUNDARA_ORB_SPARKS_2` | render (fxdata d6121033) | sprites: white dot sparks around the orb (byte-identical to fx_005 entry 0x1f) |
+| fx_0d8 | 0x1C | `FX_SWDMAG_THUNDARA_ORB_DOTS` | render (fxdata d6121033) | sprites: white dot sparks around the orb (byte-identical to fx_005 entry 0x1f) |
 | fx_0d8 | 0x1D | `FX_SWDMAG_THUNDARA_LENS_FLARES` | render | particles: orange lens-flare dots around the orb (byte-identical to fx_005 entry 0x16) |
 | fx_0d8 | 0x1E | `FX_SWDMAG_THUNDARA_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
 | fx_0d8 | 0x1F | `FX_SWDMAG_THUNDARA_SWORD_GLINT_2` | render | rings: white gouraud ring flash at the sword, rotated |

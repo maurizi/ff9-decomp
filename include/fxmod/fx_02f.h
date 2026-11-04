@@ -6,7 +6,7 @@
 
 /* fx_02f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_FLAME_FIREBALL     0x5 /* emitter: expanding red-orange fireballs + flame tongues (one per target) */
+#define FX_FLAME_FLAME_BURST 0x5 /* emitter: flame explosion with expanding red-orange fireballs and flame tongues, at each target (byte-identical to fx_137 entry 0x5) */
 #define FX_FLAME_FLAME_STREAK 0x6 /* emitter: screen trail with a flame-streak strip */
 
 typedef struct {

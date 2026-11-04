@@ -75,7 +75,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->modelPos18.vy = work->pos10.vy;
         work->modelPos18.vz = work->pos10.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&fx_081_bodyPos);
-        work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPARKLE_EMITTER), (s32)&work->pos10);
+        work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SPARKLES), (s32)&work->pos10);
         if (work->emit2C != NULL) {
             work->emit2C->otZ = 0x18;
             if (work->emit2C != NULL) {
@@ -87,19 +87,19 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        fx_081_emitter0 = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SPECKS), (s32)&work->pos24);
+        fx_081_emitter0 = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SPARKLES_2), (s32)&work->pos24);
         if (work->emit30 != NULL) {
             work->emit30->otZ = 0x18;
         }
-        work->emit34 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_GLINTS), (s32)&work->pos24);
+        work->emit34 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LENS_FLARE), (s32)&work->pos24);
         if (work->emit34 != NULL) {
             work->emit34->otZ = 0x10;
         }
         ex->btlfx_initEffModels(fx_081_effModels, 3);
-        work->model8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_WHITE_SPHERE), 0x137,
+        work->model8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LIGHT_SPHERE), 0x137,
                                                 0xFFFF, 0,
                                                 0x80);
-        work->modelC = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_RING_DISC));
+        work->modelC = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_GLOW_BAND));
     } else {
         frame = entry->frame;
         sc = alpha = 0;
@@ -229,17 +229,17 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = -0x180;
             rot.vy = (work->frame4 * 32) + 0x180;
             rot.vz = work->frame4 * 0x18;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TEX_RING), &work->pos10, &rot, swell4, 0, 1, fx_081_glow);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TEXTURED_RING), &work->pos10, &rot, swell4, 0, 1, fx_081_glow);
             rot.vx = 0x200;
             rot.vy = 0x200 - work->frame4 * 32;
             rot.vz = -work->frame4 * 16;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TEX_RING), &work->pos10, &rot, (swell * 8 + swell4) >> 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TEXTURED_RING), &work->pos10, &rot, (swell * 8 + swell4) >> 1,
                               0, 1,
                               fx_081_glow);
             rot.vx = 0x100;
             rot.vy = -0x180 - work->frame4 * 0x18;
             rot.vz = -work->frame4 * 16;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TEX_RING), &work->pos10, &rot, (swell * 16 + swell4) >> 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TEXTURED_RING), &work->pos10, &rot, (swell * 16 + swell4) >> 1,
                               0, 1,
                               fx_081_glow);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BACKDROP_3), work->frame4);
@@ -318,7 +318,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0x400;
             env->otZ = work->otZ8 + 0x40;
             t = (frame << 12) / 7;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_VIOLET_RING_2), &work->posC, &rot, 0x3000, frame, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_WHITE_VIOLET_RINGS), &work->posC, &rot, 0x3000, frame, 1,
                               0x1000);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LILAC_RING), &work->posC, NULL, t + 0x13000, frame, 1,
                               0x1000);
@@ -343,7 +343,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = work->otZ8 + 0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPECK_EMITTER), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SHIMMER), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = work->otZ8 + 0x40;
                 }
@@ -385,7 +385,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 orbitAng = work->frame4 * 41 + (j << 7);
                 for (i = 0; i < 12; i++, orbitAng += 0x155) {
                     ex->btlfx_offsetPoint(&work->posC, (s32)pp, 0, (XY32 *)&ang, orbitRadius, orbitAng);
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SPARKLES), pp, NULL, 0x1000, frame & 0xF, 1,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SPARKLE_DOTS), pp, NULL, 0x1000, frame & 0xF, 1,
                                       bright, 0, 0);
                 }
             }
@@ -401,7 +401,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ang.vy = (orbitAng = (i << 12) / fx_081_ringCounts[ring] - (work->frame4 << 5)) + twist16;
                     ang.vx = vx;
                     ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&ang, orbitRadius, (s16 *)pp2);
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_PARTICLE), pp2, NULL, bright + 0x800, 0, 1, bright, 0,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPARK), pp2, NULL, bright + 0x800, 0, 1, bright, 0,
                                       0);
                 }
             }

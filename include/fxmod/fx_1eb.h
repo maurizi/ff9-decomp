@@ -15,7 +15,7 @@
 #define FX_SIX_DRAGONS_VALUE_PATH     0x7 /* table: value path keys for fxm_valuePathInit */
 #define FX_SIX_DRAGONS_STONE_TRAIL    0x8 /* emitter: spiralling 3D trail with a rock texture, small spark sprites */
 #define FX_SIX_DRAGONS_SPARKLE_CIRCLE 0x14 /* emitter: circle of gold / white sparkle quads + blue-green specks (byte-identical to fx_03d entry 0x11) */
-#define FX_SIX_DRAGONS_FAN_EMITTER    0x15 /* emitter: fan, green light streaks (byte-identical to fx_03d entry 0x10) */
+#define FX_SIX_DRAGONS_LIGHT_STREAK 0x15 /* emitter: fan drawn as a thin green to violet horizontal light streak (byte-identical to fx_03d entry 0x10) */
 #define FX_SIX_DRAGONS_WHITE_RINGS_2  0x1D /* emitter: white gouraud rings, 45 frames */
 #define FX_SIX_DRAGONS_SMOKE          0x1E /* emitter: green-to-pink smoke puffs */
 

@@ -134,7 +134,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->counters0[4] = 0x10;
             break;
         case 0x18:
-            w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_FAN_EMITTER), (s32)&w->posBC);
+            w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_STREAKS), (s32)&w->posBC);
             w->emit20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_VIOLET_RING), (s32)&w->posC4);
             if (w->emit20[0] != NULL) {
                 w->emit20[0]->otZ = 0x200;

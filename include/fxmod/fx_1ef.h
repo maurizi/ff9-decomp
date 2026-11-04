@@ -20,7 +20,7 @@
 #define FX_CARBUNCLE_GOLD_GLOW        0xD /* emitter: golden glow sprite + pale yellow gouraud rings */
 #define FX_CARBUNCLE_FLAME_GLINT      0xE /* emitter: orange-blue flame-shaped glints, gouraud rings, fans (same call site as fx_0b1 entry 0x13, same kind) */
 #define FX_CARBUNCLE_ORBIT_GLOW_3     0xF /* emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x24, same kind) */
-#define FX_CARBUNCLE_FAN_EMITTER      0x10 /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
+#define FX_CARBUNCLE_WHITE_LIGHT_STREAK 0x10 /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
 #define FX_CARBUNCLE_GLOW_RING        0x11 /* emitter: white glow fans and a white / pale green gouraud ring (same call site as fx_0b1 entry 0xC, same kind) */
 #define FX_CARBUNCLE_LIGHT_BEAM       0x12 /* trail: blue-white light beam, drawn twice (same call site as fx_0b1 entry 0x10, same kind) */
 #define FX_CARBUNCLE_CAMERA_KEYS      0x13 /* table: camera key path for fxm_camKeyAdd (target 1) (same call site as fx_0b1 entry 0xF, same kind) */

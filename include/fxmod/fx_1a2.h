@@ -12,7 +12,7 @@
 #define FX_MOONLIGHT_SLASH_LIGHT_BAND_2     0x2 /* model: cylinder band, blue light-streak texture */
 #define FX_MOONLIGHT_SLASH_LIGHT_RING       0x3 /* model: flat ring of blue light streaks */
 #define FX_MOONLIGHT_SLASH_MOON             0x5 /* emitter: blue full-moon particles, 30 frames + blue gouraud rings */
-#define FX_MOONLIGHT_SLASH_SPIKED_MODEL     0x6 /* model: 20-poly spiked shape (Hi_RegisterTexListModel, texture not drawn) (look pending) */
+#define FX_MOONLIGHT_SLASH_SPIKED_SHAPE 0x6 /* model: 20-poly spiked shape (Hi_RegisterTexListModel, texture not drawn) (look pending) */
 #define FX_MOONLIGHT_SLASH_CYAN_RINGS       0x7 /* emitter: thin cyan streak fan + white-cyan gouraud rings */
 #define FX_MOONLIGHT_SLASH_SPRITES          0x8 /* emitter: three sprite elements, 24 frames, render black (look pending) */
 #define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL   0x9 /* emitter: spiralling 3D trail, blue crescent strip */

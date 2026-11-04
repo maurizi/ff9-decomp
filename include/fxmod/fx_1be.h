@@ -7,7 +7,7 @@
 /* fx_1be effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ATOMOS_PURPLE_RINGS 0x1 /* emitter: white / magenta / purple and pale yellow / grey gouraud rings (byte-identical to fx_0b8 entry 0x21) */
-#define FX_ATOMOS_FAN_EMITTER  0x2 /* emitter: fan elements (not rendered; byte-identical to fx_0b8 entry 0x7) (look pending) */
+#define FX_ATOMOS_ORANGE_STREAKS 0x2 /* emitter: two fans, thin orange light streaks (byte-identical to fx_0b8 entry 0x7, same render) */
 #define FX_ATOMOS_VIOLET_RING  0x4 /* emitter: white-violet and white-blue gouraud rings */
 #define FX_ATOMOS_ROCK_DEBRIS  0x5 /* emitter: orbiting grey-blue rock debris particles, four elements */
 #define FX_ATOMOS_BLUE_SPECKS  0x6 /* emitter: tiny blue speck sprites */

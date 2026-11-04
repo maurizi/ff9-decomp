@@ -326,7 +326,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTO
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_PURPLE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_PURPLE_STREAK), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 INCLUDE_RODATA("asm/us/fx_0e0/nonmatchings/fx_0e0", fx_0e0_headerPtr);
@@ -419,7 +419,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                 }
                 env->otZ = 0x20;
                 if (frame < 8) {
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_DUST_RING), &it->posC, &ang, 0x2000, frame, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_WHITE_RING), &it->posC, &ang, 0x2000, frame, 1,
                                       ex->math_cos(frame << 7));
                 }
                 env->otZ = 0;
@@ -552,13 +552,13 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0e0_env = env;
         ex->btlfx_initEffModels(fx_0e0_effModels, 8);
-        work->model5C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_ROCK), 0x98, 0x3D80, 0, 0);
-        work->model60 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BOULDER), 0x118, 0xFFFF, 0x40, 0);
+        work->model5C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_METEOR), 0x98, 0x3D80, 0, 0);
+        work->model60 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BIG_METEOR), 0x118, 0xFFFF, 0x40, 0);
         work->model64 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BOULDER_2), 0x118, 0xFFFF, 0x40, 0);
-        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_STAR_FUNNEL), 0x37, 0x3D07, 0, 0);
+        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_STAR_TUNNEL), 0x37, 0x3D07, 0, 0);
         work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_RED_DOME));
-        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_STAR_DOME), 0x37, 0x3D07, 0, 0);
-        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_SMOKE_CYLINDER), 0xBC, 0x3E00, 0x80, 0);
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_STAR_ARCH), 0x37, 0x3D07, 0, 0);
+        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_LIGHT_CONE), 0xBC, 0x3E00, 0x80, 0);
         fx_0e0_centerPos.vz += 0x400;
         BTLFX_COPY_SVEC(&work->pos8, &fx_0e0_centerPos);
         fx_0e0_centerPos.vz -= 0x400;

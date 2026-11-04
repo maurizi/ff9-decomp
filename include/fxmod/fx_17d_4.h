@@ -16,7 +16,7 @@
 #define FX_ARK_FLAME_BOWL     0x21 /* 'so' model: shallow bowl with an orange-white fire texture (byte-identical to fx_1bf_0 entry 0x6) */
 #define FX_ARK_STREAK_BOWL 0x84 /* summon data: 'so' model, bowl ring with a grey streak texture */
 #define FX_ARK_SWIRL_DOME 0x86 /* summon data: 'so' model, dome with a grey swirl texture */
-#define FX_ARK_STRAND_TABLE 0x8A /* summon data: table read by fx_17d_4_drawStrands */
+#define FX_ARK_STRAND_POINTS 0x8A /* summon data: offset table of the strand point lists per layer, read by fx_17d_4_drawStrands (byte-identical to fx_1bf_0 entry 0x1D) */
 
 extern Unk800F78A4 *fx_17d_4_env;
 extern s16 fx_17d_4_particleFileIds[16];

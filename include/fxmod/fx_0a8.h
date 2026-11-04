@@ -10,7 +10,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_REIS_WIND_SPARKLES        0x1 /* emitter: violet, gold, teal and white sparkles */
 #define FX_REIS_WIND_LIGHT_STREAK    0x3 /* emitter: fan drawn as a thin green to violet horizontal light streak */
-#define FX_REIS_WIND_SPARKLES_2      0x5 /* emitter: gold and teal sparkles */
+#define FX_REIS_WIND_SPARKLE_CIRCLE 0x5 /* emitter: circle of gold / white sparkle quads + teal specks (byte-identical to fx_03d entry 0x11) */
 #define FX_REIS_WIND_VIOLET_SPARKLES 0x6 /* emitter: violet sparkles */
 #define FX_REIS_WIND_WIND_TRAIL      0x7 /* emitter: green wind trail + green specks */
 #define FX_REIS_WIND_GREEN_RINGS     0xC /* emitter: green gouraud rings */

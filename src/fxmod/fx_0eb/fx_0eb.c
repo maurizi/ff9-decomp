@@ -31,7 +31,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emitTarget2C.vz = work->pos1C.vz;
             work->emitTarget2C.vy = -0x3E8;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_PSYCHIC_ORBS), (s32)&work->pos24);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RING_2), (s32)&work->pos14);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RINGS), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -40,7 +40,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->dropTimer36 = 3;
             work->hold38 = 0;
             work->emitTarget2C.vy = work->pos1C.vy;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RING), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RINGS_2), (s32)&work->pos14);
             break;
         }
         if (work->liftTimer34 >= 0) {
@@ -68,7 +68,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_setUnitPos(0, (s16 *)&work->pos1C);
                 work->pos1C.vx = work->pos14.vx;
                 work->pos1C.vz = work->pos14.vz;
-                work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_SHOCK_RING), (s32)&work->pos14);
+                work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_GREY_RINGS), (s32)&work->pos14);
                 work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_DARK_BUBBLES), (s32)&work->pos14);
                 if (work->emit10 != NULL) {
                     work->emit10->trails = (s32)fx_0eb_op80Trails;

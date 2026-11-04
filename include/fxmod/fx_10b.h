@@ -7,7 +7,7 @@
 
 /* fx_10b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_THROW_SWORD_IMPACT     0x4 /* emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) */
+#define FX_THROW_IMPACT 0x4 /* emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) */
 #define FX_THROW_SWORD            0x5 /* 'so' model: the thrown sword, drawn on its path (the same model as entry 0xC, 'so' form) */
 #define FX_THROW_SWORD_AFTERIMAGE 0xC /* model: sword (63 polys, weapon texture), drawn as fading afterimages along the path */
 

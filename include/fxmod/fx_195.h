@@ -7,27 +7,27 @@
 
 /* fx_195 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_BAHAMUT_PINK_RINGS     0x2 /* rings: white / salmon gouraud rings, 14 frames */
+#define FX_BAHAMUT_PINK_FLAT_RING 0x2 /* rings: white / salmon gouraud rings, 14 frames */
 #define FX_BAHAMUT_BACKDROP       0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_BAHAMUT_VIOLET_RINGS   0x8 /* rings: white-cyan-violet-indigo gouraud rings, 24 frames */
 #define FX_BAHAMUT_HALO_RINGS     0x9 /* rings: white-crimson-blue gouraud rings, 16 frames */
 #define FX_BAHAMUT_BLUE_RINGS     0xA /* rings: navy-to-blue gouraud rings, 12 frames */
 #define FX_BAHAMUT_EMBERS         0xB /* emitter: spiral of tiny orange sprites */
 #define FX_BAHAMUT_BLUE_SPARKS    0xC /* emitter: tiny blue-violet spark sprites falling */
-#define FX_BAHAMUT_FAN_STREAK     0xD /* emitter: two fan elements, a thin tan streak in the render (look pending) */
+#define FX_BAHAMUT_ORANGE_STREAKS 0xD /* emitter: two fans, thin orange-white rising streaks (byte-identical to fx_0e3_1 entry 0xE, same render) */
 #define FX_BAHAMUT_BLUE_SPARKS_2  0xE /* emitter: tiny blue-violet spark sprites falling */
 #define FX_BAHAMUT_RED_GLOWS      0xF /* emitter: spiral of red glowing orbs */
 #define FX_BAHAMUT_EMBERS_2       0x10 /* emitter: spiral of tiny orange sprites */
 #define FX_BAHAMUT_FIRE_CYLINDER  0x11 /* 'so' model: open cone cylinder, fire texture */
 #define FX_BAHAMUT_FIRE_RING      0x13 /* 'so' model: flared ring, fire texture */
 #define FX_BAHAMUT_SMOKE_RING     0x14 /* 'so' model: flared ring, grey-violet smoke texture */
-#define FX_BAHAMUT_GLOW_PLANE     0x15 /* 'so' model: gouraud plane, red-to-yellow glow bands */
+#define FX_BAHAMUT_FLAME_STRIP 0x15 /* 'so' model: gouraud plane, red-to-yellow glow bands */
 #define FX_BAHAMUT_SMOKE_ARC      0x16 /* 'so' model: curved half-tube, grey smoke texture */
 #define FX_BAHAMUT_VIOLET_FAN     0x17 /* emitter: fan with a violet lightning pattern, 13 frames */
 #define FX_BAHAMUT_PURPLE_BOLT    0x18 /* trail: violet energy strip (fxm_drawOffsetTrail0) */
 #define FX_BAHAMUT_PURPLE_BOLT_2  0x19 /* trail: violet energy strip (fxm_drawOffsetTrail1) */
-#define FX_BAHAMUT_RED_BEAM_PLANE 0x1A /* 'so' model: gouraud plane, red beam line */
-#define FX_BAHAMUT_BLUE_BLADE     0x1C /* 'so' model: curved gouraud blade, white-blue */
+#define FX_BAHAMUT_RED_STRIP 0x1A /* 'so' model: gouraud plane, red beam line */
+#define FX_BAHAMUT_BLUE_SLIVER 0x1C /* 'so' model: curved gouraud blade, white-blue */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

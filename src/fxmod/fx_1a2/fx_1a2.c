@@ -294,7 +294,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         rot.vy = rot.pad = 0x3D40;
         bonePos.vy = bonePos.vx = bonePos.vz = 0;
         bonePos.pad = 0x80;
-        w->model48 = (s16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_SPIKED_MODEL), &rot, &bonePos);
+        w->model48 = (s16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_SPIKED_SHAPE), &rot, &bonePos);
         ex->btlfx_getUnitPos(0, (s16 *)&w->pos8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&w->pos10);
         ex->btlfx_setPartnerByArg(0);

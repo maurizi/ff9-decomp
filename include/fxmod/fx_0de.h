@@ -8,16 +8,16 @@
 
 /* fx_0de effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SWDMAG_WATER_DROPLETS      0x1 /* emitter: water blobs, blue glow and glints */
-#define FX_SWDMAG_WATER_WATER_BALL_1  0x2 /* model: water funnel rising, morph stage 1 */
-#define FX_SWDMAG_WATER_WATER_BALL_2  0x3 /* model: water vase shape, morph stage 2 */
-#define FX_SWDMAG_WATER_WATER_BALL_3  0x4 /* model: water bulb closing, morph stage 3 */
-#define FX_SWDMAG_WATER_WATER_BALL_0  0x5 /* model: flat water pool (water texture), morph stage 0 */
-#define FX_SWDMAG_WATER_SPRAY_FUNNEL  0x6 /* model: swirling funnel, mist texture, morph end of the spray */
-#define FX_SWDMAG_WATER_SPRAY_COLUMN  0x7 /* model: open cylinder, mist texture, morph start of the spray */
-#define FX_SWDMAG_WATER_WATER_SURFACE 0x8 /* model: flat disc, water texture */
+#define FX_SWDMAG_WATER_SPLASH_DROPS 0x1 /* emitter: water blobs, blue glow and glints */
+#define FX_SWDMAG_WATER_GLOBE_1 0x2 /* model: water funnel rising, morph stage 1 */
+#define FX_SWDMAG_WATER_GLOBE_2 0x3 /* model: water vase shape, morph stage 2 */
+#define FX_SWDMAG_WATER_GLOBE_3 0x4 /* model: water bulb closing, morph stage 3 */
+#define FX_SWDMAG_WATER_GLOBE_0 0x5 /* model: flat water pool (water texture), morph stage 0 */
+#define FX_SWDMAG_WATER_SPLASH_FUNNEL 0x6 /* model: swirling funnel, mist texture, morph end of the spray */
+#define FX_SWDMAG_WATER_SPLASH_COLUMN 0x7 /* model: open cylinder, mist texture, morph start of the spray */
+#define FX_SWDMAG_WATER_BASE_DISC 0x8 /* model: flat disc, water texture */
 #define FX_SWDMAG_WATER_BLUE_RING     0x9 /* emitter: white-blue gouraud rings */
-#define FX_SWDMAG_WATER_WATER_BALL    0xD /* model: closed water sphere, morph end */
+#define FX_SWDMAG_WATER_GLOBE 0xD /* model: closed water sphere, morph end */
 #define FX_SWDMAG_WATER_SWORD_GLINT   0xE /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_WATER_SWORD_FLASH   0xF /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 

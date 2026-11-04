@@ -7,17 +7,17 @@
 
 /* fx_12c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_EARTHQUAKE_GROUND_SLAB_8 0x1 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[8] */
-#define FX_EARTHQUAKE_GROUND_SLAB_1 0x2 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[1] */
-#define FX_EARTHQUAKE_GROUND_SLAB_2 0x3 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[2] */
-#define FX_EARTHQUAKE_GROUND_SLAB_3 0x4 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[3] */
-#define FX_EARTHQUAKE_GROUND_SLAB_4 0x5 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[4] */
-#define FX_EARTHQUAKE_GROUND_SLAB_5 0x6 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[5] */
-#define FX_EARTHQUAKE_GROUND_SLAB_6 0x7 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[6] */
-#define FX_EARTHQUAKE_GROUND_SLAB_7 0x8 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[7] */
-#define FX_EARTHQUAKE_GROUND_SLAB_0 0x9 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[0] */
-#define FX_EARTHQUAKE_GROUND_SLAB_9 0xE /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[9] */
-#define FX_EARTHQUAKE_ROCK_DEBRIS_2 0x10 /* emitter: spiral of small rock debris frames */
+#define FX_EARTHQUAKE_ROCK_CHUNK_8 0x1 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[8] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_1 0x2 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[1] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_2 0x3 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[2] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_3 0x4 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[3] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_4 0x5 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[4] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_5 0x6 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[5] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_6 0x7 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[6] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_7 0x8 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[7] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_0 0x9 /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[0] */
+#define FX_EARTHQUAKE_ROCK_CHUNK_9 0xE /* 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[9] */
+#define FX_EARTHQUAKE_RUBBLE 0x10 /* emitter: spiral of small rock debris / rubble frames (byte-identical to fx_03a entry 0x10) */
 #define FX_EARTHQUAKE_DUST_RING     0x11 /* emitter: ring with a sand-dust texture on the ground */
 #define FX_EARTHQUAKE_ROCK_DEBRIS   0x12 /* emitter: small rock debris frames thrown up */
 

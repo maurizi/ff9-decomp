@@ -17,9 +17,9 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_1f6_effModels, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->posA4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posAC);
-        work->models20[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_MODEL), 1);
-        work->models20[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_MODEL_2), 1);
-        work->models20[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_MODEL_3), 1);
+        work->models20[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_GREEN_TORNADO), 1);
+        work->models20[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_GREY_ARC), 1);
+        work->models20[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_GREEN_WIND_RING), 1);
         work->models20[2].rot4.vx = 0;
         work->models20[2].rot4.vy = 0;
         work->models20[2].rot4.vz = 0;

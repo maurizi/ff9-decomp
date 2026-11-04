@@ -7,7 +7,7 @@
 
 /* fx_1bf_1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ARK_FAN_EMITTER     0x1 /* emitter: two fans, white / orange light streaks (byte-identical to fx_17d_7 entry 0x2) */
+#define FX_ARK_LIGHT_STREAKS 0x1 /* emitter: two fans, thin pale orange light streaks (byte-identical to fx_17d_7 entry 0x2) */
 #define FX_ARK_ROCK_DEBRIS_2   0x3 /* emitter: grey-blue rock chunks (byte-identical to fx_17d_7 entry 0x4) */
 #define FX_ARK_PALE_RING       0x5 /* emitter: white-cream-violet and white-peach-mauve gouraud rings (byte-identical to fx_17d_7 entry 0x6) */
 #define FX_ARK_VIOLET_RING     0x6 /* emitter: white-cream-violet and white-purple-blue gouraud rings (byte-identical to fx_17d_7 entry 0x7) */
@@ -15,14 +15,14 @@
 #define FX_ARK_PEACH_RING      0xC /* rings: white-peach-mauve gouraud rings (byte-identical to fx_17d_6 entry 0xB) */
 #define FX_ARK_ROCK_DEBRIS     0xE /* emitter: grey-blue rock chunks (byte-identical to fx_17d_7 entry 0x1) */
 #define FX_ARK_ORANGE_RING     0xF /* emitter: two fans (not rendered) + white-orange gouraud rings (byte-identical to fx_17d_7 entry 0xD) */
-#define FX_ARK_RED_BEAM        0x86 /* summon data: 'so' model, glowing red-orange beam bar */
-#define FX_ARK_GREEN_CRATER    0x88 /* summon data: 'so' model, dark green rippled crater ring */
-#define FX_ARK_FIRE_DISC       0x89 /* summon data: 'so' model, flat ring disc with an orange flame texture */
+#define FX_ARK_ORANGE_BEAM 0x86 /* summon data: 'so' model, glowing red-orange beam bar */
+#define FX_ARK_TEAL_RING 0x88 /* summon data: 'so' model, dark green rippled crater ring */
+#define FX_ARK_FLAME_TEX_RING 0x89 /* summon data: 'so' model, flat ring disc with an orange flame texture */
 #define FX_ARK_SMOKE_BOWL      0x8A /* summon data: 'so' model, bowl with a dark cloud texture */
 #define FX_ARK_GREY_TORUS      0x8C /* summon data: 'so' model, grey gouraud torus */
-#define FX_ARK_ROCK_TORUS      0x8D /* summon data: 'so' model, torus with a brown rock texture */
-#define FX_ARK_GOLD_TORUS      0x8E /* summon data: 'so' model, gold gouraud torus */
-#define FX_ARK_BLUE_SWIRL_BOWL 0x8F /* summon data: 'so' model, bowl with a twisted blue cloud texture */
+#define FX_ARK_EMBER_RING 0x8D /* summon data: 'so' model, torus with a brown rock texture */
+#define FX_ARK_GOLD_RING 0x8E /* summon data: 'so' model, gold gouraud torus */
+#define FX_ARK_BLUE_CLOUD_RING 0x8F /* summon data: 'so' model, bowl with a twisted blue cloud texture */
 #define FX_ARK_ROCK            0x90 /* summon data: 'so' model, rock chunk */
 #define FX_ARK_FIRE_CONE       0x91 /* summon data: 'so' model, open cone with a dark flame texture */
 #define FX_ARK_ROCK_2          0x92 /* summon data: 'so' model, rock chunk */

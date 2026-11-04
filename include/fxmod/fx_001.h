@@ -12,7 +12,7 @@
 #define FX_DAGGERS_MAGIC_STAR_FLARES    0x6 /* emitter: yellow-green and violet star flares, faint glow */
 #define FX_DAGGERS_MAGIC_BLUE_SWIRL     0x7 /* emitter: blue swirl-textured trail + green/yellow/white sparkle sprites */
 #define FX_DAGGERS_MAGIC_SPARKLE_SHOWER 0xD /* emitter: green/yellow/white sparkle sprites (at pos4C) */
-#define FX_DAGGERS_MAGIC_LIGHT_SPIRES   0xE /* model: spiky spire shapes, green light-arc texture */
+#define FX_DAGGERS_MAGIC_LIGHT_FOUNTAIN 0xE /* model: tall spiky funnel with a green light-fountain texture (byte-identical to fx_08e entry 0xE) */
 #define FX_DAGGERS_MAGIC_LIGHT_RING     0xF /* model: ring, green light-arc texture */
 #define FX_DAGGERS_MAGIC_SPARKLE_BURST  0x10 /* emitter: white/yellow/green sparkle sprites */
 

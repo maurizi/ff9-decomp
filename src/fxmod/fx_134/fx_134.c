@@ -598,7 +598,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                                  0x40, 0);
         work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STAR_TUNNEL), 0x37, 0x3D07, 0,
                                                  0);
-        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_GLOW_DISC));
+        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_RED_DOME));
         work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STAR_ARCH), 0x37, 0x3D07, 0,
                                                  0);
         work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_LIGHT_CONE), 0xBC, 0x3E00, 0x80,
@@ -1320,7 +1320,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->pos10.vz = work->pos18.vz;
                 work->pos10.vx -= 0x2800;
                 work->pos10.vy += 0xB86;
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_GREY_SPARKS), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_PEBBLES), (s32)&work->pos10);
             }
             break;
         case 8:

@@ -16,7 +16,7 @@
 #define FX_FLARE_BLUE_LIGHTNING   0x8 /* trail: blue lightning strip */
 #define FX_FLARE_WHITE_RING       0x9 /* rings: white-cream gouraud rings */
 #define FX_FLARE_RED_SPARKS       0xB /* emitter: red spark sprites + white-red rings */
-#define FX_FLARE_RING_DISC        0xF /* model: gouraud flat annulus */
+#define FX_FLARE_RED_HALO 0xF /* model: flat red-orange gouraud halo ring (byte-identical to fx_0df entry 0xD) */
 #define FX_FLARE_BACKDROP         0x11 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element, nothing drawable in the data (look pending) */
 #define FX_FLARE_FIRE_RING        0x13 /* rings: white-cyan-orange-red gouraud rings */

@@ -85,7 +85,7 @@ Notes:
 | fx_0f8 | 0xD | `FX_GRAND_LETHAL_SPRITE_RINGS` | kind/usage (look pending) | emitter: white / cyan / blue / grey gouraud rings with a sprite that renders as a flat violet square (texture not in the file) |
 | fx_0f8 | 0xE | `FX_GRAND_LETHAL_SWIRL_RINGS` | kind/usage (look pending) | emitter: white swirl sprite with textured rings; the rings still read garbled multicolour texels (texture not resolved) |
 | fx_0f9 | 0x1 | `FX_FLEE_SPARKLE_BURST` | render | emitter: pale gouraud rings, pale sparkle puffs and orange sparks |
-| fx_0fa | 0x1 | `FX_DETECT_SPHERE` | render | model: 12-sided sphere, bronze riveted-metal texture in the render |
+| fx_0fa | 0x1 | `FX_DETECT_METAL_SPHERE` | render | model: 12-sided sphere, bronze riveted-metal texture in the render |
 | fx_0fa | 0x2 | `FX_DETECT_BLUE_SPIKES` | render (fxdata d6121033) | emitter: two fans, blue light spikes |
 | fx_0fa | 0x3 | `FX_DETECT_GLYPH_TEXT` | render | emitter: blocks of scrolling script glyphs (blue, green, purple, orange) |
 | fx_0fb_0 | 0x1 | `FX_MADEEN_SPECKS` | render (fxdata d6121033) | emitter: white dot specks |
@@ -216,27 +216,27 @@ Notes:
 | fx_106 | 0x4 | `FX_MUCUS_YELLOW_RINGS` | render | emitter: yellow-green gouraud rings |
 | fx_106 | 0x5 | `FX_MUCUS_SPLASH_STREAK` | render | emitter: white streaky splash screen trail |
 | fx_109 | 0x1 | `FX_THROW_RACKET` | render (fxdata d6121033) | 'so' model: the thrown racket, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_109 | 0x5 | `FX_THROW_RACKET_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_109 | 0x5 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_109 | 0xC | `FX_THROW_RACKET_AFTERIMAGE` | render | model: racket (76 polys, weapon texture), drawn as fading afterimages along the path |
 | fx_10a | 0x1 | `FX_THROW_THIEF_SWORD` | render (fxdata d6121033) | 'so' model: the thrown thief sword, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10a | 0x5 | `FX_THROW_THIEF_SWORD_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10a | 0x5 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_10a | 0xC | `FX_THROW_THIEF_SWORD_AFTERIMAGE` | render | model: thief sword (60 polys, weapon texture), drawn as fading afterimages along the path |
-| fx_10b | 0x4 | `FX_THROW_SWORD_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10b | 0x4 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_10b | 0x5 | `FX_THROW_SWORD` | render (fxdata d6121033) | 'so' model: the thrown sword, drawn on its path (the same model as entry 0xC, 'so' form) |
 | fx_10b | 0xC | `FX_THROW_SWORD_AFTERIMAGE` | render | model: sword (63 polys, weapon texture), drawn as fading afterimages along the path |
-| fx_10c | 0x4 | `FX_THROW_SPEAR_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10c | 0x4 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_10c | 0x5 | `FX_THROW_SPEAR` | render (fxdata d6121033) | 'so' model: the thrown spear, drawn on its path (the same model as entry 0xC, 'so' form) |
 | fx_10c | 0xC | `FX_THROW_SPEAR_AFTERIMAGE` | render | model: spear (67 polys, weapon texture), drawn as fading afterimages along the path |
 | fx_10d | 0x1 | `FX_THROW_CLAWS` | render (fxdata d6121033) | 'so' model: the thrown claws, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10d | 0x5 | `FX_THROW_CLAWS_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10d | 0x5 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_10d | 0xC | `FX_THROW_CLAWS_AFTERIMAGE` | render | model: claws (42 polys, weapon texture), drawn as fading afterimages along the path |
 | fx_10e | 0x4 | `FX_THROW_ROD` | render (fxdata d6121033) | 'so' model: the thrown rod / flute / staff, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10e | 0x5 | `FX_THROW_ROD_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10e | 0x5 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_10e | 0xC | `FX_THROW_ROD_AFTERIMAGE` | render | model: rod / flute / staff (54 polys, weapon texture), drawn as fading afterimages along the path |
-| fx_10f | 0x1 | `FX_THROW_FORK_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10f | 0x1 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_10f | 0x2 | `FX_THROW_FORK` | render (fxdata d6121033) | 'so' model: the thrown fork, drawn on its path (the same model as entry 0xC, 'so' form) |
 | fx_10f | 0xC | `FX_THROW_FORK_AFTERIMAGE` | render | model: fork (90 polys, weapon texture), drawn as fading afterimages along the path |
-| fx_110 | 0x5 | `FX_THROW_DAGGER_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_110 | 0x5 | `FX_THROW_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
 | fx_110 | 0x6 | `FX_THROW_DAGGER` | render (fxdata d6121033) | 'so' model: the thrown dagger, drawn on its path (the same model as entry 0xC, 'so' form) |
 | fx_110 | 0xC | `FX_THROW_DAGGER_AFTERIMAGE` | render | model: dagger (48 polys, weapon texture), drawn as fading afterimages along the path |
 | fx_112 | 0x1 | `FX_EAT_SPHERE` | render | model: sphere, white texture |
@@ -371,8 +371,8 @@ Notes:
 | fx_128 | 0x3 | `FX_DRAGON_BREATH_VALUE_PATH` | kind/usage | table: value path (fxm_valuePathInit) |
 | fx_128 | 0x8 | `FX_DRAGON_BREATH_VIOLET_RINGS` | render | emitter: violet and blue-white gouraud rings |
 | fx_128 | 0xB | `FX_DRAGON_BREATH_DRAGON` | render (fxdata d6121033) | 'so' model: teal-green dragon |
-| fx_128 | 0x15 | `FX_DRAGON_BREATH_COLOR_LINES` | render (fxdata d6121033) | emitter: spiralling fan of thin green and violet light lines |
-| fx_128 | 0x16 | `FX_DRAGON_BREATH_GOLD_SPARKLES` | render | emitter: gold and white sparkles + teal specks |
+| fx_128 | 0x15 | `FX_DRAGON_BREATH_LIGHT_STREAK` | render (fxdata d6121033) | emitter: fan drawn as a thin green to violet horizontal light streak (byte-identical to fx_03d entry 0x10) |
+| fx_128 | 0x16 | `FX_DRAGON_BREATH_SPARKLE_CIRCLE` | render | emitter: circle of gold / white sparkle quads + teal specks (byte-identical to fx_03d entry 0x11) |
 | fx_128 | 0x17 | `FX_DRAGON_BREATH_BUBBLES` | render | emitter: gold sparkles + teal bubbles |
 | fx_128 | 0x18 | `FX_DRAGON_BREATH_BUBBLES_2` | render | emitter: gold sparkles + green bubbles spiralling |
 | fx_128 | 0x1F | `FX_DRAGON_BREATH_DRAGON_2` | render (fxdata d6121033) | 'so' model: the second teal-green dragon |

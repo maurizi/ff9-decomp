@@ -104,7 +104,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale60.vx = 0x800;
         work->scale60.vy = 0x800;
         work->scale60.vz = 0x800;
-        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_SLOT_MODEL), 0x9A, 0x3E40, 0, 0x80);
+        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_SLOT_STRIPS), 0x9A, 0x3E40, 0, 0x80);
         work->unk88 = 0;
         work->unk8A = sel[3];
         for (i = 0; i < 6; i++) {

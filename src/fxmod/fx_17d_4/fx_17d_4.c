@@ -36,7 +36,7 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
 
     ex = BTLFX_EXPORTS(fx_17d_4_env);
     layer = 0;
-    data = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STRAND_TABLE);
+    data = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STRAND_POINTS);
     w = (w * 3) >> 1;
     do {
         for (j = 0; j < 18; j++) {

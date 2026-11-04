@@ -162,7 +162,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
 void fx_0df_recordElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0df_env);
 
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, FX_SWDMAG_FLARE_GLOW), pos, rot, *scale / 2, frame, 1, *alpha, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, FX_SWDMAG_FLARE_ORANGE_GLOW), pos, rot, *scale / 2, frame, 1, *alpha, 0, 0);
     BTLFX_COPY_SVEC(&fx_0df_recentPos[fx_0df_recentNext], pos);
     fx_0df_recentNext = (fx_0df_recentNext + 1) % 24;
 }
@@ -241,7 +241,7 @@ static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk8010
         ex->Hi_ModifyEffModelRGB(work->model20, r, g, (ex->math_cos(fadeAng) >> 5) - 0x80);
     }
     env->otZ = 0x200;
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_GLOW), &p->pos4, 0, (p->size2 * 3) >> 1, 0, 1, bright >> 1, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ORANGE_GLOW), &p->pos4, 0, (p->size2 * 3) >> 1, 0, 1, bright >> 1, 0, 0);
     env->otZ = 0;
     if (frame >= 0xC) {
         return 1;
@@ -285,7 +285,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ARCH), 0x139, 0xFFFF,
                                                  0, 0x80);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_FIRE_DOME), 0x38, 0x3E83, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SMOKE_SPHERE), 0x13C, 0xFFFF,
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_CLOUD_SPHERE), 0x13C, 0xFFFF,
                                                  0x10, 0x80);
         work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_HALO));
     } else {
@@ -335,7 +335,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->state0 = 2;
                     entry->frame = -1;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
-                    work->emit3C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SHOCK_RINGS), (s32)&work->posC);
+                    work->emit3C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_VIOLET_RINGS), (s32)&work->posC);
                     if (emitter != NULL) {
                         emitter->otZ = work->otZ8 + 0x46;
                     }
@@ -440,11 +440,11 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     entry->frame = -1;
                     ex->btlfx_stopEmitter(work->emit3C);
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xAA, 0xAA, 0xAA);
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_EMBERS), (s32)&work->posC);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SPARK_GLOW), (s32)&work->posC);
                     if (emitter != NULL) {
                         emitter->otZ = work->otZ8 + 0x46;
                     }
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_FAN_EMITTER), (s32)&work->posC);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_GOLDEN_GLOWS), (s32)&work->posC);
                     if (emitter != NULL) {
                         emitter->otZ = work->otZ8 + 0x46;
                     }
@@ -553,7 +553,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
         pt++;
     }
     env->otZ = 0x200;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BLUE_BOLT), 0, 0, frame, 0x1000, fade * 2 / 3, 2, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BLUE_LIGHTNING), 0, 0, frame, 0x1000, fade * 2 / 3, 2, (u8 *)bolt, 0);
     env->otZ = 0;
 }
 

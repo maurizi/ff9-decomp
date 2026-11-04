@@ -20,14 +20,14 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos4.vx);
         ex->btlfx_getUnitPos(0, &work->posC.vx);
         ex->btlfx_initEffModels(fx_0de_effModels, 8);
-        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_WATER_BALL_0), 0x39, 0x3D00, 0, 0x80);
-        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_WATER_BALL_1), 0x39, 0x3D00, 0, 0x80);
-        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_WATER_BALL_2), 0x39, 0x3D00, 0, 0x80);
-        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_WATER_BALL_3), 0x39, 0x3D00, 0, 0x80);
-        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_WATER_BALL), 0x39, 0x3D00, 0, 0x80);
-        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPRAY_COLUMN), 0x3B, 0x3D01, 0, 0x80);
-        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPRAY_FUNNEL), 0x3B, 0x3D01, 0, 0x80);
-        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_WATER_SURFACE), 0x39, 0x3D00, 0, 0x80);
+        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_0), 0x39, 0x3D00, 0, 0x80);
+        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_1), 0x39, 0x3D00, 0, 0x80);
+        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_2), 0x39, 0x3D00, 0, 0x80);
+        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_3), 0x39, 0x3D00, 0, 0x80);
+        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE), 0x39, 0x3D00, 0, 0x80);
+        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_COLUMN), 0x3B, 0x3D01, 0, 0x80);
+        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_FUNNEL), 0x3B, 0x3D01, 0, 0x80);
+        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_BASE_DISC), 0x39, 0x3D00, 0, 0x80);
         size = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (size < 0x400) {
             size = 0x6A4;
@@ -106,7 +106,7 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->model14[5], (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80);
         }
         if (frame == 0x10) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_DROPLETS), (s32)&work->pos4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_DROPS), (s32)&work->pos4);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

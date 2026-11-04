@@ -54,7 +54,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 9, timer = &work->timers0[9]; i >= 0; i--) {
             *timer-- = 0;
         }
-        work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DETECT_SPHERE), 0xFA, 0x3DC0, 0x80, 0x80);
+        work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DETECT_METAL_SPHERE), 0xFA, 0x3DC0, 0x80, 0x80);
         work->scale5C.vx = 0x333;
         work->scale5C.vy = 0x333;
         work->scale5C.vz = 0x333;

@@ -10,12 +10,12 @@
 #define FX_BAHAMUT_PURPLE_BOLT     0x2 /* trail: purple energy strip (fxm_drawOffsetTrail1) */
 #define FX_BAHAMUT_TEAL_PUFF       0x3 /* particles: teal puff (pool task); the render still reads garbled teal texels (texture partly outside the file) (look pending) */
 #define FX_BAHAMUT_BLUE_RINGS      0x5 /* emitter: dark-to-light blue gouraud rings */
-#define FX_BAHAMUT_CORE_MODEL      0x7 /* 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise (look pending) */
+#define FX_BAHAMUT_CORE_GRID 0x7 /* 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise (look pending) */
 #define FX_BAHAMUT_WHITE_BOLT      0x8 /* trail: faint white strip (fxm_drawOffsetTrail0); the render is still almost empty (look pending) */
 #define FX_BAHAMUT_FIRE_SPARKS     0xA /* emitter: orange flame glows + spark sprites */
-#define FX_BAHAMUT_GLOW_MODEL      0xB /* 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels (look pending) */
+#define FX_BAHAMUT_TILE_RING 0xB /* 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels (look pending) */
 #define FX_BAHAMUT_WHITE_RINGS     0xC /* rings: grey-white gouraud rings */
-#define FX_BAHAMUT_PILLAR_MODEL    0x82 /* summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise (look pending) */
+#define FX_BAHAMUT_PILLAR_STRIP 0x82 /* summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise (look pending) */
 #define FX_BAHAMUT_BLUE_SPARKS     0x83 /* summon data: emitter, blue-white spark sprites */
 #define FX_BAHAMUT_CLOUD_SPHERE    0x85 /* summon data: 'so' model, sphere with a blue-white cloud texture, drawn fading at the end */
 #define FX_BAHAMUT_SMOKE_ARC       0x86 /* summon data: 'so' model, curved band with a grey smoke texture, stacked nine times as a cone */

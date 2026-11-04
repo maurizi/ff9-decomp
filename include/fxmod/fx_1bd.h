@@ -16,7 +16,7 @@
 #define FX_IFRIT_FLAME_RING          0xB /* model: flat ring, flame texture (byte-identical to fx_114 entry 0x22) */
 #define FX_IFRIT_GRID_PLANE          0xD /* model: flat grid plane (tpage 0x117 reads a placeholder page in the render; byte-identical to fx_114 entry 0x2A) (look pending) */
 #define FX_IFRIT_FLAME_DOME          0xE /* model: dome, flame texture (byte-identical to fx_114 entry 0x27) */
-#define FX_IFRIT_FAN_EMITTER_2       0x12 /* emitter: one orbiting fan element (not rendered; byte-identical to fx_114 entry 0x26) (look pending) */
+#define FX_IFRIT_RED_GLOW 0x12 /* emitter: orbiting fan, a horizontal orange-red glow (byte-identical to fx_114 entry 0x26, same render) */
 #define FX_IFRIT_BOWL                0x13 /* model: hemisphere bowl (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x1E) (look pending) */
 #define FX_IFRIT_SHOT0_CAMERA_KEYS_2 0x14 /* table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[1]) */
 #define FX_IFRIT_SHOT0_CAMERA_KEYS_1 0x15 /* table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[0]) */
