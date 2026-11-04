@@ -631,7 +631,7 @@ s32 btlseq_opStopTexAnim(BtlScript *script, BtlUnit *unit) {
     u8 i = script->pc[1];
     BtlModel *model = unit->model;
     BtlUnit9C50 *texAnim;
-    (*(texAnim = PSX_NULLABLE(model->texAnims) + i)).flags &= 0xFC;
+    (*(texAnim = PSX_NULLABLE(model->texAnims) + i)).flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     script->pc += 2;
     return 1;
 }

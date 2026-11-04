@@ -63,13 +63,13 @@ void btl_setModelAbr(BtlModel *model, s32 abr) {
             if (!(model->hiddenMeshes & (1 << i))) {
                 do {
                     code = getcode(p);
-                    if (code == 0xFF) {
+                    if (code == BTL_PRIM_MESH_END) {
                         p += sizeof(DR_TPAGE);
-                    } else if (code == 0xE1) {
-                        ((DR_TPAGE *)p)->code[0] = (u16)abr | 0xE1000000;
+                    } else if (code == GPU_DRAW_MODE) {
+                        ((DR_TPAGE *)p)->code[0] = (u16)abr | GPU_CODE(GPU_DRAW_MODE);
                         p += sizeof(DR_TPAGE);
                     } else {
-                        code &= 0x3C;
+                        code &= GPU_POLY_KIND;
                     }
                     switch (code) {
                     case GPU_POLY_FT4:
@@ -157,7 +157,7 @@ void btl_updateTexAnims(TexAnimSet *set) {
                 RAND_REFILL2();
                 anim->pos = -((anim->waitMin + (anim->waitRand + 1) * RAND16() / 0x10000) << 12);
             } else if (anim->flags & BTL_TEXANIM_ONCE) {
-                anim->flags &= 0xFC;
+                anim->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
             } else {
                 anim->pos = 0;
             }

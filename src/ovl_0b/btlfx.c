@@ -221,7 +221,7 @@ void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
     if (tpage != BTLFX_ABR_OPAQUE) {
         drMode = (DR_TPAGE *)g_btlfxEnv->prim;
         g_btlfxEnv->prim = (u8 *)(drMode + 1);
-        drMode->code[0] = ((tpage & 3) << 5) | 0xE1000200;
+        drMode->code[0] = ((tpage & 3) << TPAGE_ABR_SHIFT) | (GPU_CODE(GPU_DRAW_MODE) | GPU_DRAW_DITHER);
         addPrimLenIn(ot, drMode, PRIM_TAG(DR_TPAGE));
     }
 }
@@ -243,7 +243,7 @@ void btlfx_addPrimAbr(s32 code, s32 depth, void *prim, s32 abr) {
 DR_TPAGE *btlfx_allocDrMode(s32 tpage, s32 abr) {
     DR_TPAGE *drMode = (DR_TPAGE *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(drMode + 1);
-    drMode->code[0] = tpage | ((abr & 3) << 5) | 0xE1000200;
+    drMode->code[0] = tpage | ((abr & 3) << TPAGE_ABR_SHIFT) | (GPU_CODE(GPU_DRAW_MODE) | GPU_DRAW_DITHER);
     return drMode;
 }
 
@@ -1173,7 +1173,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     prim = g_btlfxEnv->prim;
     mode = (u32 *)(prim + num * 20);
     g_btlfxEnv->prim = (u8 *)(mode + 2);
-    mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5);
+    mode[1] = tpage | GPU_CODE(GPU_DRAW_MODE) | ((tp & 3) << TPAGE_ABR_SHIFT);
     ctab = (u8 *)(pal + tmp + 1);
     col.code = (tp != BTLFX_ABR_OPAQUE) ? GPU_SPRT | GPU_ABE : GPU_SPRT;
     for (i = 0; i < num; i++, prim += 20) {

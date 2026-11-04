@@ -255,6 +255,12 @@ extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Mag
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+/* GPU packet words (psyq.h neighbours: GPU_POLY_*, GPU_CODE, TPAGE_ABR_MASK, get_mode). Evidence: [code] the GP0 command
+ * layout libgpu's get_mode/getTPage build */
+#define GPU_DRAW_MODE   0xE1  /* GP0(E1h) draw-mode word's code byte (DR_TPAGE, get_mode) */
+#define GPU_DRAW_DITHER 0x200 /* draw-mode word bit 9: dither (get_mode's dtd) */
+#define TPAGE_ABR_SHIFT 5     /* texture page / draw-mode word: semi-transparency rate at bits 5-6 (TPAGE_ABR_MASK) */
+#define GPU_POLY_KIND   0x3C  /* polygon code bits that pick the GPU_POLY_* kind, without GPU_ABE and GPU_TGE */
 
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
@@ -262,7 +268,9 @@ typedef struct {
     DRAWENV prev; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
-/* one primitive in a model's packed GPU packet buffer (BtlModel.prims) */
+/* one primitive in a model's packed GPU packet buffer (BtlModel.prims): per mesh, polygons and DR_TPAGEs, closed by a
+ * P_TAG with code BTL_PRIM_MESH_END (btl_buildMeshPrims). Evidence: [code] */
+#define BTL_PRIM_MESH_END 0xFF
 typedef union {
     P_TAG tag;
     u32 w[13]; /* w[1], w[3]/w[4], ...: rgb + code words */
