@@ -56,11 +56,11 @@ void btl_playCmdEffect(BtlCmd *cmd, s32 effectId, s16 *fxArgs) {
     if (cmd->info.b.reflect == 0) {
         bounceMask = btl_applyReflect(cmd);
         cmdNo = cmd->cmdNo;
-        if (cmdNo == 0xE || cmdNo == 0x33) {
+        if (cmdNo == BTL_CMD_ITEM || cmdNo == BTL_CMD_AUTO_POTION) {
             list->kind = BTL_FXK_ITEM;
-        } else if (cmdNo == 0x1F) {
+        } else if (cmdNo == BTL_CMD_SWD_MAG) {
             list->kind = BTL_FXK_SWD_MAG;
-        } else if ((u8)(cmdNo - 0x39) < 2) {
+        } else if ((u8)(cmdNo - BTL_CMD_TRANCE_EIDOLON) < 2) { /* TRANCE_EIDOLON, REBIRTH_FLAME */
             list->kind = BTL_FXK_NO_CAST;
         }
     } else if (cmd->info.b.reflect == 2) {

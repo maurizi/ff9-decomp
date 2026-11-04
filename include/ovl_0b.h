@@ -1268,6 +1268,9 @@ extern s32 g_btlbgScrollCount;
 #define BTL_COMMON_STATUS_INFO 0x1F4 /* copied to Battle.statusInfo (0x180 bytes) */
 #define BTL_COMMON_ABILITIES   0x1F5 /* copied to Battle.abilities (0xC00 bytes) */
 #define BTL_COMMON_STATUS_SETS 0x1F6 /* copied to Battle.statusSets (0x100 bytes) */
+/* Battle.cmdSlots per unit (btl_initUnitCmds: party slots first, then the enemies'). Evidence: [code] */
+#define BTL_PARTY_CMD_SLOTS 6
+#define BTL_ENEMY_CMD_SLOTS 3
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle

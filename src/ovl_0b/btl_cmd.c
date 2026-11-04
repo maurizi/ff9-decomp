@@ -259,14 +259,14 @@ void btl_initUnitCmds(BtlUnit *unit) {
     unit->cmdIssued = 0;
     unit->onScreen = 0;
     if (unit->flags & BTL_UNIT_PARTY) {
-        firstSlot = BTL_UNIT_SLOT(unit->flags) * 6;
+        firstSlot = BTL_UNIT_SLOT(unit->flags) * BTL_PARTY_CMD_SLOTS;
     } else {
-        firstSlot = (BTL_UNIT_SLOT(unit->flags) - 4) * 3 + 0x18;
+        firstSlot = (BTL_UNIT_SLOT(unit->flags) - PARTY_SIZE) * BTL_ENEMY_CMD_SLOTS + PARTY_SIZE * BTL_PARTY_CMD_SLOTS;
     }
     cmd = &battle->cmdSlots[firstSlot];
     /* unk4..unk18 are the unit's six command slots */
-    for (i = 0; i < 6; i++) {
-        if ((unit->flags & BTL_UNIT_PARTY) || i < 3) {
+    for (i = 0; i < BTL_PARTY_CMD_SLOTS; i++) {
+        if ((unit->flags & BTL_UNIT_PARTY) || i < BTL_ENEMY_CMD_SLOTS) {
             (&unit->cmd)[i] = cmd;
             cmd->caster = unit;
             cmd++;
@@ -431,9 +431,9 @@ void btl_processCmdQueue(Battle *battle) {
             return;
         }
         k = cmd->cmdNo;
-        if (k < 0x37) {
+        if (k < BTL_CMD_ENEMY_REACT) {
             w = cmd->caster;
-            if ((u32)(k - 0x31) < 4) {
+            if ((u32)(k - BTL_CMD_COUNTER) < BTL_CMD_CHARGE_ATTACK - BTL_CMD_COUNTER + 1) {
                 w->model->motion = (BtlMotion *)w->motions[BTL_MOTION_READY];
                 w->obj->frame = 0;
             }
@@ -1023,14 +1023,14 @@ void btl_enqueueCmd(BtlCmd *cmd) {
             }
             if (cmd->cmdNo >= BTL_CMD_KO || cmd->cmdNo == BTL_CMD_ENEMY_DEATH) {
                 nextCmdNo = next->cmdNo;
-                cond = nextCmdNo < 0x3C;
+                cond = nextCmdNo < BTL_CMD_KO;
                 goto chk;
             }
             if (cmd->cmdNo == BTL_CMD_TRANCE) {
                 nextCmdNo = next->cmdNo;
-                cond = nextCmdNo < 0x3B;
+                cond = nextCmdNo < BTL_CMD_TRANCE;
             chk:
-                if (cond == 0 || nextCmdNo == 0x36) {
+                if (cond == 0 || nextCmdNo == BTL_CMD_ENEMY_DEATH) {
                     continue;
                 }
             insert:
