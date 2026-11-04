@@ -27,16 +27,16 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vx = 0;
         work->pos20.vy = 0;
         work->pos20.vz = -0x550;
-        fx_12c_bounceModels[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
-        fx_12c_bounceModels[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 0xFF);
-        fx_12c_bounceModels[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0xFF);
-        fx_12c_bounceModels[3].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 0xFF);
-        fx_12c_bounceModels[4].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0xFF);
-        fx_12c_bounceModels[5].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 0xFF);
-        fx_12c_bounceModels[6].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
-        fx_12c_bounceModels[7].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 0xFF);
-        fx_12c_bounceModels[8].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0xFF);
-        fx_12c_bounceModels[9].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 0xFF);
+        fx_12c_bounceModels[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_0), 0xFF);
+        fx_12c_bounceModels[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_1), 0xFF);
+        fx_12c_bounceModels[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_2), 0xFF);
+        fx_12c_bounceModels[3].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_3), 0xFF);
+        fx_12c_bounceModels[4].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_4), 0xFF);
+        fx_12c_bounceModels[5].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_5), 0xFF);
+        fx_12c_bounceModels[6].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_6), 0xFF);
+        fx_12c_bounceModels[7].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_7), 0xFF);
+        fx_12c_bounceModels[8].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_8), 0xFF);
+        fx_12c_bounceModels[9].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_SLAB_9), 0xFF);
         for (i = 0; i < 9; i++) {
             setVector(&fx_12c_bounceModels[i].rot24, 0, 0, 0);
             setVector(&fx_12c_bounceModels[i].scale4, 0xF00, 0, 0xF00);
@@ -56,14 +56,14 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
             work->pos28.vy = 0;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos28);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_DUST_RING), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos28);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_DEBRIS), (s32)&work->pos28);
             break;
         case 9:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_DEBRIS_2), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }

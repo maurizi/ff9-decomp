@@ -20,7 +20,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         clut[1] = 0x80;
         clut[3] = 0;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->model0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 7), tex, clut);
+        work->model0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_PUMPKIN_HEAD_PUMPKIN), tex, clut);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos2C);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot14);
         work->rot14.vy += 0x800;
@@ -58,11 +58,11 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->scale1C.vy = 0x330 - work->speed38;
                     switch (work->count58) {
                     case 0:
-                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PUMPKIN_HEAD_SMOKE_BURST), (s32)&work->pos2C);
                         break;
                     case 1:
                     case 2:
-                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PUMPKIN_HEAD_SMOKE_BURST_2), (s32)&work->pos2C);
                         break;
                     }
                     work->count58++;

@@ -5,6 +5,37 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_134 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DOOMSDAY_METEOR_TRAIL  0x1 /* emitter: helix screen trail with a rock texture, red sparks */
+#define FX_DOOMSDAY_NEBULA        0x3 /* sprite: purple nebula bands on black (space background layer) */
+#define FX_DOOMSDAY_STARFIELD     0x4 /* sprite: blue stars on black (space background layer) */
+#define FX_DOOMSDAY_GREEN_GLOW    0x5 /* emitter: green glowing cloud particles */
+#define FX_DOOMSDAY_RED_RING      0x6 /* rings: white-pink-red gouraud rings */
+#define FX_DOOMSDAY_METEOR        0x8 /* model: rock polyhedron (32 polys, rock texture) */
+#define FX_DOOMSDAY_WHITE_RING    0x9 /* rings: white rings fading to grey (pool task) */
+#define FX_DOOMSDAY_FIRE_RING     0xA /* rings: white-orange-yellow gouraud rings (pool task) */
+#define FX_DOOMSDAY_BIG_METEOR    0xB /* model: large rock ellipsoid (324 polys, 15-bit rock texture) */
+#define FX_DOOMSDAY_BACKDROP      0xC /* table: background layers for btlfx_drawBackdrop */
+#define FX_DOOMSDAY_EMBERS        0xD /* emitter: small orange ember sprites (pool task) */
+#define FX_DOOMSDAY_STAR_TUNNEL   0x11 /* model: tube with a star texture, a warp tunnel */
+#define FX_DOOMSDAY_STAR_ARCH     0x12 /* model: arch with a star texture */
+#define FX_DOOMSDAY_GLOW_DISC     0x13 /* model: gouraud disc (46 polys) */
+#define FX_DOOMSDAY_BIG_METEOR_2  0x14 /* model: large rock ellipsoid (324 polys, 15-bit rock texture) */
+#define FX_DOOMSDAY_EMBERS_2      0x15 /* emitter: small yellow ember sprites */
+#define FX_DOOMSDAY_FLAME_BURST   0x16 /* emitter: orange flame puffs */
+#define FX_DOOMSDAY_BLUE_PLANET   0x18 /* sprite: pale blue planet */
+#define FX_DOOMSDAY_LIGHT_CONE    0x19 /* model: open cone with a grey streak texture */
+#define FX_DOOMSDAY_LILAC_RING    0x1A /* rings: white-lilac gouraud rings */
+#define FX_DOOMSDAY_BLUE_RING     0x1B /* rings: white-cyan-blue gouraud rings, four segments */
+#define FX_DOOMSDAY_PURPLE_STREAK 0x1E /* trail: purple streak (fxm_drawOffsetTrail) */
+#define FX_DOOMSDAY_SPACE_LAYER   0x1F /* sprite: purple shapes and noise (space background layer; texture mix unclear) (look pending) */
+#define FX_DOOMSDAY_RED_PLANET    0x20 /* sprite: small red planet */
+#define FX_DOOMSDAY_GREY_SPARKS   0x21 /* emitter: small grey spark sprites */
+#define FX_DOOMSDAY_ROCK_DEBRIS   0x22 /* emitter: grey rock chunks */
+#define FX_DOOMSDAY_BACKDROP_2    0x30 /* table: background layers for btlfx_drawBackdrop */
+#define FX_DOOMSDAY_BACKDROP_3    0x31 /* table: background layers for btlfx_drawBackdrop */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

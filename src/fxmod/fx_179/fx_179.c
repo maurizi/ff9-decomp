@@ -247,7 +247,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vz = env->targets->centerZ;
         fx_179_env = env;
         ex->btlfx_initEffModels(fx_179_effModels, 1);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MEDEO_METEOR), 0x9A, 0x3D40, 0, 0);
     } else {
     frame = entry->frame;
     switch (work->state0) {
@@ -293,38 +293,38 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scratch.s.vy = 0;
             scratch.s.vz = 0;
             fxm_shatterModel(work->model18, &scratch.s);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_WHITE_RING), (s32)&work->pos10);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_GLOW_TRAIL), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_179_op80Trails;
                 emitter->trailSlots = 0xA;
                 emitter->trailStride = 0x5C;
                 emitter->otZ = 0x20;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_FAN_EMITTER), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_SPARKLES), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_SPRITE_BURST), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_COLOR_SMOKE), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_COLOR_SMOKE_2), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_STAR_FLASH), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }

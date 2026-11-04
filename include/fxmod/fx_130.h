@@ -5,6 +5,14 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_130 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_PROPELLER_WIND_TARGET_MODEL  0x1 /* 'so' model registered per target (not drawn by the tool) (look pending) */
+#define FX_PROPELLER_WIND_TEAL_RING     0x2 /* emitter: orbiting dark-to-teal gouraud rings */
+#define FX_PROPELLER_WIND_BLUE_CRESCENT 0x3 /* emitter: blue crescent then ring particles (ring texture partly not in the file) */
+#define FX_PROPELLER_WIND_WIND_RING     0x4 /* emitter: orbiting grey wind ring */
+#define FX_PROPELLER_WIND_WIND_SWIRL    0x5 /* emitter: three-armed grey wind swirl */
+
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 extern Unk800F78A4 *fx_130_env;
 

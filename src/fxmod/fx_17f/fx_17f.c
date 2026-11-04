@@ -56,24 +56,24 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_fadeUnitById(0x11, fade);
         }
         if (frame == 3) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_SPLASH), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
         }
         if (frame == 6) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_BLOB), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_PINK_SMOKE), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
         }
         if (frame == 0x1C) {
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_BLOB_2), (s32)&work->posC);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_RIPPLE), (s32)&work->posC);
         }
         work->pos20.vy += 5;
         if (frame >= 0x47) {

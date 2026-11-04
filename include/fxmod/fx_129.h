@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_129 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_PUMPKIN_HEAD_SMOKE_BURST_2 0x1 /* emitter: pale smoke burst with a dark red glow, later bounces */
+#define FX_PUMPKIN_HEAD_SMOKE_BURST   0x3 /* emitter: pale smoke burst with a dark red glow, first bounce */
+#define FX_PUMPKIN_HEAD_PUMPKIN       0x7 /* model: round pumpkin head with a bow tie, drawn with the caster's texture list */
+
 typedef struct {
     s32 vx, vy, vz;
 } Fx129Vec3;

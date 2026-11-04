@@ -12,7 +12,7 @@ s32 fx_136_op80(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         ex->btlfx_getUnitBoneMatrix(0x10, 2, (BtlBone *)&m);
         ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->posC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_SPARKLE), (s32)&work->pos4);
     } else {
         frame = entry->frame;
         if (work->emit0 != NULL) {
@@ -37,7 +37,7 @@ s32 fx_136_op81(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_136_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->posC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_SMOKE_SWIRL), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }

@@ -16,11 +16,11 @@ s32 fx_132_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         } else {
             work->vy -= (0x100 - dir) * 4;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)work);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_SPARKLE_HELIX), (s32)work);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)work);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_SMOKE_PUFF), (s32)work);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

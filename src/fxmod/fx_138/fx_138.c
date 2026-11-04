@@ -104,7 +104,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale60.vx = 0x800;
         work->scale60.vy = 0x800;
         work->scale60.vz = 0x800;
-        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1B), 0x9A, 0x3E40, 0, 0x80);
+        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_SLOT_MODEL), 0x9A, 0x3E40, 0, 0x80);
         work->unk88 = 0;
         work->unk8A = sel[3];
         for (i = 0; i < 6; i++) {
@@ -175,7 +175,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
             }
-            work->emit18 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos20);
+            work->emit18 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_RAINBOW_TRAIL), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_138_op81Trails;
                 work->emit18->trailSlots = 0x18;
@@ -186,14 +186,14 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0xC:
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_FIRE_BURST), (s32)&work->pos20);
             if (work->emit1C != NULL) {
                 work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }
         if (frame >= 0 && frame < 0xD) {
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &work->pos28, work->frame30, work->fade32);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_SPRITE_LINE), &work->pos28, work->frame30, work->fade32);
             if (frame >= 5) {
                 work->fade32 -= 0x200;
             }

@@ -5,6 +5,11 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_136 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ABSORB_SPARKLE     0x1 /* emitter: cyan swirl collapsing into a star sparkle */
+#define FX_ABSORB_SMOKE_SWIRL 0x3 /* emitter: curling white smoke */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

@@ -14,7 +14,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vx = env->targets->centerX;
         work->pos18.vz = env->targets->centerZ;
         work->pos18.vy = 0;
-        work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PAPER_STORM_PAPER_SHEETS), (s32)&work->pos8);
         ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos18, (s16 *)&work->rot0);
     } else {
         frame = entry->frame;
@@ -31,10 +31,10 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit40->rot.vz = work->rot0.vz;
         }
         if (frame == 0x10) {
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos18);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PAPER_STORM_PAPER_SWIRL), (s32)&work->pos18);
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitPos(i, (s16 *)&work->pos20[i]);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos20[i]);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PAPER_STORM_ORANGE_BURST), (s32)&work->pos20[i]);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
@@ -42,7 +42,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0x14) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos20[i]);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PAPER_STORM_GREEN_BURST), (s32)&work->pos20[i]);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }

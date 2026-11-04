@@ -5,6 +5,14 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_17f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MELT_PINK_SMOKE 0x1 /* emitter: pink smoke puffs */
+#define FX_MELT_GOO_BLOB   0x2 /* emitter: purple goo blobs */
+#define FX_MELT_GOO_BLOB_2 0x3 /* emitter: small dark purple goo blobs */
+#define FX_MELT_GOO_RIPPLE 0x4 /* emitter: pink ripple disc */
+#define FX_MELT_GOO_SPLASH 0xB /* emitter: glossy purple goo splash */
+
 typedef struct {
     s32 scale0[3]; /* target scale */
     SVECTOR posC; /* target position */

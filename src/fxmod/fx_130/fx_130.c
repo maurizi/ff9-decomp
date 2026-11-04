@@ -49,7 +49,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_130_units[i].timer18 = i * 6;
             fx_130_units[i].timer1C = 0x20;
             fx_130_units[i].timer20 = i * 6;
-            fx_130_units[i].model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+            fx_130_units[i].model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_TARGET_MODEL), 1);
             setVector(&fx_130_units[i].pos30, fx_130_units[i].pos0.vx, fx_130_units[i].pos0.vy, fx_130_units[i].pos0.vz);
             setVector(&fx_130_units[i].rot28, 0, 0, 0);
             setVector(&fx_130_units[i].scale40, 0x1000, 0x1000, 0x1000);
@@ -58,11 +58,11 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_WIND_SWIRL), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_WIND_RING), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
@@ -72,7 +72,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer0[1] = 0x20;
             break;
         case 0x2A:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_TEAL_RING), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
@@ -115,7 +115,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer0[1]--;
             for (i = 0; i < 4; i++) {
                 if (fx_130_units[i].timer20 == 0) {
-                    ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_130_units[i]);
+                    ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_BLUE_CRESCENT), (s32)&fx_130_units[i]);
                 }
                 fx_130_units[i].timer20--;
             }
