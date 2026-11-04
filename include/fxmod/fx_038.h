@@ -4,6 +4,19 @@
 /* Effect module fx_038 (dir 13 file 0x38). */
 #include "btlfx_mod.h"
 
+/* fx_038 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_COMET_BLUE_GLOW    0x1 /* particles: blue glow with a white core, drawn on each falling rock */
+#define FX_COMET_ROCK         0x2 /* model: rock (grey stone texture) */
+#define FX_COMET_ROCK_DEBRIS  0x3 /* emitter: orange / white striped debris sprites */
+#define FX_COMET_TAIL         0x4 /* trail: violet-white strip behind each rock */
+#define FX_COMET_FIRE_GLOW    0x5 /* particles: orange-red fiery glow */
+#define FX_COMET_IMPACT_SMOKE 0x9 /* emitter: white-pink smoke burst at the impact */
+#define FX_COMET_GLOW_DISH    0xA /* gouraud model: wide shallow dish */
+#define FX_COMET_SHOCK_RING   0xB /* model: flat ring, white texture */
+#define FX_COMET_BACKDROP     0xC /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_COMET_BLUE_RING    0xD /* rings: dark blue / blue gouraud rings at the impact */
+
 /* falling rock, a pool item */
 typedef struct {
     s32 state0; /* state */

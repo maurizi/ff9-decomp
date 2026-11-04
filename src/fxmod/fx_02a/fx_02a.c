@@ -11,7 +11,7 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_02a_env = env;
         work->hold0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_GLYPH_GLOW), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }
@@ -20,17 +20,17 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->hold0 == 0) {
             if (frame == 8) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_GLYPH), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_RUNE_SEAL), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame >= 8) {
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 4), frame);
+                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SILENCE_BACKDROP), frame);
             }
             if (frame >= 0x28) {
                 return 1;

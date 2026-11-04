@@ -17,10 +17,10 @@ s32 fx_031_op80(s32 mode, Fx031Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos8.vy += 0x80;
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&boneMat0);
         ex->btlfx_matrixPointAhead(&boneMat0, (s16)env->targets->fxParam, (s32)&work->pos10);
-        work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+        work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRADUAL_PETRIFY_GOLD_RINGS), (s32)&work->pos10);
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&boneMat1);
         ex->btlfx_matrixPointAhead(&boneMat1, (s16)env->targets->fxParam, (s32)&work->pos20);
-        work->emit34 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
+        work->emit34 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRADUAL_PETRIFY_GOLD_RINGS), (s32)&work->pos20);
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&camBoneMat);
         ex->btlfx_matrixPointAhead(&camBoneMat, (s16)env->targets->fxParam, (s32)env->camera);
     } else {
@@ -43,9 +43,9 @@ s32 fx_031_op80(s32 mode, Fx031Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
         }
         if (frame == 8) {
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos0);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRADUAL_PETRIFY_STONE_DUST_2), (s32)&work->pos8);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRADUAL_PETRIFY_STONE_DUST), (s32)&work->pos0);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRADUAL_PETRIFY_GOLD_RINGS_2), (s32)&work->pos0);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

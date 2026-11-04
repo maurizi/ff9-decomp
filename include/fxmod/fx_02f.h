@@ -4,6 +4,11 @@
 /* Effect module fx_02f (dir 13 file 0x2F). */
 #include "btlfx_mod.h"
 
+/* fx_02f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FLAME_FIREBALL     0x5 /* emitter: expanding red-orange fireballs + flame tongues (one per target) */
+#define FX_FLAME_FLAME_STREAK 0x6 /* emitter: screen trail with a flame-streak strip */
+
 typedef struct {
     SVECTOR aim0; /* beam angles */
     SVECTOR pos8;

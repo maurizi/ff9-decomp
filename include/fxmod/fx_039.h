@@ -4,6 +4,13 @@
 /* Effect module fx_039 (dir 13 file 0x39). */
 #include "btlfx_mod.h"
 
+/* fx_039 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_OSMOSE_SPARKLES     0x7 /* emitter: blue glint + spark sprites (texture not in the file) (look pending) */
+#define FX_OSMOSE_FAN_EMITTER  0x8 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_OSMOSE_DRAIN_ORB    0x9 /* emitter: white-violet-cyan gouraud rings + screen trail, flies between caster and target */
+#define FX_OSMOSE_ABSORB_FLASH 0xA /* emitter: white-lilac / white-violet-cyan rings + purple light streaks */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -4,6 +4,13 @@
 /* Effect module fx_030 (dir 13 file 0x30). */
 #include "btlfx_mod.h"
 
+/* fx_030 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_POLLEN_POLLEN      0x1 /* emitter: pollen sprites (texture not in the file) (look pending) */
+#define FX_POLLEN_DUST_PUFF   0x2 /* emitter: grey dust puff + dim specks */
+#define FX_POLLEN_POLLEN_PUFF 0x3 /* emitter: yellow-brown pollen puff + grey puff */
+#define FX_POLLEN_POLLEN_2    0x8 /* emitter: pollen sprites (texture not in the file) (look pending) */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;

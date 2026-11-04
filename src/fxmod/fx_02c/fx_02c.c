@@ -14,11 +14,11 @@ s32 fx_02c_op80(s32 mode, Fx02cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vz = env->targets->centerZ;
         work->pos10.vy -= 0xC8;
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos10, (s16 *)&work->aim18);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAD_BREATH_GAS_CLOUD), (s32)&work->pos8);
     } else {
         frame = entry->frame;
         if (frame == 8) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAD_BREATH_GAS_BURST), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

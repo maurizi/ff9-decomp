@@ -23,16 +23,16 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vx = 0;
         work->pos20.vy = 0;
         work->pos20.vz = -0x550;
-        fx_03a_models[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
-        fx_03a_models[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 0xFF);
-        fx_03a_models[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0xFF);
-        fx_03a_models[3].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 0xFF);
-        fx_03a_models[4].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0xFF);
-        fx_03a_models[5].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 0xFF);
-        fx_03a_models[6].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
-        fx_03a_models[7].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 0xFF);
-        fx_03a_models[8].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0xFF);
-        fx_03a_models[9].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 0xFF);
+        fx_03a_models[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_0), 0xFF);
+        fx_03a_models[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_1), 0xFF);
+        fx_03a_models[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_2), 0xFF);
+        fx_03a_models[3].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_3), 0xFF);
+        fx_03a_models[4].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_4), 0xFF);
+        fx_03a_models[5].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_5), 0xFF);
+        fx_03a_models[6].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_6), 0xFF);
+        fx_03a_models[7].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_7), 0xFF);
+        fx_03a_models[8].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_8), 0xFF);
+        fx_03a_models[9].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_GROUND_PIECE_9), 0xFF);
         for (i = 0; i < 9; i++) {
             setVector(&fx_03a_models[i].rot24, 0, 0, 0);
             setVector(&fx_03a_models[i].scale4, 0xF00, 0, 0xF00);
@@ -48,7 +48,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, fx_03a_bgOt, 0, -0x550, -0x1000);
             break;
         case 1:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_RUBBLE), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }

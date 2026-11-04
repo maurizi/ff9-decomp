@@ -4,6 +4,41 @@
 /* Effect module fx_026 (dir 13 file 0x26): Shiva, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_026 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SHIVA_STREAK_PATH      0x2 /* track: path of the ice streak strips (op82 pool items) */
+#define FX_SHIVA_ICE_CRESCENTS    0x4 /* emitter: blue ice crescent sprites + small shard sprites */
+#define FX_SHIVA_ICE_SHARD_BURST  0x5 /* emitter: four ice-crescent sprite elements + cyan-white gouraud rings */
+#define FX_SHIVA_ICE_CHUNKS       0x6 /* emitter: falling ice chunk sprites, faint sparkles */
+#define FX_SHIVA_STAR_GLINTS      0x7 /* emitter: blue glows, white / green star glints, blue glow domes */
+#define FX_SHIVA_PATH             0xB /* track: keyframed position (camera point 2) in op80 state 1 */
+#define FX_SHIVA_PATH_2           0xE /* track: keyframed position (camera point 2) in op80 state 2 */
+#define FX_SHIVA_PATH_3           0x11 /* track: keyframed position in op80 state 3 */
+#define FX_SHIVA_ICE_SPRAY        0x17 /* emitter: white ice chunk sprites */
+#define FX_SHIVA_ICE_CHUNKS_2     0x19 /* emitter: falling ice chunk sprites, faint sparkles */
+#define FX_SHIVA_SHATTER_RINGS    0x1A /* emitter: blue gouraud rings + ice chunk sprites, sparks (pool item per piece) */
+#define FX_SHIVA_BLUE_TRAIL       0x1F /* emitter: spiralling trail, blue strip texture */
+#define FX_SHIVA_ICE_DEBRIS       0x20 /* emitter: small ice chunk sprites */
+#define FX_SHIVA_ICE_DEBRIS_2     0x21 /* emitter: small ice chunk sprites */
+#define FX_SHIVA_CYAN_RING        0x22 /* emitter: cyan-white gouraud ring */
+#define FX_SHIVA_ICE_STREAK_3     0x34 /* trail: blue ice strip (third streak kind) */
+#define FX_SHIVA_ICE_STREAK_2     0x35 /* trail: blue ice strip (second streak kind) */
+#define FX_SHIVA_ICE_STREAK       0x36 /* trail: blue ice strip */
+#define FX_SHIVA_SO_MODEL         0x85 /* 'so' model registered at the end of op80 state 1 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_TRACK_EMITTER    0x86 /* emitter started at each op80 pool item's track point (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_SO_MODEL_2       0x87 /* 'so' model registered with 0x85 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_STREAK_PATH_2    0x9D /* track: path of the ice streak strips (op82 pool items) (summon data 0x80+, not analysed by the tool) */
+#define FX_SHIVA_IMPACT_EMITTER_2 0x9E /* emitter at the target, op82 frame 39 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_IMPACT_EMITTER   0x9F /* emitter at the target, op82 frame 39 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_BONE19_RINGS     0xA0 /* rings drawn at summon bone 0x19, growing (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_ROOT_EMITTER_3   0xA1 /* emitter at summon bone 0, op80 state 2 start (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_ROOT_EMITTER     0xA2 /* emitter at summon bone 0, op80 state 1 frame 38 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_ROOT_EMITTER_2   0xA3 /* emitter at summon bone 0, op80 state 1 frame 42 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_ROOT_EMITTER_4   0xA4 /* emitter at summon bone 0, op80 state 2 end (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_BONE19_EMITTER_2 0xA5 /* emitter at summon bone 0x19, op80 state 3 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_BONE19_EMITTER   0xA6 /* emitter at summon bone 0x19, op80 state 2 frame 29 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_SPIN_MODEL       0xAB /* 'so' model drawn spinning and widening at the target (op82) (summon data 0x80+, not analysed by the tool) (look pending) */
+
 /* keyframe track read from the effect file: count, then the keys */
 typedef struct {
     s16 unk0; /* not read by the module */

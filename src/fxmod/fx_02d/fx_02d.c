@@ -10,8 +10,8 @@ s32 fx_02d_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vy = -0xC8;
         work->vz = env->targets->centerZ;
         fx_02d_env = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)work);
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)work);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ANGELS_SNACK_OLIVE_RINGS), (s32)work);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ANGELS_SNACK_GOLD_FLARES), (s32)work);
     } else {
         return entry->frame >= 0x28;
     }
