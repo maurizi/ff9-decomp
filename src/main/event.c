@@ -705,13 +705,13 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
         case TEXT_WIN_BOTTOM_LEFT:
         case TEXT_WIN_TOP_RIGHT:
         case TEXT_WIN_TOP_LEFT:
-            evt_placeBalloon(PSX_NULLABLE(obj), w, w->anchor & 3, 0);
+            evt_placeBalloon(PSX_NULLABLE(obj), w, TEXT_WIN_SIDE(w->anchor), 0);
             break;
         case TEXT_WIN_FIXED_BOTTOM_RIGHT:
         case TEXT_WIN_FIXED_BOTTOM_LEFT:
         case TEXT_WIN_FIXED_TOP_RIGHT:
         case TEXT_WIN_FIXED_TOP_LEFT:
-            evt_placeBalloon(PSX_NULLABLE(obj), w, w->anchor & 3, 1);
+            evt_placeBalloon(PSX_NULLABLE(obj), w, TEXT_WIN_SIDE(w->anchor), 1);
             break;
         default:
             evt_placeBalloon(PSX_NULLABLE(obj), w, -1, 0);

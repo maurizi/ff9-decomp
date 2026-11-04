@@ -871,6 +871,8 @@ void win_updateAll(void);
 #define TEXT_WIN_FIXED_BOTTOM_LEFT 0x59
 #define TEXT_WIN_FIXED_TOP_RIGHT 0x5A
 #define TEXT_WIN_FIXED_TOP_LEFT 0x5B
+#define TEXT_WIN_SIDE(a) ((a) & 3) /* of the corner anchors above: the balloon side, bit 0 left, bit 1 top
+                                    * (evt_getMsgLayout -> evt_placeBalloon) */
 #define TEXT_WIN_CENTER 0x5C /* x centred, y centred on 74 (no anchor: on 110); a balloon is placed automatically */
 /* embedded values */
 #define TEXT_BANK_TEXT 0x06 /* + bank, number slot: text g_msgNumbers[slot] of text bank g_msgTextBanks[bank] */
@@ -1284,6 +1286,7 @@ typedef struct {
     u8 pad27;
     Unk4 color; /* current colour */
 } FadeState;
+#define FADE_DRAWN 0xFFFF0000 /* *(u32 *)&g_fade: active or covered, the fade's draw handler runs (menuList) */
 /* fade_start / game_startFade arguments */
 #define FADE_FLAT 1 /* type: the whole screen (fadeFlat_*) */
 #define FADE_WIPE 2 /* type: two rotated quads sweep across (fadeWipe_*) */
@@ -4017,6 +4020,7 @@ typedef struct {
  * ability's defaultSide with side switching, 1 party, 0 enemies; targetAll) and g_btluiTargetAllByType, rows 0-13;
  * btlui_startTargetSelect (canSwitchSide for 0/3/6/9, canToggleAll for 3-5). 9-11 are 6-8 again, but the command's
  * targeting is 2 instead of the target count (btlui_getTargeting, btlui_confirmDoubleCast; Charge!, Spear). */
+#define BTL_CMD_INFO_TARGET 0xF /* MainCalc.cmd->info bits 0-3: the BTL_TGT_* below (fieldCalc_multiTargetHalf) */
 #define BTL_TGT_SINGLE_ANY  0x0 /* one unit, either side (Life, Esuna, Scan, Haste) */
 #define BTL_TGT_SINGLE_PARTY 0x1 /* one party member (Vanish, Auto-Life, Chakra) */
 #define BTL_TGT_SINGLE_ENEMY 0x2 /* one enemy (Fire, Comet, Goblin Punch) */

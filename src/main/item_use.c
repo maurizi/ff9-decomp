@@ -156,7 +156,7 @@ void fieldCalc_supportBoost(MainCalc *calc) {
 }
 
 void fieldCalc_multiTargetHalf(MainCalc *calc) {
-    if (calc->all == 1 && (u32)((calc->cmd->info & 0xF) - BTL_TGT_MULTI_ANY) < 3) {
+    if (calc->all == 1 && (u32)((calc->cmd->info & BTL_CMD_INFO_TARGET) - BTL_TGT_MULTI_ANY) < 3) {
         calc->multiplier /= 2;
     }
 }
