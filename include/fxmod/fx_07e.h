@@ -10,7 +10,7 @@
 #define FX_SLOW_GREEN_RING 0x2 /* rings: white-green gouraud rings */
 #define FX_SLOW_BLUE_WAVE  0x3 /* particles: blue chevron wave frames */
 #define FX_SLOW_PARTICLES  0x5 /* particles: 8 frames, still render all black (look pending) */
-#define FX_SLOW_BACKDROP   0xA /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SLOW_BACKDROP   0xA /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SLOW_CRESCENT   0xC /* model: one quad textured with a blue-white crescent */
 
 typedef struct {

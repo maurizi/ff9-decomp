@@ -35,7 +35,7 @@
 #define FX_ULTIMA_ROCK_SWIRL_2   0x23 /* emitter: spiralling 3D trail of rock pieces + sparks */
 #define FX_ULTIMA_PINK_SPIKES_2  0x24 /* emitter: pink spike particles + spark sprites (byte-identical to fx_180 entry 0x15) */
 #define FX_ULTIMA_WHITE_BEAM     0x25 /* emitter: spiralling white beam screen trail, pink sparks (byte-identical to fx_180 entry 0xD) */
-#define FX_ULTIMA_BACKDROP       0x26 /* table: background layers for btlfx_drawBackdrop (byte-identical to fx_180 entry 0x19) */
+#define FX_ULTIMA_BACKDROP       0x26 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_180 entry 0x19) */
 #define FX_ULTIMA_NOISE_RING_3   0x27 /* emitter: ring with a texture not resolved (noise) + lilac gouraud ring (look pending) */
 
 typedef struct {

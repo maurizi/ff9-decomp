@@ -84,7 +84,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_BACKDROP), pathFrame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_BACKDROP), pathFrame);
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (fxm_isMotionDone(i) != 0) {
                     fxm_startUnitMotion(i, 0);

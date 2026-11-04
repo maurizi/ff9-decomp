@@ -557,7 +557,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             scale.vx = scale.vy = scale.vz = (fade >> 7) + 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, (CVECTOR *)&aim, flag, 0);
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
         work->frame4++;
     }
     return 0;

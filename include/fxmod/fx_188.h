@@ -10,7 +10,7 @@
 #define FX_LV3_DEF_LESS_PARTICLE       0x3 /* particles: one frame, renders black (drawn per pool item) (look pending) */
 #define FX_LV3_DEF_LESS_VIOLET_ORBS    0x4 /* emitter: violet glowing orb sprites, 12 frames (per pool item) */
 #define FX_LV3_DEF_LESS_VIOLET_ORB     0xE /* particles: violet glowing orb (per pool item) */
-#define FX_LV3_DEF_LESS_BACKDROP       0xF /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV3_DEF_LESS_BACKDROP       0xF /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_LV3_DEF_LESS_SMOKE_RINGS    0x10 /* emitter: rings textured with orange smoke */
 #define FX_LV3_DEF_LESS_SMOKE_RINGS_2  0x11 /* emitter: rings textured with orange smoke */
 #define FX_LV3_DEF_LESS_BLUE_RINGS     0x12 /* emitter: white-blue and white-green gouraud rings */

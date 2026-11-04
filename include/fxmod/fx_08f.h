@@ -10,7 +10,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_METEOR_FIRE_RING      0x1 /* rings: cream-red-blue-violet-orange gouraud rings */
 #define FX_METEOR_STREAK_SHELL   0x4 /* model: bullet-shaped shell; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (byte-identical to fx_086 entry 0x4) (look pending) */
-#define FX_METEOR_BACKDROP       0x7 /* table: backdrop layers (btlfx_drawBackdrop) (byte-identical to fx_086 entry 0x7) */
+#define FX_METEOR_BACKDROP       0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_086 entry 0x7) */
 #define FX_METEOR_CONE_SPRITES   0xB /* emitter: cone of sprites, still render all black (byte-identical to fx_086 entry 0xB) (look pending) */
 #define FX_METEOR_DUST_RING      0xC /* model: ring band with a pink-brown rocky dust texture (byte-identical to fx_086 entry 0xC) */
 #define FX_METEOR_CLOUDS         0xE /* sprite: grey cloud strip */

@@ -1,15 +1,15 @@
 #ifndef FX_0F7_H
 #define FX_0F7_H
 
-/* Effect module fx_0f7 (dir 13 file 0x0F7): Solution 9. Emitters and backdrops at the target, with four screen
+/* Effect module fx_0f7 (dir 13 file 0x0F7): Solution 9. Emitters and layer textures at the target, with four screen
  * sprites (fx_0f7_sparks). Evidence: [data] the party ability / item tables and enemy sequences that play this file
  * id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* fx_0f7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SOLUTION_9_BACKDROP_2 0x2 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_SOLUTION_9_BACKDROP   0x4 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SOLUTION_9_BACKDROP_2 0x2 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_SOLUTION_9_BACKDROP   0x4 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SOLUTION_9_RUNES      0x5 /* sprite: red glowing rune glyphs (large) */
 #define FX_SOLUTION_9_BLUE_RINGS 0xB /* emitter: white-blue gouraud rings + textured rings (texture not resolved) */
 #define FX_SOLUTION_9_RUNES_2    0xC /* sprite: red glowing rune glyphs (small) */

@@ -9,7 +9,7 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_TIDAL_WAVE_PATH        0x1 /* table: vector path (fxm_vecPathInit) */
 #define FX_TIDAL_WAVE_CURL        0x2 /* model: curved sheet like a breaking wave (texture page 0x117 renders plain white) (look pending) */
-#define FX_TIDAL_WAVE_BACKDROP    0x3 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_TIDAL_WAVE_BACKDROP    0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_TIDAL_WAVE_WATER_ORBS  0x7 /* emitter: orbiting blue water-caustic orbs + grey-blue shard sprites */
 #define FX_TIDAL_WAVE_RED_TRAIL   0x8 /* emitter: helix flat trail, red caustic strip */
 #define FX_TIDAL_WAVE_WATER_TRAIL 0x9 /* emitter: spiralling screen trail, grey-blue water streak strip */

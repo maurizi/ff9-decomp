@@ -11,9 +11,9 @@
 #define FX_WATERGA_WATER_SPHERE   0x2 /* 'so' model: sphere, blue water-caustic texture */
 #define FX_WATERGA_WATER_SPLASH   0x3 /* emitter: cone of dark-blue water splash sprites, 24 frames */
 #define FX_WATERGA_RINGS          0x4 /* emitter: cone of textured rings (texture not resolved) (look pending) */
-#define FX_WATERGA_BACKDROP       0x5 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_WATERGA_BACKDROP_2     0x6 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_WATERGA_BACKDROP_3     0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_WATERGA_BACKDROP       0x5 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_WATERGA_BACKDROP_2     0x6 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_WATERGA_BACKDROP_3     0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_WATERGA_WATER_SPLASH_2 0x8 /* emitter: sphere of dark-blue water splash sprites, 24 frames */
 
 typedef struct {

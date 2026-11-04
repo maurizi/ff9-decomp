@@ -14,7 +14,7 @@
 #define FX_COMET_IMPACT_SMOKE 0x9 /* emitter: white-pink smoke burst at the impact */
 #define FX_COMET_GLOW_DISH    0xA /* gouraud model: wide shallow dish */
 #define FX_COMET_SHOCK_RING   0xB /* model: flat ring, white texture */
-#define FX_COMET_BACKDROP     0xC /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_COMET_BACKDROP     0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
 #define FX_COMET_BLUE_RING    0xD /* rings: dark blue / blue gouraud rings at the impact */
 
 /* falling rock, a pool item */

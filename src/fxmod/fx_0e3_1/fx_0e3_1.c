@@ -1088,7 +1088,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ringFade = ex->math_cos(ringAng);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PINK_FLAT_RING), &work->pos30, &flatRingRot, ringScale, 0, 1, ringFade);
             env->otZ = 0;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BACKDROP), frame);
             ex->btlfx_drawScrollMove(work->frame4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
             if (frame >= 0x4D) {
                 ex->btlfx_clearEffModels();

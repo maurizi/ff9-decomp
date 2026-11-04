@@ -23,7 +23,7 @@
 #define FX_BAHAMUT_SPIN_RING          0x12 /* rings: white-blue gouraud rings, spinning */
 #define FX_BAHAMUT_BLUE_RINGS         0x14 /* rings: dark-to-light blue gouraud rings */
 #define FX_BAHAMUT_WHITE_BOLT         0x15 /* trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8); the render is still almost empty (look pending) */
-#define FX_BAHAMUT_BACKDROP           0x16 /* table: background layers for btlfx_drawBackdrop */
+#define FX_BAHAMUT_BACKDROP           0x16 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_BAHAMUT_ENERGY_ORBS        0x17 /* emitter: cyan-green orbs + violet lightning strip */
 #define FX_BAHAMUT_SPARKLE_RING       0x18 /* sprites: ring of blue-white sparkles, 16 frames */
 #define FX_BAHAMUT_FIRE_RING_BURST    0x19 /* emitter: red-white fire flashes + crimson rings */

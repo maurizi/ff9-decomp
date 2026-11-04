@@ -76,7 +76,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->pos10.vz += work->speed34;
             work->scale20.vz += 0x100;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_BACKDROP), elapsed);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_BACKDROP), elapsed);
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();

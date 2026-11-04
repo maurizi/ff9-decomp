@@ -13,7 +13,7 @@
 #define FX_FROST_SNOW_BURST  0x6 /* emitter: ring of ice-flake sprites + white-cyan rings */
 #define FX_FROST_ICE_CRYSTAL 0xA /* 'so' model: faceted ice crystal (pale blue cracked-ice texture) */
 #define FX_FROST_ICE_SHARD   0xB /* 'so' model: flat jagged ice shard (same cracked-ice texture) */
-#define FX_FROST_BACKDROP    0xC /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FROST_BACKDROP    0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
 typedef struct {
     Pool6CEntry *emit0;

@@ -342,7 +342,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                     fx_0d2_streak2.fadeC, 1, fx_0d2_streakBufs2[j], 0);
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FENRIR_BACKDROP), frame);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FENRIR_BACKDROP), frame);
         return frame >= 0x64;
     }
     return 0;

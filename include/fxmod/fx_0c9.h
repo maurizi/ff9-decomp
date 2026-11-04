@@ -12,7 +12,7 @@
 #define FX_JEWEL_COMET_STREAKS 0x3 /* emitter: two fans, white-violet comet streaks */
 #define FX_JEWEL_LIGHT_BURST  0x4 /* emitter: white / lilac / cyan rings and violet light streaks */
 #define FX_JEWEL_ORE_GLINT    0x5 /* emitter: green ore glint, lilac / cyan ring, star sparkles */
-#define FX_JEWEL_BACKDROP     0x6 /* table: background layers for btlfx_drawBackdrop */
+#define FX_JEWEL_BACKDROP     0x6 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_JEWEL_GLOW_RING    0x10 /* emitter: white-cyan gouraud ring, fans */
 
 typedef struct {

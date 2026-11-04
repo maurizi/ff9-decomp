@@ -25,7 +25,7 @@
 #define FX_PHOENIX_GOLD_FEATHERS    0x12 /* emitter: golden feather quads */
 #define FX_PHOENIX_FEATHERS_2       0x13 /* emitter: two fans, grey and tan feathers with light streaks */
 #define FX_PHOENIX_FAN_EMITTER_5    0x14 /* emitter: two fans; the render reads garbled multicolour texels (texture not resolved) (look pending) */
-#define FX_PHOENIX_BACKDROP         0x15 /* table: background layers for btlfx_drawBackdrop */
+#define FX_PHOENIX_BACKDROP         0x15 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_PHOENIX_FLAME_SWIRL      0x16 /* 'so' model: cone of swirling brown-orange flame tongues (fx_0d3_sharedModel) */
 #define FX_PHOENIX_FLAME_FEATHERS   0x17 /* emitter: flame-feather quads */
 #define FX_PHOENIX_FLAME_FEATHERS_2 0x18 /* emitter: flame-feather quads (cylinder) */

@@ -9,7 +9,7 @@
 #define FX_SLEEP_LIGHT_SPIRAL   0x6 /* emitter: helix of white screen trails, white-cyan rings, green glint (same call site and look as fx_01a entry 0x2) */
 #define FX_SLEEP_SPECK_RING     0x7 /* emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks (same call site and look as fx_01a entry 0x3) (look pending) */
 #define FX_SLEEP_LIGHT_SPIRAL_2 0x8 /* emitter: helix of two white screen trails with green / violet glows (same call site and look as fx_01a entry 0x4) */
-#define FX_SLEEP_BACKDROP       0x9 /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (same call site and look as fx_01a entry 0x1) (look pending) */
+#define FX_SLEEP_BACKDROP       0x9 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (same call site and look as fx_01a entry 0x1) (look pending) */
 
 typedef struct {
     Pool6CEntry *emit0;

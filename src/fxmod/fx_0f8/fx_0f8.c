@@ -70,8 +70,8 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit10[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_SPRITE_RINGS), (s32)&work->emitPos30[j]);
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP), frame);
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP_2), frame);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP), frame);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP_2), frame);
         return frame >= 0x2D;
     }
     return 0;

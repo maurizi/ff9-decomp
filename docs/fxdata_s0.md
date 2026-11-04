@@ -28,7 +28,7 @@ entries or by the same call site.
 - fx_04e (Sleep, all targets), fx_05f (Water, all targets), fx_056 (Chakra, Elan) and the Aerial Slash
   modules fx_024 / fx_02b / fx_045 reuse the names of fx_01a, fx_016, fx_055 and fx_01d (byte-identical
   entries, else the same call site and the same render).
-- Backdrop tables (`btlfx_drawBackdrop`) are named `FX_<NAME>_BACKDROP` by use; the tool does not draw
+- Backdrop tables (`btlfx_drawLayerTexture`) are named `FX_<NAME>_BACKDROP` by use; the tool does not draw
   them (look pending).
 
 ## Open questions (emulator)
@@ -41,44 +41,44 @@ the tool), particles / rings / models whose texture is neither in the file nor i
 (magenta), strips that read unrelated or placeholder VRAM (probably filled at run time), and emitters that
 still render black.
 
-- fx_00b 0x7 `FX_ESUNA_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
-- fx_00e 0x3 `FX_BERSERK_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
-- fx_01a 0x1 `FX_SLEEP_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_00b 0x7 `FX_ESUNA_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
+- fx_00e 0x3 `FX_BERSERK_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
+- fx_01a 0x1 `FX_SLEEP_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_01a 0x3 `FX_SLEEP_SPECK_RING`: emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks
 - fx_01b 0x1 `FX_FLOAT_SPECK_RING`: emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks
 - fx_01b 0x3 `FX_FLOAT_GLOW`: emitter: one particle (magenta: texture still outside the file and the common pages)
-- fx_01b 0x4 `FX_FLOAT_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_01b 0x4 `FX_FLOAT_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_01f 0x3 `FX_01F_WHITE_RINGS`: emitter: textured rings (UV box reads a placeholder page, texture filled at run time) + white gouraud rings
-- fx_01f 0xD `FX_01F_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_01f 0xD `FX_01F_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_023 0x8 `FX_PSYCHOKINESIS_SCREEN_TRAILS`: emitter: two screen trails, still render all black
-- fx_02a 0x4 `FX_SILENCE_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_02a 0x4 `FX_SILENCE_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_033 0x5 `FX_SNORT_BREATH_TRAILS`: emitter: two spiralling screen trails; the strip's top shows grey smoke, the rest stays outside the file and the common pages
 - fx_034 0xA `FX_COLD_BREATH_ICE_CRYSTAL_2`: model: the same crystal shape, texture page 0x9A still not uploaded by the file or the common pages
 - fx_037 0x2 `FX_DARKNESS_SCREEN_TRAIL`: emitter: orbiting screen trail; the strip reads a page of unrelated green sprite shapes, probably filled at run time
-- fx_038 0xC `FX_COMET_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_038 0xC `FX_COMET_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_03b 0x3 `FX_TROUBLE_JUICE_SCREEN_TRAIL`: emitter: screen trail, still renders all black
 - fx_03b 0xA `FX_TROUBLE_JUICE_SCREEN_TRAIL_2`: emitter: screen trail, still renders all black
 - fx_043 0x1 `FX_INK_INK_TRAIL`: emitter: flat trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator
 - fx_043 0x2 `FX_INK_INK_SPRAY`: emitter: screen trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator
 - fx_04c 0x1 `FX_FLOAT_GLOW_2`: emitter: one particle (magenta: texture still outside the file and the common pages)
 - fx_04c 0x2 `FX_FLOAT_GLOW`: emitter: one particle (magenta: texture still outside the file and the common pages)
-- fx_04c 0x5 `FX_FLOAT_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_04c 0x5 `FX_FLOAT_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_04e 0x7 `FX_SLEEP_SPECK_RING`: emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks (same call site and look as fx_01a entry 0x3)
-- fx_04e 0x9 `FX_SLEEP_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (same call site and look as fx_01a entry 0x1)
-- fx_04f 0xA `FX_REFLECT_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
-- fx_04f 0xD `FX_REFLECT_BACKDROP_2`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_04e 0x9 `FX_SLEEP_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (same call site and look as fx_01a entry 0x1)
+- fx_04f 0xA `FX_REFLECT_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
+- fx_04f 0xD `FX_REFLECT_BACKDROP_2`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_052 0x7 `FX_LIMIT_GLOVE_SPHERE`: 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80
-- fx_052 0xC `FX_LIMIT_GLOVE_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
-- fx_057 0x3 `FX_HOLY_BACKDROP_3`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_052 0xC `FX_LIMIT_GLOVE_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
+- fx_057 0x3 `FX_HOLY_BACKDROP_3`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_057 0x6 `FX_HOLY_TRAIL`: trail drawn by the emitter callback; the strip reads unrelated multicoloured VRAM, filled at run time
 - fx_057 0x17 `FX_HOLY_SPRITE_LINE`: sprite line; its frames read a page of unrelated sprites, filled at run time
-- fx_057 0x18 `FX_HOLY_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_057 0x18 `FX_HOLY_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_057 0x1D `FX_HOLY_SPARK`: particles: one sprite; reads grey stripes that look like unrelated VRAM
 - fx_057 0x1E `FX_HOLY_TEXTURED_RING`: rings: textured ring, drawn swelling three times; the UV box reads unrelated VRAM
-- fx_057 0x1F `FX_HOLY_BACKDROP_2`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
-- fx_05a 0x7 `FX_MIGHT_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_057 0x1F `FX_HOLY_BACKDROP_2`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
+- fx_05a 0x7 `FX_MIGHT_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 - fx_05d 0x11 `FX_BIO_SCREEN_TRAIL`: emitter: orbiting screen trail, still renders all black
-- fx_05e 0xB `FX_DEATH_BACKDROP`: backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool)
+- fx_05e 0xB `FX_DEATH_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
 
 ## Table
 
@@ -94,14 +94,14 @@ still render black.
 | fx_001 | 0xF | `FX_DAGGERS_MAGIC_LIGHT_RING` | render | model: ring, green light-arc texture |
 | fx_001 | 0x10 | `FX_DAGGERS_MAGIC_SPARKLE_BURST` | render | emitter: white/yellow/green sparkle sprites |
 | fx_00a | 0x2 | `FX_VENOM_POWDER_VENOM_SPLASH` | render | emitter: purple powder / venom blobs + droplet splash (byte-identical to fx_0ae entry 0x2, same render) |
-| fx_00b | 0x7 | `FX_ESUNA_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_00b | 0x7 | `FX_ESUNA_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_00b | 0x8 | `FX_ESUNA_LIGHT_SHOWER` | render | emitter: rainbow halo + blue ripple, falling golden streaks with white glints, lens flare |
 | fx_00c | 0x7 | `FX_PANACEA_GREEN_RINGS` | render | emitter: yellow-green and white-violet gouraud rings |
 | fx_00c | 0x8 | `FX_PANACEA_SPARKLES` | render | emitter: green star glint, teal glow orb, golden sparkle sprites |
 | fx_00d | 0x2 | `FX_STONA_LIGHT_TRAIL` | render | emitter: flat orbiting trail, yellow-red strip texture |
 | fx_00d | 0x3 | `FX_STONA_BLUE_ORBS` | render | emitter: blue light orbs dissolving into golden specks |
 | fx_00d | 0x9 | `FX_STONA_GOLD_RINGS` | render | emitter: gold-brown gouraud rings + yellow light streak |
-| fx_00e | 0x3 | `FX_BERSERK_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_00e | 0x3 | `FX_BERSERK_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_00e | 0x4 | `FX_BERSERK_CONE` | render | model: open cone (frustum), plain white texture |
 | fx_00e | 0xA | `FX_BERSERK_FIRE_RINGS` | render | emitter: dark red-orange-yellow gouraud rings |
 | fx_00e | 0xB | `FX_BERSERK_RED_FLASH` | render | emitter: white star flash, red star flash, violet circle |
@@ -128,14 +128,14 @@ still render black.
 | fx_017 | 0x2 | `FX_DEVILS_CANDLE_FLAME` | render | emitter: smoky yellow-grey flame quads |
 | fx_017 | 0x7 | `FX_DEVILS_CANDLE_FLAME_2` | render | emitter: smoky yellow-grey flame quads |
 | fx_019 | 0x1 | `FX_MINI_LIGHT_BEAM` | render (fxdata d6121033) | emitter: fan drawn as a blue-white horizontal light beam + one faint ring |
-| fx_01a | 0x1 | `FX_SLEEP_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_01a | 0x1 | `FX_SLEEP_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_01a | 0x2 | `FX_SLEEP_LIGHT_SPIRAL` | render | emitter: helix of white screen trails, white-cyan rings, green glint |
 | fx_01a | 0x3 | `FX_SLEEP_SPECK_RING` | kind/usage (look pending) | emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks |
 | fx_01a | 0x4 | `FX_SLEEP_LIGHT_SPIRAL_2` | render | emitter: helix of two white screen trails with green / violet glows |
 | fx_01b | 0x1 | `FX_FLOAT_SPECK_RING` | kind/usage (look pending) | emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks |
 | fx_01b | 0x2 | `FX_FLOAT_LIFT_RINGS` | render | emitter: speckled ring, white-lilac gouraud rings, two fans |
 | fx_01b | 0x3 | `FX_FLOAT_GLOW` | kind/usage (look pending) | emitter: one particle (magenta: texture still outside the file and the common pages) |
-| fx_01b | 0x4 | `FX_FLOAT_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_01b | 0x4 | `FX_FLOAT_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_01c | 0x4 | `FX_AQUA_BREATH_WATER_DROPS` | render | emitter: water droplet clusters |
 | fx_01c | 0x5 | `FX_AQUA_BREATH_WAVE_RING` | render | emitter: ring with a blue wave texture + blue glow |
 | fx_01c | 0x6 | `FX_AQUA_BREATH_BUBBLES` | render | emitter: water-droplet trail + bubble quads |
@@ -154,7 +154,7 @@ still render black.
 | fx_01f | 0x4 | `FX_01F_RED_GLOW` | render | emitter: dark red glow with a white spot |
 | fx_01f | 0xB | `FX_01F_PINK_RINGS` | render | emitter: white-lilac-maroon and white-cream-pink gouraud rings |
 | fx_01f | 0xC | `FX_01F_RED_GLOW_2` | render | emitter: dark red glow with a white spot (orbiting) |
-| fx_01f | 0xD | `FX_01F_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_01f | 0xD | `FX_01F_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_020 | 0x2 | `FX_REGEN_GLINTS` | render | emitter: fan + blue glint, teal-white ring, blue / green star glints |
 | fx_020 | 0x8 | `FX_REGEN_LIGHT_TRAIL` | render | emitter: white-blue light trail + faint sparkle sprites |
 | fx_021 | 0x1 | `FX_OPEN_BOOK_DUST_PUFF` | render | emitter: white-grey dust puffs |
@@ -212,7 +212,7 @@ still render black.
 | fx_029 | 0x7 | `FX_WHITE_WIND_GLOW` | render | emitter: blue specks + blue-white star glow |
 | fx_02a | 0x1 | `FX_SILENCE_GLYPH` | render | emitter: kana glyph sprite + dotted mouth shape (one element's texture not in the file) |
 | fx_02a | 0x3 | `FX_SILENCE_GLYPH_GLOW` | render | emitter: blurred kana glyph + specks |
-| fx_02a | 0x4 | `FX_SILENCE_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_02a | 0x4 | `FX_SILENCE_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_02a | 0xA | `FX_SILENCE_RUNE_SEAL` | render | emitter: grey stone ring carved with runes |
 | fx_02b | 0x1 | `FX_AERIAL_SLASH_CRESCENT` | render (fxdata d6121033) | emitter: fan drawn as a pale green-white crescent slash + faint green spark quads (same call site as fx_01d entry 0x2) |
 | fx_02b | 0x2 | `FX_AERIAL_SLASH_CRESCENT_2` | render (fxdata d6121033) | emitter: fan drawn as a pale green-white crescent slash + faint green spark quads (same call site as fx_01d entry 0x1) |
@@ -271,7 +271,7 @@ still render black.
 | fx_038 | 0x9 | `FX_COMET_IMPACT_SMOKE` | render | emitter: white-pink smoke burst at the impact |
 | fx_038 | 0xA | `FX_COMET_GLOW_DISH` | render | gouraud model: wide shallow dish |
 | fx_038 | 0xB | `FX_COMET_SHOCK_RING` | render | model: flat ring, white texture |
-| fx_038 | 0xC | `FX_COMET_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_038 | 0xC | `FX_COMET_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_038 | 0xD | `FX_COMET_BLUE_RING` | render | rings: dark blue / blue gouraud rings at the impact |
 | fx_039 | 0x7 | `FX_OSMOSE_SPARKLES` | render (fxdata d6121033) | emitter: blue glint + small blue / white sparkle dots |
 | fx_039 | 0x8 | `FX_OSMOSE_DRAIN_STREAKS` | render (fxdata d6121033) | emitter: two fans drawn as white-violet comet streaks |
@@ -341,17 +341,17 @@ still render black.
 | fx_04c | 0x2 | `FX_FLOAT_GLOW` | kind/usage (look pending) | emitter: one particle (magenta: texture still outside the file and the common pages) |
 | fx_04c | 0x3 | `FX_FLOAT_STAR_FLASH` | render | emitter: speckled ring, blue star flashes, two fans (per target) |
 | fx_04c | 0x4 | `FX_FLOAT_SPECK_RING` | render | emitter: ring textured with brown specks (per target) |
-| fx_04c | 0x5 | `FX_FLOAT_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_04c | 0x5 | `FX_FLOAT_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_04e | 0x6 | `FX_SLEEP_LIGHT_SPIRAL` | render | emitter: helix of white screen trails, white-cyan rings, green glint (same call site and look as fx_01a entry 0x2) |
 | fx_04e | 0x7 | `FX_SLEEP_SPECK_RING` | kind/usage (look pending) | emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks (same call site and look as fx_01a entry 0x3) |
 | fx_04e | 0x8 | `FX_SLEEP_LIGHT_SPIRAL_2` | render | emitter: helix of two white screen trails with green / violet glows (same call site and look as fx_01a entry 0x4) |
-| fx_04e | 0x9 | `FX_SLEEP_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (same call site and look as fx_01a entry 0x1) |
+| fx_04e | 0x9 | `FX_SLEEP_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (same call site and look as fx_01a entry 0x1) |
 | fx_04f | 0x4 | `FX_REFLECT_HALO_RINGS` | render | emitter: white-pink gouraud rings, golden glow strip, leaf-shaped halo, white-green / white-pink rings |
 | fx_04f | 0x6 | `FX_REFLECT_STAR` | render | model: four-pointed star, sketch texture |
-| fx_04f | 0xA | `FX_REFLECT_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_04f | 0xA | `FX_REFLECT_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_04f | 0xB | `FX_REFLECT_GLOW_BAND` | render | gouraud model: wide ring band |
 | fx_04f | 0xC | `FX_REFLECT_PANELS` | render | model: three curved panels, black / white texture |
-| fx_04f | 0xD | `FX_REFLECT_BACKDROP_2` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_04f | 0xD | `FX_REFLECT_BACKDROP_2` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_051 | 0x7 | `FX_MIGHTY_GUARD_CRYSTAL_SPECKS` | render | emitter: two fans + white / cyan / grey square specks |
 | fx_051 | 0x8 | `FX_MIGHTY_GUARD_GOLD_HALO` | render | emitter: golden ring glow with golden dots, blue orb, yellow and pale blue rings |
 | fx_052 | 0x7 | `FX_LIMIT_GLOVE_SPHERE` | kind/usage (look pending) | 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80 |
@@ -359,7 +359,7 @@ still render black.
 | fx_052 | 0x9 | `FX_LIMIT_GLOVE_GOLD_GLOW` | render | emitter: golden glow, red streak trail, pink dots |
 | fx_052 | 0xA | `FX_LIMIT_GLOVE_GOLD_GLOW_2` | render | emitter: golden glow, red streak trail, pink dots |
 | fx_052 | 0xB | `FX_LIMIT_GLOVE_GRID_SPHERE` | render (fxdata d6121033) | 'so' model: sphere textured with glowing blue grid lines, registered in op80 |
-| fx_052 | 0xC | `FX_LIMIT_GLOVE_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_052 | 0xC | `FX_LIMIT_GLOVE_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_052 | 0xD | `FX_LIMIT_GLOVE_LIGHT_BEAM` | render | emitter: blue glow + pink-white light beam |
 | fx_052 | 0xE | `FX_LIMIT_GLOVE_GLOW_DOME` | render | gouraud model: shallow dome |
 | fx_052 | 0xF | `FX_LIMIT_GLOVE_BLUE_RINGS` | render | emitter: white-cyan / white-blue / grey gouraud rings |
@@ -378,7 +378,7 @@ still render black.
 | fx_056 | 0x8 | `FX_CHAKRA_STAR_GLINTS` | render | emitter: blue star glints + light streak, small glints (byte-identical to fx_055 entry 0x7) |
 | fx_057 | 0x1 | `FX_HOLY_VIOLET_RINGS` | render | rings: white-grey-violet-blue gouraud rings |
 | fx_057 | 0x2 | `FX_HOLY_LENS_FLARE` | render | emitter: white lens-flare glints |
-| fx_057 | 0x3 | `FX_HOLY_BACKDROP_3` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_057 | 0x3 | `FX_HOLY_BACKDROP_3` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_057 | 0x4 | `FX_HOLY_BLUE_SPARKLES` | render | emitter: callback element + blue sparkle sprites |
 | fx_057 | 0x5 | `FX_HOLY_VIOLET_RAYS` | render (fxdata d6121033) | emitter: two fans drawn as narrow violet-white dithered rays |
 | fx_057 | 0x6 | `FX_HOLY_TRAIL` | kind/usage (look pending) | trail drawn by the emitter callback; the strip reads unrelated multicoloured VRAM, filled at run time |
@@ -390,12 +390,12 @@ still render black.
 | fx_057 | 0x12 | `FX_HOLY_LIGHT_LINES` | render | emitter: thin blue light lines |
 | fx_057 | 0x16 | `FX_HOLY_DARK_BLUE_RINGS` | render | emitter: dark blue gouraud rings |
 | fx_057 | 0x17 | `FX_HOLY_SPRITE_LINE` | kind/usage (look pending) | sprite line; its frames read a page of unrelated sprites, filled at run time |
-| fx_057 | 0x18 | `FX_HOLY_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_057 | 0x18 | `FX_HOLY_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_057 | 0x19 | `FX_HOLY_LIGHT_SPHERE` | render | model: sphere, plain white texture |
 | fx_057 | 0x1A | `FX_HOLY_BLUE_SPARKLES_2` | render | emitter: blue sparkle clusters |
 | fx_057 | 0x1D | `FX_HOLY_SPARK` | kind/usage (look pending) | particles: one sprite; reads grey stripes that look like unrelated VRAM |
 | fx_057 | 0x1E | `FX_HOLY_TEXTURED_RING` | kind/usage (look pending) | rings: textured ring, drawn swelling three times; the UV box reads unrelated VRAM |
-| fx_057 | 0x1F | `FX_HOLY_BACKDROP_2` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_057 | 0x1F | `FX_HOLY_BACKDROP_2` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_057 | 0x21 | `FX_HOLY_VIOLET_RAYS_2` | render (fxdata d6121033) | emitter: two fans drawn as narrow violet-white dithered rays |
 | fx_057 | 0x22 | `FX_HOLY_SKY_RINGS` | render | rings: white-cyan-blue gouraud rings |
 | fx_057 | 0x23 | `FX_HOLY_LILAC_RINGS` | render | rings: white-lilac gouraud rings |
@@ -413,7 +413,7 @@ still render black.
 | fx_059 | 0x13 | `FX_HASTE_VIOLET_RINGS` | render | emitter: white-cyan-violet gouraud rings |
 | fx_059 | 0x14 | `FX_HASTE_ORANGE_RINGS` | render | emitter: white-grey-violet-orange gouraud rings |
 | fx_059 | 0x18 | `FX_HASTE_CLOCK_FACE` | render | emitter: clock face with Roman numerals + blue glow |
-| fx_05a | 0x7 | `FX_MIGHT_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_05a | 0x7 | `FX_MIGHT_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_05a | 0x8 | `FX_MIGHT_LIGHT_TRAIL` | render | emitter: screen trail with a pale crystal strip + sparks (texture not in the file) |
 | fx_05a | 0x9 | `FX_MIGHT_SWIRL` | render | emitter: blue-white swirl particles + fan |
 | fx_05a | 0xA | `FX_MIGHT_STAR` | render | model: four-pointed star, plain white texture |
@@ -433,7 +433,7 @@ still render black.
 | fx_05e | 0x5 | `FX_DEATH_RED_RINGS` | render | emitter: pink spark sprites + white-red gouraud rings |
 | fx_05e | 0x6 | `FX_DEATH_REAPER` | render (fxdata d6121033) | summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe |
 | fx_05e | 0x9 | `FX_DEATH_SOUL_ORBS` | render | emitter: blue glowing orb quads |
-| fx_05e | 0xB | `FX_DEATH_BACKDROP` | kind/usage (look pending) | backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) |
+| fx_05e | 0xB | `FX_DEATH_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
 | fx_05e | 0xC | `FX_DEATH_BLUE_TRAIL` | render | emitter: spiralling trail with a blue flame strip |
 | fx_05e | 0x10 | `FX_DEATH_SMOKE` | render | emitter: grey smoke puffs |
 | fx_05e | 0x1B | `FX_DEATH_BLUE_TRAIL_2` | render | emitter: spiralling trail with a blue flame strip |

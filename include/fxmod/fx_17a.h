@@ -23,7 +23,7 @@
 #define FX_MADEEN_WHITE_GLOW    0xE /* particles: white-blue glow */
 #define FX_MADEEN_BLUE_SPARKLES 0xF /* emitter: blue square sparkles and gold sprites */
 #define FX_MADEEN_TRAIL         0x11 /* trail: strip texture not in the file (magenta in the render) (look pending) */
-#define FX_MADEEN_BACKDROP      0x12 /* table: background layers for btlfx_drawBackdrop */
+#define FX_MADEEN_BACKDROP      0x12 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_MADEEN_BLUE_STREAKS  0x13 /* emitter: orbiting blue light streaks */
 
 typedef struct {

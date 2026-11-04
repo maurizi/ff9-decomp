@@ -1128,7 +1128,7 @@ s32 padW, padH;
     btlfx_addPrim(PRIM_TAG(POLY_FT4), 0xFFE, poly);
 }
 
-void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alpha) {
+void btlfx_drawLayerSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alpha) {
     struct {
         u16 rg;
         u8 b;
@@ -1195,7 +1195,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     btlfx_addPrim(PRIM_TAG(DR_TPAGE), 0xFFE, mode);
 }
 
-void btlfx_drawBackdrop(BtlBgLayers *bg, s32 frame) {
+void btlfx_drawLayerTexture(BtlBgLayers *bg, s32 frame) {
     RECT rect;
     s16 ofs[2];
     CVECTOR col;
@@ -1322,7 +1322,7 @@ void btlfx_drawBackdrop(BtlBgLayers *bg, s32 frame) {
                     fade = 0x1000;
                 }
                 if (fd->dataOfs != 0) {
-                    btlfx_drawBackdropSprite((u8 *)bg + fd->dataOfs + 4, fd->x, fd->y, elapsed, layer->abr, fade);
+                    btlfx_drawLayerSprite((u8 *)bg + fd->dataOfs + 4, fd->x, fd->y, elapsed, layer->abr, fade);
                 }
             }
             break;

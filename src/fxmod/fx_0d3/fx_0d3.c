@@ -742,7 +742,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawSpriteLine(data, &work->pos8, lineFrame, ex->math_sin(lineT >> 2));
             env->otZ = 0;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_BACKDROP), frame_119);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_BACKDROP), frame_119);
         work->camAt40.vy = work->summonPos10.vy;
         work->camAt40.vx = work->summonPos10.vx;
         work->camAt40.vz = work->summonPos10.vz;

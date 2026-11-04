@@ -94,7 +94,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_188 | 0x3 | `FX_LV3_DEF_LESS_PARTICLE` | kind/usage (look pending) | particles: one frame, renders black (drawn per pool item) |
 | fx_188 | 0x4 | `FX_LV3_DEF_LESS_VIOLET_ORBS` | render | emitter: violet glowing orb sprites, 12 frames (per pool item) |
 | fx_188 | 0xE | `FX_LV3_DEF_LESS_VIOLET_ORB` | render | particles: violet glowing orb (per pool item) |
-| fx_188 | 0xF | `FX_LV3_DEF_LESS_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_188 | 0xF | `FX_LV3_DEF_LESS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_188 | 0x10 | `FX_LV3_DEF_LESS_SMOKE_RINGS` | render | emitter: rings textured with orange smoke |
 | fx_188 | 0x11 | `FX_LV3_DEF_LESS_SMOKE_RINGS_2` | render | emitter: rings textured with orange smoke |
 | fx_188 | 0x12 | `FX_LV3_DEF_LESS_BLUE_RINGS` | render | emitter: white-blue and white-green gouraud rings |
@@ -140,7 +140,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_194 | 0x3 | `FX_SHOCKWAVE_GREY_STREAK_RINGS` | render | emitter: rings textured with grey vertical streaks |
 | fx_194 | 0x6 | `FX_SHOCKWAVE_WHITE_GLOW` | render | emitter: white glow particles fading in, 21 frames |
 | fx_195 | 0x2 | `FX_BAHAMUT_PINK_FLAT_RING` | render | rings: white / salmon gouraud rings, 14 frames |
-| fx_195 | 0x7 | `FX_BAHAMUT_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_195 | 0x7 | `FX_BAHAMUT_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_195 | 0x8 | `FX_BAHAMUT_VIOLET_RINGS` | render | rings: white-cyan-violet-indigo gouraud rings, 24 frames |
 | fx_195 | 0x9 | `FX_BAHAMUT_HALO_RINGS` | render | rings: white-crimson-blue gouraud rings, 16 frames |
 | fx_195 | 0xA | `FX_BAHAMUT_BLUE_RINGS` | render | rings: navy-to-blue gouraud rings, 12 frames |
@@ -176,7 +176,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_198 | 0x6 | `FX_TSUNAMI_WATER_SPLASH` | render | anim quads: blue-white water bubbles and foam, 30 frames |
 | fx_198 | 0x15 | `FX_TSUNAMI_BOWL` | render | model: hemisphere bowl, plain white texture |
 | fx_198 | 0x16 | `FX_TSUNAMI_BOWL_KEYS` | usage | table: per-frame rotation keys of the bowl model |
-| fx_198 | 0x17 | `FX_TSUNAMI_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_198 | 0x17 | `FX_TSUNAMI_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_198 | 0x18 | `FX_TSUNAMI_SPLASH_ROW_KEYS` | usage | table: per-frame position keys of the row of water splashes |
 | fx_199 | 0x1 | `FX_DARKSIDE_SPARKLE_BURST` | render | emitter: yellow / blue ring, blue sparkle sprites, fan (byte-identical to fx_0bc entry 0x1) |
 | fx_19a | 0x4 | `FX_MINUS_STRIKE_SLASH_ARC` | render | emitter: blue slash arc, blue sparkle sprites, pale yellow ring, fan (byte-identical to fx_0bd entry 0x4) |
@@ -284,15 +284,15 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1ab | 0x2 | `FX_WATERGA_WATER_SPHERE` | render | 'so' model: sphere, blue water-caustic texture |
 | fx_1ab | 0x3 | `FX_WATERGA_WATER_SPLASH` | render | emitter: cone of dark-blue water splash sprites, 24 frames |
 | fx_1ab | 0x4 | `FX_WATERGA_RINGS` | kind/usage (look pending) | emitter: cone of textured rings (texture not resolved) |
-| fx_1ab | 0x5 | `FX_WATERGA_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
-| fx_1ab | 0x6 | `FX_WATERGA_BACKDROP_2` | usage | table: backdrop layers (btlfx_drawBackdrop) |
-| fx_1ab | 0x7 | `FX_WATERGA_BACKDROP_3` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_1ab | 0x5 | `FX_WATERGA_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_1ab | 0x6 | `FX_WATERGA_BACKDROP_2` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_1ab | 0x7 | `FX_WATERGA_BACKDROP_3` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1ab | 0x8 | `FX_WATERGA_WATER_SPLASH_2` | render | emitter: sphere of dark-blue water splash sprites, 24 frames |
 | fx_1ac | 0x1 | `FX_VIRUS_CRUNCH_MOTHS` | render | emitter: orbiting gold / green / orange moth-wing quads, 24 frames |
 | fx_1ac | 0x2 | `FX_VIRUS_CRUNCH_MOTHS_2` | render | emitter: gold / orange / green moth-wing quads, 24 frames |
 | fx_1ac | 0x3 | `FX_VIRUS_CRUNCH_CYAN_CLOUD` | render | emitter: white-grey gouraud rings + teal-cyan cloud quads |
 | fx_1ac | 0x5 | `FX_VIRUS_CRUNCH_GREY_TRAIL` | render | emitter: flat trail, grey faceted strip |
-| fx_1ad | 0x1 | `FX_6_LEGS_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_1ad | 0x1 | `FX_6_LEGS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1ad | 0x2 | `FX_6_LEGS_POD` | kind/usage (look pending) | 'so' model: rounded pod with an opening (texture page 0x117 renders plain white) |
 | fx_1ad | 0x4 | `FX_6_LEGS_BUBBLE_TRAIL` | render | emitter: orbiting 3D trail of glass bubbles (sprites render black) |
 | fx_1ad | 0x5 | `FX_6_LEGS_GREEN_TRAIL` | render | emitter: screen trail, green striped strip |
@@ -320,7 +320,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b1 | 0x5 | `FX_GOLEM_DEATH_DUST_CLOUD_2` | render | emitter: orbiting tan dust cloud quads, 17 frames (sprites render black) |
 | fx_1b2 | 0x1 | `FX_TIDAL_WAVE_PATH` | usage | table: vector path (fxm_vecPathInit) |
 | fx_1b2 | 0x2 | `FX_TIDAL_WAVE_CURL` | kind/usage (look pending) | model: curved sheet like a breaking wave (texture page 0x117 renders plain white) |
-| fx_1b2 | 0x3 | `FX_TIDAL_WAVE_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_1b2 | 0x3 | `FX_TIDAL_WAVE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1b2 | 0x7 | `FX_TIDAL_WAVE_WATER_ORBS` | render | emitter: orbiting blue water-caustic orbs + grey-blue shard sprites |
 | fx_1b2 | 0x8 | `FX_TIDAL_WAVE_RED_TRAIL` | render | emitter: helix flat trail, red caustic strip |
 | fx_1b2 | 0x9 | `FX_TIDAL_WAVE_WATER_TRAIL` | render | emitter: spiralling screen trail, grey-blue water streak strip |
@@ -334,7 +334,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b3 | 0x7 | `FX_DEATH1_YELLOW_STREAKS` | render | emitter: pale-yellow light-streak fans + white-violet and cream-crimson gouraud rings |
 | fx_1b3 | 0x8 | `FX_DEATH1_EXPLOSIONS` | render | emitter: fire explosion quads, three elements, + speck sprites |
 | fx_1b3 | 0x9 | `FX_DEATH1_ROCKS` | render | emitter: grey rock particles + magenta patterned particles |
-| fx_1b3 | 0xA | `FX_DEATH1_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_1b3 | 0xA | `FX_DEATH1_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1b3 | 0xB | `FX_DEATH1_TAN_STREAKS` | render | emitter: tan light-streak fans + white-violet gouraud rings with a silver nebula texture |
 | fx_1b3 | 0xC | `FX_DEATH1_GREEN_SMOKE` | render | emitter: teal grid quads + pale-green smoke puffs + speck sprites |
 | fx_1b3 | 0xD | `FX_DEATH1_ROCK_DEBRIS` | render | emitter: grey rock quads, three elements |
@@ -358,7 +358,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b4 | 0x11 | `FX_FLARE_STAR_RED_RINGS` | render | emitter: golden sparkle ring + lilac and crimson gouraud rings |
 | fx_1b4 | 0x12 | `FX_FLARE_STAR_SMOKE_TRAIL` | render | emitter: spiralling 3D trail, grey smoke strip |
 | fx_1b4 | 0x13 | `FX_FLARE_STAR_RED_ORB` | render | emitter: red glowing orb particles + violet-pink rings + red streak trail |
-| fx_1b4 | 0x1C | `FX_FLARE_STAR_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_1b4 | 0x1C | `FX_FLARE_STAR_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1b4 | 0x29 | `FX_FLARE_STAR_PINK_RINGS_2` | render | emitter: white-pink-magenta and yellow-olive gouraud rings |
 | fx_1b4 | 0x2A | `FX_FLARE_STAR_ORANGE_GLOW` | render | emitter: fading orange glow + red flare streaks |
 | fx_1b4 | 0x2B | `FX_FLARE_STAR_RED_SHARDS` | render | emitter: red shard sprites, 31 frames |
@@ -421,5 +421,5 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1be | 0xC | `FX_ATOMOS_SPHERE` | kind/usage (look pending) | 'so' model: segmented sphere (texture page 0x117 renders plain white) |
 | fx_1be | 0xD | `FX_ATOMOS_VORTEX_DOME` | render | 'so' model: dome, violet and cyan cloud texture |
 | fx_1be | 0xE | `FX_ATOMOS_RING_FUNNEL` | render | 'so' model: gouraud ring funnel, white glow at the hole |
-| fx_1be | 0xF | `FX_ATOMOS_BACKDROP` | usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_1be | 0xF | `FX_ATOMOS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1be | 0x10 | `FX_ATOMOS_GREY_RINGS` | render | emitter: white-to-grey gouraud rings, 8 frames |

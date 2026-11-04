@@ -23,7 +23,7 @@
 #define FX_ATOMOS_RING_FUNNEL     0x11 /* model: gouraud ring funnel (flat torus) */
 #define FX_ATOMOS_CLOUD_FUNNEL    0x12 /* model: ring funnel with a grey cloud texture */
 #define FX_ATOMOS_ORANGE_RING     0x13 /* model: ring with an orange cloud texture */
-#define FX_ATOMOS_BACKDROP        0x1F /* table: background layers for btlfx_drawBackdrop */
+#define FX_ATOMOS_BACKDROP        0x1F /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ATOMOS_VIOLET_RING     0x20 /* emitter: white-violet and white-blue gouraud rings */
 #define FX_ATOMOS_PURPLE_RINGS    0x21 /* emitter: white / magenta / purple and pale yellow / grey gouraud rings */
 #define FX_ATOMOS_SPRITES_3       0x22 /* emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) (look pending) */

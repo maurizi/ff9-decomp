@@ -58,7 +58,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             otz = 0x40;
             tick = work->frame4;
             ex->btlfx_drawScrollMove(tick * 4, 0x200, 0x100, 0x20, otz, ((tick & 3) << 5) + 0x240, ((tick * 16) & 0xC0) + 0x100);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_6_LEGS_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_6_LEGS_BACKDROP), work->frame4);
             if (frame == 0) {
                 work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_6_LEGS_GREEN_TRAIL), (s32)&work->pos10);
                 if (work->emit20 != NULL) {

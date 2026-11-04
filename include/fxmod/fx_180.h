@@ -30,7 +30,7 @@
 #define FX_ULTIMA_PINK_ORB_BURST 0x16 /* emitter: pink orb and blade particles, sparks, white-yellow-red gouraud rings */
 #define FX_ULTIMA_SPIKE_CROWN    0x17 /* 'so' model: ring crown of red-pink spikes, drawn with FX_ULTIMA_GLOW_DOME */
 #define FX_ULTIMA_RED_FLARE_2    0x18 /* emitter: red lens streak and white-red gouraud rings */
-#define FX_ULTIMA_BACKDROP       0x19 /* table: background layers for btlfx_drawBackdrop */
+#define FX_ULTIMA_BACKDROP       0x19 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ULTIMA_PATH_SET_2     0x1A /* table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 */
 #define FX_ULTIMA_ROCK_SWIRL     0x1D /* emitter: spiralling 3D trail of rock pieces, pink glows */
 #define FX_ULTIMA_ROCK_SWIRL_2   0x1E /* emitter: spiralling 3D trail of rock pieces, pink glows */

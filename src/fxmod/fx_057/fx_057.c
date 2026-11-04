@@ -209,7 +209,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelAbr(work->modelC, 0xFF);
             ex->Hi_ModifyEffModelRGB(work->modelC, (fx_057_fade >> 5) - 0x80, (fx_057_fade >> 5) - 0x80,
                                      (fx_057_fade >> 5) - 0x80);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP), work->frame4);
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_VIOLET_RINGS), &work->pos10, NULL, 0x1600, 0, 1, fx_057_fade);
             env->otZ = 0;
@@ -235,9 +235,9 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang.vz = -work->frame4 * 0x10;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_TEXTURED_RING), &work->pos10, &ang, (swell * 16 + swell * 4) >> 1, 0, 1,
                               fx_057_fade);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP_2), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP_2), work->frame4);
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP_3), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP_3), work->frame4);
         work->frame4++;
     }
     return 0;

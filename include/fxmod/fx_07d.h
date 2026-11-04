@@ -17,13 +17,13 @@
 #define FX_FLARE_WHITE_RING       0x9 /* rings: white-cream gouraud rings */
 #define FX_FLARE_RED_SPARKS       0xB /* emitter: red spark sprites + white-red rings */
 #define FX_FLARE_RED_HALO 0xF /* model: flat red-orange gouraud halo ring (byte-identical to fx_0df entry 0xD) */
-#define FX_FLARE_BACKDROP         0x11 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_BACKDROP         0x11 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element, nothing drawable in the data (look pending) */
 #define FX_FLARE_FIRE_RING        0x13 /* rings: white-cyan-orange-red gouraud rings */
 #define FX_FLARE_WHITE_FLASH      0x14 /* emitter: two fans drawn as solid white flash quads */
-#define FX_FLARE_BACKDROP_2       0x15 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_BACKDROP_2       0x15 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_FLARE_FIRE_DOME        0x16 /* model: dome with a fiery orange texture */
-#define FX_FLARE_BACKDROP_3       0x17 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_BACKDROP_3       0x17 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_FLARE_TEX_RING         0x18 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
 #define FX_FLARE_TEX_RING_2       0x19 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
 #define FX_FLARE_SPARK_GLOW       0x1A /* emitter: red spark sprites + fading orange glow */

@@ -384,7 +384,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.pad = 0;
                 alpha = ex->math_sin(t >> 2);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
                 env->otZ = work->otZ8 + 0x46;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot, 0x1400 - t, 0, 1, alpha);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING), &work->posC, &rot, t * 2 + 0x400, 0, 1, alpha);
@@ -428,7 +428,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot3.vz = 0;
                 rot3.pad = 0;
                 alpha = ex->math_sin(t >> 2);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
                 env->otZ = work->otZ8 + 0x46;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot3, ((frame << 11) + t) / 2 + 0x200, 0,
                                   1, alpha);
@@ -466,8 +466,8 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     s32 tint = 0xFF - (frame - 1) * 0xFF / 6;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
                 }
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP), work->frame4);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_2), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_2), work->frame4);
                 if (frame < 0x20 && !(frame & 1)) {
                     grow = frame << 7;
                     spawnRadius = (grow >> 3) + 0x200;
@@ -497,7 +497,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->otZ = work->otZ8 + 0x46;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BLAST_RINGS), &work->posC, &rot,
                                   ex->math_cos(t >> 2) / 2 + 0x400, 0, 1, alpha >> 1);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
                 rot.vx = 0x200;
                 rot.vy = 0x590;
                 rot.vz = 0x80;

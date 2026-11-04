@@ -604,7 +604,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos24.vy += 0x90;
             work->pos24.vz += 0x46;
             ex->Hi_DrawEffModel(&work->rot3C, (VECTOR *)&work->pos24, (s32)&work->scale30, work->model64);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BACKDROP), work->frame4);
             work->scale44.vx = work->scale44.vy = 0x3800;
             work->scale44.vz = 0x2000;
             work->pos24.vy -= 0x5DC;
@@ -710,7 +710,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->model64, ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
                                      ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
                                      ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BACKDROP), work->frame4);
             work->scale44.vx = work->scale44.vy = 0x3800;
             work->scale44.vz = 0x2000;
             work->pos24.vy -= 0x5DC;

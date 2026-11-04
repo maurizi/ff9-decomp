@@ -666,7 +666,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         break;
     }
-    ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOM_BACKDROP), work->frame4);
+    ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOM_BACKDROP), work->frame4);
     work->frame4++;
     }
     return 0;

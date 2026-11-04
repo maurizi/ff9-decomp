@@ -2381,8 +2381,8 @@ ovl_0b btlfx_drawSprites 0x3dc 0x800d1ffc
 ovl_0b btlfx_drawRings 0x560 0x800d23d8
 ovl_0b btlfx_drawFan 0x340 0x800d2938
 ovl_0b btlfx_addSpriteQuad 0x144 0x800d2c78
-ovl_0b btlfx_drawBackdropSprite 0x274 0x800d2dbc
-ovl_0b btlfx_drawBackdrop 0xa3c 0x800d3030
+ovl_0b btlfx_drawLayerSprite 0x274 0x800d2dbc
+ovl_0b btlfx_drawLayerTexture 0xa3c 0x800d3030
 ovl_0b btlfx_ease 0x100 0x800d3a6c
 ovl_0b btlfx_drawSpriteLine 0x368 0x800d3b6c
 ovl_0b btlfx_emitAnimQuads 0x1f8 0x800d3ed4

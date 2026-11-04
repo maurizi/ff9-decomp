@@ -7,7 +7,7 @@
 
 /* fx_182 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_COUNTDOWN_BACKDROP    0x1 /* table: background layers for btlfx_drawBackdrop (byte-identical to fx_181 entry 0x1) */
+#define FX_COUNTDOWN_BACKDROP    0x1 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_181 entry 0x1) */
 #define FX_COUNTDOWN_GOLD_SHARDS 0x3 /* emitter: golden shard flashes, a dark teal sprite and white-blue gouraud rings (renders as fx_181 entry 0x2) */
 #define FX_COUNTDOWN_LENS_FLASH  0x6 /* emitter: pink lens streak, golden shard flashes, rings (ring texture not resolved; renders as fx_181 entry 0x3) */
 

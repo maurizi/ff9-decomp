@@ -151,15 +151,15 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x6 | `FX_SWDMAG_FLARE_SPARK_GLOW` | render | emitter: red ember sprites + orange glow |
 | 0x8 | `FX_SWDMAG_FLARE_RED_VIOLET_RINGS` | render | emitter: white-crimson / white-violet gouraud rings |
 | 0x9 | `FX_SWDMAG_FLARE_GOLDEN_GLOWS` | render (byte-identical twin, consistency pass) | emitter: two fans drawn as small golden glow spots (byte-identical to fx_07d entry 0x1B, same render) |
-| 0xB | `FX_SWDMAG_FLARE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0xB | `FX_SWDMAG_FLARE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0xC | `FX_SWDMAG_FLARE_CLOUD_SPHERE` | render (fxdata d6121033) | model: sphere with a grey smoke texture (page 0x13C) |
 | 0xD | `FX_SWDMAG_FLARE_RED_HALO` | render (fxdata d6121033) | model: flat red-orange gouraud halo ring |
-| 0xE | `FX_SWDMAG_FLARE_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop |
+| 0xE | `FX_SWDMAG_FLARE_BACKDROP_2` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x10 | `FX_SWDMAG_FLARE_ORANGE_GLOW` | render | particles: orange glow with a white core |
 | 0x11 | `FX_SWDMAG_FLARE_EMBERS_2` | render | emitter: red ember sprites |
 | 0x12 | `FX_SWDMAG_FLARE_ARCH` | render (fxdata d6121033) | model: grey arch, 15-bit texture page 0x139 (white in the render) |
 | 0x13 | `FX_SWDMAG_FLARE_WHITE_RINGS` | render | rings: white-cream gouraud rings |
-| 0x18 | `FX_SWDMAG_FLARE_BACKDROP_3` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x18 | `FX_SWDMAG_FLARE_BACKDROP_3` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
 | 0x1A | `FX_SWDMAG_FLARE_TEX_RING_2` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
 | 0x1B | `FX_SWDMAG_FLARE_BLUE_LIGHTNING` | render | trail: blue lightning strip (fxm_drawOffsetTrail) |
@@ -182,7 +182,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x19 | `FX_SWDMAG_DOOMSDAY_LIGHT_CONE` | render (fxdata d6121033) | model: open cylinder with a grey-white smoke texture |
 | 0x1A | `FX_SWDMAG_DOOMSDAY_LILAC_RINGS` | render | rings: white-lilac gouraud rings at the centre |
 | 0x1B | `FX_SWDMAG_DOOMSDAY_BLUE_RINGS` | render | rings: white-cyan-blue gouraud rings at the centre |
-| 0x1C | `FX_SWDMAG_DOOMSDAY_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x1C | `FX_SWDMAG_DOOMSDAY_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x1D | `FX_SWDMAG_DOOMSDAY_PURPLE_STREAK` | render | trail: purple lightning strip (fxm_drawOffsetTrail) |
 | 0x20 | `FX_SWDMAG_DOOMSDAY_PEBBLES` | render | emitter: spiral of small grey pebble sprites |
 | 0x21 | `FX_SWDMAG_DOOMSDAY_ROCK_DEBRIS` | render (fxdata d6121033) | emitter: four particle elements, tumbling grey-blue rock debris |
@@ -215,7 +215,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 |---|---|---|---|
 | 0x1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | kind/usage (look pending) | emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file) |
 | 0x2 | `FX_REBIRTH_FLAME_RED_RINGS_2` | render, byte-identical | emitter: white-grey-violet-red gouraud rings (byte-identical to fx_0e1_0 entry 0x6) |
-| 0x3 | `FX_REBIRTH_FLAME_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x3 | `FX_REBIRTH_FLAME_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x4 | `FX_REBIRTH_FLAME_RED_SPARKS` | render | emitter: spiral of tiny red spark sprites |
 | 0x5 | `FX_REBIRTH_FLAME_LENS_FLARES` | render | sprite line: lens-flare rings and glows |
 | 0x6 | `FX_REBIRTH_FLAME_STAR_FLARES` | render | emitter: orange star flares + glowing dots |
@@ -304,7 +304,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x12 | `FX_BAHAMUT_SPIN_RING` | render | rings: white-blue gouraud rings, spinning |
 | 0x14 | `FX_BAHAMUT_BLUE_RINGS` | render | rings: dark-to-light blue gouraud rings |
 | 0x15 | `FX_BAHAMUT_WHITE_BOLT` | kind/usage (look pending) | trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8); the render is still almost empty |
-| 0x16 | `FX_BAHAMUT_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x16 | `FX_BAHAMUT_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x17 | `FX_BAHAMUT_ENERGY_ORBS` | render | emitter: cyan-green orbs + violet lightning strip |
 | 0x18 | `FX_BAHAMUT_SPARKLE_RING` | render | sprites: ring of blue-white sparkles, 16 frames |
 | 0x19 | `FX_BAHAMUT_FIRE_RING_BURST` | render | emitter: red-white fire flashes + crimson rings |
@@ -412,7 +412,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0xE | `FX_DOOM_CYAN_SPARKLES` | render | emitter: cyan sparkles in a tube |
 | 0xF | `FX_DOOM_REAPER_PICTURE_2` | render | model: second panel with the picture of Death |
 | 0x10 | `FX_DOOM_WHITE_SHELL` | kind/usage (look pending) | model: capsule on 15-bit texture page 0x119 (filled at run time; white in the render) |
-| 0x11 | `FX_DOOM_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x11 | `FX_DOOM_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x13 | `FX_DOOM_GOURAUD_SHELL` | kind/usage (look pending) | model: gouraud capsule; the render draws it black (colours set by the C at run time?) |
 
 ### fx_0ed: Roulette (FX_ROULETTE_)
@@ -420,7 +420,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | index | name | evidence | what it is |
 |---|---|---|---|
 | 0x2 | `FX_ROULETTE_MODEL_DATA` | usage | model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL |
-| 0x4 | `FX_ROULETTE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x4 | `FX_ROULETTE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x6 | `FX_ROULETTE_TARGET_RING` | render | sprite: white ring outline on the chosen target |
 | 0x7 | `FX_ROULETTE_REAPER` | render (fxdata d6121033) | 'so' summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe (byte-identical to fx_05e entry 0x6, same render) |
 | 0x8 | `FX_ROULETTE_REAPER_2` | render (fxdata d6121033) | 'so' model: the robed skull reaper with the scythe in another pose (same textures, 354 polys; byte-identical to fx_05e entry 0x1C, same render) |
@@ -472,7 +472,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | index | name | evidence | what it is |
 |---|---|---|---|
 | 0x2 | `FX_TIDAL_FLAME_DOME` | kind/usage (look pending) | model: hemisphere, texture page 0x11A not in the file (magenta in the render) |
-| 0x3 | `FX_TIDAL_FLAME_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x3 | `FX_TIDAL_FLAME_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x8 | `FX_TIDAL_FLAME_RUNE_BURST` | render | emitter: white rune glyphs with cyan-blue rings, embers, blue light streak |
 | 0x9 | `FX_TIDAL_FLAME_FLAME_CLOUD` | render | emitter: embers + orange flame cloud |
 

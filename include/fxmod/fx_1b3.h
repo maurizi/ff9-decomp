@@ -14,7 +14,7 @@
 #define FX_DEATH1_YELLOW_STREAKS     0x7 /* emitter: pale-yellow light-streak fans + white-violet and cream-crimson gouraud rings */
 #define FX_DEATH1_EXPLOSIONS         0x8 /* emitter: fire explosion quads, three elements, + speck sprites */
 #define FX_DEATH1_ROCKS              0x9 /* emitter: grey rock particles + magenta patterned particles */
-#define FX_DEATH1_BACKDROP           0xA /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_DEATH1_BACKDROP           0xA /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DEATH1_TAN_STREAKS        0xB /* emitter: tan light-streak fans + white-violet gouraud rings with a silver nebula texture */
 #define FX_DEATH1_GREEN_SMOKE        0xC /* emitter: teal grid quads + pale-green smoke puffs + speck sprites */
 #define FX_DEATH1_ROCK_DEBRIS        0xD /* emitter: grey rock quads, three elements */

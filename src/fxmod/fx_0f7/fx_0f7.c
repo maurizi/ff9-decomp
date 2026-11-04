@@ -48,10 +48,10 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit14 = NULL;
         }
         if (work->emitC != NULL) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_BACKDROP), frame);
         }
         if (work->emit14 != NULL) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_BACKDROP_2), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_BACKDROP_2), frame);
         }
         if (work->timer0 != 0) {
             work->timer0--;

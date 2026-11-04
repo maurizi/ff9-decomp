@@ -17,7 +17,7 @@
 #define FX_FLARE_STAR_RED_RINGS      0x11 /* emitter: golden sparkle ring + lilac and crimson gouraud rings */
 #define FX_FLARE_STAR_SMOKE_TRAIL    0x12 /* emitter: spiralling 3D trail, grey smoke strip */
 #define FX_FLARE_STAR_RED_ORB        0x13 /* emitter: red glowing orb particles + violet-pink rings + red streak trail */
-#define FX_FLARE_STAR_BACKDROP       0x1C /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_STAR_BACKDROP       0x1C /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_FLARE_STAR_PINK_RINGS_2   0x29 /* emitter: white-pink-magenta and yellow-olive gouraud rings */
 #define FX_FLARE_STAR_ORANGE_GLOW    0x2A /* emitter: fading orange glow + red flare streaks */
 #define FX_FLARE_STAR_RED_SHARDS     0x2B /* emitter: red shard sprites, 31 frames */

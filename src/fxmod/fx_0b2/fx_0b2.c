@@ -345,7 +345,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         }
         work->rot18.vz += -0x10 - work->frame4 * 2;
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TWISTER_BACKDROP), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TWISTER_BACKDROP), work->frame4);
         ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, 0x1C0, 0x170, 0x1C, 0x70, 0x1DC, 0x170);
         ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, 0x280, 0x100, 0x1C, 0x70, 0x29C, 0x100);
         i = 0;

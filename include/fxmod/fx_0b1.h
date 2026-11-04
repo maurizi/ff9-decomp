@@ -24,7 +24,7 @@
 #define FX_CARBUNCLE_COLOR_RINGS      0x18 /* emitter: pink / green / pink gouraud rings at each target body */
 #define FX_CARBUNCLE_CAMERA_KEYS_2    0x19 /* table: camera key path for fxm_camKeyAdd (target 2) */
 #define FX_CARBUNCLE_PINK_RING        0x21 /* emitter: pink gouraud ring and swirl-ring particles at each target body */
-#define FX_CARBUNCLE_BACKDROP         0x22 /* table: background layers for btlfx_drawBackdrop */
+#define FX_CARBUNCLE_BACKDROP         0x22 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_CARBUNCLE_STAR_CRYSTAL     0x23 /* model: four-point star crystal (texture 0x177), one per target */
 #define FX_CARBUNCLE_ORBIT_GLOW_3     0x24 /* emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time (look pending) */
 

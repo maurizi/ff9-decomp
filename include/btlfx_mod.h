@@ -93,8 +93,8 @@ typedef struct BtlfxExports {
     s32 (*btlfx_drawSprites)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x124 */
     s32 (*btlfx_drawRings)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x128 */
     s32 (*btlfx_drawFan)(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x12C */
-    s32 (*btlfx_drawBackdropSprite)(u8 *, s32, s32, s32, s32, s32); /* 0x130 */
-    s32 (*btlfx_drawBackdrop)(BtlBgLayers *, s32); /* 0x134 */
+    s32 (*btlfx_drawLayerSprite)(u8 *, s32, s32, s32, s32, s32); /* 0x130 */
+    s32 (*btlfx_drawLayerTexture)(BtlBgLayers *, s32); /* 0x134 */
     s32 (*btlfx_drawSpriteLine)(u8 *, SVECTOR *, s32, s32); /* 0x138 */
     s32 (*btlfx_initParticles)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
     s32 (*btlfx_getParticleTrail)(Pool30Entry *, Pool6CEntry *); /* 0x140 */

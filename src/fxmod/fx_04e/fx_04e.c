@@ -33,7 +33,7 @@ s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0x13) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SLEEP_BACKDROP), frame - 0x13);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SLEEP_BACKDROP), frame - 0x13);
         }
         return frame >= 0x50;
     }

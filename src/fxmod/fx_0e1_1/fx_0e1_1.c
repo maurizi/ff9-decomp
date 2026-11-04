@@ -46,7 +46,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_LENS_FLARES), &work->pos8, frame, alpha);
                 env->otZ = 0;
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BACKDROP), frame);
             if (frame >= 0x34) {
                 ex->btlfx_initParticleSystem();
                 camPos.vx = fx_0e1_1_camPos.vx;

@@ -8,7 +8,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_HOLY_VIOLET_RINGS       0x1 /* rings: white-grey-violet-blue gouraud rings */
 #define FX_HOLY_LENS_FLARE         0x2 /* emitter: white lens-flare glints */
-#define FX_HOLY_BACKDROP_3         0x3 /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_HOLY_BACKDROP_3         0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
 #define FX_HOLY_BLUE_SPARKLES      0x4 /* emitter: callback element + blue sparkle sprites */
 #define FX_HOLY_VIOLET_RAYS        0x5 /* emitter: two fans drawn as narrow violet-white dithered rays */
 #define FX_HOLY_TRAIL              0x6 /* trail drawn by the emitter callback; the strip reads unrelated multicoloured VRAM, filled at run time (look pending) */
@@ -20,12 +20,12 @@
 #define FX_HOLY_LIGHT_LINES        0x12 /* emitter: thin blue light lines */
 #define FX_HOLY_DARK_BLUE_RINGS    0x16 /* emitter: dark blue gouraud rings */
 #define FX_HOLY_SPRITE_LINE        0x17 /* sprite line; its frames read a page of unrelated sprites, filled at run time (look pending) */
-#define FX_HOLY_BACKDROP           0x18 /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_HOLY_BACKDROP           0x18 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
 #define FX_HOLY_LIGHT_SPHERE       0x19 /* model: sphere, plain white texture */
 #define FX_HOLY_BLUE_SPARKLES_2    0x1A /* emitter: blue sparkle clusters */
 #define FX_HOLY_SPARK              0x1D /* particles: one sprite; reads grey stripes that look like unrelated VRAM (look pending) */
 #define FX_HOLY_TEXTURED_RING      0x1E /* rings: textured ring, drawn swelling three times; the UV box reads unrelated VRAM (look pending) */
-#define FX_HOLY_BACKDROP_2         0x1F /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_HOLY_BACKDROP_2         0x1F /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
 #define FX_HOLY_VIOLET_RAYS_2      0x21 /* emitter: two fans drawn as narrow violet-white dithered rays */
 #define FX_HOLY_SKY_RINGS          0x22 /* rings: white-cyan-blue gouraud rings */
 #define FX_HOLY_LILAC_RINGS        0x23 /* rings: white-lilac gouraud rings */

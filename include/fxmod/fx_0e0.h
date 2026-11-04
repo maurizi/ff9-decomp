@@ -20,7 +20,7 @@
 #define FX_SWDMAG_DOOMSDAY_LIGHT_CONE 0x19 /* model: open cylinder with a grey-white smoke texture */
 #define FX_SWDMAG_DOOMSDAY_LILAC_RINGS      0x1A /* rings: white-lilac gouraud rings at the centre */
 #define FX_SWDMAG_DOOMSDAY_BLUE_RINGS       0x1B /* rings: white-cyan-blue gouraud rings at the centre */
-#define FX_SWDMAG_DOOMSDAY_BACKDROP         0x1C /* table: background layers for btlfx_drawBackdrop */
+#define FX_SWDMAG_DOOMSDAY_BACKDROP         0x1C /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SWDMAG_DOOMSDAY_PURPLE_STREAK 0x1D /* trail: purple lightning strip (fxm_drawOffsetTrail) */
 #define FX_SWDMAG_DOOMSDAY_PEBBLES          0x20 /* emitter: spiral of small grey pebble sprites */
 #define FX_SWDMAG_DOOMSDAY_ROCK_DEBRIS      0x21 /* emitter: four particle elements, tumbling grey-blue rock debris */

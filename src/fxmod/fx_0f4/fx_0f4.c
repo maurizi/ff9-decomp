@@ -110,9 +110,9 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale48.vz = work->scale48.vz > 0x666 ? 0x666 : work->scale48.vz;
         }
         if (frame >= 0x32) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_BACKDROP), frame);
         } else {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_BACKDROP_2), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_BACKDROP_2), frame);
         }
         if (frame >= 0x78) {
             ex->btlfx_clearEffModels();

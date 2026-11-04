@@ -20,8 +20,8 @@
 #define FX_MADEEN_BLUE_RINGS      0xA /* rings: white-blue gouraud rings, 16 frames */
 #define FX_MADEEN_DUST_CLOUD      0xB /* emitter: tan dust puffs, 27 animated frames */
 #define FX_MADEEN_ROCK_SPIRAL     0xC /* emitter: teal-green rock debris rising in a spiral */
-#define FX_MADEEN_BACKDROP        0xD /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_MADEEN_BACKDROP_2      0xE /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_MADEEN_BACKDROP        0xD /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_MADEEN_BACKDROP_2      0xE /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_MADEEN_BLUE_RING_2     0xF /* emitter: white-blue gouraud ring */
 #define FX_MADEEN_BLUE_GLOW       0x10 /* particles: blue glowing dot (byte-identical to fx_0fb_1 entry 0xa) */
 #define FX_MADEEN_WHITE_RINGS     0x14 /* rings: white-blue gouraud rings, five rings */

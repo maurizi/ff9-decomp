@@ -120,7 +120,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_134 | 0x9 | `FX_DOOMSDAY_WHITE_RING` | render | rings: white rings fading to grey (pool task) |
 | fx_134 | 0xA | `FX_DOOMSDAY_FIRE_RING` | render | rings: white-orange-yellow gouraud rings (pool task) |
 | fx_134 | 0xB | `FX_DOOMSDAY_BIG_METEOR` | render | model: large rock ellipsoid (324 polys, 15-bit rock texture) |
-| fx_134 | 0xC | `FX_DOOMSDAY_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_134 | 0xC | `FX_DOOMSDAY_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_134 | 0xD | `FX_DOOMSDAY_EMBERS` | render | emitter: small orange ember sprites (pool task) |
 | fx_134 | 0x11 | `FX_DOOMSDAY_STAR_TUNNEL` | render | model: tube with a star texture, a warp tunnel |
 | fx_134 | 0x12 | `FX_DOOMSDAY_STAR_ARCH` | render | model: arch with a star texture |
@@ -137,8 +137,8 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_134 | 0x20 | `FX_DOOMSDAY_RED_PLANET` | render | sprite: small red planet |
 | fx_134 | 0x21 | `FX_DOOMSDAY_PEBBLES` | render | emitter: spiral of small grey pebble sprites (byte-identical to fx_0e0 entry 0x20) |
 | fx_134 | 0x22 | `FX_DOOMSDAY_ROCK_DEBRIS` | render | emitter: grey rock chunks |
-| fx_134 | 0x30 | `FX_DOOMSDAY_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop |
-| fx_134 | 0x31 | `FX_DOOMSDAY_BACKDROP_3` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_134 | 0x30 | `FX_DOOMSDAY_BACKDROP_2` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_134 | 0x31 | `FX_DOOMSDAY_BACKDROP_3` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_135 | 0x7 | `FX_BAD_BREATH_GAS_CLOUD` | render | emitter: cone of olive and purple gas blobs with green and pink glows |
 | fx_135 | 0x8 | `FX_BAD_BREATH_GAS_BURST` | render | emitter: olive and purple gas blobs, glows and a yellow-green flash at the target |
 | fx_136 | 0x1 | `FX_ABSORB_SPARKLE` | render | emitter: cyan swirl collapsing into a star sparkle |
@@ -174,7 +174,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17a | 0xE | `FX_MADEEN_WHITE_GLOW` | render | particles: white-blue glow |
 | fx_17a | 0xF | `FX_MADEEN_BLUE_SPARKLES` | render | emitter: blue square sparkles and gold sprites |
 | fx_17a | 0x11 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file (magenta in the render) |
-| fx_17a | 0x12 | `FX_MADEEN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_17a | 0x12 | `FX_MADEEN_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_17a | 0x13 | `FX_MADEEN_BLUE_STREAKS` | render | emitter: orbiting blue light streaks |
 | fx_17d_0 | 0x19 | `FX_ARK_CAMERA_KEYS_2` | usage | table: per-frame position keys for camera point 1 (op 0x82) |
 | fx_17d_0 | 0x1A | `FX_ARK_CAMERA_KEYS` | usage | table: per-frame position keys for camera point 0 (op 0x82) |
@@ -213,7 +213,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_4 | 0x84 | `FX_ARK_STREAK_BOWL` | render (fxdata d6121033) | summon data: 'so' model, bowl ring with a grey streak texture |
 | fx_17d_4 | 0x86 | `FX_ARK_SWIRL_DOME` | render (fxdata d6121033) | summon data: 'so' model, dome with a grey swirl texture |
 | fx_17d_4 | 0x8A | `FX_ARK_STRAND_POINTS` | usage | summon data: offset table of the strand point lists per layer, read by fx_17d_4_drawStrands (byte-identical to fx_1bf_0 entry 0x1D) |
-| fx_17d_5 | 0x1 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_17d_5 | 0x1 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_17d_5 | 0x2 | `FX_ARK_CREAM_RING` | render | emitter: cream-white and white-grey-violet gouraud rings |
 | fx_17d_5 | 0x3 | `FX_ARK_LILAC_RING` | render | emitter: dark noise particle + lilac-white gouraud ring |
 | fx_17d_5 | 0x4 | `FX_ARK_ORANGE_RING` | render | rings: white-orange-brown gouraud rings (pool task) |
@@ -266,7 +266,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_8 | 0x4 | `FX_ARK_DARK_BLUE_RING` | render (fxdata d6121033) | 'so' model: flat ring with a dark blue texture, work model slot 5 |
 | fx_17d_8 | 0x5 | `FX_ARK_FIRE_RING` | render | rings: white-yellow-red gouraud rings |
 | fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4 |
-| fx_17d_8 | 0x7 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_17d_8 | 0x7 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_17d_8 | 0x9 | `FX_ARK_GREY_STAR_DISC` | render (fxdata d6121033) | 'so' model: shallow disc with a grey radial texture, work model slot 2 |
 | fx_17d_8 | 0xB | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites |
 | fx_17d_8 | 0x10 | `FX_ARK_STARFIELD` | render | sprite: faint starfield drawn on screen |
@@ -300,7 +300,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_180 | 0x16 | `FX_ULTIMA_PINK_ORB_BURST` | render | emitter: pink orb and blade particles, sparks, white-yellow-red gouraud rings |
 | fx_180 | 0x17 | `FX_ULTIMA_SPIKE_CROWN` | render (fxdata d6121033) | 'so' model: ring crown of red-pink spikes, drawn with FX_ULTIMA_GLOW_DOME |
 | fx_180 | 0x18 | `FX_ULTIMA_RED_FLARE_2` | render | emitter: red lens streak and white-red gouraud rings |
-| fx_180 | 0x19 | `FX_ULTIMA_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_180 | 0x19 | `FX_ULTIMA_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_180 | 0x1A | `FX_ULTIMA_PATH_SET_2` | usage | table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 |
 | fx_180 | 0x1D | `FX_ULTIMA_ROCK_SWIRL` | render | emitter: spiralling 3D trail of rock pieces, pink glows |
 | fx_180 | 0x1E | `FX_ULTIMA_ROCK_SWIRL_2` | render | emitter: spiralling 3D trail of rock pieces, pink glows |
@@ -308,10 +308,10 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_180 | 0x20 | `FX_ULTIMA_ROCK_TRAIL_2` | render | emitter: spiralling screen trail of rock pieces |
 | fx_180 | 0x21 | `FX_ULTIMA_PURPLE_HAZE` | render (fxdata d6121033) | emitter: pink-purple smoke puffs |
 | fx_180 | 0x22 | `FX_ULTIMA_PATH_SET` | usage | table: 18 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x80 |
-| fx_181 | 0x1 | `FX_COUNTDOWN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_181 | 0x1 | `FX_COUNTDOWN_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_181 | 0x2 | `FX_COUNTDOWN_GOLD_SHARDS` | render | emitter: golden shard flashes, a dark teal sprite and white-blue gouraud rings |
 | fx_181 | 0x3 | `FX_COUNTDOWN_LENS_FLASH` | render | emitter: pink lens streak, golden shard flashes, rings (ring texture not resolved) |
-| fx_182 | 0x1 | `FX_COUNTDOWN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_181 entry 0x1) |
+| fx_182 | 0x1 | `FX_COUNTDOWN_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_181 entry 0x1) |
 | fx_182 | 0x3 | `FX_COUNTDOWN_GOLD_SHARDS` | render | emitter: golden shard flashes, a dark teal sprite and white-blue gouraud rings (renders as fx_181 entry 0x2) |
 | fx_182 | 0x6 | `FX_COUNTDOWN_LENS_FLASH` | render | emitter: pink lens streak, golden shard flashes, rings (ring texture not resolved; renders as fx_181 entry 0x3) |
 | fx_183 | 0xD | `FX_CHERRY_BLOSSOM_PETAL` | render | emitter: spiralling pink petal |

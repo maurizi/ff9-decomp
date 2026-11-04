@@ -573,7 +573,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         SET_ROT(work->emit80[15], work->rot148);
         SET_ROT(work->emit80[13], work->rot150);
         if (work->emit80[9] != NULL || work->emit80[15] != NULL) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEATH1_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEATH1_BACKDROP), frame);
         }
         if (work->timers0[0] != 0) {
             work->timers0[0]--;

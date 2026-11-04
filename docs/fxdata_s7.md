@@ -153,7 +153,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1ec | 0x23 | `FX_ULTIMA_ROCK_SWIRL_2` | render | emitter: spiralling 3D trail of rock pieces + sparks |
 | fx_1ec | 0x24 | `FX_ULTIMA_PINK_SPIKES_2` | render | emitter: pink spike particles + spark sprites (byte-identical to fx_180 entry 0x15) |
 | fx_1ec | 0x25 | `FX_ULTIMA_WHITE_BEAM` | render | emitter: spiralling white beam screen trail, pink sparks (byte-identical to fx_180 entry 0xD) |
-| fx_1ec | 0x26 | `FX_ULTIMA_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_180 entry 0x19) |
+| fx_1ec | 0x26 | `FX_ULTIMA_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_180 entry 0x19) |
 | fx_1ec | 0x27 | `FX_ULTIMA_NOISE_RING_3` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + lilac gouraud ring |
 | fx_1ed | 0x1 | `FX_CARBUNCLE_BLUE_RINGS` | render | emitter: pale blue gouraud rings at each target (op 0x81) |
 | fx_1ed | 0x3 | `FX_CARBUNCLE_CAMERA_KEYS_3` | usage | table: camera key path for fxm_camKeyAdd (target 3) (same call site as fx_0b1 entry 0x17, same kind) |
@@ -217,7 +217,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1f8 | 0x2 | `FX_CARBUNCLE_ORBIT_GLOW_2` | render | emitter: orbiting particle + sprite, orange speckled arcs (same call site as fx_0b1 entry 0x16, same kind) |
 | fx_1f8 | 0x5 | `FX_CARBUNCLE_COLOR_RINGS` | render | emitter: pink / green / pink gouraud rings at each target body (byte-identical to fx_0b1 entry 0x18) |
 | fx_1f8 | 0xA | `FX_CARBUNCLE_PINK_RING` | render | emitter: pink gouraud ring and swirl-ring particles at each target body (byte-identical to fx_0b1 entry 0x21) |
-| fx_1f8 | 0xB | `FX_CARBUNCLE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_0b1 entry 0x22) |
+| fx_1f8 | 0xB | `FX_CARBUNCLE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_0b1 entry 0x22) |
 | fx_1f8 | 0xC | `FX_CARBUNCLE_STAR_CRYSTAL` | render | model: four-point star crystal (texture 0x177), one per target (byte-identical to fx_0b1 entry 0x23) |
 | fx_1f9 | 0x1 | `FX_CARBUNCLE_BLUE_RINGS` | render | emitter: pale blue gouraud rings at each target (op 0x81) (byte-identical to fx_1ed entry 0x1) |
 | fx_1f9 | 0x3 | `FX_CARBUNCLE_ORBIT_GLOW_2` | render | emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x16, same kind) |
@@ -280,7 +280,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1f3 | 0xD | `FX_NEUTRON_RING_TEAL_ARC` | render | 'so' model: teal arc band |
 | fx_1f3 | 0xE | `FX_NEUTRON_RING_LIGHT_STREAKS_2` | render | emitter: two fans, pale yellow light streaks |
 | fx_1f3 | 0xF | `FX_NEUTRON_RING_YELLOW_RINGS_2` | render | emitter: yellow / pale yellow gouraud rings |
-| fx_1f3 | 0x10 | `FX_NEUTRON_RING_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_1f3 | 0x10 | `FX_NEUTRON_RING_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1f3 | 0x11 | `FX_NEUTRON_RING_VIOLET_TRAIL` | render | trail: violet noise strip |
 | fx_1f3 | 0x12 | `FX_NEUTRON_RING_VIOLET_RINGS` | render | emitter: white-lilac, peach and violet gouraud rings |
 | fx_1f3 | 0x13 | `FX_NEUTRON_RING_GREY_DISC` | render | 'so' model: flat ring disc, grey streak texture |
@@ -367,7 +367,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1bf_1 | 0x94 | `FX_ARK_FIRE_ARC` | render | summon data: 'so' model, curved band with an orange flame texture |
 | fx_1bf_2 | 0x1 | `FX_ARK_ORANGE_BEAM` | render | 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) |
 | fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6) |
-| fx_1bf_2 | 0x3 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_17d_8 entry 0x7) |
+| fx_1bf_2 | 0x3 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_17d_8 entry 0x7) |
 | fx_1bf_2 | 0x5 | `FX_ARK_GREY_STAR_DISC` | render | 'so' model: shallow dish with a grey radial cloud texture (byte-identical to fx_17d_8 entry 0x9) |
 | fx_1bf_2 | 0x7 | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) |
 | fx_1bf_2 | 0xB | `FX_ARK_STARFIELD` | render | sprite: faint starfield drawn on screen (byte-identical to fx_17d_8 entry 0x10) |

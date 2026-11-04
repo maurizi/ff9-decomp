@@ -230,7 +230,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit40[6] = NULL;
         }
         if (work->emit40[1] != NULL) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_BACKDROP), frame);
         }
         if (work->timer0[1] != 0) {
             work->timer0[1]--;

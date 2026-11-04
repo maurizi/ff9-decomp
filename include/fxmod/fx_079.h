@@ -15,7 +15,7 @@
 #define FX_DEMI_SHOCK_TRAIL      0x9 /* trail: strip texture still outside the file and the common pages (magenta) (look pending) */
 #define FX_DEMI_SHOCK_BOWL       0xA /* model: gouraud hemisphere bowl */
 #define FX_DEMI_SHOCK_SPHERE     0xB /* model: sphere, texture still outside the file and the common pages (magenta) (look pending) */
-#define FX_DEMI_SHOCK_BACKDROP   0xC /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_DEMI_SHOCK_BACKDROP   0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
 typedef struct {
     s16 vx;

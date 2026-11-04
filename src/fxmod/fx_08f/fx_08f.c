@@ -186,7 +186,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
                 ex->Hi_ModifyEffModelAbr(work->model28, 1);
                 ex->Hi_ModifyEffModelRGB(work->model28, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
             }
             otz = -0x64;
             streakCol.r = 0x20;
@@ -284,7 +284,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_SMOKE_TRAIL), (s32)&work->pos14, NULL, 0,
                                 ex->math_cos(approach >> 2) * 2 + 0x1000, ex->math_cos(approach >> 2) / 2 + 0x800, 1, fx_08f_trail, 0);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
             if (frame >= 9) {
                 spriteRot.vx = 0;
                 spriteRot.vy = 0;

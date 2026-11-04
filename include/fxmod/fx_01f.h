@@ -11,7 +11,7 @@
 #define FX_01F_RED_GLOW    0x4 /* emitter: dark red glow with a white spot */
 #define FX_01F_PINK_RINGS  0xB /* emitter: white-lilac-maroon and white-cream-pink gouraud rings */
 #define FX_01F_RED_GLOW_2  0xC /* emitter: dark red glow with a white spot (orbiting) */
-#define FX_01F_BACKDROP    0xD /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_01F_BACKDROP    0xD /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
 
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */

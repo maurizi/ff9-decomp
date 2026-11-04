@@ -18,7 +18,7 @@
 #define FX_NEUTRON_RING_TEAL_ARC        0xD /* 'so' model: teal arc band */
 #define FX_NEUTRON_RING_LIGHT_STREAKS_2 0xE /* emitter: two fans, pale yellow light streaks */
 #define FX_NEUTRON_RING_YELLOW_RINGS_2  0xF /* emitter: yellow / pale yellow gouraud rings */
-#define FX_NEUTRON_RING_BACKDROP        0x10 /* table: background layers for btlfx_drawBackdrop */
+#define FX_NEUTRON_RING_BACKDROP        0x10 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_NEUTRON_RING_VIOLET_TRAIL    0x11 /* trail: violet noise strip */
 #define FX_NEUTRON_RING_VIOLET_RINGS    0x12 /* emitter: white-lilac, peach and violet gouraud rings */
 #define FX_NEUTRON_RING_GREY_DISC       0x13 /* 'so' model: flat ring disc, grey streak texture */

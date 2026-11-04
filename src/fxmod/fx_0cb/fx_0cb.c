@@ -251,7 +251,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tint = 0x78 - (frame - 1) * 0x14;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP), work->frame4);
             ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
             if (frame < 0x20) {
                 if (frame == frame / 3 * 3) {
@@ -285,7 +285,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->otZ = work->otZ8 + 0x46;
             data = (u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RINGS);
             ex->btlfx_drawRings(data, &work->posC, &rot, ex->math_cos(ang) / 3 + 0x2AA, 0, 1, alpha);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP_2), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP_2), work->frame4);
             rot.vx = 0x200;
             rot.vy = 0x590;
             rot.vz = 0x80;

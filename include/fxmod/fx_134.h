@@ -16,7 +16,7 @@
 #define FX_DOOMSDAY_WHITE_RING    0x9 /* rings: white rings fading to grey (pool task) */
 #define FX_DOOMSDAY_FIRE_RING     0xA /* rings: white-orange-yellow gouraud rings (pool task) */
 #define FX_DOOMSDAY_BIG_METEOR    0xB /* model: large rock ellipsoid (324 polys, 15-bit rock texture) */
-#define FX_DOOMSDAY_BACKDROP      0xC /* table: background layers for btlfx_drawBackdrop */
+#define FX_DOOMSDAY_BACKDROP      0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DOOMSDAY_EMBERS        0xD /* emitter: small orange ember sprites (pool task) */
 #define FX_DOOMSDAY_STAR_TUNNEL   0x11 /* model: tube with a star texture, a warp tunnel */
 #define FX_DOOMSDAY_STAR_ARCH     0x12 /* model: arch with a star texture */
@@ -33,8 +33,8 @@
 #define FX_DOOMSDAY_RED_PLANET    0x20 /* sprite: small red planet */
 #define FX_DOOMSDAY_PEBBLES 0x21 /* emitter: spiral of small grey pebble sprites (byte-identical to fx_0e0 entry 0x20) */
 #define FX_DOOMSDAY_ROCK_DEBRIS   0x22 /* emitter: grey rock chunks */
-#define FX_DOOMSDAY_BACKDROP_2    0x30 /* table: background layers for btlfx_drawBackdrop */
-#define FX_DOOMSDAY_BACKDROP_3    0x31 /* table: background layers for btlfx_drawBackdrop */
+#define FX_DOOMSDAY_BACKDROP_2    0x30 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_DOOMSDAY_BACKDROP_3    0x31 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

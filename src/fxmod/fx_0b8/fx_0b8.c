@@ -538,7 +538,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->flags0[0xF] != 0) {
             work->flags0[0xF]--;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
             morphT = fxm_easeLerp(2, 0x10, work->flags0[0xF], 0x1000, 0);
             work->pos164.vy = work->pos13C.vy = fxm_easeLerp(1, 0x10, work->flags0[0xF], -0x2500, -0x1000);
             work->scale14C.vx = work->scale14C.vz = work->scale14C.vy = fxm_easeLerp(1, 0x10, work->flags0[0xF], 0x1800, 0);
@@ -581,7 +581,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale14C.vx = work->scale14C.vz = work->scale14C.vy = fxm_easeLerp(1, 8, work->flags0[0x1A], 0x555, 0);
         }
         if (work->flags0[0xA] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
             ex->Hi_DrawEffModel(&work->rot15C, &work->pos13C, (s32)&work->scale14C, work->model128);
         }
         if (work->flags0[0x1C] != 0) {

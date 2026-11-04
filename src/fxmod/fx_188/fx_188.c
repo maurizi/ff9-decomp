@@ -115,7 +115,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->otZ = 0x20;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_RING), &work->pos4, &ringRot, ringScale, 0, 1, ringAlpha);
             env->otZ = 0;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_BACKDROP), frame);
             if (frame >= 0x10) {
                 work->state0 = 2;
                 entry->frame = -1;

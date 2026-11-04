@@ -7,7 +7,7 @@
 /* fx_07f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SILENCE_RING_DISC  0x1 /* model: flat annulus; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (look pending) */
-#define FX_SILENCE_BACKDROP   0x2 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SILENCE_BACKDROP   0x2 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SILENCE_KANJI      0x3 /* emitter: the kanji "silence" glyph, glowing orange to violet */
 #define FX_SILENCE_KANJI_DOME 0x5 /* model: dome textured with the "silence" glyph */
 #define FX_SILENCE_PINK_PUFF  0x9 /* emitter: pink-white puff */
@@ -15,7 +15,7 @@
 
 typedef struct {
     s32 state0; /* state */
-    s32 bgFrame4; /* frame for btlfx_drawBackdrop */
+    s32 bgFrame4; /* frame for btlfx_drawLayerTexture */
     SVECTOR pos8; /* position: env->targets->centerX */
     SVECTOR pos10; /* pos8 raised by 0x180 */
     s32 modelPos18[3]; /* model position (VECTOR without its pad word) */

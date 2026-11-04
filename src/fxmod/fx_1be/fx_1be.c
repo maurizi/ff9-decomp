@@ -222,7 +222,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->scale74.vx = w->scale74.vz = w->scale74.vy = fxm_easeLerp(1, 8, w->counters0[3], 0x555, 0);
         }
         if (w->counters0[0] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
             ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scale74, w->model60);
         }
         if (w->counters0[0xD] != 0) {

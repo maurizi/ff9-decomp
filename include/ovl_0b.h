@@ -2140,7 +2140,8 @@ typedef struct {
 
 void btlfx_addPrim(u32, s32, void *);
 
-/* scrolling/waving 2D background layer (btlfx_drawBackdrop) */
+/* one layer of a layer table (BtlBgLayers): a scrolling / waving / fading 2D layer that btlfx_drawLayerTexture
+ * draws into the table's VRAM rect (an off-screen texture, not the screen: the "Bg" names are older) */
 typedef struct {
     u16 kind; /* kind: 0 scroll, 1 horizontal wave, 2 fade, 3 vertical wave */
     u16 tpage; /* tpage (SprInfo view) */
@@ -2169,7 +2170,7 @@ typedef struct {
             s16 scrollSpeed; /* scroll speed */
         } wave;
         struct BtlBgFadeP {
-            s32 dataOfs; /* sprite set offset from the layer block (btlfx_drawBackdropSprite) */
+            s32 dataOfs; /* sprite set offset from the layer block (btlfx_drawLayerSprite) */
             u8 pad4;
             u8 delay;  /* delay */
             u16 duration; /* fade-in frames */
@@ -2186,7 +2187,10 @@ typedef struct {
     u16 x; /* x */
     u16 y; /* y */
     s32 layers[1]; /* layer offsets */
-} BtlBgLayers;
+} BtlBgLayers; /* layer table (effect data): btlfx_drawLayerTexture clears the VRAM rect (x, y, w, h) and draws the layers
+                * into it; the effect's sprites / models then sample it as a texture. All 89 tables the modules pass
+                * target x >= 0x180 (off screen). Evidence: [code] DR_AREA / DR_OFFSET from the header, [runtime]
+                * docs/runtime-findings.md effect-data pass */
 
 
 /* positive modulo: wt holds the dividend */
@@ -2209,7 +2213,7 @@ void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
 /* first u16 of a sprite set (the headers below, btlfx_getCommonSprite): bits 0-14 the frame count; bit 15 is masked off and
  * never tested in ovl_0b. Evidence: [code] */
 #define BTLFX_SPRITE_FRAMES 0x7FFF
-/* sprite set header (btlfx_drawAnimQuads, btlfx_drawBackdropSprite): u16 frame offsets, then at
+/* sprite set header (btlfx_drawAnimQuads, btlfx_drawLayerSprite): u16 frame offsets, then at
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
@@ -2238,7 +2242,7 @@ void btlfx_emitSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void btlfx_emitFixedSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void btlfx_emitDots(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 DR_TPAGE *btlfx_allocDrMode(s32, s32);
-void btlfx_drawBackdropSprite(u8 *, s32, s32, s32, s32, s32);
+void btlfx_drawLayerSprite(u8 *, s32, s32, s32, s32, s32);
 
 
 typedef struct {

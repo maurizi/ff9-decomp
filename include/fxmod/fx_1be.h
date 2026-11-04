@@ -18,7 +18,7 @@
 #define FX_ATOMOS_SPHERE       0xC /* 'so' model: segmented sphere (texture page 0x117 renders plain white) (look pending) */
 #define FX_ATOMOS_VORTEX_DOME  0xD /* 'so' model: dome, violet and cyan cloud texture */
 #define FX_ATOMOS_RING_FUNNEL  0xE /* 'so' model: gouraud ring funnel, white glow at the hole */
-#define FX_ATOMOS_BACKDROP     0xF /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_ATOMOS_BACKDROP     0xF /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ATOMOS_GREY_RINGS   0x10 /* emitter: white-to-grey gouraud rings, 8 frames */
 
 typedef struct {

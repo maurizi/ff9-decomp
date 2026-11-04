@@ -37,11 +37,11 @@ Notes:
 | fx_0b1 | 0x18 | `FX_CARBUNCLE_COLOR_RINGS` | render | emitter: pink / green / pink gouraud rings at each target body |
 | fx_0b1 | 0x19 | `FX_CARBUNCLE_CAMERA_KEYS_2` | usage | table: camera key path for fxm_camKeyAdd (target 2) |
 | fx_0b1 | 0x21 | `FX_CARBUNCLE_PINK_RING` | render | emitter: pink gouraud ring and swirl-ring particles at each target body |
-| fx_0b1 | 0x22 | `FX_CARBUNCLE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0b1 | 0x22 | `FX_CARBUNCLE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0b1 | 0x23 | `FX_CARBUNCLE_STAR_CRYSTAL` | render | model: four-point star crystal (texture 0x177), one per target |
 | fx_0b1 | 0x24 | `FX_CARBUNCLE_ORBIT_GLOW_3` | kind/usage (look pending) | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
 | fx_0b2 | 0x1 | `FX_TWISTER_VORTEX` | render | particles: tan swirling vortex, drawn directly |
-| fx_0b2 | 0x2 | `FX_TWISTER_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0b2 | 0x2 | `FX_TWISTER_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0b2 | 0x4 | `FX_TWISTER_WIND_STREAK` | render | trail: violet-white wind streak (fxm_drawOffsetTrail) |
 | fx_0b2 | 0x5 | `FX_TWISTER_DUST_CLOUDS` | render | emitter: spiralling grey-blue dust clouds |
 | fx_0b3 | 0x2 | `FX_LEVIATHAN_WATER_SPLASH` | render | emitter: blue water-splash sprites and droplets |
@@ -108,7 +108,7 @@ Notes:
 | fx_0b8 | 0x11 | `FX_ATOMOS_RING_FUNNEL` | render | model: gouraud ring funnel (flat torus) |
 | fx_0b8 | 0x12 | `FX_ATOMOS_CLOUD_FUNNEL` | render | model: ring funnel with a grey cloud texture |
 | fx_0b8 | 0x13 | `FX_ATOMOS_ORANGE_RING` | render | model: ring with an orange cloud texture |
-| fx_0b8 | 0x1F | `FX_ATOMOS_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0b8 | 0x1F | `FX_ATOMOS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0b8 | 0x20 | `FX_ATOMOS_VIOLET_RING` | render | emitter: white-violet and white-blue gouraud rings |
 | fx_0b8 | 0x21 | `FX_ATOMOS_PURPLE_RINGS` | render | emitter: white / magenta / purple and pale yellow / grey gouraud rings |
 | fx_0b8 | 0x22 | `FX_ATOMOS_SPRITES_3` | kind/usage (look pending) | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
@@ -163,7 +163,7 @@ Notes:
 | fx_0ba | 0x84 | `FX_RAMUH_STORM_CLOUDS` | render (fxdata d6121033) | summon data entry 4: emitter, orbiting animated blue cloud puffs |
 | fx_0ba | 0x85 | `FX_RAMUH_SUMMON_KEYS_5` | usage | summon data entry 5: per-frame key table (op80) |
 | fx_0ba | 0x86 | `FX_RAMUH_BLUE_FLASH` | render (fxdata d6121033) | summon data entry 6: emitter, orbiting fan of a horizontal blue light flash |
-| fx_0bb | 0x1 | `FX_MUSTARD_BOMB_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0bb | 0x1 | `FX_MUSTARD_BOMB_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0bb | 0x7 | `FX_MUSTARD_BOMB_FIREBALLS` | render | emitter: orange fireball sprites with light streaks |
 | fx_0bb | 0x9 | `FX_MUSTARD_BOMB_EXPLOSION_RINGS` | render | emitter: yellow-orange-red and blue gouraud rings (+ a textured ring, texture not in the file) |
 | fx_0bb | 0xA | `FX_MUSTARD_BOMB_BLAST_RINGS` | render | emitter: cone of yellow / orange / brown gouraud rings |
@@ -199,14 +199,14 @@ Notes:
 | fx_0c9 | 0x3 | `FX_JEWEL_COMET_STREAKS` | render (fxdata d6121033) | emitter: two fans, white-violet comet streaks |
 | fx_0c9 | 0x4 | `FX_JEWEL_LIGHT_BURST` | render | emitter: white / lilac / cyan rings and violet light streaks |
 | fx_0c9 | 0x5 | `FX_JEWEL_ORE_GLINT` | render | emitter: green ore glint, lilac / cyan ring, star sparkles |
-| fx_0c9 | 0x6 | `FX_JEWEL_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0c9 | 0x6 | `FX_JEWEL_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0c9 | 0x10 | `FX_JEWEL_GLOW_RING` | render | emitter: white-cyan gouraud ring, fans |
 | fx_0ca | 0x1 | `FX_POISON_BUBBLES` | render | emitter: purple poison blobs and bubbles |
 | fx_0ca | 0x2 | `FX_POISON_SWIRL` | render | emitter: orbiting purple poison trail |
 | fx_0cb | 0x5 | `FX_LIGHT_FLARE_GLOW_RINGS` | render | rings: white / cyan / orange / red gouraud rings |
 | fx_0cb | 0x8 | `FX_LIGHT_FLARE_RED_HALO` | render (fxdata d6121033) | 'so' model: red-orange gouraud halo ring, drawn fading with the fireball |
-| fx_0cb | 0xC | `FX_LIGHT_FLARE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (with the screen tint) |
-| fx_0cb | 0xF | `FX_LIGHT_FLARE_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop (with the rings) |
+| fx_0cb | 0xC | `FX_LIGHT_FLARE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (with the screen tint) |
+| fx_0cb | 0xF | `FX_LIGHT_FLARE_BACKDROP_2` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (with the rings) |
 | fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | kind/usage (look pending) | rings: textured ring drawn twice, tilted; the render reads unrelated texels (noise), texture not in the file |
 | fx_0cb | 0x12 | `FX_LIGHT_FLARE_FIREBALL` | render (fxdata d6121033) | 'so' model: sphere with a fire texture, drawn fading |
 | fx_0cc | 0x2 | `FX_METEORITE_IMPACT_RING` | render | rings: white-pink gouraud ring at the impact |
@@ -243,7 +243,7 @@ Notes:
 | fx_0d2 | 0x2 | `FX_FENRIR_DUST_CLOUD` | render | emitter: tan dust clouds and an orange gouraud ring |
 | fx_0d2 | 0x3 | `FX_FENRIR_BLUE_RINGS` | render | emitter: white-blue gouraud rings |
 | fx_0d2 | 0x4 | `FX_FENRIR_ORANGE_RING` | render | emitter: orange gouraud ring |
-| fx_0d2 | 0x5 | `FX_FENRIR_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0d2 | 0x5 | `FX_FENRIR_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0d2 | 0x8 | `FX_FENRIR_UNIT_PATHS` | usage | table: offset table of per-unit position paths (op83) |
 | fx_0d2 | 0x9 | `FX_FENRIR_MORPH_PATH` | usage | table: rotation / position path of the morph models (fx_0d2_morphPath) |
 | fx_0d2 | 0x14 | `FX_FENRIR_UNIT_OFFSET_PATH` | usage | table: position path (fx_0d2_unitOffsetPath) |
@@ -309,7 +309,7 @@ Notes:
 | fx_0d3 | 0x12 | `FX_PHOENIX_GOLD_FEATHERS` | render | emitter: golden feather quads |
 | fx_0d3 | 0x13 | `FX_PHOENIX_FEATHERS_2` | render (fxdata d6121033) | emitter: two fans, grey and tan feathers with light streaks |
 | fx_0d3 | 0x14 | `FX_PHOENIX_FAN_EMITTER_5` | kind/usage (look pending) | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
-| fx_0d3 | 0x15 | `FX_PHOENIX_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0d3 | 0x15 | `FX_PHOENIX_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0d3 | 0x16 | `FX_PHOENIX_FLAME_SWIRL` | render (fxdata d6121033) | 'so' model: cone of swirling brown-orange flame tongues (fx_0d3_sharedModel) |
 | fx_0d3 | 0x17 | `FX_PHOENIX_FLAME_FEATHERS` | render | emitter: flame-feather quads |
 | fx_0d3 | 0x18 | `FX_PHOENIX_FLAME_FEATHERS_2` | render | emitter: flame-feather quads (cylinder) |

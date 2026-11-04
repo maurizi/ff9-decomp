@@ -10,7 +10,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_LV5_DEATH_GREEN_ORB 0x1 /* emitter: fan + green glow sprites, orange / violet rings */
 #define FX_LV5_DEATH_MODEL_DATA 0x2 /* table: data block passed with the model to btlfx_registerSummonModel */
-#define FX_LV5_DEATH_BACKDROP   0x3 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV5_DEATH_BACKDROP   0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_LV5_DEATH_BLUE_TRAIL 0x7 /* emitter: blue spiralling trail */
 #define FX_LV5_DEATH_REAPER     0x8 /* 'so' model (btlfx_registerSummonModel): the robed skull reaper holding a scythe */
 #define FX_LV5_DEATH_RED_RINGS 0x9 /* emitter: pink-red sprites + white-red rings */

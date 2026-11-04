@@ -129,7 +129,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         rowKey = (Fx198Key *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_BACKDROP);
-        ex->btlfx_drawBackdrop((BtlBgLayers *)rowKey, work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)rowKey, work->frame4);
         work->frame4++;
     }
     return 0;

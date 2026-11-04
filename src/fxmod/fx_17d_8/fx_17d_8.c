@@ -354,7 +354,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         ex->btlfx_drawScrollMove(work->frame4 * 4, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
         ex->btlfx_drawScrollMove(0x2710 - work->frame4 * 4, 0x300, 0x100, 0x20, 0x80, 0x320, 0x100);
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
         work->frame4++;
     }
     return 0;

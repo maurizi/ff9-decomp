@@ -10,7 +10,7 @@
 #define FX_FLOAT_GLOW       0x2 /* emitter: one particle (magenta: texture still outside the file and the common pages) (look pending) */
 #define FX_FLOAT_STAR_FLASH 0x3 /* emitter: speckled ring, blue star flashes, two fans (per target) */
 #define FX_FLOAT_SPECK_RING 0x4 /* emitter: ring textured with brown specks (per target) */
-#define FX_FLOAT_BACKDROP   0x5 /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_FLOAT_BACKDROP   0x5 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
 
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */

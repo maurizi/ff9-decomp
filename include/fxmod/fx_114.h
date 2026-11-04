@@ -10,7 +10,7 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_IFRIT_EMBERS              0x3 /* emitter: tiny ember specks orbiting */
 #define FX_IFRIT_FIRE_RING           0x5 /* emitter: orange-red to white gouraud ring */
-#define FX_IFRIT_BACKDROP            0x6 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_IFRIT_BACKDROP            0x6 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_IFRIT_EMBER_TRAIL         0x7 /* emitter: orbiting screen trail (red strip) + ember sprites */
 #define FX_IFRIT_ROCK_RINGS          0x8 /* emitter: rings textured with a golden rock pattern, 16 frames */
 #define FX_IFRIT_FLAME_LINE          0x9 /* emitter: two orbiting fans, a thin horizontal orange flame line */

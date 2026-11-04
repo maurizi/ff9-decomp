@@ -1,8 +1,8 @@
 #ifndef FX_0F4_H
 #define FX_0F4_H
 
-/* Effect module fx_0f4 (dir 13 file 0x0F4): Shift Break. Two growing textured models over backdrops
- * (btlfx_drawBackdrop). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+/* Effect module fx_0f4 (dir 13 file 0x0F4): Shift Break. Two growing textured models with layer textures
+ * (btlfx_drawLayerTexture). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
@@ -11,12 +11,12 @@
 #define FX_SHIFT_BREAK_WHITE_RINGS  0x2 /* emitter: white gouraud rings in a cone + a textured ring (texture not resolved) */
 #define FX_SHIFT_BREAK_RAINBOW_HALO 0x3 /* emitter: orbiting particles, dark disc with a rainbow rim */
 #define FX_SHIFT_BREAK_VIOLET_HALO  0x4 /* emitter: orbiting white swirl marks + blue-violet glow ring */
-#define FX_SHIFT_BREAK_BACKDROP     0x8 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SHIFT_BREAK_BACKDROP     0x8 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SHIFT_BREAK_DOME         0xA /* model: stepped dome, white texture */
 #define FX_SHIFT_BREAK_DOME_2       0xB /* model: stepped dome, white texture (byte-identical to entry 0xA) */
 #define FX_SHIFT_BREAK_CONE_RINGS   0xC /* emitter: textured rings in a cone; the render reads garbled multicolour texels (texture not resolved) (look pending) */
 #define FX_SHIFT_BREAK_LIGHTNING    0xD /* emitter: white-cyan gouraud rings + blue lightning streak particles */
-#define FX_SHIFT_BREAK_BACKDROP_2   0xE /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SHIFT_BREAK_BACKDROP_2   0xE /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
 typedef struct {
     Pool6CEntry *emit0;

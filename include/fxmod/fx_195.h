@@ -8,7 +8,7 @@
 /* fx_195 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_BAHAMUT_PINK_FLAT_RING 0x2 /* rings: white / salmon gouraud rings, 14 frames */
-#define FX_BAHAMUT_BACKDROP       0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_BAHAMUT_BACKDROP       0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_BAHAMUT_VIOLET_RINGS   0x8 /* rings: white-cyan-violet-indigo gouraud rings, 24 frames */
 #define FX_BAHAMUT_HALO_RINGS     0x9 /* rings: white-crimson-blue gouraud rings, 16 frames */
 #define FX_BAHAMUT_BLUE_RINGS     0xA /* rings: navy-to-blue gouraud rings, 12 frames */

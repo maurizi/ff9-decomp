@@ -1020,9 +1020,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (curtainBright != 0 || sheetPhase != 0) {
             if (work->state0 == 0 || (work->state0 == 1 && frame < 0x10)) {
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP), work->frame4);
             } else {
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP_2), work->frame4);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP_2), work->frame4);
             }
         }
         if (domeBright != 0) {

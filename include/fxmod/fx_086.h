@@ -10,7 +10,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_METEOR_STREAK_SHELL   0x4 /* model: bullet-shaped shell; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (look pending) */
 #define FX_METEOR_SPRITES        0x6 /* emitter: sprites, still render all black (look pending) */
-#define FX_METEOR_BACKDROP       0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_METEOR_BACKDROP       0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_METEOR_EXPLOSION      0x9 /* emitter: green and orange explosion frames */
 #define FX_METEOR_CONE_SPRITES   0xB /* emitter: cone of sprites, still render all black (look pending) */
 #define FX_METEOR_DUST_RING      0xC /* model: ring band with a pink-brown rocky dust texture */

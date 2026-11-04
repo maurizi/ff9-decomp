@@ -868,7 +868,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ex->Hi_ModifyEffModelRGB(work->modelBC, (((ex->math_cos(beamAng) >> 1) + 0x800) >> 5) - 0x80,
                                  (((ex->math_cos(beamAng) >> 1) + 0x800) >> 5) - 0x80,
                                  (((ex->math_cos(beamAng) >> 1) + 0x800) >> 5) - 0x80);
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP_3), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP_3), work->frame4);
         ex->btlfx_drawScrollMove(work->frame4 * 10, 0x360, 0x180, 0x10, 0x40, 0x370, 0x180);
         sparkFade = (ex->math_cos(beamAng) >> 1) + 0x800;
         if (frame < 0x18) {

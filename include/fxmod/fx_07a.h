@@ -9,7 +9,7 @@
 /* fx_07a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_DEMI_SHOCK_FLASH_RING 0x6 /* emitter: white gouraud ring (same call site as fx_079 entry 0x2) */
-#define FX_DEMI_SHOCK_BACKDROP   0x8 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_DEMI_SHOCK_BACKDROP   0x8 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DEMI_SHOCK_WISP_BURST 0x9 /* emitter: white gouraud rings + blue and violet smoke wisps */
 #define FX_DEMI_SHOCK_SPHERE     0xB /* model: sphere, texture still outside the file and the common pages (magenta) (byte-identical to fx_079 entry 0xB) (look pending) */
 #define FX_DEMI_SHOCK_TRAIL      0xC /* trail: strip texture still outside the file and the common pages (magenta) (byte-identical to fx_079 entry 0x9) (look pending) */

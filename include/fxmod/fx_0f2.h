@@ -1,15 +1,15 @@
 #ifndef FX_0F2_H
 #define FX_0F2_H
 
-/* Effect module fx_0f2 (dir 13 file 0x0F2): Tidal Flame. A textured model sweeping across the field over a backdrop
- * (btlfx_drawBackdrop). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+/* Effect module fx_0f2 (dir 13 file 0x0F2): Tidal Flame. A textured model sweeping across the field with a layer texture
+ * (btlfx_drawLayerTexture). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* fx_0f2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_TIDAL_FLAME_DOME        0x2 /* model: hemisphere, texture page 0x11A not in the file (magenta in the render) (look pending) */
-#define FX_TIDAL_FLAME_BACKDROP    0x3 /* table: background layers for btlfx_drawBackdrop */
+#define FX_TIDAL_FLAME_BACKDROP    0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_TIDAL_FLAME_RUNE_BURST  0x8 /* emitter: white rune glyphs with cyan-blue rings, embers, blue light streak */
 #define FX_TIDAL_FLAME_FLAME_CLOUD 0x9 /* emitter: embers + orange flame cloud */
 

@@ -19,7 +19,7 @@
 #define FX_MADEEN_BLUE_SPECKS      0xE /* emitter: small blue specks in a spiral */
 #define FX_MADEEN_BLUE_RINGS_2     0xF /* rings: navy-blue gouraud rings */
 #define FX_MADEEN_PALE_RINGS       0x10 /* rings: white / pale-cyan / grey gouraud rings, 8 frames */
-#define FX_MADEEN_BACKDROP_3       0x11 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_MADEEN_BACKDROP_3       0x11 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_MADEEN_WHITE_RINGS      0x12 /* rings: white to grey fading gouraud rings, 8 frames */
 #define FX_MADEEN_RAINBOW_ARCH     0x13 /* model: arch, rainbow-cloud texture */
 #define FX_MADEEN_TRAIL            0x14 /* trail: strip texture not in the file (magenta in the render) (look pending) */

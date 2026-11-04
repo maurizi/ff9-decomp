@@ -12,7 +12,7 @@
 #define FX_FENRIR_DUST_CLOUD            0x2 /* emitter: tan dust clouds and an orange gouraud ring */
 #define FX_FENRIR_BLUE_RINGS            0x3 /* emitter: white-blue gouraud rings */
 #define FX_FENRIR_ORANGE_RING           0x4 /* emitter: orange gouraud ring */
-#define FX_FENRIR_BACKDROP              0x5 /* table: background layers for btlfx_drawBackdrop */
+#define FX_FENRIR_BACKDROP              0x5 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_FENRIR_UNIT_PATHS            0x8 /* table: offset table of per-unit position paths (op83) */
 #define FX_FENRIR_MORPH_PATH            0x9 /* table: rotation / position path of the morph models (fx_0d2_morphPath) */
 #define FX_FENRIR_UNIT_OFFSET_PATH      0x14 /* table: position path (fx_0d2_unitOffsetPath) */

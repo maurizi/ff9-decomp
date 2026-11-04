@@ -458,7 +458,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->timer176--;
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_IFRIT_BACKDROP), bgFrame);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_IFRIT_BACKDROP), bgFrame);
         ex->btlfx_drawScrollMove(0x1180 - work->frame16C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
     }
     if (frame >= 0x7B && frame < 0xB7) {

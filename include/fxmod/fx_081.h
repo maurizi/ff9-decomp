@@ -16,7 +16,7 @@
 #define FX_LV4_HOLY_SPRITE_LINE     0xB /* sprite line; its frames read a page of unrelated sprites, filled at run time (look pending) */
 #define FX_LV4_HOLY_BLUE_SPARKLE_DOTS 0xC /* particles: blue sparkle frames */
 #define FX_LV4_HOLY_BLUE_STREAKS    0xF /* emitter: blue light streaks + sparkles */
-#define FX_LV4_HOLY_BACKDROP        0x10 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV4_HOLY_BACKDROP        0x10 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_LV4_HOLY_BLUE_SPARKLES 0x11 /* emitter: callback element + blue sparkle sprites (byte-identical to fx_057 entry 0x4) */
 #define FX_LV4_HOLY_TRAIL           0x12 /* trail: the strip reads unrelated multicoloured VRAM, filled at run time (look pending) */
 #define FX_LV4_HOLY_VIOLET_RAYS     0x13 /* emitter: two fans drawn as narrow violet-white dithered rays */
@@ -29,9 +29,9 @@
 #define FX_LV4_HOLY_BLUE_SHIMMER 0x1C /* emitter: blue dot sprites + shimmering particles (byte-identical to fx_057 entry 0x9, same render) */
 #define FX_LV4_HOLY_PRISM_BURST     0x1D /* emitter: prism-coloured particles + violet / cyan rings */
 #define FX_LV4_HOLY_BLUE_RING_2     0x1F /* rings: blue gouraud rings */
-#define FX_LV4_HOLY_BACKDROP_2      0x20 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV4_HOLY_BACKDROP_2      0x20 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_LV4_HOLY_LIGHT_SPHERE 0x21 /* model: sphere, white texture */
-#define FX_LV4_HOLY_BACKDROP_3      0x22 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV4_HOLY_BACKDROP_3      0x22 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_LV4_HOLY_TEXTURED_RING 0x23 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
 #define FX_LV4_HOLY_WHITE_VIOLET_RINGS 0x24 /* rings: white-blue-violet gouraud rings, 4 segments */
 #define FX_LV4_HOLY_SPARK 0x25 /* particles: one small frame; reads grey stripes that look like unrelated VRAM (look pending) */

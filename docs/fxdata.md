@@ -133,6 +133,16 @@ Seven's nearly empty sprite line. No module defines a name twice or two names fo
 generic names (`*_CYL_EMITTER`, `*_CALLBACK_EMITTER`, `*_FAN_EMITTER` of fans the render does not show) are
 all still pending. The helper scripts were throw-away (hash every entry with `FxFile.entries`, group by sha1).
 
+## Layer tables (render-to-texture)
+
+The `*_BACKDROP` entries are not screen backdrops. `btlfx_drawLayerTexture` (was `btlfx_drawBackdrop`, ovl_0b
+0x800D3030) sets the draw area and offset to the rect in the table header (`BtlBgLayers`: count, w, h, x, y), clears
+it with a black TILE, draws the scrolling / waving / fading layers into it and restores the draw environment. Every
+table the modules pass (89 call sites) targets an off-screen VRAM rect (x >= 0x180, at most 240 wide), and the
+effect's sprites and models sample it: skipping the call turns their textured parts white or garbled
+(docs/runtime-findings.md, effect-data pass). Played tables are named by the texture they make
+(`FX_SLEEP_MOON_TEXTURE`, `FX_HOLY_STARFIELD_TEXTURE`); the others keep `*_BACKDROP`, with a "layer table" comment.
+
 ## Open questions (emulator)
 
 All still-pending names of all slices, grouped by battle setup with what to capture, are in

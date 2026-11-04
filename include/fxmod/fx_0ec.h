@@ -19,7 +19,7 @@
 #define FX_DOOM_CYAN_SPARKLES    0xE /* emitter: cyan sparkles in a tube */
 #define FX_DOOM_REAPER_PICTURE_2 0xF /* model: second panel with the picture of Death */
 #define FX_DOOM_WHITE_SHELL      0x10 /* model: capsule on 15-bit texture page 0x119 (filled at run time; white in the render) (look pending) */
-#define FX_DOOM_BACKDROP         0x11 /* table: background layers for btlfx_drawBackdrop */
+#define FX_DOOM_BACKDROP         0x11 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DOOM_GOURAUD_SHELL    0x13 /* model: gouraud capsule; the render draws it black (colours set by the C at run time?) (look pending) */
 
 typedef struct {

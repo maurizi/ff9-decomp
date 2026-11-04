@@ -6,7 +6,7 @@
 
 /* fx_17d_5 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ARK_BACKDROP         0x1 /* table: background layers for btlfx_drawBackdrop */
+#define FX_ARK_BACKDROP         0x1 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ARK_CREAM_RING       0x2 /* emitter: cream-white and white-grey-violet gouraud rings */
 #define FX_ARK_LILAC_RING       0x3 /* emitter: dark noise particle + lilac-white gouraud ring */
 #define FX_ARK_ORANGE_RING      0x4 /* rings: white-orange-brown gouraud rings (pool task) */

@@ -12,7 +12,7 @@
 #define FX_ARK_DARK_BLUE_RING 0x4 /* 'so' model: flat ring with a dark blue texture, work model slot 5 */
 #define FX_ARK_FIRE_RING   0x5 /* rings: white-yellow-red gouraud rings */
 #define FX_ARK_FLAT_PANEL  0x6 /* 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4 (look pending) */
-#define FX_ARK_BACKDROP    0x7 /* table: background layers for btlfx_drawBackdrop */
+#define FX_ARK_BACKDROP    0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ARK_GREY_STAR_DISC 0x9 /* 'so' model: shallow disc with a grey radial texture, work model slot 2 */
 #define FX_ARK_GOLD_SPARKS 0xB /* emitter: tube of small gold spark sprites */
 #define FX_ARK_STARFIELD   0x10 /* sprite: faint starfield drawn on screen */

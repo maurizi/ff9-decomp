@@ -65,25 +65,25 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0f4 | 0x2 | `FX_SHIFT_BREAK_WHITE_RINGS` | render | emitter: white gouraud rings in a cone + a textured ring (texture not resolved) |
 | fx_0f4 | 0x3 | `FX_SHIFT_BREAK_RAINBOW_HALO` | render | emitter: orbiting particles, dark disc with a rainbow rim |
 | fx_0f4 | 0x4 | `FX_SHIFT_BREAK_VIOLET_HALO` | render | emitter: orbiting white swirl marks + blue-violet glow ring |
-| fx_0f4 | 0x8 | `FX_SHIFT_BREAK_BACKDROP` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_0f4 | 0x8 | `FX_SHIFT_BREAK_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0f4 | 0xA | `FX_SHIFT_BREAK_DOME` | render | model: stepped dome, white texture |
 | fx_0f4 | 0xB | `FX_SHIFT_BREAK_DOME_2` | render | model: stepped dome, white texture (byte-identical to entry 0xA) |
 | fx_0f4 | 0xC | `FX_SHIFT_BREAK_CONE_RINGS` | kind/usage (look pending) | emitter: textured rings in a cone; the render reads garbled multicolour texels (texture not resolved) |
 | fx_0f4 | 0xD | `FX_SHIFT_BREAK_LIGHTNING` | render | emitter: white-cyan gouraud rings + blue lightning streak particles |
-| fx_0f4 | 0xE | `FX_SHIFT_BREAK_BACKDROP_2` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_0f4 | 0xE | `FX_SHIFT_BREAK_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0f5 | 0x7 | `FX_STELLAR_CIRCLE_5_SMOKE` | render | emitter: grey smoke cloud, 20 animated frames |
 | fx_0f5 | 0x9 | `FX_STELLAR_CIRCLE_5_CLOUD_DOME` | render (fxdata d6121033) | 'so' model: shallow dome with a grey-violet cloud texture |
 | fx_0f6 | 0xD | `FX_MEO_TWISTER_WIND_RINGS` | render | emitter: white / pale-cyan gouraud rings in a cone + a fan element |
 | fx_0f6 | 0xE | `FX_MEO_TWISTER_FIRE_ORBS` | render | emitter: red / yellow / green gouraud rings + fiery orb particles |
-| fx_0f7 | 0x2 | `FX_SOLUTION_9_BACKDROP_2` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
-| fx_0f7 | 0x4 | `FX_SOLUTION_9_BACKDROP` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_0f7 | 0x2 | `FX_SOLUTION_9_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_0f7 | 0x4 | `FX_SOLUTION_9_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0f7 | 0x5 | `FX_SOLUTION_9_RUNES` | render | sprite: red glowing rune glyphs (large) |
 | fx_0f7 | 0xB | `FX_SOLUTION_9_BLUE_RINGS` | render | emitter: white-blue gouraud rings + textured rings (texture not resolved) |
 | fx_0f7 | 0xC | `FX_SOLUTION_9_RUNES_2` | render | sprite: red glowing rune glyphs (small) |
 | fx_0f7 | 0xE | `FX_SOLUTION_9_RUNE_RINGS` | render | emitter: white-blue gouraud rings + red rune particles, fan elements |
 | fx_0f7 | 0xF | `FX_SOLUTION_9_HALO_RINGS` | render | emitter: white-blue gouraud rings + dark ring with a rainbow rim |
-| fx_0f8 | 0x1 | `FX_GRAND_LETHAL_BACKDROP` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
-| fx_0f8 | 0x2 | `FX_GRAND_LETHAL_BACKDROP_2` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_0f8 | 0x1 | `FX_GRAND_LETHAL_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_0f8 | 0x2 | `FX_GRAND_LETHAL_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0f8 | 0x3 | `FX_GRAND_LETHAL_PINK_FLARES` | render | emitter: pink lens-flare glows and streaks |
 | fx_0f8 | 0xD | `FX_GRAND_LETHAL_SPRITE_RINGS` | kind/usage (look pending) | emitter: white / cyan / blue / grey gouraud rings with a sprite that renders as a flat violet square (texture not in the file) |
 | fx_0f8 | 0xE | `FX_GRAND_LETHAL_SWIRL_RINGS` | kind/usage (look pending) | emitter: white swirl sprite with textured rings; the rings still read garbled multicolour texels (texture not resolved) |
@@ -102,8 +102,8 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0fb_0 | 0xA | `FX_MADEEN_BLUE_RINGS` | render | rings: white-blue gouraud rings, 16 frames |
 | fx_0fb_0 | 0xB | `FX_MADEEN_DUST_CLOUD` | render | emitter: tan dust puffs, 27 animated frames |
 | fx_0fb_0 | 0xC | `FX_MADEEN_ROCK_SPIRAL` | render | emitter: teal-green rock debris rising in a spiral |
-| fx_0fb_0 | 0xD | `FX_MADEEN_BACKDROP` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
-| fx_0fb_0 | 0xE | `FX_MADEEN_BACKDROP_2` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_0fb_0 | 0xD | `FX_MADEEN_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_0fb_0 | 0xE | `FX_MADEEN_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0fb_0 | 0xF | `FX_MADEEN_BLUE_RING_2` | render | emitter: white-blue gouraud ring |
 | fx_0fb_0 | 0x10 | `FX_MADEEN_BLUE_GLOW` | render | particles: blue glowing dot (byte-identical to fx_0fb_1 entry 0xa) |
 | fx_0fb_0 | 0x14 | `FX_MADEEN_WHITE_RINGS` | render | rings: white-blue gouraud rings, five rings |
@@ -125,7 +125,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0fb_1 | 0xE | `FX_MADEEN_BLUE_SPECKS` | render | emitter: small blue specks in a spiral |
 | fx_0fb_1 | 0xF | `FX_MADEEN_BLUE_RINGS_2` | render | rings: navy-blue gouraud rings |
 | fx_0fb_1 | 0x10 | `FX_MADEEN_PALE_RINGS` | render | rings: white / pale-cyan / grey gouraud rings, 8 frames |
-| fx_0fb_1 | 0x11 | `FX_MADEEN_BACKDROP_3` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_0fb_1 | 0x11 | `FX_MADEEN_BACKDROP_3` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0fb_1 | 0x12 | `FX_MADEEN_WHITE_RINGS` | render | rings: white to grey fading gouraud rings, 8 frames |
 | fx_0fb_1 | 0x13 | `FX_MADEEN_RAINBOW_ARCH` | render | model: arch, rainbow-cloud texture |
 | fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file (magenta in the render) |
@@ -253,7 +253,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_113 | 0x5 | `FX_VIRUS_COMBO_PUFF` | render | emitter: pink-white puffs fading in a cone |
 | fx_114 | 0x3 | `FX_IFRIT_EMBERS` | render | emitter: tiny ember specks orbiting |
 | fx_114 | 0x5 | `FX_IFRIT_FIRE_RING` | render | emitter: orange-red to white gouraud ring |
-| fx_114 | 0x6 | `FX_IFRIT_BACKDROP` | kind/usage | table: backdrop layers (btlfx_drawBackdrop) |
+| fx_114 | 0x6 | `FX_IFRIT_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_114 | 0x7 | `FX_IFRIT_EMBER_TRAIL` | render | emitter: orbiting screen trail (red strip) + ember sprites |
 | fx_114 | 0x8 | `FX_IFRIT_ROCK_RINGS` | render | emitter: rings textured with a golden rock pattern, 16 frames |
 | fx_114 | 0x9 | `FX_IFRIT_FLAME_LINE` | render (fxdata d6121033) | emitter: two orbiting fans, a thin horizontal orange flame line |
