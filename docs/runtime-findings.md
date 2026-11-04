@@ -4221,7 +4221,7 @@ string 2n). New states: disc 4 `r41b_wm_disc4_memoria_orb`, `r41b_wm_disc4_windm
   128-175, all inside this bank. So the field never re-uploads it because it is always resident. Not seen requested by
   a field in this pass. high (identity), medium (field use).
 
-## Effect-data runtime pass (fxdata_runtime.md)  (status: proposed)
+## Effect-data runtime pass (fxdata_runtime.md)  (status: **applied**: renamed and confirmed names in include/fxmod, low ones still marked "(look pending: low)", still-unknown ones pending with the reason; btlfx_drawBackdrop -> btlfx_drawLayerTexture, btlfx_drawBackdropSprite -> btlfx_drawLayerSprite; name clashes taken as FX_METEOR_RED_ROCK and FX_(LV4_)HOLY_LENS_FLARE_LINE)
 
 Checklist `docs/wip/fxdata_runtime.md`, groups P1, P2, P4, P6, P3 done (P7, P5 and the E groups not started). All runs
 from disc 3 `disc3_malboro_lv99_calm` (Zidane / Vivi / Dagger / Eiko Lv 99, enemies calmed by walking Battle.unitList:
