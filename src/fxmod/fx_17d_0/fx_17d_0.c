@@ -185,10 +185,10 @@ static s32 fx_17d_0_op80PoolTask(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk8
         p->pos8.vz += p->speed2 + 0x186;
         env->otZ = -0x80;
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x22), (s32)&p->pos8, 0, -1, 0x800, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_TRAIL), (s32)&p->pos8, 0, -1, 0x800, 0x1000, 1,
                               fx_17d_0_partTrails[p->index4], 0);
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x22), (s32)&p->pos8, 0, 0, 0x800, 0x1000, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_TRAIL), (s32)&p->pos8, 0, 0, 0x800, 0x1000, 1,
                           fx_17d_0_partTrails[p->index4], 0);
         env->otZ = 0;
         if (frame >= 0x10) {
@@ -222,7 +222,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->frame4 = 0;
         fx_17d_0_env = env;
         ex->btlfx_initEffModels(fx_17d_0_effModels, 0x20);
-        work->modelBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
+        work->modelBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SO_MODEL), 0);
         BTLFX_COPY_SVEC(&work->pos8, &fx_17d_0_basePos);
         work->pos18.vy = -0x1000;
         work->pos18.vx = 0;
@@ -305,7 +305,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             abr = 1;
             spriteX = ((0x1000 - ex->math_sin(phase)) >> 5) + 0xA0;
             spriteY = 0x6E - ((0x1000 - ((0x1000 - ex->math_cos(swayAng)) >> 1)) >> 3);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x1D), spriteX, spriteY, 0, 0xFF, t);
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), spriteX, spriteY, 0, 0xFF, t);
             gridBright = 0x60 - gridScale;
             if (frame >= 0x50) {
                 work->state0 = code;
@@ -343,7 +343,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 BTLFX_COPY_SVEC(&work->pos40, &work->pos8);
                 work->pos40.vy -= 0x140;
                 work->pos40.vz += 0x1000;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->pos40);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_VIOLET_RING), (s32)&work->pos40);
                 if (emitter != NULL) {
                     emitter->otZ = -0x100;
                 }
@@ -375,7 +375,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             fx_17d_0_drawPieces(entry, &work->pos10, frame % 10, (s32)work->model5C, work->model86, pieceScale);
             if (frame < 0x58) {
                 spriteY = (frame >> 2) + 0x6E;
-                ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x1D), 0xA0, spriteY, 0, 0xFF, alpha);
+                ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), 0xA0, spriteY, 0, 0xFF, alpha);
             }
             code = 1;
             abr = 1;
@@ -417,7 +417,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s32 unused2;
                 s32 unused3;
 
-                track = (s16 *)ex->btlfx_getFileData(entry->file, 0x1E);
+                track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_MORPH_PATH);
                 key = frame;
                 if (key >= track[1]) {
                     key = track[1] - 1;
@@ -429,9 +429,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vx = track[3];
                 rot.vy = track[4];
                 rot.vz = -track[5];
-                track = (s16 *)ex->btlfx_getFileData(entry->file, 0x1B);
+                track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_MORPH_KEYS);
                 if (frame >= track[1]) {
-                    track = (s16 *)ex->btlfx_getFileData(entry->file, 0x20);
+                    track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_MORPH_KEYS_2);
                     key = frame - (track[1] - 1);
                     if (key >= track[1]) {
                         key = track[1] - 1;
@@ -444,7 +444,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame >= 0x8E) {
-                track = (s16 *)ex->btlfx_getFileData(entry->file, 0x1F);
+                track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_MORPH_PATH_2);
                 key = frame;
                 if (key >= track[1]) {
                     key = track[1] - 1;
@@ -456,7 +456,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vx = track[3];
                 rot.vy = track[4];
                 rot.vz = -track[5];
-                track = (s16 *)ex->btlfx_getFileData(entry->file, 0x21);
+                track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_MORPH_KEYS_3);
                 key = frame;
                 if (key >= track[1]) {
                     key = track[1] - 1;
@@ -558,7 +558,7 @@ s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
         fx_17d_0_env = env;
     } else {
         frame = entry->frame;
-        track = (s16 *)ex->btlfx_getFileData(entry->file, 0x1A);
+        track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_CAMERA_KEYS);
         key = frame;
         if (key >= track[1]) {
             key = track[1] - 1;
@@ -570,14 +570,14 @@ s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
         env->camera->points[0].vx = camPos.vx;
         env->camera->points[0].vy = camPos.vy;
         env->camera->points[0].vz = camPos.vz;
-        track = (s16 *)ex->btlfx_getFileData(entry->file, 0x25);
+        track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_CAMERA_ROLL_KEYS);
         key = frame;
         if (key >= track[1]) {
             key = track[1] - 1;
         }
         track += key * 3 + 2;
         env->camera->pointRots[0].vz = track[2];
-        track = (s16 *)ex->btlfx_getFileData(entry->file, 0x19);
+        track = (s16 *)ex->btlfx_getFileData(entry->file, FX_ARK_CAMERA_KEYS_2);
         key = frame;
         if (key >= track[1]) {
             key = track[1] - 1;

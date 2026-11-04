@@ -4,6 +4,19 @@
 /* Effect module fx_17d_6 (dir 13 file 0x17d): Ark, full summon (load group 6). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_FAN_EMITTER   0x1 /* emitter: one fan element (not rendered) (look pending) */
+#define FX_ARK_GOLD_SPARKLES 0x2 /* emitter: gold square sparkles */
+#define FX_ARK_FLAME_BURST   0x4 /* emitter: red-orange flame burst sprites (partly white: texture mix) */
+#define FX_ARK_CLOUD_TRAIL   0x5 /* emitter: orbiting 3D trails with a grey cloud texture */
+#define FX_ARK_ORANGE_RING   0x6 /* rings: white-orange-brown gouraud rings */
+#define FX_ARK_RED_RING      0xA /* rings: red to dark red gouraud rings */
+#define FX_ARK_PEACH_RING    0xB /* rings: white-peach-mauve gouraud rings */
+#define FX_ARK_FAN_EMITTER_2 0xC /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_ARK_SPRITE_LINE   0xD /* sprite line: green textures, partly not resolved (look pending) */
+#define FX_ARK_GREY_RING     0xE /* emitter: grey-white gouraud ring */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

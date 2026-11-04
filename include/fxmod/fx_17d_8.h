@@ -4,6 +4,19 @@
 /* Effect module fx_17d_8 (dir 13 file 0x17d): Ark, full summon (load group 8). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_MODEL_0     0x1 /* 'so' model (not drawn by the tool), work model slot 0 (look pending) */
+#define FX_ARK_MODEL_1     0x2 /* 'so' model (not drawn by the tool), work model slot 1 (look pending) */
+#define FX_ARK_MODEL_3     0x3 /* 'so' model (not drawn by the tool), work model slot 3 (look pending) */
+#define FX_ARK_MODEL_5     0x4 /* 'so' model (not drawn by the tool), work model slot 5 (look pending) */
+#define FX_ARK_FIRE_RING   0x5 /* rings: white-yellow-red gouraud rings */
+#define FX_ARK_MODEL_4     0x6 /* 'so' model (not drawn by the tool), work model slot 4 (look pending) */
+#define FX_ARK_BACKDROP    0x7 /* table: background layers for btlfx_drawBackdrop */
+#define FX_ARK_MODEL_2     0x9 /* 'so' model (not drawn by the tool), work model slot 2 (look pending) */
+#define FX_ARK_GOLD_SPARKS 0xB /* emitter: tube of small gold spark sprites */
+#define FX_ARK_STARFIELD   0x10 /* sprite: faint starfield drawn on screen */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */

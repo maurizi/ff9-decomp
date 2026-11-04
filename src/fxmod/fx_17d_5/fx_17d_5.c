@@ -24,7 +24,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
     switch (it->state0) {
     case 0:
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)&it->pos8, NULL, -1, 0, 0, 0, it->trail18, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL), (s32)&it->pos8, NULL, -1, 0, 0, 0, it->trail18, 0);
         }
         if (frame < 20) {
             it->speed2 += ex->math_cos((frame << 10) / 20) >> 7;
@@ -54,7 +54,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
             it->angle10 += (ex->math_sin(wobbleAng + it->angle12) * wobble) >> 12;
             it->angle12 -= (ex->math_cos(wobbleAng - it->angle10) * wobble) >> 12;
             ex->btlfx_pointAhead((s16 *)head, &it->angle10, it->speed2, (s16 *)head);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)head, NULL, 0, wobble * 16 + 0x140, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL), (s32)head, NULL, 0, wobble * 16 + 0x140, 0x1000, 1,
                                 it->trail18, 0);
             if (parent->state0 > 0) {
                 it->flag14 = 1;
@@ -72,7 +72,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
             it->angle12 -= (ex->math_cos(wobbleAng - it->angle10) * wobble) >> 12;
             ex->btlfx_pointAhead((s16 *)head, &it->angle10, it->speed2, (s16 *)head);
             env->otZ = 0xFF;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)head, NULL, 0, it->width22 - frame * 0x23A,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL), (s32)head, NULL, 0, it->width22 - frame * 0x23A,
                                 0x1000, 1, it->trail18, 0);
             env->otZ = 0;
             if (it->index6 == 1) {
@@ -86,7 +86,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
         break;
     case 1:
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&it->pos8, NULL, -1, 0, 0, 0, it->trail18, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, -1, 0, 0, 0, it->trail18, 0);
         }
         trailScale = 0x1800;
         it->pos8.vz += 0x300;
@@ -94,7 +94,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
         if (it->angle10 == FX_17D_5_HIT_FINAL) {
             trailScale = 0x5000;
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&it->pos8, NULL, 0, trailScale, 0x1000, 1, it->trail18, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, trailScale, 0x1000, 1, it->trail18, 0);
         if (frame >= 7) {
             it->state0 = 2;
             ((s16 *)it)[-1] = -1;
@@ -105,7 +105,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
                 flash = (ex->btlfx_rand() & 0x1F) + 0x28;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, flash, flash, flash);
             } else {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&it->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_PLANET_FRAGMENTS), (s32)&it->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -116,15 +116,15 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
     case 2:
         t = (frame << 12) / 24;
         if (frame < 8) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&it->pos8, NULL, 0, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, 0x1000, 0x1000, 1,
                                 it->trail18, 0);
         }
         env->otZ = 0x140;
         if (it->angle10 != FX_17D_5_HIT_BURST) {
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &it->pos8, NULL, 0x1000, frame, 1, 0xAAA);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &it->pos8, NULL, 0x1000, frame, 1, 0xAAA);
             env->otZ = 0;
         } else {
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 8), &it->pos8, NULL, 0x1000, frame, 1, 0xC00,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PLANET), &it->pos8, NULL, 0x1000, frame, 1, 0xC00,
                                     0, 0);
             env->otZ = 0;
         }
@@ -154,7 +154,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
     case 3:
         t = frame << 7;
         if (frame < 8) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&it->pos8, NULL, 0, 0x5000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, 0x5000, 0x1000, 1,
                                 it->trail18, 0);
             if (frame < 6) {
                 fade = 0x80 - t / 6;
@@ -162,7 +162,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
             }
         }
         env->otZ = 0x400;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &it->pos8, NULL, 0x1800, frame, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &it->pos8, NULL, 0x1800, frame, 1, 0x1000);
         env->otZ = 0;
         ang.vz = 0;
         ang.vx = 0;
@@ -274,20 +274,20 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->model84, 1);
             ex->Hi_ModifyEffModelRGB(work->model84, 0, 0, 0);
             if (frame == 0x1F) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_CREAM_RING), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = -0xF0;
                 }
             }
             if (frame == 0x1B) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_LILAC_RING), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
             lineFrame = frame - 0x20;
             if ((u32)lineFrame < 0x10) {
-                lineData = (u8 *)ex->btlfx_getFileData(entry->file, 0xD);
+                lineData = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_SPRITE_LINE);
                 lineFrame <<= 12;
                 ex->btlfx_drawSpriteLine(lineData, &work->posC, lineFrame >> 12, ex->math_cos(lineFrame >> 6));
             }
@@ -424,7 +424,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &fx_17d_5_targetPos, &rot, 0x5000, 0, 1, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &fx_17d_5_targetPos, &rot, 0x5000, 0, 1, -1);
             }
             if (frame >= 0x20) {
                 work->state0 = 3;
@@ -511,7 +511,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &fx_17d_5_targetPos, &rot, 0x5000, 0, 1, ringAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &fx_17d_5_targetPos, &rot, 0x5000, 0, 1, ringAlpha);
             }
             ex->btlfx_drawScrollMove(frame * 29, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
             if (frame >= 0x38) {
@@ -557,7 +557,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             scale.vx = scale.vy = scale.vz = (fade >> 7) + 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, (CVECTOR *)&aim, flag, 0);
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->frame4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
         work->frame4++;
     }
     return 0;

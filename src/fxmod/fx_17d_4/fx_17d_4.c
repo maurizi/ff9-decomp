@@ -305,7 +305,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos10.vx = work->pos48.vx;
                 work->pos10.vz = work->pos48.vz;
                 work->pos10.vy -= 0x400;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_GREEN_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_4_op80Trails;
                     emitter->trailSlots = 0x30;
@@ -473,7 +473,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vy = work->pos20.vy;
             env->camera->points[2].vz = work->pos20.vz;
             if (frame == 0) {
-                sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
+                sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_MAGENTA_RING), (s32)&work->pos10);
                 if (sparkEmitter != NULL) {
                     sparkEmitter->otZ = 0x8C;
                 }
@@ -483,7 +483,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 8) {
                 ringAlpha = frame << 9;
             }
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->pos10, NULL, 0x1000, 0, 1, ringAlpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &work->pos10, NULL, 0x1000, 0, 1, ringAlpha);
             if (frame >= 6) {
                 lineFade = ((frame - 6) << 12) / 14;
             } else {
@@ -522,7 +522,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             lineTop.vx = ringPos.vx;
             lineTop.vy = work->pos8.vy - 0x1000;
             lineTop.vz = ringPos.vz;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &ringPos, NULL, 0xAAA, 0, 1, phase);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, 0xAAA, 0, 1, phase);
             fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &ringPos, &lineTop, frame, phase, 1, 0x20);
             env->otZ = 0;
             if (frame >= 0x18) {
@@ -540,7 +540,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->otZ = 0x10;
             ramp = (frame << 12) / 51;
             fadeOut = 0x1000 - ramp;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &basePos, NULL, 0xAAA, 0, 1, fadeOut);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &basePos, NULL, 0xAAA, 0, 1, fadeOut);
             fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &basePos, &baseTop, frame, fadeOut, 1,
                           (ramp >> 7) + 0x20);
             env->otZ = 0;
@@ -552,14 +552,14 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 flashAng = (frame << 12) >> 6;
                 flashScale = ex->math_sin(flashAng) * 5;
                 flashAlpha = ex->math_cos(flashAng);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &basePos, &flatRot, flashScale, 0, 1, flashAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &basePos, &flatRot, flashScale, 0, 1, flashAlpha);
             }
             if (frame >= 0x1E) {
                 alpha = (frame - 0x1E) << 9;
                 if (alpha > 0x1000) {
                     alpha = 0x1000;
                 }
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &basePos, &flatRot, 0x5000, 0, 1, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &basePos, &flatRot, 0x5000, 0, 1, alpha);
             }
             flag = 0;
             if (frame < 0x26) {

@@ -4,6 +4,11 @@
 /* Effect module fx_17d_1 (dir 13 file 0x17D): Ark, full summon (load group 1). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_FIRE_RING       0x5 /* rings: white-yellow-red gouraud rings */
+#define FX_ARK_ORANGE_SPARKLES 0x8 /* emitter: orange square sparkles */
+
 extern Unk800F78A4 *fx_17d_1_env;
 
 void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);

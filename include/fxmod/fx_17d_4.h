@@ -4,6 +4,13 @@
 /* Effect module fx_17d_4 (dir 13 file 0x17d): Ark, full summon (load group 4). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_GREEN_TRAIL    0x1 /* emitter: orbiting 3D trails with a green-blue texture */
+#define FX_ARK_RED_RING       0x3 /* rings: white-pink-red gouraud rings */
+#define FX_ARK_RED_FLASH_RING 0x5 /* rings: red-white flat flash ring */
+#define FX_ARK_MAGENTA_RING   0x17 /* emitter: grey noise rings and white-magenta-purple gouraud rings */
+
 extern Unk800F78A4 *fx_17d_4_env;
 extern s16 fx_17d_4_particleFileIds[16];
 extern SVECTOR fx_17d_4_particleOffsets[3];

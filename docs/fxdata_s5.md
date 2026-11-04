@@ -16,6 +16,31 @@ Notes:
 - `tools/fxdata.py` at 8ff097d8 crashes on uses without a `call` (`u.get('call', '')` on a None value); the
   renders here came from a local copy with `(u.get('call') or '')`.
 
+- Twins: fx_182 (Countdown, Elan) shares only the backdrop table byte for byte with fx_181; its two emitters
+  (0x3, 0x6) differ in bytes but render the same as fx_181 0x2 / 0x3 and got the same names. fx_185 (Spear,
+  2nd) shares the spear model with fx_184 byte for byte; its ring emitter differs and is named by its render.
+  fx_183's 'so' model 0x1D has the spear model's size (0xB18) but other bytes.
+
+## Ark: not named yet
+
+`tools/fxdata.py` (8ff097d8) does not analyse the summon data (indices 0x80+, `g_btlfxLoader.summon`), and for
+some Ark groups its slot split disagrees with the C (entries the C registers as models or draws as trails come
+out empty), so those literals stay numbers until the summon-data update lands:
+
+| module | indices left as literals | why |
+|---|---|---|
+| fx_17d_1 | 0x9D, 0x9E, 0x9F | summon data |
+| fx_17d_2 | all (1, 2, 3, 5, 7, 8, 9, 0xA, 0xB) | the tool's group 2 slot has 0x5-0xC empty (entry 4 is 0x8210 bytes), so the split is wrong |
+| fx_17d_3 | 0x80, 0x81, 0x82, 0x83 | summon data |
+| fx_17d_4 | 0x1D, 0x1F, 0x20, 0x21 / 0x84, 0x86, 0x8A | empty in the tool's split / summon data |
+| fx_17d_5 | 0x85, 0x87, 0x88, 0x91, 0x9B | summon data |
+| fx_17d_6 | 0x8B, 0x8D | summon data |
+| fx_17d_7 | 0x11 / 0x8C, 0x8E-0x90, 0x92-0x9A | empty in the tool's split / summon data |
+
+Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModelFileIds`, `fx_17d_4_strandInfo`,
+`fx_17d_4_pointFileIds`, `fx_17d_4_particleFileIds`, `fx_12b_pathFileIds*`, `fx_138_*FileIds`,
+`fx_183_*FileIds`, `fx_186_modelFileIds*`) have no literal and are not named.
+
 ## Table
 
 | module | index | name | evidence | what it is |
@@ -143,6 +168,67 @@ Notes:
 | fx_17a | 0x11 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file |
 | fx_17a | 0x12 | `FX_MADEEN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | fx_17a | 0x13 | `FX_MADEEN_BLUE_STREAKS` | render | emitter: orbiting blue light streaks |
+| fx_17d_0 | 0x19 | `FX_ARK_CAMERA_KEYS_2` | usage | table: per-frame position keys for camera point 1 (op 0x82) |
+| fx_17d_0 | 0x1A | `FX_ARK_CAMERA_KEYS` | usage | table: per-frame position keys for camera point 0 (op 0x82) |
+| fx_17d_0 | 0x1B | `FX_ARK_MORPH_KEYS` | usage | table: per-frame morph weights, first morph pair |
+| fx_17d_0 | 0x1C | `FX_ARK_SO_MODEL` | kind/usage (look pending) | 'so' model (not drawn by the tool), registered at the start of op 0x80 |
+| fx_17d_0 | 0x1D | `FX_ARK_RED_ROCK_LAYER` | render | sprite: red-brown rock / cloud texture drawn on screen |
+| fx_17d_0 | 0x1E | `FX_ARK_MORPH_PATH` | usage | table: per-frame position + rotation keys for the first morph models |
+| fx_17d_0 | 0x1F | `FX_ARK_MORPH_PATH_2` | usage | table: per-frame position + rotation keys for the second morph models |
+| fx_17d_0 | 0x20 | `FX_ARK_MORPH_KEYS_2` | usage | table: per-frame morph weights, second morph pair |
+| fx_17d_0 | 0x21 | `FX_ARK_MORPH_KEYS_3` | usage | table: per-frame morph weights for the second morph models |
+| fx_17d_0 | 0x22 | `FX_ARK_GREY_TRAIL` | render | trail: grey noise strip (pool task) |
+| fx_17d_0 | 0x23 | `FX_ARK_VIOLET_RING` | render | emitter: white-violet-blue and white-cream-purple gouraud rings |
+| fx_17d_0 | 0x25 | `FX_ARK_CAMERA_ROLL_KEYS` | usage | table: per-frame keys whose third value is camera point 0 roll (op 0x82) |
+| fx_17d_1 | 0x5 | `FX_ARK_FIRE_RING` | render | rings: white-yellow-red gouraud rings |
+| fx_17d_1 | 0x8 | `FX_ARK_ORANGE_SPARKLES` | render | emitter: orange square sparkles |
+| fx_17d_3 | 0x1 | `FX_ARK_SMOKE_TRAIL` | render | emitter: spiralling screen trail with a blue-grey smoke texture, orange embers |
+| fx_17d_3 | 0x2 | `FX_ARK_CLOUD_TRAIL` | render | emitter: two spiralling screen trails with a grey cloud texture |
+| fx_17d_3 | 0x4 | `FX_ARK_SMOKE_TRAIL_2` | render | emitter: spiralling screen trail with a blue-grey smoke texture, orange embers |
+| fx_17d_3 | 0x6 | `FX_ARK_SMOKE_TRAIL_3` | render | emitter: spiralling screen trail with a blue-grey smoke texture, orange embers |
+| fx_17d_3 | 0x9 | `FX_ARK_DUST_CLOUD` | render | emitter: grey dust clouds and grey sparks |
+| fx_17d_3 | 0xE | `FX_ARK_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_17d_4 | 0x1 | `FX_ARK_GREEN_TRAIL` | render | emitter: orbiting 3D trails with a green-blue texture |
+| fx_17d_4 | 0x3 | `FX_ARK_RED_RING` | render | rings: white-pink-red gouraud rings |
+| fx_17d_4 | 0x5 | `FX_ARK_RED_FLASH_RING` | render | rings: red-white flat flash ring |
+| fx_17d_4 | 0x17 | `FX_ARK_MAGENTA_RING` | render | emitter: grey noise rings and white-magenta-purple gouraud rings |
+| fx_17d_5 | 0x1 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_17d_5 | 0x2 | `FX_ARK_CREAM_RING` | render | emitter: cream-white and white-grey-violet gouraud rings |
+| fx_17d_5 | 0x3 | `FX_ARK_LILAC_RING` | render | emitter: dark noise particle + lilac-white gouraud ring |
+| fx_17d_5 | 0x4 | `FX_ARK_ORANGE_RING` | render | rings: white-orange-brown gouraud rings (pool task) |
+| fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | kind/usage (look pending) | trail: strip texture not resolved (noise and green) |
+| fx_17d_5 | 0x8 | `FX_ARK_PLANET` | render | particles: green-tinted planet with cloud swirls, fading |
+| fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | kind/usage (look pending) | trail: strip texture not resolved (noise and green) |
+| fx_17d_5 | 0xA | `FX_ARK_PLANET_FRAGMENTS` | render | emitter: sprites of planet-surface fragments |
+| fx_17d_5 | 0xB | `FX_ARK_RED_FLASH_RING` | render | rings: red-white flat flash ring |
+| fx_17d_5 | 0xD | `FX_ARK_SPRITE_LINE` | kind/usage (look pending) | sprite line: textures partly not resolved |
+| fx_17d_6 | 0x1 | `FX_ARK_FAN_EMITTER` | kind/usage (look pending) | emitter: one fan element (not rendered) |
+| fx_17d_6 | 0x2 | `FX_ARK_GOLD_SPARKLES` | render | emitter: gold square sparkles |
+| fx_17d_6 | 0x4 | `FX_ARK_FLAME_BURST` | render | emitter: red-orange flame burst sprites (partly white: texture mix) |
+| fx_17d_6 | 0x5 | `FX_ARK_CLOUD_TRAIL` | render | emitter: orbiting 3D trails with a grey cloud texture |
+| fx_17d_6 | 0x6 | `FX_ARK_ORANGE_RING` | render | rings: white-orange-brown gouraud rings |
+| fx_17d_6 | 0xA | `FX_ARK_RED_RING` | render | rings: red to dark red gouraud rings |
+| fx_17d_6 | 0xB | `FX_ARK_PEACH_RING` | render | rings: white-peach-mauve gouraud rings |
+| fx_17d_6 | 0xC | `FX_ARK_FAN_EMITTER_2` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_17d_6 | 0xD | `FX_ARK_SPRITE_LINE` | kind/usage (look pending) | sprite line: green textures, partly not resolved |
+| fx_17d_6 | 0xE | `FX_ARK_GREY_RING` | render | emitter: grey-white gouraud ring |
+| fx_17d_7 | 0x1 | `FX_ARK_ROCK_DEBRIS` | render | emitter: grey-blue rock chunks |
+| fx_17d_7 | 0x2 | `FX_ARK_FAN_EMITTER` | kind/usage (look pending) | emitter: fan elements (not rendered) |
+| fx_17d_7 | 0x4 | `FX_ARK_ROCK_DEBRIS_2` | render | emitter: grey-blue rock chunks |
+| fx_17d_7 | 0x6 | `FX_ARK_PALE_RING` | render | emitter: white-cream-violet and white-peach-mauve gouraud rings |
+| fx_17d_7 | 0x7 | `FX_ARK_VIOLET_RING` | render | emitter: white-cream-violet and white-purple-blue gouraud rings |
+| fx_17d_7 | 0xA | `FX_ARK_GOLD_GLOW` | render | emitter: golden glow flash |
+| fx_17d_7 | 0xD | `FX_ARK_ORANGE_RING` | render | emitter: two fans (not rendered) + white-orange gouraud rings |
+| fx_17d_8 | 0x1 | `FX_ARK_MODEL_0` | kind/usage (look pending) | 'so' model (not drawn by the tool), work model slot 0 |
+| fx_17d_8 | 0x2 | `FX_ARK_MODEL_1` | kind/usage (look pending) | 'so' model (not drawn by the tool), work model slot 1 |
+| fx_17d_8 | 0x3 | `FX_ARK_MODEL_3` | kind/usage (look pending) | 'so' model (not drawn by the tool), work model slot 3 |
+| fx_17d_8 | 0x4 | `FX_ARK_MODEL_5` | kind/usage (look pending) | 'so' model (not drawn by the tool), work model slot 5 |
+| fx_17d_8 | 0x5 | `FX_ARK_FIRE_RING` | render | rings: white-yellow-red gouraud rings |
+| fx_17d_8 | 0x6 | `FX_ARK_MODEL_4` | kind/usage (look pending) | 'so' model (not drawn by the tool), work model slot 4 |
+| fx_17d_8 | 0x7 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_17d_8 | 0x9 | `FX_ARK_MODEL_2` | kind/usage (look pending) | 'so' model (not drawn by the tool), work model slot 2 |
+| fx_17d_8 | 0xB | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites |
+| fx_17d_8 | 0x10 | `FX_ARK_STARFIELD` | render | sprite: faint starfield drawn on screen |
 | fx_17e | 0x2 | `FX_CHESTNUT_IMPACT_RINGS` | render | emitter: white-pink-red-yellow and white-grey gouraud rings + spark sprites (texture not in the file) |
 | fx_17e | 0x9 | `FX_CHESTNUT_CHESTNUT_MODEL` | kind/usage (look pending) | 'so' model (not drawn by the tool), probably the thrown chestnut |
 | fx_17f | 0x1 | `FX_MELT_PINK_SMOKE` | render | emitter: pink smoke puffs |
@@ -249,6 +335,21 @@ Each wants one screenshot of the effect at the frame the C starts the entry (bat
 | fx_17a | 0x9 | `FX_MADEEN_INFINITY_LOOP` | model: figure-eight band (15-bit texture page 0x138, not resolved) |
 | fx_17a | 0xD | `FX_MADEEN_FAN_EMITTER` | emitter: three fan elements (not rendered) |
 | fx_17a | 0x11 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file |
+| fx_17d_0 | 0x1C | `FX_ARK_SO_MODEL` | 'so' model (not drawn by the tool), registered at the start of op 0x80 |
+| fx_17d_3 | 0xE | `FX_ARK_FAN_EMITTER` | emitter: two fan elements (not rendered) |
+| fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | trail: strip texture not resolved (noise and green) |
+| fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | trail: strip texture not resolved (noise and green) |
+| fx_17d_5 | 0xD | `FX_ARK_SPRITE_LINE` | sprite line: textures partly not resolved |
+| fx_17d_6 | 0x1 | `FX_ARK_FAN_EMITTER` | emitter: one fan element (not rendered) |
+| fx_17d_6 | 0xC | `FX_ARK_FAN_EMITTER_2` | emitter: two fan elements (not rendered) |
+| fx_17d_6 | 0xD | `FX_ARK_SPRITE_LINE` | sprite line: green textures, partly not resolved |
+| fx_17d_7 | 0x2 | `FX_ARK_FAN_EMITTER` | emitter: fan elements (not rendered) |
+| fx_17d_8 | 0x1 | `FX_ARK_MODEL_0` | 'so' model (not drawn by the tool), work model slot 0 |
+| fx_17d_8 | 0x2 | `FX_ARK_MODEL_1` | 'so' model (not drawn by the tool), work model slot 1 |
+| fx_17d_8 | 0x3 | `FX_ARK_MODEL_3` | 'so' model (not drawn by the tool), work model slot 3 |
+| fx_17d_8 | 0x4 | `FX_ARK_MODEL_5` | 'so' model (not drawn by the tool), work model slot 5 |
+| fx_17d_8 | 0x6 | `FX_ARK_MODEL_4` | 'so' model (not drawn by the tool), work model slot 4 |
+| fx_17d_8 | 0x9 | `FX_ARK_MODEL_2` | 'so' model (not drawn by the tool), work model slot 2 |
 | fx_17e | 0x9 | `FX_CHESTNUT_CHESTNUT_MODEL` | 'so' model (not drawn by the tool), probably the thrown chestnut |
 | fx_180 | 0x2 | `FX_ULTIMA_NOISE_RING` | emitter: ring with a texture not resolved (noise) + pink gouraud ring |
 | fx_180 | 0xF | `FX_ULTIMA_NOISE_RING_2` | emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings |

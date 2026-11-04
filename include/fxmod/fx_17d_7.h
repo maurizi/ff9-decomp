@@ -4,6 +4,16 @@
 /* Effect module fx_17d_7 (dir 13 file 0x17d): Ark, full summon (load group 7). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_ROCK_DEBRIS   0x1 /* emitter: grey-blue rock chunks */
+#define FX_ARK_FAN_EMITTER   0x2 /* emitter: fan elements (not rendered) (look pending) */
+#define FX_ARK_ROCK_DEBRIS_2 0x4 /* emitter: grey-blue rock chunks */
+#define FX_ARK_PALE_RING     0x6 /* emitter: white-cream-violet and white-peach-mauve gouraud rings */
+#define FX_ARK_VIOLET_RING   0x7 /* emitter: white-cream-violet and white-purple-blue gouraud rings */
+#define FX_ARK_GOLD_GLOW     0xA /* emitter: golden glow flash */
+#define FX_ARK_ORANGE_RING   0xD /* emitter: two fans (not rendered) + white-orange gouraud rings */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
