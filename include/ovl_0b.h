@@ -1826,14 +1826,14 @@ typedef struct {
 #define BTLCAM_ANCHOR_SEQ_CENTER  0x0E /* Battle.seq.camTarget, at seq.camCenterX/Z */
 #define BTLCAM_ANCHOR_PARTNER     0x0F /* g_btlCamTargets.partner */
 #define BTLCAM_ANCHOR_POINT0      0x15 /* 0x15 + i: g_btlCamera.points[i] (and pointRots[i] for i < 4) */
-#define BTLCAM_ANCHOR_SAVED_EYE   0x19 /* points[4]: eye kept by BTLCAM_OP_SAVE_VIEW (btlcam_evalPath counts viewState) */
-#define BTLCAM_ANCHOR_SAVED_AT    0x1A /* points[5]: target kept by BTLCAM_OP_SAVE_VIEW */
+#define BTLCAM_ANCHOR_SAVED_EYE   0x19 /* points[4]: eye kept by BTLCAM_OP_SET_HOME_VIEW (btlcam_evalPath counts viewState) */
+#define BTLCAM_ANCHOR_SAVED_AT    0x1A /* points[5]: target kept by BTLCAM_OP_SET_HOME_VIEW */
 
 typedef struct {
     Unk800C412C0 keys[2]; /* from [0] and to [1] (btlcam_setPathKey shifts them) */
     u8 mode; /* BTLCAM_PATH_* */
     u8 wrapModes; /* per axis, 2 bits: how angles wrap while lerping (BTLCAM_WRAP_*) */
-    u8 easeModes; /* 2 bits per weight (BTLCAM_EASE_*; g_btlCamScript.accel) */
+    u8 easeModes; /* 2 bits per weight (BTLCAM_EASE_*; g_btlCamScript.easeSpeed) */
     u8 locked; /* keys set by camera flag 0x8000: the next command doesn't replace the mode or timing */
     u8 frames;
     u8 framesLeft; /* counts down in btlcam_step */
@@ -1844,8 +1844,8 @@ typedef struct {
 #define BTLCAM_MODE2_BITS  2
 #define BTLCAM_MODE2_MASK  3
 #define BTLCAM_EASE_LINEAR 0 /* weight falls evenly with framesLeft */
-#define BTLCAM_EASE_OUT    1 /* fast start, slowing by g_btlCamScript.accel */
-#define BTLCAM_EASE_IN     2 /* slow start */
+#define BTLCAM_EASE_IN     1 /* starts at g_btlCamScript.easeSpeed (at rest when 0) and speeds up (runtime) */
+#define BTLCAM_EASE_OUT    2 /* slows down to g_btlCamScript.easeSpeed (to rest when 0) (runtime) */
 #define BTLCAM_WRAP_SHORT  0 /* turn the short way round */
 #define BTLCAM_WRAP_UP     1 /* the to-angle gets + 0x1000 when it is not above the from-angle */
 #define BTLCAM_WRAP_DOWN   2 /* the from-angle gets + 0x1000 when it is not above the to-angle */
@@ -1862,17 +1862,21 @@ typedef struct {
  * eye / target path modes (BTLCAM_PATH_*). Evidence: [code] */
 #define BTLCAM_CMD_FRAME_MASK  0x3FF
 #define BTLCAM_CMD_PATH_BITS   3        /* path i's mode is (flags >> (i * 3)) & 7 */
-#define BTLCAM_OP_ACCEL        0x40     /* u8 g_btlCamScript.accel, pad */
-#define BTLCAM_OP_SAVE_VIEW    0x80     /* keep the current eye/target in points[4]/[5] */
-#define BTLCAM_OP_PAUSE        0x100    /* stop counting script frames until an effect step resumes them */
-#define BTLCAM_OP_SWAY         0x200    /* u8 g_btlCamScript.sway, pad */
-#define BTLCAM_OP_IDLE_SWAY    0x400    /* u8 g_btlCamera.idleSway, pad */
+#define BTLCAM_OP_EASE_SPEED   0x40     /* u8 g_btlCamScript.easeSpeed, pad */
+#define BTLCAM_OP_SET_HOME_VIEW 0x80    /* copy the eye/target (before bob and shake) to points[4]/[5], where the idle camera
+                                         * (scene data 1) and the target-select view sit: every intro sets it with its
+                                         * END_INTRO cue, so the battle's home view is where the intro ended (runtime) */
+#define BTLCAM_OP_PAUSE_CMD    0x100    /* stop counting script frames until the action resumes them: used by the command
+                                         * cameras (scene data 3/4), released when the cast ends (code) */
+#define BTLCAM_OP_BOB          0x200    /* u8 g_btlCamScript.bob (BTLCAM_BOB_*), pad: vertical bob of eye and target (runtime) */
+#define BTLCAM_OP_IDLE_BOB     0x400    /* u8 g_btlCamera.idleBob, pad: the bob used when a script sets none; outlives the script */
 #define BTLCAM_OP_ZOOM         0x800    /* u8 frames, u8 target, u16 projection distance (0: the default) */
 #define BTLCAM_OP_SHAKE        0x1000   /* u8 from, to, frames, axes (bits 0-1) */
 #define BTLCAM_OP_PICK_VARIANT 0x2000   /* effectPick = the playing variant */
 #define BTLCAM_OP_CUE          0x4000   /* u8 BTLCAM_CUE_END_INTRO, else Battle.subPhase++ (see there); pad */
-#define BTLCAM_OP_RETURN       0x8000   /* u8 path mode (bits 5-6), frames, easing: ends the script, back to the idle scene camera (scene data 1) */
-#define BTLCAM_OP_PAUSE_HI     0x100000 /* same as BTLCAM_OP_PAUSE (both bits are tested together) */
+#define BTLCAM_OP_RETURN       0x8000   /* u8 path mode (bits 5-6, both paths), frames, easeModes: ends the script, back to the idle scene camera (scene data 1) */
+#define BTLCAM_OP_PAUSE_SEQ    0x100000 /* same effect as BTLCAM_OP_PAUSE_CMD (tested together); used by the enemy-type
+                                         * cameras (scene data 5+), released by btlseq_opWaitAnim (runtime) */
 #define BTLCAM_OP_KEEP_CAMERA  0x80000  /* btlcam_endEffect keeps this camera instead of reloading the idle one */
 /* BTLCAM_OP_CUE argument */
 #define BTLCAM_CUE_END_INTRO   1 /* set g_btlCamera.endIntro: the intro camera may end; any other value is a subPhase cue */
@@ -1880,10 +1884,10 @@ typedef struct {
  * all but battle 938's) cues 2; no idle, command, enemy, AI-played or effect camera has a cue. */
 
 typedef struct Unk800FE3B8 {
-    SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for BTLCAM_OP_SAVE_VIEW */
+    SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for BTLCAM_OP_SET_HOME_VIEW */
     SVECTOR pointRots[4]; /* rotations kept with points[0-3] (zeroed by btlcam_loadScript; btlcam_resolveAnchor anchors 0x15+) */
     s16 yaw; /* from eye to target (btlcam_step) */
-    u8 paused; /* script frame stops counting (BTLCAM_OP_PAUSE); effect steps resume it */
+    u8 paused; /* script frame stops counting (BTLCAM_OP_PAUSE_CMD/_SEQ); the action resumes it */
     u8 effectPick; /* camera choice btlfx_opPlayCamera mode 3 plays: random 0/1 per effect, or the variant (BTLCAM_OP_PICK_VARIANT) */
     SVECTOR eye; /* eye position given to btlcam_lookAt */
     u8 flags; /* BTLCAM_F_* */
@@ -1896,8 +1900,8 @@ typedef struct Unk800FE3B8 {
     u8 endIntro; /* BTLCAM_OP_CUE with BTLCAM_CUE_END_INTRO: ends the intro once loadFlags has all three setup bits */
     Unk800C412C paths[2]; /* eye path [0], target path [1] (btlcam_evalPath) */
     s32 variant; /* script variant 0-2 the camera plays (btlcam_loadScript: from the script header, Battle.cameraNo, the unit size, ...) */
-    u32 idleSway; /* sway used when the script sets none (BTLCAM_OP_IDLE_SWAY): BTLCAM_SWAY_* */
-    s32 idleSwayPhase;
+    u32 idleBob; /* bob used when the script sets none (BTLCAM_OP_IDLE_BOB): BTLCAM_BOB_* */
+    s32 idleBobPhase;
     s32 viewBlend; /* frames left of the blend into the target view (btlcam_applyTargetView) */
     u8 nextVariant; /* variant chosen by a header with BTLCAM_HDR_NEXT_VARIANT for the next script (BTLCAM_SEL_CHAINED) */
     u8 mode; /* BTLCAM_MODE_* */
@@ -1929,9 +1933,9 @@ typedef struct Unk800FE3B8 {
 #define BTLCAM_SELCTX_TARGET_SIZE 2    /* the target's radius/height: 0 small, 1 medium, 2 large */
 #define BTLCAM_SELCTX_FOCUS     3      /* 0 when focusUnit can't act, else by the ambush and the party's live count */
 
-/* sway byte (g_btlCamScript.sway, g_btlCamera.idleSway; btlcam_applySway). Evidence: [code] */
-#define BTLCAM_SWAY_AMP         0xF0   /* amplitude (scaled by the eye-target distance) */
-#define BTLCAM_SWAY_SPEED       0x0F   /* phase step per frame */
+/* bob byte (g_btlCamScript.bob, g_btlCamera.idleBob; btlcam_applyBob). Evidence: [code], runtime (docs/runtime-findings.md BTLCAM_OP runtime check) */
+#define BTLCAM_BOB_AMP         0xF0   /* amplitude (scaled by the eye-target distance) */
+#define BTLCAM_BOB_SPEED       0x0F   /* phase step per frame */
 
 /* Unk800FE3B8 (g_btlCamera).mode: what the camera plays. Evidence: [code] */
 #define BTLCAM_MODE_SCENE  0 /* btlcam_playScene */
@@ -3755,10 +3759,10 @@ extern SpriteDef g_popupDigitSprites[]; /* digits */
 typedef struct {
     u8 *pc; /* camera script pointer (btlcam_step reads its commands) */
     u32 frame; /* script frame, compared with each command's 10-bit frame */
-    s32 accel; /* ease acceleration of the paths (camera flag 0x40) */
+    s32 easeSpeed; /* linear speed term of eased paths, weight per frame / 4096: the start speed of BTLCAM_EASE_IN, the end speed of BTLCAM_EASE_OUT (BTLCAM_OP_EASE_SPEED; runtime) */
     s32 viewHold; /* frames the target view is kept after target select (btlcam_applyTargetView) */
-    u32 sway; /* sway: BTLCAM_SWAY_* (btlcam_applySway) */
-    s32 swayPhase;
+    u32 bob; /* vertical bob of eye and target together: BTLCAM_BOB_* (btlcam_applyBob; runtime) */
+    s32 bobPhase;
     s32 savedVariant; /* variant restored for the scene camera after an effect (btlcam_endEffect) */
     s32 shakeAxes; /* BTLCAM_SHAKE_* (btlcam_applyShake) */
     s32 shakeFrames;
@@ -3770,7 +3774,7 @@ typedef struct {
     s32 zoomTarget; /* BTLCAM_ZOOM_* */
     s32 zoomFrom;
     s32 zoomTo;
-    u8 saveView; /* BTLCAM_OP_SAVE_VIEW: 1 requested, 2 eye/target saved in points[4]/[5] */
+    u8 setHomeView; /* BTLCAM_OP_SET_HOME_VIEW: 1 requested, 2 eye/target saved in points[4]/[5] */
     u8 keepCamera; /* BTLCAM_OP_KEEP_CAMERA: btlcam_endEffect doesn't reload the scene camera */
     s16 casterAnchors[5]; /* btlcam_getUnitAnchors of the acting unit */
     s16 partnerAnchors[5]; /* btlcam_getUnitAnchors of the partner (effect flag 4) */
@@ -4473,7 +4477,7 @@ void btlcam_setPathKey(Unk800C412C *, Unk800C3F78 *);
 void btlcam_setPathTiming(Unk800C412C *, u8 *);
 void btlcam_lookAt(MATRIX *, SVECTOR *, SVECTOR *);
 void btlcam_applyTargetView(SVECTOR *, SVECTOR *);
-void btlcam_applySway(s16 *, s16 *);
+void btlcam_applyBob(s16 *, s16 *);
 void btlcam_applyShake(s16 *);
 s32 btlfx_lerpRatio(s32, s32, s32, s32);
 s32 btlfx_randRange(s32, s32);

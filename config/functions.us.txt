@@ -2218,7 +2218,7 @@ ovl_0b btlcam_setPathKey 0x1b4 0x800c3f78
 ovl_0b btlcam_setPathTiming 0x40 0x800c412c
 ovl_0b btlcam_evalPath 0x7d0 0x800c416c
 ovl_0b btlcam_applyShake 0x100 0x800c493c
-ovl_0b btlcam_applySway 0x160 0x800c4a3c
+ovl_0b btlcam_applyBob 0x160 0x800c4a3c
 ovl_0b btlcam_orbitAnchor 0x228 0x800c4b9c
 ovl_0b btlcam_resolveAnchorPair 0xc0 0x800c4dc4
 ovl_0b btlcam_resolveAnchor 0x430 0x800c4e84

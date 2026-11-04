@@ -11516,3 +11516,15 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 
 # ===== R38 field minigame script variables =====
 # new: EVT_GB_ENV_SOUND0/1_ID, EVT_GB_ENV_SOUND0/1_STATE, EVT_GB_STELLAZZIO_GIVEN, EVT_GB_FROG_UNLOCK/LEFT/POP, EVT_GB_CANARY_BEST, EVT_GB_HIPPAUL_LEVEL, EVT_GB_JUMPROPE_BEST
+# 2026-11-04 battle camera runtime check (docs/runtime-findings.md "BTLCAM_OP runtime check")
+btlcam_applySway btlcam_applyBob  # [runtime] vertical bob of eye and target
+BTLCAM_OP_ACCEL BTLCAM_OP_EASE_SPEED  # [runtime]
+BTLCAM_OP_SWAY BTLCAM_OP_BOB  # [runtime]
+BTLCAM_OP_IDLE_SWAY BTLCAM_OP_IDLE_BOB  # [runtime]
+BTLCAM_OP_SAVE_VIEW BTLCAM_OP_SET_HOME_VIEW  # [runtime]
+BTLCAM_OP_PAUSE BTLCAM_OP_PAUSE_CMD  # [runtime]
+BTLCAM_OP_PAUSE_HI BTLCAM_OP_PAUSE_SEQ  # [runtime]
+BTLCAM_SWAY_AMP BTLCAM_BOB_AMP  # [runtime]
+BTLCAM_SWAY_SPEED BTLCAM_BOB_SPEED  # [runtime]
+# FIELDS include/ovl_0b.h Unk800FE488 (g_btlCamScript): accel->easeSpeed, sway->bob, swayPhase->bobPhase, saveView->setHomeView; Unk800FE3B8 (g_btlCamera): idleSway->idleBob, idleSwayPhase->idleBobPhase
+# NOTE BTLCAM_EASE_IN (now 1) / BTLCAM_EASE_OUT (now 2) swapped values: names were reversed (runtime)

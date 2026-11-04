@@ -38,7 +38,7 @@ void btlcam_playScene(s32 script) {
 void btlcam_play(s32 script) {
     g_btlCamera.mode = BTLCAM_MODE_EFFECT;
     g_btlCamera.paused = 0;
-    g_btlCamScript.accel = 0;
+    g_btlCamScript.easeSpeed = 0;
     if (g_btlCamera.flags & BTLCAM_F_EFFECT_RUNNING) {
         g_btlCamera.flags = 0;
     }
@@ -296,22 +296,22 @@ s32 btlcam_step(void) {
                     }
                     g_btlCamera.paths[i].locked = 0;
                 }
-                if (flags & BTLCAM_OP_ACCEL) {
-                    g_btlCamScript.accel = *g_btlCamScript.pc;
+                if (flags & BTLCAM_OP_EASE_SPEED) {
+                    g_btlCamScript.easeSpeed = *g_btlCamScript.pc;
                     g_btlCamScript.pc += 2;
                 }
-                if (flags & BTLCAM_OP_SAVE_VIEW) {
-                    g_btlCamScript.saveView = 1;
+                if (flags & BTLCAM_OP_SET_HOME_VIEW) {
+                    g_btlCamScript.setHomeView = 1;
                 }
-                if (flags & (BTLCAM_OP_PAUSE | BTLCAM_OP_PAUSE_HI)) {
+                if (flags & (BTLCAM_OP_PAUSE_CMD| BTLCAM_OP_PAUSE_SEQ)) {
                     g_btlCamera.paused = 1;
                 }
-                if (flags & BTLCAM_OP_SWAY) {
-                    g_btlCamScript.sway = *g_btlCamScript.pc;
+                if (flags & BTLCAM_OP_BOB) {
+                    g_btlCamScript.bob = *g_btlCamScript.pc;
                     g_btlCamScript.pc += 2;
                 }
-                if (flags & BTLCAM_OP_IDLE_SWAY) {
-                    g_btlCamera.idleSway = *g_btlCamScript.pc;
+                if (flags & BTLCAM_OP_IDLE_BOB) {
+                    g_btlCamera.idleBob = *g_btlCamScript.pc;
                     g_btlCamScript.pc += 2;
                 }
                 if (flags & BTLCAM_OP_ZOOM) {
@@ -378,13 +378,13 @@ s32 btlcam_step(void) {
         g_btlCamera.viewState = 0;
         btlcam_evalPath(0, &g_btlCamera.paths[0], &g_btlCamera.eye.vx);
         btlcam_evalPath(0, &g_btlCamera.paths[1], &sv.vx);
-        if (g_btlCamScript.saveView == 1) {
-            g_btlCamScript.saveView = 2;
+        if (g_btlCamScript.setHomeView == 1) {
+            g_btlCamScript.setHomeView = 2;
             bcopy(&g_btlCamera.eye, &g_btlCamera.points[4], 8);
             bcopy(&sv, &g_btlCamera.points[5], 8);
         }
         btlcam_applyTargetView(&g_btlCamera.eye, &sv);
-        btlcam_applySway(&g_btlCamera.eye.vx, &sv.vx);
+        btlcam_applyBob(&g_btlCamera.eye.vx, &sv.vx);
         btlcam_applyShake(&sv.vx);
         btlcam_lookAt(&g_gameState->gameData->viewMatrix, &g_btlCamera.eye, &sv);
         g_btlCamera.yaw = -ratan2(g_btlCamera.eye.vx - sv.vx, g_btlCamera.eye.vz - sv.vz) - 0x800;
@@ -494,18 +494,18 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
             if (path->frames == 0 || path->framesLeft == 0) {
                 wa[i] = 0;
             } else {
-                k = (u32)((0x1000 - path->frames * g_btlCamScript.accel) << 17) / (u32)(path->frames * path->frames);
+                k = (u32)((0x1000 - path->frames * g_btlCamScript.easeSpeed) << 17) / (u32)(path->frames * path->frames);
                 switch (modes & BTLCAM_MODE2_MASK) {
                 case BTLCAM_EASE_LINEAR:
                     wa[i] = (0x10000000 / path->frames * path->framesLeft) >> 16;
                     break;
-                case BTLCAM_EASE_OUT:
-                    steps = path->frames - path->framesLeft;
-                    wa[i] = 0x1000 - ((k * steps * steps) >> 17) - steps * g_btlCamScript.accel;
-                    break;
                 case BTLCAM_EASE_IN:
+                    steps = path->frames - path->framesLeft;
+                    wa[i] = 0x1000 - ((k * steps * steps) >> 17) - steps * g_btlCamScript.easeSpeed;
+                    break;
+                case BTLCAM_EASE_OUT:
                     steps = path->framesLeft;
-                    wa[i] = ((k * steps * steps) >> 17) + steps * g_btlCamScript.accel;
+                    wa[i] = ((k * steps * steps) >> 17) + steps * g_btlCamScript.easeSpeed;
                     break;
                 }
             }
@@ -637,20 +637,20 @@ void btlcam_applyShake(s16 *at) {
     }
 }
 
-void btlcam_applySway(s16 *eye, s16 *at) {
+void btlcam_applyBob(s16 *eye, s16 *at) {
     s32 dx = eye[0] - at[0];
     s32 dz = eye[2] - at[2];
     s32 dist = btlfx_sqrt(dx * dx + dz * dz, 0xF);
-    u32 sway = 0;
-    if (g_btlCamScript.sway != 0) {
-        sway = ((math_sin(g_btlCamScript.swayPhase << 6) * dist) >> 13) * (g_btlCamScript.sway & BTLCAM_SWAY_AMP) >> 11;
-        g_btlCamScript.swayPhase += g_btlCamScript.sway & BTLCAM_SWAY_SPEED;
-    } else if (g_btlCamera.idleSway != 0) {
-        sway = ((math_sin(g_btlCamera.idleSwayPhase << 6) * dist) >> 13) * (g_btlCamera.idleSway & BTLCAM_SWAY_AMP) >> 11;
-        g_btlCamera.idleSwayPhase += g_btlCamera.idleSway & BTLCAM_SWAY_SPEED;
+    u32 bob = 0;
+    if (g_btlCamScript.bob != 0) {
+        bob = ((math_sin(g_btlCamScript.bobPhase << 6) * dist) >> 13) * (g_btlCamScript.bob & BTLCAM_BOB_AMP) >> 11;
+        g_btlCamScript.bobPhase += g_btlCamScript.bob & BTLCAM_BOB_SPEED;
+    } else if (g_btlCamera.idleBob != 0) {
+        bob = ((math_sin(g_btlCamera.idleBobPhase << 6) * dist) >> 13) * (g_btlCamera.idleBob & BTLCAM_BOB_AMP) >> 11;
+        g_btlCamera.idleBobPhase += g_btlCamera.idleBob & BTLCAM_BOB_SPEED;
     }
-    eye[1] += sway;
-    at[1] += sway;
+    eye[1] += bob;
+    at[1] += bob;
 }
 
 void btlcam_orbitAnchor(s32 anchor, s32 anchorFlags, s16 *offset, s16 *out) {

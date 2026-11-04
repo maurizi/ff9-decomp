@@ -3817,3 +3817,108 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
   `f42_dali354_after_quit` (back in Dali 354 after quitting a real match).
 - confidence: high for the field list and the no-effect claims (decompiled ovl_0d, no INCLUDE_ASM left, plus the tracker
   over ~12,000 frames on 3 entries); high for the residue source (byte-level last-writer log).
+
+## BTLCAM_OP runtime check: battle camera script command flags (ovl_0b btlcam_step)  (status: applied; renames EASE_SPEED, BOB/IDLE_BOB, SET_HOME_VIEW, PAUSE_CMD/PAUSE_SEQ, EASE_IN/OUT swapped)
+- binary: ovl_0b; names under test: `BTLCAM_OP_*`, `BTLCAM_CUE_END_INTRO` (include/ovl_0b.h), fields of `g_btlCamera`
+  (0x800FE3B8) and `g_btlCamScript` (0x800FE488). Battle (21, Black Waltz 1 + Sealion) base 0x80108800: phase +0xD80,
+  subPhase +0xD81, loadFlags +0xD85, cameraNo +0x131C, scene.flags +0x132C, scene.sceneData +0x133C.
+- setup: `start --disc 1`, `frames 1800`, `tools/rt/enter_battle.py 21 --disc 1 --field 351 --base-state field_dali_inn`,
+  ~200 frames. New disc-1 states: `btlcam_enc21_preintro` (ovl_0b resident, intro camera not started, script frame 0),
+  `btlcam_enc21_combat` (phase 4, after the scripted intro), `btlcam_enc21_cmd` (Zidane's command menu, Sealion and
+  Black Waltz HP poked to 1), `btlcam_enc21_attack` (cmd state + Cross Cross; an enemy action with an effect camera
+  follows).
+- tools (scratch, build/btlcam_rt/): `rec.lua` (one exec breakpoint on btlcam_step's entry 0x800C37BC and one on
+  btlcam_lookAt 0x800C52B4; logs script frame, pc, endIntro, paused, phase/subPhase/loadFlags, projDist, base, GameData
+  projDist (+0xA), eye/target per step), `stream.py` / `streamB.py` (hand-written command lists), `run.py` / `runB.py`
+  (load `btlcam_enc21_preintro`, break at the second btlcam_step (script frame 2, pc 0x8010F0C6 = intro variant 0 after
+  its frame-1 commands), overwrite the rest of the intro list (room up to 0x8010F2BE) with the test list, record),
+  `keep.py` (KEEP_CAMERA), `freq.py` (scanner statistics). The camera steps once per 4 VBlanks here.
+- **Q1 intro / victory cues: confirmed.** `until 0x800C3B58` (the `sb` of endIntro in btlcam_step) from
+  `btlcam_enc21_preintro`: hit at script frame 0x93 = 147 (variant 0, Battle.cameraNo 0), phase 2, loadFlags 0x7F.
+  With cameraNo poked to 1 (`write 0x80109B1C 1`) before the intro: hit at frame 96, variant 1. Same-frame clear:
+  `watch 0x800FE41F` shows the set (btlcam_step+0x39C) and the clear (+0x750) in the same step, and phase goes 2 -> 1
+  (BTL_PHASE_SCRIPT, battle 21 has BTL_SCENE_SCRIPT_START); with scene.flags bit 2 cleared it goes to ENTRANCE and
+  combat (runB). The frame-147 command also sets saveView (1 -> 2 at the next path evaluation). The RETURN at 148 loads
+  the idle script (pc 0x8010F2E6). subPhase: `watch 0x80109581` over 1500 frames of intro + combat start: one write,
+  btl_setBattleVar from the event script, value stays 0; recorder log over the whole fight: 0 until the end. Victory
+  (Sealion and Black Waltz HP poked to 1, ATB speeds +0x2E to 0, Zidane/Vivi Attack): writes are
+  btl_checkSideDefeated (BTL_END_VICTORY = 0), btl_victory (0, phase 5 -> 6), then btlcam_step+0x3C4 (cue) and
+  btl_update+0x230 one VBlank later. Recorder: victory camera (scene 2, variant 2 here) at script frame 31 sees
+  subPhase 0, at frame 32 subPhase 2 and exitTimer counting 1, 2, ... (btl_update: subPhase 1 -> fade_out(0x20) and 2).
+  So the 0x4000 cue with argument 2 starts the fade-out at frame 31, as predicted.
+- **Q2 frequencies** (`btlcam_scan.py --json`, 5937 scripts: 562 encounters' scene data on all discs (a battle that a
+  disc copies twice counts twice), 835 effect-camera lookups on disc 1, 15 common; columns: commands / scripts / where):
+  0x40 ACCEL 1428/1060 (intro 169, cmd cams 733, enemy 142, effects 16; values 0, 0x28-0x8C, 0x6F);
+  0x80 SAVE_VIEW 1319/578 (every intro (562), always in the same command as the 0x4000 END_INTRO cue; 13 AI cameras,
+  3 effects); 0x100 PAUSE 760/745 (only party/enemy-target command cameras (scenes 3/4: 522 + 219), 1 effect, 3 common);
+  0x200 SWAY 167/72 (intro 67, args 0xF1 / 0x91 / 0 / 0x0001); 0x400 IDLE_SWAY 19/8 (scene 296's intro, victory and
+  AI cameras, 0x22/0x23/0x13 and 0 to stop it); 0x800 ZOOM 14223/3045 (everywhere); 0x1000 SHAKE 339/114 (enemy-type
+  cameras 19, effects 95); 0x2000 PICK_VARIANT 3315/1586 (command cameras 1124, enemy-type 452, common 10; never
+  intro/victory/effect); 0x4000 CUE 2986/1123 (intro 1303x arg 1, victory 1683x arg 2, nothing else);
+  0x8000 RETURN 5133/3408 (args 21 00 00 5079x; a1 00 00 22x; 61 0f 02, 61 0a 02, 21 13 00, 21 10 01, ...);
+  0x80000 KEEP_CAMERA 23/23 (22 effect cameras (18 of whose variants end without RETURN), scene 891/6 variant 2);
+  **0x100000 PAUSE_HI 1268/695 (enemy-type cameras, scenes 5+: 661; effects 32; AI 2)**; bits 0x10000-0x40000 and
+  0x200000: never used.
+- **SHAKE (0x1000): confirmed, axes byte refined.** Test list: `10: 0x1000 [40,0,20,0]`, `40: [40,0,20,1]`,
+  `70: [40,0,20,2]` with both paths holding. Only the look-at point (btlcam_lookAt a2) moves; the eye never does. Axes 0:
+  x, y and z jitter (x 2084..2336, y -2240..-2064 around 2132/-2200), decaying to rest over exactly 20 steps
+  (frames 10-28). Axes 1: y fixed, x/z jitter. Axes 2: x/z fixed, y jitters. So args = start amplitude, end amplitude,
+  frames, axes (bit 0 no vertical, bit 1 no horizontal), as in the header; the shake moves the target, not the eye.
+- **ZOOM (0x800): confirmed.** `100: [10, 2, 0x300]`: projDist and GameData.projDist go 200 -> 257, 314, ... 768 in
+  10 steps (linear), base 512 unchanged. `115: [10, 1, 0x100]`: base 512 -> 256 in 10 steps, projDist stays 768.
+  `130: [5, 2, 0]`: projDist 768 -> 256 (= the new base) in 5 steps. Bytes: frames, which (bit 0 base, bit 1 current),
+  u16 distance (0 = base). Frame-1 commands with frames 1 are just "set the projection distance".
+- **PAUSE (0x100) / PAUSE_HI (0x100000): confirmed; both stop the script frame.** `270: 0x100`: frame stays 270 for
+  60 VBlanks (paused = 1); after `write paused 0` it counts on. `275: 0x100000` (c0 bit 14): same. What resumes it
+  in a real fight: a write log on paused (0x800FE40A, `Bridge.addBp(...,'Write',1,'log')`) during the
+  btlcam_enc21_attack action: set by btlcam_step at the enemy camera's (scene 6 = enemy type 1, variant 0) frame 16
+  (its 0x100000 command), cleared ~5 VBlanks later by btlseq_opWaitAnim+0x58 (the enemy sequence's
+  wait-for-animation-end), also cleared by btlcam_play. Code: btlfx_op's cast handler clears it when the cast ends
+  (not observed: no party spell was cast). 0x100 is only in party command cameras and 0x100000 only in enemy/sequence
+  and effect cameras, so the two bits look like per-tool spellings of one op; the names can stay, or become
+  `PAUSE_CMD` / `PAUSE_SEQ` if you want the usage in the name (low value).
+- **SWAY (0x200) / IDLE_SWAY (0x400): confirmed, but it's a vertical bob.** `140: 0x200 [0xF2]`: eye.y and target.y
+  both move by the same amount (x, z unchanged), sinusoidal, about +-190 units, period 32 steps; `180: [0x81]`:
+  about +-103, period 64 steps. `220: SWAY 0 + IDLE_SWAY 0xF4`: the idle value takes over (period 16 steps,
+  same +-190 amplitude) because the script's own sway is 0; `260: IDLE_SWAY 0`: back at rest. Amplitude = high nibble
+  scaled by the horizontal eye-target distance, speed = low nibble (phase += n per step, 64/n steps per cycle).
+  g_btlCamera.idleSway survives btlcam_playScene/btlcam_play (only g_btlCamScript is cleared), so IDLE_SWAY sets a bob
+  that keeps running under later cameras that set none. Proposed rename: `BTLCAM_OP_BOB` / `BTLCAM_OP_IDLE_BOB`
+  (fields `bob` / `idleBob`, `btlcam_applySway` -> `btlcam_applyBob`), or keep the names and say "vertical" in the
+  comment. Confidence high for the behaviour, naming is taste.
+- **ACCEL (0x40): works, name should change.** Same 20-frame anchored move (path 0 mode 3) K0 -> K1, eye progress per
+  step (fraction of the distance): ease 0: 0.05 per step (linear); ease 1, accel 0: 0.003, 0.010, 0.023, ... 0.903, 1.0
+  (= s^2/400, starts at rest and speeds up); ease 1, accel 0x8C: 0.035, 0.072, 0.110, ... (starts at 0x8C/4096 =
+  0.034 per frame); ease 2, accel 0: 0.098, 0.190, ... 0.990, 0.998, 1.0 (slows to rest); ease 2, accel 0x8C: ...
+  0.929, 0.965, 1.0 (ends at 0.035 per frame). So the value is the linear-speed term of the eased weight
+  (per-frame weight / 4096): start speed for ease mode 1, end speed for ease mode 2; 0x1000/frames would make it
+  linear. Proposed: `BTLCAM_OP_EASE_SPEED`, `g_btlCamScript.easeSpeed`. Also, `Unk800C412C.easeModes`'s comment has the
+  mode names the wrong way round in the usual sense: mode 1 starts slow (ease-in, accelerate), mode 2 ends slow
+  (ease-out, decelerate). The LERP-mode eye (run A, mode 2 paths) shows the same weights, only bent by the polar orbit.
+- **SAVE_VIEW (0x80): confirmed, the meaning is narrower.** `265: 0x2080`: then points[4] = (-183, -2419, 3080) = the
+  eye and points[5] = (2132, -2200, 5383) = the target (unswayed, before shake), saveView = 2. The idle camera (scene 1
+  at 0x8010F2DA: one command, frame 1, flags 9, keys with anchors 0x19 / 0x1A and zero offsets) is "eye at points[4],
+  target at points[5]", i.e. the view SAVE_VIEW stored. Every intro ends with 0x4080 (save + END_INTRO), so the idle
+  camera is wherever the intro stopped. That is also the target-select view (btlcam_applyTargetView copies
+  points[4]/[5]). Proposed: `BTLCAM_OP_SET_HOME_VIEW` (or keep SAVE_VIEW and comment "the idle camera's view").
+- **PICK_VARIANT (0x2000): confirmed.** effectPick poked to 7 and g_btlCamera.variant to 2, then `265: 0x2080`:
+  effectPick = 2. Used by command and enemy cameras, so the effect camera btlfx_opPlayCamera mode 3 plays follows the
+  command camera's variant (otherwise random 0/1 from btlcam_beginEffect).
+- **RETURN (0x8000): confirmed, the byte meanings refined.** Arg bytes: pc[0] bits 5-6 = path mode of both paths for the
+  way back (other bits ignored: 0x21 and 0xA1 are both HOLD), pc[1] = frames, pc[2] = easeModes. `21 00 00` (run A):
+  mode 1, no frames: the idle camera's keys apply on the same step (a snap; with the view saved by the intro the
+  picture doesn't move). `61 0f 02` (runB, intro ended at K1, saved view K0): mode 3 (anchored lerp) for 15 steps with
+  ease 2: eye 1113,-1537,-1011 -> 642,-1651,-49 -> 528 ... -180,-2416,3063 -> -183,-2419,3080 (slows down at the end),
+  then paths drop to HOLD. `locked = 1` keeps the idle script's first command from replacing that mode/timing; it
+  only supplies the destination keys. The script frame restarts at 1 in the same step (btlcam_update steps again).
+- **KEEP_CAMERA (0x80000): confirmed.** `keep.py`: from `btlcam_enc21_attack`, break at the second btlcam_play
+  (effect camera 0x801F6E04 from btlfx_opPlayCamera), OR 0x2000 into each variant's first c0. Unpatched: the idle
+  script is reloaded (pc 0x8010F2E6) at the effect camera's own RETURN and again at btlcam_endEffect (f24033, script
+  frame 1). Patched: keepCamera = 1 from the first step, the same RETURN reload happens (RETURN ignores the flag), but
+  at btlcam_endEffect keepCamera drops to 0 with no reload (script frame runs on 15, 16, ...). 18 of the 22 effect
+  camera variants with the flag end without RETURN, so for them the effect's last view stays up after the effect.
+  The name fits.
+- CUE / END_INTRO: as in Q1; a cue other than 1 increments subPhase (victory cameras use 2). Name fits.
+- confidence: high for SHAKE, ZOOM, PAUSE (both bits), SWAY/IDLE_SWAY behaviour, ACCEL behaviour, SAVE_VIEW,
+  PICK_VARIANT, RETURN, KEEP_CAMERA, CUE (all measured from patched or natural scripts); the cast-end release of PAUSE
+  is code-only.
