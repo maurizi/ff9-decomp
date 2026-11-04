@@ -496,7 +496,7 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         addPrim(&ot[otz], pF3);
         prim += sizeof(POLY_F3);
     }
-    setcode((P_TAG *)prim, 0xFF);
+    setcode((P_TAG *)prim, BTL_PRIM_MESH_END);
     return prim + sizeof(P_TAG);
 }
 
@@ -676,11 +676,11 @@ void btl_setModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
         if (!(model->hiddenMeshes & (1 << i))) {
         do {
             code = prim->tag.code;
-            if (code == 0xFF || code == 0xE1) {
+            if (code == BTL_PRIM_MESH_END || code == GPU_DRAW_MODE) {
                 prim = (BtlPrim *)&prim->w[2];
                 continue;
             }
-            switch (code & 0x3C) {
+            switch (code & GPU_POLY_KIND) {
             case GPU_POLY_FT4:
                 prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
                 prim->tag.code = code;
@@ -732,7 +732,7 @@ void btl_setModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
                 prim = (BtlPrim *)&prim->w[5];
                 break;
             }
-        } while (code != 0xFF);
+        } while (code != BTL_PRIM_MESH_END);
         }
     } while (++i < model->header->meshCount);
     }
@@ -754,11 +754,11 @@ void btl_fillModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
         if (!(model->hiddenMeshes & (1 << i))) {
         do {
             code = prim->tag.code;
-            if (code == 0xFF || code == 0xE1) {
+            if (code == BTL_PRIM_MESH_END || code == GPU_DRAW_MODE) {
                 prim = (BtlPrim *)&prim->w[2];
                 continue;
             }
-            switch (code & 0x3C) {
+            switch (code & GPU_POLY_KIND) {
             case GPU_POLY_FT4:
                 prim->w[1] = col;
                 prim->tag.code = code;
@@ -810,7 +810,7 @@ void btl_fillModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
                 prim = (BtlPrim *)&prim->w[5];
                 break;
             }
-        } while (code != 0xFF);
+        } while (code != BTL_PRIM_MESH_END);
         }
     } while (++i < model->header->meshCount);
     }

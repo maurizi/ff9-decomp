@@ -255,6 +255,15 @@ extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Mag
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+#define CHR_INFO_KIND_VALUE (CHR_INFO_KIND >> CHR_INFO_KIND_SHIFT) /* the kind once shifted down: (info.w >> CHR_INFO_KIND_SHIFT) & this */
+/* GPU packet words (psyq.h neighbours: GPU_POLY_*, GPU_CODE, TPAGE_ABR_MASK, get_mode). Evidence: [code] the GP0 command
+ * layout libgpu's get_mode/getTPage build */
+#define GPU_DRAW_MODE   0xE1  /* GP0(E1h) draw-mode word's code byte (DR_TPAGE, get_mode) */
+#define GPU_DRAW_DITHER 0x200 /* draw-mode word bit 9: dither (get_mode's dtd) */
+#define TPAGE_ABR_SHIFT 5     /* texture page / draw-mode word: semi-transparency rate at bits 5-6 (TPAGE_ABR_MASK) */
+#define GPU_POLY_KIND   0x3C  /* polygon code bits that pick the GPU_POLY_* kind, without GPU_ABE and GPU_TGE */
+#define TPAGE_X         0x0F  /* texture page word: x / 64 (getTPage) */
+#define TPAGE_Y         0x10  /* texture page word: y 256 (getTPage) */
 
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
@@ -262,7 +271,9 @@ typedef struct {
     DRAWENV prev; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
-/* one primitive in a model's packed GPU packet buffer (BtlModel.prims) */
+/* one primitive in a model's packed GPU packet buffer (BtlModel.prims): per mesh, polygons and DR_TPAGEs, closed by a
+ * P_TAG with code BTL_PRIM_MESH_END (btl_buildMeshPrims). Evidence: [code] */
+#define BTL_PRIM_MESH_END 0xFF
 typedef union {
     P_TAG tag;
     u32 w[13]; /* w[1], w[3]/w[4], ...: rgb + code words */
@@ -437,6 +448,7 @@ typedef struct {
 #define BTL_ATTR_LEVEL         0x29 /* runtime */
 #define BTL_ATTR_IMMUNE_HI     0x2A /* statusImmune bits 24-31 */
 #define BTL_ATTR_IMMUNE_LO     0x2B /* statusImmune bits 0-23 */
+#define BTL_ATTR_LO_MASK       0xFFFFFF /* the *_LO attributes: bits 0-23 of the word (the *_HI ones read byte 3) */
 #define BTL_ATTR_AUTO_STATUS_HI 0x2C
 #define BTL_ATTR_AUTO_STATUS_LO 0x2D
 #define BTL_ATTR_STATUS_HI     0x2E
@@ -730,6 +742,13 @@ typedef struct BtlScript {
 } BtlScript;
 
 /* BtlScript.flags (Battle122C.flags). Evidence: [code] */
+/* btlseq_opTurn angle word. Evidence: [code] */
+#define BTLSEQ_TURN_SPECIAL     0x8000 /* the low bits pick a direction (BTLSEQ_TURN_*), else they are the angle */
+#define BTLSEQ_TURN_MODE        0x7FFF
+#define BTLSEQ_TURN_MODEL       0      /* the model's own rotation */
+#define BTLSEQ_TURN_TARGETS     1      /* ratan2 of the unit minus the targets' centre (btlseq_getTargetCenter) */
+/* btlseq_opShowName argument. Evidence: [code] */
+#define BTLSEQ_NAME_CMD         0x80   /* the command's ability name (else the enemy's ability idx) */
 #define BTLSEQ_F_WAIT_HIT       0x01 /* btlseq_opEffect started an effect; the effect's seqSync turns it into HIT */
 #define BTLSEQ_F_HIT_BIT        1
 #define BTLSEQ_F_HIT            (1 << BTLSEQ_F_HIT_BIT) /* the effect hit (btlseq_opWaitEffectHit goes on) */
@@ -767,6 +786,22 @@ typedef struct {
 #define BTLFX_UNIT_CASTER  0x10 /* BtlUnitList.caster */
 #define BTLFX_UNIT_PARTNER 0x11 /* BtlUnitList.partner */
 #define BTLFX_UNIT_NONE    0xFF /* no unit: the effect ops skip it or use the targets' centre */
+#define BTLFX_UNIT_MODEL_RADIUS 0x100 /* btlfx_getUnitRadius: | id: the model's radius even for an enemy (else the enemy type's) */
+/* btlfx_fadeUnitGroup groups (op 0x24 btlfx_opFadeUnits: arg 1 & BTLFX_FADE_GROUP; cast task). Evidence: [code] */
+#define BTLFX_FADE_PARTY       0 /* the party units */
+#define BTLFX_FADE_ENEMIES     1
+#define BTLFX_FADE_ALL         2
+#define BTLFX_FADE_OUT         4 /* btlfx_opFadeUnits: from 0x80 down to 0 (else 0 up to 0x80) */
+#define BTLFX_FADE_CASTER_SIDE 8 /* the enemies if the caster is one, else the other party units */
+#define BTLFX_FADE_CASTER      9
+#define BTLFX_FADE_GROUP       0xB /* btlfx_opFadeUnits: the group bits of its argument */
+/* effect script table entry (resident module, btlfx_findScript): u8 id, u8 BTLFX_SCRENT_*, then 3-byte ops. Evidence: [code] */
+#define BTLFX_SCRENT_ID_HI 0x80 /* id + 0x100 */
+#define BTLFX_SCRENT_OPS   0x7F /* op count */
+/* btlfx_opSetSpriteClut argument 1. Evidence: [code] */
+#define BTLFX_SPRCLUT_INDEX 0x1F /* g_btlfxCommonCluts index */
+#define BTLFX_SPRCLUT_SLOT  0xE0 /* 0-1: the sprite's first clut word, 2-3: the second */
+#define BTLFX_SPRCLUT_SLOT_SHIFT 5
 #define BTLFX_ABR_OPAQUE 0xFF /* abr / tpage argument of the btlfx draw helpers: no semi-transparency (code byte without GPU_ABE, no DR_TPAGE) */
 /* effect ids (BtlfxState.effectId) tested by ovl_0b, identities from docs/effect-modules.md */
 #define BTLFX_EFFECT_ROULETTE  0x0ED /* fx_0ed Roulette: btlfx_op does not turn the caster towards its target */
@@ -1160,20 +1195,34 @@ void btlbg_setLayerMask(s32);
 extern s32 g_btlbgId;
 extern s32 g_btlbgSkySpeed;
 extern struct BtlBgHeader *g_btlbgHeader;
-extern s32 g_btlbgLayerMask;
+extern s32 g_btlbgLayerMask; /* BTLBG_SHOW_* */
+/* BtlBgRec.layer: where btlbg_drawRecord sorts the record, and g_btlbgLayerMask: which ones btlbg_draw draws.
+ * Evidence: [code] btlbg_draw, btlbg_drawRecord, btlfx_drawBgOffscreen (draws only BTLBG_SHOW_FRONT) */
+#define BTLBG_LAYER_SCENE 0 /* in the scene OT, depth sorted with the units */
+#define BTLBG_LAYER_FRONT 2 /* background OT, front (index 0) */
+#define BTLBG_LAYER_MID   4 /* background OT, depth sorted */
+#define BTLBG_LAYER_SKY   8 /* background OT, back (0x3FC); turns with g_btlbgSkyAngle */
+#define BTLBG_SHOW_SCENE  0x1
+#define BTLBG_SHOW_FRONT  0x2
+#define BTLBG_SHOW_MID    0x4
+#define BTLBG_SHOW_SKY    0x8
+#define BTLBG_SHOW_ALL    (BTLBG_SHOW_SCENE | BTLBG_SHOW_FRONT | BTLBG_SHOW_MID | BTLBG_SHOW_SKY)
 extern s32 g_btlbgSkyAngle;
 extern struct BtlUnit9C50 *g_btlbgTexAnims;
 extern s32 g_btlbgSkyOwnProj;
 /* battle background: texture scroll entry (g_btlbgScrolls) */
 typedef struct {
     s16 uvOfs; /* the uv pair it moves, offset from the first group (Battle11C0.bgData) */
-    u8 mode;   /* 0 = wrap (step back period x (du, dv)), 1 = bounce (negate du, dv) */
+    u8 mode;   /* BTLBG_SCROLL_* */
     u8 du;
     u8 dv;
     u8 step;   /* frames since the last wrap/bounce (written at run time) */
     u8 period; /* frames per cycle */
     u8 pad7;
 } BtlBgScroll;
+/* BtlBgScroll.mode: what happens after period frames (btlbg_draw). Evidence: [code] */
+#define BTLBG_SCROLL_WRAP   0 /* step back period x (du, dv) */
+#define BTLBG_SCROLL_BOUNCE 1 /* negate du, dv */
 
 /* battle background: group header (0x18 bytes), followed by its records; offsets are from the group, groups
  * follow each other (docs/battle-backgrounds.md). Members marked "data" are not read by the code. */
@@ -1195,7 +1244,7 @@ typedef struct {
 /* battle background: record (draw batch) of a group, 0x10 bytes; offsets are from the record itself
  * (docs/battle-backgrounds.md) */
 typedef struct {
-    u16 layer; /* 8 sky (turns with g_btlbgSkyAngle), 4, 2, 0 (btlbg_draw, g_btlbgLayerMask bits 8/4/2/1);
+    u16 layer; /* BTLBG_LAYER_*: 8 sky (turns with g_btlbgSkyAngle), 4, 2, 0 (btlbg_draw, g_btlbgLayerMask BTLBG_SHOW_*);
                 * btlbg_drawRecord: 0 = scene OT, index from the depth sum << g_btlbgOtShift; else the
                 * background OT: bit 3 = back (0x3FC), bit 1 = front (0), otherwise sum >> 6 (quads) /
                 * >> 4 (triangles) << 2 */
@@ -1367,7 +1416,7 @@ typedef struct Battle11C020 {
     u8 groupCount; /* count of groups */
     u8 typeCount; /* count of enemy type records following the groups */
     u8 abilityCount; /* count of enemy abilities (BtlCmd8) following the enemy records */
-    u16 flags; /* Battle.scene.flags bits 2 and up (btl_initSceneFlags) */
+    u16 flags; /* Battle.scene.flags bits 2 and up (btl_initSceneFlags): BTL_ENC_* */
     u8 pad6[8 - 6];
     Battle1330 groups[1]; /* enemy groups (btl_pickEnemyGroup) */
 } Battle11C020;
@@ -1391,7 +1440,7 @@ typedef struct BtlCmd8 {
     u8 flags; /* BTL_ABIL_* */
     u8 statusSet; /* index into Battle.statusSets */
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
-    u8 flags2; /* BTL_ABIL2_*; 0x81 together: party targets play hit motion 3 instead of 2 (btl_startHitMotion) */
+    u8 flags2; /* BTL_ABIL2_* */
     u16 altEffect; /* effect played for short summons, Seiken and single-target casts (btl_startCmdEffect) */
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
@@ -1406,6 +1455,7 @@ typedef struct BtlCmd8 {
 
 /* BtlCmd8.flags2. Evidence: [code] */
 #define BTL_ABIL2_SUMMON 0x04 /* costs 4x MP while EVT_GB_SUMMON_MP_X4 is set (btl_payMpCost, btl_getMpCost) */
+#define BTL_ABIL2_HEAVY_HIT 0x81 /* both bits set: party targets play BTL_MOTION_HIT_HEAVY (btl_startHitMotion); the bits alone are not tested */
 
 
 typedef struct BtlCmd {
@@ -1418,7 +1468,7 @@ typedef struct BtlCmd {
     union {
         struct {
             u32 targeting : 2; /* btl_setCmd's last argument; 1 = several targets (btl_halveForSpread, btl_setEnemyCmd) */
-            u32 unk0_2 : 2; /* write-only (cleared by btl_clearCmd, btl_unlinkCmd) */
+            u32 unk0_2 : 2; /* write-only: 1 while linked into a queue (btl_linkCmd, BTL_CMDINFO_LINKED); cleared by btl_clearCmd, btl_unlinkCmd */
             u32 automatic : 1; /* set for the ids above BTL_CMD_TABLE_COUNT (btl_setCmd, btl_setEnemyCmd) */
             u32 covered : 1; /* retargeted to a Cover unit (btl_findCover) */
             u32 dodged : 1; /* the target dodged; its step aside is undone at the end (btl_applyCalcResult) */
@@ -1437,6 +1487,8 @@ typedef struct BtlCmd {
 
 /* BtlCmd.info.b as a word (info.w; BtlCalc8.flags) */
 #define BTL_CMDINFO_TARGETING         0x003 /* info.b.targeting */
+#define BTL_CMDINFO_LINK_STATE        0x00C /* info.b.unk0_2 */
+#define BTL_CMDINFO_LINKED            0x004 /* unk0_2 = 1: btl_linkCmd put it in a queue */
 #define BTL_CMDINFO_AUTOMATIC         0x010 /* info.b.automatic */
 #define BTL_CMDINFO_COVERED_BIT       5
 #define BTL_CMDINFO_COVERED           (1 << BTL_CMDINFO_COVERED_BIT) /* info.b.covered */
@@ -1595,9 +1647,14 @@ typedef struct {
 #define BTL_AMBUSH_BACK         0 /* back attack: the party starts with empty ATB, "Back attack!" */
 #define BTL_AMBUSH_PREEMPTIVE   1 /* preemptive strike: the enemies start with empty ATB, the party's are full */
 #define BTL_AMBUSH_NORMAL       2
+/* Battle11C020.flags -> Battle.scene.flags (btl_initSceneFlags). Evidence: [code] */
+#define BTL_ENC_TO_SCENE        4    /* scene.flags = (flags ^ BTL_ENC_INVERTED) * 4: bit n becomes scene bit n + 2 */
+#define BTL_ENC_INVERTED        0x30 /* stored inverted: they become BTL_SCENE_VICTORY and BTL_SCENE_CAN_ESCAPE */
 #define BTL_SCENE_SCRIPT_START_BIT 2 /* the intro hands over to the event script (BTL_PHASE_SCRIPT, btlcam_step) */
 #define BTL_SCENE_SCRIPT_START  (1 << BTL_SCENE_SCRIPT_START_BIT)
-/* bit 3: BTL_SETVAR_RESUME resets the ambush to normal unless bits 2 and 3 are both set */
+#define BTL_SCENE_BACK_ATTACK_BIT 3 /* btl_rollAmbush: a back attack for sure (unless Alert); with BTL_SCENE_SCRIPT_START a
+                                    * back attack instead of a normal start, kept by BTL_SETVAR_RESUME */
+#define BTL_SCENE_BACK_ATTACK   (1 << BTL_SCENE_BACK_ATTACK_BIT)
 #define BTL_SCENE_NO_GAMEOVER_BIT 4 /* a defeat plays no defeat music and keeps battleResult 3 (else 6; btl_saveParty) */
 #define BTL_SCENE_NO_GAMEOVER   (1 << BTL_SCENE_NO_GAMEOVER_BIT)
 #define BTL_SCENE_VICTORY_BIT   6 /* victory music, poses and rewards (btl_victory); BTL_SETVAR_END 1 goes through it */
@@ -1747,16 +1804,51 @@ typedef struct {
     u8 padA[0xC - 0xA];
 } Unk800C412C0; /* 0xC */
 
+/* Camera anchor byte (Unk800C412C0.anchor; anchorFlags bits 0-5 name a second anchor in the same layout, averaged in
+ * by btlcam_resolveAnchorPair with the first anchor's height bits). Evidence: [code] btlcam_resolveAnchor,
+ * btlcam_getAnchorUnit, btlcam_getUnitAnchors */
+#define BTLCAM_ANCHOR_KIND        0x1F /* kind, BTLCAM_ANCHOR_* below */
+#define BTLCAM_ANCHOR_HOME        0x20 /* take the unit's model rotation and home position (else its current rot/pos) */
+#define BTLCAM_ANCHOR_HEIGHT      0xC0 /* which height of the unit (btlcam_getUnitAnchors) the anchor sits at: */
+#define BTLCAM_ANCHOR_H_MID       0x00 /*   anchors[1]: half the model height (party) / enemy bone 1 */
+#define BTLCAM_ANCHOR_H_HIGH      0x40 /*   anchors[2]: three quarters up (party) / enemy bone 2 */
+#define BTLCAM_ANCHOR_H_GROUND    0x80 /*   y 0 */
+#define BTLCAM_ANCHOR_H_LOW       0xC0 /*   anchors[0]: a quarter up (party) / enemy bone 0 */
+/* anchor kinds (BTLCAM_ANCHOR_KIND) */
+#define BTLCAM_ANCHOR_NONE        0x00 /* origin */
+#define BTLCAM_ANCHOR_CASTER      0x01 /* g_btlCamTargets.caster */
+#define BTLCAM_ANCHOR_TARGET      0x05 /* g_btlCamTargets.target */
+#define BTLCAM_ANCHOR_TARGET_CENTER 0x09 /* the target, at g_btlCamTargets.centerX/Z */
+#define BTLCAM_ANCHOR_FOCUS       0x0A /* g_btlCamera.focusUnit (nothing when NULL) */
+#define BTLCAM_ANCHOR_ENEMY_GROUP 0x0B /* the enemy group's first placement x/z, y 0 */
+#define BTLCAM_ANCHOR_SEQ_CASTER  0x0C /* Battle.seq.camCaster */
+#define BTLCAM_ANCHOR_SEQ_TARGET  0x0D /* Battle.seq.camTarget */
+#define BTLCAM_ANCHOR_SEQ_CENTER  0x0E /* Battle.seq.camTarget, at seq.camCenterX/Z */
+#define BTLCAM_ANCHOR_PARTNER     0x0F /* g_btlCamTargets.partner */
+#define BTLCAM_ANCHOR_POINT0      0x15 /* 0x15 + i: g_btlCamera.points[i] (and pointRots[i] for i < 4) */
+#define BTLCAM_ANCHOR_SAVED_EYE   0x19 /* points[4]: eye kept by BTLCAM_OP_SAVE_VIEW (btlcam_evalPath counts viewState) */
+#define BTLCAM_ANCHOR_SAVED_AT    0x1A /* points[5]: target kept by BTLCAM_OP_SAVE_VIEW */
+
 typedef struct {
     Unk800C412C0 keys[2]; /* from [0] and to [1] (btlcam_setPathKey shifts them) */
     u8 mode; /* BTLCAM_PATH_* */
-    u8 wrapModes; /* per axis, 2 bits: how angles wrap while lerping */
-    u8 easeModes; /* 2 bits per weight: 0 linear, 1 ease out, 2 ease in (g_btlCamScript.accel) */
+    u8 wrapModes; /* per axis, 2 bits: how angles wrap while lerping (BTLCAM_WRAP_*) */
+    u8 easeModes; /* 2 bits per weight (BTLCAM_EASE_*; g_btlCamScript.accel) */
     u8 locked; /* keys set by camera flag 0x8000: the next command doesn't replace the mode or timing */
     u8 frames;
     u8 framesLeft; /* counts down in btlcam_step */
     u8 pad1E[0x20 - 0x1E];
 } Unk800C412C; /* 0x20 */
+
+/* Unk800C412C.easeModes / wrapModes: 2-bit fields, one per weight / axis (btlcam_evalPath). Evidence: [code] */
+#define BTLCAM_MODE2_BITS  2
+#define BTLCAM_MODE2_MASK  3
+#define BTLCAM_EASE_LINEAR 0 /* weight falls evenly with framesLeft */
+#define BTLCAM_EASE_OUT    1 /* fast start, slowing by g_btlCamScript.accel */
+#define BTLCAM_EASE_IN     2 /* slow start */
+#define BTLCAM_WRAP_SHORT  0 /* turn the short way round */
+#define BTLCAM_WRAP_UP     1 /* the to-angle gets + 0x1000 when it is not above the from-angle */
+#define BTLCAM_WRAP_DOWN   2 /* the from-angle gets + 0x1000 when it is not above the to-angle */
 
 /* Unk800C412C.mode (g_btlCamera.paths[]; set from camera script op bits 5-6) */
 #define BTLCAM_PATH_OFF      0
@@ -1794,7 +1886,7 @@ typedef struct Unk800FE3B8 {
     u8 paused; /* script frame stops counting (BTLCAM_OP_PAUSE); effect steps resume it */
     u8 effectPick; /* camera choice btlfx_opPlayCamera mode 3 plays: random 0/1 per effect, or the variant (BTLCAM_OP_PICK_VARIANT) */
     SVECTOR eye; /* eye position given to btlcam_lookAt */
-    u8 flags; /* 1 a camera script took over (projDist reset), BTLCAM_F_EFFECT_RUNNING */
+    u8 flags; /* BTLCAM_F_* */
     u8 stepped; /* the effect frame already stepped the camera: btlcam_update skips this frame */
     u16 projDist; /* projection distance (SetGeomScreen through GameData.unkA) */
     u16 baseProjDist; /* default projection distance (0x200) */
@@ -1804,10 +1896,10 @@ typedef struct Unk800FE3B8 {
     u8 endIntro; /* BTLCAM_OP_CUE with BTLCAM_CUE_END_INTRO: ends the intro once loadFlags has all three setup bits */
     Unk800C412C paths[2]; /* eye path [0], target path [1] (btlcam_evalPath) */
     s32 variant; /* script variant 0-2 the camera plays (btlcam_loadScript: from the script header, Battle.cameraNo, the unit size, ...) */
-    u32 idleSway; /* sway used when the script sets none (BTLCAM_OP_IDLE_SWAY): amplitude bits 4-7, speed 0-3 */
+    u32 idleSway; /* sway used when the script sets none (BTLCAM_OP_IDLE_SWAY): BTLCAM_SWAY_* */
     s32 idleSwayPhase;
     s32 viewBlend; /* frames left of the blend into the target view (btlcam_applyTargetView) */
-    u8 nextVariant; /* variant chosen by a header with flag 0x200 for the next script (2 bits per variant) */
+    u8 nextVariant; /* variant chosen by a header with BTLCAM_HDR_NEXT_VARIANT for the next script (BTLCAM_SEL_CHAINED) */
     u8 mode; /* BTLCAM_MODE_* */
     u8 targetView; /* 1 while the target-select view is on */
     u8 viewState; /* 2: at the target view; btlcam_evalPath counts anchors 0x19/0x1A up to it */
@@ -1816,11 +1908,37 @@ typedef struct Unk800FE3B8 {
     BtlUnit *focusUnit; /* unit the scene camera follows (anchor 0xA; btlcam_loadScript variant from its state) */
 } Unk800FE3B8;
 
+/* Camera script header (btlcam_loadScript): u16 flags, then a u16 offset per set bit 0-3 (bits 0-2: the pcs of
+ * variants 0-2, bit 3: the variant selector word), the offset of the point data, then 3 s16 per set bit 4-7
+ * (g_btlCamera.points[0-3]). Evidence: [code] */
+#define BTLCAM_HDR_SLOTS        4      /* offsets (bits 0-3) and points (bits 4-7) */
+#define BTLCAM_HDR_SELECTOR     3      /* slot of the variant selector word */
+#define BTLCAM_HDR_NEXT_VARIANT 0x200  /* store the next script's variant: bits 10 + 2 * variant (2 bits) */
+#define BTLCAM_HDR_NEXT_SHIFT   10
+/* variant selector word: kind (bits 14-15), argument (bits 12-13), bias (bits 10-11) */
+#define BTLCAM_SEL_KIND_SHIFT   14
+#define BTLCAM_SEL_FIXED        0      /* variant = the argument */
+#define BTLCAM_SEL_RANDOM       1      /* argument 0: 0 or 1, (5 + bias) in 10 for 0; else 0, 1 or 2 ((3 + bias), 3, rest) */
+#define BTLCAM_SEL_CONTEXT      2      /* chosen by BTLCAM_SELCTX_* (the argument) */
+#define BTLCAM_SEL_CHAINED      3      /* g_btlCamera.nextVariant (3 means 2, 2 means 0) */
+#define BTLCAM_SEL_ARG_SHIFT    12
+#define BTLCAM_SEL_ARG          0x3000
+#define BTLCAM_SEL_BIAS_SHIFT   10
+#define BTLCAM_SELCTX_AMBUSH    0      /* normal battle 0, else random 0/1; kept as savedVariant */
+#define BTLCAM_SELCTX_CAMERA_NO 1      /* Battle.cameraNo */
+#define BTLCAM_SELCTX_TARGET_SIZE 2    /* the target's radius/height: 0 small, 1 medium, 2 large */
+#define BTLCAM_SELCTX_FOCUS     3      /* 0 when focusUnit can't act, else by the ambush and the party's live count */
+
+/* sway byte (g_btlCamScript.sway, g_btlCamera.idleSway; btlcam_applySway). Evidence: [code] */
+#define BTLCAM_SWAY_AMP         0xF0   /* amplitude (scaled by the eye-target distance) */
+#define BTLCAM_SWAY_SPEED       0x0F   /* phase step per frame */
+
 /* Unk800FE3B8 (g_btlCamera).mode: what the camera plays. Evidence: [code] */
 #define BTLCAM_MODE_SCENE  0 /* btlcam_playScene */
 #define BTLCAM_MODE_EFFECT 1 /* btlcam_play */
 #define BTLCAM_MODE_SEQ    2 /* enemy sequence (btlcam_playSeq) */
-/* Unk800FE3B8.flags */
+/* Unk800FE3B8.flags. Evidence: [code] */
+#define BTLCAM_F_SCRIPT_STARTED 0x01 /* a script command ran: the projection distance was reset to 0x200 (btlcam_step) */
 #define BTLCAM_F_EFFECT_RUNNING 0x02 /* the effect script runs its ops (btlfx_runScript phase 4); btlcam_play clears the flags then */
 extern Unk800FE3B8 g_btlCamera;
 
@@ -1876,11 +1994,13 @@ typedef struct {
 
 
 typedef struct {
-    u8 flags; /* weapon table flags: 8 = the reach is along x (btl_getWeaponOffset) */
+    u8 flags; /* weapon table flags: BTL_WEAPON_REACH_X */
     u8 pad1[7];
     u16 reach; /* tip offset along y (or x) in the weapon bone's space */
     u16 offsetZ; /* tip offset along z */
 } Unk800BC1E0;
+/* Unk800BC1E0.flags. Evidence: [code] */
+#define BTL_WEAPON_REACH_X 0x08 /* the reach is along the weapon bone's x (else y) (btl_getWeaponOffset) */
 
 typedef struct {
     u8 pad0[0x33];
@@ -2015,11 +2135,14 @@ typedef struct {
     s32 count;
 } Grad;
 void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
+/* first u16 of a sprite set (the headers below, btlfx_getCommonSprite): bits 0-14 the frame count; bit 15 is masked off and
+ * never tested in ovl_0b. Evidence: [code] */
+#define BTLFX_SPRITE_FRAMES 0x7FFF
 /* sprite set header (btlfx_drawAnimQuads, btlfx_drawBackdropSprite): u16 frame offsets, then at
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
-    u16 frameCount; /* frame count (& 0x7FFF) */
+    u16 frameCount; /* frame count (& BTLFX_SPRITE_FRAMES) */
     u16 tpage; /* tpage */
     u16 clut; /* clut */
     u8 h; /* height */
@@ -2120,6 +2243,7 @@ typedef struct EffElem {
     s32 tex2; /* second texture data, relocated on load */
     void (*draw)(); /* kind 9: set by the effect module; (particle, emitter, pos, rot, &scale, &alpha, &blend, frame, frames) */
 } EffElem; /* 0x28 */
+#define BTLFX_TEX_ADDR 0x80000000 /* EffElem.tex/tex2 already hold an address (btlfx_getCommonData, sprites): not relocated (btlfx_spawnEmitter). Evidence: [code] */
 
 /* EffElem.flags (btlfx_updateParticles). Evidence: [code] */
 #define BTLFX_ELEM_NO_ROT      0x01 /* no element rotation */
@@ -2676,7 +2800,7 @@ typedef struct Unk80100DC054 {
     u8 padC[0x10 - 0xC];
     s32 workOfs; /* work area offset (work area: 0x50000 - workOfs bytes) */
     s32 texAnimOfs; /* texture animation offset */
-    u16 texTpage[6]; /* per texture: tpage (bits 0-3 x / 64, bit 4 y + 256) */
+    u16 texTpage[6]; /* per texture: tpage (TPAGE_X / TPAGE_Y) */
     u16 texClut[6]; /* per texture: clut */
     u16 texY[6]; /* per texture: y in its page */
     u8 *modelHdr; /* model header */
@@ -3359,7 +3483,20 @@ s32 btlfx_isPartyUnit(s32);
 s32 btlfx_getUnitWeapon(s32);
 s32 btlfx_getWeaponScript(s32);
 void btl_unreserveItem(s32);
+/* flags of the battle load steps (btl_loadSoundsStep, btl_loadEnemyModelsStep, btl_load{Weapon,Party}ModelsStep,
+ * btl_reloadPartyStep, btl_swapPartyModelStep) and btl_getPartyModelId. Evidence: [code] */
+#define BTL_STEPF_UNTESTED0   0x01   /* in the callers' words (btl_reloadParty, btl_swapPartyModel); no step tests it */
+#define BTL_STEPF_UNTESTED1   0x02   /* in the callers' words (also btl_loadModelsStep); no step tests it */
+#define BTL_STEPF_RELOAD_UNITS 0x04  /* btl_reloadPartyStep: then reapply the models, textures and motions to the party units */
+#define BTL_STEPF_FLIP_TRANCE 0x10   /* btl_getPartyModelId: the form the unit isn't showing (trance <-> normal); every step clears it */
+#define BTL_STEPF_BASE_MODEL  0x20   /* btl_getPartyModelId: the normal form, without looking at the unit (none exist yet) */
+#define BTL_STEPF_DEP_SOUNDS  0x100  /* btl_loadSoundsStep: also the dependency table's sound banks (type DB_SOUND_BANK, kind 2) */
+#define BTL_STEPF_SOUNDS      0x200  /* btl_reloadPartyStep: load the sound banks first */
+#define BTL_STEPF_BEGIN       0x8000 /* start over: clear the loaded flag, state 1 (or 2) */
 s32 btl_reloadPartyStep(s32);
+/* the statuses a character keeps after the battle (btl_saveCharStatus: Character.status). Evidence: [code] */
+#define BTL_STATUS_KEPT (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_VIRUS | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | \
+                         BTL_STATUS_TROUBLE | BTL_STATUS_ZOMBIE)
 s32 btl_swapPartyModelStep(s32, s32);
 u32 btlfx_getUnitStatus(s32, u32);
 void btlfx_resetUnitMotion(s32, u8);
@@ -3552,11 +3689,20 @@ typedef struct {
 typedef struct {
     u32 *prim; /* next free primitive */
     u32 *ot; /* ordering table entry */
-    s32 rgb; /* colour word: rgb, bit 25 semi-transparent (popups: animation bit 7), bit 24 set */
+    s32 rgb; /* colour word: rgb | GPU_CODE(GPU_TGE [| GPU_ABE]), or'ed with the SPRT code (popups: BTL_POPANIM_SEMI) */
     u8 padC[0x10 - 0xC];
     XY32 xy; /* screen position (projected from the popup, then offset) */
     u16 clut; /* clut (BtlPopup.clut), shifted into the uv word */
 } Unk800CCD00;
+/* btl_drawPopupDigits' word: digit count << 16 | BCD digits, the last digit in the low nibble. Evidence: [code] */
+#define BTL_POPDIGITS_COUNT_SHIFT 16
+#define BTL_POPDIGITS(count, bcd) (((count) << BTL_POPDIGITS_COUNT_SHIFT) | (bcd))
+#define BTL_POPDIGITS_DIGIT 0xF
+#define BTL_POPDIGITS_DIGIT_BITS 4
+/* popup bounce animation bytes (g_btlPopupBounce*, BtlPopupText.anim), one per frame. Evidence: [code] btl_drawNumberPopup, btl_drawTextPopup */
+#define BTL_POPANIM_SEMI 0x80 /* draw semi-transparent this frame */
+#define BTL_POPANIM_Y    0x7F /* height above the anchor (number popups; text popups read bits 0-4) */
+#define BTL_POPANIM_END  0xFF /* the popup ends */
 
 void btl_drawPopupGlyph(Unk800CCD00 *, SpriteDef *);
 void btl_drawPopupDigits(Unk800CCD00 *, u32);
@@ -3611,17 +3757,17 @@ typedef struct {
     u32 frame; /* script frame, compared with each command's 10-bit frame */
     s32 accel; /* ease acceleration of the paths (camera flag 0x40) */
     s32 viewHold; /* frames the target view is kept after target select (btlcam_applyTargetView) */
-    u32 sway; /* sway: amplitude bits 4-7, speed bits 0-3 (btlcam_applySway) */
+    u32 sway; /* sway: BTLCAM_SWAY_* (btlcam_applySway) */
     s32 swayPhase;
     s32 savedVariant; /* variant restored for the scene camera after an effect (btlcam_endEffect) */
-    s32 shakeAxes; /* shake: bit 0 no vertical, bit 1 no horizontal (btlcam_applyShake) */
+    s32 shakeAxes; /* BTLCAM_SHAKE_* (btlcam_applyShake) */
     s32 shakeFrames;
     s32 shakeLeft;
     s32 shakeFrom;
     s32 shakeTo;
     s32 zoomFrames; /* projection-distance tween (btlcam_step) */
     s32 zoomLeft;
-    s32 zoomTarget; /* 1 base distance (g_btlCamera.baseProjDist), 2 current (projDist) */
+    s32 zoomTarget; /* BTLCAM_ZOOM_* */
     s32 zoomFrom;
     s32 zoomTo;
     u8 saveView; /* BTLCAM_OP_SAVE_VIEW: 1 requested, 2 eye/target saved in points[4]/[5] */
@@ -3630,6 +3776,13 @@ typedef struct {
     s16 partnerAnchors[5]; /* btlcam_getUnitAnchors of the partner (effect flag 4) */
     s16 targetAnchors[5]; /* btlcam_getUnitAnchors of the target */
 } Unk800FE488; /* 0x64 */
+/* Unk800FE488.shakeAxes (BTLCAM_OP_SHAKE). Evidence: [code] btlcam_applyShake */
+#define BTLCAM_SHAKE_NO_VERTICAL   0x01 /* leave y alone */
+#define BTLCAM_SHAKE_NO_HORIZONTAL 0x02 /* leave x/z alone */
+#define BTLCAM_SHAKE_AXES          (BTLCAM_SHAKE_NO_VERTICAL | BTLCAM_SHAKE_NO_HORIZONTAL)
+/* Unk800FE488.zoomTarget (BTLCAM_OP_ZOOM): which distances the tween writes. Evidence: [code] btlcam_step */
+#define BTLCAM_ZOOM_BASE    0x01 /* g_btlCamera.baseProjDist */
+#define BTLCAM_ZOOM_CURRENT 0x02 /* g_btlCamera.projDist */
 extern Unk800FE488 g_btlCamScript;
 extern u32 g_btluiTargetMovePads[][4];
 extern void (*g_btluiTargetMoveFns[])(void);
@@ -4486,7 +4639,7 @@ void btlfx_drawTrail3D(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *
 void btlfx_drawTrailFlat(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
 
 typedef struct {
-    u16 frameCount; /* frame count (& 0x7FFF) */
+    u16 frameCount; /* frame count (& BTLFX_SPRITE_FRAMES) */
     u16 tpage; /* tpage */
     u16 unk4; /* not read */
     u16 frameOfs[1]; /* frame offsets */

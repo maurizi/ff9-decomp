@@ -2633,7 +2633,7 @@ void btlui_targetInput(void) {
     if (g_padRepeat & BTN_L2) {
         snd_playSe(SE_CURSOR);
         config = g_gameState->config;
-        g_gameState->config = (config & ~0x80000) | ((((config >> 19) & 1) ^ 1) << 19);
+        g_gameState->config = (config & ~(1 << CFG_BIT_TARGET_WINDOW)) | ((((config >> CFG_BIT_TARGET_WINDOW) & 1) ^ 1) << CFG_BIT_TARGET_WINDOW);
         return;
     }
     btlui_targetMove();
@@ -3667,7 +3667,7 @@ void btlui_restoreKeyRepeat(void) {
 void btlui_readPad(void) {
     pad_update();
     pad_updateRepeat(g_btluiState.port);
-    if ((g_padRepeat & 8) && g_btluiState.pauseReq == 0) {
+    if ((g_padRepeat & PAD_START) && g_btluiState.pauseReq == 0) {
         g_btluiState.pauseReq = 1;
     }
 }

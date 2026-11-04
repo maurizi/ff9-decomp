@@ -17,7 +17,7 @@ void btl_initEquipElements(Character *chr, BtlUnit *unit) {
 }
 
 void btl_getWeaponOffset(Unk800BC1E0 *weapon, s16 *out) {
-    if (!(weapon->flags & 8)) {
+    if (!(weapon->flags & BTL_WEAPON_REACH_X)) {
         out[0] = 0;
         out[1] = weapon->reach;
     } else {
@@ -205,7 +205,7 @@ void btl_startHitMotion(BtlUnit *unit) {
     }
     flags = unit->flags;
     if (flags & BTL_UNIT_PARTY) {
-        if ((g_gameState->gameData->ctx.battle->curCmd->ability->flags2 & 0x81) == 0x81) {
+        if ((g_gameState->gameData->ctx.battle->curCmd->ability->flags2 & BTL_ABIL2_HEAVY_HIT) == BTL_ABIL2_HEAVY_HIT) {
             unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_HIT_HEAVY];
         } else {
             unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_HIT];

@@ -265,19 +265,19 @@ u32 btl_getUnitAttr(BtlUnit *unit, s32 attr) {
         value = ((u8 *)&unit->statusImmune)[3];
         break;
     case BTL_ATTR_IMMUNE_LO:
-        value = unit->statusImmune & 0xFFFFFF;
+        value = unit->statusImmune & BTL_ATTR_LO_MASK;
         break;
     case BTL_ATTR_AUTO_STATUS_HI:
         value = ((u8 *)&unit->autoStatus)[3];
         break;
     case BTL_ATTR_AUTO_STATUS_LO:
-        value = unit->autoStatus & 0xFFFFFF;
+        value = unit->autoStatus & BTL_ATTR_LO_MASK;
         break;
     case BTL_ATTR_STATUS_HI:
         value = ((u8 *)&unit->status)[3];
         break;
     case BTL_ATTR_STATUS_LO:
-        value = unit->status & 0xFFFFFF;
+        value = unit->status & BTL_ATTR_LO_MASK;
         break;
     case BTL_ATTR_ELEM_GUARD:
         value = unit->elemGuard;
@@ -315,7 +315,7 @@ u32 btl_getUnitAttr(BtlUnit *unit, s32 attr) {
         break;
     case BTL_ATTR_KIND:
         value = (g_gameState->gameData->characters + BTL_UNIT_INDEX(unit->flags))->info.w >> CHR_INFO_KIND_SHIFT;
-        value &= 0x1F;
+        value &= CHR_INFO_KIND_VALUE;
         break;
     case BTL_ATTR_CLASS_FLAGS:
         value = (g_gameState->gameData->characters + BTL_UNIT_INDEX(unit->flags))->classFlags;
@@ -604,7 +604,7 @@ void btl_setBattleVar(s32 var, s32 value) {
             sceneFlags = battle->scene.flags;
             battle->phase = BTL_PHASE_ENTRANCE;
             battle->subPhase = 0;
-            if ((sceneFlags & 0xC) != 0xC) {
+            if ((sceneFlags & (BTL_SCENE_SCRIPT_START | BTL_SCENE_BACK_ATTACK)) != (BTL_SCENE_SCRIPT_START | BTL_SCENE_BACK_ATTACK)) {
                 battle->scene.flags = (sceneFlags & ~BTL_SCENE_AMBUSH) | BTL_AMBUSH_NORMAL;
             }
         }

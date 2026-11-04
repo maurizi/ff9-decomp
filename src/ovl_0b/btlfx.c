@@ -221,7 +221,7 @@ void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
     if (tpage != BTLFX_ABR_OPAQUE) {
         drMode = (DR_TPAGE *)g_btlfxEnv->prim;
         g_btlfxEnv->prim = (u8 *)(drMode + 1);
-        drMode->code[0] = ((tpage & 3) << 5) | 0xE1000200;
+        drMode->code[0] = ((tpage & 3) << TPAGE_ABR_SHIFT) | (GPU_CODE(GPU_DRAW_MODE) | GPU_DRAW_DITHER);
         addPrimLenIn(ot, drMode, PRIM_TAG(DR_TPAGE));
     }
 }
@@ -243,7 +243,7 @@ void btlfx_addPrimAbr(s32 code, s32 depth, void *prim, s32 abr) {
 DR_TPAGE *btlfx_allocDrMode(s32 tpage, s32 abr) {
     DR_TPAGE *drMode = (DR_TPAGE *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(drMode + 1);
-    drMode->code[0] = tpage | ((abr & 3) << 5) | 0xE1000200;
+    drMode->code[0] = tpage | ((abr & 3) << TPAGE_ABR_SHIFT) | (GPU_CODE(GPU_DRAW_MODE) | GPU_DRAW_DITHER);
     return drMode;
 }
 
@@ -524,7 +524,7 @@ void btlfx_drawParticles(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
         zero.w[1] = 0;
     }
     k = frame;
-    off = h->frameCount & 0x7FFF;
+    off = h->frameCount & BTLFX_SPRITE_FRAMES;
     if (k >= off) {
         k = off - 1;
     }
@@ -599,7 +599,7 @@ void btlfx_drawSprite(u8 *data, SVECTOR *pos, s32 frame, s32 abr, s32 alpha) {
     u16 *frameOfs;
     Unk800D1BC4 *h = (Unk800D1BC4 *)data;
 
-    off = h->frameCount & 0x7FFF;
+    off = h->frameCount & BTLFX_SPRITE_FRAMES;
     if (frame >= off) {
         frame = off - 1;
     }
@@ -657,7 +657,7 @@ void btlfx_drawSpriteAtOt(u32 otIndex, u8 *data, s32 x, s32 y, s32 frame, s32 ab
 
     s32 k = frame;
 
-    frameCount = h->frameCount & 0x7FFF;
+    frameCount = h->frameCount & BTLFX_SPRITE_FRAMES;
     if (k >= frameCount) {
         k = frameCount - 1;
     }
@@ -715,7 +715,7 @@ void btlfx_drawAnimQuads(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
         *(s32 *)&zeroRot.vx = 0;
         *(s32 *)&zeroRot.vz = 0;
     }
-    val = h->frameCount & 0x7FFF;
+    val = h->frameCount & BTLFX_SPRITE_FRAMES;
     i = frame;
     if (i >= val) {
         i %= val;
@@ -783,7 +783,7 @@ void btlfx_drawSprites(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fram
         *(s32 *)&zeroRot.vx = 0;
         *(s32 *)&zeroRot.vz = 0;
     }
-    val = h->frameCount & 0x7FFF;
+    val = h->frameCount & BTLFX_SPRITE_FRAMES;
     i = frame;
     if (i >= val) {
         i %= val;
@@ -1153,7 +1153,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     s32 tmp; /* frame index, then the palette entry count, then the uv table offset (separate locals don't match) */
     s32 clut;
 
-    val = h->frameCount & 0x7FFF;
+    val = h->frameCount & BTLFX_SPRITE_FRAMES;
     tmp = frame;
     if (tmp >= val) {
         tmp %= val;
@@ -1173,7 +1173,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     prim = g_btlfxEnv->prim;
     mode = (u32 *)(prim + num * 20);
     g_btlfxEnv->prim = (u8 *)(mode + 2);
-    mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5);
+    mode[1] = tpage | GPU_CODE(GPU_DRAW_MODE) | ((tp & 3) << TPAGE_ABR_SHIFT);
     ctab = (u8 *)(pal + tmp + 1);
     col.code = (tp != BTLFX_ABR_OPAQUE) ? GPU_SPRT | GPU_ABE : GPU_SPRT;
     for (i = 0; i < num; i++, prim += 20) {

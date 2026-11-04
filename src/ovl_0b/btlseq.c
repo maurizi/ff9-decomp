@@ -459,7 +459,7 @@ s32 btlseq_opShowName(BtlScript *script, BtlUnit *unit) {
     idx = pc[1];
     battle = g_gameState->gameData->ctx.battle;
     txt = battle->work->texts;
-    if (idx & 0x80) {
+    if (idx & BTLSEQ_NAME_CMD) {
         btl_setBannerAt((s32)(txt + script->cmd->ability->nameOfs), 1);
     } else {
         idx += battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->firstAbility;
@@ -539,12 +539,12 @@ s32 btlseq_opTurn(BtlScript *script, BtlUnit *unit) {
     rot = unit->rot[1];
     script->turnFrame = 1;
     script->turnFrom = rot;
-    if (angleArg & 0x8000) {
-        switch (angleArg & 0x7FFF) {
-        case 0:
+    if (angleArg & BTLSEQ_TURN_SPECIAL) {
+        switch (angleArg & BTLSEQ_TURN_MODE) {
+        case BTLSEQ_TURN_MODEL:
             ang = unit->obj->rotY;
             break;
-        case 1:
+        case BTLSEQ_TURN_TARGETS:
             btlseq_getTargetCenter(script->cmd->targets, (u16 *)&center[0], (u16 *)&center[1]);
             x = (unit->pos[0] >> 16) - center[0];
             z = (unit->pos[2] >> 16) - center[1];
@@ -631,7 +631,7 @@ s32 btlseq_opStopTexAnim(BtlScript *script, BtlUnit *unit) {
     u8 i = script->pc[1];
     BtlModel *model = unit->model;
     BtlUnit9C50 *texAnim;
-    (*(texAnim = PSX_NULLABLE(model->texAnims) + i)).flags &= 0xFC;
+    (*(texAnim = PSX_NULLABLE(model->texAnims) + i)).flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     script->pc += 2;
     return 1;
 }

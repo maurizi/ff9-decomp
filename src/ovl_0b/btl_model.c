@@ -63,13 +63,13 @@ void btl_setModelAbr(BtlModel *model, s32 abr) {
             if (!(model->hiddenMeshes & (1 << i))) {
                 do {
                     code = getcode(p);
-                    if (code == 0xFF) {
+                    if (code == BTL_PRIM_MESH_END) {
                         p += sizeof(DR_TPAGE);
-                    } else if (code == 0xE1) {
-                        ((DR_TPAGE *)p)->code[0] = (u16)abr | 0xE1000000;
+                    } else if (code == GPU_DRAW_MODE) {
+                        ((DR_TPAGE *)p)->code[0] = (u16)abr | GPU_CODE(GPU_DRAW_MODE);
                         p += sizeof(DR_TPAGE);
                     } else {
-                        code &= 0x3C;
+                        code &= GPU_POLY_KIND;
                     }
                     switch (code) {
                     case GPU_POLY_FT4:
@@ -157,7 +157,7 @@ void btl_updateTexAnims(TexAnimSet *set) {
                 RAND_REFILL2();
                 anim->pos = -((anim->waitMin + (anim->waitRand + 1) * RAND16() / 0x10000) << 12);
             } else if (anim->flags & BTL_TEXANIM_ONCE) {
-                anim->flags &= 0xFC;
+                anim->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
             } else {
                 anim->pos = 0;
             }
@@ -277,7 +277,7 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *encounter) {
 
 void btl_initSceneFlags(void) {
     Battle *battle = g_gameState->gameData->ctx.battle;
-    battle->scene.flags = (battle->work->encounter->flags ^ 0x30) * 4;
+    battle->scene.flags = (battle->work->encounter->flags ^ BTL_ENC_INVERTED) * BTL_ENC_TO_SCENE;
     g_btlRewards.ap = g_gameState->gameData->ctx.battle->scene.group->ap;
 }
 
@@ -303,7 +303,7 @@ void btl_setupEnemies(void) {
     flags = &battle->scene.flags;
     grp = battle->scene.group;
     hdr = battle->work->encounter;
-    battle->scene.flags = (battle->scene.flags & ~BTL_SCENE_AMBUSH) | (btl_rollAmbush(flags) & 3);
+    battle->scene.flags = (battle->scene.flags & ~BTL_SCENE_AMBUSH) | (btl_rollAmbush(flags) & BTL_SCENE_AMBUSH);
     i = 0;
     nextAbility = hdr->typeCount + hdr->abilityCount;
     grp2 = hdr->groups;
@@ -368,7 +368,7 @@ void btl_placeParty(void) {
     }
     x = (partyCount - 1) * 0x13C;
     i = 0;
-    rot = ((*flags & 3) != 0) << 11;
+    rot = ((*flags & BTL_SCENE_AMBUSH) != BTL_AMBUSH_BACK) << 11;
     unit = g_gameState->gameData->ctx.battle->unitList;
     for (; i < partyCount; i++) {
         if (!(unit->flags & BTL_UNIT_PARTY)) {
@@ -377,7 +377,7 @@ void btl_placeParty(void) {
         unitFlags = unit->flags & ~BTL_UNIT_ROW_MASK;
         unitFlags |= (g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> (CHR_INFO_BATTLE_ROW_BIT - BTL_UNIT_ROW_SHIFT)) & (1 << BTL_UNIT_ROW_SHIFT);
         unit->flags = unitFlags;
-        if (!(*flags & 3)) {
+        if ((*flags & BTL_SCENE_AMBUSH) == BTL_AMBUSH_BACK) {
             unit->flags = (unit->flags & ~BTL_UNIT_ROW_MASK) | ((BTL_UNIT_ROW(unit->flags) ^ 1) << BTL_UNIT_ROW_SHIFT);
         }
         unit->pos[0] = unit->home->pos[0] = unit->obj->x = x << 16;

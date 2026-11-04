@@ -538,12 +538,12 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *pool, Pool6C *list, u8 *data, s32 pos) {
             cursor += h->elemCount * 0x28;
             for (; i < h->elemCount; i++, el++) {
                 if (el->kind != BTLFX_ELEMK_CALLBACK) {
-                    if (el->tex != -1 && !(el->tex & 0x80000000)) {
+                    if (el->tex != -1 && !(el->tex & BTLFX_TEX_ADDR)) {
                         el->tex = (s32)data + el->tex;
                     }
                 }
                 if (el->kind2 != BTLFX_ELEMK_NONE) {
-                    if (el->tex2 != -1 && !(el->tex2 & 0x80000000)) {
+                    if (el->tex2 != -1 && !(el->tex2 & BTLFX_TEX_ADDR)) {
                         el->tex2 = (s32)data + el->tex2;
                     }
                 }
