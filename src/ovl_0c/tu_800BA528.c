@@ -1444,11 +1444,11 @@ void wm_naviInit(void) {
     g_worldNaviCursorDraw = 1;
     g_worldNaviVisible = 1;
     g_worldNaviMode = (globalVars = g_evtGlobalVars.b)[0x64];
-    i = 0x2E;
+    i = WM_NAVI_KNOWN_VAR;
     if (*g_worldStoryCounterPtr >= 0x1766) {
-        g_evtGlobalVars.h[i] |= 0x7C0;
-        if (g_evtGlobalVars.h[i] & 0xC000) {
-            g_evtGlobalVars.h[i] |= 0xC000;
+        g_evtGlobalVars.h[i] |= WM_NAVI_KNOWN_LATE;
+        if (g_evtGlobalVars.h[i] & WM_NAVI_KNOWN_PAIR) {
+            g_evtGlobalVars.h[i] |= WM_NAVI_KNOWN_PAIR;
         }
     }
     if (g_worldMapDebugFlags & WM_DEBUG_REQUEST) {
@@ -1968,9 +1968,9 @@ void wm_drawTitle(void) {
         g_worldTitlePhase = 3;
     }
     if (endFrame <= (u32)g_worldReadyFrameCount) {
-        g_padPortMask[0] &= ~0x02080000;
+        g_padPortMask[0] &= ~(BTN_SELECT_ALT | BTN_SQUARE);
     } else {
-        g_padPortMask[0] |= 0x02080000;
+        g_padPortMask[0] |= BTN_SELECT_ALT | BTN_SQUARE;
     }
     if (g_worldTitlePhase == 1) {
         if (g_worldTitleFade == 0) {
@@ -2052,19 +2052,19 @@ s32 wm_naviIsPlaceKnown(u32 place) {
     u16 knownBits = 0;
 
     if (place < 0x10) {
-        knownBits = g_evtGlobalVars.h[0x2E];
+        knownBits = g_evtGlobalVars.h[WM_NAVI_KNOWN_VAR];
         bit = place;
     }
     if (place - 0x10 < 0x10) {
-        knownBits = g_evtGlobalVars.h[0x2F];
+        knownBits = g_evtGlobalVars.h[WM_NAVI_KNOWN_VAR + 1];
         bit = place - 0x10;
     }
     if (place - 0x20 < 0x10) {
-        knownBits = g_evtGlobalVars.h[0x30];
+        knownBits = g_evtGlobalVars.h[WM_NAVI_KNOWN_VAR + 2];
         bit = place - 0x20;
     }
     if (place - 0x30 < 0x10) {
-        knownBits = g_evtGlobalVars.h[0x31];
+        knownBits = g_evtGlobalVars.h[WM_NAVI_KNOWN_VAR + 3];
         bit = place - 0x30;
     }
     if ((g_worldNaviPlaces[g_worldNaviPage][place].mapX | g_worldNaviPlaces[g_worldNaviPage][place].mapY) == 0) {

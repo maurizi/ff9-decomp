@@ -97,7 +97,7 @@ s32 wm_readtxFind(s32 texId, s32 variant) {
     s32 i;
 
     for (i = 0; i < 3; i++, slot = slot->next) {
-        if ((slot->texId & 0x3F) == (texId & 0x3F) && slot->extracted == (variant & 0xFF)) {
+        if ((slot->texId & WM_TEXID_MASK) == (texId & WM_TEXID_MASK) && slot->extracted == (variant & 0xFF)) {
             return (s32)slot->pack;
         }
     }

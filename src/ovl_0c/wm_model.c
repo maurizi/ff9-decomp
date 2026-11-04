@@ -183,7 +183,7 @@ void wm_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2]) {
                 pFT4->u3 = grp->uvs[sFT4->uvs[3]][0];
                 pFT4->v3 = grp->uvs[sFT4->uvs[3]][1];
                 pFT4->clut = mdl->texInfo[sFT4->texture].clut;
-                pFT4->tpage = tp = mdl->texInfo[sFT4->texture].tpage & ~0x20;
+                pFT4->tpage = tp = mdl->texInfo[sFT4->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sFT4->flags & WMSRC_SEMITRANS) {
                     pFT4->tpage = tp | (sFT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT4, 1);
@@ -217,7 +217,7 @@ void wm_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2]) {
                 pFT3->u2 = grp->uvs[sFT3->uvs[2]][0];
                 pFT3->v2 = grp->uvs[sFT3->uvs[2]][1];
                 pFT3->clut = mdl->texInfo[sFT3->texture].clut;
-                pFT3->tpage = tp = mdl->texInfo[sFT3->texture].tpage & ~0x20;
+                pFT3->tpage = tp = mdl->texInfo[sFT3->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sFT3->flags & WMSRC_SEMITRANS) {
                     pFT3->tpage = tp | (sFT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT3, 1);
@@ -264,7 +264,7 @@ void wm_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2]) {
                 pGT4->u3 = grp->uvs[sGT4->uvs[3]][0];
                 pGT4->v3 = grp->uvs[sGT4->uvs[3]][1];
                 pGT4->clut = mdl->texInfo[sGT4->texture].clut;
-                pGT4->tpage = tp = mdl->texInfo[sGT4->texture].tpage & ~0x20;
+                pGT4->tpage = tp = mdl->texInfo[sGT4->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sGT4->flags & WMSRC_SEMITRANS) {
                     pGT4->tpage = tp | (sGT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT4, 1);
@@ -307,7 +307,7 @@ void wm_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2]) {
                 pGT3->u2 = grp->uvs[sGT3->uvs[2]][0];
                 pGT3->v2 = grp->uvs[sGT3->uvs[2]][1];
                 pGT3->clut = mdl->texInfo[sGT3->texture].clut;
-                pGT3->tpage = tp = mdl->texInfo[sGT3->texture].tpage & ~0x20;
+                pGT3->tpage = tp = mdl->texInfo[sGT3->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sGT3->flags & WMSRC_SEMITRANS) {
                     pGT3->tpage = tp | (sGT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT3, 1);
@@ -804,17 +804,17 @@ void wm_calcBoneMatrices(ModelObj *mdl, u16 frame) {
     key = (WmAnimKey *)anim->rotKeys;
     key2 = (WmAnimKey *)anim->rotKeysLo;
     rot = (SVECTOR *)0x1F800000;
-    if (anim->constMask & 1) {
+    if (anim->constMask & WMANIM_ROOT_CONST(0)) {
         bones->t[0] = anim->rootPos[0];
     } else {
         bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[frame];
     }
-    if (anim->constMask & 2) {
+    if (anim->constMask & WMANIM_ROOT_CONST(1)) {
         mat->t[1] = anim->rootPos[1];
     } else {
         mat->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[frame];
     }
-    if (anim->constMask & 4) {
+    if (anim->constMask & WMANIM_ROOT_CONST(2)) {
         mat->t[2] = anim->rootPos[2];
     } else {
         mat->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[frame];
@@ -1287,7 +1287,7 @@ void wm_drawMeshClipY(ModelObj *mdl, u8 groupIdx) {
 }
 
 s32 wm_getSpriteFrameCount(u16 *spr) {
-    return *spr & 0x7FFF;
+    return *spr & WMSPR_COUNT_MASK;
 }
 
 s32 wm_drawSprite3D(s32 pkt, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 fade,
@@ -1310,7 +1310,7 @@ s32 wm_drawSprite3D(s32 pkt, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale,
     if (clutOfs != 0) {
         h->clut += clutOfs;
     }
-    val = h->frameCount & 0x7FFF;
+    val = h->frameCount & WMSPR_COUNT_MASK;
     tmp = frame;
     if (tmp >= val) {
         tmp = frame % val;

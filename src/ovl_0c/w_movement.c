@@ -2209,7 +2209,7 @@ void wm_mountPalettePre(void) {
 
 s32 wm_getTerrainHeightOffset(s32 terrainClass, u32 cellAttr, u8 *outFlat) {
     s32 i;
-    switch ((s32)(cellAttr & 0xFC) >> 2) {
+    switch ((s32)(cellAttr & WM_ATTR_TOPO_MASK) >> 2) {
     case WM_TOPO_FOREST:
     case WM_TOPO_FOREST_2:
     case WM_TOPO_FOREST_3:

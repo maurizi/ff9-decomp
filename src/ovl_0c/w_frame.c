@@ -155,7 +155,7 @@ s32 wm_frameMain(void) {
     case WM_EVT_FIELD:
         printf("MAP JUMP\n");
         if (g_worldTitleId >= 0) {
-            g_padPortMask[0] &= 0xFDF7FFFF;
+            g_padPortMask[0] &= ~(BTN_SELECT_ALT | BTN_SQUARE);
         }
         cd_syncAsync(0);
         while (cd_getState() != 0) {
@@ -556,7 +556,7 @@ s32 w_frameGetParameter(s32 param) {
         roll = ((hi << 8) | lo) % (g_worldEventBattleRate + 1);
         result = 0;
         if (g_worldPlayerStepped != 0 && g_worldPlayerPosChanged != 0) {
-            k = (s32)(attr & 0xFC) >> 2;
+            k = (s32)(attr & WM_ATTR_TOPO_MASK) >> 2;
             if (k >= 0x24) {
                 if (k < 0x27 && g_worldFrameCount > 400) {
                     result = roll == 1;
@@ -722,22 +722,22 @@ s32 wm_lerpShift(s32 from, s16 to, s32 t, s32 headroom) {
 s32 w_frameExtruct(s32 *pack) {
     u32 i;
 
-    if (!(*pack & 0x80000000)) {
+    if (!(*pack & WM_PACK_EXTRACTED)) {
         if (g_worldMapDebugFlags & WM_DEBUG_PACK) {
-            printf(s_wmStrFrameExtructExtract, pack, *pack & 0x7FFFFFFF);
+            printf(s_wmStrFrameExtructExtract, pack, *pack & WM_PACK_COUNT_MASK);
         }
-        *pack |= 0x80000000;
-        for (i = 0; i < (*pack & 0x7FFFFFFF); i++) {
+        *pack |= WM_PACK_EXTRACTED;
+        for (i = 0; i < (*pack & WM_PACK_COUNT_MASK); i++) {
             pack[i + 1] += (s32)pack;
         }
     } else if (g_worldMapDebugFlags & WM_DEBUG_PACK) {
         printf(s_wmStrFrameExtructAlready, pack);
     }
-    return *pack & 0x7FFFFFFF;
+    return *pack & WM_PACK_COUNT_MASK;
 }
 
 void *w_framePackGetPtr(void **pack, s32 idx) {
-    s32 count = (s32)pack[0] & 0x7FFFFFFF;
+    s32 count = (s32)pack[0] & WM_PACK_COUNT_MASK;
 
     if ((g_worldMapDebugFlags & WM_DEBUG_PACK) && count < idx) {
         printf(s_wmStrFramePackGetPtrRange, idx, count);

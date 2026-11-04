@@ -8,7 +8,7 @@ s32 w_frmbufRequest(s16 texId) {
     WmFrmbufSlot *slot;
     u32 i;
 
-    if (texId & 0x3F) {
+    if (texId & WM_TEXID_MASK) {
         slot = g_worldFrmbufHead.next;
         i = 0;
         while (1) {
@@ -109,7 +109,7 @@ void wm_frmbufTransfer(void) {
             if (texPack != 0) {
                 g_worldFrmbufTransfers[xferCount].pack = texPack;
                 g_worldFrmbufTransfers[xferCount].vramArea = slot->vramArea;
-                g_worldFrmbufTransfers[xferCount].area = slot->texId & 0x3F;
+                g_worldFrmbufTransfers[xferCount].area = slot->texId & WM_TEXID_MASK;
                 xferCount++;
                 slot->transferred = 1;
             }

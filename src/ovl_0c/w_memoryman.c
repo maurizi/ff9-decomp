@@ -286,14 +286,14 @@ void wm_animCluts(void) {
         }
     }
     slot = g_worldFrmbufHead.next;
-    if ((slot->texId & 0x3F) == 4) {
+    if ((slot->texId & WM_TEXID_MASK) == 4) {
         on = 1;
         if (slot->vramArea == 2) {
             frmDy = 8;
         }
     }
     slot = slot->next;
-    if ((slot->texId & 0x3F) == 4) {
+    if ((slot->texId & WM_TEXID_MASK) == 4) {
         on = 1;
         if (slot->vramArea == 2) {
             frmDy = 8;
@@ -337,7 +337,7 @@ void wm_updateVramAnims(void) {
 }
 
 void wm_loadTimPack(s32 *pack, s32 imgDx, s32 imgDy, s32 clutDx, s32 clutDy) {
-    s32 count = *pack & 0x7FFFFFFF;
+    s32 count = *pack & WM_PACK_COUNT_MASK;
     s32 i;
 
     for (i = 0; i < count; i++) {

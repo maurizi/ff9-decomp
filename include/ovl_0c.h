@@ -75,7 +75,8 @@
 #define WM_ATTR_AREA(a) (((a) & 0x3F00) >> 8)
 #define WM_ATTR_TRIGGER_MASK 0xC000 /* cell event trigger kind (evt_callWorldCellTrigger's third argument), 0 none */
 #define WM_ATTR_TRIGGER(a) (((a) & WM_ATTR_TRIGGER_MASK) >> 14)
-#define WM_ATTR_TOPOGRAPHY(a) (((a) & 0xFC) >> 2)
+#define WM_ATTR_TOPO_MASK 0xFC /* bits 2-7 (callers that shift it as s32 use the mask directly) */
+#define WM_ATTR_TOPOGRAPHY(a) (((a) & WM_ATTR_TOPO_MASK) >> 2)
 /* topography values (WM_ATTR_TOPOGRAPHY) the code tests by number. Which move modes may enter a topography is data
  * (WmMoveMode.allowedCells: the Reef chocobo adds 0x33 0x35-0x37 0x3D, Mountain 0x31 0x32, Ocean 0x30 0x38 0x39, the
  * flying ones 0x3A-0x3C 0x3E; the boat only 0x35 0x36 0x39). Evidence: R37 in docs/runtime-findings.md. The chocobo
@@ -273,7 +274,7 @@ typedef struct WmReadtxSlot {
     struct WmReadtxSlot *prev;
     struct WmReadtxSlot *next;
     s32 *pack; /* frame pack */
-    s16 texId; /* low 6 bits: id; -1: none */
+    s16 texId; /* WM_TEXID_MASK: id; -1: none */
     u8 extracted;
     u8 padF;
 } WmReadtxSlot; /* 0x10 */
@@ -506,10 +507,13 @@ typedef struct {
 typedef struct WmAnimHdr {
     u8 pad0[4];
     s16 rootPos[3]; /* root position: constant, or offset of s16[frame] */
-    u16 constMask;    /* 1, 2, 4: rootPos[i] is a constant */
+    u16 constMask;    /* WMANIM_ROOT_CONST(i): rootPos[i] is a constant */
     s32 rotKeys;    /* -> WmAnimKey[], rotation tracks, one per bone */
     s32 rotKeysLo;   /* -> WmAnimKey[], low rotation bits, two frames per byte */
 } WmAnimHdr;
+/* WmAnimHdr.constMask: axis i of the root position is rootPos[i] itself instead of an offset of a per-frame s16
+ * track (wm_calcBoneMatrices). Evidence: [code] */
+#define WMANIM_ROOT_CONST(i) (1 << (i))
 
 typedef struct ModelObj {
     u16 flags; /* flags; 0x10: behind the camera */
@@ -1485,13 +1489,14 @@ static inline u8 wm_testCellType_inline(u32 *a, u32 c) {
 }
 
 typedef struct {
-    u16 frameCount; /* frame count (low 15 bits) */
+    u16 frameCount; /* frame count (WMSPR_COUNT_MASK) */
     u16 tpage;
     u16 clut;
     u8 height;
     u8 width;
     u16 frameOffsets[1]; /* per-frame data offsets, then a counted u16 table */
 } WmSprHdr; /* sprite animation header (wm_drawSprite3D) */
+#define WMSPR_COUNT_MASK 0x7FFF /* WmSprHdr.frameCount: the count; bit 15 is never tested. Evidence: [code] */
 
 typedef struct {
     u16 *uvs;
@@ -1717,5 +1722,21 @@ void wm_uploadParkedSound(void);
 void wm_weatherInit(void);
 void wm_weatherUpdate(void);
 s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
+
+/* Packs (w_frameExtruct, w_framePackGetPtr, wm_loadTimPack): word 0 = entry count | WM_PACK_EXTRACTED, then one
+ * offset per entry, relative to the pack until w_frameExtruct relocates them. Evidence: [code] */
+#define WM_PACK_COUNT_MASK 0x7FFFFFFF
+#define WM_PACK_EXTRACTED 0x80000000 /* the offsets are pointers now; w_frameExtruct prints "already" and skips it */
+/* frame-buffer texture slots (WmFrmbufSlot.texId, w_frmbufRequest): the low 6 bits are the texture id, 0 = none */
+#define WM_TEXID_MASK 0x3F
+/* navigation map: which places are known, one bit per place (wm_naviIsPlaceKnown), places 0-15 in event global
+ * u16 var WM_NAVI_KNOWN_VAR, 16-31 in the next, up to 63. Evidence: [code] */
+#define WM_NAVI_KNOWN_VAR 0x2E /* g_evtGlobalVars.h index */
+#define WM_NAVI_KNOWN_LATE 0x7C0 /* places 6-10: wm_naviInit marks them known once the story counter is >= 0x1766 */
+#define WM_NAVI_KNOWN_PAIR 0xC000 /* places 14 and 15: then knowing either marks both */
+
+/* main exe: candidates for ff9.h (flag names used by ovl_0c). Evidence: [code] */
+#define BTN_SELECT_ALT 0x2000000 /* the second game bit config_applyPadMapping maps to raw Select (with BTN_SELECT) */
+#define TPAGE_ABR_ADD 0x20 /* texture page abr 1 (bits 5-6): back + front */
 
 #endif
