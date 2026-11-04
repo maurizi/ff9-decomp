@@ -403,7 +403,7 @@ void btl_drawStatusIcons(Unk800CCD00 *ctx) {
             pos.vy = attachBone->ty + y;
             if (icon->single != 0) {
                 frame = (u16)ring->tick;
-                btlfx_drawSprite(icon->sprite, &pos, frame % (*(u16 *)icon->sprite & 0x7FFF), icon->abr, -1);
+                btlfx_drawSprite(icon->sprite, &pos, frame % (*(u16 *)icon->sprite & BTLFX_SPRITE_FRAMES), icon->abr, -1);
             } else {
                 if ((rot.pad = icon->turnsWithUnit) != 0) {
                     rot.vy = (unit->rot[1] + 0xC00) & 0xFFF;

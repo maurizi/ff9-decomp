@@ -653,7 +653,7 @@ s32 btlfx_opDrawOnUnit(s32 mode, Unk800E57B0 *work, Unk800F78A4 *env, s32 *entry
             work->roll = (s8)param1 << 8;
             work->data = btlfx_getCommonSprite(work->dataId);
             ((u16 *)work->data)[1] = g_btlfxCommonCluts[work->colorIdx];
-            work->frames = *(u16 *)work->data & 0x7FFF;
+            work->frames = *(u16 *)work->data & BTLFX_SPRITE_FRAMES;
             work->offX = (s8)g_btlfxResArgs.offX * 4;
             work->offY = (s8)g_btlfxResArgs.offY * 4;
             break;
@@ -663,7 +663,7 @@ s32 btlfx_opDrawOnUnit(s32 mode, Unk800E57B0 *work, Unk800F78A4 *env, s32 *entry
             work->roll = (s8)param1 << 8;
             work->data = btlfx_getCommonSprite(work->dataId);
             ((u16 *)work->data)[2] = g_btlfxCommonCluts[work->colorIdx];
-            work->frames = *(u16 *)work->data & 0x7FFF;
+            work->frames = *(u16 *)work->data & BTLFX_SPRITE_FRAMES;
             break;
         case BTLFX_DRAWON_EMITTER:
             work->emitterId = g_btlfxResArgs.data;
@@ -718,7 +718,7 @@ s32 btlfx_opDrawOnUnit(s32 mode, Unk800E57B0 *work, Unk800F78A4 *env, s32 *entry
                     emitter->elems->tex = (s32)sprite;
                     emitter->elems->kind = work->scale;
                 }
-                emitter->elems->frameCount = *sprite & 0x7FFF; /* outside the NULL check in the original */
+                emitter->elems->frameCount = *sprite & BTLFX_SPRITE_FRAMES; /* outside the NULL check in the original */
                 work->data = emitter;
             }
             if (work->frames < work->frame) {

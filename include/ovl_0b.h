@@ -2133,11 +2133,14 @@ typedef struct {
     s32 count;
 } Grad;
 void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
+/* first u16 of a sprite set (the headers below, btlfx_getCommonSprite): bits 0-14 the frame count; bit 15 is masked off and
+ * never tested in ovl_0b. Evidence: [code] */
+#define BTLFX_SPRITE_FRAMES 0x7FFF
 /* sprite set header (btlfx_drawAnimQuads, btlfx_drawBackdropSprite): u16 frame offsets, then at
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
-    u16 frameCount; /* frame count (& 0x7FFF) */
+    u16 frameCount; /* frame count (& BTLFX_SPRITE_FRAMES) */
     u16 tpage; /* tpage */
     u16 clut; /* clut */
     u8 h; /* height */
@@ -4634,7 +4637,7 @@ void btlfx_drawTrail3D(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *
 void btlfx_drawTrailFlat(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
 
 typedef struct {
-    u16 frameCount; /* frame count (& 0x7FFF) */
+    u16 frameCount; /* frame count (& BTLFX_SPRITE_FRAMES) */
     u16 tpage; /* tpage */
     u16 unk4; /* not read */
     u16 frameOfs[1]; /* frame offsets */
