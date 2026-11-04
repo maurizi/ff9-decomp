@@ -39,19 +39,21 @@
 /* A local the original code reads before ever writing it, so on the PS1 it starts with whatever an earlier function
  * left on the stack. Empty here (the build stays byte-identical); a port defines it to give the variable a
  * deterministic start value, e.g. `#define PSX_STACK_RESIDUE(lv) ((lv) = 0)` (ff9-ds F42). */
-/* A value that holds either a small number or a PS1 pointer, told apart by its sign: KSEG0 addresses
- * (0x80000000+) are negative as s32. True here exactly when the original code's `< 0` test is; a port whose native
- * pointers are positive redefines it (e.g. as "above the largest number the value can hold") (3DS F38). */
-#ifndef PSX_IS_PTR
-#define PSX_IS_PTR(v) ((s32)(v) < 0)
-#endif
-
 #ifndef PSX_STACK_RESIDUE
 #define PSX_STACK_RESIDUE(lv)
 #endif
 
+/* A value that holds either a small number or a PS1 pointer, told apart by its sign: KSEG0 addresses
+ * (0x80000000+) are negative as s32. True here exactly when the original code's `< 0` test is; a port whose native
+ * pointers are positive redefines it (e.g. as "above the largest number the value can hold") (3DS F38).
+ * docs/wip/psx_ptr_sign_sites.md lists every site that tells a pointer from a number by its address bits. */
+#ifndef PSX_IS_PTR
+#define PSX_IS_PTR(v) ((s32)(v) < 0)
+#endif
+
 /* Is this offset-or-pointer field still a file offset, i.e. not yet relocated in place? Relocated values are
- * KSEG0 pointers (0x80xxxxxx, negative as s32). A port whose pointers are positive defines its own. */
+ * KSEG0 pointers (0x80xxxxxx, negative as s32). A port whose pointers are positive defines its own (kept separate
+ * from PSX_IS_PTR: a file offset can be far larger than the small numbers PSX_IS_PTR's sites hold). */
 #ifndef IS_OFFSET
 #define IS_OFFSET(x) ((s32)(x) >= 0)
 #endif
