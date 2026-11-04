@@ -1799,6 +1799,11 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
 #define WM_ITEM_CHUNKS_T(set) (0x42E + (set)) /* g_worldChunkTableT */
 #define WM_ITEM_TIMS(set) (0x438 + (set)) /* a TIM pack loaded whole (wm_loadTimPack) */
 #define WM_ITEM_FORM_TIMS(set) (0x442 + (set)) /* story form textures: entry form + 16 * g_worldFormFlags[form] */
+/* DIR_WORLD_IMAGES file ids (wm_initDiscImage), id = base + g_worldDataSet; the g_worldImageNames slot names them
+ * ("\\DISCn.IMG", "...S", "...T", "...H", "...V"). Evidence: [string] g_worldImageNamesDisc1/Disc4, [code] */
+#define WM_IMAGE_FILE(set) (0x3F2 + (set)) /* slot 0 "DISCn.IMG", "Image Top Sector" */
+#define WM_IMAGE_FILE_H(set) (0x3FC + (set)) /* slot 3 "DISCnH.IMG": chunk runs of direction 1 (wm_getChunkEntry) */
+#define WM_IMAGE_FILE_V(set) (0x406 + (set)) /* slot 4 "DISCnV.IMG": the other runs (wm_getChunkEntryT) */
 #define WM_ITEM_CELL_MAP 0x5DC /* the WmCellMap copied to g_worldChunkFlags */
 #define WM_ITEM_COMMON_TIMS 0x5DD /* a TIM pack loaded whole (wm_loadTimPack) */
 #define WM_ITEM_NAVI_TIMS 0x5DE /* navi map halves (page * 2, | 1), 4, then the area titles (title * 2 + 5, + 6) */
