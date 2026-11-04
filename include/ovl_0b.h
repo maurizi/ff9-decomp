@@ -1274,6 +1274,12 @@ extern s32 g_btlbgScrollCount;
 #define BTL_ENEMY_CMD_SLOTS 3
 #define BTL_SOUND_BASE_BANK 0x201 /* DIR_SOUND_BANKS file btl_loadSoundsStep always reads first and loads with
                                    * akao_loadBankRetry (no slot), before the slot banks. Evidence: [code] (runtime: pending R41, its sounds) */
+/* VRAM area of the common effect textures: FILE_BTLFX_COMMON's four 64x128 pages (btlfx_reloadCommonData); an upload
+ * inside it sets BTLFX_HDR_COMMON_VRAM (btlfx_markCommonVram). Evidence: [code] */
+#define VRAM_BTLFX_COMMON_X 0x300
+#define VRAM_BTLFX_COMMON_Y 0x100
+#define VRAM_BTLFX_COMMON_W 0x80
+#define VRAM_BTLFX_COMMON_H 0x100
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle

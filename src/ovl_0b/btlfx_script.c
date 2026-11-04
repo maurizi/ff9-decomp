@@ -143,7 +143,7 @@ void btlfx_runScript(void) {
     }
     switch (state->phase) {
     case BTLFX_PHASE_SAVE_VRAM:
-        rect.x = 0x300;
+        rect.x = VRAM_BTLFX_COMMON_X;
         rect.y = 0x140;
         rect.w = 0x40;
         rect.h = 0x10;
@@ -160,7 +160,7 @@ void btlfx_runScript(void) {
             btlfx_swapVramPages(0, NULL, (hdr & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
         }
         if (hdr & BTLFX_HDR_RESIDENT) {
-            rect.x = 0x300;
+            rect.x = VRAM_BTLFX_COMMON_X;
             rect.y = 0x150;
             rect.w = 0x40;
             rect.h = 0xB0;

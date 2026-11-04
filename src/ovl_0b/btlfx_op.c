@@ -31,8 +31,8 @@ s32 btlfx_reloadCommonData(s32 poll) {
         rect.w = 0x40;
         rect.h = 0x80;
         for (i = 0; i < 4; i++) {
-            rect.x = (i >> 1) * 64 + 0x300;
-            rect.y = (i & 1) * 128 + 0x100;
+            rect.x = (i >> 1) * 64 + VRAM_BTLFX_COMMON_X;
+            rect.y = (i & 1) * 128 + VRAM_BTLFX_COMMON_Y;
             LoadImage(&rect, p);
             p += 0x1000;
         }

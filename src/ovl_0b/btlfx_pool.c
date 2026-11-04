@@ -216,8 +216,8 @@ s32 btlfx_waitSoundBank(s32 opArgA, s32 opArgB) {
 }
 
 void btlfx_markCommonVram(RECT *rect) {
-    if (rect->x >= 0x300 && rect->x + rect->w < 0x381) {
-        if (rect->y >= 0x100 && rect->y + rect->h < 0x201) {
+    if (rect->x >= VRAM_BTLFX_COMMON_X && rect->x + rect->w <= VRAM_BTLFX_COMMON_X + VRAM_BTLFX_COMMON_W) {
+        if (rect->y >= VRAM_BTLFX_COMMON_Y && rect->y + rect->h <= VRAM_BTLFX_COMMON_Y + VRAM_BTLFX_COMMON_H) {
             g_btlfxState.flags |= BTLFX_HDR_COMMON_VRAM;
         }
     }
@@ -557,7 +557,7 @@ ringOfs = *cmdPtr++ << 11; readSize += ringOfs; loader->ringBase = RAM_BTLFX_RIN
                     for (i = 0; i < 8; i++) {
                         if (tmp & loader->cmdArg) {
                             if (i < 4) {
-                                rect.r.x = ((i >> 1) << 6) + 0x300;
+                                rect.r.x = ((i >> 1) << 6) + VRAM_BTLFX_COMMON_X;
                             } else {
                                 rect.r.x = (((i - 4) >> 1) << 6) + 0x140;
                             }
