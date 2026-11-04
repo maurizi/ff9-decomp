@@ -37,25 +37,25 @@ void wm_setupWorldData(void) {
     while (cd_getState() != 0) {
     }
     if (g_worldDataSet == WM_DATASET_DISC1) {
-        g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, 0x411, 0);
-        g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, 0x41B, 0);
-        g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, 0x425, 0);
-        g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, 0x42F, 0);
-        files[4] = db_lookupRegistered(DB_GET_ADDR, 0x439, 0);
-        files[5] = db_lookupRegistered(DB_GET_ADDR, 0x443, 0);
+        g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_TEX_ANIM(WM_DATASET_DISC1), 0);
+        g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_DATA_PACK(WM_DATASET_DISC1), 0);
+        g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_CHUNKS(WM_DATASET_DISC1), 0);
+        g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_CHUNKS_T(WM_DATASET_DISC1), 0);
+        files[4] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_TIMS(WM_DATASET_DISC1), 0);
+        files[5] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_FORM_TIMS(WM_DATASET_DISC1), 0);
     } else {
-        g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, 0x414, 0);
-        g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, 0x41E, 0);
-        g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, 0x428, 0);
-        g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, 0x432, 0);
-        files[4] = db_lookupRegistered(DB_GET_ADDR, 0x43C, 0);
-        files[5] = db_lookupRegistered(DB_GET_ADDR, 0x446, 0);
+        g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_TEX_ANIM(WM_DATASET_DISC4), 0);
+        g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_DATA_PACK(WM_DATASET_DISC4), 0);
+        g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_CHUNKS(WM_DATASET_DISC4), 0);
+        g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_CHUNKS_T(WM_DATASET_DISC4), 0);
+        files[4] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_TIMS(WM_DATASET_DISC4), 0);
+        files[5] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_FORM_TIMS(WM_DATASET_DISC4), 0);
     }
-    files[0] = db_lookupRegistered(DB_GET_ADDR, 0x5DC, 0);
-    files[1] = db_lookupRegistered(DB_GET_ADDR, 0x5DD, 0);
-    files[2] = db_lookupRegistered(DB_GET_ADDR, 0x5DE, 0);
-    files[3] = db_lookupRegistered(DB_GET_ADDR, 0x5DF, 0);
-    files[6] = db_lookupRegistered(DB_GET_ADDR, 0x5E0, 0);
+    files[0] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_CELL_MAP, 0);
+    files[1] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_COMMON_TIMS, 0);
+    files[2] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_NAVI_TIMS, 0);
+    files[3] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_CHOCOGRAPH_TIMS, 0);
+    files[6] = db_lookupRegistered(DB_GET_ADDR, WM_ITEM_IMAGES, 0);
     w = g_worldChunkTable->width;
     h = g_worldChunkTable->height;
     g_worldChunksW = w;
@@ -85,7 +85,7 @@ void wm_setupWorldData(void) {
     if (g_gameState->gameData->chocograph != 0) {
         wm_loadTim((u32 *)files[3], g_gameState->gameData->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
     }
-    if (*g_worldStoryCounterPtr >= 0x1766) {
+    if (*g_worldStoryCounterPtr >= WM_STORY_FOG_END) {
         g_worldNaviPage = 1;
     } else {
         g_worldNaviPage = 0;
@@ -95,16 +95,16 @@ void wm_setupWorldData(void) {
     wm_loadTim((u32 *)files[2], 4, 0, 0, 0, 0, 0);
     g_worldTitleId = -1;
     switch (*g_worldStoryCounterPtr) {
-    case 0x960:
+    case WM_STORY_TITLE_0:
         g_worldTitleId = 0;
         break;
-    case 0x1766:
+    case WM_STORY_TITLE_1:
         g_worldTitleId = 1;
         break;
-    case 0x2585:
+    case WM_STORY_TITLE_2:
         g_worldTitleId = 2;
         break;
-    case 0x26A2:
+    case WM_STORY_TITLE_3:
         g_worldTitleId = 3;
         break;
     }
@@ -117,16 +117,16 @@ void wm_setupWorldData(void) {
             wm_loadTim((u32 *)files[2], g_worldTitleId * 2 + 6, 0x300, 0x60, 0x290, 0xF4, 0);
         }
     }
-    for (i = 0x35; i < 0x43; i++) {
+    for (i = WM_PACK_MODELS_FIRST; i < WM_PACK_MODELS_END; i++) {
         wm_relocatePack(w_framePackGetPtr(g_worldDataPack, i));
     }
-    g_worldDefaultBlocks = w_framePackGetPtr(g_worldDataPack, 0x42);
-    g_worldAreaNames = w_framePackGetPtr(g_worldDataPack, 0);
-    g_worldEncounterTable = w_framePackGetPtr(g_worldDataPack, 3);
-    g_worldWeatherData = *(WmWeatherData *)w_framePackGetPtr(g_worldDataPack, 5);
+    g_worldDefaultBlocks = w_framePackGetPtr(g_worldDataPack, WM_PACK_DEFAULT_BLOCKS);
+    g_worldAreaNames = w_framePackGetPtr(g_worldDataPack, WM_PACK_AREA_NAMES);
+    g_worldEncounterTable = w_framePackGetPtr(g_worldDataPack, WM_PACK_ENCOUNTERS);
+    g_worldWeatherData = *(WmWeatherData *)w_framePackGetPtr(g_worldDataPack, WM_PACK_WEATHER);
     dst = (WmTexScrollTbl *)g_worldTexScrolls;
-    *dst = *(WmTexScrollTbl *)w_framePackGetPtr(g_worldDataPack, 6);
-    g_worldEncounterEventRows = w_framePackGetPtr(g_worldDataPack, 4);
+    *dst = *(WmTexScrollTbl *)w_framePackGetPtr(g_worldDataPack, WM_PACK_TEX_SCROLLS);
+    g_worldEncounterEventRows = w_framePackGetPtr(g_worldDataPack, WM_PACK_ENCOUNTER_EVENTS);
 }
 
 void wm_applyEncounterEvents(void) {
@@ -159,7 +159,7 @@ void wm_applyEncounterEvents(void) {
         g_worldAmbientSeDist[i] = 0xFFFF;
         g_worldAmbientSeOn[i] = 0;
     }
-    if (*g_worldStoryCounterPtr - 0x1B4EU < 0x1004) {
+    if (*g_worldStoryCounterPtr - (u32)WM_STORY_DISC3 < WM_STORY_LATE_DATA - WM_STORY_DISC3) {
         g_worldBlockFx7Spin = 0;
     } else {
         g_worldBlockFx7Spin = 1;
@@ -190,7 +190,7 @@ void wm_drawMap(void) {
         }
         SetLightMatrix(&g_worldBackdropLightMatrix);
         SetColorMatrix(&g_worldBackdropColorMatrix);
-        pack = w_framePackGetPtr(g_worldDataPack, 0x3B);
+        pack = w_framePackGetPtr(g_worldDataPack, WM_PACK_BACKDROP);
         m2.t[0] = 0;
         m2.t[1] = 0;
         m2.t[2] = 0;
@@ -254,7 +254,7 @@ void wm_updateMap(void) {
             g_worldCameraTarget[2] += rand() % shake - shake / 2;
         }
     }
-    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && playerType - 1 < 7U) {
+    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == WM_TOPO_PUSHBACK && playerType - 1 < 7U) {
         g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
         if (g_worldPlayer->pos.vx == g_worldPlayer->prevPos.vx && g_worldPlayer->pos.vz == g_worldPlayer->prevPos.vz) {
             g_worldPlayer->prevPos.vx++;
@@ -1445,7 +1445,7 @@ void wm_naviInit(void) {
     g_worldNaviVisible = 1;
     g_worldNaviMode = (globalVars = g_evtGlobalVars.b)[0x64];
     i = WM_NAVI_KNOWN_VAR;
-    if (*g_worldStoryCounterPtr >= 0x1766) {
+    if (*g_worldStoryCounterPtr >= WM_STORY_FOG_END) {
         g_evtGlobalVars.h[i] |= WM_NAVI_KNOWN_LATE;
         if (g_evtGlobalVars.h[i] & WM_NAVI_KNOWN_PAIR) {
             g_evtGlobalVars.h[i] |= WM_NAVI_KNOWN_PAIR;
@@ -1570,16 +1570,16 @@ void wm_naviUpdate(void) {
                 g_worldNaviCursorX += math_sin(ang) * speed >> 12;
                 g_worldNaviCursorY -= math_cos(ang) * speed >> 12;
                 if (g_worldNaviCursorX < 0) {
-                    g_worldNaviCursorX += 0xF0000;
+                    g_worldNaviCursorX += (WM_NAVI_MAP_W << 12);
                 }
                 if (g_worldNaviCursorY < 0) {
-                    g_worldNaviCursorY += 0xC8000;
+                    g_worldNaviCursorY += (WM_NAVI_MAP_H << 12);
                 }
-                if (g_worldNaviCursorX > 0xF0000) {
-                    g_worldNaviCursorX -= 0xF0000;
+                if (g_worldNaviCursorX > (WM_NAVI_MAP_W << 12)) {
+                    g_worldNaviCursorX -= (WM_NAVI_MAP_W << 12);
                 }
-                if (g_worldNaviCursorY > 0xC8000) {
-                    g_worldNaviCursorY -= 0xC8000;
+                if (g_worldNaviCursorY > (WM_NAVI_MAP_H << 12)) {
+                    g_worldNaviCursorY -= (WM_NAVI_MAP_H << 12);
                 }
             }
             if (pad & (BTN_L1 | BTN_R1)) {

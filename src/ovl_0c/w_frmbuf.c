@@ -386,7 +386,7 @@ void wm_weatherStart(void) {
 }
 
 s32 wm_getStoryFog(void) {
-    return (u32)(*g_worldStoryCounterPtr - 0x1766) >= 0x13ED;
+    return (u32)(*g_worldStoryCounterPtr - WM_STORY_FOG_END) >= WM_STORY_FOG_BACK - WM_STORY_FOG_END;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frmbuf", s_wmStrIllegalWeatherMode);

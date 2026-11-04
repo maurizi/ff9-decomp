@@ -615,7 +615,7 @@ void wm_setMountPalette(void) {
     id = 0;
     k = 0;
     palAnim = g_gameState->gameData->ctx.world->obj->palAnims;
-    pal = w_framePackGetPtr(g_worldDataPack, 1);
+    pal = w_framePackGetPtr(g_worldDataPack, WM_PACK_MOUNT_PALETTES);
     wm_mountPalettePre();
     for (node = evt_getObjectList(); node != NULL; node = node->next) {
         obj = node->obj;
@@ -1398,7 +1398,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
     memset(&tryPos, 0, sizeof(tryPos));
     ok = 0;
-    if (g_worldAmbientSeDist[1] < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x17) {
+    if (g_worldAmbientSeDist[1] < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == WM_TOPO_PUSHBACK) {
         return 0;
     }
     g_worldFlyTurning = 0;
@@ -1417,7 +1417,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
             return 0;
         }
         topo = (u8)cell >> 2;
-        if (topo >= 0x2D && (topo < 0x2F || topo == WM_TOPO_NO_ENCOUNTER)) {
+        if (topo >= WM_TOPO_NO_LANDING && (topo <= WM_TOPO_NO_LANDING_2 || topo == WM_TOPO_NO_ENCOUNTER)) {
             return 0;
         }
         break;

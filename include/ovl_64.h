@@ -191,7 +191,7 @@ typedef struct {
 typedef struct {
     u8 unk0; /* write-only (set to 1) */
     u8 stalled; /* the ring was full: reading paused until mbg_streamFreeFrame */
-    u8 endState; /* MBG_END_*; when set, mbg_streamGetFrame returns 5 instead of 3 for an empty ring */
+    u8 endState; /* MBG_END_*; when set, mbg_streamGetFrame returns MBG_FRAME_END instead of MBG_FRAME_WAIT for an empty ring */
     u8 hasCamera; /* frames carry camera / mask data */
     void (*frameInfoCallback)(u8 *, u8 *, Ovl64FrameInfo *);
     void (*frameCallback)(void); /* called after each complete frame */
@@ -230,6 +230,10 @@ typedef struct {
 #define MBG_END_NONE 0
 #define MBG_END_LAST_FRAME 1 /* the frame counter passed lastFrame */
 #define MBG_END_ERROR 2 /* channel or frame mismatch, or the read timed out */
+/* mbg_streamGetFrame results. Evidence: [code] */
+#define MBG_FRAME_OK 0 /* a ready frame was handed out */
+#define MBG_FRAME_WAIT 3 /* the ring is empty, the stream goes on */
+#define MBG_FRAME_END 5 /* the ring is empty and endState is set: mbg_readFrame marks the player ended */
 extern s32 g_mbgSectorLogCount;
 extern Ovl64Stream g_mbgStream;
 

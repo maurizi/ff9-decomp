@@ -687,11 +687,11 @@ s32 wm_canCallChocobo(void) {
     s32 type = g_worldPlayer->actorType;
     if (type < WM_ACTOR_CHOCOBO0 && type != WM_ACTOR_NONE) {
         switch ((u8)g_worldActorTypeInfo[type].cellAttr >> 2) {
-        case 3:
-        case 18:
-        case 21:
-        case 22:
-        case 28:
+        case WM_TOPO_CHOCOBO_CALL_A:
+        case WM_TOPO_CHOCOBO_CALL_B:
+        case WM_TOPO_CHOCOBO_CALL_C:
+        case WM_TOPO_CHOCOBO_CALL_D:
+        case WM_TOPO_CHOCOBO_CALL_E:
             return 1;
         }
     }
@@ -870,17 +870,17 @@ void wm_initDiscImage(void) {
             g_worldImageNames[i] = g_worldImageNamesDisc1[i];
         }
         printf("Read CD Image [Disc-1]\n");
-        g_worldImageSectors[0] = PSX_NULLABLE(file_find(DIR_WORLD_IMAGES, 0x3F3))->sector + g_gameState->imgSector;
-        g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, 0x3FD)->sector + g_gameState->imgSector;
-        g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, 0x407)->sector + g_gameState->imgSector;
+        g_worldImageSectors[0] = PSX_NULLABLE(file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE(WM_DATASET_DISC1)))->sector + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE_H(WM_DATASET_DISC1))->sector + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE_V(WM_DATASET_DISC1))->sector + g_gameState->imgSector;
     } else {
         for (i = 0; i < 5; i++) {
             g_worldImageNames[i] = g_worldImageNamesDisc4[i];
         }
         printf("Read CD Image [Disc-4]\n");
-        g_worldImageSectors[0] = PSX_NULLABLE(file_find(DIR_WORLD_IMAGES, 0x3F6))->sector + g_gameState->imgSector;
-        g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, 0x400)->sector + g_gameState->imgSector;
-        g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, 0x40A)->sector + g_gameState->imgSector;
+        g_worldImageSectors[0] = PSX_NULLABLE(file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE(WM_DATASET_DISC4)))->sector + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE_H(WM_DATASET_DISC4))->sector + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE_V(WM_DATASET_DISC4))->sector + g_gameState->imgSector;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(s_wmStrImageTopSector, g_worldImageSectors[0]);

@@ -78,12 +78,12 @@ void wm_drawEffects(void) {
             if (view.vz > 1000) {
                 tex = g_worldOt[*g_worldBufIndex];
                 switch ((u8)fx->type) {
-                case 2:
+                case WM_FX_RISING_PUFF:
                     g_worldOtBias = 0;
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale = fx->frame * 400 + 6000,
                                                (s16)((s16)(fx->frame / 4) % 26), (u8)fx->abr, -1, tex, 0, 2);
                     break;
-                case 3:
+                case WM_FX_RISING_PUFF_2:
                     g_worldOtBias = 0;
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale = fx->frame * 400 + 6000,
                                                (s16)((s16)(fx->frame / 2) % 23), (u8)fx->abr, -1, tex, 0, 2);
@@ -176,17 +176,17 @@ void wm_updateEffects(void) {
             wm_freeEffect(fx);
         }
         switch ((u8)fx->type) {
-        case 2:
+        case WM_FX_RISING_PUFF:
             fx->y -= 60 + rand8_inline() % 24;
             fx->x -= 30 - rand8_inline() % 60;
             fx->z -= 30 - rand8_inline() % 60;
             break;
-        case 3:
+        case WM_FX_RISING_PUFF_2:
             fx->y -= 60 + rand8_inline() % 24;
             fx->x -= 60 - rand8_inline() % 60;
             fx->z -= 30 - rand8_inline() % 60;
             break;
-        case 23:
+        case WM_FX_CLAY_SWIRL:
             fx->x = math_sin((fx->frame << 6) + fx->phase) / 2 + g_worldBlockFx4Pos.vx;
             fx->y -= 80;
             fx->z = math_cos((fx->frame << 6) + fx->phase) / 2 + g_worldBlockFx4Pos.vz;
@@ -201,12 +201,12 @@ void wm_updateEffects(void) {
         cur = fx;
         fx = fx->next;
         switch ((u8)cur->type) {
-        case 2:
+        case WM_FX_RISING_PUFF:
             if (cur->frame >= 77) {
                 wm_freeEffect(cur);
             }
             break;
-        case 3:
+        case WM_FX_RISING_PUFF_2:
             if (cur->frame >= 46) {
                 wm_freeEffect(cur);
             }
@@ -242,7 +242,7 @@ void wm_drawBlockFx(u8 fxId) {
     SetBackColor((u8)((u16)g_worldWeatherData.work[0].fxBackColor[0] >> 5), (u8)((u16)g_worldWeatherData.work[0].fxBackColor[1] >> 5),
                  (u8)((u16)g_worldWeatherData.work[0].fxBackColor[2] >> 5));
     switch (fxId) {
-    case 4:
+    case WM_BLOCKFX_CLAY:
         if (g_worldFormFlags[WM_FORM_CLAY] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
             VECTOR scale;
 
@@ -253,28 +253,28 @@ void wm_drawBlockFx(u8 fxId) {
                 CompMatrix(g_worldViewMatrix, &mtx, &mtx);
                 SetRotMatrix(&mtx);
                 SetTransMatrix(&mtx);
-                wm_drawModel(WM_PACK0(0x3A), 0x50, 1);
-                wm_drawModel(WM_PACK0(0x35), 0x3C, 0);
+                wm_drawModel(WM_PACK0(WM_PACK_CLAY_OUTER), 0x50, 1);
+                wm_drawModel(WM_PACK0(WM_PACK_CLAY_MODEL), 0x3C, 0);
                 for (j = 0; j < 3; j++) {
                     math_rotMatrixXYZ(&g_worldBlockFx4PartRots[j], &mtx);
                     wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)mtx.t, &view, 0);
                     CompMatrix(g_worldViewMatrix, &mtx, &mtx);
                     SetRotMatrix(&mtx);
                     SetTransMatrix(&mtx);
-                    wm_drawModel(WM_PACK0(j + 0x36), 0, 0);
+                    wm_drawModel(WM_PACK0(j + WM_PACK_CLAY_PARTS), 0, 0);
                 }
             }
         }
         break;
-    case 7:
+    case WM_BLOCKFX_SPINNER:
         math_rotMatrixXYZ(&g_worldBlockFx7Rot, &mtx);
         wm_worldToView(&g_worldBlockFx7Pos, (VECTOR *)mtx.t, &view, 0);
         CompMatrix(g_worldViewMatrix, &mtx, &mtx);
         SetRotMatrix(&mtx);
         SetTransMatrix(&mtx);
-        wm_drawModel(WM_PACK0(0x39), 0, 1);
+        wm_drawModel(WM_PACK0(WM_PACK_SPINNER_MODEL), 0, 1);
         break;
-    case 6:
+    case WM_BLOCKFX_DISC4_CORE:
         if (g_worldDataSet == WM_DATASET_DISC4) {
             SVECTOR pos;
             u32 *ot;
@@ -287,7 +287,7 @@ void wm_drawBlockFx(u8 fxId) {
             pos.vx = mtx.t[0];
             pos.vy = mtx.t[1];
             pos.vz = mtx.t[2];
-            spr = w_framePackGetPtr(g_worldDataPack, 0x25);
+            spr = w_framePackGetPtr(g_worldDataPack, WM_PACK_CORE_SPRITE);
             frames = wm_getSpriteFrameCount((u16 *)spr) - 1;
             if (frames != 0) {
                 g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, spr, &pos, NULL, g_worldBlockFx6SpriteSize, g_worldFrameCount / 2 % frames, 1, -1,
@@ -298,19 +298,19 @@ void wm_drawBlockFx(u8 fxId) {
             math_rotMatrixXYZ(&g_worldBlockFx6CoreRot, &mtx);
             SetRotMatrix(&mtx);
             SetTransMatrix(&mtx);
-            wm_drawModel(WM_PACK0(0x3F), g_worldBlockFx6CoreOtOfs, 2);
+            wm_drawModel(WM_PACK0(WM_PACK_CORE_MODEL), g_worldBlockFx6CoreOtOfs, 2);
             math_rotMatrixXYZ(&g_worldBlockFx6RotA, &mtx);
             wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)mtx.t, &view, 0);
             CompMatrix(g_worldViewMatrix, &mtx, &mtx);
             SetRotMatrix(&mtx);
             SetTransMatrix(&mtx);
-            wm_drawModel(WM_PACK0(0x3C), 0, 2);
+            wm_drawModel(WM_PACK0(WM_PACK_CORE_SHELL_A), 0, 2);
             math_rotMatrixXYZ(&g_worldBlockFx6RotB, &mtx);
             wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)mtx.t, &view, 0);
             CompMatrix(g_worldViewMatrix, &mtx, &mtx);
             SetRotMatrix(&mtx);
             SetTransMatrix(&mtx);
-            wm_drawModel(WM_PACK0(0x3D), 0, 2);
+            wm_drawModel(WM_PACK0(WM_PACK_CORE_SHELL_B), 0, 2);
             for (i = 0; i < 10; i++) {
                 MATRIX m1;
                 MATRIX m2;
@@ -356,10 +356,10 @@ void wm_drawBlockFx(u8 fxId) {
                     SetTransMatrix(&mtx);
                     switch (rand() % 3) {
                     case 0:
-                        wm_drawModel(WM_PACK0(0x40), 0, 2);
+                        wm_drawModel(WM_PACK0(WM_PACK_CORE_FLASH_A), 0, 2);
                         break;
                     case 1:
-                        wm_drawModel(WM_PACK0(0x41), 0, 2);
+                        wm_drawModel(WM_PACK0(WM_PACK_CORE_FLASH_B), 0, 2);
                         break;
                     }
                 }
@@ -395,7 +395,7 @@ void wm_drawBlockFx(u8 fxId) {
                 gte_CompMatrix(g_worldViewMatrix, &mtx, &mtx);
                 SetRotMatrix(&mtx);
                 SetTransMatrix(&mtx);
-                wm_drawModel(WM_PACK0(0x3E), 0, 2);
+                wm_drawModel(WM_PACK0(WM_PACK_CORE_RING), 0, 2);
             }
         }
         break;
@@ -421,7 +421,7 @@ void wm_updateBlockFx(s32 fxId) {
 
     on = 0;
     switch ((u8)fxId) {
-    case 2:
+    case WM_BLOCKFX_GULUG_SUMMIT:
         g_worldClutAnimFx2 = 1;
         on = 1;
         break;
@@ -433,24 +433,24 @@ void wm_updateBlockFx(s32 fxId) {
             on = 1;
         }
         break;
-    case 3:
-        if ((u16)(*g_worldStoryCounterPtr - 0x24EA) < 0x1B9) {
+    case WM_BLOCKFX_STORY:
+        if ((u16)(*g_worldStoryCounterPtr - WM_STORY_BLOCKFX3_ON) < WM_STORY_BLOCKFX3_OFF - WM_STORY_BLOCKFX3_ON) {
             on = 1;
         }
         break;
-    case 7:
+    case WM_BLOCKFX_SPINNER:
         if (g_worldBlockFx7Spin != 0) {
             g_worldBlockFx7Rot.vy += 0x40;
         }
         break;
-    case 4:
+    case WM_BLOCKFX_CLAY:
         on = 1;
         g_worldBlockFx4Rot.vy -= 0x100;
         g_worldBlockFx4PartRots[0].vy += 0x100;
         g_worldBlockFx4PartRots[1].vy -= 0x40;
         g_worldBlockFx4PartRots[2].vy -= 0x180;
         break;
-    case 6:
+    case WM_BLOCKFX_DISC4_CORE:
         g_worldBlockFx6RotA.vz -= 8;
         g_worldBlockFx6RotA.vy -= 0x10;
         g_worldBlockFx6RotB.vz -= 0x10;
@@ -466,7 +466,7 @@ void wm_updateBlockFx(s32 fxId) {
         break;
     }
     if (on) {
-        emitter = w_framePackGetPtr(g_worldDataPack, (u8)fxId + 0x28);
+        emitter = w_framePackGetPtr(g_worldDataPack, WM_PACK_BLOCKFX_EMITTERS((u8)fxId));
         for (; emitter->effect != -1; emitter++) {
             if (rand() % 4096 < emitter->chance) {
                 x = emitter->x - emitter->rangeX / 2;
@@ -499,8 +499,8 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     fx = g_worldEffectFree.next;
     h = &g_worldEffectActive;
     switch (type) {
-    case 2:
-    case 3:
+    case WM_FX_RISING_PUFF:
+    case WM_FX_RISING_PUFF_2:
         k = 2;
         break;
     case WM_FX_FOREST_LEAVES:
@@ -524,7 +524,7 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     case WM_FX_WATERFALL_MIST:
     case 21:
     case WM_FX_WATER_RIPPLE:
-    case 23:
+    case WM_FX_CLAY_SWIRL:
     case 24:
     case 25:
     case 26:
@@ -538,7 +538,7 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
         break;
     }
     if (fx->next != 0) {
-        sprite = (s32)w_framePackGetPtr(g_worldDataPack, type + 7);
+        sprite = (s32)w_framePackGetPtr(g_worldDataPack, WM_PACK_FX_SPRITE(type));
         fx->prev->next = fx->next;
         fx->next->prev = fx->prev;
         fx->prev = h;
@@ -555,7 +555,7 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
         fx->type = type;
         fx->phase = 0;
         fx->unk24 = 0;
-        if (type == 0x17) {
+        if (type == WM_FX_CLAY_SWIRL) {
             fx->phase = rand() & 0xFFF;
         }
     }

@@ -96,7 +96,7 @@ void wm_initClutAnims(void) {
         if (i < 18) {
             if (i >= 15) {
                 dst = &g_worldClutBuf[0][off];
-                memcpy((u8 *)dst, (u8 *)w_framePackGetPtr(g_worldDataPack, 2) + src, (u16)anim->count * 2);
+                memcpy((u8 *)dst, (u8 *)w_framePackGetPtr(g_worldDataPack, WM_PACK_CLUT_ANIM) + src, (u16)anim->count * 2);
                 src += (u16)anim->count * 2;
             } else {
                 StoreImage(&rect, (u32 *)&g_worldClutBuf[0][off]);

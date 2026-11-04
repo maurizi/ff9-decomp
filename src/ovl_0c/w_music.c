@@ -42,7 +42,7 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
     case 0:
         se.seIds[0] = 0x68;
         break;
-    case 1:
+    case WM_SE_BUZZER:
         se.seIds[0] = SE_BUZZER;
         break;
     case 2:
@@ -54,10 +54,10 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
     case 4:
         se.seIds[0] = 0x27E;
         break;
-    case 5:
+    case WM_SE_HELP_OPEN:
         se.seIds[0] = SE_HELP_OPEN;
         break;
-    case 39:
+    case WM_SE_CURSOR:
         se.seIds[0] = SE_CURSOR;
         break;
     }
@@ -83,7 +83,7 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
         case 35:
             se.seIds[0] = 0x37C;
             break;
-        case 36:
+        case WM_SE_CHOCOBO_CALL:
             se.seIds[0] = SE_CHOCOBO_CALL;
             break;
         case 37:
@@ -140,17 +140,17 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
                     se.seIds[0] = 0x376;
                     se.seIds[1] = 0x377;
                     break;
-                case 22:
+                case WM_SE_INVINCIBLE_LOOP:
                     se.channelMask = 0x8000;
                     se.seIds[0] = 0x378;
                     se.seIds[1] = 0x379;
                     break;
-                case 23:
+                case WM_SE_HILDA_GARDE_LOOP:
                     se.channelMask = 0x8000;
                     se.seIds[0] = 0x554;
                     se.seIds[1] = 0x555;
                     break;
-                case 24:
+                case WM_SE_BOAT_LOOP:
                     se.channelMask = 0x8000;
                     se.seIds[0] = 0x5D9;
                     se.seIds[1] = 0x5DA;
@@ -278,10 +278,10 @@ s32 wm_keepEntryMusic(void) {
     u16 sc = g_evtGlobalVars.h[0];
     u8 moveMode = g_evtGlobalVars.b[0xBE];
 
-    if (sc - 0x2580U < 0x122) {
+    if (sc - (u32)WM_STORY_FIELD_SONG1 < WM_STORY_FIELD_SONG2 - WM_STORY_FIELD_SONG1) {
         return 1;
     }
-    if (sc - 0x26A2U < 0x14) {
+    if (sc - (u32)WM_STORY_FIELD_SONG2 < WM_STORY_FIELD_SONG2_END - WM_STORY_FIELD_SONG2) {
         return 1;
     }
     return (u32)(moveMode - WM_MOVE_HILDA_GARDE) < 2;
@@ -381,10 +381,10 @@ s32 wm_getSongMusicId(u16 song) {
 
     if (song == WM_SONG_NORMAL) {
         sc = *g_worldStoryCounterPtr;
-        if (sc - 0x2580U < 0x122) {
+        if (sc - (u32)WM_STORY_FIELD_SONG1 < WM_STORY_FIELD_SONG2 - WM_STORY_FIELD_SONG1) {
             song = WM_SONG_FIELD1;
         }
-        if (sc - 0x26A2U < 0x14) {
+        if (sc - (u32)WM_STORY_FIELD_SONG2 < WM_STORY_FIELD_SONG2_END - WM_STORY_FIELD_SONG2) {
             song = WM_SONG_FIELD2;
         }
         if (g_worldDataSet == WM_DATASET_DISC4) {
