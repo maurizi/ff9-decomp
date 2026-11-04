@@ -6,10 +6,10 @@
 
 /* fx_07e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SLOW_GLINT      0x1 /* particles: white glint (texture partly outside the file) (look pending) */
+#define FX_SLOW_GLINT      0x1 /* particles: white glint, the rest of the frame still outside the file and the common pages (look pending) */
 #define FX_SLOW_GREEN_RING 0x2 /* rings: white-green gouraud rings */
 #define FX_SLOW_BLUE_WAVE  0x3 /* particles: blue chevron wave frames */
-#define FX_SLOW_PARTICLES  0x5 /* particles: 8 frames, render all black (look pending) */
+#define FX_SLOW_PARTICLES  0x5 /* particles: 8 frames, still render all black (look pending) */
 #define FX_SLOW_BACKDROP   0xA /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_SLOW_CRESCENT   0xC /* model: one quad textured with a blue-white crescent */
 

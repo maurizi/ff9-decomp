@@ -8,18 +8,18 @@
 
 /* fx_086 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_METEOR_STREAK_SHELL   0x4 /* model: bullet-shaped shell (UV box reads a placeholder page) (look pending) */
-#define FX_METEOR_SPRITES        0x6 /* emitter: sprites, render all black (look pending) */
+#define FX_METEOR_STREAK_SHELL   0x4 /* model: bullet-shaped shell; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (look pending) */
+#define FX_METEOR_SPRITES        0x6 /* emitter: sprites, still render all black (look pending) */
 #define FX_METEOR_BACKDROP       0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_METEOR_EXPLOSION      0x9 /* emitter: green and orange explosion frames */
-#define FX_METEOR_CONE_SPRITES   0xB /* emitter: cone of sprites, render all black (look pending) */
-#define FX_METEOR_RING_BAND      0xC /* model: ring band (texture not resolved) (look pending) */
+#define FX_METEOR_CONE_SPRITES   0xB /* emitter: cone of sprites, still render all black (look pending) */
+#define FX_METEOR_DUST_RING      0xC /* model: ring band with a pink-brown rocky dust texture */
 #define FX_METEOR_CLOUDS         0xE /* sprite: grey cloud strip */
 #define FX_METEOR_SKY_CYLINDER   0xF /* model: cylinder with a blue sky / cloud texture */
 #define FX_METEOR_DARK_CLOUDS    0x10 /* sprite: dark cloud strip */
 #define FX_METEOR_ROCK           0x11 /* model: rock with a cratered texture (the meteor) */
 #define FX_METEOR_ORANGE_RING    0x12 /* rings: white-orange gouraud rings */
-#define FX_METEOR_DEBRIS_SPRITES 0x13 /* sprites: 44 frames, render all black (look pending) */
+#define FX_METEOR_DEBRIS_SPRITES 0x13 /* sprites: 44 frames, still render all black (look pending) */
 #define FX_METEOR_STREAK         0x18 /* model: long thin gouraud spike */
 #define FX_METEOR_BOWL           0x19 /* model: gouraud hemisphere bowl */
 #define FX_METEOR_RING_DISC      0x1A /* model: gouraud flat annulus */

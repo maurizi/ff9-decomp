@@ -16,7 +16,7 @@
 #define FX_BLIZZAGA_ICE_CRYSTAL     0x14 /* model: main ice crystal spike (byte-identical to fx_097 entry 0x14) */
 #define FX_BLIZZAGA_FROST_RING      0x1B /* rings: blue gouraud ring on the ground (byte-identical to fx_097 entry 0x1B) */
 #define FX_BLIZZAGA_MIST            0x1C /* emitter: grey frost mist at the crystal base (same call site as fx_097 entry 0x26) */
-#define FX_BLIZZAGA_FAN_EMITTER     0x1D /* emitter: four fan elements (not rendered) (byte-identical to fx_097 entry 0x1c) (look pending) */
+#define FX_BLIZZAGA_ICE_SPIKES      0x1D /* emitter: four fans drawn as narrowing cyan, green, violet and blue icicle-shaped light spikes (byte-identical to fx_097 entry 0x1c) */
 #define FX_BLIZZAGA_SNOW_BURST      0x1E /* emitter: rings textured with snow flakes (same call site as fx_097 entry 0x1d) */
 #define FX_BLIZZAGA_SHATTER_WAVE    0x1F /* emitter: blue ripple wave (byte-identical to fx_097 entry 0x1e) */
 #define FX_BLIZZAGA_ICE_FLARES_2    0x20 /* emitter: cyan ice glints (byte-identical to fx_097 entry 0x1f) */

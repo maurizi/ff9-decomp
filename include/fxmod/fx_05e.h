@@ -11,13 +11,13 @@
 #define FX_DEATH_SUMMON_TEXTURES 0x2 /* table: texture block passed with the summon model (btlfx_registerSummonModel) */
 #define FX_DEATH_GREEN_ORB       0x4 /* emitter: fan + pale green orb sprites, white-salmon-violet gouraud rings */
 #define FX_DEATH_RED_RINGS       0x5 /* emitter: pink spark sprites + white-red gouraud rings */
-#define FX_DEATH_SUMMON_MODEL    0x6 /* summon model (btlfx_registerSummonModel), not drawn by the tool (look pending) */
+#define FX_DEATH_REAPER          0x6 /* summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe */
 #define FX_DEATH_SOUL_ORBS       0x9 /* emitter: blue glowing orb quads */
 #define FX_DEATH_BACKDROP        0xB /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
 #define FX_DEATH_BLUE_TRAIL      0xC /* emitter: spiralling trail with a blue flame strip */
 #define FX_DEATH_SMOKE           0x10 /* emitter: grey smoke puffs */
 #define FX_DEATH_BLUE_TRAIL_2    0x1B /* emitter: spiralling trail with a blue flame strip */
-#define FX_DEATH_SO_MODEL        0x1C /* 'so' model registered in op80 (look pending) */
+#define FX_DEATH_REAPER_2        0x1C /* 'so' model: the robed skull reaper with the scythe (same textures, other mesh), registered in op80 */
 
 /* ribbon history: two edge points per step, edge0.pad = live */
 typedef struct {

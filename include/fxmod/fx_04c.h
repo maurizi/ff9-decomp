@@ -6,8 +6,8 @@
 
 /* fx_04c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_FLOAT_GLOW_2     0x1 /* emitter: one particle (texture not in the file) (look pending) */
-#define FX_FLOAT_GLOW       0x2 /* emitter: one particle (texture not in the file) (look pending) */
+#define FX_FLOAT_GLOW_2     0x1 /* emitter: one particle (magenta: texture still outside the file and the common pages) (look pending) */
+#define FX_FLOAT_GLOW       0x2 /* emitter: one particle (magenta: texture still outside the file and the common pages) (look pending) */
 #define FX_FLOAT_STAR_FLASH 0x3 /* emitter: speckled ring, blue star flashes, two fans (per target) */
 #define FX_FLOAT_SPECK_RING 0x4 /* emitter: ring textured with brown specks (per target) */
 #define FX_FLOAT_BACKDROP   0x5 /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */

@@ -83,7 +83,7 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_moveEmitterTo((s32)work->emit8, (s32)&pos1);
             }
             if (frame == 0xE) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAVES), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_DUST_SPECKS), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

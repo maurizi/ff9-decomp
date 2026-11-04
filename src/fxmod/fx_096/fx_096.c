@@ -172,8 +172,8 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos24.vy = work->pos58.vy;
         work->pos24.vz = work->pos58.vz;
         work->pos14.vy = -0x258;
-        work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FROST_ICE_MODEL), 1);
-        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FROST_ICE_MODEL_2), 1);
+        work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FROST_ICE_CRYSTAL), 1);
+        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FROST_ICE_SHARD), 1);
         work->fade60 = -1;
     } else {
         frame = entry->frame;

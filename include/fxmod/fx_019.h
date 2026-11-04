@@ -6,7 +6,7 @@
 
 /* fx_019 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_MINI_FAN_EMITTER 0x1 /* emitter: fan element + one faint ring (fan not rendered) (look pending) */
+#define FX_MINI_LIGHT_BEAM  0x1 /* emitter: fan drawn as a blue-white horizontal light beam + one faint ring */
 
 typedef struct {
     Pool6CEntry *emit0;

@@ -11,13 +11,13 @@
 #define FX_BLASTER_TEX_RING       0x1 /* emitter: textured green-grey ring band */
 #define FX_BLASTER_PINK_HALO      0x2 /* emitter: green ring band + pink halo rings */
 #define FX_BLASTER_PINK_HALO_2    0x3 /* emitter: pink halo rings */
-#define FX_BLASTER_FAN_EMITTER    0x4 /* emitter: fan element (not rendered) (look pending) */
+#define FX_BLASTER_LIGHT_CONE     0x4 /* emitter: fan drawn as a narrowing light cone fading pink to yellow */
 #define FX_BLASTER_PINK_STARBURST 0x5 /* emitter: pink starburst + violet petals */
 #define FX_BLASTER_VIOLET_PETALS  0x6 /* emitter: violet petal sprites */
-#define FX_BLASTER_TRAIL          0x7 /* emitter: flat orbiting trail, grey strip (look pending) */
+#define FX_BLASTER_TRAIL          0x7 /* emitter: flat orbiting trail; the grey strip reads a page of unrelated smoke shapes (look pending) */
 #define FX_BLASTER_GREY_RING      0x8 /* emitter: lilac-grey gouraud rings */
 #define FX_BLASTER_VIOLET_RING    0xF /* emitter: white-violet gouraud rings */
-#define FX_BLASTER_TRAIL_2        0x10 /* trail: small strip (look unclear) (look pending) */
+#define FX_BLASTER_TRAIL_2        0x10 /* trail: small strip, mostly black with magenta texels (look pending) */
 
 typedef struct {
     s32 state0; /* state */

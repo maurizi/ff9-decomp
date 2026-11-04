@@ -18,17 +18,17 @@
 #define FX_FLARE_RED_SPARKS       0xB /* emitter: red spark sprites + white-red rings */
 #define FX_FLARE_RING_DISC        0xF /* model: gouraud flat annulus */
 #define FX_FLARE_BACKDROP         0x11 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element (look pending) */
+#define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element, nothing drawable in the data (look pending) */
 #define FX_FLARE_FIRE_RING        0x13 /* rings: white-cyan-orange-red gouraud rings */
-#define FX_FLARE_FAN_EMITTER      0x14 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_FLARE_WHITE_FLASH      0x14 /* emitter: two fans drawn as solid white flash quads */
 #define FX_FLARE_BACKDROP_2       0x15 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_FLARE_FIRE_DOME        0x16 /* model: dome with a fiery orange texture */
 #define FX_FLARE_BACKDROP_3       0x17 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_FLARE_TEX_RING         0x18 /* rings: textured rings (texture not resolved) (look pending) */
-#define FX_FLARE_TEX_RING_2       0x19 /* rings: textured rings (texture not resolved) (look pending) */
+#define FX_FLARE_TEX_RING         0x18 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
+#define FX_FLARE_TEX_RING_2       0x19 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
 #define FX_FLARE_SPARK_GLOW       0x1A /* emitter: red spark sprites + fading orange glow */
-#define FX_FLARE_FAN_EMITTER_2    0x1B /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_FLARE_SPHERE           0x1E /* model: sphere (texture not resolved) (look pending) */
+#define FX_FLARE_GOLDEN_GLOWS     0x1B /* emitter: two fans drawn as small golden glow spots */
+#define FX_FLARE_CLOUD_SPHERE     0x1E /* model: sphere with a grey cloudy texture */
 
 typedef struct {
     SVECTOR from0; /* from */

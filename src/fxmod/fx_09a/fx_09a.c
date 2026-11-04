@@ -122,7 +122,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->frame4 = 0;
         fx_09a_env = env;
         file = ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_MODEL_DATA);
-        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_MODEL), &file, 1, &fx_09a_summonModel);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_REAPER), &file, 1, &fx_09a_summonModel);
         work->unit8 = -1;
         work->unitsDoneC = -1;
         work->unitCount10 = env->targets->targetCount;

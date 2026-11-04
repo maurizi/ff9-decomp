@@ -8,7 +8,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SLEEP_BACKDROP       0x1 /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
 #define FX_SLEEP_LIGHT_SPIRAL   0x2 /* emitter: helix of white screen trails, white-cyan rings, green glint */
-#define FX_SLEEP_SPECK_RING     0x3 /* emitter: particle (texture not in the file) + ring textured with brown specks (look pending) */
+#define FX_SLEEP_SPECK_RING     0x3 /* emitter: particle (magenta: texture still outside the file and the common pages) + ring textured with brown specks (look pending) */
 #define FX_SLEEP_LIGHT_SPIRAL_2 0x4 /* emitter: helix of two white screen trails with green / violet glows */
 
 typedef struct {

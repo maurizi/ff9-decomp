@@ -24,13 +24,13 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m0);
             ex->btlfx_matrixPointAhead(&m0, (s16)env->targets->fxParam, (s32)&work->pos8);
-            work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARKS), (s32)&work->pos8);
+            work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARK_DOTS), (s32)&work->pos8);
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m1);
             ex->btlfx_matrixPointAhead(&m1, (s16)env->targets->fxParam, (s32)&work->pos18);
             work->emit4C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_GLOW_RINGS), (s32)&work->pos18);
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m2);
             ex->btlfx_matrixPointAhead(&m2, (s16)env->targets->fxParam, (s32)&work->pos28);
-            work->emit50 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARKS), (s32)&work->pos28);
+            work->emit50 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARK_DOTS), (s32)&work->pos28);
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m3);
             ex->btlfx_matrixPointAhead(&m3, (s16)env->targets->fxParam, (s32)&work->pos38);
             work->emit54 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_GLOW_RINGS_2), (s32)&work->pos38);

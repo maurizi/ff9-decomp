@@ -10,8 +10,8 @@
 #define FX_BLOWUP_EXPLOSION_SMOKE 0x2 /* emitter: fire explosion + grey smoke puffs */
 #define FX_BLOWUP_BIG_EXPLOSION   0x3 /* emitter: three fire explosions */
 #define FX_BLOWUP_RED_RING        0x4 /* emitter: fan + white-red gouraud ring */
-#define FX_BLOWUP_SPARKS          0xB /* emitter: spark sprites (texture not in the file), at the targets (look pending) */
-#define FX_BLOWUP_SPARKS_2        0xC /* emitter: spark sprites (texture not in the file), at the targets (look pending) */
+#define FX_BLOWUP_SPARK_DOTS      0xB /* emitter: faint spark dots (btlfx_emitDots), at the targets */
+#define FX_BLOWUP_SPARK_DOTS_2    0xC /* emitter: faint spark dots (btlfx_emitDots), at the targets */
 #define FX_BLOWUP_SMOKE           0xD /* emitter: grey smoke puffs */
 
 typedef struct {

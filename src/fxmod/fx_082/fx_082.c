@@ -25,8 +25,8 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos18.vy -= 0x145;
         BTLFX_COPY_SVEC(&work->rot28, &work->rot20);
         ex->btlfx_initEffModels(fx_082_effModels, 2);
-        work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_MODEL), 0);
-        work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_MODEL), 0);
+        work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_HAMMER), 0);
+        work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_HAMMER), 0);
         env->camera->points[0].vx = work->pos18.vx;
         env->camera->points[0].vy = work->pos18.vy;
         env->camera->points[0].vz = work->pos18.vz;
@@ -90,7 +90,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 6;
             work->rot28.vx = 0x400 - ((frame & 1) * 2 - 1) * (ex->math_cos(t >> 2) >> 7);
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_FAN_EMITTER), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_RAINBOW_STREAK), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }

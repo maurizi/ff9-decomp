@@ -9,15 +9,15 @@
 
 /* fx_005 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_THUNDARA_SPARKS       0x7 /* emitter: spark sprites (texture not in the file) (look pending) */
+#define FX_THUNDARA_SPARK_DOTS   0x7 /* emitter: white spark dots (btlfx_emitDots) */
 #define FX_THUNDARA_LENS_FLARES  0x16 /* particles: orange lens-flare dots around the orb */
 #define FX_THUNDARA_IMPACT_FLASH 0x17 /* emitter: four-point star flash, white rings, sparks */
 #define FX_THUNDARA_IMPACT_RING  0x19 /* emitter: white-cyan gouraud rings */
 #define FX_THUNDARA_ORB_EMITTER  0x1A /* emitter: helix whose callback element draws the orb (0x16, 0x1C-0x1F) */
 #define FX_THUNDARA_ORB_FADE     0x1C /* particles: blue energy sphere fading to orange */
 #define FX_THUNDARA_ORB          0x1D /* particles: bright blue energy sphere */
-#define FX_THUNDARA_ORB_SPARKS   0x1E /* sprites: sparks around the orb (texture not in the file) (look pending) */
-#define FX_THUNDARA_ORB_SPARKS_2 0x1F /* sprites: sparks around the orb (texture not in the file) (look pending) */
+#define FX_THUNDARA_ORB_SPARKS   0x1E /* sprites: blank, samples page (0x1C0, 0x100) which the file leaves zero, filled at run time (look pending) */
+#define FX_THUNDARA_ORB_DOTS     0x1F /* sprites: white dots scattering around the orb */
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {

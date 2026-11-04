@@ -9,7 +9,7 @@
 #define FX_MATRA_MAGIC_MISSILE_TRAIL 0x2 /* trail: blue streak behind each homing missile */
 #define FX_MATRA_MAGIC_BLAST         0x8 /* particles: violet-white radial blast */
 #define FX_MATRA_MAGIC_SMOKE         0x9 /* particles: pink-violet smoke puff */
-#define FX_MATRA_MAGIC_SO_MODEL      0xA /* 'so' model registered in op80 (look pending) */
+#define FX_MATRA_MAGIC_STAR_GLOW     0xA /* 'so' model: crossed quads with a violet-white glow texture (a star-shaped flare), registered in op80 */
 
 /* homing particle, one pool item */
 typedef struct {

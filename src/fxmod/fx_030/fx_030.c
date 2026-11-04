@@ -16,8 +16,8 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->pos8, (s16 *)&work->aim10);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos0, (s16 *)&work->aim18);
         work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLLEN_POLLEN_PUFF), (s32)&work->pos0);
-        work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLLEN_POLLEN), (s32)&work->pos0);
-        work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLLEN_POLLEN_2), (s32)&work->pos0);
+        work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLLEN_POLLEN_DOTS), (s32)&work->pos0);
+        work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLLEN_POLLEN_DOTS_2), (s32)&work->pos0);
     } else {
         frame = entry->frame;
         if (work->emit20 != NULL && work->emit20->state == BTLFX_EMIT_DONE) {

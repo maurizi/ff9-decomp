@@ -13,28 +13,28 @@
 #define FX_LV4_HOLY_CYAN_RING       0x6 /* rings: white-cyan-blue gouraud rings, 8 segments */
 #define FX_LV4_HOLY_LILAC_RING      0x9 /* rings: white-lilac gouraud rings */
 #define FX_LV4_HOLY_RAINBOW_ARCH    0xA /* model: half-ring arch, rainbow cloud texture */
-#define FX_LV4_HOLY_SPRITE_LINE     0xB /* sprite line: small sprites (look unclear) (look pending) */
+#define FX_LV4_HOLY_SPRITE_LINE     0xB /* sprite line; its frames read a page of unrelated sprites, filled at run time (look pending) */
 #define FX_LV4_HOLY_BLUE_SPARKLES   0xC /* particles: blue sparkle frames */
 #define FX_LV4_HOLY_BLUE_STREAKS    0xF /* emitter: blue light streaks + sparkles */
 #define FX_LV4_HOLY_BACKDROP        0x10 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_LV4_HOLY_SPARKLE_EMITTER 0x11 /* emitter: callback element + blue sparkles and specks */
-#define FX_LV4_HOLY_TRAIL           0x12 /* trail: strip texture not resolved (look pending) */
-#define FX_LV4_HOLY_FAN_EMITTER     0x13 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_LV4_HOLY_FAN_EMITTER_2   0x14 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_LV4_HOLY_TRAIL           0x12 /* trail: the strip reads unrelated multicoloured VRAM, filled at run time (look pending) */
+#define FX_LV4_HOLY_VIOLET_RAYS     0x13 /* emitter: two fans drawn as narrow violet-white dithered rays */
+#define FX_LV4_HOLY_VIOLET_RAYS_2   0x14 /* emitter: two fans drawn as narrow violet-white dithered rays */
 #define FX_LV4_HOLY_BLUE_SPECKS     0x15 /* emitter: blue speck sprites */
 #define FX_LV4_HOLY_VIOLET_RING     0x16 /* rings: white-grey-violet-blue gouraud rings */
 #define FX_LV4_HOLY_RING_DISC       0x17 /* model: gouraud flat annulus */
 #define FX_LV4_HOLY_DARK_BLUE_RING  0x19 /* emitter: dark blue gouraud rings */
-#define FX_LV4_HOLY_FAN_EMITTER_3   0x1A /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_LV4_HOLY_SPECK_EMITTER   0x1C /* emitter: dim sprites with blue specks (look pending) */
+#define FX_LV4_HOLY_BLUE_RAYS       0x1A /* emitter: two fans drawn as thin vertical blue light rays */
+#define FX_LV4_HOLY_SPECK_EMITTER   0x1C /* emitter: dim sprites with blue specks; the frames read unrelated dithered VRAM (look pending) */
 #define FX_LV4_HOLY_PRISM_BURST     0x1D /* emitter: prism-coloured particles + violet / cyan rings */
 #define FX_LV4_HOLY_BLUE_RING_2     0x1F /* rings: blue gouraud rings */
 #define FX_LV4_HOLY_BACKDROP_2      0x20 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_LV4_HOLY_WHITE_SPHERE    0x21 /* model: sphere, white texture */
 #define FX_LV4_HOLY_BACKDROP_3      0x22 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_LV4_HOLY_TEX_RING        0x23 /* rings: textured rings (texture not resolved) (look pending) */
+#define FX_LV4_HOLY_TEX_RING        0x23 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
 #define FX_LV4_HOLY_VIOLET_RING_2   0x24 /* rings: white-blue-violet gouraud rings, 4 segments */
-#define FX_LV4_HOLY_PARTICLE        0x25 /* particles: one small frame (look unclear) (look pending) */
+#define FX_LV4_HOLY_PARTICLE        0x25 /* particles: one small frame; reads grey stripes that look like unrelated VRAM (look pending) */
 #define FX_LV4_HOLY_FLASH_RINGS     0x27 /* emitter: white-yellow and white-grey gouraud rings */
 
 extern Unk800F78A4 *fx_081_env;

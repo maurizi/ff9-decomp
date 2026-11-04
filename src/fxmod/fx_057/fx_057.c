@@ -173,7 +173,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit2C->alpha = fx_057_fade;
             }
             if (frame == 19) {
-                fx_057_emitter1 = emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HOLY_FAN_EMITTER), (s32)&work->pos10);
+                fx_057_emitter1 = emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HOLY_VIOLET_RAYS), (s32)&work->pos10);
                 if (fx_057_emitter1 != NULL) {
                     fx_057_emitter1->otZ = 0x80;
                 }
@@ -327,7 +327,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos1C.vz = work->posC.vz;
             BTLFX_COPY_SVEC(&work->pos14, &work->posC);
             work->pos14.vy -= 0xC00;
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HOLY_FAN_EMITTER_2), (s32)&work->posC);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HOLY_VIOLET_RAYS_2), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = work->targetOtZ8 + 0x40;
             }
@@ -344,7 +344,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (emitter != NULL) {
                 emitter->otZ = work->targetOtZ8 + 0x46;
             }
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HOLY_FAN_EMITTER_3), (s32)&work->pos14);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HOLY_BLUE_RAYS), (s32)&work->pos14);
             if (emitter != NULL) {
                 emitter->otZ = 0x46;
             }

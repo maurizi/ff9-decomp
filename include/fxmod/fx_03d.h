@@ -9,11 +9,11 @@
 #define FX_LUNA_MAGENTA_RING   0x1 /* emitter: white-magenta gouraud ring + two fans */
 #define FX_LUNA_GOLD_RINGS     0x2 /* emitter: white-gold and dark magenta gouraud rings */
 #define FX_LUNA_RED_TRAIL      0x3 /* emitter: flat trail with a red strip + green sparkles, sparks (texture not in the file) */
-#define FX_LUNA_FAN_EMITTER    0x7 /* emitter: four fan elements (not rendered) (look pending) */
-#define FX_LUNA_FAN_EMITTER_2  0x10 /* emitter: one fan element (not rendered) (look pending) */
+#define FX_LUNA_LIGHT_CONES    0x7 /* emitter: four fans drawn as narrowing green, pink, red and orange light cones */
+#define FX_LUNA_LIGHT_STREAK   0x10 /* emitter: fan drawn as a thin green to violet horizontal light streak */
 #define FX_LUNA_SPARKLE_CIRCLE 0x11 /* emitter: circle of gold / white sparkle quads + blue-green specks */
-#define FX_LUNA_SO_MODEL_2     0x16 /* 'so' model registered in op82 (look pending) */
-#define FX_LUNA_SO_MODEL       0x17 /* 'so' model registered in op82 (look pending) */
+#define FX_LUNA_FLAME_RING     0x16 /* 'so' model: flat ring with an orange flame texture, registered in op82 */
+#define FX_LUNA_FLAME_BOWL     0x17 /* 'so' model: shallow bowl with an orange flame-streak texture, registered in op82 */
 
 typedef struct {
     Pool6CEntry *emit0;

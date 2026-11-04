@@ -30,7 +30,7 @@ s32 fx_094_op80(s32 mode, Fx094Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x30:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_FAN_EMITTER), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_RAINBOW_STREAK), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

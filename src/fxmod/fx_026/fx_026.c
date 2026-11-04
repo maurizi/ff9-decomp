@@ -126,7 +126,7 @@ static s32 fx_026_op80PoolTask(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk801
             it->posC.vx = pos.vx;
             it->posC.vy = pos.vy;
             it->posC.vz = pos.vz;
-            it->emit8 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_TRACK_EMITTER), (s32)&it->posC);
+            it->emit8 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_SHARD_SPRAY), (s32)&it->posC);
             if (it->emit8 != NULL) {
                 it->emit8->otZ = 0x80;
             }
@@ -229,13 +229,13 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = trackPos.vy;
         env->camera->points[2].vz = trackPos.vz;
         if (frame == 38) {
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ROOT_EMITTER), (s32)&work->pos28);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_GLOW_DOMES), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
         if (frame == 42) {
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ROOT_EMITTER_2), (s32)&work->pos28);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_GLOW_DOMES_2), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
@@ -243,8 +243,8 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 66) {
             work->state0 = 2;
             entry->frame = -1;
-            fx_026_op80Model = work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_SO_MODEL), 0);
-            work->model6C = fx_026_op80Model2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_SO_MODEL_2), 1);
+            fx_026_op80Model = work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICICLE), 0);
+            work->model6C = fx_026_op80Model2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICICLE_2), 1);
         }
         break;
     case 2:
@@ -265,13 +265,13 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = trackPos.vy;
         env->camera->points[2].vz = trackPos.vz;
         if (frame == 0) {
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ROOT_EMITTER_3), (s32)&work->pos28);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_STAR_GLINTS_2), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
         if (frame == 29) {
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_BONE19_EMITTER), (s32)&work->pos30);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_BURST), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
@@ -286,7 +286,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             entry->frame = -1;
             ex->btlfx_initParticleSystem();
             ex->btlfx_poolClear(entry->pool);
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ROOT_EMITTER_4), (s32)&work->pos28);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_GLOW_DOMES_3), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
@@ -294,7 +294,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 3:
         if (frame == 0) {
-            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_BONE19_EMITTER_2), (s32)&work->pos30);
+            emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_CUBES), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
@@ -335,7 +335,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ringScale = ringScale * 9 >> 3;
         }
         env->otZ = 0x40;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_BONE19_RINGS), &work->pos30, 0, ringScale, 0, 1, ringAlpha);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_FROST_RINGS), &work->pos30, 0, ringScale, 0, 1, ringAlpha);
         env->otZ = 0;
     }
     work->frame4++;
@@ -542,7 +542,7 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 39 && frame < 92) {
                 if (frame == 39) {
-                    work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_SPIN_MODEL), 1);
+                    work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_VORTEX), 1);
                 }
                 rot.vz = 0;
                 rot.vx = 0;
@@ -559,11 +559,11 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_drawScrollMoveX(1000 - frame * 2, 0x200, 0x1C0, 0x80, 0x40, 0x200, 0x180);
             }
             if (frame == 39) {
-                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_IMPACT_EMITTER), (s32)&work->pos8);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_SHATTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
-                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_IMPACT_EMITTER_2), (s32)&work->pos8);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_SHATTER_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }

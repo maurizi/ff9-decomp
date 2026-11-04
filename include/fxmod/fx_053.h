@@ -8,7 +8,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_WHITE_DRAW_BLUE_SPARKLES   0x1 /* emitter: blue bow-tie sparkle sprites + sparks (texture not in the file) */
 #define FX_WHITE_DRAW_GREEN_CRYSTAL   0x2 /* emitter: white ring + green crystal particles */
-#define FX_WHITE_DRAW_FAN_EMITTER     0x4 /* emitter: one fan element (not rendered) (look pending) */
+#define FX_WHITE_DRAW_LIGHT_STREAK    0x4 /* emitter: fan drawn as a thin green to violet horizontal light streak */
 #define FX_WHITE_DRAW_SPARKLE_CIRCLE  0x5 /* emitter: circle of gold / white sparkle quads + blue-green specks */
 #define FX_WHITE_DRAW_BLUE_SPARKLES_2 0xE /* emitter: blue bow-tie sparkle sprites */
 #define FX_WHITE_DRAW_TRAIL           0xF /* emitter: grey trail, blue specks, sparks (texture not in the file) */

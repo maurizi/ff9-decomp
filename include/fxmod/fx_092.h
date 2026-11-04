@@ -11,7 +11,7 @@
 #define FX_HYPNOTIZE_MAGENTA_RINGS 0x1 /* emitter: violet-cream and magenta gouraud rings */
 #define FX_HYPNOTIZE_HALO_RINGS    0x2 /* emitter: glowing circle particles, violet to orange */
 #define FX_HYPNOTIZE_VIOLET_RING   0x3 /* emitter: violet-tan gouraud rings */
-#define FX_HYPNOTIZE_SPARKLES      0x4 /* emitter: sparkle sprites (texture not in the file) (look pending) */
+#define FX_HYPNOTIZE_SPARKLE_DOTS  0x4 /* emitter: faint white sparkle dots (btlfx_emitDots) */
 
 typedef struct {
     Pool6CEntry *emit0;

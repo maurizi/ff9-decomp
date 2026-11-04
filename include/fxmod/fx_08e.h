@@ -9,15 +9,15 @@
 
 /* fx_08e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_CURAGA_SPARKLE_BURST  0x1 /* emitter: ring + sparkle sprites (drawn as squares: texture not resolved) (look pending) */
+#define FX_CURAGA_SPARKLE_BURST  0x1 /* emitter: ring + sparkle sprites, still drawn as coloured squares (texture not resolved) (look pending) */
 #define FX_CURAGA_WHITE_RINGS    0x3 /* emitter: white gouraud rings */
 #define FX_CURAGA_GOLD_RING      0x5 /* emitter: white-gold gouraud rings */
 #define FX_CURAGA_STAR_GLINTS    0x6 /* emitter: green and violet star glints */
 #define FX_CURAGA_STAR_TRAIL     0x7 /* emitter: blue starry trail + sparkles */
-#define FX_CURAGA_SPARKLE_SPIRAL 0xD /* emitter: spiralling sparkle sprites (drawn as squares) (look pending) */
+#define FX_CURAGA_SPARKLE_SPIRAL 0xD /* emitter: spiralling sparkle sprites, still drawn as pale yellow-green squares (look pending) */
 #define FX_CURAGA_LIGHT_FOUNTAIN 0xE /* model: tall funnel with a green light-fountain texture */
 #define FX_CURAGA_LIGHT_RING     0xF /* model: ring with a green light-fountain texture */
-#define FX_CURAGA_SPARKLES       0x10 /* emitter: sparkle sprites (drawn as squares) (look pending) */
+#define FX_CURAGA_SPARKLES       0x10 /* emitter: sparkle sprites, still drawn as white / green squares (look pending) */
 
 typedef struct {
     Pool6CEntry *emit0;

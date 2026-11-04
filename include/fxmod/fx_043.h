@@ -6,8 +6,8 @@
 
 /* fx_043 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_INK_INK_TRAIL  0x1 /* emitter: flat trail + spark sprites (texture not in the file) (look pending) */
-#define FX_INK_INK_SPRAY  0x2 /* emitter: screen trail + spark sprites (texture not in the file) (look pending) */
+#define FX_INK_INK_TRAIL  0x1 /* emitter: flat trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator (look pending) */
+#define FX_INK_INK_SPRAY  0x2 /* emitter: screen trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator (look pending) */
 #define FX_INK_GREY_RINGS 0x3 /* emitter: grey gouraud rings */
 
 typedef struct {

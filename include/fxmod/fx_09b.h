@@ -13,7 +13,7 @@
 #define FX_LAVA_GUN_EXPLOSION  0x3 /* emitter: fire explosion + embers */
 #define FX_LAVA_GUN_FIRE_RING  0x4 /* emitter: ring with a fiery texture */
 #define FX_LAVA_GUN_RED_RING   0x5 /* emitter: red gouraud rings */
-#define FX_LAVA_GUN_MODEL      0x6 /* 'so' model (not drawn by the tool) (look pending) */
+#define FX_LAVA_GUN_LAVA_BALL  0x6 /* 'so' model: rounded blob with a red-orange molten texture */
 
 typedef struct {
     Pool6CEntry *emit0;

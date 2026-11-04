@@ -10,7 +10,7 @@
 #define FX_PSYCHOKINESIS_GLYPH_ORBS    0x2 /* emitter: pink orbs, each with a kana glyph, homing */
 #define FX_PSYCHOKINESIS_WHITE_RINGS_2 0x3 /* emitter: white gouraud rings */
 #define FX_PSYCHOKINESIS_GREY_RINGS    0x7 /* emitter: white rings fading to grey */
-#define FX_PSYCHOKINESIS_SCREEN_TRAILS 0x8 /* emitter: two screen trails, render all black (look pending) */
+#define FX_PSYCHOKINESIS_SCREEN_TRAILS 0x8 /* emitter: two screen trails, still render all black (look pending) */
 
 typedef struct {
     Pool6CEntry *emit0;

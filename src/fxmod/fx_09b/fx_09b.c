@@ -80,7 +80,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale2C.vx = 0x1000;
         work->scale2C.vy = 0x1000;
         work->scale2C.vz = 0x1000;
-        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_MODEL), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_LAVA_BALL), 1);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_FIRE_FLASH), (s32)&work->pos3C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_09b_shotBlocks[work->instance6C]),
                                        (s32)&fx_09b_emitStartPos[work->instance6C]);

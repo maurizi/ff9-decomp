@@ -19,7 +19,7 @@ s32 fx_037_op80(s32 mode, Fx037Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 8:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARKNESS_FAN_EMITTER), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARKNESS_MAGENTA_STREAK), (s32)&work->pos14);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_037_trails2;
                 work->emit8->trailSlots = 0x2C;

@@ -48,8 +48,8 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit10->tail->shape = -1;
                 work->emit10->tail->s.module.spawnFn = fx_036_op80SpawnPoint;
             }
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SPARKS), (s32)&env->targets->centerX);
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SPARKS_2), (s32)&env->targets->centerX);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SPARK_DOTS), (s32)&env->targets->centerX);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SPARK_DOTS_2), (s32)&env->targets->centerX);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = 0x100;
             }

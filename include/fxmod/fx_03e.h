@@ -9,7 +9,7 @@
 #define FX_BLIZZARD_ICE_CRACKING   0x1 /* model: the block breaking into pieces, morph middle (same call site as fx_006 entry 0x4) */
 #define FX_BLIZZARD_ICE_REFLECTION 0x2 /* model: ice shell drawn with the scrolling reflection map (byte-identical to fx_006 entry 0x2) */
 #define FX_BLIZZARD_ICE_BLOCK      0x3 /* model: ice block (cracked-ice texture), morph start (byte-identical to fx_006 entry 0x3) */
-#define FX_BLIZZARD_FROST_SWIRL    0x7 /* emitter: orbiting pale trails + sprites at the start (same call site as fx_006 entry 0x12) (look pending) */
+#define FX_BLIZZARD_FROST_SWIRL    0x7 /* emitter: orbiting pale trail, cyan ice flecks and white dots (same call site as fx_006 entry 0x12) */
 #define FX_BLIZZARD_SHATTER_WAVE   0x8 /* emitter: blue ripple wave with ice sparkles */
 #define FX_BLIZZARD_FROST_RING     0xA /* emitter: lilac-blue gouraud rings */
 #define FX_BLIZZARD_ICE_FLARES_2   0x15 /* emitter: cyan ice glints */

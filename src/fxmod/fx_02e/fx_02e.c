@@ -22,7 +22,7 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (frame == 0x24) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_BREAK_RUNE_RING), (s32)&work->pos18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_BREAK_FAN_EMITTER), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_BREAK_VIOLET_WAVES), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

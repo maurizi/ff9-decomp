@@ -6,16 +6,16 @@
 
 /* fx_03a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_EARTHQUAKE_GROUND_PIECE_8 0x1 /* 'so' model: ground piece 8 bounced by the quake (fx_03a_models[8]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_1 0x2 /* 'so' model: ground piece 1 bounced by the quake (fx_03a_models[1]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_2 0x3 /* 'so' model: ground piece 2 bounced by the quake (fx_03a_models[2]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_3 0x4 /* 'so' model: ground piece 3 bounced by the quake (fx_03a_models[3]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_4 0x5 /* 'so' model: ground piece 4 bounced by the quake (fx_03a_models[4]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_5 0x6 /* 'so' model: ground piece 5 bounced by the quake (fx_03a_models[5]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_6 0x7 /* 'so' model: ground piece 6 bounced by the quake (fx_03a_models[6]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_7 0x8 /* 'so' model: ground piece 7 bounced by the quake (fx_03a_models[7]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_0 0x9 /* 'so' model: ground piece 0 bounced by the quake (fx_03a_models[0]) (look pending) */
-#define FX_EARTHQUAKE_GROUND_PIECE_9 0xE /* 'so' model: fx_03a_models[9], registered but not drawn (look pending) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_8   0x1 /* 'so' model: brown rock chunk 8 bounced by the quake (fx_03a_models[8]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_1   0x2 /* 'so' model: brown rock chunk 1 bounced by the quake (fx_03a_models[1]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_2   0x3 /* 'so' model: brown rock chunk 2 bounced by the quake (fx_03a_models[2]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_3   0x4 /* 'so' model: brown rock chunk 3 bounced by the quake (fx_03a_models[3]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_4   0x5 /* 'so' model: brown rock chunk 4 bounced by the quake (fx_03a_models[4]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_5   0x6 /* 'so' model: brown rock chunk 5 bounced by the quake (fx_03a_models[5]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_6   0x7 /* 'so' model: brown rock chunk 6 bounced by the quake (fx_03a_models[6]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_7   0x8 /* 'so' model: brown rock chunk 7 bounced by the quake (fx_03a_models[7]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_0   0x9 /* 'so' model: brown rock chunk 0 bounced by the quake (fx_03a_models[0]) */
+#define FX_EARTHQUAKE_ROCK_CHUNK_9   0xE /* 'so' model: brown rock chunk, fx_03a_models[9], registered but not drawn */
 #define FX_EARTHQUAKE_RUBBLE         0x10 /* emitter: yellow striped rubble quads */
 
 typedef struct {

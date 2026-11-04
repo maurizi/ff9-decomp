@@ -6,11 +6,11 @@
 
 /* fx_052 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_LIMIT_GLOVE_SO_MODEL      0x7 /* 'so' model registered in op80 (look pending) */
+#define FX_LIMIT_GLOVE_SO_MODEL      0x7 /* 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80 (look pending) */
 #define FX_LIMIT_GLOVE_GOLD_SPARKLES 0x8 /* emitter: rings of golden sparkles */
 #define FX_LIMIT_GLOVE_GOLD_GLOW     0x9 /* emitter: golden glow, red streak trail, pink dots */
 #define FX_LIMIT_GLOVE_GOLD_GLOW_2   0xA /* emitter: golden glow, red streak trail, pink dots */
-#define FX_LIMIT_GLOVE_SO_MODEL_2    0xB /* 'so' model registered in op80 (look pending) */
+#define FX_LIMIT_GLOVE_GRID_SPHERE   0xB /* 'so' model: sphere textured with glowing blue grid lines, registered in op80 */
 #define FX_LIMIT_GLOVE_BACKDROP      0xC /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
 #define FX_LIMIT_GLOVE_LIGHT_BEAM    0xD /* emitter: blue glow + pink-white light beam */
 #define FX_LIMIT_GLOVE_GLOW_DOME     0xE /* gouraud model: shallow dome */

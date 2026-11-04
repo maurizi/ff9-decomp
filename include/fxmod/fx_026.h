@@ -24,20 +24,20 @@
 #define FX_SHIVA_ICE_STREAK_3     0x34 /* trail: blue ice strip (third streak kind) */
 #define FX_SHIVA_ICE_STREAK_2     0x35 /* trail: blue ice strip (second streak kind) */
 #define FX_SHIVA_ICE_STREAK       0x36 /* trail: blue ice strip */
-#define FX_SHIVA_SO_MODEL         0x85 /* 'so' model registered at the end of op80 state 1 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_TRACK_EMITTER    0x86 /* emitter started at each op80 pool item's track point (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_SO_MODEL_2       0x87 /* 'so' model registered with 0x85 (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_ICICLE           0x85 /* 'so' model: long pale-blue marbled icicle, registered at the end of op80 state 1 (summon data) */
+#define FX_SHIVA_SHARD_SPRAY      0x86 /* emitter: light / dark blue gouraud rings, white ice-shard sprites and dots, started at each op80 pool item's track point (summon data) */
+#define FX_SHIVA_ICICLE_2         0x87 /* 'so' model: the same icicle, dark marbled ice texture, registered with 0x85 (summon data) */
 #define FX_SHIVA_STREAK_PATH_2    0x9D /* track: path of the ice streak strips (op82 pool items) (summon data 0x80+, not analysed by the tool) */
-#define FX_SHIVA_IMPACT_EMITTER_2 0x9E /* emitter at the target, op82 frame 39 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_IMPACT_EMITTER   0x9F /* emitter at the target, op82 frame 39 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_BONE19_RINGS     0xA0 /* rings drawn at summon bone 0x19, growing (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_ROOT_EMITTER_3   0xA1 /* emitter at summon bone 0, op80 state 2 start (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_ROOT_EMITTER     0xA2 /* emitter at summon bone 0, op80 state 1 frame 38 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_ROOT_EMITTER_2   0xA3 /* emitter at summon bone 0, op80 state 1 frame 42 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_ROOT_EMITTER_4   0xA4 /* emitter at summon bone 0, op80 state 2 end (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_BONE19_EMITTER_2 0xA5 /* emitter at summon bone 0x19, op80 state 3 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_BONE19_EMITTER   0xA6 /* emitter at summon bone 0x19, op80 state 2 frame 29 (summon data 0x80+, not analysed by the tool) (look pending) */
-#define FX_SHIVA_SPIN_MODEL       0xAB /* 'so' model drawn spinning and widening at the target (op82) (summon data 0x80+, not analysed by the tool) (look pending) */
+#define FX_SHIVA_ICE_SHATTER_2    0x9E /* emitter: white ice-shard and ice-block sprites at the target, op82 frame 39 (summon data) */
+#define FX_SHIVA_ICE_SHATTER      0x9F /* emitter: white ice-shard and ice-block sprites at the target, op82 frame 39 (summon data) */
+#define FX_SHIVA_FROST_RINGS      0xA0 /* rings: white / blue gouraud rings drawn growing at summon bone 0x19 (summon data) */
+#define FX_SHIVA_STAR_GLINTS_2    0xA1 /* emitter: blue glows, white / green star glints, blue glow dome at summon bone 0, op80 state 2 start (summon data) */
+#define FX_SHIVA_GLOW_DOMES       0xA2 /* emitter: blue glows, faint streaks, blue glow domes at summon bone 0, op80 state 1 frame 38 (summon data) */
+#define FX_SHIVA_GLOW_DOMES_2     0xA3 /* emitter: blue glows, faint streaks, blue glow domes at summon bone 0, op80 state 1 frame 42 (summon data) */
+#define FX_SHIVA_GLOW_DOMES_3     0xA4 /* emitter: blue glows, faint streaks, blue glow domes at summon bone 0, op80 state 2 end (summon data) */
+#define FX_SHIVA_ICE_CUBES        0xA5 /* emitter: blue ice-cube sprites at summon bone 0x19, op80 state 3 (summon data) */
+#define FX_SHIVA_ICE_BURST        0xA6 /* emitter: white ice-chunk burst sprites at summon bone 0x19, op80 state 2 frame 29 (summon data) */
+#define FX_SHIVA_ICE_VORTEX       0xAB /* 'so' model: blue swirling ice cone (spiral seen from above), drawn spinning and widening at the target (op82) (summon data) */
 
 /* keyframe track read from the effect file: count, then the keys */
 typedef struct {

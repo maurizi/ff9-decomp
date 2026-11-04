@@ -12,7 +12,7 @@
 #define FX_FIRAGA_FLAME_DISC    0x9 /* model: flat octagon, flame texture; registered, never drawn */
 #define FX_FIRAGA_FLAME_BURST   0xA /* emitter: flame explosion */
 #define FX_FIRAGA_GLOW          0xB /* rings: white-red gouraud glow disc at the target */
-#define FX_FIRAGA_ORBIT_TRAIL   0xC /* emitter: orbiting trail + sprites at the start (texture not in the file) (look pending) */
+#define FX_FIRAGA_EMBER_TRAIL   0xC /* emitter: orbiting red glow trail + red ember dots */
 #define FX_FIRAGA_COLUMN_SPARK  0xD /* rings: small red-white glow drawn at random fire-column segments */
 #define FX_FIRAGA_FLAME_BURST_2 0xE /* emitter: flame explosion at the pillar's start */
 #define FX_FIRAGA_PILLAR_RING   0xF /* rings: textured flame ring rising with the pillar */
@@ -20,12 +20,12 @@
 #define FX_FIRAGA_GOLD_SPARKS_2 0x11 /* emitter: golden spark sprites + spark sub-particles */
 #define FX_FIRAGA_EMBERS        0x12 /* emitter: dark red ember sprites */
 #define FX_FIRAGA_SMOKE_BURST   0x13 /* emitter: dark teal-tinted burst (smoke after the blast) */
-#define FX_FIRAGA_CONE_SPARKS   0x14 /* emitter: cone of spark sprites (texture not in the file) (look pending) */
-#define FX_FIRAGA_CONE_GLOW     0x15 /* emitter: cone, one dark particle frame (look pending) */
-#define FX_FIRAGA_COLUMN_SEG_0  0x16 /* 'so' model: fire-column segment, drawn coiled 18 times (look pending) */
-#define FX_FIRAGA_COLUMN_SEG_1  0x17 /* 'so' model: fire-column segment (look pending) */
-#define FX_FIRAGA_COLUMN_SEG_2  0x18 /* 'so' model: fire-column segment (look pending) */
-#define FX_FIRAGA_COLUMN_SEG_3  0x19 /* 'so' model: fire-column segment (look pending) */
+#define FX_FIRAGA_EMBER_CONE    0x14 /* emitter: cone of red and grey ember dots */
+#define FX_FIRAGA_CONE_GLOW     0x15 /* emitter: cone, one dim dark-red particle frame; the blend mode decides the look (look pending) */
+#define FX_FIRAGA_FLAME_RIBBON_0 0x16 /* 'so' model: flat flame-textured ribbon piece, drawn coiled 18 times as the fire column */
+#define FX_FIRAGA_FLAME_RIBBON_1 0x17 /* 'so' model: flat flame-textured ribbon piece */
+#define FX_FIRAGA_FLAME_RIBBON_2 0x18 /* 'so' model: flat flame-textured ribbon piece */
+#define FX_FIRAGA_FLAME_RIBBON_3 0x19 /* 'so' model: flat flame-textured ribbon piece */
 
 /* PsyQ gte_stszotz: SZ3 / 4 */
 #define gte_stszotz(r0) __asm__ volatile( \

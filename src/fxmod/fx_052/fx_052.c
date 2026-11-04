@@ -25,7 +25,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos1C.vy = work->pos40.vy;
         work->pos1C.vz = work->pos40.vz;
         work->model52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_SO_MODEL), 1);
-        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_SO_MODEL_2), 1);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GRID_SPHERE), 1);
         work->model56 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GLOW_DOME));
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GOLD_SPARKLES), (s32)&work->pos48);
         work->fadeIn50 = -1;

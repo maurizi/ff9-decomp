@@ -8,24 +8,24 @@
 
 /* fx_048 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_FIRAGA_COLUMN_SEG_3  0x2 /* 'so' model: fire-column segment (byte-identical to fx_007 entry 0x19) (look pending) */
+#define FX_FIRAGA_FLAME_RIBBON_3 0x2 /* 'so' model: flat flame-textured ribbon piece (byte-identical to fx_007 entry 0x19) */
 #define FX_FIRAGA_FLAME_BURST_2 0x4 /* emitter: flame explosion at the pillar's start (same call site as fx_007 entry 0xe) */
 #define FX_FIRAGA_FLAME_BURST   0x5 /* emitter: flame explosion (byte-identical to fx_007 entry 0xa) */
-#define FX_FIRAGA_COLUMN_SEG_1  0x9 /* 'so' model: fire-column segment (byte-identical to fx_007 entry 0x17) (look pending) */
+#define FX_FIRAGA_FLAME_RIBBON_1 0x9 /* 'so' model: flat flame-textured ribbon piece (byte-identical to fx_007 entry 0x17) */
 #define FX_FIRAGA_FLAME_PILLAR  0xA /* model: open cylinder with a flame texture (the pillar) (byte-identical to fx_007 entry 0x8) */
-#define FX_FIRAGA_COLUMN_SEG_2  0xB /* 'so' model: fire-column segment (byte-identical to fx_007 entry 0x18) (look pending) */
-#define FX_FIRAGA_COLUMN_SEG_0  0xC /* 'so' model: fire-column segment, drawn coiled 18 times (byte-identical to fx_007 entry 0x16) (look pending) */
+#define FX_FIRAGA_FLAME_RIBBON_2 0xB /* 'so' model: flat flame-textured ribbon piece (byte-identical to fx_007 entry 0x18) */
+#define FX_FIRAGA_FLAME_RIBBON_0 0xC /* 'so' model: flat flame-textured ribbon piece, drawn coiled 18 times as the fire column (byte-identical to fx_007 entry 0x16) */
 #define FX_FIRAGA_FLAME_DISC    0xE /* model: flat octagon, flame texture; registered, never drawn (byte-identical to fx_007 entry 0x9) */
 #define FX_FIRAGA_GLOW          0x10 /* rings: white-red gouraud glow disc at the target (same call site as fx_007 entry 0xb) */
-#define FX_FIRAGA_ORBIT_TRAIL   0x11 /* emitter: orbiting trail + sprites at the start (texture not in the file) (byte-identical to fx_007 entry 0xc) (look pending) */
+#define FX_FIRAGA_EMBER_TRAIL   0x11 /* emitter: orbiting red glow trail + red ember dots (byte-identical to fx_007 entry 0xc) */
 #define FX_FIRAGA_COLUMN_SPARK  0x12 /* rings: small red-white glow drawn at random fire-column segments (byte-identical to fx_007 entry 0xd) */
 #define FX_FIRAGA_PILLAR_RING   0x13 /* rings: textured flame ring rising with the pillar (byte-identical to fx_007 entry 0xf) */
 #define FX_FIRAGA_EMBERS        0x14 /* emitter: dark red ember sprites (byte-identical to fx_007 entry 0x12) */
 #define FX_FIRAGA_GOLD_SPARKS_2 0x15 /* emitter: golden spark sprites + spark sub-particles (byte-identical to fx_007 entry 0x11) */
 #define FX_FIRAGA_GOLD_SPARKS   0x16 /* emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) */
 #define FX_FIRAGA_SMOKE_BURST   0x17 /* emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) */
-#define FX_FIRAGA_CONE_GLOW     0x18 /* emitter: cone, one dark particle frame (same call site as fx_007 entry 0x15) (look pending) */
-#define FX_FIRAGA_CONE_SPARKS   0x19 /* emitter: cone of spark sprites (texture not in the file) (byte-identical to fx_007 entry 0x14) (look pending) */
+#define FX_FIRAGA_CONE_GLOW     0x18 /* emitter: cone, one dim dark-red particle frame; the blend mode decides the look (same call site as fx_007 entry 0x15) (look pending) */
+#define FX_FIRAGA_EMBER_CONE    0x19 /* emitter: cone of red and grey ember dots (byte-identical to fx_007 entry 0x14) */
 
 typedef struct {
     SVECTOR pos0; /* above the target centre */

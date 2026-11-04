@@ -15,7 +15,7 @@
 #define FX_BLIZZARD_FROST_RING     0xD /* emitter: lilac-blue gouraud rings */
 #define FX_BLIZZARD_FREEZE_BURST   0xE /* emitter: white-pink rings + spark sprites as the ice forms */
 #define FX_BLIZZARD_SHATTER_WAVE   0x10 /* emitter: blue ripple wave when the ice shatters */
-#define FX_BLIZZARD_FROST_SWIRL    0x12 /* emitter: orbiting pale trails + sprites at the start (look pending) */
+#define FX_BLIZZARD_FROST_SWIRL    0x12 /* emitter: orbiting pale trail, cyan ice flecks and white dots */
 
 typedef struct {
     s32 state0; /* state */

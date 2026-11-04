@@ -9,7 +9,7 @@
 #define FX_COLD_BREATH_ICE_CRYSTAL   0x1 /* model: ice crystal shape with a cracked-ice texture */
 #define FX_COLD_BREATH_FROST_BREATH  0x2 /* emitter: violet-white frost mist streams */
 #define FX_COLD_BREATH_ICE_CHUNKS    0x3 /* emitter: grey ice lumps + teal glows */
-#define FX_COLD_BREATH_ICE_CRYSTAL_2 0xA /* model: the same crystal shape, texture page 0x9A not in the file (look pending) */
+#define FX_COLD_BREATH_ICE_CRYSTAL_2 0xA /* model: the same crystal shape, texture page 0x9A still not uploaded by the file or the common pages (look pending) */
 
 typedef struct {
     s16 x, y, z;

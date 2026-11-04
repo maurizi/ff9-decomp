@@ -6,7 +6,7 @@
 
 /* fx_07c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_MINI_FAN_EMITTER 0x6 /* emitter: fan element + small blue rings (fan not rendered) (look pending) */
+#define FX_MINI_LIGHT_BEAM  0x6 /* emitter: fan drawn as a blue-white horizontal light beam + small blue rings */
 
 typedef struct {
     Pool6CEntry *emit0;

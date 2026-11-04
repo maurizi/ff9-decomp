@@ -20,7 +20,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos8.vy = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_initEffModels(fx_099_effModels, 1);
-        work->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BREAK_MODEL), 0);
+        work->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BREAK_STONE_CRUST), 0);
         scale = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (scale < 0x800) {
             scale = 0x800;

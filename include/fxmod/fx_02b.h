@@ -6,10 +6,10 @@
 
 /* fx_02b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_AERIAL_SLASH_FAN_EMITTER   0x1 /* emitter: fan + faint green spark quads (fan not rendered) (same call site as fx_01d entry 0x2) (look pending) */
-#define FX_AERIAL_SLASH_FAN_EMITTER_2 0x2 /* emitter: fan + faint green spark quads (fan not rendered) (same call site as fx_01d entry 0x1) (look pending) */
+#define FX_AERIAL_SLASH_CRESCENT      0x1 /* emitter: fan drawn as a pale green-white crescent slash + faint green spark quads (same call site as fx_01d entry 0x2) */
+#define FX_AERIAL_SLASH_CRESCENT_2    0x2 /* emitter: fan drawn as a pale green-white crescent slash + faint green spark quads (same call site as fx_01d entry 0x1) */
 #define FX_AERIAL_SLASH_DUST_CLOUD    0x3 /* emitter: lilac dust clouds + green glint (byte-identical to fx_01d entry 0x3) */
-#define FX_AERIAL_SLASH_FAN_EMITTER_3 0x5 /* emitter: fan + small blue spark quads (fan not rendered) (byte-identical to fx_01d entry 0x5) (look pending) */
+#define FX_AERIAL_SLASH_BLUE_GUST     0x5 /* emitter: fan drawn as a blue crescent gust + small blue spark quads (byte-identical to fx_01d entry 0x5) */
 #define FX_AERIAL_SLASH_WIND_RINGS    0xB /* emitter: ring with a violet sparkle-curtain texture + pink-white gouraud rings (byte-identical to fx_01d entry 0xB) */
 #define FX_AERIAL_SLASH_DUST_RING     0xC /* emitter: ring with a grey dust texture (byte-identical to fx_01d entry 0xC) */
 

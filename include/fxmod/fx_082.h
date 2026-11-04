@@ -10,10 +10,10 @@
 /* fx_082 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_MAGIC_HAMMER_SMOKE        0x1 /* emitter: grey smoke puffs */
-#define FX_MAGIC_HAMMER_FAN_EMITTER  0x2 /* emitter: fan element (not rendered) (look pending) */
+#define FX_MAGIC_HAMMER_RAINBOW_STREAK 0x2 /* emitter: fan drawn as a horizontal streak cycling blue, green, yellow, orange, red, pink */
 #define FX_MAGIC_HAMMER_PASTEL_RINGS 0x3 /* emitter: pastel gouraud rings + coloured star specks */
 #define FX_MAGIC_HAMMER_STARS        0x4 /* emitter: five-point stars fading blue to red */
-#define FX_MAGIC_HAMMER_MODEL        0x5 /* 'so' model (not drawn by the tool) (look pending) */
+#define FX_MAGIC_HAMMER_HAMMER       0x5 /* 'so' model: the hammer (banded green barrel head with steel caps, short handle) */
 #define FX_MAGIC_HAMMER_VIOLET_RING  0x7 /* emitter: white-violet gouraud rings */
 #define FX_MAGIC_HAMMER_CYAN_RING    0x8 /* emitter: white-cyan gouraud rings */
 

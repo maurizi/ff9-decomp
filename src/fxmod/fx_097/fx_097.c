@@ -623,7 +623,7 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->shardCount7A >= 6) {
                 work->state0 = 4;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_FAN_EMITTER), (s32)&work->pos58);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_ICE_SPIKES), (s32)&work->pos58);
                 work->emit84 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;

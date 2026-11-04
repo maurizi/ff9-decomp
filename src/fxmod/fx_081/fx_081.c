@@ -177,7 +177,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x13) {
-                fx_081_emitter1 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_FAN_EMITTER), (s32)&work->pos10);
+                fx_081_emitter1 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_VIOLET_RAYS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -339,7 +339,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk1C.vy = work->posC.vy;
                 work->pos14.vy -= 0xC00;
                 work->unk1C.vz = work->posC.vz;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_FAN_EMITTER_2), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_VIOLET_RAYS_2), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = work->otZ8 + 0x40;
                 }
@@ -352,7 +352,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = work->otZ8 + 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_FAN_EMITTER_3), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_RAYS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x46;
                 }

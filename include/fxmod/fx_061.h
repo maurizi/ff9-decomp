@@ -7,9 +7,9 @@
 /* fx_061 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_CONFUSE_SWIRLS       0x1 /* emitter: teal and pink spiral swirl particles */
-#define FX_CONFUSE_ORBIT_TRAILS 0x2 /* emitter: orbiting 3D + screen trails, scribble strip texture (look pending) */
+#define FX_CONFUSE_ORBIT_TRAILS 0x2 /* emitter: orbiting 3D + screen trails; the strip page shows music notes, a smoke swirl and a wavy smoke band, real texture or placeholder page (look pending) */
 #define FX_CONFUSE_SWIRLS_2     0x3 /* emitter: teal and pink spiral swirl particles, rising in a cylinder */
-#define FX_CONFUSE_WAVE_TRAILS  0x7 /* emitter: two wobbling flat trails, strip texture with wave / scribble marks (look pending) */
+#define FX_CONFUSE_WAVE_TRAILS  0x7 /* emitter: two wobbling flat trails; the strip page shows music staves with notes and a hazy wave band, real texture or placeholder page (look pending) */
 
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */

@@ -15,7 +15,7 @@
 #define FX_BLIZZAGA_ICE_CRYSTAL_3   0x13 /* model: wide ice crystal spike */
 #define FX_BLIZZAGA_ICE_CRYSTAL     0x14 /* model: main ice crystal spike */
 #define FX_BLIZZAGA_FROST_RING      0x1B /* rings: blue gouraud ring on the ground */
-#define FX_BLIZZAGA_FAN_EMITTER     0x1C /* emitter: four fan elements (not rendered) (look pending) */
+#define FX_BLIZZAGA_ICE_SPIKES      0x1C /* emitter: four fans drawn as narrowing cyan, green, violet and blue icicle-shaped light spikes */
 #define FX_BLIZZAGA_SNOW_BURST      0x1D /* emitter: rings textured with snow flakes */
 #define FX_BLIZZAGA_SHATTER_WAVE    0x1E /* emitter: blue ripple wave */
 #define FX_BLIZZAGA_ICE_FLARES_2    0x1F /* emitter: cyan ice glints */

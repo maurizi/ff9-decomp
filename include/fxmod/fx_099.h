@@ -6,7 +6,7 @@
 
 /* fx_099 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_BREAK_MODEL      0x1 /* 'so' model (not drawn by the tool) (look pending) */
+#define FX_BREAK_STONE_CRUST 0x1 /* 'so' model: jagged brown stone pieces (cracked rock texture) */
 #define FX_BREAK_CYAN_RINGS 0x2 /* emitter: white-cyan / lilac gouraud rings + fan */
 #define FX_BREAK_DUST_CLOUD 0x3 /* emitter: sparkles, brown dust cloud, pale puffs */
 #define FX_BREAK_ROCK_RING  0x4 /* emitter: ring of white rock chunks */

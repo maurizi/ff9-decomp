@@ -16,7 +16,7 @@ Blizzara, Blizzaga, Thunder, Thundara, Thundaga, Cure: 20 modules, every getFile
 - `<WHAT>`: what the entry looks like in the render, in plain words: `FLAME_BURST`, `ICE_CRYSTAL`,
   `LIGHTNING_BOLT`, `HEAT_RING`, `SMOKE`. Repeats get `_2`, `_3`; parts of one object `_PIECE_0..2` /
   `_SEG_0..3`. Where the render does not settle it, the name says the kind and what the C does with it
-  (`FX_THUNDAGA_FAN_EMITTER`, `FX_FIRAGA_ORBIT_TRAIL`) and the define comment ends with `(look pending)`;
+  (`FX_THUNDAGA_CYL_EMITTER`, `FX_FLARE_CALLBACK_EMITTER`) and the define comment ends with `(look pending)`;
   those are listed under open questions for an emulator look.
 - The define comment says the kind and what the render shows; names carried to the all-targets module say
   where from ("byte-identical to fx_006 entry 0x3", "same call site as ...").
@@ -79,7 +79,7 @@ Summon modules take about 30 s with `--render` (the textured model views).
 
 Still not resolved by the render (not texture-source problems the file could answer):
 - page (0x1C0, 0x100), 4-bit u 0x00-0x8F, v 0x00-0x0F is blank (zero) in fx_005 / fx_018's own upload, and that is where
-  `FX_THUNDARA_ORB_SPARKS(_2)` and `FX_THUNDAGA_CYL_EMITTER(_2)` sample: probably filled at run time (a VRAM
+  `FX_THUNDARA_ORB_SPARKS` and `FX_THUNDAGA_CYL_EMITTER(_2)` sample: probably filled at run time (a VRAM
   dump while the spell plays would show it).
 - `FX_THUNDAGA_DISC` reads 15-bit page 0x119 = (0x240, 0x100), which holds the file's 4-bit pages: the disc
   samples something drawn there at run time (screen copy?), not file data.
@@ -88,9 +88,11 @@ Still not resolved by the render (not texture-source problems the file could ans
 
 179 named sites in 20 modules: 143 by the render (flame bursts, smoke, ice crystals and their pieces,
 reflection-map shells, lightning bolts, plasma orbs, star flashes, ring colours), 36 by kind and use (look
-pending). The pending ones are emitters whose sprites read VRAM the file does not upload (magenta: spark
+pending). The pending ones were emitters whose sprites read VRAM the file does not upload (magenta: spark
 sprites in every Thunder spell, Firaga's cone sparks), emitters that render fully transparent (Thundaga's
-cylinder/cone emitters), fan emitters and `'so'` models the tool does not draw. The one-target and all-targets
+cylinder/cone emitters), fan emitters and `'so'` models the tool did not draw. The fxdata d6121033 revisit
+renamed 24 of the 36 by the render (the magenta sparks are 1-pixel dots, `*_SPARK_DOTS`; the fans are
+Thundaga's lightning arcs; the `'so'` models are Firaga's flame ribbons); 12 stay pending. The one-target and all-targets
 files mostly share entries byte for byte (Firaga, Blizzaga, Thundara, Thundaga) or run the same C with other
 indices; fx_03e shows that the same call site can play different data (its "flares" site plays fx_006's other
 flare emitter), so names follow the content, not the site.
@@ -100,14 +102,11 @@ flare emitter), so names follow the content, not the site.
 Each wants one screenshot of the effect at the frame the C starts the entry (save state: battle, cast the
 spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing texture pages:
 
-- Spark sprites with textures outside the file (magenta): `FX_THUNDARA_SPARKS`, `FX_THUNDARA_ORB_SPARKS(_2)`,
-  `FX_THUNDAGA_SPARKS`, `FX_FIRAGA_CONE_SPARKS`, `FX_FIRAGA_ORBIT_TRAIL` (sub-sprites), `FX_BLIZZARD_FROST_SWIRL`
-  (sub-sprites), and the spark elements of every FREEZE_BURST / IMPACT_FLASH (named by their visible
-  elements). Where does that VRAM come from (type 9 common pages from the battle load buffer?).
-- Transparent renders: `FX_THUNDAGA_CYL_EMITTER(_2)`, `FX_THUNDAGA_CONE_EMITTER`, `FX_FIRAGA_CONE_GLOW`.
-- Not drawn by the tool: `FX_THUNDAGA_FAN_EMITTER(_2)`, `FX_BLIZZAGA_FAN_EMITTER` (fan elements),
-  `FX_FIRAGA_COLUMN_SEG_0..3` (`'so'` models drawn as the coiling fire column), `FX_THUNDAGA_DISC` (15-bit
-  texture page 0x119).
+- Blank page area (0x1C0, 0x100), filled at run time: `FX_THUNDARA_ORB_SPARKS` (fx_005, fx_049).
+- Still transparent with the common / summon pages: `FX_THUNDAGA_CYL_EMITTER(_2)`, `FX_THUNDAGA_CONE_EMITTER`
+  (fx_018, fx_085).
+- `FX_FIRAGA_CONE_GLOW` (fx_007, fx_048): one dim dark-red frame; the blend mode decides the look.
+- `FX_THUNDAGA_DISC` (fx_018, fx_085): 15-bit texture page 0x119, drawn there at run time.
 
 ## Pilot table
 
@@ -139,15 +138,15 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_004 | 0x16 | `FX_BLIZZARA_CRYSTAL_PIECE_1` | render | model: second piece of the split crystal |
 | fx_004 | 0x17 | `FX_BLIZZARA_CRYSTAL_PIECE_2` | render | model: third piece of the split crystal |
 | fx_004 | 0x19 | `FX_BLIZZARA_SHATTER_WAVE` | render | emitter: blue ripple wave |
-| fx_005 | 0x7 | `FX_THUNDARA_SPARKS` | kind/usage (look pending) | emitter: spark sprites (texture not in the file) |
+| fx_005 | 0x7 | `FX_THUNDARA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white spark dots (btlfx_emitDots) |
 | fx_005 | 0x16 | `FX_THUNDARA_LENS_FLARES` | render | particles: orange lens-flare dots around the orb |
 | fx_005 | 0x17 | `FX_THUNDARA_IMPACT_FLASH` | render | emitter: four-point star flash, white rings, sparks |
 | fx_005 | 0x19 | `FX_THUNDARA_IMPACT_RING` | render | emitter: white-cyan gouraud rings |
 | fx_005 | 0x1A | `FX_THUNDARA_ORB_EMITTER` | render | emitter: helix whose callback element draws the orb (0x16, 0x1C-0x1F) |
 | fx_005 | 0x1C | `FX_THUNDARA_ORB_FADE` | render | particles: blue energy sphere fading to orange |
 | fx_005 | 0x1D | `FX_THUNDARA_ORB` | render | particles: bright blue energy sphere |
-| fx_005 | 0x1E | `FX_THUNDARA_ORB_SPARKS` | kind/usage (look pending) | sprites: sparks around the orb (texture not in the file) |
-| fx_005 | 0x1F | `FX_THUNDARA_ORB_SPARKS_2` | kind/usage (look pending) | sprites: sparks around the orb (texture not in the file) |
+| fx_005 | 0x1E | `FX_THUNDARA_ORB_SPARKS` | kind/usage (look pending) | sprites: blank, samples page (0x1C0, 0x100) which the file leaves zero, filled at run time |
+| fx_005 | 0x1F | `FX_THUNDARA_ORB_DOTS` | render (fxdata d6121033) | sprites: white dots scattering around the orb |
 | fx_006 | 0x1 | `FX_BLIZZARD_ICE_FLARES` | render | emitter: cyan ice glint / light-streak frames |
 | fx_006 | 0x2 | `FX_BLIZZARD_ICE_REFLECTION` | render | model: ice shell drawn with the scrolling reflection map |
 | fx_006 | 0x3 | `FX_BLIZZARD_ICE_BLOCK` | render | model: ice block (cracked-ice texture), morph start |
@@ -157,12 +156,12 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_006 | 0xD | `FX_BLIZZARD_FROST_RING` | render | emitter: lilac-blue gouraud rings |
 | fx_006 | 0xE | `FX_BLIZZARD_FREEZE_BURST` | render | emitter: white-pink rings + spark sprites as the ice forms |
 | fx_006 | 0x10 | `FX_BLIZZARD_SHATTER_WAVE` | render | emitter: blue ripple wave when the ice shatters |
-| fx_006 | 0x12 | `FX_BLIZZARD_FROST_SWIRL` | kind/usage (look pending) | emitter: orbiting pale trails + sprites at the start |
+| fx_006 | 0x12 | `FX_BLIZZARD_FROST_SWIRL` | render (fxdata d6121033) | emitter: orbiting pale trail, cyan ice flecks and white dots |
 | fx_007 | 0x8 | `FX_FIRAGA_FLAME_PILLAR` | render | model: open cylinder with a flame texture (the pillar) |
 | fx_007 | 0x9 | `FX_FIRAGA_FLAME_DISC` | render | model: flat octagon, flame texture; registered, never drawn |
 | fx_007 | 0xA | `FX_FIRAGA_FLAME_BURST` | render | emitter: flame explosion |
 | fx_007 | 0xB | `FX_FIRAGA_GLOW` | render | rings: white-red gouraud glow disc at the target |
-| fx_007 | 0xC | `FX_FIRAGA_ORBIT_TRAIL` | kind/usage (look pending) | emitter: orbiting trail + sprites at the start (texture not in the file) |
+| fx_007 | 0xC | `FX_FIRAGA_EMBER_TRAIL` | render (fxdata d6121033) | emitter: orbiting red glow trail + red ember dots |
 | fx_007 | 0xD | `FX_FIRAGA_COLUMN_SPARK` | render | rings: small red-white glow drawn at random fire-column segments |
 | fx_007 | 0xE | `FX_FIRAGA_FLAME_BURST_2` | render | emitter: flame explosion at the pillar's start |
 | fx_007 | 0xF | `FX_FIRAGA_PILLAR_RING` | render | rings: textured flame ring rising with the pillar |
@@ -170,18 +169,18 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_007 | 0x11 | `FX_FIRAGA_GOLD_SPARKS_2` | render | emitter: golden spark sprites + spark sub-particles |
 | fx_007 | 0x12 | `FX_FIRAGA_EMBERS` | render | emitter: dark red ember sprites |
 | fx_007 | 0x13 | `FX_FIRAGA_SMOKE_BURST` | render | emitter: dark teal-tinted burst (smoke after the blast) |
-| fx_007 | 0x14 | `FX_FIRAGA_CONE_SPARKS` | kind/usage (look pending) | emitter: cone of spark sprites (texture not in the file) |
-| fx_007 | 0x15 | `FX_FIRAGA_CONE_GLOW` | kind/usage (look pending) | emitter: cone, one dark particle frame |
-| fx_007 | 0x16 | `FX_FIRAGA_COLUMN_SEG_0` | kind/usage (look pending) | 'so' model: fire-column segment, drawn coiled 18 times |
-| fx_007 | 0x17 | `FX_FIRAGA_COLUMN_SEG_1` | kind/usage (look pending) | 'so' model: fire-column segment |
-| fx_007 | 0x18 | `FX_FIRAGA_COLUMN_SEG_2` | kind/usage (look pending) | 'so' model: fire-column segment |
-| fx_007 | 0x19 | `FX_FIRAGA_COLUMN_SEG_3` | kind/usage (look pending) | 'so' model: fire-column segment |
+| fx_007 | 0x14 | `FX_FIRAGA_EMBER_CONE` | render (fxdata d6121033) | emitter: cone of red and grey ember dots |
+| fx_007 | 0x15 | `FX_FIRAGA_CONE_GLOW` | kind/usage (look pending) | emitter: cone, one dim dark-red particle frame; the blend mode decides the look |
+| fx_007 | 0x16 | `FX_FIRAGA_FLAME_RIBBON_0` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece, drawn coiled 18 times as the fire column |
+| fx_007 | 0x17 | `FX_FIRAGA_FLAME_RIBBON_1` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece |
+| fx_007 | 0x18 | `FX_FIRAGA_FLAME_RIBBON_2` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece |
+| fx_007 | 0x19 | `FX_FIRAGA_FLAME_RIBBON_3` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece |
 | fx_008 | 0x3 | `FX_CURE_STAR_FLARES` | render | sprite line: blue star flares along a path |
 | fx_008 | 0x4 | `FX_CURE_SPARKLE_SWIRL` | render | emitter: star-sparkle trails orbiting the target, sparkles and bubbles |
 | fx_009 | 0x3 | `FX_CURE_SPARKLE_SWIRL` | render | emitter: star-sparkle trails spiralling up, sparkles and bubbles |
-| fx_018 | 0x7 | `FX_THUNDAGA_CYL_EMITTER` | kind/usage (look pending) | emitter: cylinder particles, render all transparent |
-| fx_018 | 0xA | `FX_THUNDAGA_CYL_EMITTER_2` | kind/usage (look pending) | emitter: cylinder particles, render all transparent |
-| fx_018 | 0x10 | `FX_THUNDAGA_DISC` | kind/usage (look pending) | model: flat octagon, 15-bit texture page 0x119 |
+| fx_018 | 0x7 | `FX_THUNDAGA_CYL_EMITTER` | kind/usage (look pending) | emitter: cylinder particles, still render all transparent with the summon/common pages |
+| fx_018 | 0xA | `FX_THUNDAGA_CYL_EMITTER_2` | kind/usage (look pending) | emitter: cylinder particles, still render all transparent with the summon/common pages |
+| fx_018 | 0x10 | `FX_THUNDAGA_DISC` | kind/usage (look pending) | model: flat octagon, 15-bit texture page 0x119 holds the file's 4-bit pages, so it samples something drawn there at run time |
 | fx_018 | 0x11 | `FX_THUNDAGA_GLOW_DOME` | render | model: hemisphere with an orange-to-white streak texture |
 | fx_018 | 0x13 | `FX_THUNDAGA_BLUE_RING` | render | rings: white-blue gouraud rings |
 | fx_018 | 0x15 | `FX_THUNDAGA_WHITE_RING` | render | rings: white gouraud rings drawn flat |
@@ -189,13 +188,14 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_018 | 0x1B | `FX_THUNDAGA_SPARK_BALL` | render | particles: golden plasma ball, 8 frames |
 | fx_018 | 0x1E | `FX_THUNDAGA_VIOLET_RING` | render | rings: white-violet gouraud rings |
 | fx_018 | 0x20 | `FX_THUNDAGA_THIN_BOLT` | render | particles: thin cyan lightning bolt |
-| fx_018 | 0x21 | `FX_THUNDAGA_FAN_EMITTER` | kind/usage (look pending) | emitter: four fan elements (not rendered) |
-| fx_018 | 0x22 | `FX_THUNDAGA_FAN_EMITTER_2` | kind/usage (look pending) | emitter: four fan elements (not rendered) |
+| fx_018 | 0x21 | `FX_THUNDAGA_LIGHTNING_ARCS` | render (fxdata d6121033) | emitter: four fans drawn as cyan and blue zig-zag lightning arcs |
+| fx_018 | 0x22 | `FX_THUNDAGA_LIGHTNING_ARCS_2` | render (fxdata d6121033) | emitter: four fans drawn as cyan and blue zig-zag lightning arcs |
 | fx_018 | 0x25 | `FX_THUNDAGA_IMPACT_FLASH` | render | emitter: four-point star flash |
-| fx_018 | 0x26 | `FX_THUNDAGA_CONE_EMITTER` | kind/usage (look pending) | emitter: cone of sprites, render all transparent |
-| fx_018 | 0x27 | `FX_THUNDAGA_SPARKS` | kind/usage (look pending) | emitter: spark sprites (texture not in the file) |
+| fx_018 | 0x26 | `FX_THUNDAGA_CONE_EMITTER` | kind/usage (look pending) | emitter: cone of sprites, still render all transparent with the summon/common pages |
+| fx_018 | 0x27 | `FX_THUNDAGA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white spark dots (btlfx_emitDots) |
 | fx_03e | 0x2 | `FX_BLIZZARD_ICE_REFLECTION` | render | model: ice shell drawn with the scrolling reflection map (byte-identical to fx_006 entry 0x2) |
 | fx_03e | 0x3 | `FX_BLIZZARD_ICE_BLOCK` | render | model: ice block (cracked-ice texture), morph start (byte-identical to fx_006 entry 0x3) |
+| fx_03e | 0x7 | `FX_BLIZZARD_FROST_SWIRL` | render (fxdata d6121033) | emitter: orbiting pale trail, cyan ice flecks and white dots (same call site as fx_006 entry 0x12) |
 | fx_03e | 0x8 | `FX_BLIZZARD_SHATTER_WAVE` | render | emitter: blue ripple wave with ice sparkles |
 | fx_03e | 0xA | `FX_BLIZZARD_FROST_RING` | render | emitter: lilac-blue gouraud rings |
 | fx_03e | 0x15 | `FX_BLIZZARD_ICE_FLARES_2` | render | emitter: cyan ice glints |
@@ -208,29 +208,30 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_047 | 0x3 | `FX_FIRA_FLAME_BURST` | render | emitter: flame explosion with ember sparks, above the targets |
 | fx_047 | 0x4 | `FX_FIRA_SMOKE` | render | emitter: grey smoke puffs |
 | fx_047 | 0x5 | `FX_FIRA_FLAME_BURST_2` | render | emitter: second flame explosion |
-| fx_048 | 0x2 | `FX_FIRAGA_COLUMN_SEG_3` | kind/usage (look pending) | 'so' model: fire-column segment (byte-identical to fx_007 entry 0x19) |
+| fx_048 | 0x2 | `FX_FIRAGA_FLAME_RIBBON_3` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece (byte-identical to fx_007 entry 0x19) |
 | fx_048 | 0x5 | `FX_FIRAGA_FLAME_BURST` | render | emitter: flame explosion (byte-identical to fx_007 entry 0xa) |
-| fx_048 | 0x9 | `FX_FIRAGA_COLUMN_SEG_1` | kind/usage (look pending) | 'so' model: fire-column segment (byte-identical to fx_007 entry 0x17) |
+| fx_048 | 0x9 | `FX_FIRAGA_FLAME_RIBBON_1` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece (byte-identical to fx_007 entry 0x17) |
 | fx_048 | 0xA | `FX_FIRAGA_FLAME_PILLAR` | render | model: open cylinder with a flame texture (the pillar) (byte-identical to fx_007 entry 0x8) |
-| fx_048 | 0xB | `FX_FIRAGA_COLUMN_SEG_2` | kind/usage (look pending) | 'so' model: fire-column segment (byte-identical to fx_007 entry 0x18) |
-| fx_048 | 0xC | `FX_FIRAGA_COLUMN_SEG_0` | kind/usage (look pending) | 'so' model: fire-column segment, drawn coiled 18 times (byte-identical to fx_007 entry 0x16) |
+| fx_048 | 0xB | `FX_FIRAGA_FLAME_RIBBON_2` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece (byte-identical to fx_007 entry 0x18) |
+| fx_048 | 0xC | `FX_FIRAGA_FLAME_RIBBON_0` | render (fxdata d6121033) | 'so' model: flat flame-textured ribbon piece, drawn coiled 18 times as the fire column (byte-identical to fx_007 entry 0x16) |
 | fx_048 | 0xE | `FX_FIRAGA_FLAME_DISC` | render | model: flat octagon, flame texture; registered, never drawn (byte-identical to fx_007 entry 0x9) |
-| fx_048 | 0x11 | `FX_FIRAGA_ORBIT_TRAIL` | kind/usage (look pending) | emitter: orbiting trail + sprites at the start (texture not in the file) (byte-identical to fx_007 entry 0xc) |
+| fx_048 | 0x11 | `FX_FIRAGA_EMBER_TRAIL` | render (fxdata d6121033) | emitter: orbiting red glow trail + red ember dots (byte-identical to fx_007 entry 0xc) |
 | fx_048 | 0x12 | `FX_FIRAGA_COLUMN_SPARK` | render | rings: small red-white glow drawn at random fire-column segments (byte-identical to fx_007 entry 0xd) |
 | fx_048 | 0x13 | `FX_FIRAGA_PILLAR_RING` | render | rings: textured flame ring rising with the pillar (byte-identical to fx_007 entry 0xf) |
 | fx_048 | 0x14 | `FX_FIRAGA_EMBERS` | render | emitter: dark red ember sprites (byte-identical to fx_007 entry 0x12) |
 | fx_048 | 0x15 | `FX_FIRAGA_GOLD_SPARKS_2` | render | emitter: golden spark sprites + spark sub-particles (byte-identical to fx_007 entry 0x11) |
 | fx_048 | 0x16 | `FX_FIRAGA_GOLD_SPARKS` | render | emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) |
 | fx_048 | 0x17 | `FX_FIRAGA_SMOKE_BURST` | render | emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) |
-| fx_048 | 0x19 | `FX_FIRAGA_CONE_SPARKS` | kind/usage (look pending) | emitter: cone of spark sprites (texture not in the file) (byte-identical to fx_007 entry 0x14) |
+| fx_048 | 0x18 | `FX_FIRAGA_CONE_GLOW` | kind/usage (look pending) | emitter: cone, one dim dark-red particle frame; the blend mode decides the look (same call site as fx_007 entry 0x15) |
+| fx_048 | 0x19 | `FX_FIRAGA_EMBER_CONE` | render (fxdata d6121033) | emitter: cone of red and grey ember dots (byte-identical to fx_007 entry 0x14) |
 | fx_049 | 0x2 | `FX_THUNDARA_IMPACT_FLASH` | render | emitter: four-point star flash, white rings, sparks |
 | fx_049 | 0x6 | `FX_THUNDARA_IMPACT_RING` | render | emitter: white-cyan gouraud rings |
 | fx_049 | 0x15 | `FX_THUNDARA_ORB_EMITTER` | render | emitter: helix whose callback element draws the orb (0x16, 0x1C-0x1F) |
-| fx_049 | 0x18 | `FX_THUNDARA_SPARKS` | kind/usage (look pending) | emitter: spark sprites (texture not in the file) |
+| fx_049 | 0x18 | `FX_THUNDARA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white spark dots (btlfx_emitDots) |
 | fx_049 | 0x19 | `FX_THUNDARA_ORB_FADE` | render | particles: blue energy sphere fading to orange |
 | fx_049 | 0x1A | `FX_THUNDARA_ORB` | render | particles: bright blue energy sphere |
-| fx_049 | 0x1B | `FX_THUNDARA_ORB_SPARKS` | kind/usage (look pending) | sprites: sparks around the orb (texture not in the file) |
-| fx_049 | 0x1C | `FX_THUNDARA_ORB_SPARKS_2` | kind/usage (look pending) | sprites: sparks around the orb (texture not in the file) |
+| fx_049 | 0x1B | `FX_THUNDARA_ORB_SPARKS` | kind/usage (look pending) | sprites: blank, samples page (0x1C0, 0x100) which the file leaves zero, filled at run time |
+| fx_049 | 0x1C | `FX_THUNDARA_ORB_DOTS` | render (fxdata d6121033) | sprites: white dots scattering around the orb |
 | fx_049 | 0x1F | `FX_THUNDARA_LENS_FLARES` | render | particles: orange lens-flare dots around the orb |
 | fx_04d | 0xB | `FX_BLIZZARA_ICE_REFLECTION` | render | model: crystal shell drawn with the reflection map |
 | fx_04d | 0xD | `FX_BLIZZARA_ICE_CRYSTAL` | render | model: long ice crystal spike (ice texture), splits in three |
@@ -248,16 +249,16 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_04d | 0x19 | `FX_BLIZZARA_SHATTER_WAVE` | render | emitter: blue ripple wave |
 | fx_085 | 0x1 | `FX_THUNDAGA_IMPACT_FLASH` | render | emitter: four-point star flash (byte-identical to fx_018 entry 0x25) |
 | fx_085 | 0x6 | `FX_THUNDAGA_GLOW_DOME` | render | model: hemisphere with an orange-to-white streak texture (byte-identical to fx_018 entry 0x11) |
-| fx_085 | 0x8 | `FX_THUNDAGA_CONE_EMITTER` | kind/usage (look pending) | emitter: cone of sprites, render all transparent (byte-identical to fx_018 entry 0x26) |
-| fx_085 | 0xE | `FX_THUNDAGA_SPARKS` | kind/usage (look pending) | emitter: spark sprites (texture not in the file) (byte-identical to fx_018 entry 0x27) |
-| fx_085 | 0xF | `FX_THUNDAGA_DISC` | kind/usage (look pending) | model: flat octagon, 15-bit texture page 0x119 (byte-identical to fx_018 entry 0x10) |
+| fx_085 | 0x8 | `FX_THUNDAGA_CONE_EMITTER` | kind/usage (look pending) | emitter: cone of sprites, still render all transparent with the summon/common pages (byte-identical to fx_018 entry 0x26) |
+| fx_085 | 0xE | `FX_THUNDAGA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white spark dots (btlfx_emitDots) (byte-identical to fx_018 entry 0x27) |
+| fx_085 | 0xF | `FX_THUNDAGA_DISC` | kind/usage (look pending) | model: flat octagon, 15-bit texture page 0x119 holds the file's 4-bit pages, so it samples something drawn there at run time (byte-identical to fx_018 entry 0x10) |
 | fx_085 | 0x10 | `FX_THUNDAGA_LIGHTNING_BOLT` | render | particles: wide blue-white lightning bolt (byte-identical to fx_018 entry 0x17) |
 | fx_085 | 0x11 | `FX_THUNDAGA_THIN_BOLT` | render | particles: thin cyan lightning bolt (byte-identical to fx_018 entry 0x20) |
-| fx_085 | 0x15 | `FX_THUNDAGA_FAN_EMITTER` | kind/usage (look pending) | emitter: four fan elements (not rendered) (byte-identical to fx_018 entry 0x21) |
+| fx_085 | 0x15 | `FX_THUNDAGA_LIGHTNING_ARCS` | render (fxdata d6121033) | emitter: four fans drawn as cyan and blue zig-zag lightning arcs (byte-identical to fx_018 entry 0x21) |
 | fx_085 | 0x18 | `FX_THUNDAGA_SPARK_BALL` | render | particles: golden plasma ball, 8 frames (byte-identical to fx_018 entry 0x1b) |
-| fx_085 | 0x1B | `FX_THUNDAGA_CYL_EMITTER` | kind/usage (look pending) | emitter: cylinder particles, render all transparent (byte-identical to fx_018 entry 0x7) |
-| fx_085 | 0x1C | `FX_THUNDAGA_CYL_EMITTER_2` | kind/usage (look pending) | emitter: cylinder particles, render all transparent (byte-identical to fx_018 entry 0xa) |
-| fx_085 | 0x22 | `FX_THUNDAGA_FAN_EMITTER_2` | kind/usage (look pending) | emitter: four fan elements (not rendered) (byte-identical to fx_018 entry 0x22) |
+| fx_085 | 0x1B | `FX_THUNDAGA_CYL_EMITTER` | kind/usage (look pending) | emitter: cylinder particles, still render all transparent with the summon/common pages (byte-identical to fx_018 entry 0x7) |
+| fx_085 | 0x1C | `FX_THUNDAGA_CYL_EMITTER_2` | kind/usage (look pending) | emitter: cylinder particles, still render all transparent with the summon/common pages (byte-identical to fx_018 entry 0xa) |
+| fx_085 | 0x22 | `FX_THUNDAGA_LIGHTNING_ARCS_2` | render (fxdata d6121033) | emitter: four fans drawn as cyan and blue zig-zag lightning arcs (byte-identical to fx_018 entry 0x22) |
 | fx_097 | 0xF | `FX_BLIZZAGA_CRYSTAL_SHEEN_2` | render | model: crystal 2 shape, reflection-map texture |
 | fx_097 | 0x10 | `FX_BLIZZAGA_CRYSTAL_SHEEN_3` | render | model: crystal 3 shape, reflection-map texture |
 | fx_097 | 0x11 | `FX_BLIZZAGA_CRYSTAL_SHEEN` | render | model: main crystal shape, reflection-map texture |
@@ -265,7 +266,7 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_097 | 0x13 | `FX_BLIZZAGA_ICE_CRYSTAL_3` | render | model: wide ice crystal spike |
 | fx_097 | 0x14 | `FX_BLIZZAGA_ICE_CRYSTAL` | render | model: main ice crystal spike |
 | fx_097 | 0x1B | `FX_BLIZZAGA_FROST_RING` | render | rings: blue gouraud ring on the ground |
-| fx_097 | 0x1C | `FX_BLIZZAGA_FAN_EMITTER` | kind/usage (look pending) | emitter: four fan elements (not rendered) |
+| fx_097 | 0x1C | `FX_BLIZZAGA_ICE_SPIKES` | render (fxdata d6121033) | emitter: four fans drawn as narrowing cyan, green, violet and blue icicle-shaped light spikes |
 | fx_097 | 0x1D | `FX_BLIZZAGA_SNOW_BURST` | render | emitter: rings textured with snow flakes |
 | fx_097 | 0x1E | `FX_BLIZZAGA_SHATTER_WAVE` | render | emitter: blue ripple wave |
 | fx_097 | 0x1F | `FX_BLIZZAGA_ICE_FLARES_2` | render | emitter: cyan ice glints |
@@ -286,7 +287,7 @@ spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing 
 | fx_098 | 0x13 | `FX_BLIZZAGA_ICE_CRYSTAL_3` | render | model: wide ice crystal spike (byte-identical to fx_097 entry 0x13) |
 | fx_098 | 0x14 | `FX_BLIZZAGA_ICE_CRYSTAL` | render | model: main ice crystal spike (byte-identical to fx_097 entry 0x14) |
 | fx_098 | 0x1B | `FX_BLIZZAGA_FROST_RING` | render | rings: blue gouraud ring on the ground (byte-identical to fx_097 entry 0x1b) |
-| fx_098 | 0x1D | `FX_BLIZZAGA_FAN_EMITTER` | kind/usage (look pending) | emitter: four fan elements (not rendered) (byte-identical to fx_097 entry 0x1c) |
+| fx_098 | 0x1D | `FX_BLIZZAGA_ICE_SPIKES` | render (fxdata d6121033) | emitter: four fans drawn as narrowing cyan, green, violet and blue icicle-shaped light spikes (byte-identical to fx_097 entry 0x1c) |
 | fx_098 | 0x1F | `FX_BLIZZAGA_SHATTER_WAVE` | render | emitter: blue ripple wave (byte-identical to fx_097 entry 0x1e) |
 | fx_098 | 0x20 | `FX_BLIZZAGA_ICE_FLARES_2` | render | emitter: cyan ice glints (byte-identical to fx_097 entry 0x1f) |
 | fx_098 | 0x21 | `FX_BLIZZAGA_FROST_RING_2` | render | emitter: pale blue gouraud rings (byte-identical to fx_097 entry 0x22) |

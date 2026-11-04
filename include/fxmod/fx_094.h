@@ -12,7 +12,7 @@
 #define FX_DELTA_ATTACK_VIOLET_RING  0x2 /* emitter: homing violet gouraud rings */
 #define FX_DELTA_ATTACK_WHITE_RING_2 0x3 /* emitter: white gouraud rings */
 #define FX_DELTA_ATTACK_COLOR_RINGS  0x4 /* emitter: yellow / blue / red / gold gouraud rings */
-#define FX_DELTA_ATTACK_FAN_EMITTER  0x5 /* emitter: fan element (not rendered) (look pending) */
+#define FX_DELTA_ATTACK_RAINBOW_STREAK 0x5 /* emitter: fan drawn as a thin rainbow-coloured horizontal streak */
 
 typedef struct {
     SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */

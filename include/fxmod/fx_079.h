@@ -12,9 +12,9 @@
 #define FX_DEMI_SHOCK_WISP_BURST 0x1 /* emitter: white gouraud rings + pink-violet smoke wisps */
 #define FX_DEMI_SHOCK_FLASH_RING 0x2 /* emitter: white gouraud ring */
 #define FX_DEMI_SHOCK_BOWL_2     0x6 /* model: second gouraud hemisphere bowl */
-#define FX_DEMI_SHOCK_TRAIL      0x9 /* trail: strip texture not in the file (look pending) */
+#define FX_DEMI_SHOCK_TRAIL      0x9 /* trail: strip texture still outside the file and the common pages (magenta) (look pending) */
 #define FX_DEMI_SHOCK_BOWL       0xA /* model: gouraud hemisphere bowl */
-#define FX_DEMI_SHOCK_SPHERE     0xB /* model: sphere (texture not in the file) (look pending) */
+#define FX_DEMI_SHOCK_SPHERE     0xB /* model: sphere, texture still outside the file and the common pages (magenta) (look pending) */
 #define FX_DEMI_SHOCK_BACKDROP   0xC /* table: backdrop layers (btlfx_drawBackdrop) */
 
 typedef struct {

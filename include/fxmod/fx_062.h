@@ -9,7 +9,7 @@
 #define FX_DEMI_BACKDROP   0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_DEMI_SPHERE     0x8 /* model: sphere, white texture */
 #define FX_DEMI_BACKDROP_2 0x9 /* table: backdrop layers (btlfx_drawBackdrop) */
-#define FX_DEMI_CAP        0xA /* model: shallow spherical cap (texture not in the file) (look pending) */
+#define FX_DEMI_CAP        0xA /* model: shallow spherical cap, texture still outside the file and the common pages (magenta) (look pending) */
 #define FX_DEMI_BOWL       0xB /* model: gouraud hemisphere bowl */
 #define FX_DEMI_BOWL_2     0xC /* model: second gouraud hemisphere bowl */
 #define FX_DEMI_GLOW_TRAIL 0xD /* trail: white radial glow strip */
