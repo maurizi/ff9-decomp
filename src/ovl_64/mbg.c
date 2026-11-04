@@ -507,7 +507,7 @@ s32 mbg_setRgb24(s32 on) {
             return 0;
         }
     }
-    if (mbg_getStatus() & 2) {
+    if (mbg_getStatus() & MBG_STATUS_FRAMES) {
         g_mbgPlayer.modeSwitch = MBG_SWITCH_PENDING;
     } else if (on != 0) {
         k = 1;

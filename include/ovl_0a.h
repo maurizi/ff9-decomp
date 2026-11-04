@@ -1768,4 +1768,10 @@ s32 vib_update(void); /* main */
 /* menu_open(MENU_DISC, arg): the wanted disc in bits 14-15, the next location in bits 0-13 (ovl_3e DISC_REQ_*) */
 #define MENU_DISC_ARG(disc, loc) ((((disc) & 3) << 14) | (loc))
 
+/* mbg_getStatus (main) result bits, main exe candidates for ff9.h: 1 a movie is loaded or playing, 2 its frames are
+ * running (g_mbgFrame > 0), 4 g_mbgRgb24, 8 g_mbgIsBackground, 0x10 g_mbgPaused. Evidence: [code] */
+#ifndef MBG_STATUS_FRAMES
+#define MBG_STATUS_FRAMES 0x2
+#endif
+
 #endif

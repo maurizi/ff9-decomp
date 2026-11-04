@@ -38,7 +38,7 @@ s32 ending_playMovie(s32 list, s32 entry) {
             g_movieState = MOVIE_ST_PLAY;
             break;
         case MOVIE_ST_PLAY:
-            if ((g_movieFlags & MOVIE_PLAYING) && (mbg_getStatus() & 2)) {
+            if ((g_movieFlags & MOVIE_PLAYING) && (mbg_getStatus() & MBG_STATUS_FRAMES)) {
                 done = mbg_update(0);
                 mbg_getLastFrame();
                 if (done != 0) {
@@ -114,7 +114,7 @@ void ending_movieSwap(void) {
     s32 j;
 
     DrawSync(0);
-    if (!(mbg_getStatus() & 2)) {
+    if (!(mbg_getStatus() & MBG_STATUS_FRAMES)) {
         g_gameState->vsyncMode = 0;
     }
     VSync(g_gameState->vsyncMode);
