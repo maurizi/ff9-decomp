@@ -361,7 +361,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         }
         return -1;
     case SND_TYPE_STREAM:
-        id = (soundId & 0xFFFF) | 0x180000;
+        id = (soundId & 0xFFFF) | DB_SND_STREAM;
         switch (kind) {
         case SND_CMD_PLAY:
             slot = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
@@ -571,7 +571,7 @@ void fld_suspendResidentSfx(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        fld_soundCommand(((i & 1) << 6) | 0x1880, i, 0, 0, 0);
+        fld_soundCommand(((i & 1) << 6) | SND_SE_SUSPEND | SND_RESIDENT, i, 0, 0, 0);
     }
 }
 
@@ -579,7 +579,7 @@ void fld_resumeResidentSfx(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        fld_soundCommand(((i & 1) << 6) | 0x1980, i, 0, 0, 0);
+        fld_soundCommand(((i & 1) << 6) | SND_SE_RESUME | SND_RESIDENT, i, 0, 0, 0);
     }
 }
 
@@ -667,7 +667,7 @@ void fld_playAnimSfx(FieldObjSlot **slots, s32 count) {
                     triFlags = (s16)triFlags >> 8;
                 }
                 ch = sfx->modelSlot & 3;
-                ch = (0x10000 << ch) & 0xF0000;
+                ch = SND_SE_GROUP_ACTOR(ch) & SND_SE_GROUP_ACTORS;
                 snd = sfx->sound[(triFlags >> 4) & 1] | DB_SE;
                 if (sfx->randomPitch != 0) {
                     rnd = rand8_inline();
@@ -1074,7 +1074,7 @@ void fld_applyLights(FieldObjSlot **slots, s32 count) {
                     lightCol = amb->color;
                 }
                 col = ((((baseCol & 0xFF) + (lightCol & 0xFF)) * 8) & 0xFF) | ((((baseCol & 0xFF00) + (lightCol & 0xFF00)) * 8) & 0xFF00)
-                    | ((((baseCol & 0xFF0000) + (lightCol & 0xFF0000)) * 8) & 0xFF0000) | 0x01000000;
+                    | ((((baseCol & 0xFF0000) + (lightCol & 0xFF0000)) * 8) & 0xFF0000) | FLD_COLOR_PENDING;
                 info->nextColor.w = col;
                 info->color.w = col;
                 obj->flags |= FLD_OBJ_LIT;
@@ -1125,7 +1125,7 @@ s32 fld_setSlotColor(FieldObjSlot *obj, s32 r, s32 g, s32 b) {
     u32 col;
 
     if (!(objFlags & FLD_OBJ_COLOR_WAIT)) {
-        col = (r & 0xFF) | ((g << 8) & 0xFF00) | ((b << 16) & 0xFF0000) | 0x01000000;
+        col = (r & 0xFF) | ((g << 8) & 0xFF00) | ((b << 16) & 0xFF0000) | FLD_COLOR_PENDING;
         info->nextColor.w = col;
         info->color.w = col;
         obj->flags |= FLD_OBJ_COLOR_SET | FLD_OBJ_COLOR_WAIT;

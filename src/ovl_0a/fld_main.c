@@ -358,7 +358,7 @@ void fld_load(s32 fieldId) {
     g_gameState->gameData->flags |= GD_NO_FLIP;
     g_gameState->gameData->ctx.field->flags |= FLD_MAP_ACTIVE;
     game_setClearColor(0, 0, 0);
-    g_padPortMask[0] &= 0xFFFF0006;
+    g_padPortMask[0] &= ~PAD_ALL;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
             g_fieldFlagQueue.gameFlags[i][j] = 0;
@@ -421,7 +421,7 @@ void fld_exit(void) {
     sc = g_gameState->gameData->ctx.field->area->scene;
     DrawSync(0);
     fld_stopSceneSfx(sc, g_gameState->gameData->fieldId);
-    g_padPortMask[0] &= 0xFFFF0006;
+    g_padPortMask[0] &= ~PAD_ALL;
     fld_freeVibration(sc, g_gameState->gameData->fieldId);
     fld_freeFieldFile(sc, g_gameState->gameData->fieldId);
     fld_freeModelBundles();
@@ -677,7 +677,7 @@ s32 fld_loadVibration(scene, fieldId)
     FieldScene *scene;
     u16 fieldId;
 {
-    void *vibData = db_lookupRegistered(DB_GET_ADDR, fieldId | 0x1E0000, 0);
+    void *vibData = db_lookupRegistered(DB_GET_ADDR, fieldId | DB_VIBRATION, 0);
 
     scene->vibration = vibData;
     if (vibData != NULL) {

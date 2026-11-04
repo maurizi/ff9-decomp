@@ -221,7 +221,7 @@ void fld_discChangeBackToPrompt(void) {
 }
 
 void fld_discChangeOpenMenu8(void) {
-    menu_open(MENU_DISC, ((g_fieldDiscChange.disc & 3) << 14) | g_fieldDiscChange.fieldId);
+    menu_open(MENU_DISC, MENU_DISC_ARG(g_fieldDiscChange.disc, g_fieldDiscChange.fieldId));
     menu_setOnClose(fld_discChangeFinish);
     menu_setFadeInOnClose(0);
 }

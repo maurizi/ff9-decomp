@@ -211,6 +211,7 @@ typedef struct {
 #define FLD_MVF_END_FADE 0x20 /* the volume fade (akao_sendCmdE5) for the last frames was sent */
 #define FLD_MVF_CAMERA 0x40 /* models and sprites use the movie's geometry offset (mbg_getGeomOffset); one frame at the start */
 #define FLD_MVF_END_DONE 0x100 /* the end-of-movie flag restore was done or queued */
+#define FLD_MVF_PER_MOVIE 0x1FF /* bits 0-8 (the above and the unused 0x10/0x80): fld_movieFinish clears them all */
 
 /* FieldScene.exitReason: why the field loop ended (fld_main sets it from the event system's result, fld_exit
  * switches on it and sets GameState.mode to the same number; docs/encounters.md, docs/runtime-findings.md) */
@@ -257,6 +258,7 @@ typedef struct FieldMap {
                             * instead of DrawOTagEnv (the swirl reuses the last frame) and the sound loader keeps
                             * 0x3000 bytes back for the swirl buffer; with GD_HIDE_ALL it selects vsyncMode 0 */
 #define FLD_MAP_NO_VIBRATION 0x10 /* fld_main skips vib_update */
+#define FLD_MAP_ENCOUNTER_UNREAD 0x100 /* queued by fld_startEncounter, cleared by fld_updateEncounter; no reader found */
 #define FLD_MAP_NO_DISPENV 0x20 /* fld_endFrame skips PutDispEnv */
 #define FLD_MAP_NO_DRAW 0x40 /* fld_endFrame skips the OT draw */
 #define FLD_MAP_NO_TIMER 0x80 /* fld_main skips game_updateTimer */
@@ -376,6 +378,7 @@ typedef struct {
 #define FLDBG_SCROLL_LIMITS 0x20 /* camera scroll limits in force (fldbg_disableScrollLimits/fldbg_enableScrollLimits) */
 #define FLDBG_FOLLOW 0x40 /* fldbg_setFollow: the camera follows the player; scrolling needs it */
 #define FLDBG_CAMERA_CHANGED 0x80 /* fldbg_setCamera/fldbg_setOverlayPos; fldbg_updateOverlayScroll clears it */
+#define FLDBG_INIT_CLEARED 0xC00 /* fldbg_initOverlays clears these two bits; nothing sets or tests them */
 
 /* field background file (g_fieldBgData = g_fieldBgCtx.unk10, fld_setupBackground): the header holds
  * offsets (from the file start) of its overlay-animation, overlay and camera tables */
@@ -909,10 +912,13 @@ typedef union {
 typedef struct {
     u8 pad0[4];
     s16 rootPos[3]; /* root position: constant, or offset of s16[frame] */
-    u16 constMask;    /* 1, 2, 4: rootPos[i] is a constant */
+    u16 constMask;    /* WMANIM_ROOT_CONST(i): rootPos[i] is a constant */
     WmAnimKey *rotKeys;  /* rotation tracks, one per bone */
     WmAnimKey *rotKeysLo; /* low rotation bits, packed two frames per byte */
 } WmAnim;
+/* WmAnim.constMask: axis i of the root position is rootPos[i] itself instead of an offset of a per-frame s16 track
+ * (fldmdl_calcBoneMatrices). Evidence: [code] */
+#define WMANIM_ROOT_CONST(i) (1 << (i))
 
 typedef struct ModelObj {
     u16 flags; /* flags; 0x10: behind the camera */
@@ -975,6 +981,8 @@ typedef struct FieldActorExt {
 
 /* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
 /* rgb + flag byte (bit 24 of the word: pending) */
+#define FLD_COLOR_PENDING 0x01000000 /* FieldColor.w: fld_applyLights / fld_setSlotColor set it with the colour; the
+                                      * apply loop recolours the model while the top byte is nonzero, then takes nextColor */
 
 typedef struct FieldActorInfo {
     u32 flags; /* flags */
@@ -989,6 +997,9 @@ typedef struct FieldActorInfo {
 /* FieldActorInfo.flags: the object's flags as last applied, so changes can be detected */
 #define FLD_INFO_DIR_LIGHT 0x4 /* FLD_OBJ_DIR_LIGHT when fld_applyLights last ran */
 #define FLD_INFO_SEMITRANS 0x10000 /* FLD_OBJ_SEMITRANS when fld_applyModelCommands last ran */
+/* SND_SE_PLAY channel/group argument of an animation sound (fld_playAnimSfx): one bit per model slot & 3 */
+#define SND_SE_GROUP_ACTOR(n) (0x10000 << (n))
+#define SND_SE_GROUP_ACTORS 0xF0000
 
 /* background VRAM animation (fldmdl_updateTexAnims) */
 typedef struct {
@@ -1064,13 +1075,14 @@ extern TILE g_fieldPauseDim;
 
 /* 3D sprite data (FieldSprite.unk18) */
 typedef struct {
-    u16 frameCount; /* frame count | 0x8000 */
+    u16 frameCount; /* frame count | 0x8000 (FLDSPR_COUNT_MASK) */
     u16 tpage; /* tpage */
     u16 clut; /* clut */
     u8 height;  /* width */
     u8 width;  /* height */
     u16 frameOffsets[1]; /* frame offsets, then the u16-counted table */
 } FieldSprHdr;
+#define FLDSPR_COUNT_MASK 0x7FFF /* FieldSprHdr.frameCount: the count; bit 15 is set in the data and never tested. Evidence: [code] */
 
 /* parameter block for fld_emitSprite3D */
 typedef struct {
@@ -1734,5 +1746,26 @@ s32 preload_update(void); /* main */
 s32 tpage_getX(s32 tpage); /* main */
 s32 tpage_getY(s16 tpage); /* main */
 s32 vib_update(void); /* main */
+
+/* main exe: candidates for ff9.h (flag names used by ovl_0a). Evidence: [code] */
+/* every controller button bit of g_padPortMask's low half (all PAD_* but the unnamed 0x2/0x4); the event script's
+ * EVT_OP_PAD_MASK_SET can only set these, and fld_load/fld_exit clear them all with g_padPortMask[0] &= ~PAD_ALL */
+#define PAD_ALL (PAD_SELECT | PAD_START | PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 \
+                 | PAD_TRIANGLE | PAD_CIRCLE | PAD_CROSS | PAD_SQUARE) /* 0xFFF9 */
+#define DB_SND_STREAM 0x180000 /* streamed sound (SND_TYPE_STREAM, fld_soundCommand) */
+#define DB_VIBRATION 0x1E0000 /* field vibration data, id = field id (fld_loadVibration -> vib_init) */
+/* GameData.flags 0x40: queued by fld_startEncounter and by fld_movieUpdate for a colour-keyed (movieRgb24) movie,
+ * cleared by fld_updateEncounter / fld_movieFinish; no reader found in any binary */
+#define GD_FLD_TAKEOVER_UNREAD 0x40
+/* texture page word fields (getTPage's layout) */
+#define TPAGE_X_MASK 0xF /* bits 0-3: x / 64 */
+#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
+#define TPAGE_ABR(abr) (((abr) & 3) << 5) /* bits 5-6: semi-transparency rate */
+#define TPAGE_ABR_ADD 0x20 /* TPAGE_ABR(1): back + front */
+#define TPAGE_8BIT 0x80 /* bits 7-8: colour mode 1 (8-bit CLUT) */
+#define TPAGE_15BIT 0x100 /* colour mode 2 (15-bit direct) */
+#define PRIM_ADDR_MASK 0xFFFFFF /* a packet's tag word: the OT link (P_TAG.addr, getaddr); fldmdl_tint* only recolour linked packets */
+/* menu_open(MENU_DISC, arg): the wanted disc in bits 14-15, the next location in bits 0-13 (ovl_3e DISC_REQ_*) */
+#define MENU_DISC_ARG(disc, loc) ((((disc) & 3) << 14) | (loc))
 
 #endif

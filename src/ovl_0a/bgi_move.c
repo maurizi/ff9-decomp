@@ -496,7 +496,7 @@ static inline s32 bgi_pushOutOfEdges_inline(BgiActor *actor, SVECTOR *pos, BgiTr
     u16 k;
     BgiTriangle *tri;
     s32 cnt;
-    u16 mask = ~0x80;
+    u16 mask = ~BGI_TRI_VISITED;
 
     tri = g_fieldBgi.triangles;
     cnt = g_fieldBgi.header->triangleCount;
@@ -725,7 +725,7 @@ s32 bgi_placeActor(s32 actorId, s16 x, s16 y, s16 z) {
     for (; i < bgi->triangleCount; i++, node++) {
         hit = 0;
         if ((u8)bgi_pointInTriangleXZ(bgi, &g_fieldBgi.floors[node->floor], node, &pos)) {
-            mask = ~0x80;
+            mask = ~BGI_TRI_VISITED;
             clearTri = g_fieldBgi.triangles;
             cnt = g_fieldBgi.header->triangleCount;
             for (j = hit; j < cnt; j++) {

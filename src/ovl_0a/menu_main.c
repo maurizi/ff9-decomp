@@ -465,7 +465,7 @@ void menuMain_drawParty(void) {
 }
 
 s32 fld_getSpriteFrameCount(u16 *spr) {
-    return *spr & 0x7FFF;
+    return *spr & FLDSPR_COUNT_MASK;
 }
 
 u8 *fld_drawSprite3D(u8 *pkt, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 fade,
@@ -485,7 +485,7 @@ u8 *fld_drawSprite3D(u8 *pkt, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 sc
         ((s32 *)&zero)[0] = 0;
         ((s32 *)&zero)[1] = 0;
     }
-    tmp = h->frameCount & 0x7FFF;
+    tmp = h->frameCount & FLDSPR_COUNT_MASK;
     val = frame;
     if (val >= tmp) {
         val = frame % tmp;

@@ -183,7 +183,7 @@ void fldmdl_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2])
                 pFT4->u3 = grp->uvs[sFT4->uvs[3]][0];
                 pFT4->v3 = grp->uvs[sFT4->uvs[3]][1];
                 pFT4->clut = mdl->texInfo[sFT4->texture].clut;
-                pFT4->tpage = tp = mdl->texInfo[sFT4->texture].tpage & ~0x20;
+                pFT4->tpage = tp = mdl->texInfo[sFT4->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sFT4->flags & WMSRC_SEMITRANS) {
                     pFT4->tpage = tp | (sFT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT4, 1);
@@ -217,7 +217,7 @@ void fldmdl_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2])
                 pFT3->u2 = grp->uvs[sFT3->uvs[2]][0];
                 pFT3->v2 = grp->uvs[sFT3->uvs[2]][1];
                 pFT3->clut = mdl->texInfo[sFT3->texture].clut;
-                pFT3->tpage = tp = mdl->texInfo[sFT3->texture].tpage & ~0x20;
+                pFT3->tpage = tp = mdl->texInfo[sFT3->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sFT3->flags & WMSRC_SEMITRANS) {
                     pFT3->tpage = tp | (sFT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT3, 1);
@@ -264,7 +264,7 @@ void fldmdl_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2])
                 pGT4->u3 = grp->uvs[sGT4->uvs[3]][0];
                 pGT4->v3 = grp->uvs[sGT4->uvs[3]][1];
                 pGT4->clut = mdl->texInfo[sGT4->texture].clut;
-                pGT4->tpage = tp = mdl->texInfo[sGT4->texture].tpage & ~0x20;
+                pGT4->tpage = tp = mdl->texInfo[sGT4->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sGT4->flags & WMSRC_SEMITRANS) {
                     pGT4->tpage = tp | (sGT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT4, 1);
@@ -307,7 +307,7 @@ void fldmdl_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2])
                 pGT3->u2 = grp->uvs[sGT3->uvs[2]][0];
                 pGT3->v2 = grp->uvs[sGT3->uvs[2]][1];
                 pGT3->clut = mdl->texInfo[sGT3->texture].clut;
-                pGT3->tpage = tp = mdl->texInfo[sGT3->texture].tpage & ~0x20;
+                pGT3->tpage = tp = mdl->texInfo[sGT3->texture].tpage & ~TPAGE_ABR_ADD;
                 if (sGT3->flags & WMSRC_SEMITRANS) {
                     pGT3->tpage = tp | (sGT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT3, 1);
@@ -800,17 +800,17 @@ void fldmdl_calcBoneMatrices(ModelObj *mdl, u16 frame) {
     key = anim->rotKeys;
     key2 = anim->rotKeysLo;
     rot = (SVECTOR *)0x1F800000;
-    if (anim->constMask & 1) {
+    if (anim->constMask & WMANIM_ROOT_CONST(0)) {
         bones->t[0] = anim->rootPos[0];
     } else {
         bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[frame];
     }
-    if (anim->constMask & 2) {
+    if (anim->constMask & WMANIM_ROOT_CONST(1)) {
         boneMtx->t[1] = anim->rootPos[1];
     } else {
         boneMtx->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[frame];
     }
-    if (anim->constMask & 4) {
+    if (anim->constMask & WMANIM_ROOT_CONST(2)) {
         boneMtx->t[2] = anim->rootPos[2];
     } else {
         boneMtx->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[frame];
@@ -1172,7 +1172,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
         prim += grp->packetSize;
     }
     for (j = 0; j < grp->ft4Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_FT4 *)prim)->code;
             *(u32 *)&((POLY_FT4 *)prim)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)src)->rgb, dr, dg, db);
             ((POLY_FT4 *)prim)->code = primCode;
@@ -1182,7 +1182,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->ft3Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_FT3 *)prim)->code;
             *(u32 *)&((POLY_FT3 *)prim)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)src)->rgb, dr, dg, db);
             ((POLY_FT3 *)prim)->code = primCode;
@@ -1192,7 +1192,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->gt4Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_GT4 *)prim)->code;
             col = (u32 *)grp->colors[((WmSrcGT4 *)src)->colors[0]];
             *(u32 *)&((POLY_GT4 *)prim)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
@@ -1209,7 +1209,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->gt3Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_GT3 *)prim)->code;
             col = (u32 *)grp->colors[((WmSrcGT3 *)src)->colors[0]];
             *(u32 *)&((POLY_GT3 *)prim)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
@@ -1224,7 +1224,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->g4Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_G4 *)prim)->code;
             col = (u32 *)grp->colors[((WmSrcG4 *)src)->colors[0]];
             *(u32 *)&((POLY_G4 *)prim)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
@@ -1241,7 +1241,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->g3Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_G3 *)prim)->code;
             col = (u32 *)grp->colors[((WmSrcG3 *)src)->colors[0]];
             *(u32 *)&((POLY_G3 *)prim)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
@@ -1256,7 +1256,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->f4Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_F4 *)prim)->code;
             *(u32 *)&((POLY_F4 *)prim)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)src)->rgb, dr, dg, db);
             ((POLY_F4 *)prim)->code = primCode;
@@ -1266,7 +1266,7 @@ void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     }
 
     for (j = 0; j < grp->f3Count; j++) {
-        if (*(u32 *)prim & 0xFFFFFF) {
+        if (*(u32 *)prim & PRIM_ADDR_MASK) {
             primCode = ((POLY_F3 *)prim)->code;
             *(u32 *)&((POLY_F3 *)prim)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)src)->rgb, dr, dg, db);
             ((POLY_F3 *)prim)->code = primCode;
@@ -1514,17 +1514,17 @@ void fldmdl_calcBoneMatricesLookAt(ModelObj *mdl, s32 frame) {
     key = anim->rotKeys;
     key2 = anim->rotKeysLo;
     rot = (SVECTOR *)0x1F800000;
-    if (anim->constMask & 1) {
+    if (anim->constMask & WMANIM_ROOT_CONST(0)) {
         bones->t[0] = anim->rootPos[0];
     } else {
         bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[(u16)frame];
     }
-    if (anim->constMask & 2) {
+    if (anim->constMask & WMANIM_ROOT_CONST(1)) {
         boneMtx->t[1] = anim->rootPos[1];
     } else {
         boneMtx->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[(u16)frame];
     }
-    if (anim->constMask & 4) {
+    if (anim->constMask & WMANIM_ROOT_CONST(2)) {
         boneMtx->t[2] = anim->rootPos[2];
     } else {
         boneMtx->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[(u16)frame];
@@ -2871,7 +2871,7 @@ s32 fldbg_initOverlays(u8 *heap, BgSprt **spritesOut) {
     }
     g_fieldBgState.unk73 = 0;
     g_fieldBgState.unk72 = 0;
-    g_fieldBgState.flags &= ~0xC00;
+    g_fieldBgState.flags &= ~FLDBG_INIT_CLEARED;
     return 1;
 }
 
@@ -4271,9 +4271,9 @@ s32 fldbg_playAnim(s32 animId, s32 play) {
     u8 newFlags;
 
     if (play != 0) {
-        newFlags = anim->flags | 6;
+        newFlags = anim->flags | (FLDBG_ANIM_ACTIVE | FLDBG_ANIM_PLAY_ONCE);
     } else {
-        newFlags = anim->flags & ~6;
+        newFlags = anim->flags & ~(FLDBG_ANIM_ACTIVE | FLDBG_ANIM_PLAY_ONCE);
     }
     anim->flags = newFlags;
     return 1;
