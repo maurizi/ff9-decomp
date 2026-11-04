@@ -1173,17 +1173,17 @@ void btl_getLinkedDepSectors(s32 fileId, s32 *outSector, s32 *outSectors) {
 }
 
 s32 btl_swapPartyModel(s32 slot, s32 begin) {
-    s32 flags = BTL_STEPF_FLIP_TRANCE | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
+    s32 flags = BTL_STEPF_FLIP_TRANCE | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_PARTY | BTL_STEPF_IN_BATTLE;
     if (begin != 0) {
-        flags = BTL_STEPF_BEGIN | BTL_STEPF_FLIP_TRANCE | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
+        flags = BTL_STEPF_BEGIN | BTL_STEPF_FLIP_TRANCE | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_PARTY | BTL_STEPF_IN_BATTLE;
     }
     return btl_swapPartyModelStep(slot, flags);
 }
 
 s32 btl_reloadParty(s32 begin) {
-    s32 flags = BTL_STEPF_SOUNDS | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
+    s32 flags = BTL_STEPF_SOUNDS | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_PARTY | BTL_STEPF_IN_BATTLE;
     if (begin != 0) {
-        flags = BTL_STEPF_BEGIN | BTL_STEPF_SOUNDS | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
+        flags = BTL_STEPF_BEGIN | BTL_STEPF_SOUNDS | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_PARTY | BTL_STEPF_IN_BATTLE;
     }
     return btl_reloadPartyStep(flags);
 }
@@ -1231,12 +1231,12 @@ s16 btl_loadModelsStep(s32 begin) {
             (*st)++;
         }
     } else if (step == 3) {
-        if (btl_loadWeaponModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_UNTESTED1, ld) == 0) {
+        if (btl_loadWeaponModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_PARTY, ld) == 0) {
             btl_loadPartyModelsStep(BTL_STEPF_BEGIN | BTL_STEPF_BASE_MODEL, ld);
             (*st)++;
         }
     } else if (step == 4) {
-        if (btl_loadPartyModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_UNTESTED1, ld) == 0) {
+        if (btl_loadPartyModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_PARTY, ld) == 0) {
             g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
             *state = 0;
         }

@@ -65,30 +65,6 @@ typedef struct {
 extern ConfigMenu s_menuConfig;
 extern const u8 g_configMenuText[]; /* menu text block */
 
-/* GameState.unk24: the config word (main exe: candidates for ff9.h). Bit positions shown by the config rows
- * that read and write them (menuConfig_setOption, the row drawers). */
-#define CFG_BIT_SOUND         0  /* 1 = mono */
-#define CFG_BIT_CONTROLLER    1  /* 1 = custom button mapping (GameState.unk28) */
-#define CFG_BIT_CURSOR        2  /* 1 = memory */
-#define CFG_BIT_ATB           3  /* 1 = wait */
-#define CFG_BIT_CAMERA        4  /* 1 = fixed */
-#define CFG_BIT_BTL_CONTROL   5  /* 1 = custom: controller port per character (CFG_SHIFT_CHAR_PORT bits) */
-#define CFG_BIT_MOVEMENT      6  /* 1 = run */
-#define CFG_BIT_VIBRATION     7  /* 1 = off */
-#define CFG_SHIFT_BTL_SPEED   8  /* 3 bits, 0..CFG_BTL_SPEED_MAX */
-#define CFG_SHIFT_MSG_SPEED   14 /* 3 bits, 0..CFG_MSG_SPEED_MAX */
-#define CFG_BIT_HERE_ICON     17 /* 1 = off */
-#define CFG_BIT_WINDOW_COLOR  18 /* 1 = classic */
-#define CFG_BIT_TARGET_WINDOW 19 /* 1 = always */
-#define CFG_SHIFT_CHAR_PORT   20 /* one bit per character: 1 = controller port 2 */
-#define CFG_BTL_SPEED_MAX     2
-#define CFG_MSG_SPEED_MAX     6
-#define CFG_SPEED_MASK        7 /* the 3-bit CFG_SHIFT_*_SPEED fields (menuConfig_stepSlider wraps within it) */
-/* GameState.padMap: 4 bits per button slot (CFG_PADMAP_SHIFT(slot)), of which the config screen keeps the
- * low 3: the action (s_menuConfigPadActions index) mapped to that slot. Evidence: [code] */
-#define CFG_PADMAP_SHIFT(slot) ((slot) * 4)
-#define CFG_PADMAP_ACTION_MASK 7
-
 /* the same word, written through bitfields by menuConfig_setOption */
 typedef struct {
     u32 soundMono : 1;

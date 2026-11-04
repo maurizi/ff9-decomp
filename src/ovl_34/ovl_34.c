@@ -814,7 +814,7 @@ u8 menuConfig_hasVibration(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        if (((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
+        if (PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_ANALOG) {
             return 1;
         }
         if (g_padPortState[i] == 6) {

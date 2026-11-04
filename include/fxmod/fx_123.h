@@ -81,10 +81,6 @@ typedef struct {
 } Fx123Path_0b4;
 static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
-/* PsyQ libgte.h macros: candidates for psyq.h */
-#define copyVector(d, s) (d)->vx = (s)->vx, (d)->vy = (s)->vy, (d)->vz = (s)->vz
-#define addVector(d, s) (d)->vx += (s)->vx, (d)->vy += (s)->vy, (d)->vz += (s)->vz
-
 typedef struct {
     Pool6CEntry *emit0[6];
     u8 pad18[0x30 - 0x18];

@@ -485,30 +485,6 @@ extern u16 s_menuSaveCrcTable[256];
 typedef union { s32 w; u16 h; } Crc16;
 
 /* main exe: candidates for ff9.h */
-/* PsyQ libapi event classes and specs of the memory card */
-#ifndef SwCARD
-#define SwCARD     0xF4000001
-#define HwCARD     0xF0000011
-#define EvSpIOE    0x0004
-#define EvSpERROR  0x8000
-#define EvSpTIMOUT 0x0100
-#define EvSpNEW    0x2000
-#define EvMdNOINTR 0x2000
-#endif
-/* PsyQ sys/file.h open() modes; FCREAT takes the block count in bits 16+ */
-#ifndef FREAD
-#define FREAD  0x0001
-#define FWRITE 0x0002
-#define FCREAT 0x0200
-#define FASYNC 0x8000
-#endif
-/* GameState.unk24 config word bit (ovl_34): Window Color, 1 = classic */
-#ifndef CFG_BIT_WINDOW_COLOR
-#define CFG_BIT_WINDOW_COLOR 18
-#endif
-#ifndef SEEK_CUR
-#define SEEK_CUR 1
-#endif
 EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */
 u8 fld_getDiscChangeDisc(void); /* other overlay */

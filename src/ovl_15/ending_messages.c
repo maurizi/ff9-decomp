@@ -194,10 +194,10 @@ s32 ending_textWidth(u8 *str) {
         if (ch >= hi) {
             ch = (ch << 8) + str[1] - font->extCode + font->extBase;
             str++;
-            width += (font->glyphs[ch] >> 28) + 1;
+            width += GLYPH_ADVANCE(font->glyphs[ch]) + 1;
         } else {
             glyph = &font->glyphs[ch];
-            width += (*glyph >> 28) + 1;
+            width += GLYPH_ADVANCE(*glyph) + 1;
         }
         str++;
     }
@@ -209,12 +209,12 @@ void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 *out, SprtWords *sp
 
     setlen(sprt, PRIM_LEN(SPRT));
     sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    sprt->xy = ((x + ((glyph >> 20) & 3)) & 0xFFFF) | (y << 16);
-    sprt->uvclut = (glyph & 0x40FFFF) + 0x38270000;
-    sprt->wh = ((glyph >> 16) & 0xF) | 0xD0000;
+    sprt->xy = ((x + GLYPH_DX(glyph)) & 0xFFFF) | (y << 16);
+    sprt->uvclut = GLYPH_UVCLUT(glyph) + 0x38270000;
+    sprt->wh = GLYPH_W(glyph) | 0xD0000;
     addPrim(ot, sprt);
     sprt++;
-    glyphW = glyph >> 28;
+    glyphW = GLYPH_ADVANCE(glyph);
     if (out != NULL) {
         *out = glyphW + 1;
     }

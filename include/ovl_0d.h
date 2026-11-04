@@ -593,8 +593,4 @@ extern char g_tmNoLabel[]; /* "NO" label (INCLUDE_RODATA) */
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void tm_addRandomCard(); /* (TmState *, u8); unprototyped: callers pass the argument unconverted */
 
-/* main exe: candidates for ff9.h (texture page word fields, getTPage's layout). Evidence: [code] */
-#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
-#define TPAGE_8BIT 0x80 /* bits 7-8: colour mode 1 (8-bit CLUT) */
-
 #endif

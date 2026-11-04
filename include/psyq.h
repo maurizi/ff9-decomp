@@ -49,6 +49,19 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define PRIM_LEN(type) (sizeof(type) / 4 - 1)
 #define PRIM_TAG(type) (PRIM_LEN(type) << 24) /* the same as a tag word's len byte (addPrimLen-style helpers) */
 #define TPAGE_ABR_MASK 0x60 /* texture page word bits 5-6: semi-transparency rate (getTPage's abr << 5) */
+/* texture page word fields (getTPage's layout, also bits 0-8 of the GP0(E1h) draw-mode word). Evidence: [code] the
+ * texel copy helpers (x = (tp & TPAGE_X_MASK) * 64), getTPage */
+#define TPAGE_X_MASK 0xF /* bits 0-3: x / 64 */
+#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
+#define TPAGE_ABR_SHIFT 5 /* bits 5-6: semi-transparency rate (TPAGE_ABR_MASK) */
+#define TPAGE_ABR(abr) (((abr) & 3) << 5)
+#define TPAGE_ABR_ADD 0x20 /* TPAGE_ABR(1): back + front */
+#define TPAGE_8BIT 0x80 /* bits 7-8: colour mode 1 (8-bit CLUT) */
+#define TPAGE_15BIT 0x100 /* colour mode 2 (15-bit direct) */
+#define GPU_DRAW_MODE 0xE1 /* GP0(E1h) draw-mode word's code byte (DR_TPAGE, get_mode) */
+#define GPU_DRAW_DITHER 0x200 /* draw-mode word bit 9: dither (get_mode's dtd) */
+#define RGB15_STP 0x8000 /* 15-bit pixel bit 15 (semi-transparency / mask); with it a black pixel isn't transparent */
+#define PRIM_ADDR_MASK 0xFFFFFF /* a packet's tag word: the OT link (P_TAG.addr, getaddr) */
 #define GPU_STP(set, check) (0xE6000000 | ((check) << 1) | (set)) /* GP0(E6h) as ovl_0b writes it */
 #define _get_mask(set, chk) (0xE6000000 | ((chk) ? 2 : 0) | ((set) ? 1 : 0)) /* GP0(E6h) mask-bit setting word */
 /* GP0 primitive codes: the high byte of a packet's first (colour) word, as libgpu's setPolyF3() etc. write it.
@@ -74,8 +87,12 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define GPU_SPRT_16 0x7C
 #define GPU_ABE 0x02
 #define GPU_TGE 0x01
+#define GPU_POLY_KIND 0x3C /* polygon code bits that pick the GPU_POLY_* kind, without GPU_ABE and GPU_TGE */
 #define GPU_CODE(c) ((c) << 24)
 #define GPU_RGBC(c, rgb) (GPU_CODE(c) | (rgb)) /* code byte + 0xBBGGRR */
+/* libgte.h vector macros */
+#define copyVector(d, s) (d)->vx = (s)->vx, (d)->vy = (s)->vy, (d)->vz = (s)->vz
+#define addVector(d, s) (d)->vx += (s)->vx, (d)->vy += (s)->vy, (d)->vz += (s)->vz
 #define ONE 4096 /* libgte fixed-point 1.0 (matrix elements, rsin/rcos results) */
 #define GPU_RGB_NEUTRAL 0x808080 /* 0x80 per channel: textures drawn with their own colours */
 /* libgpu.h primitive-word helpers */
@@ -374,6 +391,26 @@ int sprintf(char *buf, const char *fmt, ...);
 #define CdlDataReady 0x01
 #define CdlComplete 0x02
 #define CdlDiskError 0x05
+#define CdlStatError 0x01
+#define CdlStatStandby 0x02
+/* CdGetDiskType results */
+#define CdlStatNoDisk 0
+#define CdlOtherFormat 1
+#define CdlCdromFormat 2
+/* libapi event classes and specs of the memory card */
+#define SwCARD 0xF4000001
+#define HwCARD 0xF0000011
+#define EvSpIOE 0x0004
+#define EvSpERROR 0x8000
+#define EvSpTIMOUT 0x0100
+#define EvSpNEW 0x2000
+#define EvMdNOINTR 0x2000
+/* sys/file.h open() modes; FCREAT takes the block count in bits 16+ */
+#define FREAD 0x0001
+#define FWRITE 0x0002
+#define FCREAT 0x0200
+#define FASYNC 0x8000
+#define SEEK_CUR 1
 int CdControlF(u8 com, u8 *param);
 int CD_getsector(void *madr, int size);
 int CD_getsector2(void *madr, int size);

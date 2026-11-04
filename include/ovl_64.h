@@ -276,16 +276,6 @@ typedef struct {
     u32 pad : 24;
 } Ovl64Cfg; /* view of GameState.unk24, the config word */
 
-/* PsyQ inline_c.h; candidate for psyq.h */
-#define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
-    "sll\t$12, %0, 16;"                              \
-    "sll\t$13, %1, 16;"                              \
-    "ctc2\t$12, $24;"                                \
-    "ctc2\t$13, $25"                                 \
-    :                                                \
-    : "r"(r0), "r"(r1)                               \
-    : "$12", "$13")
-
 typedef struct {
     u16 runMasked; /* current run: nonzero = pixels get the mask bit */
     u16 runLength; /* pixels left in the current run */
@@ -377,11 +367,5 @@ static inline void mbg_streamReadyCallback_retry(void) {
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 s32 fldbg_setCamera(s32 cameraId); /* ovl_0a */
 s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera, Ovl64Pair **outMask, MbgRumble **outRumble);
-
-/* mbg_getStatus (main) result bits, main exe candidates for ff9.h: 1 a movie is loaded or playing, 2 its frames are
- * running (g_mbgFrame > 0), 4 g_mbgRgb24, 8 g_mbgIsBackground, 0x10 g_mbgPaused. Evidence: [code] */
-#ifndef MBG_STATUS_FRAMES
-#define MBG_STATUS_FRAMES 0x2
-#endif
 
 #endif
