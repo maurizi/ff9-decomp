@@ -4,7 +4,7 @@ void file_loadTim(s32 addr) {
     TimHeader *tim = (TimHeader *)addr;
     TimBlock *blk = &tim->clut;
 
-    if (tim->flag & 8) {
+    if (tim->flag & TIM_FLAG_CLUT) {
         LoadImage((RECT *)&tim->clut.x, (u32 *)(&tim->clut + 1));
         blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));
     }
@@ -16,7 +16,7 @@ void file_getTimRects(TimHeader *tim, RECT **clut, RECT **image) {
 
     if (tim != NULL) {
         blk = &tim->clut;
-        if (tim->flag & 8) {
+        if (tim->flag & TIM_FLAG_CLUT) {
             if (clut != NULL) {
                 *clut = (RECT *)&tim->clut.x;
             }
@@ -33,7 +33,7 @@ void file_getTimPos(TimHeader *tim, s32 *cx, s32 *cy, s32 *px, s32 *py) {
 
     if (tim != NULL) {
         blk = &tim->clut;
-        if (tim->flag & 8) {
+        if (tim->flag & TIM_FLAG_CLUT) {
             *cx = tim->clut.x;
             *cy = tim->clut.y;
             blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));
@@ -49,7 +49,7 @@ void file_setTimPos(s32 addr, s32 cx, s32 cy, s32 px, s32 py) {
 
     if (tim != NULL) {
         blk = &tim->clut;
-        if (tim->flag & 8) {
+        if (tim->flag & TIM_FLAG_CLUT) {
             tim->clut.x = cx;
             tim->clut.y = cy;
             blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));

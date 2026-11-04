@@ -543,10 +543,10 @@ void akao_applyKeySplit(AkaoChannel *chan, u32 key) {
     }
     chan->voiceAdsr1 |= instr->adsr1 & (SPU_ADSR1_ATTACK_EXP | SPU_ADSR1_DECAY_RATE | SPU_ADSR1_SUSTAIN_LEVEL);
     if (!(chFlags & AKAO_CH_SUSTAIN_RATE_SET)) {
-        chan->voiceAdsr2 &= 0x201F;
+        chan->voiceAdsr2 &= SPU_ADSR2_BIT13 | SPU_ADSR2_RELEASE_RATE;
         chan->voiceAdsr2 |= region->sustainRate << 6;
     } else {
-        chan->voiceAdsr2 &= 0x3FDF;
+        chan->voiceAdsr2 &= SPU_ADSR2_BIT13 | SPU_ADSR2_SUSTAIN_RATE | SPU_ADSR2_RELEASE_RATE;
     }
     switch (region->sustainMode) {
     case AKAO_ENV_LINEAR_DEC:
@@ -635,10 +635,10 @@ s32 akao_playDrumNote(AkaoChannel *chan, u32 chBit, s32 key) {
     }
     chan->voiceAdsr1 |= instr->adsr1 & (SPU_ADSR1_ATTACK_EXP | SPU_ADSR1_DECAY_RATE | SPU_ADSR1_SUSTAIN_LEVEL);
     if (!(chFlags & AKAO_CH_SUSTAIN_RATE_SET)) {
-        chan->voiceAdsr2 &= 0x201F;
+        chan->voiceAdsr2 &= SPU_ADSR2_BIT13 | SPU_ADSR2_RELEASE_RATE;
         chan->voiceAdsr2 |= drum->sustainRate << 6;
     } else {
-        chan->voiceAdsr2 &= 0x3FDF;
+        chan->voiceAdsr2 &= SPU_ADSR2_BIT13 | SPU_ADSR2_SUSTAIN_RATE | SPU_ADSR2_RELEASE_RATE;
     }
     switch (drum->sustainMode) {
     case AKAO_ENV_LINEAR_DEC:
@@ -798,7 +798,7 @@ void akao_execChannel(AkaoChannel *chan, u32 chBit) {
         op = chan->flags;
         chan->voiceDirty |= AKAO_VD_VOL | AKAO_VD_PITCH;
         if (op & AKAO_CH_VIBRATO) {
-            vibDepth = (chan->vibratoDepthParam & 0x7F00) >> 8;
+            vibDepth = (chan->vibratoDepthParam & AKAO_VIB_DEPTH) >> 8;
             if (!(chan->vibratoDepthParam & AKAO_VIB_FULL_SCALE)) {
                 vibDepth = (vibDepth * ((u32)(vel * 15) >> 8)) >> 7;
             } else {
@@ -1227,7 +1227,7 @@ void akao_opB4(AkaoChannel *chan) {
     val = *chan->pc++;
     depthParam = chan->vibratoDepthParam;
     k = (u16)chan->pitch;
-    amount = (depthParam & 0x7F00) >> 8;
+    amount = (depthParam & AKAO_VIB_DEPTH) >> 8;
     if (!(depthParam & AKAO_VIB_FULL_SCALE)) {
         vibDepth = (amount * ((s32)(k * 15) >> 8)) >> 7;
     } else {
@@ -1249,7 +1249,7 @@ void akao_opB5(AkaoChannel *chan) {
     chan->vibratoDepthParam = *chan->pc++ << 8;
     k = chan->pitch;
     depthParam = chan->vibratoDepthParam;
-    amount = (depthParam & 0x7F00) >> 8;
+    amount = (depthParam & AKAO_VIB_DEPTH) >> 8;
     if (!(depthParam & AKAO_VIB_FULL_SCALE)) {
         vibDepth = amount * ((s32)(k * 15) >> 8);
     } else {
@@ -1459,13 +1459,13 @@ void akao_opAC(AkaoChannel *chan) {
     u32 clock = *chan->pc++;
 
     if (chan->isSe == 0) {
-        if (clock & 0xC0) {
-            g_akaoSeq->noiseClock = (g_akaoSeq->noiseClock + (clock & 0x3F)) & 0x3F;
+        if (clock & AKAO_NOISE_CLOCK_ADD) {
+            g_akaoSeq->noiseClock = (g_akaoSeq->noiseClock + (clock & AKAO_NOISE_CLOCK)) & AKAO_NOISE_CLOCK;
         } else {
             g_akaoSeq->noiseClock = clock;
         }
-    } else if (clock & 0xC0) {
-        g_akaoSeState.noiseClock = (g_akaoSeState.noiseClock + (clock & 0x3F)) & 0x3F;
+    } else if (clock & AKAO_NOISE_CLOCK_ADD) {
+        g_akaoSeState.noiseClock = (g_akaoSeState.noiseClock + (clock & AKAO_NOISE_CLOCK)) & AKAO_NOISE_CLOCK;
     } else {
         g_akaoSeState.noiseClock = clock;
     }
@@ -1794,7 +1794,7 @@ s32 akao_allocStreamVoices(void) {
         if (i != 0) {
             return i + 7;
         }
-        akao_stopSeChannels(0, 0x40000000);
+        akao_stopSeChannels(0, AKAO_SE_STOP_OLDEST);
     } while (busy != (g_akaoSeState.activeMask | g_akaoSeState.pausedMask));
     return -1;
 }

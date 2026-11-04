@@ -107,8 +107,17 @@ typedef struct {
     u16 extBase; /* glyph index of the first two-byte code */
     s16 glyphCount; /* entries in glyphs[] (0xB2 in the US font, tools/ff9text.py); msg_init copies it to g_msgFontGlyphCount, nothing reads it */
     u8 padA[2];
-    u32 glyphs[1]; /* glyph info, width in the top 4 bits */
+    u32 glyphs[1]; /* glyph info (GLYPH_*), advance width in the top 4 bits */
 } Font;
+/* Font.glyphs word: bits 0-15 texture u/v in the font page, 16-19 sprite width, 20-21 x offset, 22 CLUT row, 28-31
+ * advance width (+ 1 pixel spacing). Evidence: [code] text_drawChar, text_draw, text_buildGlyph, text_measure */
+#define GLYPH_UV 0xFFFF
+#define GLYPH_CLUT_ROW 0x400000 /* kept in the SPRT's clut half: the glyph uses the CLUT one row below the palette's */
+#define GLYPH_UVCLUT(g) ((g) & (GLYPH_UV | GLYPH_CLUT_ROW))
+#define GLYPH_W(g) (((g) >> 16) & 0xF)
+#define GLYPH_DX(g) (((g) >> 20) & 3)
+#define GLYPH_ADVANCE(g) ((g) >> 28)
+#define TEXT_GLYPH_H 13 /* glyph sprite height */
 
 /* Character.info: packed ids, also read as a whole word */
 typedef union {
@@ -1009,7 +1018,14 @@ extern s8 g_mbgState;
 extern s32 g_mbgFrame; /* movie frame counter (mbg_getStatus reports 3 once it is > 0) */
 extern s8 g_mbgPaused;
 extern s8 g_mbgRgb24;
-extern s8 g_mbgIsBackground; /* mbg_getStatus reports bit 8 when it is 1 */
+extern s8 g_mbgIsBackground; /* mbg_getStatus reports MBG_STATUS_BACKGROUND when it is 1 */
+/* mbg_getStatus result (FMV player state, ovl_64). Evidence: [code] mbg_getStatus; the movie loops of ovl_0a/14/15
+ * wait for MBG_STATUS_PLAYING */
+#define MBG_STATUS_OPEN 0x1 /* g_mbgState >= 1: a movie is opened (alone: still starting) */
+#define MBG_STATUS_PLAYING 0x2 /* g_mbgState >= 2 and g_mbgFrame > 0: frames are being shown */
+#define MBG_STATUS_RGB24 0x4 /* g_mbgRgb24: the movie decodes to 24-bit colour */
+#define MBG_STATUS_BACKGROUND 0x8 /* g_mbgIsBackground == 1: the movie is a field background */
+#define MBG_STATUS_PAUSED 0x10 /* g_mbgPaused */
 extern s32 g_menuOnClose;
 extern u8 g_menuFadeInOnClose;
 extern u8 g_menuFadeOutOnClose;
@@ -1019,7 +1035,16 @@ extern u8 g_partyChanged;
 extern struct MsgWindow *g_msgFocus;
 extern s32 g_cardGameResult;
 extern s32 D_8006798C;
-extern u16 g_padFlags;
+extern u16 g_padFlags; /* PAD_FLAG_*: a nibble per port (PAD_FLAG_PORT) and PAD_FLAG_STICK_DPAD */
+/* g_padFlags. Evidence: [code] pad_resetState, pad_update, pad_setFlags callers */
+#define PAD_FLAG_PORT(port, f) ((f) << ((port) * 4)) /* flag f of port 0/1 */
+#define PAD_FLAG_SETUP 0x1 /* the port still needs its controller setup: set at reset and while no pad is connected
+                            * (PadStateDiscon); cleared for a pad without the extended protocol (PadStateFindCTP1) and
+                            * once the actuators are set (PadStateStable) */
+#define PAD_FLAG_MODE_SET 0x2 /* the setup sent PadSetMainMode (analog mode); the next stable frame sets the actuators */
+#define PAD_FLAG_ACT_PENDING 0x4 /* a pad was found (PadStateFindPad): send the actuator setup again once stable */
+#define PAD_FLAG_STICK_DPAD 0x8000 /* an analog pad's left stick also sets PAD_UP/DOWN/LEFT/RIGHT (set at reset;
+                                    * ovl_0c w_frame and tu_8002BEEC switch it with pad_setFlags) */
 extern u8 D_8006825C;
 extern u8 D_8006826C;
 
@@ -1142,6 +1167,7 @@ typedef struct {
     s16 voiceVolL; /* volume left */
     s16 voiceVolR; /* volume right */
 } AkaoChannel; /* 0x134 */
+#define AKAO_VIB_DEPTH 0x7F00 /* AkaoChannel.vibratoDepthParam: the depth (op B5's byte), >> 8 */
 #define AKAO_VIB_FULL_SCALE 0x8000 /* AkaoChannel.vibratoDepthParam: the depth scales the full pitch instead of 15/256 of it (akao_opB5) */
 /* AkaoChannel.legato (runtime: op D0 only runs on SE channels) */
 #define AKAO_LEGATO      1 /* legato on (ops CC, DA); copied to AKAO_LEGATO_TIED after each note */
@@ -1496,6 +1522,17 @@ typedef struct EvtObject {
 /* EvtObject.wait special values (evt_runScripts) */
 #define EVT_WAIT_WINDOW 0xFE /* until its message window closes (msg_isOpen; ops 0x1F/0x54) */
 #define EVT_WAIT_CALL 0xFF /* until a function it called on another object returns (evt_callObjectFunc, evt_returnFromFunc) */
+/* Call frame: evt_callObjectFunc pushes two stack words, the return offset and this word. Evidence: [code]
+ * evt_callObjectFunc, evt_returnFromFunc */
+#define EVT_FRAME_WAIT 0x000000FF /* the callee's wait to restore (a caller's own frame: EVT_WAIT_CALL while it waits) */
+#define EVT_FRAME_LEVEL 0x0000FF00 /* the callee's level to restore */
+#define EVT_FRAME_CALLER_LEVEL 0x00FF0000 /* the caller's level if it waits for the return, else EVT_FRAME_NO_WAIT */
+#define EVT_FRAME_CALLER_LEVEL_OF(w) (((w) >> 16) & 0xFF)
+#define EVT_FRAME_NO_WAIT 0xFF /* EVT_FRAME_CALLER_LEVEL_OF: the caller doesn't wait, nothing to wake */
+#define EVT_FRAME_CALLER_UID 0xFF000000 /* the caller's uid */
+/* *(u32 *)&EvtObject.level reads level (byte 0) to uid (byte 3); these bits are both: evt_returnFromFunc restores
+ * the other objects' states when object 0 returns from a level-0 call */
+#define EVT_OBJ_LEVEL_UID 0xFF0000FF
 
 #define EVT_STATE_NEW 0 /* created this frame (evt_createObject); evt_runScripts makes it EVT_STATE_INIT without running it */
 #define EVT_STATE_RUNNING 1 /* running; when its call stack empties it idles (ip NULL) */
@@ -1612,9 +1649,15 @@ static inline EvtObject *evt_getObject_inline(s32 id) {
 
 
 typedef struct {
-    s32 type; /* 0 none, 1-2 passed to the focus window chain (2 adds bit 31), set by msg_readPad */
+    s32 type; /* MSG_PAD_*, 0 none; set by msg_readPad */
     s32 buttons;
 } Unk8007B988;
+/* Unk8007B988.type. Evidence: [code] msg_readPad, msg_update */
+#define MSG_PAD_PRESS 1 /* buttons newly pressed: passed to the focus window chain */
+#define MSG_PAD_REPEAT 2 /* d-pad auto-repeat: passed with MSG_INPUT_REPEAT */
+#define MSG_PAD_RELEASE 4 /* buttons released: not passed on */
+#define MSG_INPUT_REPEAT 0x80000000 /* MsgWindow.onInput's pad: the press is an auto-repeat */
+#define PAD_GAME_BITS 0x3FFFFFF /* the pad bits msg_getPad* report: all but BTN_START / BTN_SELECT */
 extern Unk8007B988 g_msgPadEvent;
 extern s32 g_msgPadCopySrc;
 extern s32 g_msgPadCopyDst;
@@ -3862,9 +3905,10 @@ typedef struct {
 
 typedef struct {
     u32 id;
-    u32 flag;
+    u32 flag; /* TIM_FLAG_* */
     TimBlock clut;
 } TimHeader;
+#define TIM_FLAG_CLUT 0x8 /* TimHeader.flag: a CLUT block comes first (TIM format) */
 
 extern u32 g_allocTop; /* bump allocator for the boot-time state block */
 void game_allocState(void);
@@ -4231,11 +4275,13 @@ typedef struct {
 #define EVT_OP_MOVE_XZ_NOTURN 0xA5 /* x, z: evt_moveObjectTo flags 1 */
 #define EVT_OP_BGI_ACTOR_ACTIVE 0xA8 /* u8: bgi_setActorActive */
 #define EVT_OP_OBJ_SCREEN_POS 0xA9 /* obj: evt_projectToScreen -> sysvars 12/13 (EVT_SYSVAR_SCREEN_X/Y) */
-#define EVT_OP_PAD_UNLOCK_MENU 0xAA /* g_padPortMask[0] &= ~0x40000 */
-#define EVT_OP_PAD_LOCK_MENU 0xAB /* |= 0x40000 */
+#define EVT_OP_PAD_UNLOCK_MENU 0xAA /* g_padPortMask[0] &= ~BTN_TRIANGLE */
+#define EVT_OP_PAD_LOCK_MENU 0xAB /* g_padPortMask[0] |= BTN_TRIANGLE: Triangle (the menu button) is masked off */
 #define EVT_OP_SET_POS_OBJ 0xAD /* obj, x, y, z */
 #define EVT_OP_SPRITE_CMD 0xB3 /* 5 args: fld_spriteCommand */
-#define EVT_OP_SET_RECRUITED 0xB4 /* u16 mask: chr_setRecruited per bit */
+#define EVT_OP_SET_RECRUITED 0xB4 /* u16 mask: chr_setRecruited per bit (bits 9-11 also count as 5-7, EVT_CHR_ALIAS_BITS) */
+/* the slot bits 5-7 of script character ids 9-11 (evt_execInstr_chr maps ids >= 9 to id - 4). Evidence: [code] */
+#define EVT_CHR_ALIAS_BITS(m) (((m) >> 4) & 0xE0)
 #define EVT_OP_GOTO_WORLD 0xB6 /* u16 world: evt_setNextLocation, returns 5 (runtime: field_ice_300 walking down: 0xB6(9000) -> mode 3, ovl_0c, wm_main(0x2328)) */
 #define EVT_OP_ANIM_OBJ 0xBD /* obj, anim */
 #define EVT_OP_WAIT_ANIM_OBJ 0xBE /* obj */
@@ -4288,6 +4334,8 @@ typedef struct {
 #define EVT_OP_SET_RUN_SPEED 0xA6 /* u8: EvtObject.runSpeed */
 #define EVT_OP_TURN_TO_ANGLE 0xA7 /* u8 angle >> 4: evt_turnObject at turnSpeed (the talk turn script runs it) */
 #define EVT_OP_DISC_CHANGE 0xAC /* u16 disc << 14 | location: fld_requestDiscChange */
+#define EVT_DISC_CHANGE_DISC(w) (((w) >> 14) & 3) /* EVT_OP_DISC_CHANGE operand: disc */
+#define EVT_DISC_CHANGE_LOCATION(w) ((w) & 0x3FFF) /* and location */
 #define EVT_OP_CARD_GAME 0xAE /* u16 opponent: evt_setCardOpponent; result 7 (Tetra Master) */
 #define EVT_OP_SET_LOCATION_NAME 0xB0 /* u16 text: copied to g_evtLocationNameBuf, GameData.locationName */
 #define EVT_OP_RESET_LOCATION_NAME 0xB1 /* GameData.locationName back to the event data one (g_evtLocationName) */
@@ -4375,6 +4423,11 @@ typedef struct {
 #define EVT_FUNC_RANGE 2  /* evt_checkPlayerAction: player inside the region / touching the actor (while control is enabled) */
 #define EVT_FUNC_TALK 3   /* evt_checkPlayerAction: Cross (or Square without an EVT_FUNC_SQUARE) on the actor / region */
 #define EVT_FUNC_SQUARE 8 /* evt_checkPlayerAction: Square, tried before EVT_FUNC_TALK */
+/* world map cell trigger (evt_callWorldCellTrigger, on object 0): cell z in bits 8-13, cell x in bits 2-7, trigger
+ * kind (ovl_0c WM_ATTR_TRIGGER) in bits 0-1. Evidence: [code] */
+#define EVT_FUNC_WORLD_CELL 0x8000
+#define EVT_FUNC_WORLD_CELL_KEY(x, z, kind) \
+    (EVT_FUNC_WORLD_CELL | (((z) << 8) & 0x3F00) | (((x) << 2) & 0xFC) | ((kind) & 3))
 /* expression bytes (evt_runExpr, jump table 0x8006E718; C equivalent in src_equiv/main/script_text.c); bytes >= 0x80 are
  * variable references */
 #define EVT_EXPR_PROP_REF 0x29     /* u8: property reference */
@@ -4385,6 +4438,11 @@ typedef struct {
 #define EVT_EXPR_OBJ_VAR_REF 0x78  /* u8 uid, u8 index: another object's variable */
 #define EVT_EXPR_SYSVAR_REF 0x79   /* u8: system variable reference */
 #define EVT_EXPR_SYSVAR 0x7A       /* u8: evt_getSysVar value */
+/* A variable reference on the expression stack keeps its space in bits 26-28 (the reference byte's bits 0-1, then the
+ * object-property spaces) and its width in bits 29-31 (func_80051F18, evt_popAssign in src_equiv/main/script_text.c).
+ * Evidence: [code] evt_popAssign, the evt_exprUnit* ops */
+#define EVT_VAR_SPACE(ref) (((ref) >> 26) & 7)
+#define EVT_SPACE_BATTLE 5 /* evt_getBattleVar / evt_setBattleVar (g_evtBattleVars: unit masks ...) */
 /* Expression ops evt_runExpr passes to evt_exprSpecial (its jump table 0x8006E718). The EVT_EXPR_UNIT_* ops work on
  * every battle unit in the mask below the operands (g_evtUnitObjects); ops not listed here give 0. The plain
  * versions are handled in evt_runExpr itself: ++/-- 0x04-0x07, = 0x2C, *= .. >>= 0x2F-0x35, &= ^= |= 0x3D-0x3F,
@@ -4993,7 +5051,12 @@ static inline s32 evt_exprSpecial_chr(s32 i) {
 
 /* evt_getSysVar (script system variables) */
 extern s32 g_evtTalkAngle;
-void *evt_findNearestObject(EvtObject *, s32, s32 *); /* nearest object of a kind */
+void *evt_findNearestObject(EvtObject *, s32, s32 *); /* nearest object of a kind (EVT_FIND_*) */
+/* evt_findNearestObject flags; 0 finds the nearest actor in collision range. Evidence: [code] evt_findNearestObject,
+ * evt_checkPlayerAction */
+#define EVT_FIND_RANGE 0x2 /* only objects with an EVT_FUNC_RANGE function, range widened by 60 + their speed */
+#define EVT_FIND_TALK 0x4 /* talk search: talk radii, objects in front with an EVT_FUNC_TALK function, skips EVT_OBJ_NO_TALK */
+#define EVT_FIND_SCRIPTED (EVT_FIND_RANGE | EVT_FIND_TALK) /* either: the object needs the matching function */
 extern s32 g_evtStepCount;
 s32 fldbg_getCamera(u8 *);
 s32 btlseq_isBusy(void);

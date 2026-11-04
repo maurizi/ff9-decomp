@@ -160,11 +160,11 @@ s32 pad_isAnalog(s32 i) {
 void pad_setStickAsDpad(u8 on) {
     if (on) {
         g_padSavedStickFlag = pad_getFlags() >> 15;
-        pad_setFlags(0x8000, 1);
+        pad_setFlags(PAD_FLAG_STICK_DPAD, 1);
         pad_getAnalogThresholds(&g_padSavedThresholds);
         pad_setAnalogThresholds(&g_padStickDpadThresholds);
     } else {
-        pad_setFlags(0x8000, g_padSavedStickFlag);
+        pad_setFlags(PAD_FLAG_STICK_DPAD, g_padSavedStickFlag);
         pad_setAnalogThresholds(&g_padSavedThresholds);
     }
 }

@@ -61,15 +61,15 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 ch, s32 mode) {
     }
     glyph = tbl[ch];
     setlen(g_primPtr, PRIM_LEN(SPRT));
-    w = (glyph >> 16) & 0xF;
+    w = GLYPH_W(glyph);
     sprt = (SprtWords *)g_primPtr;
     sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     sprt->xy = (x + ((10 - w) >> 1)) | (y << 16);
-    sprt->uvclut = (glyph & 0x40FFFF) | (g_textPalettes[mode] << 16);
-    sprt->wh = w | 0xD0000;
+    sprt->uvclut = GLYPH_UVCLUT(glyph) | (g_textPalettes[mode] << 16);
+    sprt->wh = w | (TEXT_GLYPH_H << 16);
     addPrim(&g_ot[otz], sprt);
     g_primPtr = (u8 *)(sprt + 1);
-    return glyph >> 28;
+    return GLYPH_ADVANCE(glyph);
 }
 
 void text_draw(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
@@ -91,15 +91,15 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
         }
         glyph = *(font->glyphs + ch);
         setlen(sprt, PRIM_LEN(SPRT));
-        k = (glyph >> 20) & 3;
+        k = GLYPH_DX(glyph);
         sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-        w = glyph >> 28;
+        w = GLYPH_ADVANCE(glyph);
         spacing = 1;
         gx = x + k;
         x = x + spacing + w;
         sprt->xy = (gx & 0xFFFF) | (y << 16);
-        sprt->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[pal] << 16);
-        sprt->wh = ((glyph >> 16) & 0xF) | 0xD0000;
+        sprt->uvclut = GLYPH_UVCLUT(glyph) + (g_textPalettes[pal] << 16);
+        sprt->wh = GLYPH_W(glyph) | (TEXT_GLYPH_H << 16);
         addPrim(ot, sprt);
         sprt++;
         str++;
@@ -919,14 +919,14 @@ TextSize text_measure(u8 *str) {
             code = (ch << 8) + str[1];
             ch = code - kanji->codeBase;
             str++;
-            w += 1 + (*(kanji->glyphs + ch) >> 28);
+            w += 1 + GLYPH_ADVANCE(*(kanji->glyphs + ch));
         } else if (ch < th) {
-            w += 1 + (*(font->glyphs + ch) >> 28);
+            w += 1 + GLYPH_ADVANCE(*(font->glyphs + ch));
         } else {
             code = (ch << 8) + str[1];
             ch = code - font->extCode + font->extBase;
             str++;
-            w += 1 + (*(font->glyphs + ch) >> 28);
+            w += 1 + GLYPH_ADVANCE(*(font->glyphs + ch));
         }
         str++;
     }
@@ -1010,17 +1010,17 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *str, s32 style, void *pkt) {
 
 u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 mode, s32 *out, SprtWords *sprt) {
     u32 rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
-    s32 dx = (glyph >> 20) & 3;
-    s32 h = (glyph >> 16) & 0xF;
-    s32 advance = glyph >> 28;
+    s32 dx = GLYPH_DX(glyph);
+    s32 h = GLYPH_W(glyph); /* the sprite width */
+    s32 advance = GLYPH_ADVANCE(glyph);
     if (mode != TEXT_PAL_PLAIN) {
         rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
     setlen(sprt, PRIM_LEN(SPRT));
     sprt->xy = ((x + dx) & 0xFFFF) | (y << 16);
     sprt->rgbc = rgbc;
-    sprt->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[mode] << 16);
-    sprt->wh = h | 0xD0000;
+    sprt->uvclut = GLYPH_UVCLUT(glyph) + (g_textPalettes[mode] << 16);
+    sprt->wh = h | (TEXT_GLYPH_H << 16);
     addPrim(ot, sprt);
     if (out != NULL) {
         *out = advance + 1;

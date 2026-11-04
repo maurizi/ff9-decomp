@@ -382,10 +382,23 @@ u32 SpuSetTransferStartAddr(u32 addr);
 void SpuSetReverb(int on_off);
 long GetRCnt(unsigned long spec);
 long SpuSetReverbModeType(long mode);
+#define SPU_REV_MODE_CLEAR_WA 0x100 /* libspu.h: SpuSetReverbModeType also clears the reverb work area */
 void SpuSetIRQAddr(u32 addr);
 int SpuSetIRQ(int on_off);
 void SpuGetVoiceEnvelope(int vNum, short *envx);
 int PadGetState(int port);
+/* libpad.h PadGetState results and PadInfoMode terms */
+#define PadStateDiscon 0
+#define PadStateFindPad 1
+#define PadStateFindCTP1 2
+#define PadStateFindCTP2 3
+#define PadStateReqInfo 4
+#define PadStateExecCmd 5
+#define PadStateStable 6
+#define InfoModeCurID 1
+#define InfoModeCurExID 2
+#define InfoModeCurExOffs 3
+#define InfoModeIdTable 4
 int PadInfoMode(int port, int term, int offs);
 int PadSetMainMode(int port, int offs, int lock);
 void PadSetAct(int port, unsigned char *data, int len);

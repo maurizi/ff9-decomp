@@ -156,7 +156,7 @@ void evt_returnFromFunc(EvtObject *obj) {
         slot = (u32 *)obj + obj->stackOfs + obj->sp;
         slot--;
         saved = slot[0];
-        if (!(*(u32 *)&obj->level & 0xFF0000FF)) {
+        if (!(*(u32 *)&obj->level & EVT_OBJ_LEVEL_UID)) {
             for (iter = g_evtState->objects; iter != NULL; iter = iter->next) {
                 other = iter->obj;
                 if (other->uid != 0) {
@@ -168,7 +168,7 @@ void evt_returnFromFunc(EvtObject *obj) {
         obj->wait = saved;
         obj->sp -= 2;
         obj->level = saved >> 8;
-        if (((saved >> 16) & 0xFF) != 0xFF) {
+        if (EVT_FRAME_CALLER_LEVEL_OF(saved) != EVT_FRAME_NO_WAIT) {
             for (node = g_evtState->objects; node != NULL; node = node->next) {
                 if (node->obj->uid == (u32)saved >> 24) {
                     break;
@@ -186,13 +186,13 @@ void evt_returnFromFunc(EvtObject *obj) {
                 base = (u32 *)caller + caller->stackOfs;
                 slot = base + (caller->sp - 1);
                 while (base < slot) {
-                    if (*(u8 *)slot == 0xFF) {
+                    if (*(u8 *)slot == EVT_WAIT_CALL) {
                         break;
                     }
                     slot -= 2;
                 }
                 if (base < slot) {
-                    *slot &= ~0xFF;
+                    *slot &= ~EVT_FRAME_WAIT;
                 }
             }
         }
@@ -224,7 +224,7 @@ s32 evt_callObjectFunc(EvtObject *obj, s32 lv, s32 key, s32 save) {
                 x = x | w;
                 x |= hi;
             } else {
-                x = hi | 0xFF0000;
+                x = hi | (EVT_FRAME_NO_WAIT << 16);
                 x = x | w;
             }
             slot[1] = x;
@@ -262,7 +262,7 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
 
     x = obj->pos.vx;
     y = obj->pos.vy;
-    back = flags & 4;
+    back = flags & EVT_FIND_TALK;
     z = obj->pos.vz;
     if (back) {
         radius = obj->talkRadius * 4;
@@ -296,7 +296,7 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
         if (other == obj || (selfSkip && otherSkip)) {
             continue;
         }
-        if ((flags & 6) && evt_callObjectFunc_find(other->scriptIdx, back ? EVT_FUNC_TALK : EVT_FUNC_RANGE) == NULL) {
+        if ((flags & EVT_FIND_SCRIPTED) && evt_callObjectFunc_find(other->scriptIdx, back ? EVT_FUNC_TALK : EVT_FUNC_RANGE) == NULL) {
             continue;
         }
         if (other->kind != EVT_KIND_ACTOR) {
@@ -329,7 +329,7 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
             rr = (rr * math_isqrt(((cosA * cosA) >> 4) * cand->collisionEllipse + 0x1000000)) >> 12;
         }
         rr += radius;
-        if (flags & 6) {
+        if (flags & EVT_FIND_SCRIPTED) {
             rr += 0x3C + cand->speed;
         }
         distSq = math_distSq2(dx, dz, rr);
@@ -1973,13 +1973,13 @@ s32 evt_execInstr(void) {
         return 1;
     case EVT_OP_DISC_CHANGE:
         operand0 = evt_getArg16_inline();
-        fld_requestDiscChange((operand0 >> 14) & 3, operand0 & 0x3FFF);
+        fld_requestDiscChange(EVT_DISC_CHANGE_DISC(operand0), EVT_DISC_CHANGE_LOCATION(operand0));
         return 1;
     case EVT_OP_PAD_UNLOCK_MENU:
-        g_padPortMask[0] &= ~0x40000;
+        g_padPortMask[0] &= ~BTN_TRIANGLE;
         return 0;
     case EVT_OP_PAD_LOCK_MENU:
-        g_padPortMask[0] |= 0x40000;
+        g_padPortMask[0] |= BTN_TRIANGLE;
         return 1;
     case EVT_OP_ADD_ITEM:
         operand0 = evt_getArg16_inline();
@@ -2015,7 +2015,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SET_RECRUITED:
         operand0 = evt_getArg16_inline();
-        operand0 |= (operand0 >> 4) & 0xE0;
+        operand0 |= EVT_CHR_ALIAS_BITS(operand0);
         for (i = 0; i < 9; i++) {
             chr_clearRecruited(i);
         }
@@ -2497,7 +2497,7 @@ s32 evt_callTurnScript(EvtObject *obj, s32 angle) {
             sp[0] = obj->ip - g_evtState->scriptBase;
             w = obj->wait | (obj->level << 8);
             hi = g_evtCurObj->uid << 24;
-            x = hi | 0xFF0000;
+            x = hi | (EVT_FRAME_NO_WAIT << 16);
             sp[1] = w | x;
             obj->ip = (u8 *)&obj->talkTurnScript;
             obj->level = 0;
@@ -2772,7 +2772,7 @@ void evt_checkPlayerAction(EvtObject *player) {
 
     pressed = msg_getPadPressed();
     btn = pressed & (g_evtMode == EVT_MODE_FIELD ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
-    if (btn && (target = evt_findNearestObject(player, 4, NULL)) != NULL) {
+    if (btn && (target = evt_findNearestObject(player, EVT_FIND_TALK, NULL)) != NULL) {
         g_evtTalkAngle = evt_angleToObject(player, target, player->pos.rotY);
         if ((u32)(g_evtTalkAngle + 0x3FF) < 0x7FF) {
             player->talkTarget = target->uid;
@@ -2785,7 +2785,7 @@ void evt_checkPlayerAction(EvtObject *player) {
         }
         target = NULL;
     } else {
-        target = evt_findNearestObject(player, 2, NULL);
+        target = evt_findNearestObject(player, EVT_FIND_RANGE, NULL);
     }
     if (target != NULL) {
         evt_callObjectFunc(target, 1, EVT_FUNC_RANGE, 0);
@@ -3125,7 +3125,7 @@ void evt_onAnimEnd(EvtObject *obj) {
         if (obj->moveFlags & EVT_MOVE_JUMPING) {
             obj->moveFlags &= ~EVT_MOVE_JUMPING;
             slot = (u32 *)game_getModel(obj->modelSlot);
-            *slot &= ~0x10;
+            *slot &= ~MODEL_SLOT_NO_SHADOW;
             obj->animStart = 0;
             obj->animEnd = 0xFF;
         }
@@ -3685,7 +3685,7 @@ s32 evt_getPartyChrIndex(s32 i) {
 }
 
 void evt_callWorldCellTrigger(s32 cellX, s32 cellZ, s32 kind) {
-    evt_callObjectFunc(evt_getObject_inline(0), 1, 0x8000 | ((cellZ << 8) & 0x3F00) | ((cellX << 2) & 0xFC) | (kind & 3), 0);
+    evt_callObjectFunc(evt_getObject_inline(0), 1, EVT_FUNC_WORLD_CELL_KEY(cellX, cellZ, kind), 0);
 }
 
 s32 evt_getWorldCamEyeObj(void) {
