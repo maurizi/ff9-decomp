@@ -1381,9 +1381,8 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
     __asm__ volatile("move $8, %0\n\tsw $29, 0($8)\n\taddiu $8, $8, -12\n\tmove $29, $8" : : "r"(addr) : "$8", "memory")
 #define ResetSpadStack12() __asm__ volatile("addiu $29, $29, 12\n\tlw $29, 0($29)" : : : "memory")
 
-/* field-only sound bank id (snd_ids.h keeps the ids several binaries share) */
-#define FLD_SOUND_BANK_NO_UPLOAD 0x84 /* DB_SOUND_BANK id whose load fld_soundCommand / fld_soundBankReadCallback read */
-                                     /* but never upload to the SPU (runtime: pending R41) */
+/* fld_soundCommand / fld_soundBankReadCallback read a load of SND_BANK_COMMON (snd_ids.h) but never upload it: it is
+ * always resident */
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);

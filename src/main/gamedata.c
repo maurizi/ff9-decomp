@@ -129,8 +129,8 @@ void game_resetData(void) {
 }
 
 s32 game_loadCommonAkao(void) {
-    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SOUND_BANK | 0x84, 0);
-    s32 size = (s32)db_lookupRegistered(DB_GET_SIZE, DB_SOUND_BANK | 0x84, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SOUND_BANK | SND_BANK_COMMON, 0);
+    s32 size = (s32)db_lookupRegistered(DB_GET_SIZE, DB_SOUND_BANK | SND_BANK_COMMON, 0);
 
     akao_beginBankUpload();
     akao_uploadBank(addr, size, 1);

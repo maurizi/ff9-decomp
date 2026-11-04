@@ -166,7 +166,8 @@ typedef struct {
 
 /* TmState.aiLevel (TmOpponent.aiLevel), tm_enemySelect [code]: levels 0-2 score the free squares only 29, 63 and
  * 93 percent of the time (else every free square scores 0 and the pick is random); TM_AI_EXPERT always scores them
- * and also weighs the odds of the battles a square starts. Names by that order. */
+ * and also weighs the odds of the battles a square starts. Names by that order; [runtime] R41b confirmed it from
+ * g_tmOpponents: the higher an opponent's deck, the higher its minimum level (0 = easiest, 3 = hardest). */
 enum { TM_AI_WEAK, TM_AI_FAIR, TM_AI_STRONG, TM_AI_EXPERT };
 
 /* TmCell.state */
@@ -237,13 +238,24 @@ typedef struct {
 #define TM_IMAGE_FILE     PSX_RAM(u8 *, 0x80104A00)
 #define TM_PRIM_BUF       TM_IMAGE_FILE
 #define TM_PRIM_BUF_SIZE  0x4B000
+/* DB_SOUND_BANK ids of the two banks in FILE_TM_DATA (tm_loadSoundBlocks uploads both). [runtime] R41b: keys 0x900E2 /
+ * 0x900FA looked up; afterwards GameData.musicBank[0] = 0xE2. */
+#define TM_MUSIC_BANK 0xE2 /* the Tetra Master song's instrument bank (96 instruments, SPU slot 0), GameData.musicBank[0] */
+#define TM_SE_BANK    0xFA /* the card game's sound effects (32 instruments, slot 160) */
 #define TM_FILE_CARDS     0 /* the 100 card picture TIMs, 0xA80 bytes each */
 #define TM_FILE_CARD_DATA 1 /* -> g_tmCardData */
 #define TM_FILE_DECKS     2 /* -> g_tmDecks */
 #define TM_FILE_OPPONENTS 3 /* -> g_tmOpponents */
 #define TM_FILE_BG        4 /* background, VRAM 0x280 (tm_drawBackground's first 256 columns) */
 #define TM_FILE_BOARD     5 /* board picture, VRAM 0x340 (tm_drawBoard) */
+#define TM_FILE_RESULT_TEXT  6 /* VRAM 0x280,0x100 (8 bpp 256x256): "WIN" / "LOSE" / "PERFECT" / "DRAW" banners, "Card
+                                * Select", "Discard", "Selection", combo digits and "COMBO" ([runtime] R41b) */
+#define TM_FILE_SCORE_DIGITS 7 /* VRAM 0x300,0x100 (8 bpp 256x128): the big blue / orange score numerals, card backs,
+                                * small arrows and a stat font ([runtime] R41b) */
+#define TM_FILE_COIN         8 /* VRAM 0x300,0x180 (8 bpp 256x128): the coin-toss coin frames, arrow pointers, "NEW Card",
+                                * "Last ONE!", L1 / R1 ([runtime] R41b) */
 #define TM_FILE_BATTLE    9 /* battle animation frames, VRAM 0x200,0x100 (tm_taskBattle) */
+#define TM_FILE_SELECT_PARTS 0xA /* VRAM 0x340,0x1E0 (4 bpp 256x32): card-type icons, digits, "Select!" ([runtime] R41b) */
 #define TM_FILE_BG_RIGHT  0xB /* background right of x 256, VRAM 0x300 */
 
 /* Tables tm_setup copies out of the image file, at fixed addresses. */

@@ -72,12 +72,21 @@ Runtime evidence (snd_playSe traced in Redux while pressing buttons): `docs/runt
 
 Ids used by a single screen keep their names in that overlay's header: ovl_65 rewards (`SE_EXP_COUNT`,
 `SE_LEVEL_UP`, ...), ovl_3c `SE_SHOP`, ovl_15 `BJ_SE_WIN`/`BJ_SE_LOSE` (0x6C/0x6B, the same samples as the rewards'
-`SE_ITEMS` and `SE_SET`). ovl_0d's `TM_SE_*` values are indices into `g_tmSeIds`, not ids.
+`SE_ITEMS` and `SE_SET`). ovl_0d's `TM_SE_*` values are indices into `g_tmSeIds`, not ids (except `TM_SE_BANK`,
+the card game's SE bank, next to `TM_MUSIC_BANK`).
 
 ## Music ids
 `MUSIC_VICTORY` 5 and `MUSIC_DEFEAT` 6 come from btl_playVictoryMusic's callers in btl_victory and the defeat exit
 phase. `MUSIC_TETRA_MASTER` 0x42 is what ovl_0d's tm_init starts. The title and ending songs are db ids (`TITLE_MUSIC`
 in ovl_14.h, `ENDING_MUSIC` in ovl_15.h).
+The world-map songs (`MUSIC_WORLD_MAP` 0x45, `MUSIC_CHOCOBO` 0x64, `MUSIC_AIRSHIP` 0x70, `MUSIC_WORLD_DISC4` 0x2D)
+are ovl_0c's `g_worldSongMusicIds` entries by `WM_SONG_*`, each heard playing in R41b (docs/runtime-findings.md);
+entries 4 and 5 (0x5F, 0x60, the "Field Song" slots) were not heard and stay numbers.
+
+## Sound banks
+`SND_BANK_COMMON` 0x84 is the resident system SE bank main's game_loadCommonAkao uploads at boot (the field skips
+it). Per-mode banks are in the overlay headers: ovl_0b `BTL_SOUND_SE_BANK` 0x201, ovl_0c `WM_SOUND_BANK*`, ovl_0d
+`TM_MUSIC_BANK` 0xE2 / `TM_SE_BANK` 0xFA.
 
 ## SPU
 SPU registers use psx-spx names. `SPU_VOICE_*` are the per-voice register offsets used with `SPU_VOICE_REG(v, r)`.

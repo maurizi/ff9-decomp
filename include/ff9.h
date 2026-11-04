@@ -1886,7 +1886,7 @@ typedef union {
 } EventVars;
 extern EventVars g_evtGlobalVars;
 /* story counter (g_evtGlobalVars.h[0]) where each disc's part of the story starts: menuSave_getDiscBit (ovl_39) stores
- * bit disc - 1 in SaveHeader.discs; the world map stops WM_BLOCKFX_SPINNER from STORY_DISC3 on. Evidence: [code] */
+ * bit disc - 1 in SaveHeader.discs; the world map stops WM_BLOCKFX_WINDMILL from STORY_DISC3 on. Evidence: [code] */
 #define STORY_DISC2 0xF3C
 #define STORY_DISC3 0x1B4E
 #define STORY_DISC4 0x2AF3
@@ -1919,7 +1919,8 @@ extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under it
 #define EVT_GB_WM_VEHICLE_POS 0x4A    /* parked vehicle position */
 #define EVT_GB_WM_CHOCOBO_POS 0x53    /* chocobo position (x24, y16, z24, dir) */
 #define EVT_GB_NAVI_MODE 0x64         /* navi map display mode (minimap / full map / off) */
-#define EVT_GB_WM_FILE 0x66           /* world file in use (0 and 8 are tested by ovl_0c) */
+#define EVT_GB_WM_FILE 0x66           /* world file in use: worldId - FIELD_ID_WORLD_FIRST, written by the world */
+                                      /* script ([runtime] R41b; ovl_0c WM_FILE_*) */
 #define EVT_GB_CHOCOGRAPH_FOUND 0xB8  /* u24: chocographs found */
 #define EVT_GB_CHOCOGRAPH_OWNED 0xBB  /* u24: chocographs owned */
 #define EVT_GB_CHOCOBO_LEVEL 0xBF     /* chocobo ability count (= world move mode when riding: WM_MOVE_CHOCOBO_*) */
@@ -4557,13 +4558,14 @@ typedef struct {
 #define EVT_FUNC_RANGE 2  /* evt_checkPlayerAction: player inside the region / touching the actor (while control is enabled) */
 #define EVT_FUNC_TALK 3   /* evt_checkPlayerAction: Cross (or Square without an EVT_FUNC_SQUARE) on the actor / region */
 #define EVT_FUNC_SQUARE 8 /* evt_checkPlayerAction: Square, tried before EVT_FUNC_TALK */
-#define EVT_FUNC_MENU 4 /* evt_onMenuOpen, on object 0 (level 1) */
+#define EVT_FUNC_MENU 4 /* evt_onMenuOpen, on object 0 (level 1); world map only (it calls only when g_evtMode is
+                         * EVT_MODE_WORLD). [runtime] R41b */
 #define EVT_FUNC_BTL_TURN 5 /* evt_updateObjects: an enemy's turn (battleTurnState 2, BTL_CMD_ENEMY_TURN), level 3 */
 #define EVT_FUNC_BTL_COUNTER 6 /* evt_battleTrigger BTL_CMD_ENEMY_COUNTER (level 1) */
 #define EVT_FUNC_BTL_REACT 7 /* evt_battleTrigger, any other command (BTL_CMD_ENEMY_REACT; level 2) */
 #define EVT_FUNC_BTL_DEATH 9 /* evt_battleTrigger BTL_CMD_ENEMY_DEATH (level 0) */
 #define EVT_FUNC_RESUME 10 /* evt_init, on object 0 after the saved script state is restored (the same field or world
-                            * again, or back from Tetra Master) */
+                            * again, or back from Tetra Master; [runtime] R41b: seen after a battle) */
 /* world map cell trigger (evt_callWorldCellTrigger, on object 0): cell z in bits 8-13, cell x in bits 2-7, trigger
  * kind (ovl_0c WM_ATTR_TRIGGER) in bits 0-1. Evidence: [code] */
 #define EVT_FUNC_WORLD_CELL 0x8000

@@ -102,7 +102,7 @@ s32 tm_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                     akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
                 g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
-                g_gameState->gameData->musicBank[0] = 0xE2;
+                g_gameState->gameData->musicBank[0] = TM_MUSIC_BANK;
                 g_gameState->gameData->musicId[0] = soundId;
                 g_gameState->gameData->musicVolume[0] = SND_VOL_MAX;
             }

@@ -449,7 +449,7 @@ state:
             }
         }
         gd = g_gameState->gameData;
-        if (!(gd->ctx.field->area->scene->flags & FLD_SCN_BANK_SLOT) && gd->soundLoadBank != FLD_SOUND_BANK_NO_UPLOAD) {
+        if (!(gd->ctx.field->area->scene->flags & FLD_SCN_BANK_SLOT) && gd->soundLoadBank != SND_BANK_COMMON) {
             akao_beginBankUpload();
         }
         g_gameState->gameData->soundLoadDest = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
@@ -971,7 +971,7 @@ s32 fld_soundBankReadCallback(CdReadCtx *ctx) {
         len = ctx->chunk;
     }
     len = (s32)ctx->dest + len - addr;
-    if ((id & 0xFFFF) != FLD_SOUND_BANK_NO_UPLOAD) {
+    if ((id & 0xFFFF) != SND_BANK_COMMON) {
         sc = gd->ctx.field->area->scene;
         if (sc->flags & FLD_SCN_BANK_SLOT) {
             ret = akao_loadBankInSlot(addr, sc->soundBankSlot, 0);

@@ -233,6 +233,16 @@
 #define MUSIC_VICTORY 5 /* btl_playVictoryMusic after BTL_END_VICTORY */
 #define MUSIC_DEFEAT 6 /* btl_playVictoryMusic in BTL_PHASE_EXIT_DEFEAT (game over) */
 #define MUSIC_TETRA_MASTER 0x42 /* ovl_0d tm_init plays it as the card game starts */
+/* world-map songs: ovl_0c g_worldSongMusicIds (data) by WM_SONG_*; [runtime] R41b heard each playing */
+#define MUSIC_WORLD_MAP 0x45   /* WM_SONG_NORMAL: walking (discs 1-3) */
+#define MUSIC_CHOCOBO 0x64     /* WM_SONG_CHOCOBO: riding; also the world map's resident song (wm_loadResidentMusic) */
+#define MUSIC_AIRSHIP 0x70     /* WM_SONG_AIRSHIP */
+#define MUSIC_WORLD_DISC4 0x2D /* WM_SONG_DISC4: the disc 4 world map */
+
+/* DB_SOUND_BANK ids shared by several binaries */
+#define SND_BANK_COMMON 0x84 /* the resident system SE bank (128 instruments, SPU slot 128): main game_loadCommonAkao
+                              * uploads it once; the field never re-uploads it. [runtime] R41b: menu cursor and
+                              * battle / spell SE key its instruments */
 
 /* SPU registers (psx-spx names) */
 #define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
