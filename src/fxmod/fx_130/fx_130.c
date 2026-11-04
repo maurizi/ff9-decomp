@@ -49,7 +49,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_130_units[i].timer18 = i * 6;
             fx_130_units[i].timer1C = 0x20;
             fx_130_units[i].timer20 = i * 6;
-            fx_130_units[i].model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_TARGET_MODEL), 1);
+            fx_130_units[i].model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PROPELLER_WIND_TORNADO), 1);
             setVector(&fx_130_units[i].pos30, fx_130_units[i].pos0.vx, fx_130_units[i].pos0.vy, fx_130_units[i].pos0.vz);
             setVector(&fx_130_units[i].rot28, 0, 0, 0);
             setVector(&fx_130_units[i].scale40, 0x1000, 0x1000, 0x1000);

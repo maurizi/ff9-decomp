@@ -457,10 +457,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkA4.vx = 0x1000;
         work->unkA4.vy = 0x1000;
         work->unkA4.vz = 0x1000;
-        work->model150[4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_MODEL_0), 1);
-        work->model150[5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_MODEL_1), 1);
-        work->model150[6] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SHELL_MODEL), 1);
-        work->model150[7] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SHELL_MODEL_2), 1);
+        work->model150[4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_BALL), 1);
+        work->model150[5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SPIKE_BURST), 1);
+        work->model150[6] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_SHELL), 1);
+        work->model150[7] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_VORTEX), 1);
         fx_0e2_stripBlend.unk10 = 0;
         fx_0e2_stripBlend.fade12 = 0x1000;
         fx_0e2_stripBlend.scale14 = 0x1000;
@@ -484,9 +484,9 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scaleD0.vx = 0x800;
         work->scaleD0.vy = 0x800;
         work->scaleD0.vz = 0x800;
-        work->model150[8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CLUSTER_MODEL_0), 1);
-        work->model150[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CLUSTER_MODEL_1), 1);
-        work->model150[10] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CLUSTER_MODEL_2), 1);
+        work->model150[8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_SHARD), 1);
+        work->model150[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_SPIKES), 1);
+        work->model150[10] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_SHARD_2), 1);
         work->rotE0.vx = 0;
         work->rotE0.vy = 0;
         work->rotE0.vz = 0;
@@ -568,7 +568,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit4);
             break;
         case 0xA3:
-            work->emit1C = trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_TRAIL_EMITTER), (s32)&fx_0e2_emitPos2);
+            work->emit1C = trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_TRAIL), (s32)&fx_0e2_emitPos2);
             if (trailEmitter != NULL) {
                 trailEmitter->trails = (s32)fx_0e2_op80Trails1;
                 work->emit1C->trailSlots = 0xC;
@@ -984,7 +984,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             setVector(&work->blockRot64[i], 0, 0, 0);
             setVector(&work->blockPos84[i], 0, 0, 0);
             setVector(&work->blockScaleC4[i], 0x1000, 0x1000, 0x1000);
-            work->model124[i + 8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_BLOCK_MODEL), 1);
+            work->model124[i + 8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_SPIKE), 1);
         }
         return 0;
     } else {
@@ -1137,8 +1137,8 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         setVector(&work->rot14, 0, 0, 0);
         setVector(&work->pos1C, 0, 0, 0x4B0);
         setVector(&work->scale2C, 0x1CCC, 0x1000, 0x1CCC);
-        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_EFFECT_MODEL), mode);
-        work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_EFFECT_MODEL_2), mode);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_RING), mode);
+        work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_RING_2), mode);
         work->fadeTimer58 = -1;
         work->fadeTimer5C = -1;
         work->fadeTimer60 = mode;

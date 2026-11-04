@@ -10,7 +10,7 @@
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SACRIFICE_RED_PETALS  0x1 /* emitter: spiral of red petals + red glitter */
 #define FX_SACRIFICE_LIGHT_FLASH 0x2 /* emitter: lilac / blue-white rings + white light streaks */
-#define FX_SACRIFICE_FAN_EMITTER 0x5 /* emitter: fans + faint sprites with cyan-white rings (look pending) */
+#define FX_SACRIFICE_WHITE_FLARE 0x5 /* emitter: two fans of white light flare streaks, faint sprites with cyan-white rings */
 #define FX_SACRIFICE_LENS_FLARES 0x9 /* sprite line: lens-flare circles and rings */
 
 typedef struct {

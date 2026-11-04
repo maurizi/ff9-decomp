@@ -10,12 +10,12 @@
 #define FX_DRAGON_BREATH_ROT_POS_PATH  0x2 /* table: rotation + position path (fxm_rotPosPathInit) */
 #define FX_DRAGON_BREATH_VALUE_PATH    0x3 /* table: value path (fxm_valuePathInit) */
 #define FX_DRAGON_BREATH_VIOLET_RINGS  0x8 /* emitter: violet and blue-white gouraud rings */
-#define FX_DRAGON_BREATH_MODEL         0xB /* 'so' model (btlfx_registerEffectModel), probably a dragon (look pending) */
-#define FX_DRAGON_BREATH_FAN_EMITTER   0x15 /* emitter: one fan element spiralling (not rendered) (look pending) */
+#define FX_DRAGON_BREATH_DRAGON        0xB /* 'so' model: teal-green dragon */
+#define FX_DRAGON_BREATH_COLOR_LINES   0x15 /* emitter: spiralling fan of thin green and violet light lines */
 #define FX_DRAGON_BREATH_GOLD_SPARKLES 0x16 /* emitter: gold and white sparkles + teal specks */
 #define FX_DRAGON_BREATH_BUBBLES       0x17 /* emitter: gold sparkles + teal bubbles */
 #define FX_DRAGON_BREATH_BUBBLES_2     0x18 /* emitter: gold sparkles + green bubbles spiralling */
-#define FX_DRAGON_BREATH_MODEL_2       0x1F /* 'so' model (btlfx_registerEffectModel), probably the second dragon (look pending) */
+#define FX_DRAGON_BREATH_DRAGON_2      0x1F /* 'so' model: the second teal-green dragon */
 #define FX_DRAGON_BREATH_GREEN_TRAIL   0x20 /* emitter: 3D helix trail, green streak strip */
 #define FX_DRAGON_BREATH_ORB           0x21 /* emitter: green-and-orange swirled orb + gold sparkles and specks */
 #define FX_DRAGON_BREATH_GREEN_TRAIL_2 0x22 /* emitter: screen helix trail, green streak strip */

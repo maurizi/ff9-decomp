@@ -11,7 +11,7 @@
 #define FX_MIRROR_WHITE_RINGS   0x1 /* emitter: white rings + green glow */
 #define FX_MIRROR_WHITE_RINGS_2 0x2 /* emitter: white rings + green glow */
 #define FX_MIRROR_GREEN_SWIRL   0x3 /* emitter: white rings + green swirl particle */
-#define FX_MIRROR_FAN_EMITTER   0x5 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_MIRROR_LIGHT_SPIKES  0x5 /* emitter: two fans, white-violet light spikes */
 
 typedef struct {
     SVECTOR pos0;

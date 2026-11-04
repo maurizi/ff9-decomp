@@ -8,7 +8,7 @@
 
 /* fx_0f0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ZOMBIE_POWDER_ANIM_EMITTER 0x1 /* emitter: animated quads, render all black (look pending) */
+#define FX_ZOMBIE_POWDER_ANIM_EMITTER 0x1 /* emitter: animated quads; the render is still all black (texture not in the file) (look pending) */
 #define FX_ZOMBIE_POWDER_SPORE_TRAIL  0x2 /* emitter: homing green spores, yellow puffs, sparkles */
 #define FX_ZOMBIE_POWDER_YELLOW_PUFFS 0x3 /* emitter: yellow powder puffs */
 #define FX_ZOMBIE_POWDER_YELLOW_CLOUD 0x4 /* emitter: yellow powder cloud */

@@ -81,7 +81,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x14:
             work->timers0[4] = 8;
             work->timers0[6] = 1;
-            work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_FAN_EMITTER), (s32)&work->pos44);
+            work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_BLUE_SPIKES), (s32)&work->pos44);
             break;
         case 0x20:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_GLYPH_TEXT), (s32)&work->pos30);

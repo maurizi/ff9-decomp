@@ -431,16 +431,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->state0 = 0;
         work->frame4 = 0;
         fx_0e3_1_env = env;
-        work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_DISC_MODEL), 1);
-        work->modelC8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BURST_MODEL), 1);
-        work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_COLUMN_MODEL), 1);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FADE_MODEL), 0);
-        work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ORB_MODEL), 0);
+        work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_ARC_2), 1);
+        work->modelC8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_DOME), 1);
+        work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_RING), 1);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CLOUD_SPHERE), 0);
+        work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SLIVER), 0);
         work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_MODEL), 1);
-        work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_MODEL_2), 0);
-        work->modelD8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_MODEL_3), 0);
-        work->modelDC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLARE_PILLAR_MODEL), 1);
-        work->modelE0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ORB_SHELL_MODEL), 0);
+        work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLAME_STRIP), 0);
+        work->modelD8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_RED_STRIP), 0);
+        work->modelDC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_RING), 1);
+        work->modelE0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_GREY_CONE), 0);
         BTLFX_COPY_SVEC(&work->center8, &fx_0e3_1_origin);
         work->rot28.vy = 0x800;
         work->rot28.vx = 0;
@@ -556,7 +556,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, sparkRing, 0, 1, sparkRing);
             }
             if (frame == 0x26) {
-                Pool6CEntry *sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FAN_EMITTER_2), (s32)&work->pos30);
+                Pool6CEntry *sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_GLOW), (s32)&work->pos30);
                 if (sparkEmitter != NULL) {
                     sparkEmitter->otZ = 0x80;
                 }
@@ -826,7 +826,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0) {
                 work->emit70 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SPARKS), (s32)&work->pos30);
                 work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SPARKS_2), (s32)&work->pos30);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FAN_EMITTER), (s32)&work->pos30);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ORANGE_STREAKS), (s32)&work->pos30);
             }
             col.r = col.g = col.b = 0x37;
             gridScale.vx = 0x1400;
@@ -880,7 +880,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (emitter != NULL) {
                     emitter->otZ = 0x300;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FAN_EMITTER_3), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_GLOW_2), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x400;
                 }

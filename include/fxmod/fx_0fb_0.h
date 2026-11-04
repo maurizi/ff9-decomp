@@ -9,11 +9,11 @@
 
 /* fx_0fb_0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_MADEEN_SPECKS          0x1 /* emitter: tiny sprite specks (texture not in the file) (look pending) */
+#define FX_MADEEN_SPECKS          0x1 /* emitter: white dot specks */
 #define FX_MADEEN_ROCK_DUST       0x2 /* emitter: tan dust puff + teal-green rock debris */
-#define FX_MADEEN_SCROLL_SPRITE   0x3 /* sprite: wide speckled strip drawn scrolling across the screen (byte-identical to fx_0fb_1 entry 0x1) (look pending) */
+#define FX_MADEEN_CLOUD_STRIP     0x3 /* sprite: wide grey-white cloud strip drawn scrolling across the screen (byte-identical to fx_0fb_1 entry 0x1) */
 #define FX_MADEEN_BLUE_SPECKS     0x4 /* emitter: small blue sparkle specks */
-#define FX_MADEEN_FAN_EMITTER     0x5 /* emitter: one fan element (not rendered) (look pending) */
+#define FX_MADEEN_GOLD_LIGHT_BAND 0x5 /* emitter: fan, a horizontal gold light band */
 #define FX_MADEEN_ROCKS           0x6 /* emitter: teal-green rock debris, four elements */
 #define FX_MADEEN_BLUE_RING       0x8 /* emitter: white-blue gouraud ring */
 #define FX_MADEEN_VIOLET_TRAIL    0x9 /* trail: violet speckled strip */
@@ -25,11 +25,11 @@
 #define FX_MADEEN_BLUE_RING_2     0xF /* emitter: white-blue gouraud ring */
 #define FX_MADEEN_BLUE_GLOW       0x10 /* particles: blue glowing dot (byte-identical to fx_0fb_1 entry 0xa) */
 #define FX_MADEEN_WHITE_RINGS     0x14 /* rings: white-blue gouraud rings, five rings */
-#define FX_MADEEN_FAN_EMITTER_2   0x15 /* emitter: fan elements (not rendered) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_2  0x82 /* summon data entry 2: textured model (Hi_RegisterTexEffModel 0x96, 0x3D40) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_4  0x84 /* summon data entry 4: textured model (Hi_RegisterTexEffModel 0x7C, 0x3D02) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_7  0x87 /* summon data entry 7: textured model (Hi_RegisterTexEffModel 0x9A, 0x3E00) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_20 0x94 /* summon data entry 20: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) (look pending) */
+#define FX_MADEEN_LIGHT_STREAKS   0x15 /* emitter: two fans, thin orange and violet light streaks */
+#define FX_MADEEN_PINK_CLOUD_BALL 0x82 /* summon data entry 2: textured model, ball with a dark pink cloud texture */
+#define FX_MADEEN_CLOUD_RING      0x84 /* summon data entry 4: textured model, ring band with a white cloud texture */
+#define FX_MADEEN_LEAF_MOUND      0x87 /* summon data entry 7: textured model, low mound with a green foliage texture */
+#define FX_MADEEN_RAINBOW_ARC     0x94 /* summon data entry 20: textured model, thin curved ribbon with a red-green-blue stripe (rainbow) texture */
 
 typedef struct {
     s32 state0; /* state */

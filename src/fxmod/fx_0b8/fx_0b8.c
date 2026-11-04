@@ -105,8 +105,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos1DC.vx = 0;
         work->pos1DC.vy = -0x2500;
         work->pos1DC.vz = -0xA00;
-        work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_4), 0xFF);
-        work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_7), 0xFF);
+        work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_PINE_TREES), 0xFF);
+        work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_PINE_TREES_2), 0xFF);
     } else {
         frame = entry->frame;
         env->camera->points[3].vx = work->pos13C.vx;
@@ -114,7 +114,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[3].vz = work->pos13C.vz;
         switch (frame) {
         case 0:
-            work->model28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_10), 1);
+            work->model28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_RUBBLE_BAND), 1);
             work->pos44.vy = -0x900;
             work->pos44.vx = 0;
             work->pos44.vz = 0x1000;
@@ -124,8 +124,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot2C.vx = 0;
             work->rot2C.vy = 0;
             work->rot2C.vz = 0;
-            work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_9), 0xB6, 0x3D40, 0, 0);
-            work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_9), 0xB6, 0x3D40, 0, 0);
+            work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_DISC), 0xB6, 0x3D40, 0, 0);
+            work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_DISC), 0xB6, 0x3D40, 0, 0);
             work->rot5C.vx = -0x400;
             work->rot5C.vy = 0x500;
             work->rot64.vy = 0x300;
@@ -141,7 +141,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale8C.vx = 0xF00;
             work->scale8C.vy = 0xF00;
             work->scale8C.vz = 0xF00;
-            work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_3), 0xFF);
+            work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_GROUND_CHUNK), 0xFF);
             work->rotBC.vy = 0x800;
             work->rotBC.vx = 0;
             work->rotBC.vz = 0;
@@ -158,10 +158,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scaleD8.vy = 0x1000;
             work->scaleD8.vz = 0x1000;
             work->model128 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPHERE), 0x17C, -1, 0x10, 0x80);
-            work->model12C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_14), 0x17C, -1, 0x10, 0x80);
-            work->model130 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_12), 0x17C, -1, 0x10, 0x80);
-            work->model134 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_13), 0x17C, -1, 0x10, 0x80);
-            work->model138 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_11), 0x17C, -1, 0x10, 0x80);
+            work->model12C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_4), 0x17C, -1, 0x10, 0x80);
+            work->model130 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_2), 0x17C, -1, 0x10, 0x80);
+            work->model134 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_3), 0x17C, -1, 0x10, 0x80);
+            work->model138 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP), 0x17C, -1, 0x10, 0x80);
             work->scale14C.vx = 0;
             work->scale14C.vy = 0;
             work->scale14C.vz = 0;
@@ -174,11 +174,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos164.vx = 0;
             work->pos164.vy = -0x2500;
             work->pos164.vz = -0x1000;
-            work->modelE8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_8), 0xFF);
-            work->modelEC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_0), 1);
-            work->modelF0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_6), 1);
-            work->modelF4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_1), 1);
-            work->modelF8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_2), 1);
+            work->modelE8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_LAVA_CRATER), 0xFF);
+            work->modelEC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_GREY_RING), 1);
+            work->modelF0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_GOLD_RING), 1);
+            work->modelF4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CRATER_MOUND), 1);
+            work->modelF8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_PILLAR), 1);
             work->scale124 = 0x800;
             work->scale10C.vx = 0;
             work->scale10C.vy = 0;
@@ -219,7 +219,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot5C.vx = 0x400;
             work->rot5C.vy = 0;
             work->rot5C.vz = 0;
-            work->model180 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SUMMON_MODEL_5), 0x3A, 0x3D01, 0, 0);
+            work->model180 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_PURPLE_DOME), 0x3A, 0x3D01, 0, 0);
             work->model170 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_RING_FUNNEL));
             work->model16C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_FUNNEL), 0x3A, 0x3D01, 0, 0);
             work->model17C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_RING), 0xBB, 0x3DC0, 0, 0);
@@ -317,7 +317,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[0xD] = 8;
             break;
         case 0xAE:
-            work->emit184 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_FAN_EMITTER), (s32)&work->pos188);
+            work->emit184 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_STREAKS), (s32)&work->pos188);
             work->emit190 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_VIOLET_RING), (s32)&work->pos194);
             if (work->emit184 != NULL) {
                 work->emit184->otZ = 0x80;

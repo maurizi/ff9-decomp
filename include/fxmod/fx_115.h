@@ -8,7 +8,7 @@
 /* fx_115 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_THROW_PINWHEEL_IMPACT 0x4 /* emitter: white-lilac gouraud ring + sprites (render black) at the hit */
-#define FX_THROW_PINWHEEL        0x5 /* 'so' model: the thrown pinwheel / rising sun, registered twice (look pending) */
+#define FX_THROW_PINWHEEL        0x5 /* 'so' model: the thrown pinwheel / rising sun (a ring blade), registered twice */
 
 typedef struct {
     SVECTOR pos0; /* caster */

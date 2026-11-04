@@ -39,8 +39,8 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->posC.vx = work->pos48.vx;
         work->posC.vy = work->pos48.vy;
         work->posC.vz = work->pos48.vz;
-        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_VIRUS_FLY_MODEL), 1);
-        work->model5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_VIRUS_FLY_MODEL_2), 1);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_VIRUS_FLY), 1);
+        work->model5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_VIRUS_FLY_2), 1);
         work->dir30 = ex->btlfx_rand() % 2;
         work->dir34 = ex->btlfx_rand() % 2;
         work->radius38 = ex->btlfx_rand() % 400 + 200;

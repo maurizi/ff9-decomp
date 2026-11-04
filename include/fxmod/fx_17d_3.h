@@ -11,7 +11,11 @@
 #define FX_ARK_SMOKE_TRAIL_2 0x4 /* emitter: spiralling screen trail with a blue-grey smoke texture, orange embers */
 #define FX_ARK_SMOKE_TRAIL_3 0x6 /* emitter: spiralling screen trail with a blue-grey smoke texture, orange embers */
 #define FX_ARK_DUST_CLOUD    0x9 /* emitter: grey dust clouds and grey sparks */
-#define FX_ARK_FAN_EMITTER   0xE /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_ARK_SMOKE_CLOUDS  0xE /* emitter: two fans of grey-purple smoke clouds fading out */
+#define FX_ARK_WING_PLATE 0x80 /* summon data: 'so' model, V-shaped plate with a grey metal texture */
+#define FX_ARK_GREY_CYLINDER 0x81 /* summon data: 'so' model, cylinder with a grey patterned texture */
+#define FX_ARK_WING_PLATE_2 0x82 /* summon data: 'so' model, flat plate with a grey metal texture and a dark centre bar */
+#define FX_ARK_TEAL_CYLINDER 0x83 /* summon data: 'so' model, cylinder with a dark teal patterned texture */
 
 typedef struct {
     u8 pad0[0x54];

@@ -11,8 +11,8 @@
 #define FX_GRAND_LETHAL_BACKDROP     0x1 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_GRAND_LETHAL_BACKDROP_2   0x2 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_GRAND_LETHAL_PINK_FLARES  0x3 /* emitter: pink lens-flare glows and streaks */
-#define FX_GRAND_LETHAL_SPRITE_RINGS 0xD /* emitter: sprite (texture not in the file) + white-blue gouraud rings (look pending) */
-#define FX_GRAND_LETHAL_SWIRL_RINGS  0xE /* emitter: textured rings (texture not resolved) + white swirl sprite (look pending) */
+#define FX_GRAND_LETHAL_SPRITE_RINGS 0xD /* emitter: white / cyan / blue / grey gouraud rings with a sprite that renders as a flat violet square (texture not in the file) (look pending) */
+#define FX_GRAND_LETHAL_SWIRL_RINGS  0xE /* emitter: white swirl sprite with textured rings; the rings still read garbled multicolour texels (texture not resolved) (look pending) */
 
 typedef struct {
     Pool6CEntry *emit0;

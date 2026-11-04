@@ -27,7 +27,7 @@ s32 fx_0ee_op80(s32 mode, Fx0eeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 8:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIRROR_FAN_EMITTER), (s32)&work->pos0);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIRROR_LIGHT_SPIKES), (s32)&work->pos0);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }

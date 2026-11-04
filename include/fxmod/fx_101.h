@@ -9,13 +9,13 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_TRANCE_BLUE_RING      0x1 /* rings: navy-white gouraud rings */
 #define FX_TRANCE_AURA_CYLINDER  0x3 /* model: open cylinder, blue-green cloud texture */
-#define FX_TRANCE_FAN_EMITTER    0x5 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_TRANCE_THIN_STREAKS   0x5 /* emitter: two fans, thin orange and blue streaks */
 #define FX_TRANCE_VIOLET_TRAIL   0x8 /* trail: violet sparkle strip, 12 frames */
 #define FX_TRANCE_LILAC_RINGS    0x9 /* rings: white / lilac / blue gouraud rings */
 #define FX_TRANCE_WHITE_RINGS    0xA /* rings: white-blue gouraud rings */
 #define FX_TRANCE_SPARKLE_SPIRAL 0xC /* emitter: small blue-gold sparkles rising in a spiral (first element renders black) */
-#define FX_TRANCE_FAN_EMITTER_2  0xF /* emitter: two orbiting fan elements (not rendered) (look pending) */
-#define FX_TRANCE_FAN_EMITTER_3  0x10 /* emitter: two orbiting fan elements (not rendered) (look pending) */
+#define FX_TRANCE_PINK_STREAKS   0xF /* emitter: two orbiting fans, white-pink light streaks */
+#define FX_TRANCE_VIOLET_STREAKS 0x10 /* emitter: two orbiting fans, violet-blue light streaks */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

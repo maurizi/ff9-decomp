@@ -54,8 +54,8 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0xA:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS), (s32)&fx_127_emitPos0);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_FAN_EMITTER), (s32)&fx_127_emitPos0);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_FAN_EMITTER_2), (s32)&fx_127_emitPos0);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WATER_STREAK), (s32)&fx_127_emitPos0);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WATER_STREAK_2), (s32)&fx_127_emitPos0);
             work->pos4C.vx = work->pos44.vx;
             work->pos4C.vy = work->pos44.vy;
             work->pos4C.vz = work->pos44.vz;

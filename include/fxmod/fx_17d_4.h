@@ -10,6 +10,9 @@
 #define FX_ARK_RED_RING       0x3 /* rings: white-pink-red gouraud rings */
 #define FX_ARK_RED_FLASH_RING 0x5 /* rings: red-white flat flash ring */
 #define FX_ARK_MAGENTA_RING   0x17 /* emitter: grey noise rings and white-magenta-purple gouraud rings */
+#define FX_ARK_STREAK_BOWL 0x84 /* summon data: 'so' model, bowl ring with a grey streak texture */
+#define FX_ARK_SWIRL_DOME 0x86 /* summon data: 'so' model, dome with a grey swirl texture */
+#define FX_ARK_STRAND_TABLE 0x8A /* summon data: table read by fx_17d_4_drawStrands */
 
 extern Unk800F78A4 *fx_17d_4_env;
 extern s16 fx_17d_4_particleFileIds[16];

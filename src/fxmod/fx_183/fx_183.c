@@ -9,7 +9,7 @@ s32 fx_183_op80(s32 mode, Fx183Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_183_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_FAN_EMITTER), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_COLOR_LINES), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_SPARKLES), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
@@ -68,7 +68,7 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale38.vx = 0x1000;
         work->scale38.vy = 0x1000;
         work->scale38.vz = 0x1000;
-        work->model48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_SO_MODEL), 1);
+        work->model48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_SPEAR), 1);
     } else {
         frame = entry->frame;
         if (frame == 4) {

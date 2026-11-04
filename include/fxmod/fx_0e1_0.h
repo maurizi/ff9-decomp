@@ -10,20 +10,20 @@
 /* fx_0e1_0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_REBIRTH_FLAME_BLUE_ORBS   0x1 /* emitter: clusters of blue-white glowing orbs */
-#define FX_REBIRTH_FLAME_SO_MODEL    0x3 /* 'so' model drawn at the end (Hi_DrawEffModel, not rendered) (look pending) */
+#define FX_REBIRTH_FLAME_SWIRL_SPHERE 0x3 /* 'so' model drawn at the end (Hi_DrawEffModel): sphere with a purple-red-blue swirl texture */
 #define FX_REBIRTH_FLAME_STAR_FLARES 0x4 /* emitter: pink-white lens arcs + orange star flares */
 #define FX_REBIRTH_FLAME_RED_RINGS   0x5 /* rings: white-grey-violet-red gouraud rings, 24 frames */
 #define FX_REBIRTH_FLAME_RED_RINGS_2 0x6 /* emitter: white-grey-violet-red gouraud rings */
 #define FX_REBIRTH_FLAME_MIST_TRAIL  0x7 /* emitter: orbiting trail with a white cloudy strip texture */
 #define FX_REBIRTH_FLAME_BLUE_RING   0x8 /* emitter: blue gouraud rings */
 #define FX_REBIRTH_FLAME_BLUE_BURST  0x9 /* emitter: deep blue rings, sub-emitter of white-blue-indigo rings */
-#define FX_REBIRTH_FLAME_FAN_EMITTER 0xA /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_REBIRTH_FLAME_WHITE_STREAK 0xA /* emitter: two fans, a long white-grey light streak */
 #define FX_REBIRTH_FLAME_RED_SPARKS  0xC /* emitter: four elements of tiny red spark sprites */
 #define FX_REBIRTH_FLAME_BLUE_ORBS_2 0xD /* emitter: faint blue orbs */
-#define FX_REBIRTH_FLAME_MORPH_2     0x80 /* summon data: 'so' model, morph end, then drawn fading (look pending) */
-#define FX_REBIRTH_FLAME_MORPH_1     0x81 /* summon data: 'so' model, morph middle (look pending) */
-#define FX_REBIRTH_FLAME_MORPH_0     0x82 /* summon data: 'so' model, morph start (look pending) */
-#define FX_REBIRTH_FLAME_GLOW_MODEL  0x83 /* summon data: 'so' model drawn three times with a fading glow (look pending) */
+#define FX_REBIRTH_FLAME_MORPH_2     0x80 /* summon data: 'so' model, morph end, then drawn fading; the render's UVs land on a mixed sprite sheet, so the look is not readable (look pending) */
+#define FX_REBIRTH_FLAME_MORPH_1     0x81 /* summon data: 'so' model, morph middle; the render's UVs land on a mixed sprite sheet, so the look is not readable (look pending) */
+#define FX_REBIRTH_FLAME_MORPH_0     0x82 /* summon data: 'so' model, morph start; the render's UVs land on a mixed sprite sheet, so the look is not readable (look pending) */
+#define FX_REBIRTH_FLAME_GLOW_BAND   0x83 /* summon data: 'so' model, ring band with a white cloud texture, drawn three times with a fading glow */
 
 /* the effect environment block as these callbacks read it */
 typedef struct {

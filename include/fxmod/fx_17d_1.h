@@ -8,6 +8,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ARK_FIRE_RING       0x5 /* rings: white-yellow-red gouraud rings */
 #define FX_ARK_ORANGE_SPARKLES 0x8 /* emitter: orange square sparkles */
+#define FX_ARK_SPARKLE_TRAIL 0x9D /* summon data: emitter, spiralling screen trail with orange square sparkles */
+#define FX_ARK_STREAK_SHELL 0x9E /* summon data: 'so' model, barrel-shaped shell with a grey streak texture */
+#define FX_ARK_ORANGE_SPARKLES_2 0x9F /* summon data: emitter, orange square sparkles */
 
 extern Unk800F78A4 *fx_17d_1_env;
 

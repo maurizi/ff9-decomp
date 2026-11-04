@@ -277,7 +277,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0xC) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_GLOW), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -306,7 +306,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos34.vz = fx_17a_centerPos.vz;
                 BTLFX_COPY_SVEC(&work->posC, &fx_17a_centerPos);
                 BTLFX_COPY_SVEC(&work->pos14, &fx_17a_centerPos);
-                emitter = work->emitB0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER), (s32)&work->pos14);
+                emitter = work->emitB0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_GLOW), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -517,7 +517,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x2B) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_GLOW), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

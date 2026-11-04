@@ -9,18 +9,18 @@
 #define FX_DOOM_GOLD_FRAME       0x1 /* model: ornate gold frame, rises sliced */
 #define FX_DOOM_GOLD_PANEL       0x3 /* model: carved gold panel, rises sliced */
 #define FX_DOOM_REAPER_PICTURE   0x4 /* model: panel with the picture of Death */
-#define FX_DOOM_PARTICLES        0x6 /* particles (texture not in the file) (look pending) */
+#define FX_DOOM_PARTICLES        0x6 /* particles; the render still reads garbled blue texels (texture not in the file) (look pending) */
 #define FX_DOOM_GOLD_LATTICE     0x7 /* model: capsule with a gold lattice texture */
 #define FX_DOOM_PINK_RINGS       0x8 /* emitter: pink-white rings (+ particles, texture not in the file) */
 #define FX_DOOM_CAMERA_POINT     0x9 /* table: SVECTOR whose pad sets the camera point height */
 #define FX_DOOM_RED_RING         0xB /* emitter: glowing red ring sprite */
 #define FX_DOOM_PINK_SMOKE       0xC /* emitter: pink-violet smoke */
-#define FX_DOOM_GLOW_SHELL       0xD /* model: capsule, additive, texture page computed (drawn twice) (look pending) */
+#define FX_DOOM_GLOW_SHELL       0xD /* model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice (look pending) */
 #define FX_DOOM_CYAN_SPARKLES    0xE /* emitter: cyan sparkles in a tube */
 #define FX_DOOM_REAPER_PICTURE_2 0xF /* model: second panel with the picture of Death */
-#define FX_DOOM_WHITE_SHELL      0x10 /* model: capsule, 15-bit texture page 0x119 (look pending) */
-#define FX_DOOM_BACKDROP         0x11 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
-#define FX_DOOM_GOURAUD_SHELL    0x13 /* model: gouraud capsule (colours not rendered) (look pending) */
+#define FX_DOOM_WHITE_SHELL      0x10 /* model: capsule on 15-bit texture page 0x119 (filled at run time; white in the render) (look pending) */
+#define FX_DOOM_BACKDROP         0x11 /* table: background layers for btlfx_drawBackdrop */
+#define FX_DOOM_GOURAUD_SHELL    0x13 /* model: gouraud capsule; the render draws it black (colours set by the C at run time?) (look pending) */
 
 typedef struct {
     s16 modelCount0; /* split models */

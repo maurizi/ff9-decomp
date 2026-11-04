@@ -7,12 +7,25 @@
 /* fx_17d_7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ARK_ROCK_DEBRIS   0x1 /* emitter: grey-blue rock chunks */
-#define FX_ARK_FAN_EMITTER   0x2 /* emitter: fan elements (not rendered) (look pending) */
+#define FX_ARK_LIGHT_STREAKS 0x2 /* emitter: two fans, thin pale orange light streaks */
 #define FX_ARK_ROCK_DEBRIS_2 0x4 /* emitter: grey-blue rock chunks */
 #define FX_ARK_PALE_RING     0x6 /* emitter: white-cream-violet and white-peach-mauve gouraud rings */
 #define FX_ARK_VIOLET_RING   0x7 /* emitter: white-cream-violet and white-purple-blue gouraud rings */
 #define FX_ARK_GOLD_GLOW     0xA /* emitter: golden glow flash */
 #define FX_ARK_ORANGE_RING   0xD /* emitter: two fans (not rendered) + white-orange gouraud rings */
+#define FX_ARK_ORANGE_BEAM 0x8C /* summon data: 'so' model, long orange gouraud beam */
+#define FX_ARK_TEAL_RING 0x8E /* summon data: 'so' model, flat ring with a dark teal texture */
+#define FX_ARK_FLAME_TEX_RING 0x8F /* summon data: 'so' model, flat ring with an orange flame texture */
+#define FX_ARK_SMOKE_BOWL 0x90 /* summon data: 'so' model, bowl ring with a grey-brown smoke texture */
+#define FX_ARK_GREY_TORUS 0x92 /* summon data: 'so' model, grey gouraud torus */
+#define FX_ARK_EMBER_RING 0x93 /* summon data: 'so' model, flat ring with an orange speckle texture */
+#define FX_ARK_GOLD_RING 0x94 /* summon data: 'so' model, gold gouraud torus */
+#define FX_ARK_BLUE_CLOUD_RING 0x95 /* summon data: 'so' model, twisted ring band with a blue cloud texture */
+#define FX_ARK_ROCK 0x96 /* summon data: 'so' model, rock chunk */
+#define FX_ARK_FIRE_CONE 0x97 /* summon data: 'so' model, cone skirt with a flame texture */
+#define FX_ARK_ROCK_2 0x98 /* summon data: 'so' model, rock chunk */
+#define FX_ARK_ROCK_3 0x99 /* summon data: 'so' model, rock chunk */
+#define FX_ARK_FIRE_ARC 0x9A /* summon data: 'so' model, curved tube with an orange fire texture */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

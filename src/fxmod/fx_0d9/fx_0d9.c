@@ -33,7 +33,7 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_DISC), 0x119, 0xFFFF,
                                                  0, 0x80);
         work->state10 = 1;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_FAN_EMITTER), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x20;
         }
@@ -59,7 +59,7 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 2) {
                 work->state10 = 2;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_FAN_EMITTER_2), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

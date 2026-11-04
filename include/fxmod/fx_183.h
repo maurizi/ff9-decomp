@@ -12,9 +12,9 @@
 #define FX_CHERRY_BLOSSOM_PETAL_STORM  0xF /* emitter: drifting pink petals and a large petal */
 #define FX_CHERRY_BLOSSOM_PETAL_TRAIL  0x10 /* emitter: orbiting screen trail of petals */
 #define FX_CHERRY_BLOSSOM_PINK_RING    0x11 /* emitter: pink and white-red gouraud rings */
-#define FX_CHERRY_BLOSSOM_FAN_EMITTER  0x17 /* emitter: spiral fan element (not rendered) (look pending) */
+#define FX_CHERRY_BLOSSOM_COLOR_LINES  0x17 /* emitter: spiralling fan of thin green and violet light lines */
 #define FX_CHERRY_BLOSSOM_SPARKLES     0x18 /* emitter: gold and cyan glints */
-#define FX_CHERRY_BLOSSOM_SO_MODEL     0x1D /* 'so' model (not drawn by the tool), same size as the Spear model but other bytes (look pending) */
+#define FX_CHERRY_BLOSSOM_SPEAR        0x1D /* 'so' model: a spear (the Spear model's shape and size, other bytes) */
 #define FX_CHERRY_BLOSSOM_PETAL_VORTEX 0x1E /* emitter: pink swirl vortex + sprites (texture not in the file) */
 
 typedef struct {

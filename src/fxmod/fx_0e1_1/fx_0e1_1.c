@@ -19,7 +19,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->pos8.vy = fx_0e1_1_origin.vy;
         work->pos8.vz = fx_0e1_1_origin.vz;
         fx_0e1_1_env = env;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_FAN_EMITTER), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_ORANGE_STREAKS), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x20;
         }

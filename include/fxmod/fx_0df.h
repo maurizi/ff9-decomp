@@ -14,18 +14,18 @@
 #define FX_SWDMAG_FLARE_FIRE_DOME    0x5 /* model: dome with a fire texture */
 #define FX_SWDMAG_FLARE_EMBERS       0x6 /* emitter: red ember sprites + orange glow */
 #define FX_SWDMAG_FLARE_SHOCK_RINGS  0x8 /* emitter: white-crimson / white-violet gouraud rings */
-#define FX_SWDMAG_FLARE_FAN_EMITTER  0x9 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_SWDMAG_FLARE_BACKDROP     0xB /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
-#define FX_SWDMAG_FLARE_SPHERE       0xC /* model: sphere, texture page 0x13C not in the file (look pending) */
-#define FX_SWDMAG_FLARE_GOURAUD_RING 0xD /* model: flat gouraud annulus (colours not rendered) (look pending) */
-#define FX_SWDMAG_FLARE_BACKDROP_2   0xE /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_SWDMAG_FLARE_FAN_EMITTER  0x9 /* emitter: two fans; the render shows only yellow glow dots on a dark strip (texture mostly outside the file) (look pending) */
+#define FX_SWDMAG_FLARE_BACKDROP     0xB /* table: background layers for btlfx_drawBackdrop */
+#define FX_SWDMAG_FLARE_SMOKE_SPHERE 0xC /* model: sphere with a grey smoke texture (page 0x13C) */
+#define FX_SWDMAG_FLARE_RED_HALO     0xD /* model: flat red-orange gouraud halo ring */
+#define FX_SWDMAG_FLARE_BACKDROP_2   0xE /* table: background layers for btlfx_drawBackdrop */
 #define FX_SWDMAG_FLARE_GLOW         0x10 /* particles: orange glow with a white core */
 #define FX_SWDMAG_FLARE_EMBERS_2     0x11 /* emitter: red ember sprites */
-#define FX_SWDMAG_FLARE_ARCH         0x12 /* model: arch, 15-bit texture page 0x139 (look pending) */
+#define FX_SWDMAG_FLARE_ARCH         0x12 /* model: grey arch, 15-bit texture page 0x139 (white in the render) */
 #define FX_SWDMAG_FLARE_WHITE_RINGS  0x13 /* rings: white-cream gouraud rings */
-#define FX_SWDMAG_FLARE_BACKDROP_3   0x18 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
-#define FX_SWDMAG_FLARE_TEX_RING     0x19 /* rings: textured ring, texture not in the file (look pending) */
-#define FX_SWDMAG_FLARE_TEX_RING_2   0x1A /* rings: textured ring, texture not in the file (look pending) */
+#define FX_SWDMAG_FLARE_BACKDROP_3   0x18 /* table: background layers for btlfx_drawBackdrop */
+#define FX_SWDMAG_FLARE_TEX_RING     0x19 /* rings: textured ring; the render reads garbled multicolour texels (texture not in the file) (look pending) */
+#define FX_SWDMAG_FLARE_TEX_RING_2   0x1A /* rings: textured ring; the render reads garbled multicolour texels (texture not in the file) (look pending) */
 #define FX_SWDMAG_FLARE_BLUE_BOLT    0x1B /* trail: blue lightning strip (fxm_drawOffsetTrail) */
 #define FX_SWDMAG_FLARE_SWORD_GLINT  0x1E /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_FLARE_SWORD_FLASH  0x1F /* rings: white 8-segment rings flashed rotating at the sword (op84) */

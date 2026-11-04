@@ -462,7 +462,7 @@ s32 fx_12b_op82(s32 mode, Fx12bWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_12b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
-        work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_FAN_EMITTER), (s32)&work->pos14);
+        work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_LIGHT_STREAK), (s32)&work->pos14);
         work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_ENERGY_ORB), (s32)&work->pos14);
         work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_YELLOW_RING), (s32)&work->pos14);
         work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_GOLD_RING), (s32)&work->pos14);

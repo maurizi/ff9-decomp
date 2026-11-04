@@ -8,10 +8,10 @@
 
 /* fx_0ce effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SCREECH_TRAIL       0x1 /* emitter: 3D trail (texture garbled in the render) (look pending) */
+#define FX_SCREECH_TRAIL       0x1 /* emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved) (look pending) */
 #define FX_SCREECH_PURPLE_MIST 0x2 /* emitter: dark purple mist rings and brown-pink gouraud rings */
-#define FX_SCREECH_MODEL       0x7 /* 'so' model (look pending) */
-#define FX_SCREECH_DARK_RINGS  0xB /* emitter: textured rings, render almost black (look pending) */
+#define FX_SCREECH_BLADE_RING  0x7 /* 'so' model: ring of pale green curved blades */
+#define FX_SCREECH_DARK_RINGS  0xB /* emitter: textured rings; the render is almost black (faint dark red) (look pending) */
 #define FX_SCREECH_LILAC_RING  0xC /* emitter: lilac glow ring particle */
 
 typedef struct {

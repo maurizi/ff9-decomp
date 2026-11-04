@@ -66,8 +66,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0ba_env = env;
         ex->btlfx_initEffModels(fx_0ba_effModels0, 6);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_4), 0);
-        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_2), 0);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_PLANE), 0);
+        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_THIN_ROD), 0);
         work->summonPos48.vx = 0;
         work->rot60.vy = 0x800;
         work->summonScale54.vx = 0x1000;
@@ -172,8 +172,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 0x3C) {
                 if (frame == 0x3C) {
-                    work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_1), 1);
-                    work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_0), 1);
+                    work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_DISC), 1);
+                    work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_RING), 1);
                     work->pos10.vx = work->summonPos48.vx;
                     work->pos10.vy = work->summonPos48.vy;
                     work->pos10.vz = work->summonPos48.vz;
@@ -182,11 +182,11 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fx_0ba_orbPos.vx = work->pos10.vx;
                     fx_0ba_orbPos.vy = work->pos10.vy;
                     fx_0ba_orbPos.vz = work->pos10.vz;
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_EMITTER_6), (s32)&work->pos10);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_FLASH), (s32)&work->pos10);
                     if (emitter != NULL) {
                         emitter->otZ = 0x37;
                     }
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_EMITTER_4), (s32)&work->pos10);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_STORM_CLOUDS), (s32)&work->pos10);
                     if (emitter != NULL) {
                         emitter->otZ = 0x37;
                     }
@@ -238,8 +238,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[2].vx = work->pos18.vx;
                 env->camera->points[2].vy = work->pos18.vy;
                 env->camera->points[2].vz = work->pos18.vz;
-                work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_2), 1);
-                work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_3), 1);
+                work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_PLANE_2), 1);
+                work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAPPED_COLUMN), 1);
             }
             break;
         case 2:
@@ -319,7 +319,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *trail, SVEC
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x100);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ORANGE_TRAIL), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ORANGE_LIGHTNING), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
 s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
@@ -399,11 +399,11 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
         work->frame4 = 0;
         fx_0ba_env = env;
         ex->btlfx_initEffModels(fx_0ba_effModels1, 5);
-        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_3), 1);
-        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_5), 0);
-        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_2), 0);
-        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL), 0);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_3), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ELECTRIC_BOWL), 1);
+        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_GREEN_DOME), 0);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_THIN_ROD), 0);
+        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_STAFF), 0);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAPPED_COLUMN), 1);
         work->pos8.vx = 0;
         work->pos8.vy = 0;
         work->pos8.vz = 0;
@@ -1294,7 +1294,7 @@ static s32 fx_0ba_op85PoolTask(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk8010
         if (p->pointIdx16 == 0) {
             p->point18[-0x10] = p->point18[-0xE] = 0x10;
             p->point18[-0xF] = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_POOL_TRAIL), 0, NULL, frame, 0x1000, fade, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_POOL_LIGHTNING), 0, NULL, frame, 0x1000, fade, 1,
                               p->point18 - 4, 0);
         }
         if (frame >= 5) {

@@ -239,8 +239,8 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos14.vy = work->posC.vy;
         work->pos14.vz = work->posC.vz;
         ex->btlfx_initEffModels(fx_0cb_effModels, 3);
-        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_MODEL), 1);
-        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_MODEL_2), 1);
+        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_FIREBALL), 1);
+        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_RED_HALO), 1);
     } else {
         frame = entry->frame;
         if (work->state0 == 0) {

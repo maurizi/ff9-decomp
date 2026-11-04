@@ -9,8 +9,8 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_WAVE_WHITE_RINGS     0x1 /* emitter: white gouraud rings in a tube, 28 frames */
 #define FX_WAVE_WHITE_RINGS_2   0x2 /* emitter: white gouraud rings in a cylinder, 28 frames */
-#define FX_WAVE_FAN_EMITTER     0x3 /* emitter: one fan element along an axis (not rendered) (look pending) */
-#define FX_WAVE_FAN_EMITTER_2   0x4 /* emitter: one fan element along an axis (not rendered) (look pending) */
+#define FX_WAVE_WATER_STREAK    0x3 /* emitter: fan along an axis, a thin white-blue water streak */
+#define FX_WAVE_WATER_STREAK_2  0x4 /* emitter: fan along an axis, a thin white-blue water streak */
 #define FX_WAVE_STRIPED_RINGS   0x5 /* emitter: white and dark striped gouraud rings */
 #define FX_WAVE_STRIPED_RINGS_2 0x6 /* emitter: white and dark striped gouraud rings, homing */
 #define FX_WAVE_WATER_TRAIL     0x7 /* emitter: screen trail, grey streak strip (part of the texture not in the file) */

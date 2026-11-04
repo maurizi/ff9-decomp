@@ -7,7 +7,7 @@
 
 /* fx_130 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_PROPELLER_WIND_TARGET_MODEL  0x1 /* 'so' model registered per target (not drawn by the tool) (look pending) */
+#define FX_PROPELLER_WIND_TORNADO       0x1 /* 'so' model: blue twisted column with a wind texture (tornado), registered per target */
 #define FX_PROPELLER_WIND_TEAL_RING     0x2 /* emitter: orbiting dark-to-teal gouraud rings */
 #define FX_PROPELLER_WIND_BLUE_CRESCENT 0x3 /* emitter: blue crescent then ring particles (ring texture partly not in the file) */
 #define FX_PROPELLER_WIND_WIND_RING     0x4 /* emitter: orbiting grey wind ring */

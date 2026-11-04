@@ -12,7 +12,7 @@
 #define FX_SWDMAG_BIO_BUBBLE_SCALE   0x2 /* table: scale keys of the morphing bubble (fxm_vecTrackInit) */
 #define FX_SWDMAG_BIO_BUBBLE_SCALE_2 0xF /* table: scale keys of the second bubble pass (fxm_vecTrackInit) */
 #define FX_SWDMAG_BIO_BUBBLE_PATH_2  0x10 /* table: rotation/position keys of the second bubble pass */
-#define FX_SWDMAG_BIO_SCREEN_TRAIL   0x11 /* emitter: orbiting screen-space trail, texture not in the file (look pending) */
+#define FX_SWDMAG_BIO_SCREEN_TRAIL   0x11 /* emitter: orbiting screen-space trail; the render is still black (texture not in the file) (look pending) */
 #define FX_SWDMAG_BIO_GREEN_WISPS    0x12 /* emitter: teal-green wisp rings */
 #define FX_SWDMAG_BIO_GREEN_CLOUD    0x13 /* emitter: green gas cloud + grey haze */
 #define FX_SWDMAG_BIO_RED_CELLS      0x14 /* emitter: red cell-mesh balls with a crimson glow */

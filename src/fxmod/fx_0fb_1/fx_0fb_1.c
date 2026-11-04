@@ -402,15 +402,15 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0fb_1_modelBlocks[i]),
                                                         0x9A, 0x3E00, 0, 0);
         }
-        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_2), 0x96, 0x3D40, 0, 0);
-        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_7), 0x9A, 0x3E00, 0, 0);
-        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_16), 0xBD, 0x3E40, 0, 0);
-        work->modelAC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_15), 0xBD, 0x3E40, 0, 0);
-        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_9), 0xBD, 0x3E40, 0, 0);
+        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_PINK_CLOUD_BALL), 0x96, 0x3D40, 0, 0);
+        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LEAF_MOUND), 0x9A, 0x3E00, 0, 0);
+        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_BANDS), 0xBD, 0x3E40, 0, 0);
+        work->modelAC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_SPHERE_2), 0xBD, 0x3E40, 0, 0);
+        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_SPHERE), 0xBD, 0x3E40, 0, 0);
         work->modelB4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_ARCH), 0xBD, 0x3EC0, 0, 0x80);
         work->modelB8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_Y_FRAME), 0x3D, 0x3E81, 0, 0x80);
         work->modelBC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LOOP_RIBBON), 0x138, 0xFFFF, 0, 0x80);
-        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_12), 0x3A, 0x3D0A, 0, 0x80);
+        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_SWIRL_DISC), 0x3A, 0x3D0A, 0, 0x80);
         work->centerC.vy = -0x1000;
         work->centerC.vx = 0;
         work->rot8C.vz = 0;
@@ -697,7 +697,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             }
         }
         if (frame == 0x18) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_3), (s32)&work->pos14);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_GLOW), (s32)&work->pos14);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
@@ -726,7 +726,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->pos54.vz = fx_0fb_1_origin.vz;
             BTLFX_COPY_SVEC(&work->centerC, &fx_0fb_1_origin);
             BTLFX_COPY_SVEC(&work->pos14, &fx_0fb_1_origin);
-            emitter = work->emitE4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_3), (s32)&work->pos14);
+            emitter = work->emitE4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_GLOW), (s32)&work->pos14);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
@@ -936,7 +936,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             }
         }
         if (frame == 0x38) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_3), (s32)&work->pos14);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_GLOW), (s32)&work->pos14);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
@@ -1005,8 +1005,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         } else {
             scrollX = (work->frame4 * 0xE) % 240;
         }
-        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SCROLL_SPRITE), 0xA0 - scrollX, 0xA0, 0, 3, trail);
-        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SCROLL_SPRITE), 0x280 - scrollX, 0xA0, 0, 3, trail);
+        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0xA0 - scrollX, 0xA0, 0, 3, trail);
+        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0x280 - scrollX, 0xA0, 0, 3, trail);
     }
     if (glow != 0) {
         CVECTOR col;

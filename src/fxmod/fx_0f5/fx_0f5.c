@@ -196,7 +196,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0f5_env = env;
         ex->btlfx_initEffModels(fx_0f5_effModels, 1);
-        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_STELLAR_CIRCLE_5_MODEL), 1);
+        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_STELLAR_CIRCLE_5_CLOUD_DOME), 1);
         work->state0 = 0;
         work->frame4 = 0;
         BTLFX_COPY_SVEC(&work->center8, &env->targets->centerX);

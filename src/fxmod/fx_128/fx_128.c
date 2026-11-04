@@ -33,7 +33,7 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_128_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_FAN_EMITTER), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_COLOR_LINES), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_GOLD_SPARKLES), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
@@ -112,8 +112,8 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale3C.vx = 0x1000;
         work->scale3C.vy = 0x1000;
         work->scale3C.vz = 0x1000;
-        work->modelA0[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_MODEL), 1);
-        work->modelA0[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_MODEL_2), 1);
+        work->modelA0[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_DRAGON), 1);
+        work->modelA0[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_DRAGON_2), 1);
         fxm_rotPosPathInit((Fx128Path *)&fx_128_rotPosPath0, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_ROT_POS_PATH));
         fxm_posPathInit(&fx_128_posPath, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_POS_PATH));
         fxm_valuePathInit((Fx128Path *)&fx_128_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_VALUE_PATH));

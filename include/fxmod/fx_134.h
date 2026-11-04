@@ -29,7 +29,7 @@
 #define FX_DOOMSDAY_LILAC_RING    0x1A /* rings: white-lilac gouraud rings */
 #define FX_DOOMSDAY_BLUE_RING     0x1B /* rings: white-cyan-blue gouraud rings, four segments */
 #define FX_DOOMSDAY_PURPLE_STREAK 0x1E /* trail: purple streak (fxm_drawOffsetTrail) */
-#define FX_DOOMSDAY_SPACE_LAYER   0x1F /* sprite: purple shapes and noise (space background layer; texture mix unclear) (look pending) */
+#define FX_DOOMSDAY_SPACE_LAYER   0x1F /* sprite: purple-blue starry nebula strip (space background layer) */
 #define FX_DOOMSDAY_RED_PLANET    0x20 /* sprite: small red planet */
 #define FX_DOOMSDAY_GREY_SPARKS   0x21 /* emitter: small grey spark sprites */
 #define FX_DOOMSDAY_ROCK_DEBRIS   0x22 /* emitter: grey rock chunks */

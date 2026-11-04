@@ -9,10 +9,10 @@
 /* fx_0ed effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ROULETTE_SUMMON_MODEL_DATA 0x2 /* model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL */
-#define FX_ROULETTE_BACKDROP          0x4 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_ROULETTE_BACKDROP          0x4 /* table: background layers for btlfx_drawBackdrop */
 #define FX_ROULETTE_TARGET_RING       0x6 /* sprite: white ring outline on the chosen target */
-#define FX_ROULETTE_SUMMON_MODEL      0x7 /* 'so' summon model (btlfx_registerSummonModel, not rendered) (look pending) */
-#define FX_ROULETTE_SO_MODEL          0x8 /* 'so' model (not rendered) (look pending) */
+#define FX_ROULETTE_HORNED_FIGURE     0x7 /* 'so' summon model (btlfx_registerSummonModel): brown armoured figure with a horned face texture */
+#define FX_ROULETTE_HORNED_FIGURE_2   0x8 /* 'so' model: the same horned figure in another pose (same textures, 354 polys) */
 #define FX_ROULETTE_BLUE_BEAM         0xA /* emitter: spiralling blue light-beam trail */
 #define FX_ROULETTE_GLOW_RINGS        0xB /* emitter: green glows + white-salmon-violet rings */
 #define FX_ROULETTE_RED_SPARKS        0xC /* emitter: pink-red spark sprites + white-red rings */

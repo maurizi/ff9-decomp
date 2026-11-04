@@ -6,9 +6,9 @@
 
 /* fx_0fb_1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_MADEEN_SCROLL_SPRITE    0x1 /* sprite: wide speckled strip drawn scrolling across the screen (byte-identical to fx_0fb_0 entry 0x3) (look pending) */
+#define FX_MADEEN_CLOUD_STRIP      0x1 /* sprite: wide grey-white cloud strip drawn scrolling across the screen (byte-identical to fx_0fb_0 entry 0x3) */
 #define FX_MADEEN_BLUE_STREAKS     0x2 /* emitter: orbiting blue light streaks + blue wing-pattern particles */
-#define FX_MADEEN_LOOP_RIBBON      0x3 /* model: figure-eight ribbon loop (texture: placeholder page 0x138) (look pending) */
+#define FX_MADEEN_LOOP_RIBBON      0x3 /* model: figure-eight ribbon loop (its texture page 0x138 holds a handwritten placeholder in the file) */
 #define FX_MADEEN_CRYSTAL_SPARKLES 0x5 /* emitter: blue-gold crystal sparkles + blue specks */
 #define FX_MADEEN_TEAL_RINGS       0x6 /* rings: navy-teal gouraud rings */
 #define FX_MADEEN_WHITE_GLOW       0x7 /* particles: white-violet glow */
@@ -22,20 +22,20 @@
 #define FX_MADEEN_BACKDROP_3       0x11 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_MADEEN_WHITE_RINGS      0x12 /* rings: white to grey fading gouraud rings, 8 frames */
 #define FX_MADEEN_RAINBOW_ARCH     0x13 /* model: arch, rainbow-cloud texture */
-#define FX_MADEEN_TRAIL            0x14 /* trail: strip texture not in the file (look pending) */
-#define FX_MADEEN_FAN_EMITTER_3    0x15 /* emitter: three fan elements (not rendered) (look pending) */
+#define FX_MADEEN_TRAIL            0x14 /* trail: strip texture not in the file (magenta in the render) (look pending) */
+#define FX_MADEEN_VIOLET_GLOW      0x15 /* emitter: three fans, a horizontal violet-white glow */
 #define FX_MADEEN_BLUE_RINGS_3     0x16 /* rings: white-blue gouraud rings, 16 frames */
 #define FX_MADEEN_LENS_FLARES_2    0x17 /* sprite line: green / red / orange lens-flare rings */
 #define FX_MADEEN_ROCK_BURST       0x18 /* emitter: teal-green rock debris + tan dust puffs */
 #define FX_MADEEN_ROCK_BURST_2     0x19 /* emitter: teal-green rock debris + tan dust puffs */
 #define FX_MADEEN_VIOLET_RINGS     0x1A /* rings: white / violet / indigo gouraud rings */
 #define FX_MADEEN_Y_FRAME          0x23 /* model: three-armed frame, grey streak texture */
-#define FX_MADEEN_SUMMON_MODEL_2   0x82 /* summon data entry 2: textured model (Hi_RegisterTexEffModel 0x96, 0x3D40) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_7   0x87 /* summon data entry 7: textured model (Hi_RegisterTexEffModel 0x9A, 0x3E00) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_9   0x89 /* summon data entry 9: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_12  0x8C /* summon data entry 12: textured model (Hi_RegisterTexEffModel 0x3A, 0x3D0A) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_15  0x8F /* summon data entry 15: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) (look pending) */
-#define FX_MADEEN_SUMMON_MODEL_16  0x90 /* summon data entry 16: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) (look pending) */
+#define FX_MADEEN_PINK_CLOUD_BALL  0x82 /* summon data entry 2: textured model, ball with a dark pink cloud texture */
+#define FX_MADEEN_LEAF_MOUND       0x87 /* summon data entry 7: textured model, low mound with a green foliage texture */
+#define FX_MADEEN_RAINBOW_SPHERE   0x89 /* summon data entry 9: textured model, sphere wrapped in red-green-blue stripe (rainbow) bands */
+#define FX_MADEEN_BLUE_SWIRL_DISC  0x8C /* summon data entry 12: textured model, disc with a blue swirl texture */
+#define FX_MADEEN_RAINBOW_SPHERE_2 0x8F /* summon data entry 15: textured model, sphere wrapped in red-green-blue stripe (rainbow) bands */
+#define FX_MADEEN_RAINBOW_BANDS    0x90 /* summon data entry 16: textured model, curved red-green-blue stripe (rainbow) bands */
 
 typedef struct {
     s32 state0; /* state */

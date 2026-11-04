@@ -454,8 +454,8 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0d3_env = env;
         ex->btlfx_initEffModels(fx_0d3_effModels, 7);
-        fx_0d3_sharedModel = work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL), 1);
-        model = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_5), 1);
+        fx_0d3_sharedModel = work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_FLAME_SWIRL), 1);
+        model = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_FLAME_SWIRL_2), 1);
         work->rot28.vy = 0x800;
         work->summonScale1C.vx = 0x1000;
         work->summonScale1C.vy = 0x1000;
@@ -497,14 +497,14 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x32) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_3), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FEATHERS), (s32)&work->pos8);
                 work->emit30 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x1E) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_PEACH_GLOW), (s32)&work->pos8);
                 work->emit34 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
@@ -647,9 +647,9 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0d3_env = env;
-        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_2), 1);
-        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_3), 1);
-        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_4), 1);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_DISC), 1);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_DOME), 1);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_SMOKE_ARC), 1);
         work->model60 = fx_0d3_sharedModel;
         work->pos8.vx = fx_0d3_centerPos.vx;
         work->pos8.vy = fx_0d3_centerPos.vy;
@@ -693,7 +693,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (emitter != NULL) {
                 emitter->otZ = -0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_3), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FEATHERS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = -0x80;
             }
@@ -778,7 +778,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             BTLFX_COPY_SVEC(&work->pos38, &fx_0d3_centerPos);
             work->pos38.vy -= 0x1000;
             work->pos38.vz += 0xFF;
-            work->emit4C = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_4), (s32)&work->pos38);
+            work->emit4C = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FEATHERS_2), (s32)&work->pos38);
             if (trackedEmitter != NULL) {
                 trackedEmitter->otZ = 0x80;
             }

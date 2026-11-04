@@ -15,15 +15,15 @@
 #define FX_SWDMAG_DOOMSDAY_EMBERS           0xD /* emitter: spiral of tiny orange sprites */
 #define FX_SWDMAG_DOOMSDAY_STAR_FUNNEL      0x11 /* model: three-bladed funnel with a starfield texture */
 #define FX_SWDMAG_DOOMSDAY_STAR_DOME        0x12 /* model: arch / dome with a starfield texture */
-#define FX_SWDMAG_DOOMSDAY_GOURAUD_DOME     0x13 /* model: shallow gouraud dome (colours not rendered) (look pending) */
+#define FX_SWDMAG_DOOMSDAY_RED_DOME         0x13 /* model: shallow dark-red gouraud dome with a white centre */
 #define FX_SWDMAG_DOOMSDAY_BOULDER_2        0x14 /* model: rough egg-shaped boulder (rock texture) */
-#define FX_SWDMAG_DOOMSDAY_CYLINDER         0x19 /* model: open cylinder, texture not in the file (look pending) */
+#define FX_SWDMAG_DOOMSDAY_SMOKE_CYLINDER   0x19 /* model: open cylinder with a grey-white smoke texture */
 #define FX_SWDMAG_DOOMSDAY_LILAC_RINGS      0x1A /* rings: white-lilac gouraud rings at the centre */
 #define FX_SWDMAG_DOOMSDAY_BLUE_RINGS       0x1B /* rings: white-cyan-blue gouraud rings at the centre */
-#define FX_SWDMAG_DOOMSDAY_BACKDROP         0x1C /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_SWDMAG_DOOMSDAY_BACKDROP         0x1C /* table: background layers for btlfx_drawBackdrop */
 #define FX_SWDMAG_DOOMSDAY_PURPLE_BOLT      0x1D /* trail: purple lightning strip (fxm_drawOffsetTrail) */
 #define FX_SWDMAG_DOOMSDAY_PEBBLES          0x20 /* emitter: spiral of small grey pebble sprites */
-#define FX_SWDMAG_DOOMSDAY_PARTICLE_EMITTER 0x21 /* emitter: four particle elements, texture not in the file (look pending) */
+#define FX_SWDMAG_DOOMSDAY_ROCK_DEBRIS      0x21 /* emitter: four particle elements, tumbling grey-blue rock debris */
 #define FX_SWDMAG_DOOMSDAY_SWORD_FLASH      0x22 /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 #define FX_SWDMAG_DOOMSDAY_SWORD_GLINT      0x23 /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 

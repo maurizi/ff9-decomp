@@ -7,10 +7,10 @@
 
 /* fx_186 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_EARTH_SHAKE_SO_MODEL      0xB /* 'so' model (not drawn by the tool), registered at the start (look pending) */
+#define FX_EARTH_SHAKE_ROCK_ARCH     0xB /* 'so' model: arch with a rock texture, registered at the start */
 #define FX_EARTH_SHAKE_GREY_RING     0xF /* rings: white-to-grey gouraud rings at each target */
 #define FX_EARTH_SHAKE_ROCK_DEBRIS   0x1A /* emitter: small rock debris frames */
-#define FX_EARTH_SHAKE_SO_MODEL_2    0x1B /* 'so' model (not drawn by the tool), registered at the start (look pending) */
+#define FX_EARTH_SHAKE_RUBBLE_STRIP  0x1B /* 'so' model: flat strip of rubble with a grey smoke texture, registered at the start */
 #define FX_EARTH_SHAKE_ROCK_DEBRIS_2 0x1D /* emitter: small rock debris frames, brighter */
 #define FX_EARTH_SHAKE_LILAC_RING    0x1E /* rings: white-lilac gouraud rings */
 #define FX_EARTH_SHAKE_CYAN_RING     0x1F /* rings: white-cyan gouraud rings */

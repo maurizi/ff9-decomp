@@ -7,14 +7,14 @@
 
 /* fx_123 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_RAINING_SWORDS_SPECKS        0x4 /* emitter: speck sprites (texture not in the file / render black) (look pending) */
+#define FX_RAINING_SWORDS_SPECKS        0x4 /* emitter: cyan dot specks */
 #define FX_RAINING_SWORDS_SWORD_RING    0x5 /* model: six swords in a star ring (weapon texture) */
 #define FX_RAINING_SWORDS_SWORD         0x7 /* model: single sword (weapon texture) */
 #define FX_RAINING_SWORDS_CYAN_FLAMES   0x8 /* emitter: cyan spirit flames + speck sprites */
 #define FX_RAINING_SWORDS_CYAN_FLAMES_2 0x9 /* emitter: cyan spirit flame burst + speck sprites */
 #define FX_RAINING_SWORDS_FLAME_SPIRAL  0xA /* emitter: cyan spirit flames spiralling + rings */
 #define FX_RAINING_SWORDS_CYAN_FLAMES_3 0xB /* emitter: cyan spirit flames + speck sprites */
-#define FX_RAINING_SWORDS_DARK_BURST    0xC /* emitter: rings and sprites that render black + speck sprites (look pending) */
+#define FX_RAINING_SWORDS_DARK_BURST    0xC /* emitter: rings and sprites that still render black, + cyan dot specks (look pending) */
 #define FX_RAINING_SWORDS_CYAN_RINGS    0xD /* emitter: cyan to white gouraud rings, 16 frames */
 #define FX_RAINING_SWORDS_TEAL_RINGS    0xE /* emitter: teal gouraud rings + a fan element */
 #define FX_RAINING_SWORDS_CYAN_RINGS_2  0xF /* emitter: cyan and teal gouraud rings, 8 frames */

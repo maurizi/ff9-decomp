@@ -92,7 +92,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_SPARKLE_FAN), (s32)&work->pos4);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_COLOR_SPIKES), (s32)&work->pos4);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

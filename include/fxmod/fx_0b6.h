@@ -9,7 +9,7 @@
 /* fx_0b6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SCORCH_FIREBALL    0x1 /* emitter: red-orange swirling fireball particle */
-#define FX_SCORCH_FAN_EMITTER 0x2 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_SCORCH_FLAME_STREAKS 0x2 /* emitter: two fans of white-yellow to red flame streaks fading out */
 #define FX_SCORCH_HEAT_RING   0x7 /* emitter: white-pink gouraud rings */
 
 typedef struct {

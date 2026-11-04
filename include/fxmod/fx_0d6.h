@@ -12,7 +12,7 @@
 #define FX_SWDMAG_FIRAGA_FLAME_DISC    0xB /* model: flat octagon, flame texture; registered, never drawn (byte-identical to fx_007 entry 0x9) */
 #define FX_SWDMAG_FIRAGA_FLAME_BURST   0xC /* emitter: flame explosion (byte-identical to fx_007 entry 0xa) */
 #define FX_SWDMAG_FIRAGA_GLOW          0xD /* rings: white-red gouraud glow disc at the target (byte-identical to fx_007 entry 0xb) */
-#define FX_SWDMAG_FIRAGA_ORBIT_TRAIL   0xE /* emitter: orbiting trail + sprites at the start (texture not in the file) (byte-identical to fx_007 entry 0xc) (look pending) */
+#define FX_SWDMAG_FIRAGA_EMBER_TRAIL   0xE /* emitter: orbiting red glow trail with red ember dots at the start (byte-identical to fx_007 entry 0xc) */
 #define FX_SWDMAG_FIRAGA_COLUMN_SPARK  0xF /* rings: small red-white glow drawn at random fire-column segments (byte-identical to fx_007 entry 0xd) */
 #define FX_SWDMAG_FIRAGA_FLAME_BURST_2 0x10 /* emitter: flame explosion at the pillar's start (byte-identical to fx_007 entry 0xe) */
 #define FX_SWDMAG_FIRAGA_PILLAR_RING   0x11 /* rings: textured flame ring rising with the pillar (byte-identical to fx_007 entry 0xf) */
@@ -20,14 +20,14 @@
 #define FX_SWDMAG_FIRAGA_GOLD_SPARKS_2 0x13 /* emitter: golden spark sprites + spark sub-particles (byte-identical to fx_007 entry 0x11) */
 #define FX_SWDMAG_FIRAGA_GOLD_SPARKS   0x14 /* emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) */
 #define FX_SWDMAG_FIRAGA_SMOKE_BURST   0x15 /* emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) */
-#define FX_SWDMAG_FIRAGA_CONE_GLOW     0x16 /* emitter: cone, one dark particle frame (byte-identical to fx_007 entry 0x15) (look pending) */
-#define FX_SWDMAG_FIRAGA_CONE_SPARKS   0x17 /* emitter: cone of spark sprites (texture not in the file) (byte-identical to fx_007 entry 0x14) (look pending) */
+#define FX_SWDMAG_FIRAGA_CONE_GLOW     0x16 /* emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) (look pending) */
+#define FX_SWDMAG_FIRAGA_EMBER_SPARKS  0x17 /* emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) */
 #define FX_SWDMAG_FIRAGA_SWORD_GLINT   0x18 /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
 #define FX_SWDMAG_FIRAGA_SWORD_GLINT_2 0x19 /* rings: white gouraud ring flash at the sword, rotated */
-#define FX_SWDMAG_FIRAGA_COLUMN_SEG_1  0x1B /* 'so' model: fire-column segment (byte-identical to fx_007 entry 0x17) (look pending) */
-#define FX_SWDMAG_FIRAGA_COLUMN_SEG_0  0x1C /* 'so' model: fire-column segment, drawn coiled 18 times (byte-identical to fx_007 entry 0x16) (look pending) */
-#define FX_SWDMAG_FIRAGA_COLUMN_SEG_2  0x1D /* 'so' model: fire-column segment (byte-identical to fx_007 entry 0x18) (look pending) */
-#define FX_SWDMAG_FIRAGA_COLUMN_SEG_3  0x1E /* 'so' model: fire-column segment (byte-identical to fx_007 entry 0x19) (look pending) */
+#define FX_SWDMAG_FIRAGA_FLAME_RIBBON_1 0x1B /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x17) */
+#define FX_SWDMAG_FIRAGA_FLAME_RIBBON_0 0x1C /* 'so' model: twisted flame ribbon with a fire texture, drawn coiled 18 times (byte-identical to fx_007 entry 0x16) */
+#define FX_SWDMAG_FIRAGA_FLAME_RIBBON_2 0x1D /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x18) */
+#define FX_SWDMAG_FIRAGA_FLAME_RIBBON_3 0x1E /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x19) */
 
 typedef struct {
     s32 state0; /* state */

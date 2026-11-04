@@ -556,9 +556,9 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model60 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BOULDER), 0x118, 0xFFFF, 0x40, 0);
         work->model64 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_BOULDER_2), 0x118, 0xFFFF, 0x40, 0);
         work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_STAR_FUNNEL), 0x37, 0x3D07, 0, 0);
-        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_GOURAUD_DOME));
+        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_RED_DOME));
         work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_STAR_DOME), 0x37, 0x3D07, 0, 0);
-        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_CYLINDER), 0xBC, 0x3E00, 0x80, 0);
+        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_SMOKE_CYLINDER), 0xBC, 0x3E00, 0x80, 0);
         fx_0e0_centerPos.vz += 0x400;
         BTLFX_COPY_SVEC(&work->pos8, &fx_0e0_centerPos);
         fx_0e0_centerPos.vz -= 0x400;
@@ -782,10 +782,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 1) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_PARTICLE_EMITTER), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_ROCK_DEBRIS), (s32)&work->pos10);
             }
             if (frame == 4) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_PARTICLE_EMITTER), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_DOOMSDAY_ROCK_DEBRIS), (s32)&work->pos10);
             }
             if (frame >= 0x20) {
                 work->state0 = 0xA;

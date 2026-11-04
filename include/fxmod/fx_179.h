@@ -13,9 +13,9 @@
 #define FX_MEDEO_GLOW_TRAIL    0x5 /* emitter: blue and green glow screen trails */
 #define FX_MEDEO_SPARKLES      0x7 /* emitter: small green and blue spark sprites */
 #define FX_MEDEO_STAR_FLASH    0x8 /* emitter: blue and green star flashes */
-#define FX_MEDEO_FAN_EMITTER   0x9 /* emitter: three fan elements (not rendered) + sprites that render transparent (look pending) */
+#define FX_MEDEO_COLOR_LIGHT_BARS 0x9 /* emitter: three fans of blue / gold / green capsule-shaped light bars, + sprites that render transparent */
 #define FX_MEDEO_COLOR_SMOKE_2 0xA /* emitter: spiral of yellow, purple, cyan and green smoke puffs */
-#define FX_MEDEO_SPRITE_BURST  0xB /* emitter: two sprite elements, render all transparent (look pending) */
+#define FX_MEDEO_SPRITE_BURST  0xB /* emitter: two sprite elements; the render is still all transparent (look pending) */
 
 typedef struct {
     SVECTOR verts0[3];
