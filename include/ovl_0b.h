@@ -3654,11 +3654,20 @@ typedef struct {
 typedef struct {
     u32 *prim; /* next free primitive */
     u32 *ot; /* ordering table entry */
-    s32 rgb; /* colour word: rgb, bit 25 semi-transparent (popups: animation bit 7), bit 24 set */
+    s32 rgb; /* colour word: rgb | GPU_CODE(GPU_TGE [| GPU_ABE]), or'ed with the SPRT code (popups: BTL_POPANIM_SEMI) */
     u8 padC[0x10 - 0xC];
     XY32 xy; /* screen position (projected from the popup, then offset) */
     u16 clut; /* clut (BtlPopup.clut), shifted into the uv word */
 } Unk800CCD00;
+/* btl_drawPopupDigits' word: digit count << 16 | BCD digits, the last digit in the low nibble. Evidence: [code] */
+#define BTL_POPDIGITS_COUNT_SHIFT 16
+#define BTL_POPDIGITS(count, bcd) (((count) << BTL_POPDIGITS_COUNT_SHIFT) | (bcd))
+#define BTL_POPDIGITS_DIGIT 0xF
+#define BTL_POPDIGITS_DIGIT_BITS 4
+/* popup bounce animation bytes (g_btlPopupBounce*, BtlPopupText.anim), one per frame. Evidence: [code] btl_drawNumberPopup, btl_drawTextPopup */
+#define BTL_POPANIM_SEMI 0x80 /* draw semi-transparent this frame */
+#define BTL_POPANIM_Y    0x7F /* height above the anchor (number popups; text popups read bits 0-4) */
+#define BTL_POPANIM_END  0xFF /* the popup ends */
 
 void btl_drawPopupGlyph(Unk800CCD00 *, SpriteDef *);
 void btl_drawPopupDigits(Unk800CCD00 *, u32);
