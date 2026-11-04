@@ -32,7 +32,7 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
         switch (it->state0) {
         case 0:
             if (it->frame8 == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_SHARD_MIST), (s32)&it->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SHARD_MIST), (s32)&it->pos18);
                 it->emit34 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
@@ -89,7 +89,7 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
                     s32 ringScale;
 
                     ex->btlfx_pointAhead((s16 *)&center, (s16 *)&rot, 0x2F6, (s16 *)&ringPos);
-                    data = ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_SNOW_RING_2);
+                    data = ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SNOW_RING_2);
                     ringScale = (ex->math_sin(ang) * 0x1154) >> 12;
                     ex->btlfx_drawRings((u8 *)data, &ringPos, &rot, ringScale, 0, 1, ex->math_cos(ang) * 2 / 3);
                 }
@@ -205,17 +205,17 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         fx_0dc_env = env;
         ex->btlfx_initEffModels(fx_0dc_effModels, 0x19);
         tp = 0x9A;
-        w->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_CRYSTAL), tp, 0x3DC0,
+        w->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_CRYSTAL), tp, 0x3DC0,
                                                   0x80, 0);
-        w->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_CRYSTAL_2), tp, 0x3DC0,
+        w->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_CRYSTAL_2), tp, 0x3DC0,
                                                   0x80, 0);
-        w->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_CRYSTAL_3), tp, 0x3DC0,
+        w->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_CRYSTAL_3), tp, 0x3DC0,
                                                    0x80, 0);
-        w->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_CRYSTAL_SHEEN), 0xBA, 0x3D40,
+        w->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_CRYSTAL_SHEEN), 0xBA, 0x3D40,
                                                    0, 0x80);
-        w->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_CRYSTAL_SHEEN_2), 0xBA, 0x3D40,
+        w->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_CRYSTAL_SHEEN_2), 0xBA, 0x3D40,
                                                    0, 0x80);
-        w->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_CRYSTAL_SHEEN_3), 0xBA, 0x3D40,
+        w->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_CRYSTAL_SHEEN_3), 0xBA, 0x3D40,
                                                    0, 0x80);
         for (i = 0; i < 14; i++) {
             w->model20[i] = (s16)ex->Hi_RegisterTexEffModel(
@@ -234,15 +234,15 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->pos70.vy -= 0x80;
         BTLFX_COPY_SVEC(&w->pos68, &w->pos58);
         w->pos68.vy -= 0x5C6;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_MIST), (s32)&w->pos58);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_MIST), (s32)&w->pos58);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_MIST_HIGH), (s32)&w->pos68);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_MIST_HIGH), (s32)&w->pos68);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_SPARKLES_2), (s32)&w->pos58);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_SPARKLES_2), (s32)&w->pos58);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
@@ -320,7 +320,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (w->spawnCount7A >= 6) {
                 w->state0 = 4;
                 entry->frame = -1;
-                w->emit84 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_FAN_EMITTER), (s32)&w->pos58);
+                w->emit84 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_FAN_EMITTER), (s32)&w->pos58);
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;
                 }
@@ -354,24 +354,24 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_stopEmitter(w->emit84);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_FLARES), (s32)&w->pos58);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_FLARES), (s32)&w->pos58);
                 if (emitter != NULL) {
                     emitter->otZ = 0x60;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_FLARES_2), (s32)&w->pos58);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_FLARES_2), (s32)&w->pos58);
                 if (emitter != NULL) {
                     emitter->otZ = 0x60;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_SNOW_BURST), (s32)&w->pos60);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_FREEZE_BURST), (s32)&w->pos60);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SNOW_BURST), (s32)&w->pos60);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_FREEZE_BURST), (s32)&w->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_FROST_RING_2), (s32)&w->pos60);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_FROST_RING_2), (s32)&w->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_ICE_SPARKLES), (s32)&w->pos60);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_SPARKLES), (s32)&w->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -408,7 +408,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 alpha = ex->math_cos((frame << 10) / 18);
             }
             if (frame == 8) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_SHATTER_WAVE), (s32)&w->pos60);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SHATTER_WAVE), (s32)&w->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -440,13 +440,13 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             rot2.vy = 0;
             rot2.vz = w->frame4 * 41;
             rot2.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_SNOW_RING), &w->pos58, &rot2, (w->frame4 << 6) + 0x15A9,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SNOW_RING), &w->pos58, &rot2, (w->frame4 << 6) + 0x15A9,
                               0, 1, alpha);
             rot2.vz = w->frame4 * 24 + 0x400;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_SNOW_RING), &w->pos58, &rot2, (w->frame4 << 6) + 0x15A9,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SNOW_RING), &w->pos58, &rot2, (w->frame4 << 6) + 0x15A9,
                               0, 1, alpha);
             env->otZ = 0x127;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_FROST_RING), &w->pos58, NULL, (w->frame4 << 5) + 0x15A9,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_FROST_RING), &w->pos58, NULL, (w->frame4 << 5) + 0x15A9,
                               0, 1, alpha);
             env->otZ = 0;
         }
@@ -518,8 +518,8 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = ry;
             rot.pad = 0;
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_BLADE_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SWORD_BLADE_FLASH), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_SWORD_FLASH), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
             env->otZ = 0;
             work->frame4++;
         }

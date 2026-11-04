@@ -9,26 +9,26 @@
 
 /* fx_0df effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_FLARE_SWORD_RED_RINGS    0x3 /* rings: white-pink-red gouraud rings */
-#define FX_FLARE_SWORD_BLAST_RINGS  0x4 /* rings: white-cyan-orange-red gouraud rings, the blast */
-#define FX_FLARE_SWORD_FIRE_DOME    0x5 /* model: dome with a fire texture */
-#define FX_FLARE_SWORD_EMBERS       0x6 /* emitter: red ember sprites + orange glow */
-#define FX_FLARE_SWORD_SHOCK_RINGS  0x8 /* emitter: white-crimson / white-violet gouraud rings */
-#define FX_FLARE_SWORD_FAN_EMITTER  0x9 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_FLARE_SWORD_BACKDROP     0xB /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
-#define FX_FLARE_SWORD_SPHERE       0xC /* model: sphere, texture page 0x13C not in the file (look pending) */
-#define FX_FLARE_SWORD_GOURAUD_RING 0xD /* model: flat gouraud annulus (colours not rendered) (look pending) */
-#define FX_FLARE_SWORD_BACKDROP_2   0xE /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
-#define FX_FLARE_SWORD_GLOW         0x10 /* particles: orange glow with a white core */
-#define FX_FLARE_SWORD_EMBERS_2     0x11 /* emitter: red ember sprites */
-#define FX_FLARE_SWORD_ARCH         0x12 /* model: arch, 15-bit texture page 0x139 (look pending) */
-#define FX_FLARE_SWORD_WHITE_RINGS  0x13 /* rings: white-cream gouraud rings */
-#define FX_FLARE_SWORD_BACKDROP_3   0x18 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
-#define FX_FLARE_SWORD_TEX_RING     0x19 /* rings: textured ring, texture not in the file (look pending) */
-#define FX_FLARE_SWORD_TEX_RING_2   0x1A /* rings: textured ring, texture not in the file (look pending) */
-#define FX_FLARE_SWORD_BLUE_BOLT    0x1B /* trail: blue lightning strip (fxm_drawOffsetTrail) */
-#define FX_FLARE_SWORD_BLADE_GLINT  0x1E /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
-#define FX_FLARE_SWORD_BLADE_FLASH  0x1F /* rings: white 8-segment rings flashed rotating at the sword (op84) */
+#define FX_SWDMAG_FLARE_RED_RINGS    0x3 /* rings: white-pink-red gouraud rings */
+#define FX_SWDMAG_FLARE_BLAST_RINGS  0x4 /* rings: white-cyan-orange-red gouraud rings, the blast */
+#define FX_SWDMAG_FLARE_FIRE_DOME    0x5 /* model: dome with a fire texture */
+#define FX_SWDMAG_FLARE_EMBERS       0x6 /* emitter: red ember sprites + orange glow */
+#define FX_SWDMAG_FLARE_SHOCK_RINGS  0x8 /* emitter: white-crimson / white-violet gouraud rings */
+#define FX_SWDMAG_FLARE_FAN_EMITTER  0x9 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_SWDMAG_FLARE_BACKDROP     0xB /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_SWDMAG_FLARE_SPHERE       0xC /* model: sphere, texture page 0x13C not in the file (look pending) */
+#define FX_SWDMAG_FLARE_GOURAUD_RING 0xD /* model: flat gouraud annulus (colours not rendered) (look pending) */
+#define FX_SWDMAG_FLARE_BACKDROP_2   0xE /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_SWDMAG_FLARE_GLOW         0x10 /* particles: orange glow with a white core */
+#define FX_SWDMAG_FLARE_EMBERS_2     0x11 /* emitter: red ember sprites */
+#define FX_SWDMAG_FLARE_ARCH         0x12 /* model: arch, 15-bit texture page 0x139 (look pending) */
+#define FX_SWDMAG_FLARE_WHITE_RINGS  0x13 /* rings: white-cream gouraud rings */
+#define FX_SWDMAG_FLARE_BACKDROP_3   0x18 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_SWDMAG_FLARE_TEX_RING     0x19 /* rings: textured ring, texture not in the file (look pending) */
+#define FX_SWDMAG_FLARE_TEX_RING_2   0x1A /* rings: textured ring, texture not in the file (look pending) */
+#define FX_SWDMAG_FLARE_BLUE_BOLT    0x1B /* trail: blue lightning strip (fxm_drawOffsetTrail) */
+#define FX_SWDMAG_FLARE_SWORD_GLINT  0x1E /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
+#define FX_SWDMAG_FLARE_SWORD_FLASH  0x1F /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 
 typedef struct {
     s32 state0; /* state */
