@@ -4062,3 +4062,161 @@ btlfx_playUnitMotion` and `run3.py r41_item --patch 0x0E,0xEC,0x01` (Potion on V
 9. **ovl_0b nop exports 0x090/0x094/0x0A4/0x29C/0x300/0x308/0x30C: CONFIRMED never reached** in black magic (effect 0),
    Leviathan full (0xB3), Fenrir full (0xD2), Throw (0x110), the Malboro's own attacks (0x64, 0x18) and Atomos / Ark
    (above, those runs did not trace them). Exec breakpoints on all seven: 0 hits. high.
+
+## R41b runtime pass: R41 question files  (status: proposed)
+Lists: docs/wip/r41_runtime_ovl_0b.md (Q1-Q3), docs/wip/r41_runtime_main.md (rows 2-5; row 1, the ATE sprites, was
+answered by "R41 runtime pass" above), docs/wip/r41_runtime_overlays.md (Q1-Q11). Redux, LuaJIT off, 2026-11-04.
+Scratch in `build/r41b/` (`tp.py` world-map teleport + topography/area readout, `toposweep.py` airship grid sweep with
+R37's `build/verify/topofind.py`, `bankabl.py`, `bgscene.sh`, `title.py`, `abl.py`, `areas.py`) and `build/rt3/r41b_*`.
+World-map area names come from the data pack at runtime (`g_worldAreaNames` at 0x800CF478 is a *pointer*; area n =
+string 2n). New states: disc 4 `r41b_wm_disc4_memoria_orb`, `r41b_wm_disc4_windmill`; disc 1 `r41b_wm_d1_story1000`
+(world 9000, story 0x1000) and `r41b_tmp` (scratch, overwritten by abl.py).
+
+### ovl_0b
+- **Q1 BTLBG_SCENE_*: scene ids CONFIRMED, locations from the field that starts each battle.** `build/r41b/bgscene.sh ENC
+  FIELD DISC BASE` (= `tools/rt/enter_battle.py ... --frames 1300`, read `g_btlbgId` 0x800FE50C, two screenshots 60
+  frames apart, `build/r41b/bg_ENC_{a,b}.png`). Field names = the field script's name (`tools/evtscript/evtdis.py F
+  --disc N`, Shift-JIS):
+  | id | enc (field) | g_btlbgId | field name | seen | proposed |
+  |---|---|---|---|---|---|
+  | 7 | 931 Nova Dragon (2756, disc 4) | 0x07 | "Red Rose/Bridge" | pink-white sky, no floor | `BTLBG_SCENE_NOVA_DRAGON` (or `_RED_ROSE_SKY`) |
+  | 0x44 | 84 Armodullahan (1423, disc 2) | 0x44 | "Fossil Roo/Passage" | stone tunnel with arches (the cart chase) | `BTLBG_SCENE_FOSSIL_ROO` |
+  | 0x6E | 924 (2902, disc 4) | 0x6E | "Memoria/Stairs of Time" | stone balustrade / colonnade | `BTLBG_SCENE_MEMORIA_STAIRS` |
+  | 0x70 | 925 (2906, disc 4) | 0x70 | "Memoria/Oblivion" | tall hall with windows and balconies | `BTLBG_SCENE_MEMORIA_OBLIVION` |
+  | 0xA8 | 191 Hades (2914, disc 4; also 952/960 from 2921) | 0xA8 | "Memoria/Birth", "Memoria/To the Origin" | dark void, red crystal mass on a floating platform | `BTLBG_SCENE_MEMORIA_ORIGIN` |
+  | 0xAB | 937 Trance Kuja (2927, disc 4) | 0xAB | "Crystal World/Origin" | tilted round platform with red spikes in space | `BTLBG_SCENE_CRYSTAL_WORLD` |
+  Which part moves was not isolated (the battles ran without calm pokes, so screenshots are mid-action); the motion
+  names can stay as comments. high (ids/locations), low (moving part).
+- **Q2 BTL_SOUND_BASE_BANK 0x201 → `BTL_SOUND_SE_BANK` (the battle's SE instrument bank). CONFIRMED.** Log bps on
+  akao_loadBankRetry (0x80055D80) and akao_loadBankInSlot during `enter_battle.py 899 --field 2714 --party 0,1,2,6`
+  (disc 3): 1 hit each per battle load. Offline: DIR_SOUND_BANKS file 0x201 is AKAO bank id 208, SPU 0x4F100, 0x13F80
+  bytes, slot 192, 32 instruments, i.e. g_akaoInstruments 192-223 = SE instrument numbers 0xC0-0xDF that
+  akao_remapSeInstrument maps; the field SE banks (files 0x0/0x14/0x27/0x3A/0x4F/0x63/0x78/0x8E) load into the same
+  SPU address and slot. Runtime (`run3.py r41b_inst3 / r41b_inst4` from `disc3_malboro_lv99_calm`, trace
+  akao_setChannelInstrument + akao_playSe): instrument 192 is keyed by the battle SE data at 0x80198758 (Zidane's
+  attack swing, from btl_soundCmd+0x4CC), 0x8019BAD0 and 0x80199AB0; the menu cursor (data 0x800A5E8C) uses 133 (bank
+  0x84 below), enemy/spell sounds 128-175, the music only slot-0 instruments 0-9. An audio ablation (stubbing
+  akao_loadBankRetry, `bankabl.py`) was inconclusive: music dominates the mix. high (what it is), medium (which SE).
+- **Q3 BTLFX_SNDSET_CAST_EIKO: CONFIRMED with a correction: kind 10 only.** `run3.py` from `disc3_malboro_lv99_calm`,
+  trace btlfx_playSoundSet / btlfx_startCastEmitter: Eiko (Triangle x3 to her menu, `--patch 0x11,0x01,0x01` Cure on
+  Zidane) → set **0** because her Character.info.kind is 11 (CHR_KIND_EIKO_RACKET; weapon 0x36); with the kind poked
+  to 10 (byte 0x8008B620 = 0xA6) → set **1**, sounds 0x17/0x18/0x19 (set 0 = 0x13/0x15/0x16). Zidane casting Fire
+  (`--patch 0x16,0x19,0x10`, kind BLACK) → 0; Shiva (`0x10,0x31,0x10`, kind SUMMON) → 2; the Malboro's own cast
+  (no calm, btlfx_start 0x39, kind ENEMY) → 0. g_btlfxUnitKinds (0x800F8D70) = 0A 00 00 00 01 00 00 00 0D 0E 0B 0C 12.
+  Unit argument is BTLFX_UNIT_CASTER (0x10) in every case. Keep the name; comment: "caster kind CHR_KIND_EIKO
+  (not EIKO_RACKET)". Cast-texture screenshots not taken (Cure: white burst with sparkles at Eiko,
+  `build/rt3/r41b_eikocure_02.png`). high.
+
+### main / ovl_0d
+- **Row 2 tm_soundCmd musicBank[0] = 0xE2 → `TM_MUSIC_BANK` (the Tetra Master song's instrument bank). CONFIRMED.**
+  Field 2714: GameData.musicId[0] 0x54, musicBank[0] 0xF1. `enter_tm.py 12 900` with a log bp on db_lookupRegistered:
+  keys 0x900FA, 0x900E2 (tm_loadSoundBlocks, the two DB_SOUND_BANK entries of the TM data file, uploaded with
+  akao_uploadBank) and 0x70042 (MUSIC_TETRA_MASTER); afterwards musicId[0] 0x42, musicBank[0] 0xE2. Offline: bank 0xE2
+  = AKAO id 62, SPU 0x3100, slot 0, 96 instruments (a music bank, like the field's 0xF1); 0xFA = id 701, SPU 0x63100,
+  slot 160, 32 instruments (TM sound effects, `TM_SE_BANK`). high.
+- **Row 3 TM files 6/7/8/0xA. CONFIRMED by decoding them.** Log bp on tm_loadTim during `enter_tm.py 12 300`; the TIMs
+  were still in RAM (file 6 at 0x80169200, 7 0x80179A00, 8 0x80182200, 0xA 0x8018EA00) and were rendered to
+  `build/r41b/tmfileN.png`. 6 (8 bpp 256x256): "WIN" / "LOSE" / "PERFECT" / "DRAW" banners with their shadows, "Card
+  Select", "Discard", "Selection", Japanese "discard cards" line, combo digits and "COMBO" → `TM_FILE_RESULT_TEXT`.
+  7 (8 bpp 256x128): big blue and orange score numerals 1-10, the card backs (blue, orange, two grey stone, the ornate
+  one), small arrow glyphs and a hex stat font → `TM_FILE_SCORE_DIGITS` (or `_PARTS`). 8 (8 bpp 256x128): the arrow
+  pointers, "NEW Card", "Last ONE!", the coin (both faces and edge frames: the coin toss), a stat font, "R2 NAME",
+  L1 / R1 → `TM_FILE_COIN`. 0xA (4 bpp 256x32): card-type icons, digits, "Select!" → `TM_FILE_SELECT_PARTS`. high.
+- **Row 4 TM_AI_WEAK..EXPERT: CONFIRMED order.** g_tmOpponents (0x80104000) in a match: levels 0/1/2/3 used 139/22/33/62
+  times. Opponents 0-43 cycle decks 0-10 at every level, 44-73 decks 11-20 at levels 1-3, 74-93 decks 21-30 at 2-3,
+  94-123 decks 31-59 and 123/127 only at 3; 124-126 = decks 60-62 at 1/2/2; 128-255 = decks 0-63 again at level 0. The
+  higher the deck, the higher the minimum level, so 0 = easiest, 3 = hardest. Story opponents not mapped. high.
+- **Row 5 EVT_FUNC_RESUME 10 / EVT_FUNC_MENU 4: CONFIRMED; MENU is world-map only.** Trace evt_callObjectFunc:
+  (a) field 2714, Triangle → menu → Circle: evt_onMenuOpen runs (from fld_main+0x118) but calls nothing (it only calls
+  on g_evtMode == WORLD); (b) world (`cpass_wm_hadris`), Triangle: evt_callObjectFunc(obj0 0x80077EB0, 1, 4, 0) from
+  evt_onMenuOpen+0xF8, v0 = 1 (the world script has the tag; its body tests variables 0xD5:0x18-0x1A against 100);
+  (c) battle won from `disc3_malboro_lv99_calm` (Malboro HP 1, Attack, Cross taps): back in field 2714 evt_init →
+  evt_callObjectFunc(obj0, 0, 10, 0) from evt_init+0x734. Field 2714's entry 0 tag 10 (evtdis) re-enables control
+  (op 2E), restores state bytes (op 5B 0..0x16) and shows two conditional messages. The Tetra Master return was not
+  run. Names fit; EVT_FUNC_MENU comment: "world map only". high.
+
+### ovl_0c (world map)
+- **Q1 SE numbers: 25 / 26 CONFIRMED; the other numbers still unknown.** After a teleport, trace wm_sePlay: source 2
+  (299201, -93859, area 60 Triquai Plains) → a0 = 0x19 (WM_SE_RUMBLE_LOOP; the camera-shake source), source 1 (130781,
+  -227819, area 45 "Gusty Valley") → 0x1A (WM_SE_VORTEX_LOOP), source 0 (Cleyra) silent because WM_FORM_CLAY is set at
+  story 0x28A0. `audio record` at source 1 vs far away: much more low-frequency and hiss energy (wind). Proposed
+  `WM_SE_WIND_LOOP` for 26 (both sources are wind/sandstorm). 0-4, 6, 7, 20, 21, 30-35, 37, 40-42 not requested in this
+  pass.
+- **Q2 WM_TOPO_PUSHBACK 0x17 → `WM_TOPO_GUSTY_VALLEY` (or `WM_TOPO_WIND`). CONFIRMED.** `toposweep.py` found 0x17 only
+  in cells (15-16, 26-27) next to source 1. Walker teleported to (131264, -222500) in `cpass_wm_hadris`: topography
+  0x17, area 45 = "Gusty Valley", z then rises every frame (-222500 → -221172 → -220236 over 100 frames: pushed away
+  from the source toward +z), sunset-lit desert canyon (`build/r41b/push3.png`, `src1_w-*.png`). The ambient loop
+  there is 26. high.
+- **Q3 chocobo call cells: they differ by ground, not by region. CONFIRMED.** Walker on each found cell
+  (`build/r41b/choc_N.png`): all show chocobo footprints. 0x03 (areas 24 Edgecry Coast, 46 Everlang Island, 13
+  Eesistern Coast, 7 Eunorus Plains, 50 Salvage Archipelago) = tracks on grass; 0x12 (32 Lucid Plains, 31 Kognish
+  Shores, 37 Falstead Coast) = tracks on brown earth; 0x15 (42 Blairsurpass Plains) = tracks on brown earth (Forgotten
+  Continent side); 0x1C (53 Mitmakis Ice Field) = tracks on snow; 0x16 not present in the disc 3 world. Proposed
+  `WM_TOPO_CHOCOBO_TRACKS_GRASS 0x03`, `_EARTH 0x12`, `_EARTH_2 0x15`, `_TRACKS_4 0x16`, `_SNOW 0x1C`. high (grass,
+  snow), medium (0x12 vs 0x15), low (0x16).
+- **Q4 WM_TOPO_NO_LANDING 0x2D / 0x2E: rocky plateau/canyon tops; the circle is the upside-down castle.** 0x2D in cells
+  (4-9, 14-17), areas 43 Yuanshao Peninsula / 42; 0x2E in cells (11-15, 19-23), areas 41 Seaways Canyon / 45 Gusty
+  Valley. Walker on 0x2D (47367, -132597): brown cliff-top plateau by the sea with the castle model below in a crater
+  (`w2d_1.png`); on 0x2E (105130, -166230): sunset rock plateau (`w2e_1.png`). Circle (49120, -121408): the walker stands
+  next to an upside-down castle in a crater ("Enter with X"; the field entered was 2500 "I. Castle/Entrance", Ipsen's
+  Castle, but every teleport-then-Enter in this pass gave 2500, so that id is not position evidence; the model is).
+  Circle on the airship (`land.py`): Circle over 0x2D / 0x2E cells did land, on a nearby 0x31 cell (wm_findGetoffPos
+  searches around), so the refusal itself was not isolated. Proposed: keep `WM_TOPO_NO_LANDING(_2)`, comments
+  "Forgotten Continent rock plateaus (0x2D around Ipsen's Castle, 0x2E Seaways Canyon / Gusty Valley)"; circle
+  `WM_IPSEN_CASTLE_X/Z/R` if named. medium.
+- **Topographies 0x30 / 0x33 (literals_runtime leftover): 0x30 waterfall, 0x33 river. CONFIRMED (medium).** Sweep: 0x30
+  in 9 cells, 0x33 in 7. Near (322000, -192000) (`r37_wm_waterfall`, two waterfalls on screen) the 0x30 polygons run
+  from y -6736 down to -684 at (316-331k, -176k..-190k): the falls and their basin; another flat 0x30 pool at y -3900
+  (98000, -262000). 0x33 near (265653, -251608): a thin strip of 27 polygons rising from y -10 to -115 inland and
+  ending at 0x35/0x36/0x37 water (a river mouth), and 42 polygons (313-319k, -188k..-204k) below the waterfalls
+  (y -661..-100). Neither can be walked on (the walker never snaps). Proposed `WM_TOPO_WATERFALL 0x30`, `WM_TOPO_RIVER
+  0x33`.
+- **Q5 WM_STORY_TITLE_0..3: CONFIRMED.** `build/r41b/title.py V` (wm_enter.py with the story poke, write log on
+  g_worldTitleId, 12 screenshots): 0x960 → title 0 "Mist Continent" (shown after the "Normal Navigation" help window
+  closes), 0x1766 → 1 "Outer Continent", 0x2585 → 2 "Forgotten Continent", 0x26A2 → 3 "Lost Continent" (each written
+  by wm_loadWorldData 0x800BAA54.., cleared by wm_drawTitle 0x800C107C ~950 frames later). Proposed
+  `WM_STORY_TITLE_MIST`, `_OUTER`, `_FORGOTTEN`, `_LOST` (the continent names). high.
+- **Q6 fog = the Mist. CONFIRMED (medium).** Same spot: story 0x1765 dark blue-grey haze over the Mist Continent map,
+  0x1766 clear daylight (`title_6517_11.png` / `title_6617_11.png`; the data set changes at the same value, so
+  fog and map switch together); disc 3 (0x28A0) clear; disc 4 (`r37b_wm_invincible_entry`, 0x2B5C) thick purple haze.
+  0x2B53 could not be entered on disc 1 (the world init stalled). Proposed `WM_STORY_MIST_GONE 0x1766`,
+  `WM_STORY_MIST_BACK 0x2B53`.
+- **Q7 block effects.** Emitter tables read from the data pack (`g_worldDataPack` 0x800CF428 -> entry 0x28 + id):
+  - `WM_BLOCKFX_DISC4_CORE 6` → **`WM_BLOCKFX_MEMORIA_ORB`. CONFIRMED.** `r37b_wm_invincible_entry` (disc 4), Invincible
+    teleported to (196602, -82002): a huge purple glowing sphere with swirling shells over a mound, "???" location,
+    "Enter with Circle", area 34 Pualei Plains (Iifa Tree) (`build/r41b/core_d.png`, state `r41b_wm_disc4_memoria_orb`).
+    high.
+  - `WM_BLOCKFX_SPINNER 7` → **`WM_BLOCKFX_WINDMILL`. CONFIRMED (visual).** Disc 4, Invincible at (283000, -210000):
+    a round stone hut with wooden windmill sails in the mountains, area 2 Nolrich Heights (`spin_e.png`, state
+    `r41b_wm_disc4_windmill`). Its emitter table: one type-1 entry at (282172, -6779, -205870). Rotation itself not
+    filmed. high (object), medium (turning).
+  - `WM_BLOCKFX_STORY 3`: emitters at (317649, -100, -71480), (312305, -50, -69732), (318280, -126, -66560), effect
+    type 4, chance 32/4096 per frame. `cpass_wm_hadris` with story poked to 0x2500: wm_spawnEffect(…, type 4) from
+    wm_updateBlockFx 3 times in 600 frames; area 39 = Kiera Desert (sand dunes, a pyramid-shaped rock). The effect was
+    not visible in screenshots. Proposed `WM_BLOCKFX_KIERA_DESERT` (place) ; the effect stays type 4. medium.
+  - `WM_BLOCKFX_CLAY 4`: not reached. Disc 1 world 9000 at story 0x1000 (`r41b_wm_d1_story1000`), walker near
+    (229007, -207000), area 12 Vube Desert: no loaded block has an fxId there (wm_updateBlockFx / wm_drawBlockFx 0
+    calls; ablation diff empty). Emitter table entry 4 is empty in the disc 3 pack. Still unknown.
+  - `WM_BLOCKFX_GULUG_SUMMIT 2` (type 3 at (129057, -2400, -29156), chance 1024): not re-run (R37 could not see it).
+- **Q8 WM_MUSIC_RESIDENT 0x64 → `WM_MUSIC_CHOCOBO`. CONFIRMED.** `r37b_wm_chocobo_ride`: GameData.musicId = {0x45,
+  0x64}, musicBank {0x13B, 0x17B} (slot 1 = the resident song, playing while riding); g_worldSongMusicIds[1]
+  (WM_SONG_CHOCOBO) = 0x64. high.
+- **Q9 g_worldSongMusicIds is u8[6] = 45 64 70 2D 5F 60. CONFIRMED** on disc 1 (world 9000, story 0x1000), disc 3
+  (`cpass_wm_hadris`, playing 0x45; `cpass_wm_airship9` playing 0x70) and disc 4 (`r37b_wm_invincible_entry`, playing
+  0x2D). Proposed snd_ids.h: `MUSIC_WORLD_MAP 0x45`, `MUSIC_CHOCOBO 0x64`, `MUSIC_AIRSHIP 0x70`, `MUSIC_WORLD_DISC4
+  0x2D`, `0x5F` / `0x60` = WM_SONG_FIELD1 / 2 (not heard). The ids are the same in the overlay image (no runtime fill).
+  high.
+- **Q10 EVT_GB_WM_FILE: = world file index (worldId - 9000). CONFIRMED.** `tools/rt/wm_force.py 9000..9012 --disc 3`:
+  b[0x66] (0x8007AF56) = 0..0xC after each init, written by the world script (write bp: evt_writeVar from
+  evt_runExpr). Known files: 0 = disc 1 Mist-continent world (Ice Cavern exit), 3 = boat era (`r37b_wm_boat_entry`,
+  story 0x24B8), 7 = disc 3 free world (`cpass_*`), 8 = disc 4 (`r37b_wm_invincible_entry`). Rain spot (247888,
+  -186968): `cpass_wm_hadris` with b[0x66] poked to 8, walker at (247888, -192000): rain falls in front of a round
+  stone building in a grassy basin (area 9 Daines-horse Basin, `rain8.png`); with 7 no rain (`rain7.png`).
+  Proposed `WM_FILE_DISC1 0`, `WM_FILE_DISC4 8`. medium (which story spans the two files cover).
+
+### ovl_0a
+- **Q11 FLD_SOUND_BANK_NO_UPLOAD 0x84 → `SND_BANK_COMMON` (the resident system SE bank). CONFIRMED.** main
+  `game_loadCommonAkao` uploads DB_SOUND_BANK | 0x84 once; offline the bank is AKAO id 0, SPU 0x71100, slot 128,
+  128 instruments; at runtime (battle traces above) the menu cursor SE keys instrument 133 and battle/spell SE use
+  128-175, all inside this bank. So the field never re-uploads it because it is always resident. Not seen requested by
+  a field in this pass. high (identity), medium (field use).
