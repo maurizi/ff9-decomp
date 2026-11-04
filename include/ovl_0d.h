@@ -56,6 +56,7 @@ enum { TM_RESULT_WIN, TM_RESULT_LOSE, TM_RESULT_DRAW };
 #define TM_HAND_SIZE 5 /* cards 0-4 the player's, 5-9 the enemy's */
 #define TM_NUM_CARDS 10
 #define TM_BOARD_SIZE 4 /* the board is 4 x 4 squares (tm_getCell, TmState.board) */
+#define TM_STOCK_SIDE 10 /* the stock screen shows the CARD_KINDS ids as a 10 x 10 grid (tm_stockInput) */
 #define TM_MAX_BLOCKS 6 /* block stones per game (tm_placeBlocks, TmState.blocks) */
 
 /* Board on screen: square x, y is at (x * TM_SQUARE_W + TM_BOARD_X, y * TM_SQUARE_H + TM_BOARD_Y). */
@@ -69,7 +70,8 @@ enum { TM_RESULT_WIN, TM_RESULT_LOSE, TM_RESULT_DRAW };
 #define TM_ENEMY_HAND_X  0x10
 
 /* Arrow directions (TmCard.arrows bit, tm_stepDir), clockwise from up */
-enum { TM_DIR_UP, TM_DIR_UP_RIGHT, TM_DIR_RIGHT, TM_DIR_DOWN_RIGHT, TM_DIR_DOWN, TM_DIR_DOWN_LEFT, TM_DIR_LEFT, TM_DIR_UP_LEFT };
+enum { TM_DIR_UP, TM_DIR_UP_RIGHT, TM_DIR_RIGHT, TM_DIR_DOWN_RIGHT, TM_DIR_DOWN, TM_DIR_DOWN_LEFT, TM_DIR_LEFT, TM_DIR_UP_LEFT,
+       TM_NUM_DIRS };
 
 /* Opponents 0x7C-0x7F (TmState.opponent): no "Cancel game" in the stock, no quitting, no rematch, and a draw
  * plays again (EXTENSION). */
@@ -271,7 +273,7 @@ typedef struct {
     u8 brightness;
     u8 pad2ED[3];
     TmBlock blocks[TM_MAX_BLOCKS];
-    TmFlip flips[10];
+    TmFlip flips[TM_NUM_CARDS]; /* at most one per card */
     s32 phase;    /* sub-step of the current task or animation */
     s32 flipOwner; /* owner the flipped cards get */
     s32 flashNext; /* task after the flash, -1 = tm_checkBattles again */
@@ -295,13 +297,13 @@ typedef struct {
     s32 showBoard;  /* tm_drawBoard */
     s32 showBlocks; /* tm_drawBlocks */
     TmCard *tradeCard; /* card changing hands (CARD_CHANGE, CHANGE2) */
-    s32 stockCol; /* stock grid cursor, card id = col * 10 + row */
+    s32 stockCol; /* stock grid cursor, card id = col * TM_STOCK_SIDE + row */
     s32 stockRow;
     s32 handCount; /* cards picked from the stock into the hand */
     s32 animFrame; /* cursor animation frame; never initialised (stack residue, F42) */
     Window *quitWin;
     s32 savedFrame; /* animFrame of the hand cursor kept while placing */
-    TmCard *targets[8]; /* cards the placed card can battle (BATTLE SELECT) */
+    TmCard *targets[TM_NUM_DIRS]; /* cards the placed card can battle, one per direction at most (BATTLE SELECT) */
     s32 numTargets;
     TmCard *attacker;
     s32 copyIdx;  /* which copy of the card under the stock cursor */

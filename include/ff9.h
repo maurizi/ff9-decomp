@@ -4309,6 +4309,11 @@ typedef struct {
 #define EVT_OP_SET_DIR_OFFSETS 0x67 /* analog, pad: state.analogDirOfs/padDirOfs = arg << 4 */
 #define EVT_OP_PLAYER_BUBBLE 0x68 /* variant: msg_showPlayerBubble: 0 "?", 1 "!" */
 #define EVT_OP_WALK_ONLY 0x6A /* state.walkOnly = 1 */
+/* evt_movePlayer [code]: the player's speed from the d-pad (run with Circle or the run setting; capped at the walk
+ * speed under walkOnly, and above it each step counts twice in g_evtStepCount), and its "no input" direction */
+#define EVT_PLAYER_WALK_SPEED 30
+#define EVT_PLAYER_RUN_SPEED 60
+#define EVT_DIR_NONE 0x8000
 #define EVT_OP_CLEAR_COLOR 0x6B /* r, g, b: game_setClearColor */
 #define EVT_OP_BG_SCROLL_TO 0x6F /* x, y, frames, mode: fldbg_scrollTo */
 #define EVT_OP_BG_SCROLL_TO_PLAYER 0x70 /* fldbg_scrollToPlayer */

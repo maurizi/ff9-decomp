@@ -2353,8 +2353,8 @@ void evt_movePlayer(EvtObject *obj) {
     s32 magSq;
 
     hit = NULL;
-    speed = 30;
-    dir = 0x8000;
+    speed = EVT_PLAYER_WALK_SPEED;
+    dir = EVT_DIR_NONE;
     analog = 0;
     memset(&step, 0, 8);
     pad = msg_getPadHeld();
@@ -2388,7 +2388,7 @@ void evt_movePlayer(EvtObject *obj) {
     if (!analog) {
         run = ((GameConfig *)&g_gameState->config)->movementRun;
         if ((pad & BTN_CIRCLE) ? (run ^ 1) != 0 : run != 0) {
-            speed = 60;
+            speed = EVT_PLAYER_RUN_SPEED;
         }
         if (pad & PAD_LEFT) {
             dir = 0x400;
@@ -2397,22 +2397,22 @@ void evt_movePlayer(EvtObject *obj) {
             dir = -0x400;
         }
         if (pad & PAD_DOWN) {
-            if (dir == 0x8000) {
+            if (dir == EVT_DIR_NONE) {
                 dir = 0;
             } else {
                 dir -= dir >> 1;
             }
         }
         if (pad & PAD_UP) {
-            if (dir == 0x8000) {
+            if (dir == EVT_DIR_NONE) {
                 dir = 0x800;
             } else {
                 dir += dir >> 1;
             }
         }
     }
-    g_evtPlayerMoved = dir != 0x8000;
-    if (dir != 0x8000) {
+    g_evtPlayerMoved = dir != EVT_DIR_NONE;
+    if (dir != EVT_DIR_NONE) {
         if (analog) {
             dir += g_evtState->analogDirOfs;
         } else {
@@ -2427,10 +2427,10 @@ void evt_movePlayer(EvtObject *obj) {
             cur += 0x1000;
         }
         obj->pos.rotY = ((cur + dir) >> 1) & 0xFFF;
-        if (g_evtState->walkOnly != 0 && speed > 30) {
-            speed = 30;
+        if (g_evtState->walkOnly != 0 && speed > EVT_PLAYER_WALK_SPEED) {
+            speed = EVT_PLAYER_WALK_SPEED;
         }
-        if (speed > 30) {
+        if (speed > EVT_PLAYER_WALK_SPEED) {
             g_evtStepCount += 2;
         } else {
             g_evtStepCount += 1;
