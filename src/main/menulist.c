@@ -303,7 +303,7 @@ void fade_update(void) {
             fn(fade);
         }
     }
-    if (*(u32 *)&g_fade & 0xFFFF0000) {
+    if (*(u32 *)&g_fade & FADE_DRAWN) {
         fn = (FadeFn)g_fadeTypes[g_fade.type].draw;
         if (fn != NULL) {
             fn(&g_fade);

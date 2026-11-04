@@ -12,7 +12,7 @@ void sprAnim_drawCell(s32 x, s32 y, s32 otz, s32 unused, SprCell *cell) {
     g_primPtr = (u8 *)(sprt + 1);
     sprt->wh = cell->w | (cell->h << 16);
     addPrim(&g_ot[otz], sprt);
-    SetDrawTPage(g_primPtr, 1, 1, ((clutTp >> 16) & 0x1F) | (((clutTp >> 21) & 3) << 5) | (((clutTp >> 23) & 3) << 7));
+    SetDrawTPage(g_primPtr, 1, 1, SPRCELL_TPAGE(clutTp));
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 8;
 }
@@ -26,7 +26,7 @@ void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, SprAnim *unused, AnimCell *an
 
     clutTp = animCell->cell.clutTpage;
     sw = (animCell->cell.w * animCell->scaleX) >> 12;
-    tp = ((clutTp >> 16) & 0x1F) | (((clutTp >> 21) & 3) << 5) | (((clutTp >> 23) & 3) << 7);
+    tp = SPRCELL_TPAGE(clutTp);
     sh = (animCell->cell.h * animCell->scaleY) >> 12;
     x = x + animCell->cell.x - 0x80 + ((animCell->cell.w - sw) >> 1);
     y = y + animCell->cell.y - 0x80 + ((animCell->cell.h - sh) >> 1);
@@ -97,7 +97,7 @@ void sprAnim_draw(s32 x, s32 y, s32 otz, SprAnim *anim) {
     AnimCell *animCell = (AnimCell *)((u8 *)anim->base + cl->offset);
 
     for (i = 0; i < cl->count; i++) {
-        if (!((animCell->cell.clutTpage >> 26) & 1)) {
+        if (!SPRCELL_SCALED(animCell->cell.clutTpage)) {
             sprAnim_drawCell(x + frameDef->x, y + frameDef->y, otz, (s32)anim, &animCell->cell);
         } else {
             sprAnim_drawScaledCell(x + frameDef->x, y + frameDef->y, otz, anim, animCell);

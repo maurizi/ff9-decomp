@@ -92,21 +92,21 @@ s32 mbg_getStatus(void) {
     s32 status = 0;
 
     if (g_mbgState == 1) {
-        return 1;
+        return MBG_STATUS_OPEN;
     }
     if (g_mbgState >= 2) {
-        status = 1;
+        status = MBG_STATUS_OPEN;
         if (g_mbgFrame > 0) {
-            status = 3;
+            status = MBG_STATUS_OPEN | MBG_STATUS_PLAYING;
         }
         if (g_mbgPaused != 0) {
-            status |= 0x10;
+            status |= MBG_STATUS_PAUSED;
         }
         if (g_mbgRgb24 != 0) {
-            status |= 4;
+            status |= MBG_STATUS_RGB24;
         }
         if (g_mbgIsBackground == 1) {
-            status |= 8;
+            status |= MBG_STATUS_BACKGROUND;
         }
     }
     return status;

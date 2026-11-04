@@ -83,9 +83,9 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
     lo = key & 0xFFFF;
     for (i = 0; i < typeCount; i++, ent++) {
         blk = (u8 *)*ent;
-        type = ((u32)blk >> 24) & 0x7F;
+        type = DB_ENTRY_KIND((u32)blk);
         if (type == hi) {
-            blk = (u8 *)ent + ((u32)blk & 0xFFFFFF);
+            blk = (u8 *)ent + ((u32)blk & DB_ENTRY_OFS);
             cnt = blk[1];
             if (mode == DB_GET_BLOCK) {
                 return (s32)blk;
@@ -103,7 +103,7 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
             }
             if (mode == DB_GET_AT) {
                 ofsEnt = &ofs[lo];
-                return (s32)ofsEnt + (*ofsEnt & 0xFFFFFF);
+                return (s32)ofsEnt + (*ofsEnt & DB_ENTRY_OFS);
             }
             for (j = 0; j < cnt; j++) {
                 if (*ids == lo) {
@@ -111,9 +111,9 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
                     case DB_GET_ADDR:
                         do {
                         } while (0);
-                        return (s32)ofs + (*ofs & 0xFFFFFF);
+                        return (s32)ofs + (*ofs & DB_ENTRY_OFS);
                     case DB_GET_SIZE:
-                        return (ofs[1] & 0xFFFFFF) - (ofs[0] & 0xFFFFFF) + 4;
+                        return (ofs[1] & DB_ENTRY_OFS) - (ofs[0] & DB_ENTRY_OFS) + 4;
                     case DB_GET_KEY_AT_IN:
                         subResult = db_lookup(db, DB_GET_KEY_AT, subKey, 0);
                         return subResult;
@@ -144,7 +144,7 @@ s32 db_getSize(s32 db) {
     s32 tmp; /* entry count, then the id table size (separate locals don't match) */
     s32 misalign;
 
-    if (base == NULL || base[0] != 0xDB) {
+    if (base == NULL || base[0] != DB_MAGIC) {
         return -1;
     }
     tmp = base[1];
@@ -152,7 +152,7 @@ s32 db_getSize(s32 db) {
         return 4;
     }
     lastEnt = (u32 *)base + tmp;
-    blk = (u8 *)lastEnt + (*lastEnt & 0xFFFFFF);
+    blk = (u8 *)lastEnt + (*lastEnt & DB_ENTRY_OFS);
     k = blk[1];
     tmp = k * 2 + 4;
     misalign = tmp & 3;
@@ -160,7 +160,7 @@ s32 db_getSize(s32 db) {
         tmp += 4 - misalign;
     }
     endEnt = (u32 *)(blk + tmp + k * 4);
-    return (u8 *)endEnt + (*endEnt & 0xFFFFFF) - base;
+    return (u8 *)endEnt + (*endEnt & DB_ENTRY_OFS) - base;
 }
 
 void game_initState(void) {

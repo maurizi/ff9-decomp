@@ -30,7 +30,7 @@ void menuScreen_drawCommands(void) {
     s32 i;
     s32 y;
 
-    if (g_menuScreenCur == 0 || (g_menuScreenSwitch.busy != 0 && (*(u32 *)&g_menuScreenSwitch & 0xFFFF00))) {
+    if (g_menuScreenCur == 0 || (g_menuScreenSwitch.busy != 0 && (*(u32 *)&g_menuScreenSwitch & MENU_SWITCH_TITLE_MOVING))) {
         all = 1;
     }
     win_setClip(NULL, 2, WIN_STYLE_BEVEL);
@@ -63,7 +63,7 @@ void menuScreen_updateOpen(void) {
             menuScreen_stepTitleScroll();
         }
         if (g_menuScreenSwitch.switching == 0 && g_menuScreenSwitch.overlayRetry == 0 && *(u16 *)&g_menuScreenSwitch.overlayLoading == 0 &&
-            !(*(u32 *)&g_menuScreenSwitch & 0xFFFF00)) {
+            !(*(u32 *)&g_menuScreenSwitch & MENU_SWITCH_TITLE_MOVING)) {
             g_menuScreenSwitch.busy = 0;
             g_menuScreen.frame = 0;
             g_menuScreen.screen = g_menuScreenSwitch.target;
