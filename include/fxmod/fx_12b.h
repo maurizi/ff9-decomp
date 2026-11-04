@@ -8,13 +8,13 @@
 /* fx_12b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_PHOTON_SMOKE_PUFF    0x8 /* emitter: yellow-to-blue smoke puffs at each shard, + sub sprites (texture not in the file) */
-#define FX_PHOTON_FAN_EMITTER   0x9 /* emitter: orbiting fan element (not rendered) (look pending) */
+#define FX_PHOTON_LIGHT_STREAK  0x9 /* emitter: orbiting fan, a yellow-to-cyan light streak */
 #define FX_PHOTON_ENERGY_ORB    0xA /* emitter: golden-green energy sphere */
 #define FX_PHOTON_YELLOW_RING   0xB /* emitter: dark-to-bright yellow gouraud rings */
 #define FX_PHOTON_GOLD_RING     0xC /* emitter: dull gold gouraud rings */
 #define FX_PHOTON_PATH_KEYS_2   0x21 /* table: position path keys for fxm_posPathInit (second shard path) */
 #define FX_PHOTON_PATH_KEYS     0x22 /* table: position path keys for fxm_posPathInit (first shard path) */
-#define FX_PHOTON_SPARKS        0x23 /* emitter: spark sprites (texture not in the file) (look pending) */
+#define FX_PHOTON_SPARKS        0x23 /* emitter: white dot sparks */
 #define FX_PHOTON_LIGHT_TRAIL   0x24 /* emitter: white glow screen trail */
 #define FX_PHOTON_LIGHT_TRAIL_3 0x25 /* emitter: white glow screen trail */
 #define FX_PHOTON_LIGHT_TRAIL_2 0x26 /* emitter: white glow screen trail */

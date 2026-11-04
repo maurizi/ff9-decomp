@@ -53,7 +53,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             entry->frame = -1;
             ((Fx101BattleState *)env->state)->signal10 = 0;
             ex->btlfx_fadeUnitById(0x10, 0);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_FAN_EMITTER), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_THIN_STREAKS), (s32)&work->pos14);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
@@ -85,11 +85,11 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->paused = 0;
             ex->btlfx_fadeUnitById(0x10, 0x80);
             ex->btlfx_stopEmitter(work->emit8);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_FAN_EMITTER_2), (s32)&work->posC);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_PINK_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_FAN_EMITTER_3), (s32)&work->posC);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }

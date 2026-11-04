@@ -477,7 +477,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos24.vy = fx_0fb_0_origin.vy;
                 work->pos24.vz = fx_0fb_0_origin.vz;
                 work->pos24.vy += 0x640;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER), (s32)&work->pos24);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_GOLD_LIGHT_BAND), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -490,10 +490,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                                                 0x9A, 0x3E00, 0, 0);
                 }
                 work->rockCount8 = 0;
-                work->model118 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_2), 0x96, 0x3D40, 0, 0);
-                work->model11C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_7), 0x9A, 0x3E00, 0, 0);
-                work->model120 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_4), 0x7C, 0x3D02, 0, 0);
-                work->model124 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_20), 0xBD, 0x3E40, 0, 0);
+                work->model118 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_PINK_CLOUD_BALL), 0x96, 0x3D40, 0, 0);
+                work->model11C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LEAF_MOUND), 0x9A, 0x3E00, 0, 0);
+                work->model120 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_RING), 0x7C, 0x3D02, 0, 0);
+                work->model124 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_ARC), 0xBD, 0x3E40, 0, 0);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_DUST_CLOUD), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x180;
@@ -831,11 +831,11 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_WHITE_RINGS), &work->pos1C, NULL, (t >> 1) + 0xAAA, 0, 1,
                               t >> 1);
             if (frame == 4) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_2), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_LIGHT_STREAKS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_2), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_LIGHT_STREAKS), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -1043,8 +1043,8 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (spriteAlpha != 0) {
             step = (work->frame4 * 16) % 240;
-            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SCROLL_SPRITE), 0xA0 - step, 0xA0, 0, 3, spriteAlpha);
-            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SCROLL_SPRITE), 0x280 - step, 0xA0, 0, 3, spriteAlpha);
+            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0xA0 - step, 0xA0, 0, 3, spriteAlpha);
+            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0x280 - step, 0xA0, 0, 3, spriteAlpha);
         }
         if (gridBright != 0) {
             CVECTOR col;

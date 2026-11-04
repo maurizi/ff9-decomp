@@ -156,14 +156,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = ((SVECTOR *)&pos)[1].vy;
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_SUMMON_MODEL_DATA);
-        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_SUMMON_MODEL), (s32 *)&file, 1, &fx_0ed_summonModel);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_HORNED_FIGURE), (s32 *)&file, 1, &fx_0ed_summonModel);
         ex->Hi_SetSummonMotion(((Fx0edSummon *)env->loader)->summon54->motion180, ((Fx0edSummon *)env->loader)->summonModel60);
         work->scale34[0] = work->scale34[1] = work->scale34[2] = 0x1000;
         work->rot2C.vx = 0;
         work->rot2C.vz = 0;
         work->rot2C.vy = work->rot10.vy;
         ex->btlfx_initEffModels(fx_0ed_effModels, 1);
-        work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_SO_MODEL), 0);
+        work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_HORNED_FIGURE_2), 0);
     } else {
         state = work->state0;
         frame = entry->frame;

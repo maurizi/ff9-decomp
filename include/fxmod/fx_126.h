@@ -9,7 +9,7 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_BOOMERANG_CRESCENTS 0x1 /* emitter: orange, white and blue crescent arcs + debris chips and specks */
 #define FX_BOOMERANG_SWIRL     0x2 /* emitter: orange and teal spiral swirls + yellow and pink gouraud rings */
-#define FX_BOOMERANG_MODEL     0x7 /* 'so' model registered twice (btlfx_registerEffectModel), probably the boomerang (look pending) */
+#define FX_BOOMERANG_CURVED_BLADE 0x7 /* 'so' model: gold curved boomerang blade, registered twice */
 
 typedef struct {
     s32 model0; /* models */

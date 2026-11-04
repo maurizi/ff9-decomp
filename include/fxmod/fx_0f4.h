@@ -14,7 +14,7 @@
 #define FX_SHIFT_BREAK_BACKDROP     0x8 /* table: backdrop layers (btlfx_drawBackdrop) */
 #define FX_SHIFT_BREAK_DOME         0xA /* model: stepped dome, white texture */
 #define FX_SHIFT_BREAK_DOME_2       0xB /* model: stepped dome, white texture (byte-identical to entry 0xA) */
-#define FX_SHIFT_BREAK_CONE_RINGS   0xC /* emitter: textured rings in a cone (texture not resolved) (look pending) */
+#define FX_SHIFT_BREAK_CONE_RINGS   0xC /* emitter: textured rings in a cone; the render reads garbled multicolour texels (texture not resolved) (look pending) */
 #define FX_SHIFT_BREAK_LIGHTNING    0xD /* emitter: white-cyan gouraud rings + blue lightning streak particles */
 #define FX_SHIFT_BREAK_BACKDROP_2   0xE /* table: backdrop layers (btlfx_drawBackdrop) */
 

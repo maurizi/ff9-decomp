@@ -36,7 +36,7 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_startHitMotionIfActive(0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_OLIVE_RINGS), (s32)&work->pos1C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_DUST_WISPS), (s32)&work->pos1C);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_SPECK_ORBIT), (s32)&work->pos1C);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_PINK_STREAK_ORBIT), (s32)&work->pos1C);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

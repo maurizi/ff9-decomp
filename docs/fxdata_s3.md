@@ -382,7 +382,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 |---|---|---|---|
 | 0x1 | `FX_SACRIFICE_RED_PETALS` | render | emitter: spiral of red petals + red glitter |
 | 0x2 | `FX_SACRIFICE_LIGHT_FLASH` | render | emitter: lilac / blue-white rings + white light streaks |
-| 0x5 | `FX_SACRIFICE_FAN_EMITTER` | kind/usage (look pending) | emitter: fans + faint sprites with cyan-white rings |
+| 0x5 | `FX_SACRIFICE_WHITE_FLARE` | render (fxdata d6121033) | emitter: two fans of white light flare streaks, faint sprites with cyan-white rings |
 | 0x9 | `FX_SACRIFICE_LENS_FLARES` | render | sprite line: lens-flare circles and rings |
 
 ### fx_0eb: enemy Psychokinesis (Nova Dragon, ...; FX_PSYCHOKINESIS_)
@@ -402,28 +402,28 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x1 | `FX_DOOM_GOLD_FRAME` | render | model: ornate gold frame, rises sliced |
 | 0x3 | `FX_DOOM_GOLD_PANEL` | render | model: carved gold panel, rises sliced |
 | 0x4 | `FX_DOOM_REAPER_PICTURE` | render | model: panel with the picture of Death |
-| 0x6 | `FX_DOOM_PARTICLES` | kind/usage (look pending) | particles (texture not in the file) |
+| 0x6 | `FX_DOOM_PARTICLES` | kind/usage (look pending) | particles; the render still reads garbled blue texels (texture not in the file) |
 | 0x7 | `FX_DOOM_GOLD_LATTICE` | render | model: capsule with a gold lattice texture |
 | 0x8 | `FX_DOOM_PINK_RINGS` | render | emitter: pink-white rings (+ particles, texture not in the file) |
 | 0x9 | `FX_DOOM_CAMERA_POINT` | usage | table: SVECTOR whose pad sets the camera point height |
 | 0xB | `FX_DOOM_RED_RING` | render | emitter: glowing red ring sprite |
 | 0xC | `FX_DOOM_PINK_SMOKE` | render | emitter: pink-violet smoke |
-| 0xD | `FX_DOOM_GLOW_SHELL` | kind/usage (look pending) | model: capsule, additive, texture page computed (drawn twice) |
+| 0xD | `FX_DOOM_GLOW_SHELL` | kind/usage (look pending) | model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice |
 | 0xE | `FX_DOOM_CYAN_SPARKLES` | render | emitter: cyan sparkles in a tube |
 | 0xF | `FX_DOOM_REAPER_PICTURE_2` | render | model: second panel with the picture of Death |
-| 0x10 | `FX_DOOM_WHITE_SHELL` | kind/usage (look pending) | model: capsule, 15-bit texture page 0x119 |
-| 0x11 | `FX_DOOM_BACKDROP` | kind/usage (look pending) | backdrop layers (btlfx_drawBackdrop, not rendered) |
-| 0x13 | `FX_DOOM_GOURAUD_SHELL` | kind/usage (look pending) | model: gouraud capsule (colours not rendered) |
+| 0x10 | `FX_DOOM_WHITE_SHELL` | kind/usage (look pending) | model: capsule on 15-bit texture page 0x119 (filled at run time; white in the render) |
+| 0x11 | `FX_DOOM_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| 0x13 | `FX_DOOM_GOURAUD_SHELL` | kind/usage (look pending) | model: gouraud capsule; the render draws it black (colours set by the C at run time?) |
 
 ### fx_0ed: Roulette (FX_ROULETTE_)
 
 | index | name | evidence | what it is |
 |---|---|---|---|
 | 0x2 | `FX_ROULETTE_SUMMON_MODEL_DATA` | usage | model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL |
-| 0x4 | `FX_ROULETTE_BACKDROP` | kind/usage (look pending) | backdrop layers (btlfx_drawBackdrop, not rendered) |
+| 0x4 | `FX_ROULETTE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | 0x6 | `FX_ROULETTE_TARGET_RING` | render | sprite: white ring outline on the chosen target |
-| 0x7 | `FX_ROULETTE_SUMMON_MODEL` | kind/usage (look pending) | 'so' summon model (btlfx_registerSummonModel, not rendered) |
-| 0x8 | `FX_ROULETTE_SO_MODEL` | kind/usage (look pending) | 'so' model (not rendered) |
+| 0x7 | `FX_ROULETTE_HORNED_FIGURE` | render (fxdata d6121033) | 'so' summon model (btlfx_registerSummonModel): brown armoured figure with a horned face texture |
+| 0x8 | `FX_ROULETTE_HORNED_FIGURE_2` | render (fxdata d6121033) | 'so' model: the same horned figure in another pose (same textures, 354 polys) |
 | 0xA | `FX_ROULETTE_BLUE_BEAM` | render | emitter: spiralling blue light-beam trail |
 | 0xB | `FX_ROULETTE_GLOW_RINGS` | render | emitter: green glows + white-salmon-violet rings |
 | 0xC | `FX_ROULETTE_RED_SPARKS` | render | emitter: pink-red spark sprites + white-red rings |
@@ -438,7 +438,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x1 | `FX_MIRROR_WHITE_RINGS` | render | emitter: white rings + green glow |
 | 0x2 | `FX_MIRROR_WHITE_RINGS_2` | render | emitter: white rings + green glow |
 | 0x3 | `FX_MIRROR_GREEN_SWIRL` | render | emitter: white rings + green swirl particle |
-| 0x5 | `FX_MIRROR_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| 0x5 | `FX_MIRROR_LIGHT_SPIKES` | render (fxdata d6121033) | emitter: two fans, white-violet light spikes |
 
 ### fx_0ef: enemy Red Clipper (Stilva; FX_RED_CLIPPER_)
 
@@ -452,7 +452,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x1 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | kind/usage (look pending) | emitter: animated quads, render all black |
+| 0x1 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | kind/usage (look pending) | emitter: animated quads; the render is still all black (texture not in the file) |
 | 0x2 | `FX_ZOMBIE_POWDER_SPORE_TRAIL` | render | emitter: homing green spores, yellow puffs, sparkles |
 | 0x3 | `FX_ZOMBIE_POWDER_YELLOW_PUFFS` | render | emitter: yellow powder puffs |
 | 0x4 | `FX_ZOMBIE_POWDER_YELLOW_CLOUD` | render | emitter: yellow powder cloud |
@@ -471,8 +471,8 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x2 | `FX_TIDAL_FLAME_DOME` | kind/usage (look pending) | model: hemisphere, texture page 0x11A not in the file |
-| 0x3 | `FX_TIDAL_FLAME_BACKDROP` | kind/usage (look pending) | backdrop layers (btlfx_drawBackdrop, not rendered) |
+| 0x2 | `FX_TIDAL_FLAME_DOME` | kind/usage (look pending) | model: hemisphere, texture page 0x11A not in the file (magenta in the render) |
+| 0x3 | `FX_TIDAL_FLAME_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | 0x8 | `FX_TIDAL_FLAME_RUNE_BURST` | render | emitter: white rune glyphs with cyan-blue rings, embers, blue light streak |
 | 0x9 | `FX_TIDAL_FLAME_FLAME_CLOUD` | render | emitter: embers + orange flame cloud |
 
@@ -491,10 +491,10 @@ plays (textures not in the file), as in `docs/fxdata.md`.
 - fx_0e2: `FX_FENRIR_WIND_RING` ('so' model (op84, not rendered)); `FX_FENRIR_SPARKS` (emitter: spiral of spark sprites (texture not in the file)); `FX_FENRIR_WIND_RING_2` ('so' model (op84, not rendered)); `FX_FENRIR_WIND_VORTEX` ('so' model drawn with SHELL_MODEL (not rendered)); `FX_FENRIR_WIND_SHELL` ('so' model (not rendered)); `FX_FENRIR_ROCK_SPIKE` (summon data: 'so' model drawn sliced as falling blocks (Hi_DrawSliceEffModel)); `FX_FENRIR_ROCK_SHARD` (summon data: 'so' model, drawn with CLUSTER_MODEL_1/2); `FX_FENRIR_ROCK_SPIKES` (summon data: 'so' model); `FX_FENRIR_ROCK_SHARD_2` (summon data: 'so' model); `FX_FENRIR_SPIKE_BURST` (summon data: 'so' model, morph target); `FX_FENRIR_WIND_BALL` (summon data: 'so' model, morph source); `FX_FENRIR_WIND_TRAIL` (summon data: emitter, screen trail + sprites (texture not in the file))
 - fx_0e3_0: `FX_BAHAMUT_TEAL_PUFF` (particles: teal puff (pool task; texture partly outside the file)); `FX_BAHAMUT_CORE_MODEL` ('so' model drawn with a fading core colour); `FX_BAHAMUT_WHITE_BOLT` (trail: faint white strip (fxm_drawOffsetTrail0)); `FX_BAHAMUT_GLOW_MODEL` ('so' model drawn with a fading colour); `FX_BAHAMUT_PILLAR_MODEL` (summon data: 'so' model, the pillar (pillarRgb)); `FX_BAHAMUT_CLOUD_SPHERE` (summon data: 'so' model drawn fading at the end); `FX_BAHAMUT_SMOKE_ARC` (summon data: 'so' model stacked nine times as a cone)
 - fx_0e3_1: `FX_BAHAMUT_SMOKE_RING` ('so' model, the column); `FX_BAHAMUT_FLARE_LINE` (sprite line (texture not in the file)); `FX_BAHAMUT_FIRE_RING` ('so' model, the pillar); `FX_BAHAMUT_FLAME_STRIP` ('so' model drawn with BLAST_MODEL); `FX_BAHAMUT_ORANGE_STREAKS` (emitter: fan elements (not rendered)); `FX_BAHAMUT_BLAST_MODEL` ('so' model); `FX_BAHAMUT_WHITE_BOLT_2` (trail: faint white strip (fxm_drawOffsetTrail1)); `FX_BAHAMUT_WHITE_BOLT` (trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8)); `FX_BAHAMUT_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_BAHAMUT_PURPLE_GLOW` (emitter: fan element (not rendered)); `FX_BAHAMUT_BLUE_SLIVER` ('so' model drawn at the blast centre); `FX_BAHAMUT_FIRE_DOME` ('so' model drawn for the burst and the flash); `FX_BAHAMUT_RED_STRIP` ('so' model); `FX_BAHAMUT_PURPLE_GLOW_2` (emitter: fan element (not rendered)); `FX_BAHAMUT_GREY_CONE` (summon data: 'so' model drawn around the orb); `FX_BAHAMUT_SMOKE_ARC_2` (summon data: 'so' model, disc); `FX_BAHAMUT_CLOUD_SPHERE` (summon data: 'so' model drawn fading at the end (same entry as fx_0e3_0's))
-- fx_0ea: `FX_SACRIFICE_FAN_EMITTER` (emitter: fans + faint sprites with cyan-white rings)
+- fx_0ea: `FX_SACRIFICE_WHITE_FLARE` (emitter: fans + faint sprites with cyan-white rings)
 - fx_0ec: `FX_DOOM_PARTICLES` (particles (texture not in the file)); `FX_DOOM_GLOW_SHELL` (model: capsule, additive, texture page computed (drawn twice)); `FX_DOOM_WHITE_SHELL` (model: capsule, 15-bit texture page 0x119); `FX_DOOM_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_DOOM_GOURAUD_SHELL` (model: gouraud capsule (colours not rendered))
-- fx_0ed: `FX_ROULETTE_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_ROULETTE_SUMMON_MODEL` ('so' summon model (btlfx_registerSummonModel, not rendered)); `FX_ROULETTE_SO_MODEL` ('so' model (not rendered))
-- fx_0ee: `FX_MIRROR_FAN_EMITTER` (emitter: two fan elements (not rendered))
+- fx_0ed: `FX_ROULETTE_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_ROULETTE_HORNED_FIGURE` ('so' summon model (btlfx_registerSummonModel, not rendered)); `FX_ROULETTE_HORNED_FIGURE_2` ('so' model (not rendered))
+- fx_0ee: `FX_MIRROR_LIGHT_SPIKES` (emitter: two fan elements (not rendered))
 - fx_0f0: `FX_ZOMBIE_POWDER_ANIM_EMITTER` (emitter: animated quads, render all black)
 - fx_0f2: `FX_TIDAL_FLAME_DOME` (model: hemisphere, texture page 0x11A not in the file); `FX_TIDAL_FLAME_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered))
 

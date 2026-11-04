@@ -7,8 +7,8 @@
 
 /* fx_11e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_VIRUS_FLY_MODEL   0x1 /* 'so' model (btlfx_registerEffectModel), probably the fly (look pending) */
-#define FX_VIRUS_FLY_MODEL_2 0x2 /* 'so' model (btlfx_registerEffectModel), same size as entry 0x1 (look pending) */
+#define FX_VIRUS_FLY         0x1 /* 'so' model: brown fly (insect) */
+#define FX_VIRUS_FLY_2       0x2 /* 'so' model: brown fly (insect), wings in another pose (same size as entry 0x1) */
 #define FX_VIRUS_FLY_FLIES   0x3 /* emitter: homing animated fly sprites flapping their wings, 64 frames */
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);

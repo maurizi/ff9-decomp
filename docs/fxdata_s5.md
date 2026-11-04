@@ -55,13 +55,13 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_12a | 0xB | `FX_JET_FIRE_PALE_WISP_RING` | render | emitter: ring with a pale wisp texture |
 | fx_12a | 0xC | `FX_JET_FIRE_WIND_GUST` | render | emitter: cyan wisp sprites |
 | fx_12b | 0x8 | `FX_PHOTON_SMOKE_PUFF` | render | emitter: yellow-to-blue smoke puffs at each shard, + sub sprites (texture not in the file) |
-| fx_12b | 0x9 | `FX_PHOTON_FAN_EMITTER` | kind/usage (look pending) | emitter: orbiting fan element (not rendered) |
+| fx_12b | 0x9 | `FX_PHOTON_LIGHT_STREAK` | render (fxdata d6121033) | emitter: orbiting fan, a yellow-to-cyan light streak |
 | fx_12b | 0xA | `FX_PHOTON_ENERGY_ORB` | render | emitter: golden-green energy sphere |
 | fx_12b | 0xB | `FX_PHOTON_YELLOW_RING` | render | emitter: dark-to-bright yellow gouraud rings |
 | fx_12b | 0xC | `FX_PHOTON_GOLD_RING` | render | emitter: dull gold gouraud rings |
 | fx_12b | 0x21 | `FX_PHOTON_PATH_KEYS_2` | usage | table: position path keys for fxm_posPathInit (second shard path) |
 | fx_12b | 0x22 | `FX_PHOTON_PATH_KEYS` | usage | table: position path keys for fxm_posPathInit (first shard path) |
-| fx_12b | 0x23 | `FX_PHOTON_SPARKS` | kind/usage (look pending) | emitter: spark sprites (texture not in the file) |
+| fx_12b | 0x23 | `FX_PHOTON_SPARKS` | render (fxdata d6121033) | emitter: white dot sparks |
 | fx_12b | 0x24 | `FX_PHOTON_LIGHT_TRAIL` | render | emitter: white glow screen trail |
 | fx_12b | 0x25 | `FX_PHOTON_LIGHT_TRAIL_3` | render | emitter: white glow screen trail |
 | fx_12b | 0x26 | `FX_PHOTON_LIGHT_TRAIL_2` | render | emitter: white glow screen trail |
@@ -70,16 +70,16 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_12b | 0x29 | `FX_PHOTON_STAR_FLASH_4` | render | emitter: white star glow fading to yellow |
 | fx_12b | 0x37 | `FX_PHOTON_STAR_FLASH` | render | emitter: white star glow fading to yellow |
 | fx_12b | 0x38 | `FX_PHOTON_STAR_FLASH_2` | render | emitter: white star glow fading to yellow |
-| fx_12c | 0x1 | `FX_EARTHQUAKE_GROUND_SLAB_8` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[8] (drawn over the offscreen background copy) |
-| fx_12c | 0x2 | `FX_EARTHQUAKE_GROUND_SLAB_1` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[1] (drawn over the offscreen background copy) |
-| fx_12c | 0x3 | `FX_EARTHQUAKE_GROUND_SLAB_2` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[2] (drawn over the offscreen background copy) |
-| fx_12c | 0x4 | `FX_EARTHQUAKE_GROUND_SLAB_3` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[3] (drawn over the offscreen background copy) |
-| fx_12c | 0x5 | `FX_EARTHQUAKE_GROUND_SLAB_4` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[4] (drawn over the offscreen background copy) |
-| fx_12c | 0x6 | `FX_EARTHQUAKE_GROUND_SLAB_5` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[5] (drawn over the offscreen background copy) |
-| fx_12c | 0x7 | `FX_EARTHQUAKE_GROUND_SLAB_6` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[6] (drawn over the offscreen background copy) |
-| fx_12c | 0x8 | `FX_EARTHQUAKE_GROUND_SLAB_7` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[7] (drawn over the offscreen background copy) |
-| fx_12c | 0x9 | `FX_EARTHQUAKE_GROUND_SLAB_0` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[0] (drawn over the offscreen background copy) |
-| fx_12c | 0xE | `FX_EARTHQUAKE_GROUND_SLAB_9` | kind/usage (look pending) | 'so' model: bouncing ground piece, fx_12c_bounceModels[9] (drawn over the offscreen background copy) |
+| fx_12c | 0x1 | `FX_EARTHQUAKE_GROUND_SLAB_8` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[8] |
+| fx_12c | 0x2 | `FX_EARTHQUAKE_GROUND_SLAB_1` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[1] |
+| fx_12c | 0x3 | `FX_EARTHQUAKE_GROUND_SLAB_2` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[2] |
+| fx_12c | 0x4 | `FX_EARTHQUAKE_GROUND_SLAB_3` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[3] |
+| fx_12c | 0x5 | `FX_EARTHQUAKE_GROUND_SLAB_4` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[4] |
+| fx_12c | 0x6 | `FX_EARTHQUAKE_GROUND_SLAB_5` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[5] |
+| fx_12c | 0x7 | `FX_EARTHQUAKE_GROUND_SLAB_6` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[6] |
+| fx_12c | 0x8 | `FX_EARTHQUAKE_GROUND_SLAB_7` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[7] |
+| fx_12c | 0x9 | `FX_EARTHQUAKE_GROUND_SLAB_0` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[0] |
+| fx_12c | 0xE | `FX_EARTHQUAKE_GROUND_SLAB_9` | render (fxdata d6121033) | 'so' model: bouncing rock chunk with rock-textured sides, its top samples the offscreen background copy (page 0x117), fx_12c_bounceModels[9] |
 | fx_12c | 0x10 | `FX_EARTHQUAKE_ROCK_DEBRIS_2` | render | emitter: spiral of small rock debris frames |
 | fx_12c | 0x11 | `FX_EARTHQUAKE_DUST_RING` | render | emitter: ring with a sand-dust texture on the ground |
 | fx_12c | 0x12 | `FX_EARTHQUAKE_ROCK_DEBRIS` | render | emitter: small rock debris frames thrown up |
@@ -93,7 +93,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_12f | 0x3 | `FX_PAPER_STORM_ORANGE_BURST` | render | emitter: orange speckle burst + red flat rings at each target |
 | fx_12f | 0x4 | `FX_PAPER_STORM_PAPER_SWIRL` | render | emitter: paper sheets spiralling up |
 | fx_12f | 0x8 | `FX_PAPER_STORM_GREEN_BURST` | render | emitter: green spiky burst, sprites, yellow and red rings at each target |
-| fx_130 | 0x1 | `FX_PROPELLER_WIND_TARGET_MODEL` | kind/usage (look pending) | 'so' model registered per target (not drawn by the tool) |
+| fx_130 | 0x1 | `FX_PROPELLER_WIND_TORNADO` | render (fxdata d6121033) | 'so' model: blue twisted column with a wind texture (tornado), registered per target |
 | fx_130 | 0x2 | `FX_PROPELLER_WIND_TEAL_RING` | render | emitter: orbiting dark-to-teal gouraud rings |
 | fx_130 | 0x3 | `FX_PROPELLER_WIND_BLUE_CRESCENT` | render | emitter: blue crescent then ring particles (ring texture partly not in the file) |
 | fx_130 | 0x4 | `FX_PROPELLER_WIND_WIND_RING` | render | emitter: orbiting grey wind ring |
@@ -101,7 +101,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_131 | 0x1 | `FX_GOLEM_REVIVAL_PINK_GLOW` | render | emitter: pink glow with a green ring, fan |
 | fx_131 | 0x2 | `FX_GOLEM_REVIVAL_SAND_CLOUD` | render | emitter: orbiting pale sand clouds |
 | fx_132 | 0x1 | `FX_APPEARANCE_SMOKE_PUFF` | render | emitter: pale yellow-green smoke puffs |
-| fx_132 | 0x2 | `FX_APPEARANCE_SPARKLE_HELIX` | kind/usage (look pending) | emitter: helix of small sprites (texture not in the file) |
+| fx_132 | 0x2 | `FX_APPEARANCE_SPARKLE_HELIX` | render (fxdata d6121033) | emitter: helix of white and yellow dot sparkles |
 | fx_133 | 0x1 | `FX_DISAPPEAR_SMOKE_PUFF` | render | emitter: pale smoke puffs (file 0x133; file 0x1B5 has coloured puffs and a "Dummy" letter sprite here) |
 | fx_134 | 0x1 | `FX_DOOMSDAY_METEOR_TRAIL` | render | emitter: helix screen trail with a rock texture, red sparks |
 | fx_134 | 0x3 | `FX_DOOMSDAY_NEBULA` | render | sprite: purple nebula bands on black (space background layer) |
@@ -125,7 +125,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_134 | 0x1A | `FX_DOOMSDAY_LILAC_RING` | render | rings: white-lilac gouraud rings |
 | fx_134 | 0x1B | `FX_DOOMSDAY_BLUE_RING` | render | rings: white-cyan-blue gouraud rings, four segments |
 | fx_134 | 0x1E | `FX_DOOMSDAY_PURPLE_STREAK` | render | trail: purple streak (fxm_drawOffsetTrail) |
-| fx_134 | 0x1F | `FX_DOOMSDAY_SPACE_LAYER` | kind/usage (look pending) | sprite: purple shapes and noise (space background layer; texture mix unclear) |
+| fx_134 | 0x1F | `FX_DOOMSDAY_SPACE_LAYER` | render (fxdata d6121033) | sprite: purple-blue starry nebula strip (space background layer) |
 | fx_134 | 0x20 | `FX_DOOMSDAY_RED_PLANET` | render | sprite: small red planet |
 | fx_134 | 0x21 | `FX_DOOMSDAY_GREY_SPARKS` | render | emitter: small grey spark sprites |
 | fx_134 | 0x22 | `FX_DOOMSDAY_ROCK_DEBRIS` | render | emitter: grey rock chunks |
@@ -138,8 +138,8 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_137 | 0x5 | `FX_FLAME_FLAME_BURST` | render | emitter: flame explosion with a rising flame pillar, at each target |
 | fx_137 | 0x6 | `FX_FLAME_FIREBALL` | render | emitter: fireball explosion at the mouth |
 | fx_138 | 0x1 | `FX_LUCKY_SEVEN_FIRE_BURST` | render | emitter: white-blue gouraud rings, fire bursts and white / pink glows |
-| fx_138 | 0xE | `FX_LUCKY_SEVEN_SPRITE_LINE` | kind/usage (look pending) | sprite line: small coloured sprites, drawn frames 0-0xC |
-| fx_138 | 0x1B | `FX_LUCKY_SEVEN_SLOT_MODEL` | kind/usage (look pending) | model: 15 polys, tpage 0x9A (texture not in the file), drawn with the three reels |
+| fx_138 | 0xE | `FX_LUCKY_SEVEN_SPRITE_LINE` | kind/usage (look pending) | sprite line: small coloured sprites, drawn frames 0-0xC; the render is almost empty |
+| fx_138 | 0x1B | `FX_LUCKY_SEVEN_SLOT_MODEL` | kind/usage (look pending) | model: 15 polys (three slanted strips), tpage 0x9A not in the file (magenta in the render), drawn with the three reels |
 | fx_138 | 0x2A | `FX_LUCKY_SEVEN_RAINBOW_TRAIL` | render | emitter: orbiting rainbow trail with glow sprites and rainbow rings |
 | fx_179 | 0x1 | `FX_MEDEO_WHITE_RING` | render | emitter: white and lilac gouraud rings |
 | fx_179 | 0x2 | `FX_MEDEO_METEOR` | render | model: rock (128 polys, red-brown rock texture) |
@@ -147,9 +147,9 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_179 | 0x5 | `FX_MEDEO_GLOW_TRAIL` | render | emitter: blue and green glow screen trails |
 | fx_179 | 0x7 | `FX_MEDEO_SPARKLES` | render | emitter: small green and blue spark sprites |
 | fx_179 | 0x8 | `FX_MEDEO_STAR_FLASH` | render | emitter: blue and green star flashes |
-| fx_179 | 0x9 | `FX_MEDEO_FAN_EMITTER` | kind/usage (look pending) | emitter: three fan elements (not rendered) + sprites that render transparent |
+| fx_179 | 0x9 | `FX_MEDEO_COLOR_LIGHT_BARS` | render (fxdata d6121033) | emitter: three fans of blue / gold / green capsule-shaped light bars, + sprites that render transparent |
 | fx_179 | 0xA | `FX_MEDEO_COLOR_SMOKE_2` | render | emitter: spiral of yellow, purple, cyan and green smoke puffs |
-| fx_179 | 0xB | `FX_MEDEO_SPRITE_BURST` | kind/usage (look pending) | emitter: two sprite elements, render all transparent |
+| fx_179 | 0xB | `FX_MEDEO_SPRITE_BURST` | kind/usage (look pending) | emitter: two sprite elements; the render is still all transparent |
 | fx_17a | 0x1 | `FX_MADEEN_BLUE_RING` | render | rings: black-to-blue gouraud rings |
 | fx_17a | 0x2 | `FX_MADEEN_BLUE_GLOW` | render | particles: blue glow (pool task) |
 | fx_17a | 0x3 | `FX_MADEEN_WHITE_RING` | render | rings: white-blue gouraud rings |
@@ -158,14 +158,14 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17a | 0x6 | `FX_MADEEN_TEAL_RING` | render | rings: black-blue-teal gouraud rings |
 | fx_17a | 0x7 | `FX_MADEEN_RAINBOW_ARCH` | render | model: arch with a rainbow aura texture |
 | fx_17a | 0x8 | `FX_MADEEN_WINGS` | render | model: three-armed wing shape with a grey feather texture |
-| fx_17a | 0x9 | `FX_MADEEN_INFINITY_LOOP` | kind/usage (look pending) | model: figure-eight band (15-bit texture page 0x138, not resolved) |
+| fx_17a | 0x9 | `FX_MADEEN_INFINITY_LOOP` | render (fxdata d6121033) | model: figure-eight band (its 15-bit texture page 0x138 holds a handwritten placeholder in the file) |
 | fx_17a | 0xA | `FX_MADEEN_RAINBOW_DOME` | render | model: banded dome with a rainbow strip texture |
 | fx_17a | 0xB | `FX_MADEEN_GLOW_LINE` | render | sprite line: green, red, orange and blue ring glows |
 | fx_17a | 0xC | `FX_MADEEN_GLOW_LINE_2` | render | sprite line: green, red, orange and blue ring glows |
-| fx_17a | 0xD | `FX_MADEEN_FAN_EMITTER` | kind/usage (look pending) | emitter: three fan elements (not rendered) |
+| fx_17a | 0xD | `FX_MADEEN_VIOLET_GLOW` | render (fxdata d6121033) | emitter: three fans, a horizontal violet-white glow |
 | fx_17a | 0xE | `FX_MADEEN_WHITE_GLOW` | render | particles: white-blue glow |
 | fx_17a | 0xF | `FX_MADEEN_BLUE_SPARKLES` | render | emitter: blue square sparkles and gold sprites |
-| fx_17a | 0x11 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file |
+| fx_17a | 0x11 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file (magenta in the render) |
 | fx_17a | 0x12 | `FX_MADEEN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | fx_17a | 0x13 | `FX_MADEEN_BLUE_STREAKS` | render | emitter: orbiting blue light streaks |
 | fx_17d_0 | 0x19 | `FX_ARK_CAMERA_KEYS_2` | usage | table: per-frame position keys for camera point 1 (op 0x82) |

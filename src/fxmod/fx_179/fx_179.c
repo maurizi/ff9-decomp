@@ -304,7 +304,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter->trailStride = 0x5C;
                 emitter->otZ = 0x20;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_FAN_EMITTER), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_COLOR_LIGHT_BARS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
