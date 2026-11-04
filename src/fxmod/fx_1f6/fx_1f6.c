@@ -17,9 +17,9 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_1f6_effModels, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->posA4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posAC);
-        work->models20[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
-        work->models20[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 1);
-        work->models20[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->models20[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_MODEL), 1);
+        work->models20[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_MODEL_2), 1);
+        work->models20[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_AERA_MODEL_3), 1);
         work->models20[2].rot4.vx = 0;
         work->models20[2].rot4.vy = 0;
         work->models20[2].rot4.vz = 0;
@@ -51,7 +51,7 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x0:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_WIND_STREAKS), (s32)&work->posA4);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1f6_op80Trails0;
                 emitter->trailSlots = 0x26;
@@ -59,7 +59,7 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x8:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_WIND_STREAKS), (s32)&work->posA4);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1f6_op80Trails1;
                 emitter->trailSlots = 0x26;
@@ -67,14 +67,14 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x10:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posA4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_WIND_RING), (s32)&work->posA4);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->timer0[0] = 0x20;
             break;
         case 0x28:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->posA4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_GREEN_BURST), (s32)&work->posA4);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
             }
@@ -84,11 +84,11 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer0[2] = 0x18;
             break;
         case 0x50:
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->posA4);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posA4);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_GUST_RINGS), (s32)&work->posA4);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_GREEN_RING), (s32)&work->posA4);
             break;
         case 0x58:
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->posA4);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_SPRITE_BURST), (s32)&work->posA4);
             break;
         }
         if (work->timer0[0] != 0) {

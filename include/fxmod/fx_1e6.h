@@ -5,6 +5,20 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1e6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CORRECT_STREAMER          0x1 /* emitter: 3D trail with a thin white streamer texture */
+#define FX_CORRECT_STREAMER_2        0x2 /* emitter: 3D trail with a thin white streamer texture */
+#define FX_CORRECT_STREAMER_3        0x3 /* emitter: 3D trail with a thin white streamer texture */
+#define FX_CORRECT_SPARKLES          0x4 /* emitter: tube of particles (renders black) + small dot sparkles (look pending) */
+#define FX_CORRECT_SPIRAL_STREAMER   0x5 /* emitter: spiralling 3D trail, white crescent texture */
+#define FX_CORRECT_SPIRAL_STREAMER_2 0x6 /* emitter: spiralling 3D trail, white crescent texture */
+#define FX_CORRECT_SPIRAL_STREAMER_3 0x7 /* emitter: spiralling 3D trail, white crescent texture */
+#define FX_CORRECT_GOLD_BALL         0x8 /* 'so' model: closed golden ball */
+#define FX_CORRECT_GOLD_BALL_OPEN    0x9 /* 'so' model: the golden ball split open in two halves */
+#define FX_CORRECT_PATH_KEYS         0xD /* table: position path keys for fxm_posPathInit (op 0x80) */
+#define FX_CORRECT_RED_TRAIL         0xE /* trail: red streak strip drawn along the path */
+
 typedef struct {
     s16 x, y, z;
 } Fx1e6Point;

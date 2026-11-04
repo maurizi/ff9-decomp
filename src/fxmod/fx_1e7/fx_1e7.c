@@ -89,14 +89,14 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e7_op80Origin.vx = work->pos8.vx;
         fx_1e7_op80Origin.vy = work->pos8.vy;
         fx_1e7_op80Origin.vz = work->pos8.vz;
-        fxm_posPathInit(&fx_1e7_posPath0[0], (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
-        fxm_posPathInit(&fx_1e7_posPath, (u16 *)ex->btlfx_getFileData(entry->file, 0x14));
+        fxm_posPathInit(&fx_1e7_posPath0[0], (u16 *)ex->btlfx_getFileData(entry->file, FX_WRONG_PATH_KEYS));
+        fxm_posPathInit(&fx_1e7_posPath, (u16 *)ex->btlfx_getFileData(entry->file, FX_WRONG_PATH_KEYS_2));
         work->unk10 = 0x1000;
     } else {
         frame = entry->frame;
         if (frame != 0) {
             if (frame == 3) {
-                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_1e7_emitPos0);
+                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_WHITE_TRAIL), (s32)&fx_1e7_emitPos0);
                 if (work->emit0 != NULL) {
                     work->emit0->trails = (s32)fx_1e7_op80Trails0;
                     work->emit0->trailSlots = 1;
@@ -110,7 +110,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         } else {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&fx_1e7_emitPos0);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_WHITE_TRAIL_2), (s32)&fx_1e7_emitPos0);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_1e7_op80Trails1;
                 work->emit4->trailSlots = 1;
@@ -147,9 +147,9 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e7_op81Origin.vx = work->pos28.vx;
         fx_1e7_op81Origin.vy = work->pos28.vy;
         fx_1e7_op81Origin.vz = work->pos28.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos28);
-        work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos28);
-        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_RED_BURST), (s32)&work->pos28);
+        work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_RED_RINGS), (s32)&work->pos28);
+        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_RED_SMOKE), (s32)&work->pos28);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }

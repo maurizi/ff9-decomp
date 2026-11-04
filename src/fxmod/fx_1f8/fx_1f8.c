@@ -10,7 +10,7 @@ s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1f8_emitPos0.vy = 0;
         fx_1f8_emitPos0.vz = -0x618;
         fx_1f8_env = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1f8_emitPos0);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW_2), (s32)&fx_1f8_emitPos0);
     } else {
         return entry->frame >= 0x40;
     }
@@ -30,7 +30,7 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1f8_env = env;
         ex->btlfx_initEffModels(fx_1f8_effModels, 4);
         for (i = 0; i < env->targets->targetCount; i++) {
-            fx_1f8_models[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0x177,
+            fx_1f8_models[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_STAR_CRYSTAL), 0x177,
                                                        0xFFFF, 0, 0x80);
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1f8_emitPos1[i]);
             fx_1f8_modelPos[i].vx = fx_1f8_emitPos1[i].vx;
@@ -49,8 +49,8 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         if (frame == 0) {
             fx_1f8_timer[0] = 0x20;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_1f8_emitPos1[i]);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f8_emitPos1[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_PINK_RING), (s32)&fx_1f8_emitPos1[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_COLOR_RINGS), (s32)&fx_1f8_emitPos1[i]);
             }
         }
         if (fx_1f8_timer[0] != 0) {
@@ -66,7 +66,7 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                     ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], shade, shade, shade);
                 }
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xB), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_BACKDROP), frame);
         }
         return frame >= 0x30;
     }

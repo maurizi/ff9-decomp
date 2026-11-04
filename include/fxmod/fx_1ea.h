@@ -5,6 +5,25 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1ea effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DRAGONS_CREST_GREEN_EMBLEM   0x1 /* emitter: green horned dragon-crest emblem */
+#define FX_DRAGONS_CREST_WHITE_EMBLEM   0x2 /* emitter: white horned dragon-crest emblem */
+#define FX_DRAGONS_CREST_ROCK_DEBRIS    0x3 /* emitter: spiral of grey rock chunks */
+#define FX_DRAGONS_CREST_ROCK_DEBRIS_2  0x4 /* emitter: grey rock chunks, five elements */
+#define FX_DRAGONS_CREST_WHITE_RINGS    0x5 /* emitter: white gouraud rings, 45 frames */
+#define FX_DRAGONS_CREST_GREEN_RINGS    0x6 /* emitter: dark-to-light green gouraud rings */
+#define FX_DRAGONS_CREST_DUST_RINGS     0x7 /* emitter: grey-brown to white gouraud rings */
+#define FX_DRAGONS_CREST_ROT_PATH_KEYS  0xB /* table: rotation / position path keys for fxm_rotPosPathInit */
+#define FX_DRAGONS_CREST_FAN_EMITTER    0x13 /* emitter: fan, green light streaks (byte-identical to fx_03d entry 0x10) */
+#define FX_DRAGONS_CREST_SPARKLE_CIRCLE 0x14 /* emitter: circle of gold / white sparkle quads + blue-green specks (byte-identical to fx_03d entry 0x11) */
+#define FX_DRAGONS_CREST_VIOLET_ENERGY  0x1C /* emitter: violet crackling energy shapes + violet sub-sparks */
+#define FX_DRAGONS_CREST_FAN_EMITTER_2  0x1D /* emitter: two fans, white / green light streaks */
+#define FX_DRAGONS_CREST_DRAGON_TRAIL   0x20 /* trail: orange dragon-scale strip */
+#define FX_DRAGONS_CREST_DRAGON_TRAIL_2 0x21 /* trail: orange dragon-scale strip */
+#define FX_DRAGONS_CREST_ROCK_DEBRIS_3  0x22 /* emitter: spiral of grey rock chunks and a grey glow */
+#define FX_DRAGONS_CREST_ROCK_DEBRIS_4  0x23 /* emitter: spiral of grey rock chunks, two elements */
+
 typedef struct {
     s16 x, y, z;
 } Fx1eaPoint;

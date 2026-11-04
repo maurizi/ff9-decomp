@@ -13,7 +13,7 @@ s32 fx_1f5_op80(s32 mode, Fx1f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vy = work->pos4.vy;
         env->camera->points[0].vz = work->pos4.vz;
         fx_1f5_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NIGHT_MOON_CLOUDS), (s32)&work->pos4);
     } else {
         return entry->frame >= 0x32;
     }
@@ -27,7 +27,7 @@ s32 fx_1f5_op81(s32 mode, Fx1f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = 0xC;
     } else if (mode == 1) {
         fx_1f5_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NIGHT_PINK_GLOW_SWIRL), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1f5_op81Trails;
             work->emit0->trailSlots = 0x1E;
@@ -52,7 +52,7 @@ s32 fx_1f5_op82(s32 mode, Fx1f5Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         ex->btlfx_getUnitPos(unit, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NIGHT_PINK_WISPS), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unitC, 0x20);
         }

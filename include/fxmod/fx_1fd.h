@@ -5,6 +5,23 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1fd effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FENRIR_RIBBON_PATHS_A   0x3 /* table: position paths of ribbon 0 (byte-identical to fx_0e2 entry 0x9) */
+#define FX_FENRIR_RIBBON_PATHS_B   0x4 /* table: position paths of ribbon 1 (byte-identical to fx_0e2 entry 0xC) */
+#define FX_FENRIR_EFFECT_MODEL     0x5 /* 'so' model (op84) (byte-identical to fx_0e2 entry 0x11) (look pending) */
+#define FX_FENRIR_EFFECT_MODEL_2   0x6 /* 'so' model (op84) (byte-identical to fx_0e2 entry 0x1D) (look pending) */
+#define FX_FENRIR_GREEN_RINGS_2    0x8 /* emitter: white-green / pale green gouraud rings (byte-identical to fx_0e2 entry 0x10) */
+#define FX_FENRIR_CAM_TRACK_1      0xE /* table: camera key track, channel 1 (fxm_camChanAdd) */
+#define FX_FENRIR_CAM_TRACK_2      0xF /* table: camera key track, channel 2 (fxm_camChanAdd) */
+#define FX_FENRIR_EMIT_PATHS       0x10 /* table: five position paths of the op 0x80 trail emitters (fx_1fd_posPath) */
+#define FX_FENRIR_GREEN_RINGS      0x11 /* emitter: pale green gouraud rings, 64 frames (byte-identical to fx_0e2 entry 0x4) */
+#define FX_FENRIR_RIBBON_PATHS_C   0x12 /* table: position paths of ribbons 2/3 (fxm_offsetTableEntry, fxm_posPathInit) (byte-identical to fx_0e2 entry 0x1) */
+#define FX_FENRIR_GREEN_WIND_TRAIL 0x13 /* emitter: spiralling green wind-streak trail + grey smoke (byte-identical to fx_0e2 entry 0xE) */
+#define FX_FENRIR_SAND_RINGS       0x14 /* emitter: brown-salmon gouraud rings + spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0xD) */
+#define FX_FENRIR_RIBBON_PATHS_D   0x15 /* table: position paths of ribbons 2/3 (other branch) (byte-identical to fx_0e2 entry 0xF) */
+#define FX_FENRIR_SPARKS           0x16 /* emitter: spiral of spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0x12) (look pending) */
+
 typedef struct {
     s16 x, y, z;
 } Fx1fdPoint;

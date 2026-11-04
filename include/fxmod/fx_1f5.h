@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1f5 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_NIGHT_MOON_CLOUDS     0x1 /* emitter: dark clouds and a full moon */
+#define FX_NIGHT_PINK_GLOW_SWIRL 0x5 /* emitter: helix of white screen trails with pink glows */
+#define FX_NIGHT_PINK_WISPS      0x6 /* emitter: pink wisp sprites */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

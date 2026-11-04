@@ -28,7 +28,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_1e9_stopBolts = 0;
         ex->btlfx_initEffModels(fx_1e9_effModels, 1);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0xB7, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TRANCE_AURA_CYLINDER), 0xB7, 0x3D80, 0, 0);
     } else {
     glow = 0;
     frame = entry->frame;
@@ -37,14 +37,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t = frame << 8;
         growSize = (ex->math_sin(t >> 2) * 0x10FF) >> 12;
         env->otZ = 0x7C;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->pos14, NULL, growSize, 0, 1, t);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos14, NULL, 0x1000, 0, 1, t);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, growSize, 0, 1, t);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, t);
         env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->posC, &rot, growSize, 0, 1, t);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, growSize, 0, 1, t);
         scale.vx = scale.vz = 0x174;
         scale.vy = ex->math_sin(t >> 2) / 6;
         glow = t;
@@ -53,7 +53,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             entry->frame = -1;
             env->state->signals[0] = 0;
             ex->btlfx_fadeUnitById(0x10, 0);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_FAN_EMITTER), (s32)&work->pos14);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
@@ -65,14 +65,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t = ((pulseFrame % 10) << 12) / 10;
         pulseSize = (ex->math_sin(t) >> 4) + 0x10FF;
         env->otZ = 0x7C;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->pos14, NULL, pulseSize, 0, 1, 0x1000);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos14, NULL, 0x1000, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, pulseSize, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, 0x1000);
         env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->posC, &rot, pulseSize, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, pulseSize, 0, 1, 0x1000);
         scale.vx = scale.vz = 0x174;
         scale.vy = (ex->math_sin(t) >> 7) + 0x2AA;
         glow = 0x1000;
@@ -85,11 +85,11 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->paused = 0;
             ex->btlfx_fadeUnitById(0x10, 0x80);
             ex->btlfx_stopEmitter(work->emit8);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_PINK_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->posC);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
@@ -100,14 +100,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fade = 0x1000 - t;
         env->otZ = 0x7C;
         fadeSize = t + 0x10FF;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->pos14, NULL, fadeSize, 0, 1, fade);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos14, NULL, 0x1000, 0, 1, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, fadeSize, 0, 1, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, fade);
         env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->posC, &rot, fadeSize, 0, 1, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, fadeSize, 0, 1, fade);
         if (frame < 0x10) {
             ang = (frame << 8) >> 2;
             glow = ex->math_cos(ang);
@@ -164,7 +164,7 @@ static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *spark, Unk800F78A4 *env, Un
         if (spark->index16 == 0) {
             TRAIL(spark)->lastSlot0 = TRAIL(spark)->count2 = 8;
             TRAIL(spark)->head1 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, 5, 0x1000, alpha, 1, (u8 *)spark->pos18 - 4, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_TRAIL), 0, NULL, 5, 0x1000, alpha, 1, (u8 *)spark->pos18 - 4, 0);
         }
         if (frame >= 8) {
             return 1;

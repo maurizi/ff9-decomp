@@ -10,7 +10,7 @@ s32 fx_1f9_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1f9_emitPos0.vy = 0;
         fx_1f9_emitPos0.vz = -0x618;
         fx_1f9_env = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1f9_emitPos0);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW_2), (s32)&fx_1f9_emitPos0);
     } else {
         return entry->frame >= 0x40;
     }
@@ -27,7 +27,7 @@ s32 fx_1f9_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1f9_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1f9_emitPos1[i]);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1f9_emitPos1[i]);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_BLUE_RINGS), (s32)&fx_1f9_emitPos1[i]);
         }
     } else {
         return entry->frame >= 0x30;

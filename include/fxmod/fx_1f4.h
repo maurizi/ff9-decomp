@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1f4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_VANISH_WHITE_STREAK_2 0x1 /* emitter: orbiting screen trail with a white light-streak texture */
+#define FX_VANISH_WHITE_STREAK   0x2 /* emitter: orbiting sprite (blank) + screen trail with a white light-streak texture */
+#define FX_VANISH_GOLD_GLOW      0x4 /* emitter: golden glow sprite + pale yellow gouraud rings */
+
 typedef struct {
     s32 fadeOut0; /* fade-out countdown */
     s32 fadeIn4; /* fade-in countdown */

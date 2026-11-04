@@ -6,6 +6,18 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_1fe effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_PHOENIX_MODEL_2          0x2 /* 'so' model: flat dome, flame texture (byte-identical to fx_0d3 entry 0xD) */
+#define FX_PHOENIX_MODEL_3          0xD /* 'so' model: dome with a hole, flame texture (byte-identical to fx_0d3 entry 0xC) */
+#define FX_PHOENIX_MODEL_4          0xF /* 'so' model: arc band, smoke texture (byte-identical to fx_0d3 entry 0xE) */
+#define FX_PHOENIX_FIRE_FEATHERS    0x10 /* emitter: orbiting fire-textured trails and flame-feather quads (same call site as fx_0d3 entry 0x10, same kind) */
+#define FX_PHOENIX_PINK_RINGS       0x11 /* emitter: white / pink / copper gouraud rings (byte-identical to fx_0d3 entry 0x11) */
+#define FX_PHOENIX_GOLD_FEATHERS    0x12 /* emitter: golden feather quads (same call site as fx_0d3 entry 0x12, same kind) */
+#define FX_PHOENIX_FLAME_FEATHERS_2 0x15 /* emitter: copper flame-feather quads (cylinder) (same call site as fx_0d3 entry 0x18, same kind) */
+#define FX_PHOENIX_EMBERS           0x16 /* emitter: sprites, render empty (texture not in the file) (same call site as fx_0d3 entry 0xF, same kind) (look pending) */
+#define FX_PHOENIX_FLAME_FEATHERS   0x17 /* emitter: copper flame-feather quads (same call site as fx_0d3 entry 0x17, same kind) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */

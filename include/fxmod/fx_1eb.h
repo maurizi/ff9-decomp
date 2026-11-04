@@ -5,6 +5,20 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1eb effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SIX_DRAGONS_DRAGON_ORBS    0x1 /* emitter: orbiting green-gold and red dragon-eye orbs */
+#define FX_SIX_DRAGONS_GREEN_AURA     0x3 /* emitter: green orb rings and rising green-gold aura flames */
+#define FX_SIX_DRAGONS_WHITE_RINGS    0x4 /* emitter: pale blue / white gouraud rings */
+#define FX_SIX_DRAGONS_BLUE_BUBBLES   0x5 /* emitter: blue hemisphere bubbles + small bubble sprites */
+#define FX_SIX_DRAGONS_STONE_DRAGON   0x6 /* 'so' model: winged stone dragon (rock texture) */
+#define FX_SIX_DRAGONS_VALUE_PATH     0x7 /* table: value path keys for fxm_valuePathInit */
+#define FX_SIX_DRAGONS_STONE_TRAIL    0x8 /* emitter: spiralling 3D trail with a rock texture, small spark sprites */
+#define FX_SIX_DRAGONS_SPARKLE_CIRCLE 0x14 /* emitter: circle of gold / white sparkle quads + blue-green specks (byte-identical to fx_03d entry 0x11) */
+#define FX_SIX_DRAGONS_FAN_EMITTER    0x15 /* emitter: fan, green light streaks (byte-identical to fx_03d entry 0x10) */
+#define FX_SIX_DRAGONS_WHITE_RINGS_2  0x1D /* emitter: white gouraud rings, 45 frames */
+#define FX_SIX_DRAGONS_SMOKE          0x1E /* emitter: green-to-pink smoke puffs */
+
 typedef struct {
     s16 x, y, z;
 } Fx1ebPoint;

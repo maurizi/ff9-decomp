@@ -6,6 +6,26 @@
  * file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_1cc effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SEALION_APPEARS_FREEZE_BURST    0x1 /* emitter: white-pink rings + spark sprites (same call site as fx_097 entry 0x21) (byte-identical to fx_098 entry 0x27) */
+#define FX_SEALION_APPEARS_FROST_RING_2    0x5 /* emitter: pale blue gouraud rings (byte-identical to fx_097 entry 0x22) */
+#define FX_SEALION_APPEARS_ICE_FLARES      0x6 /* emitter: cyan ice glints, four elements (byte-identical to fx_097 entry 0x20) */
+#define FX_SEALION_APPEARS_ICE_FLARES_2    0x7 /* emitter: cyan ice glints (byte-identical to fx_097 entry 0x1F) */
+#define FX_SEALION_APPEARS_ICE_SPARKLES_2  0xB /* emitter: small blue ice sparkles while the crystal grows (same call site as fx_097 entry 0x29) (byte-identical to fx_098 entry 0x29) */
+#define FX_SEALION_APPEARS_MIST            0xD /* emitter: grey frost mist at the crystal base (same call site as fx_097 entry 0x26) (byte-identical to fx_098 entry 0x1C) */
+#define FX_SEALION_APPEARS_SHARD_MIST      0xE /* emitter: grey mist trailing each shard (pool item) (same call site as fx_097 entry 0x25) (byte-identical to fx_098 entry 0x26) */
+#define FX_SEALION_APPEARS_MIST_HIGH       0xF /* emitter: grey frost mist higher up (same call site as fx_097 entry 0x27) (byte-identical to fx_098 entry 0x28) */
+#define FX_SEALION_APPEARS_CRYSTAL_SHEEN_2 0x1E /* model: crystal 2 shape, reflection-map texture (byte-identical to fx_097 entry 0xF) */
+#define FX_SEALION_APPEARS_CRYSTAL_SHEEN_3 0x1F /* model: crystal 3 shape, reflection-map texture (byte-identical to fx_097 entry 0x10) */
+#define FX_SEALION_APPEARS_CRYSTAL_SHEEN   0x20 /* model: main crystal shape, reflection-map texture (byte-identical to fx_097 entry 0x11) */
+#define FX_SEALION_APPEARS_SNOW_RING       0x24 /* rings: textured ring of blue snow flakes */
+#define FX_SEALION_APPEARS_FROST_RING      0x25 /* rings: lilac-blue gouraud ring on the ground */
+#define FX_SEALION_APPEARS_SNOW_RING_2     0x26 /* rings: textured ring of pale blue snow flakes */
+#define FX_SEALION_APPEARS_ICE_CRYSTAL_2   0x27 /* model: ice crystal spike (hexagonal, ice texture) (byte-identical to fx_097 entry 0x12) */
+#define FX_SEALION_APPEARS_ICE_CRYSTAL_3   0x28 /* model: wide ice crystal spike (byte-identical to fx_097 entry 0x13) */
+#define FX_SEALION_APPEARS_ICE_CRYSTAL     0x29 /* model: main ice crystal spike (byte-identical to fx_097 entry 0x14) */
+
 extern Unk800F78A4 *fx_1cc_env;
 extern s16 fx_1cc_pieceDists[];
 

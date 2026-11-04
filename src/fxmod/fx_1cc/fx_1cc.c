@@ -312,7 +312,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *obj, Unk800F78A4 *env, Unk801
         switch (obj->state0) {
         case 0:
             if (obj->frame8 == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&obj->velX18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_SHARD_MIST), (s32)&obj->velX18);
                 obj->emit34 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
@@ -363,7 +363,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *obj, Unk800F78A4 *env, Unk801
                 origin.vy = obj->posY10;
                 origin.vz = obj->posZ14;
                 ex->btlfx_pointAhead((s16 *)&origin, (s16 *)&dir, 0x578, (s16 *)&ringPos);
-                ringFile = (u8 *)ex->btlfx_getFileData(entry->file, 0x26);
+                ringFile = (u8 *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_SNOW_RING_2);
                 ringSize = (ex->math_sin(ang) * 0x2000) >> 12;
                 ex->btlfx_drawRings(ringFile, &ringPos, &dir, ringSize, 0, 1, ex->math_cos(ang) * 2 / 3);
             }
@@ -482,12 +482,12 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1cc_env = env;
         ex->btlfx_initEffModels(fx_1cc_effModels, 0x19);
         tpage = 0x9A;
-        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x29), tpage, 0x3DC0, 0x80, 0);
-        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x27), tpage, 0x3DC0, 0x80, 0);
-        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x28), tpage, 0x3DC0, 0x80, 0);
-        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x20), 0xBA, 0x3D40, 0, 0x80);
-        work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1E), 0xBA, 0x3D40, 0, 0x80);
-        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1F), 0xBA, 0x3D40, 0, 0x80);
+        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL), tpage, 0x3DC0, 0x80, 0);
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL_2), tpage, 0x3DC0, 0x80, 0);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL_3), tpage, 0x3DC0, 0x80, 0);
+        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN), 0xBA, 0x3D40, 0, 0x80);
+        work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN_2), 0xBA, 0x3D40, 0, 0x80);
+        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN_3), 0xBA, 0x3D40, 0, 0x80);
         for (i = 0; i < 14; i++) {
             work->model20[i] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_1cc_pieceFileIds[i]), tpage, 0x3DC0, 0x80, 0);
         }
@@ -537,7 +537,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
             ringAlpha = t;
             rot.pad = 1;
-            ringFile = (u8 *)ex->btlfx_getFileData(entry->file, 0x26);
+            ringFile = (u8 *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_SNOW_RING_2);
             ex->btlfx_drawRings(ringFile, &work->pos58, &rot, ((((ex->math_sin(ang) * 0x3000) >> 12) + 0x2000) * 3) >> 2, 0, 1,
                               ex->math_cos(ang));
             if (frame >= 10) {
@@ -545,15 +545,15 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 BTLFX_COPY_SVEC(&work->pos68, &work->pos58);
                 work->pos68.vy -= 0xAAA;
-                emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos58);
+                emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_MIST), (s32)&work->pos58);
                 if (emitter1 != NULL) {
                     emitter1->otZ = 0x80;
                 }
-                emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos68);
+                emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_MIST_HIGH), (s32)&work->pos68);
                 if (emitter1 != NULL) {
                     emitter1->otZ = 0x80;
                 }
-                emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos58);
+                emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_SPARKLES_2), (s32)&work->pos58);
                 if (emitter1 != NULL) {
                     emitter1->otZ = 0x80;
                 }
@@ -651,19 +651,19 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->flag78 = 1;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos58);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_FLARES), (s32)&work->pos58);
                 if (emitter != NULL) {
                     emitter->otZ = 0x60;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos58);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_FLARES_2), (s32)&work->pos58);
                 if (emitter != NULL) {
                     emitter->otZ = 0x60;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos60);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_FREEZE_BURST), (s32)&work->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos60);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_FROST_RING_2), (s32)&work->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -728,13 +728,13 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scratch.vy = 0;
             scratch.vz = work->frame4 * 41;
             scratch.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x24), &work->pos58, &scratch, (work->frame4 << 6) + 0x2800,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_SNOW_RING), &work->pos58, &scratch, (work->frame4 << 6) + 0x2800,
                               0, 1, ringAlpha);
             scratch.vz = work->frame4 * 24 + 0x400;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x24), &work->pos58, &scratch, (work->frame4 << 6) + 0x2800,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_SNOW_RING), &work->pos58, &scratch, (work->frame4 << 6) + 0x2800,
                               0, 1, ringAlpha);
             env->otZ = 0x127;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x25), &work->pos58, NULL, (work->frame4 << 5) + 0x2800,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_FROST_RING), &work->pos58, NULL, (work->frame4 << 5) + 0x2800,
                               0, 1, ringAlpha);
             env->otZ = 0;
         }

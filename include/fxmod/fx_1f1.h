@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1f1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH3_RUNE_CYLINDER   0x2 /* 'so' model: cylinder of blue glowing runes */
+#define FX_DEATH3_RUNE_CYLINDER_2 0x4 /* 'so' model: cylinder of blue glowing runes (other texture row) */
+#define FX_DEATH3_MAGIC_CIRCLE    0x5 /* emitter: blue glowing magic circle with a star */
+
 typedef struct {
     s32 delay0; /* delay */
     s32 timer4; /* countdown */

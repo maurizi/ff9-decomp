@@ -9,8 +9,8 @@ s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1eb_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos8);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_FAN_EMITTER), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_SPARKLE_CIRCLE), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -84,33 +84,33 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale30.vx = 0xAAA;
         work->scale30.vy = 0xAAA;
         work->scale30.vz = 0xAAA;
-        fxm_valuePathInit(&fx_1eb_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, 7));
+        fxm_valuePathInit(&fx_1eb_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_VALUE_PATH));
         for (j = 0; j < 3; j++) {
             fxm_rotPosPathInit(&fx_1eb_rotPosPath[j], (u16 *)ex->btlfx_getFileData(entry->file, fx_1eb_pathFileIds[j]));
             work->model52[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1eb_modelFileIds[j]), 1);
         }
-        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_STONE_DRAGON), 1);
         work->timer4C = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
             work->alpha50 = 0x1000;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos44);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->pos44);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_WHITE_RINGS_2), (s32)&work->pos44);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_SMOKE), (s32)&work->pos44);
             break;
         case 30:
             work->timer4C = 0xA;
             break;
         case 10:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos44);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos44);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_BLUE_BUBBLES), (s32)&work->pos44);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_WHITE_RINGS), (s32)&work->pos44);
             break;
         case 20:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos44);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_GREEN_AURA), (s32)&work->pos44);
             break;
         case 22:
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos44);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_STONE_TRAIL), (s32)&work->pos44);
             if (work->emit14 != NULL) {
                 work->emit14->trails = (s32)fx_1eb_op82Trails;
                 work->emit14->trailSlots = 6;
@@ -178,7 +178,7 @@ s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         ex->btlfx_getUnitPos(unit, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_DRAGON_ORBS), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unitC, 0x80);
         }

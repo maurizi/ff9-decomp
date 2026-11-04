@@ -74,11 +74,11 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1f3_rings[i].angle134 = ex->btlfx_rand() & 0xFFF;
             fx_1f3_rings[i].spin138 = (ex->btlfx_rand() & 0xFF) + 0x40;
             fx_1f3_rings[i].angleStep140 = 0x40;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&fx_1f3_rings[i].trail20, 2);
         }
         for (i = 0, scaleMax = 0x600, scaleMin = 0x400; i < 8; i++, scaleMax += 0x200, scaleMin += 0x200) {
-            fx_1f3_spinModels[i].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
+            fx_1f3_spinModels[i].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_TEAL_ARC), 1);
             fx_1f3_spinModels[i].scale10.vy = fx_1f3_spinModels[i].scale10.vx = fx_1f3_spinModels[i].scale10.vz = ex->btlfx_randRange(scaleMin, scaleMax);
             fx_1f3_spinModels[i].pos20.vx = work->pos5C.vx;
             fx_1f3_spinModels[i].pos20.vz = work->pos5C.vz;
@@ -88,7 +88,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1f3_spinModels[i].rot8.vx = -0x400;
             fx_1f3_spinModels[i].spin4 = (ex->btlfx_rand() & 0x1FF) + 0x100;
         }
-        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_FIRE_DISC), 1);
         work->pos70.vx = env->targets->centerX;
         work->pos70.vz = env->targets->centerZ;
         work->pos70.vy = -0x200;
@@ -96,8 +96,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot90.vy = 0;
         work->rot90.vz = 0;
         work->scale80.vz = work->scale80.vy = work->scale80.vx = 0x3000;
-        work->model98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
-        work->model9C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
+        work->model98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_FIRE_BOWL), 1);
+        work->model9C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_FIRE_BOWL), 1);
         work->rotA0.vx = 0;
         work->rotA0.vy = 0;
         work->rotA0.vz = 0;
@@ -105,8 +105,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotA8.vy = 0;
         work->rotA8.vz = 0;
         work->scaleB0.vz = work->scaleB0.vy = work->scaleB0.vx = 0x400;
-        work->modelC0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
-        work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
+        work->modelC0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_TEAL_TORUS), 1);
+        work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_TEAL_TORUS), 1);
         work->rotC8.vx = 0;
         work->rotC8.vy = 0;
         work->rotC8.vz = 0;
@@ -114,8 +114,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotD0.vy = 0;
         work->rotD0.vz = 0;
         work->scaleD8.vz = work->scaleD8.vy = work->scaleD8.vx = 0x400;
-        work->modelE8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x13), 1);
-        work->modelEC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x14), 1);
+        work->modelE8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_GREY_DISC), 1);
+        work->modelEC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_GREEN_DISC), 1);
         work->rotF0.vx = 0;
         work->rotF0.vy = 0;
         work->rotF0.vz = 0;
@@ -134,25 +134,25 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x22:
             ex->btlfx_getUnitBonePos(0x10, 0x2E, (u16 *)&work->pos64);
-            work->emit40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos64);
+            work->emit40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_LIGHT_STREAKS_2), (s32)&work->pos64);
             if (work->emit40[0] != NULL) {
                 work->emit40[0]->otZ = 0x200;
             }
             break;
         case 0x2A:
-            emitter = work->emit40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos64);
+            emitter = work->emit40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_YELLOW_RINGS_2), (s32)&work->pos64);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
         case 0x52:
-            emitter = work->emit40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos5C);
+            emitter = work->emit40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_YELLOW_RINGS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
         case 0x62:
-            work->emit40[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos5C);
+            work->emit40[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_ORBIT_TRAIL), (s32)&work->pos5C);
             if (work->emit40[2] != NULL) {
                 work->emit40[2]->trails = (s32)fx_1f3_op80Trails;
                 work->emit40[2]->trailSlots = 0x24;
@@ -161,7 +161,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit40[2]->otZ = 0x200;
                 }
             }
-            emitter = work->emit40[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos5C);
+            emitter = work->emit40[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_LIGHT_STREAKS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -170,14 +170,14 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer0[0] = 0x80;
             break;
         case 0x7E:
-            emitter = work->emit40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos5C);
+            emitter = work->emit40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_LIGHTNING_FLASH), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
         case 0x92:
             ex->btlfx_stopEmitter(work->emit40[6]);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos5C);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_RINGS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -199,7 +199,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer0[6] = 0x20;
             work->timer0[8] = 0x20;
             work->timer0[4] = 0x60;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos5C);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_COLOR_RINGS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -230,7 +230,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit40[6] = NULL;
         }
         if (work->emit40[1] != NULL) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x10), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_BACKDROP), frame);
         }
         if (work->timer0[1] != 0) {
             work->timer0[1]--;
@@ -358,7 +358,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         fx_1f3_rings[i].angle134 += fx_1f3_rings[i].spin138;
                         shade = (8 - fx_1f3_rings[i].timer12C) << 10;
                     }
-                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, NULL, 0, 0x1000, shade, 1,
+                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, 0, 0x1000, shade, 1,
                                         (u8 *)&fx_1f3_rings[i].trail20, 2);
                 }
             }
