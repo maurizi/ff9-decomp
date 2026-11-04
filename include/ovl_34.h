@@ -24,8 +24,6 @@ enum {
     CONFIG_ROW_COUNT
 };
 
-#define CONFIG_PAD_SLOTS 8 /* actions in the button mapping window (s_menuConfigPadActions) */
-
 enum { CONFIG_SLIDE_NONE, CONFIG_SLIDE_RIGHT, CONFIG_SLIDE_LEFT }; /* ConfigMenu.sliderDir */
 
 /* g_configMenuText ids */
@@ -88,7 +86,7 @@ extern RECT s_menuConfigSubRects[2]; /* option window rects */
 extern TweenDef s_menuConfigSubOpen; /* custom windows slide in */
 extern TweenDef s_menuConfigPadMapClose; /* button mapping window slides out, then menuConfig_closeSubWindow */
 extern TweenDef s_menuConfigBattleControlClose; /* port window slides out, then menuConfig_closeSubWindow */
-extern s32 s_menuConfigPadBits[CONFIG_PAD_SLOTS]; /* pad bit per button mapping slot: Cross, Circle, Triangle, Square, L1, R1, L2, R2 */
+extern s32 s_menuConfigPadBits[PAD_SLOT_COUNT]; /* pad bit per button mapping slot: Cross, Circle, Triangle, Square, L1, R1, L2, R2 */
 extern s32 s_menuConfigSlowText; /* text id "Slow" (slider left label) */
 extern s32 s_menuConfigFastText; /* text id "Fast" (slider right label) */
 extern u8 s_menuConfigPadArrow[];
@@ -96,7 +94,7 @@ typedef struct {
     u8 text; /* action name text id */
     u8 icon; /* button sprite */
 } ConfigPadEntry;
-extern ConfigPadEntry s_menuConfigPadActions[CONFIG_PAD_SLOTS];
+extern ConfigPadEntry s_menuConfigPadActions[PAD_SLOT_COUNT];
 
 /* main exe: candidates for ff9.h */
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */

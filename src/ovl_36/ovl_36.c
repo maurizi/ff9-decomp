@@ -231,8 +231,8 @@ void menuCard_drawCardStack(s32 id) {
             text_formatNumber(cnt, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             numText[3] = '/';
             ui_drawSmallDigits(rect->x + 0x2B, rect->y + 0x43, 0x14, numText, TEXT_PAL_WHITE);
-            prevBtn = text_getButtonSprite(4);
-            nextBtn = text_getButtonSprite(5);
+            prevBtn = text_getButtonSprite(PAD_SLOT_L1);
+            nextBtn = text_getButtonSprite(PAD_SLOT_R1);
             ui_drawSprite(rect->x + 0x1E, rect->y + 0x41, 0x14, prevBtn, 0);
             ui_drawSprite(rect->x + 0x5E, rect->y + 0x41, 0x14, nextBtn, 0);
         }

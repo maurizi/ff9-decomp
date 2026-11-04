@@ -313,7 +313,7 @@ void menuMain_setExpHelp(s32 unused) {
 
     chr = g_gameState->gameData->party[g_menuScreenMember];
     if (chr != NULL) {
-        if (chr->level >= 99) {
+        if (chr->level >= LEVEL_MAX) {
             next = chr->exp;
         } else {
             next = g_levelExp[chr->level];

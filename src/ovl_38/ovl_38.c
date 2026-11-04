@@ -173,7 +173,7 @@ void menuStatus_drawExp(void) {
     text_drawBlock(winRect->x + 0x74, winRect->y + 0x53, 0x1D, text_get(STATUS_TEXT_NEXT), TEXT_PAL_WHITE);
     text_formatNumber(chr->exp, numText, 7, TEXT_NUM_ASCII);
     ui_drawSmallDigits(winRect->x + 0xAC, winRect->y + 0x4A, 0x1D, numText, TEXT_PAL_WHITE);
-    if (chr->level >= 99) {
+    if (chr->level >= LEVEL_MAX) {
         next = chr->exp;
     } else {
         next = g_levelExp[chr->level];

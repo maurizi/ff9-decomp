@@ -99,15 +99,15 @@ void menuConfig_inputPadMap(void) {
         }
         if (g_padRepeat & PAD_UP) {
             snd_playSe(SE_CURSOR);
-            s_menuConfig.subCursor = s_menuConfig.subCursor != 0 ? s_menuConfig.subCursor - 1 : CONFIG_PAD_SLOTS - 1;
+            s_menuConfig.subCursor = s_menuConfig.subCursor != 0 ? s_menuConfig.subCursor - 1 : PAD_SLOT_COUNT - 1;
             return;
         }
         if (g_padRepeat & PAD_DOWN) {
             snd_playSe(SE_CURSOR);
-            s_menuConfig.subCursor = s_menuConfig.subCursor >= CONFIG_PAD_SLOTS - 1 ? 0 : s_menuConfig.subCursor + 1;
+            s_menuConfig.subCursor = s_menuConfig.subCursor >= PAD_SLOT_COUNT - 1 ? 0 : s_menuConfig.subCursor + 1;
             return;
         }
-        for (i = 0; i < CONFIG_PAD_SLOTS; i++) {
+        for (i = 0; i < PAD_SLOT_COUNT; i++) {
             if (g_padPressed & s_menuConfigPadBits[i]) {
                 snd_playSe(SE_CURSOR);
                 menuConfig_setPadButton(s_menuConfig.subCursor, i);
@@ -157,7 +157,7 @@ void menuConfig_drawPadMap(void) {
     ui_drawLabel(rect->x + 0x2D, rect->y - 3, 0x11, g_winLabelStrings.labelNormal, UI_LABEL_NORMAL);
     r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), TEXT_PAL_WHITE);
-    for (; i < CONFIG_PAD_SLOTS; i++) {
+    for (; i < PAD_SLOT_COUNT; i++) {
         ui_drawSprite(rect->x + 0x10, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> CFG_PADMAP_SHIFT(i)) & CFG_PADMAP_ACTION_MASK].icon, 0);
         menuConfig_drawSmallText(rect->x + 0x27, rect->y + 0xE + i * 0x11, 0x11, s_menuConfigPadArrow, TEXT_PAL_WHITE);
         ui_drawSprite(rect->x + 0x3A, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[i].icon, 0);
@@ -788,7 +788,7 @@ void menuConfig_setPadButton(s32 slot, s32 action) {
     u32 w;
     u32 old;
 
-    for (i = 0; i < CONFIG_PAD_SLOTS; i++) {
+    for (i = 0; i < PAD_SLOT_COUNT; i++) {
         if (action == ((g_gameState->padMap >> CFG_PADMAP_SHIFT(i)) & CFG_PADMAP_ACTION_MASK)) {
             j = i;
             goto found;

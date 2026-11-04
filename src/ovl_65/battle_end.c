@@ -514,7 +514,7 @@ void rewards_compute(void) {
     rw->itemCount = 0;
     rw->ap = g_btlRewards.ap;
     rw->gil.target = g_btlRewards.gil;
-    rw->card = (card_countAll() < 100) ? g_btlRewards.card : ITEM_NONE;
+    rw->card = (card_countAll() < CARD_MAX) ? g_btlRewards.card : ITEM_NONE;
     for (i = 0; i < BTL_DROP_COUNT; i++) {
         found = 0;
         if (g_btlRewards.items[i] == ITEM_NONE) {
