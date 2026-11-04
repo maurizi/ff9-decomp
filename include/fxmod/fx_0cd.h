@@ -6,6 +6,18 @@
  * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0cd effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_AERA_MODEL_3      0x1 /* 'so' model (look pending) */
+#define FX_AERA_MODEL_2      0x3 /* 'so' model (look pending) */
+#define FX_AERA_GREEN_RING   0x4 /* emitter: green gouraud rings */
+#define FX_AERA_WIND_RING    0x5 /* emitter: orbiting white wind-ring particle */
+#define FX_AERA_GREEN_BURST  0x7 /* emitter: green gust puffs */
+#define FX_AERA_WIND_STREAKS 0x8 /* emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) (look pending) */
+#define FX_AERA_GUST_RINGS   0xA /* emitter: cyan-green gouraud rings */
+#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites (texture garbled in the render) (look pending) */
+#define FX_AERA_MODEL        0xD /* 'so' model (look pending) */
+
 typedef struct {
     s32 model0; /* model */
     SVECTOR rot4; /* rotation */

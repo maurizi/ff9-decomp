@@ -126,3 +126,42 @@ Notes:
 | fx_0d8 | 0x1D | `FX_SWDMAG_THUNDARA_LENS_FLARES` | render | particles: orange lens-flare dots around the orb (byte-identical to fx_005 entry 0x16) |
 | fx_0d8 | 0x1E | `FX_SWDMAG_THUNDARA_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
 | fx_0d8 | 0x1F | `FX_SWDMAG_THUNDARA_SWORD_GLINT_2` | render | rings: white gouraud ring flash at the sword, rotated |
+| fx_0b9 | 0x1 | `FX_SANDSTORM_SAND_STREAK` | render | emitter: grey sand streak (screen trail) |
+| fx_0b9 | 0x2 | `FX_SANDSTORM_SAND_STREAK_2` | render | emitter: grey sand streak (homing 3D trail) |
+| fx_0b9 | 0x3 | `FX_SANDSTORM_SAND_CLOUD` | render | emitter: grainy grey sand clouds |
+| fx_0c9 | 0x1 | `FX_JEWEL_GEM` | render | model: faceted gem (polyhedron, white texture) |
+| fx_0c9 | 0x2 | `FX_JEWEL_GEM_SPARKLES` | render | emitter: stone / crystal glint particles and star sparkles (+ sprites, texture not in the file) |
+| fx_0c9 | 0x3 | `FX_JEWEL_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0c9 | 0x4 | `FX_JEWEL_LIGHT_BURST` | render | emitter: white / lilac / cyan rings and violet light streaks |
+| fx_0c9 | 0x5 | `FX_JEWEL_ORE_GLINT` | render | emitter: green ore glint, lilac / cyan ring, star sparkles |
+| fx_0c9 | 0x6 | `FX_JEWEL_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0c9 | 0x10 | `FX_JEWEL_GLOW_RING` | render | emitter: white-cyan gouraud ring, fans |
+| fx_0ca | 0x1 | `FX_POISON_BUBBLES` | render | emitter: purple poison blobs and bubbles |
+| fx_0ca | 0x2 | `FX_POISON_SWIRL` | render | emitter: orbiting purple poison trail |
+| fx_0cb | 0x5 | `FX_LIGHT_FLARE_GLOW_RINGS` | render | rings: white / cyan / orange / red gouraud rings |
+| fx_0cb | 0x8 | `FX_LIGHT_FLARE_MODEL_2` | kind/usage (look pending) | 'so' model, drawn fading with the first |
+| fx_0cb | 0xC | `FX_LIGHT_FLARE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (with the screen tint) |
+| fx_0cb | 0xF | `FX_LIGHT_FLARE_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop (with the rings) |
+| fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | kind/usage (look pending) | rings: textured ring drawn twice, tilted (texture not in the file) |
+| fx_0cb | 0x12 | `FX_LIGHT_FLARE_MODEL` | kind/usage (look pending) | 'so' model, drawn fading |
+| fx_0cc | 0x2 | `FX_METEORITE_IMPACT_RING` | render | rings: white-pink gouraud ring at the impact |
+| fx_0cc | 0x3 | `FX_METEORITE_IMPACT_SMOKE` | render | particles: pink-white smoke puff at the impact |
+| fx_0cc | 0x7 | `FX_METEORITE_RED_GLOW` | render | particles: red glow around the falling rock |
+| fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | kind/usage (look pending) | emitter: sprites following the falling rock, render all black |
+| fx_0cc | 0xC | `FX_METEORITE_IMPACT_FLASH` | render | particles: white radial flash at the impact |
+| fx_0cc | 0xF | `FX_METEORITE_ROCK` | kind/usage (look pending) | 'so' model: the falling rock (drawn spinning down) |
+| fx_0cd | 0x1 | `FX_AERA_MODEL_3` | kind/usage (look pending) | 'so' model |
+| fx_0cd | 0x3 | `FX_AERA_MODEL_2` | kind/usage (look pending) | 'so' model |
+| fx_0cd | 0x4 | `FX_AERA_GREEN_RING` | render | emitter: green gouraud rings |
+| fx_0cd | 0x5 | `FX_AERA_WIND_RING` | render | emitter: orbiting white wind-ring particle |
+| fx_0cd | 0x7 | `FX_AERA_GREEN_BURST` | render | emitter: green gust puffs |
+| fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | kind/usage (look pending) | emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) |
+| fx_0cd | 0xA | `FX_AERA_GUST_RINGS` | render | emitter: cyan-green gouraud rings |
+| fx_0cd | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites (texture garbled in the render) |
+| fx_0cd | 0xD | `FX_AERA_MODEL` | kind/usage (look pending) | 'so' model |
+| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | kind/usage (look pending) | emitter: 3D trail (texture garbled in the render) |
+| fx_0ce | 0x2 | `FX_SCREECH_PURPLE_MIST` | render | emitter: dark purple mist rings and brown-pink gouraud rings |
+| fx_0ce | 0x7 | `FX_SCREECH_MODEL` | kind/usage (look pending) | 'so' model |
+| fx_0ce | 0xB | `FX_SCREECH_DARK_RINGS` | kind/usage (look pending) | emitter: textured rings, render almost black |
+| fx_0ce | 0xC | `FX_SCREECH_LILAC_RING` | render | emitter: lilac glow ring particle |
+| fx_0cf | 0x1 | `FX_STOCK_BREAK_SLASH_ARC` | render | emitter: blue slash arc, fans |

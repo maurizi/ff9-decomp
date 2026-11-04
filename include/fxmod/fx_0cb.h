@@ -7,6 +7,15 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0cb effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LIGHT_FLARE_GLOW_RINGS    0x5 /* rings: white / cyan / orange / red gouraud rings */
+#define FX_LIGHT_FLARE_MODEL_2       0x8 /* 'so' model, drawn fading with the first (look pending) */
+#define FX_LIGHT_FLARE_BACKDROP      0xC /* table: background layers for btlfx_drawBackdrop (with the screen tint) */
+#define FX_LIGHT_FLARE_BACKDROP_2    0xF /* table: background layers for btlfx_drawBackdrop (with the rings) */
+#define FX_LIGHT_FLARE_TEXTURED_RING 0x11 /* rings: textured ring drawn twice, tilted (texture not in the file) (look pending) */
+#define FX_LIGHT_FLARE_MODEL         0x12 /* 'so' model, drawn fading (look pending) */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */

@@ -9,8 +9,8 @@ s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0c9_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JEWEL_GEM_SPARKLES), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JEWEL_FAN_EMITTER), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
@@ -50,7 +50,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos1C.vx = work->pos14.vx;
         work->pos1C.vy = work->pos14.vy;
         work->pos1C.vz = work->pos14.vz;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JEWEL_LIGHT_BURST), (s32)&work->pos14);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
@@ -63,12 +63,12 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale3C.vx = 0x1B;
         work->scale3C.vy = 0x1B;
         work->scale3C.vz = 0x1B;
-        work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x117, 0, 0, 0xC0);
+        work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_JEWEL_GEM), 0x117, 0, 0, 0xC0);
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0xA:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_0c9_emitPos);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JEWEL_ORE_GLINT), (s32)&fx_0c9_emitPos);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0c9_trails;
                 work->emit0->trailSlots = 0x12;
@@ -85,7 +85,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos4C.vx = work->pos1C.vx;
             work->pos4C.vy = work->pos1C.vy;
             work->pos4C.vz = work->pos1C.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos4C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JEWEL_GLOW_RING), (s32)&work->pos4C);
             break;
         }
         if (frame >= 0xA) {
@@ -119,7 +119,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_lerpVec((s16 *)&work->pos14, (s16 *)&work->posC, t, (s16 *)&work->pos1C);
                 work->pos1C.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 6), elapsed);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_JEWEL_BACKDROP), elapsed);
         }
         if (frame >= 0x50) {
             ex->btlfx_clearEffModels();
