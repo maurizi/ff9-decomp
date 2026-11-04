@@ -6,6 +6,17 @@
  * that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0f0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ZOMBIE_POWDER_ANIM_EMITTER 0x1 /* emitter: animated quads, render all black (look pending) */
+#define FX_ZOMBIE_POWDER_SPORE_TRAIL  0x2 /* emitter: homing green spores, yellow puffs, sparkles */
+#define FX_ZOMBIE_POWDER_YELLOW_PUFFS 0x3 /* emitter: yellow powder puffs */
+#define FX_ZOMBIE_POWDER_YELLOW_CLOUD 0x4 /* emitter: yellow powder cloud */
+#define FX_ZOMBIE_POWDER_VIOLET_CLOUD 0x5 /* emitter: violet powder cloud */
+#define FX_ZOMBIE_POWDER_MIST_TRAIL   0x6 /* emitter: green-grey mist screen trails */
+#define FX_ZOMBIE_POWDER_MIST_TRAIL_2 0x7 /* emitter: green-grey mist screen trails */
+#define FX_ZOMBIE_POWDER_DUST_WAVE    0x15 /* emitter: yellow-green dust half ring */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

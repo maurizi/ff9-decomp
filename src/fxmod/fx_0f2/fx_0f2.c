@@ -38,11 +38,11 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale20.vx = 0xAAA;
         work->scale20.vy = 0xAAA;
         work->scale20.vz = 0xAAA;
-        work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x11A, 0, 0, 0x80);
+        work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_DOME), 0x11A, 0, 0, 0x80);
         work->startPos40.vx = work->pos10.vx;
         work->startPos40.vy = work->pos10.vy;
         work->startPos40.vz = work->pos10.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos38);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_RUNE_BURST), (s32)&work->pos38);
         work->fadeInTimer54 = -1;
         work->fadeOutTimer56 = -1;
     } else {
@@ -52,7 +52,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos48.vx = work->pos10.vx;
             work->pos48.vy = work->pos10.vy;
             work->pos48.vz = work->pos10.vz;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos48);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_FLAME_CLOUD), (s32)&work->pos48);
             work->fadeInTimer54 = 3;
             break;
         case 0x15:
@@ -76,7 +76,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->pos10.vz += work->speed34;
             work->scale20.vz += 0x100;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), elapsed);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_BACKDROP), elapsed);
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();

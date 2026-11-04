@@ -6,6 +6,32 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0dc effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLIZZAGA_SWORD_CRYSTAL_SHEEN_2 0xF /* model: crystal 2 shape, reflection-map texture (byte-identical to fx_097 entry 0xF) */
+#define FX_BLIZZAGA_SWORD_CRYSTAL_SHEEN_3 0x10 /* model: crystal 3 shape, reflection-map texture (byte-identical to fx_097 entry 0x10) */
+#define FX_BLIZZAGA_SWORD_CRYSTAL_SHEEN   0x11 /* model: main crystal shape, reflection-map texture (byte-identical to fx_097 entry 0x11) */
+#define FX_BLIZZAGA_SWORD_ICE_CRYSTAL_2   0x12 /* model: ice crystal spike (hexagonal, ice texture) (byte-identical to fx_097 entry 0x12) */
+#define FX_BLIZZAGA_SWORD_ICE_CRYSTAL_3   0x13 /* model: wide ice crystal spike (byte-identical to fx_097 entry 0x13) */
+#define FX_BLIZZAGA_SWORD_ICE_CRYSTAL     0x14 /* model: main ice crystal spike (byte-identical to fx_097 entry 0x14) */
+#define FX_BLIZZAGA_SWORD_FROST_RING      0x1B /* rings: blue gouraud ring on the ground */
+#define FX_BLIZZAGA_SWORD_FAN_EMITTER     0x1C /* emitter: four fan elements (not rendered) (byte-identical to fx_097 entry 0x1C) (look pending) */
+#define FX_BLIZZAGA_SWORD_SNOW_BURST      0x1D /* emitter: rings textured with snow flakes (byte-identical to fx_097 entry 0x1D) */
+#define FX_BLIZZAGA_SWORD_SHATTER_WAVE    0x1E /* emitter: blue ripple wave (byte-identical to fx_097 entry 0x1E) */
+#define FX_BLIZZAGA_SWORD_ICE_FLARES_2    0x1F /* emitter: cyan ice glints (byte-identical to fx_097 entry 0x1F) */
+#define FX_BLIZZAGA_SWORD_ICE_FLARES      0x20 /* emitter: cyan ice glints, four elements (byte-identical to fx_097 entry 0x20) */
+#define FX_BLIZZAGA_SWORD_FREEZE_BURST    0x21 /* emitter: white-pink rings + spark sprites (byte-identical to fx_097 entry 0x21) */
+#define FX_BLIZZAGA_SWORD_FROST_RING_2    0x22 /* emitter: pale blue gouraud rings (byte-identical to fx_097 entry 0x22) */
+#define FX_BLIZZAGA_SWORD_SNOW_RING       0x23 /* rings: textured ring of blue snow flakes (byte-identical to fx_097 entry 0x23) */
+#define FX_BLIZZAGA_SWORD_SNOW_RING_2     0x24 /* rings: textured ring of pale snow flakes (byte-identical to fx_097 entry 0x24) */
+#define FX_BLIZZAGA_SWORD_SHARD_MIST      0x25 /* emitter: grey mist trailing each shard (pool item) (byte-identical to fx_097 entry 0x25) */
+#define FX_BLIZZAGA_SWORD_MIST            0x26 /* emitter: grey frost mist at the crystal base (byte-identical to fx_097 entry 0x26) */
+#define FX_BLIZZAGA_SWORD_MIST_HIGH       0x27 /* emitter: grey frost mist higher up (byte-identical to fx_097 entry 0x27) */
+#define FX_BLIZZAGA_SWORD_BLADE_FLASH     0x28 /* rings: white 8-segment rings flashed rotating at the sword (op84) */
+#define FX_BLIZZAGA_SWORD_BLADE_GLINT     0x29 /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
+#define FX_BLIZZAGA_SWORD_ICE_SPARKLES_2  0x2A /* emitter: small blue ice sparkles while the crystal grows (byte-identical to fx_097 entry 0x29) */
+#define FX_BLIZZAGA_SWORD_ICE_SPARKLES    0x2B /* emitter: small blue ice sparkles at the shatter (byte-identical to fx_097 entry 0x28) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* time */

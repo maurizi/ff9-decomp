@@ -27,7 +27,7 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
@@ -57,7 +57,7 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT_2), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
@@ -87,7 +87,7 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 fade) {
@@ -128,7 +128,7 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LIGHTNING_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 bright, s32 tpage,
@@ -431,16 +431,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->state0 = 0;
         work->frame4 = 0;
         fx_0e3_1_env = env;
-        work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x84), 1);
-        work->modelC8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x25), 1);
-        work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x85), 0);
-        work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 0);
-        work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 1);
-        work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 0);
-        work->modelD8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x26), 0);
-        work->modelDC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
-        work->modelE0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 0);
+        work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_DISC_MODEL), 1);
+        work->modelC8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BURST_MODEL), 1);
+        work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_COLUMN_MODEL), 1);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FADE_MODEL), 0);
+        work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ORB_MODEL), 0);
+        work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_MODEL), 1);
+        work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_MODEL_2), 0);
+        work->modelD8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_MODEL_3), 0);
+        work->modelDC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLARE_PILLAR_MODEL), 1);
+        work->modelE0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ORB_SHELL_MODEL), 0);
         BTLFX_COPY_SVEC(&work->center8, &fx_0e3_1_origin);
         work->rot28.vy = 0x800;
         work->rot28.vx = 0;
@@ -527,8 +527,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vy = work->camTarget40.vy;
             env->camera->points[3].vz = work->camTarget40.vz;
             if (frame == 0) {
-                work->emit60 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->pos30);
-                work->emit64 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos30);
+                work->emit60 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_RING_BURST), (s32)&work->pos30);
+                work->emit64 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_SPARKS), (s32)&work->pos30);
             }
             if (work->emit60 != NULL) {
                 work->emit60->rot.vx = work->handRot58.vx;
@@ -544,26 +544,26 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t_s2 = ((frame << 12) / 48) >> 2;
             chargeRingScale = (ex->math_sin(t_s2) >> 1) + 0x800;
             chargeRingFade = ex->math_sin(t_s2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos30, NULL, chargeRingScale >> 1, 0, 1, chargeRingFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CHARGE_RINGS), &work->pos30, NULL, chargeRingScale >> 1, 0, 1, chargeRingFade);
             if (frame >= 0x2B) {
                 tB = (((frame - 0x2B) << 12) / 5) >> 2;
                 flashRingScale = ex->math_sin(tB) / 3;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos30, NULL, flashRingScale, 0, 1, 0x1000);
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 7), &work->pos30, 0xB, ex->math_sin(tB));
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flashRingScale, 0, 1, 0x1000);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLARE_LINE), &work->pos30, 0xB, ex->math_sin(tB));
             }
             if (frame >= 0x10) {
                 sparkRing = ex->math_sin(((frame - 0x10) << 7) >> 2);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->pos30, NULL, sparkRing, 0, 1, sparkRing);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, sparkRing, 0, 1, sparkRing);
             }
             if (frame == 0x26) {
-                Pool6CEntry *sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos30);
+                Pool6CEntry *sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FAN_EMITTER_2), (s32)&work->pos30);
                 if (sparkEmitter != NULL) {
                     sparkEmitter->otZ = 0x80;
                 }
             }
             env->otZ = 0;
             if (frame == 0x10) {
-                work->emit68 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos30);
+                work->emit68 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ENERGY_ORBS), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -576,7 +576,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 { s32 q4b;
                 spinRingScale = (ex->math_cos(tC) * 3) >> 1;
                 q4b = ex->math_sin(tC);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x12), &work->pos30, &work->rotBC, spinRingScale, 0, 1, q4b); }
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPIN_RING), &work->pos30, &work->rotBC, spinRingScale, 0, 1, q4b); }
             }
             if (frame >= 0x30) {
                 work->state0 = 2;
@@ -680,20 +680,20 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x10 && frame != 1) {
                 flareScale = (ex->math_cos(t >> 2) >> 2) + 0x555;
                 flareFade = ex->math_cos((frame << 8) >> 2);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos30, NULL, flareScale, 0, 1, flareFade);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flareScale, 0, 1, flareFade);
                 work->rotBC.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos30, &work->rotBC, 0x1000,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), &work->pos30, &work->rotBC, 0x1000,
                                   frame, 1, flareFade);
-                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x18), &work->pos30, &work->rotBC, 0x2000,
+                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPARKLE_RING), &work->pos30, &work->rotBC, 0x2000,
                                       frame, 1, flareFade);
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 7), &work->pos30, frame - 1, flareFade);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLARE_LINE), &work->pos30, frame - 1, flareFade);
             }
             if (frame < 0x11) {
                 haloScale = (ex->math_cos(t >> 2) >> 2) + 0x800;
             } else {
                 haloScale = 0x800;
             }
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &work->pos30, NULL, (haloScale * 3) >> 1, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, (haloScale * 3) >> 1, 0, 1,
                               0x1000);
             shake = t;
             haloAng = t >> 2;
@@ -701,7 +701,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             {
                 s32 qa;
                 qa = ex->math_cos(haloAng);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->pos30, NULL, glowScale, 0, 1, qa);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, glowScale, 0, 1, qa);
             }
             env->otZ = 0;
             if (frame >= 0x1C) {
@@ -824,9 +824,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_ModifyEffModelRGB(work->modelC8, (burstCos >> 6) - 0x80, (burstCos >> 6) - 0x80, (burstCos >> 6) - 0x80);
             }
             if (frame == 0) {
-                work->emit70 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos30);
-                work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos30);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
+                work->emit70 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SPARKS), (s32)&work->pos30);
+                work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SPARKS_2), (s32)&work->pos30);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FAN_EMITTER), (s32)&work->pos30);
             }
             col.r = col.g = col.b = 0x37;
             gridScale.vx = 0x1400;
@@ -847,12 +847,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             burstAng = t >> 2;
             burstRingScale = (ex->math_sin(burstAng) * 2) + 0x1000;
             burstRingFade = (ex->math_cos(burstAng) >> 1) + 0x800;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &work->pos30, NULL, burstRingScale, 0, 1, burstRingFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, burstRingScale, 0, 1, burstRingFade);
             burstGlowScale = (ex->math_sin(burstAng) * 3) + 0x1000;
             {
                 s32 qb;
                 qb = ex->math_cos(burstAng);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->pos30, NULL, burstGlowScale, 0, 1, qb);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, burstGlowScale, 0, 1, qb);
             }
             if (frame >= 4) {
                 ringFrame = frame - 4;
@@ -861,7 +861,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ringRot.vy = 0;
                     ringRot.vz = 0;
                     ringRot.pad = 1;
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos30, &ringRot, 0x4000, ringFrame, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), &work->pos30, &ringRot, 0x4000, ringFrame, 1,
                                       0x1000);
                 }
             }
@@ -872,15 +872,15 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_stopEmitter(work->emit70);
                 ex->btlfx_stopEmitter(work->emit74);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_BURST), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x300;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_EMBERS), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x300;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x29), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FAN_EMITTER_3), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x400;
                 }
@@ -1070,7 +1070,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0x31) {
                 BTLFX_COPY_SVEC(&work->pos38, &work->pos30);
                 work->pos38.vy -= 0x400;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&work->pos38);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_EMBERS_2), (s32)&work->pos38);
                 if (emitter != NULL) {
                     emitter->otZ = 0x180;
                 }
@@ -1083,12 +1083,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ringAng = t >> 2;
             ringScale = ex->math_cos(ringAng) + 0x1800;
             ringFade = ((ex->math_cos(ringAng) * 3) >> 2) + 0x400;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &work->pos30, NULL, ringScale, 0, 1, ringFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, ringScale, 0, 1, ringFade);
             ringScale = 0x5000 - t * 2;
             ringFade = ex->math_cos(ringAng);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->pos30, &flatRingRot, ringScale, 0, 1, ringFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PINK_FLAT_RING), &work->pos30, &flatRingRot, ringScale, 0, 1, ringFade);
             env->otZ = 0;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x16), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BACKDROP), frame);
             ex->btlfx_drawScrollMove(work->frame4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
             if (frame >= 0x4D) {
                 ex->btlfx_clearEffModels();

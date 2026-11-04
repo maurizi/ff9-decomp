@@ -6,6 +6,11 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e9 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ANNOY_PINK_WISPS     0x2 /* emitter: rising pink wisps, orange shimmer, sparks, light streak */
+#define FX_ANNOY_ORANGE_SHIMMER 0x6 /* emitter: three orange shimmering quad animations */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

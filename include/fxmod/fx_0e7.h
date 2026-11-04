@@ -6,6 +6,16 @@
  * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_THIEVERY_CHEST_LID    0x1 /* model: treasure chest lid (Hi_RegisterTexListModel; shape only) */
+#define FX_THIEVERY_CHEST_BOX    0x2 /* model: treasure chest box (shape only) */
+#define FX_THIEVERY_LENS_FLARES  0x3 /* sprite line: lens-flare circles and rings */
+#define FX_THIEVERY_GOLD_GLITTER 0x4 /* emitter: gold glitter + small glows */
+#define FX_THIEVERY_WHITE_PUFF   0x5 /* emitter: white smoke puff */
+#define FX_THIEVERY_GOLD_RINGS   0xC /* emitter: fans + white-yellow-orange gouraud rings */
+#define FX_THIEVERY_GOLD_BURST   0xD /* emitter: golden puffs + yellow-orange / cyan-blue rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* target body position */

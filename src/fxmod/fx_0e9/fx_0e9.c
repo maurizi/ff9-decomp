@@ -72,14 +72,14 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0e9_orbit.wobble8 = 0;
         fx_0e9_orbit.timerA = 0x6E;
         fx_0e9_orbit.angle6 = rot.vy;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&fx_0e9_emitPos);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ANNOY_ORANGE_SHIMMER), (s32)&fx_0e9_emitPos);
         if (work->emit0 != NULL) {
             ((Fx0e9EffHdr *)work->emit0->file)->motion8 = fx_0e9_op80ParticleMotion;
         }
     } else {
         frame = entry->frame;
         if (frame == 0x50) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ANNOY_PINK_WISPS), (s32)&work->pos18);
         }
         return frame >= 0x8C;
     }

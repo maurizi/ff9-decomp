@@ -6,6 +6,27 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DOOMSDAY_SWORD_ROCK             0x8 /* model: polyhedral rock (rock texture) */
+#define FX_DOOMSDAY_SWORD_DUST_RING        0x9 /* rings: white ring fading through cream to grey, 8 frames */
+#define FX_DOOMSDAY_SWORD_FIRE_RING        0xA /* rings: white-orange / yellow rings, 16 frames */
+#define FX_DOOMSDAY_SWORD_BOULDER          0xB /* model: egg-shaped boulder (rock texture) */
+#define FX_DOOMSDAY_SWORD_EMBERS           0xD /* emitter: spiral of tiny orange sprites */
+#define FX_DOOMSDAY_SWORD_STAR_FUNNEL      0x11 /* model: three-bladed funnel with a starfield texture */
+#define FX_DOOMSDAY_SWORD_STAR_DOME        0x12 /* model: arch / dome with a starfield texture */
+#define FX_DOOMSDAY_SWORD_GOURAUD_DOME     0x13 /* model: shallow gouraud dome (colours not rendered) (look pending) */
+#define FX_DOOMSDAY_SWORD_BOULDER_2        0x14 /* model: rough egg-shaped boulder (rock texture) */
+#define FX_DOOMSDAY_SWORD_CYLINDER         0x19 /* model: open cylinder, texture not in the file (look pending) */
+#define FX_DOOMSDAY_SWORD_LILAC_RINGS      0x1A /* rings: white-lilac gouraud rings at the centre */
+#define FX_DOOMSDAY_SWORD_BLUE_RINGS       0x1B /* rings: white-cyan-blue gouraud rings at the centre */
+#define FX_DOOMSDAY_SWORD_BACKDROP         0x1C /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_DOOMSDAY_SWORD_PURPLE_BOLT      0x1D /* trail: purple lightning strip (fxm_drawOffsetTrail) */
+#define FX_DOOMSDAY_SWORD_PEBBLES          0x20 /* emitter: spiral of small grey pebble sprites */
+#define FX_DOOMSDAY_SWORD_PARTICLE_EMITTER 0x21 /* emitter: four particle elements, texture not in the file (look pending) */
+#define FX_DOOMSDAY_SWORD_BLADE_FLASH      0x22 /* rings: white 8-segment rings flashed rotating at the sword (op84) */
+#define FX_DOOMSDAY_SWORD_BLADE_GLINT      0x23 /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* time */

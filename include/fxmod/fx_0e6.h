@@ -6,6 +6,12 @@
  * this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_STONE_ROCK_SHELL 0x2 /* model: ball with a rock texture */
+#define FX_STONE_RED_RINGS  0x8 /* emitter: white-pink-red gouraud rings + spark sprites (texture not in the file) */
+#define FX_STONE_ROCK_STRIP 0x9 /* trail: strip with a rock texture */
+
 typedef struct {
     s32 model0; /* model */
     VECTOR scale4; /* scale */

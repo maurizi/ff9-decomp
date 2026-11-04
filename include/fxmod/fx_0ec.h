@@ -4,6 +4,24 @@
 /* Effect module fx_0ec (dir 13 file 0x0EC): Doom. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
+/* fx_0ec effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DOOM_GOLD_FRAME       0x1 /* model: ornate gold frame, rises sliced */
+#define FX_DOOM_GOLD_PANEL       0x3 /* model: carved gold panel, rises sliced */
+#define FX_DOOM_REAPER_PICTURE   0x4 /* model: panel with the picture of Death */
+#define FX_DOOM_PARTICLES        0x6 /* particles (texture not in the file) (look pending) */
+#define FX_DOOM_GOLD_LATTICE     0x7 /* model: capsule with a gold lattice texture */
+#define FX_DOOM_PINK_RINGS       0x8 /* emitter: pink-white rings (+ particles, texture not in the file) */
+#define FX_DOOM_CAMERA_POINT     0x9 /* table: SVECTOR whose pad sets the camera point height */
+#define FX_DOOM_RED_RING         0xB /* emitter: glowing red ring sprite */
+#define FX_DOOM_PINK_SMOKE       0xC /* emitter: pink-violet smoke */
+#define FX_DOOM_GLOW_SHELL       0xD /* model: capsule, additive, texture page computed (drawn twice) (look pending) */
+#define FX_DOOM_CYAN_SPARKLES    0xE /* emitter: cyan sparkles in a tube */
+#define FX_DOOM_REAPER_PICTURE_2 0xF /* model: second panel with the picture of Death */
+#define FX_DOOM_WHITE_SHELL      0x10 /* model: capsule, 15-bit texture page 0x119 (look pending) */
+#define FX_DOOM_BACKDROP         0x11 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_DOOM_GOURAUD_SHELL    0x13 /* model: gouraud capsule (colours not rendered) (look pending) */
+
 typedef struct {
     s16 modelCount0; /* split models */
     s16 triCount2; /* vertices */

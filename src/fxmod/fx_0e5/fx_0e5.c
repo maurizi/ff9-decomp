@@ -17,7 +17,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->linePos38.vy = work->pos10.vy;
         work->linePos38.vz = work->pos10.vz;
         ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot20, 0xC8, (s16 *)&work->pos30);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos30);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOUL_BLADE_LIGHT_FLASH), (s32)&work->pos30);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
@@ -27,13 +27,13 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0xF) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOUL_BLADE_SPIRIT_WISPS), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame >= 0xF && frame < 0x1C) {
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->linePos38, work->lineFrame40, work->lineAlpha42);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_SOUL_BLADE_LENS_FLARES), &work->linePos38, work->lineFrame40, work->lineAlpha42);
             if (frame - 0xF >= 5) {
                 work->lineAlpha42 -= 0x200;
             }

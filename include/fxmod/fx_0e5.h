@@ -6,6 +6,12 @@
  * that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e5 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SOUL_BLADE_LIGHT_FLASH  0x6 /* emitter: lilac / blue-white rings + white light streak */
+#define FX_SOUL_BLADE_SPIRIT_WISPS 0x8 /* emitter: blue rings, white sparkles, golden smoke wisps */
+#define FX_SOUL_BLADE_LENS_FLARES  0x9 /* sprite line: lens-flare circles and rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

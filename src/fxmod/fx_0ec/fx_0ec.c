@@ -12,7 +12,7 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
         rot.vy = 0;
         rot.vz = 0;
         rot.pad = 1;
-        data = (u8 *)ex->btlfx_getFileData(entry->file, 6);
+        data = (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOM_PARTICLES);
         ex->btlfx_drawParticles(data, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
         if (frame >= 6) {
             return 1;
@@ -398,19 +398,19 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vz = sv.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_0ec_effModels, 9);
-        work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x97, 0x3D40,
+        work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_FRAME), 0x97, 0x3D40,
                                                       0x80, 0x80);
-        work->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0x97, 0x3D40,
+        work->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_PANEL), 0x97, 0x3D40,
                                                       0x80, 0x80);
-        work->model40[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 4), 0xB7,
+        work->model40[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_REAPER_PICTURE), 0xB7,
                                                          0x3DC0, 0, 0x80);
-        work->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3DC0,
+        work->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_REAPER_PICTURE_2), 0x97, 0x3DC0,
                                                       0, 0x80);
-        work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x39, 0x3D01,
+        work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_LATTICE), 0x39, 0x3D01,
                                                       0, 0);
-        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x10), 0x119,
+        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_WHITE_SHELL), 0x119,
                                                       0xFFFF, 0, 0x90);
-        work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13));
+        work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOURAUD_SHELL));
         dispX = env->dispEnv->disp.x;
         if (dispX < 0x100) {
             otherX = dispX + 0x140;
@@ -419,9 +419,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         tp0 = getTPage(2, 0, dispX, env->dispEnv->disp.y);
         tp1 = getTPage(2, 0, otherX, env->dispEnv->disp.y);
-        work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp0 | TPAGE_ABR_ADD,
+        work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GLOW_SHELL), tp0 | TPAGE_ABR_ADD,
                                                          0xFFFF, 0x40, 0);
-        work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp1 | TPAGE_ABR_ADD,
+        work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GLOW_SHELL), tp1 | TPAGE_ABR_ADD,
                                                          0xFFFF, 0x40, 0);
         fx_0ec_task = (Fx0ecWork *)entry; /* the shard callbacks spawn into entry->pool */
         unitScale = (ex->btlfx_getUnitRadius(0) << 12) / 390;
@@ -432,11 +432,11 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             unitScale = 0x1755;
         }
         work->scale5C = unitScale;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOM_PINK_RINGS), (s32)&work->pos18);
         if (emitter != NULL) {
             emitter->otZ = -0x40;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos20);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOM_PINK_SMOKE), (s32)&work->pos20);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
@@ -461,7 +461,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos20.vy = work->pos18.vy;
         work->pos20.vz = work->pos18.vz;
         work->pos20.vy -= (t * 0x140) >> 12;
-        emitter = (Pool6CEntry *)ex->btlfx_getFileData(entry->file, 9);
+        emitter = (Pool6CEntry *)ex->btlfx_getFileData(entry->file, FX_DOOM_CAMERA_POINT);
         sv.vx = pos.vx;
         sv.vy = pos.vy;
         sv.vz = pos.vz;
@@ -569,7 +569,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 gte_rtv0tr();
                 gte_stlvnl(&out);
                 setVector(&work->emitPos28[i], out.vx, out.vy, out.vz);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->emitPos28[i]);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOM_RED_RING), (s32)&work->emitPos28[i]);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -598,7 +598,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos20.vy = work->pos18.vy;
                 work->pos20.vz = work->pos18.vz;
                 work->pos20.vy -= (work->scale5C << 10) >> 12;
-                work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos18);
+                work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOM_CYAN_SPARKLES), (s32)&work->pos18);
                 if (emitter == NULL) {
                     goto skip; /* the original's NULL branch skips the unk60 check (unk60 is NULL then) */
                 }
@@ -666,7 +666,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         break;
     }
-    ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x11), work->frame4);
+    ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOM_BACKDROP), work->frame4);
     work->frame4++;
     }
     return 0;

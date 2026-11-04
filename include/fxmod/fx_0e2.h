@@ -7,6 +7,48 @@
  * file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FENRIR_RIBBON_PATHS_C     0x1 /* table: position paths of ribbons 2/3 (fxm_offsetTableEntry, fxm_posPathInit) */
+#define FX_FENRIR_GREEN_RINGS        0x4 /* emitter: pale green gouraud rings, 64 frames */
+#define FX_FENRIR_RIBBON_PATHS_A     0x9 /* table: position paths of ribbon 0 */
+#define FX_FENRIR_CAM_TRACK_1        0xA /* table: camera key track, channel 1 (fxm_camChanAdd) */
+#define FX_FENRIR_CAM_TRACK_2        0xB /* table: camera key track, channel 2 (fxm_camChanAdd) */
+#define FX_FENRIR_RIBBON_PATHS_B     0xC /* table: position paths of ribbon 1 */
+#define FX_FENRIR_SAND_RINGS         0xD /* emitter: brown-salmon gouraud rings + spark sprites (texture not in the file) */
+#define FX_FENRIR_GREEN_WIND_TRAIL   0xE /* emitter: spiralling green wind-streak trail + grey smoke */
+#define FX_FENRIR_RIBBON_PATHS_D     0xF /* table: position paths of ribbons 2/3 (other branch) */
+#define FX_FENRIR_GREEN_RINGS_2      0x10 /* emitter: white-green / pale green gouraud rings */
+#define FX_FENRIR_EFFECT_MODEL       0x11 /* 'so' model (op84, not rendered) (look pending) */
+#define FX_FENRIR_SPARKS             0x12 /* emitter: spiral of spark sprites (texture not in the file) (look pending) */
+#define FX_FENRIR_GREEN_WIND_STRIP   0x17 /* trail: green wind-streak strip texture */
+#define FX_FENRIR_EFFECT_MODEL_2     0x1D /* 'so' model (op84, not rendered) (look pending) */
+#define FX_FENRIR_SHELL_MODEL_2      0x1F /* 'so' model drawn with SHELL_MODEL (not rendered) (look pending) */
+#define FX_FENRIR_SHELL_MODEL        0x21 /* 'so' model (not rendered) (look pending) */
+#define FX_FENRIR_BLOCK_MODEL        0x80 /* summon data: 'so' model drawn sliced as falling blocks (Hi_DrawSliceEffModel) (look pending) */
+#define FX_FENRIR_CLUSTER_MODEL_0    0x81 /* summon data: 'so' model, drawn with CLUSTER_MODEL_1/2 (look pending) */
+#define FX_FENRIR_WIND_STREAK        0x82 /* summon data: model, long teardrop streak (Hi_RegisterTexListModel; shape only) */
+#define FX_FENRIR_WIND_SERPENT       0x83 /* summon data: model, serpent-like streak with a head (shape only) */
+#define FX_FENRIR_WIND_BEAST         0x84 /* summon data: model, spiky beast-shaped mass (shape only) */
+#define FX_FENRIR_WIND_SPINDLE       0x85 /* summon data: model, spindle with a round end (shape only) */
+#define FX_FENRIR_CLUSTER_MODEL_1    0x87 /* summon data: 'so' model (look pending) */
+#define FX_FENRIR_CAM_TRACK_9        0x92 /* summon data: camera key tracks, channel 9 */
+#define FX_FENRIR_CLUSTER_MODEL_2    0x93 /* summon data: 'so' model (look pending) */
+#define FX_FENRIR_MORPH_MODEL_1      0x94 /* summon data: 'so' model, morph target (look pending) */
+#define FX_FENRIR_MORPH_MODEL_0      0x95 /* summon data: 'so' model, morph source (look pending) */
+#define FX_FENRIR_CAM_TRACK_4        0x96 /* summon data: camera key tracks, channel 4 */
+#define FX_FENRIR_CAM_TRACK_START    0x9B /* summon data: camera key tracks of channels 3, 4, 9, 10 at the start */
+#define FX_FENRIR_PIECE_TRACKS       0x9C /* summon data: rotation/position paths of the pieces (fxm_rotPosPathInit) */
+#define FX_FENRIR_STRIP_PATHS_2      0x9D /* summon data: position paths of strip set 1 */
+#define FX_FENRIR_STRIP_PATHS        0x9E /* summon data: position paths of strip set 0 (head position) */
+#define FX_FENRIR_CAM_TRACK_3        0x9F /* summon data: camera key tracks, channel 3 */
+#define FX_FENRIR_SMOKE              0xA0 /* summon data: emitter, grey smoke puffs */
+#define FX_FENRIR_GREEN_RING_BURST   0xA2 /* summon data: emitter, cream-white / green gouraud rings */
+#define FX_FENRIR_GREEN_RING_BURST_2 0xA3 /* summon data: emitter, olive-cream / green gouraud rings */
+#define FX_FENRIR_WIND_TRAIL_EMITTER 0xA4 /* summon data: emitter, screen trail + sprites (texture not in the file) (look pending) */
+#define FX_FENRIR_RED_MOON           0xA5 /* summon data: emitter, one big red moon sprite */
+#define FX_FENRIR_RED_MOON_GLOW      0xA6 /* summon data: emitter, red moon particle */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

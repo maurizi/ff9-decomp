@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ee effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MIRROR_WHITE_RINGS   0x1 /* emitter: white rings + green glow */
+#define FX_MIRROR_WHITE_RINGS_2 0x2 /* emitter: white rings + green glow */
+#define FX_MIRROR_GREEN_SWIRL   0x3 /* emitter: white rings + green swirl particle */
+#define FX_MIRROR_FAN_EMITTER   0x5 /* emitter: two fan elements (not rendered) (look pending) */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR rot8;
