@@ -167,13 +167,13 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_0d6_effModels, 6);
-        work->model14[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 1);
-        work->model14[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1B), 1);
-        work->model14[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), 1);
-        work->model14[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1E), 1);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 9), 0x37, 0x3D06, 0x80, 0x80);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x37, 0x3D06, 0x80, 0x80);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos8);
+        work->model14[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SEG_0), 1);
+        work->model14[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SEG_1), 1);
+        work->model14[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SEG_2), 1);
+        work->model14[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SEG_3), 1);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_FLAME_PILLAR), 0x37, 0x3D06, 0x80, 0x80);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_FLAME_DISC), 0x37, 0x3D06, 0x80, 0x80);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_ORBIT_TRAIL), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->trails = (s32)fx_0d6_trails;
             emitter->trailSlots = 0x12;
@@ -184,7 +184,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit30 = NULL;
         work->frame34 = 0;
         work->state10 = 1;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)work);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_FLAME_BURST), (s32)work);
         if (emitter != NULL) {
             emitter->otZ = 0x100;
         }
@@ -197,15 +197,15 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 9;
             ex->btlfx_drawScreenTint((u32 *)env->ot + 0x800, 1, (t * 70) >> 12, 0, 0);
             if (frame == 4) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)work);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_EMBERS), (s32)work);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)work);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GOLD_SPARKS_2), (s32)work);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)work);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GOLD_SPARKS), (s32)work);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
@@ -213,7 +213,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             bri = ex->math_cos(t >> 2);
             env->otZ = 0x200;
             scl = t / 3 + 0x555;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos8, NULL, 0x1000, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GLOW), &work->pos8, NULL, 0x1000, 0, 1,
                               ex->math_cos(t >> 2));
             env->otZ = 0;
             if (frame >= 8) {
@@ -262,11 +262,11 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scl = riseT / 2 + 0x800;
                 pos2.vz = work->pos8.vz;
                 pos2.vy -= 0x400;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &pos2, &rot, ex->math_sin(ringAng) * 3 / 2 + 0x1000,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_PILLAR_RING), &pos2, &rot, ex->math_sin(ringAng) * 3 / 2 + 0x1000,
                                   0, 1, ex->math_cos(ringAng));
             }
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos8, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GLOW), &work->pos8, NULL,
                               ex->math_cos(t >> 2) / 2 * 2 + 0x2000, 0, 1, ex->math_cos(t >> 2));
             env->otZ = 0;
             if (rising) {
@@ -287,23 +287,23 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                          (ex->math_cos(s) >> 5) - 0x80);
             }
             if (frame == 2) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_FLAME_BURST_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
             if (frame == 0xE) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)work);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SMOKE_BURST), (s32)work);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
             if (frame == 3) {
-                emitter = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
+                emitter = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_CONE_GLOW), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
-                emitter = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
+                emitter = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_CONE_SPARKS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
@@ -395,7 +395,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         sparkPos.vx += ex->btlfx_randCentered(0x140);
                         sparkPos.vy += ex->btlfx_randCentered(0x100);
                         sparkPos.vz += ex->btlfx_randCentered(0x140);
-                        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &sparkPos, NULL, 0x7000, 0, 1, fade);
+                        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SPARK), &sparkPos, NULL, 0x7000, 0, 1, fade);
                         cnt++;
                         env->otZ = 0;
                     }
@@ -495,8 +495,8 @@ s32 fx_0d6_op84(s32 mode, Fx0d6Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x18), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x19), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SWORD_GLINT_2), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

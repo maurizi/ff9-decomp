@@ -5,6 +5,11 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0be effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_IAI_STRIKE_SLASH_ARCS    0x4 /* emitter: blue and pink slash arcs */
+#define FX_IAI_STRIKE_SPARKLE_BURST 0x8 /* emitter: violet / blue ring, blue and gold sparkle sprites, fan */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

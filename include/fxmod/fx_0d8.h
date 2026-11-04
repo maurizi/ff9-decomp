@@ -7,6 +7,20 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0d8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SWDMAG_THUNDARA_IMPACT_FLASH  0x2 /* emitter: four-point star flash, white rings, sparks (byte-identical to fx_005 entry 0x17) */
+#define FX_SWDMAG_THUNDARA_ORB_EMITTER   0x14 /* emitter: helix whose callback element draws the orb (0x19-0x1D here) (byte-identical to fx_005 entry 0x1a) */
+#define FX_SWDMAG_THUNDARA_IMPACT_RING   0x17 /* emitter: white-cyan gouraud rings (byte-identical to fx_005 entry 0x19) */
+#define FX_SWDMAG_THUNDARA_SPARKS        0x18 /* emitter: spark sprites (texture not in the file) (byte-identical to fx_005 entry 0x7) (look pending) */
+#define FX_SWDMAG_THUNDARA_ORB_FADE      0x19 /* particles: blue energy sphere fading to orange (FX_THUNDARA_ORB_FADE's draw slot in fx_005) */
+#define FX_SWDMAG_THUNDARA_ORB           0x1A /* particles: bright blue energy sphere (byte-identical to fx_005 entry 0x1d) */
+#define FX_SWDMAG_THUNDARA_ORB_SPARKS    0x1B /* sprites: sparks around the orb (texture not in the file) (byte-identical to fx_005 entry 0x1e) (look pending) */
+#define FX_SWDMAG_THUNDARA_ORB_SPARKS_2  0x1C /* sprites: sparks around the orb (texture not in the file) (byte-identical to fx_005 entry 0x1f) (look pending) */
+#define FX_SWDMAG_THUNDARA_LENS_FLARES   0x1D /* particles: orange lens-flare dots around the orb (byte-identical to fx_005 entry 0x16) */
+#define FX_SWDMAG_THUNDARA_SWORD_GLINT   0x1E /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
+#define FX_SWDMAG_THUNDARA_SWORD_GLINT_2 0x1F /* rings: white gouraud ring flash at the sword, rotated */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */

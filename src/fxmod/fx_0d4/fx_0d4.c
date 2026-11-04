@@ -11,17 +11,17 @@ s32 fx_0d4_op80(s32 mode, Fx0d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRE_FIREBALL), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos10);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRE_HEAT_RING), (s32)&work->pos10);
     } else {
         frame = entry->frame;
         switch (work->state0) {
         case 0:
             if (frame == 2) {
-                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRE_FLAME_BURST), (s32)&work->pos8);
                 if (work->emit4 != NULL) {
                     work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
@@ -103,8 +103,8 @@ s32 fx_0d4_op84(s32 mode, Fx0d4Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xC), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRE_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRE_SWORD_GLINT_2), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

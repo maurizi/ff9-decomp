@@ -10,7 +10,7 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0c2_env = env;
         ex->btlfx_getUnitBoneMatrix(0x10, 0x17, &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_BLUE_RING), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
@@ -63,8 +63,8 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&work->rot14, 0x12C, (s16 *)&work->pos2C);
             ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos1C, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&ang, 0, (s16 *)&fx_0c2_pathTo);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos2C);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_0c2_emitPos);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_DUST_PLUME), (s32)&work->pos2C);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_FLASH_BURST), (s32)&fx_0c2_emitPos);
             if (work->emit4 != NULL) {
                 work->emit4->file->m.module.update = fx_0c2_op81ParticleMotion;
             }
@@ -77,7 +77,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot3C.vz = work->rot44.vz;
         }
         if (frame == 0xD) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos1C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_IMPACT_BURST), (s32)&work->pos1C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(work->unit4C, 0x80);
             }

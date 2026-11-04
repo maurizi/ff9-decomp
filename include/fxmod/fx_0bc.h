@@ -5,6 +5,10 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0bc effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DARKSIDE_SPARKLE_BURST 0x1 /* emitter: yellow / blue ring, blue sparkle sprites, fan */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */

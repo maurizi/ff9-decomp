@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0bb effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MUSTARD_BOMB_BACKDROP        0x1 /* table: background layers for btlfx_drawBackdrop */
+#define FX_MUSTARD_BOMB_FIREBALLS       0x7 /* emitter: orange fireball sprites with light streaks */
+#define FX_MUSTARD_BOMB_EXPLOSION_RINGS 0x9 /* emitter: yellow-orange-red and blue gouraud rings (+ a textured ring, texture not in the file) */
+#define FX_MUSTARD_BOMB_BLAST_RINGS     0xA /* emitter: cone of yellow / orange / brown gouraud rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */

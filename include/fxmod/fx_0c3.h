@@ -5,6 +5,11 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0c3 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CURSE_SPIRIT_WISPS 0x6 /* emitter: blue and magenta wisps (+ two rings, texture not in the file) */
+#define FX_CURSE_FLAME_PILLAR 0x8 /* emitter: orange-green flame sprite and grey smoke wisps */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

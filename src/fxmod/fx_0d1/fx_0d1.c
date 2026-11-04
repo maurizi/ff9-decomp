@@ -10,8 +10,8 @@ s32 fx_0d1_op80(s32 mode, Fx0d1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0d1_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos1C);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos14);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos14);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_ENERGY_ORB), (s32)&work->pos14);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_SPARKLES), (s32)&work->pos14);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -21,14 +21,14 @@ s32 fx_0d1_op80(s32 mode, Fx0d1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x24) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos1C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_PINK_GLOW), (s32)&work->pos1C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = 0x100;
             }
         }
         if (frame == 0x38) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos1C);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos1C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_GLOW_CROSS), (s32)&work->pos1C);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_RINGS), (s32)&work->pos1C);
             if (work->emitC != NULL) {
                 work->emitC->otZ = 0x100;
             }

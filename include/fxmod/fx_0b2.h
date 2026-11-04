@@ -7,6 +7,13 @@
  * pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0b2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_TWISTER_VORTEX      0x1 /* particles: tan swirling vortex, drawn directly */
+#define FX_TWISTER_BACKDROP    0x2 /* table: background layers for btlfx_drawBackdrop */
+#define FX_TWISTER_WIND_STREAK 0x4 /* trail: violet-white wind streak (fxm_drawOffsetTrail) */
+#define FX_TWISTER_DUST_CLOUDS 0x5 /* emitter: spiralling grey-blue dust clouds */
+
 typedef struct {
     s32 state0; /* state 0-3 */
     s32 frame4; /* frame */

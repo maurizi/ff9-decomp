@@ -6,6 +6,14 @@
  * pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0d4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SWDMAG_FIRE_FIREBALL      0x1 /* emitter: fireball sprite with ember sparks, at the target body (byte-identical to fx_000 entry 0x5) */
+#define FX_SWDMAG_FIRE_FLAME_BURST   0x2 /* emitter: flame explosion (burst, smoke, embers) rising around the target (byte-identical to fx_000 entry 0x6) */
+#define FX_SWDMAG_FIRE_HEAT_RING     0x9 /* emitter: white-red gouraud rings at the target's feet (byte-identical to fx_000 entry 0x7) */
+#define FX_SWDMAG_FIRE_SWORD_GLINT   0xB /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
+#define FX_SWDMAG_FIRE_SWORD_GLINT_2 0xC /* rings: white gouraud ring flash at the sword, rotated */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;
