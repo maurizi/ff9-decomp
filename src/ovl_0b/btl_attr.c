@@ -315,7 +315,7 @@ u32 btl_getUnitAttr(BtlUnit *unit, s32 attr) {
         break;
     case BTL_ATTR_KIND:
         value = (g_gameState->gameData->characters + BTL_UNIT_INDEX(unit->flags))->info.w >> CHR_INFO_KIND_SHIFT;
-        value &= 0x1F;
+        value &= CHR_INFO_KIND_VALUE;
         break;
     case BTL_ATTR_CLASS_FLAGS:
         value = (g_gameState->gameData->characters + BTL_UNIT_INDEX(unit->flags))->classFlags;

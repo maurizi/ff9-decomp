@@ -1326,11 +1326,11 @@ s32 btl_getPartyModelId(s32 slot, s32 flags) {
     if (!(flags & BTL_STEPF_BASE_MODEL)) {
         unit = btl_getUnitBySlot(slot);
         if (unit != NULL) {
-            tranceFlag = ((s16)unit->modelId != g_btlCharModelIds[(unit->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : CHR_KIND_NONE]) << 4;
+            tranceFlag = ((s16)unit->modelId != g_btlCharModelIds[(unit->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & CHR_INFO_KIND_VALUE : CHR_KIND_NONE]) << 4;
         }
     }
     idx = g_gameState->gameData->party[slot]->info.w >> CHR_INFO_KIND_SHIFT;
-    idx &= 0x1F;
+    idx &= CHR_INFO_KIND_VALUE;
     if ((flags & BTL_STEPF_FLIP_TRANCE) != tranceFlag) {
         if (!(flags & BTL_STEPF_BASE_MODEL)) {
             idx += CHR_KIND_TRANCE;

@@ -14,7 +14,7 @@ void btl_initParty(Battle *battle) {
         chr = g_gameState->gameData->party[i];
         if (chr != NULL) {
             unit = &battle->units[count];
-            unit->modelId = g_btlCharModelIds[(chr->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F];
+            unit->modelId = g_btlCharModelIds[(chr->info.w >> CHR_INFO_KIND_SHIFT) & CHR_INFO_KIND_VALUE];
             btl_createObjModel(node->obj, unit->modelId);
             btl_initPartyUnit(chr, unit, i, count);
             count++;
@@ -136,7 +136,7 @@ void btl_initPartyUnit(Character *chr, BtlUnit *unit, u16 slot, u16 unitNo) {
         unit->atb = RAND16() % unit->max->maxAtb;
     }
     unit->weaponModel = &g_gameState->gameData->ctx.battle->weaponModels[unitNo].model;
-    btl_loadPartyMotions(unit, (chr->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F, unitNo);
+    btl_loadPartyMotions(unit, (chr->info.w >> CHR_INFO_KIND_SHIFT) & CHR_INFO_KIND_VALUE, unitNo);
     btl_initWeapon(chr, unit);
     unit->defense = chr->defense;
     unit->evade = chr->evade;

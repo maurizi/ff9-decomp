@@ -440,7 +440,7 @@ void btlcam_setPathKey(Unk800C412C *path, Unk800C3F78 *key) {
         }
         unit = (k == BTLCAM_ANCHOR_CASTER) ? g_btlCamTargets.caster : g_btlCamTargets.target;
         if (unit->flags & BTL_UNIT_PARTY) {
-            idx = ((g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F) +
+            idx = ((g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & CHR_INFO_KIND_VALUE) +
                   (key->preset - 1) * CHR_KIND_COUNT;
             presets = g_btlCamPartyPresets;
             preset = &presets[idx];

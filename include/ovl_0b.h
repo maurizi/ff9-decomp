@@ -255,6 +255,7 @@ extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Mag
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+#define CHR_INFO_KIND_VALUE (CHR_INFO_KIND >> CHR_INFO_KIND_SHIFT) /* the kind once shifted down: (info.w >> CHR_INFO_KIND_SHIFT) & this */
 /* GPU packet words (psyq.h neighbours: GPU_POLY_*, GPU_CODE, TPAGE_ABR_MASK, get_mode). Evidence: [code] the GP0 command
  * layout libgpu's get_mode/getTPage build */
 #define GPU_DRAW_MODE   0xE1  /* GP0(E1h) draw-mode word's code byte (DR_TPAGE, get_mode) */
