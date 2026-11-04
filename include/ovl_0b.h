@@ -3472,8 +3472,11 @@ s32 btlfx_getWeaponScript(s32);
 void btl_unreserveItem(s32);
 /* flags of the battle load steps (btl_loadSoundsStep, btl_loadEnemyModelsStep, btl_load{Weapon,Party}ModelsStep,
  * btl_reloadPartyStep, btl_swapPartyModelStep) and btl_getPartyModelId. Evidence: [code] */
-#define BTL_STEPF_UNTESTED0   0x01   /* in the callers' words (btl_reloadParty, btl_swapPartyModel); no step tests it */
-#define BTL_STEPF_UNTESTED1   0x02   /* in the callers' words (also btl_loadModelsStep); no step tests it */
+/* 0x01 and 0x02 are only passed through: no step (nor btl_getPartyModelId) tests them, in the US or the JP build
+ * (docs/jp-build.md; the callers pass the same 0x207/0x22 words there). Named after the callers that pass them. */
+#define BTL_STEPF_IN_BATTLE   0x01   /* only the mid-battle reloads pass it (btl_reloadParty, btl_swapPartyModel) */
+#define BTL_STEPF_PARTY       0x02   /* every party-side load passes it: those two and btl_loadModelsStep's weapon and
+                                      * party model polls, never its sound or enemy model steps */
 #define BTL_STEPF_RELOAD_UNITS 0x04  /* btl_reloadPartyStep: then reapply the models, textures and motions to the party units */
 #define BTL_STEPF_FLIP_TRANCE 0x10   /* btl_getPartyModelId: the form the unit isn't showing (trance <-> normal); every step clears it */
 #define BTL_STEPF_BASE_MODEL  0x20   /* btl_getPartyModelId: the normal form, without looking at the unit (none exist yet) */

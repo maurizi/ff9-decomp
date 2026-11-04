@@ -1206,7 +1206,7 @@ void fld_movieUpdate(void) {
             g_fieldFlagQueue.gameFlags[0][queueIdx - 1] = GD_HIDE_SPRITES | GD_HIDE_BG | GD_MENU_DISABLED;
             g_fieldFlagQueue.mapFlags[0][queueIdx - 1] |= FLD_MAP_NO_FADE;
             if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0) {
-                g_fieldFlagQueue.gameFlags[0][queueIdx - 1] |= GD_HIDE_MODELS | GD_FLD_TAKEOVER_UNREAD;
+                g_fieldFlagQueue.gameFlags[0][queueIdx - 1] |= GD_HIDE_MODELS | GD_FLD_TAKEOVER;
                 g_fieldFlagQueue.mapFlags[0][queueIdx - 1] |= FLD_MAP_NO_WINDOWS;
             }
             g_fieldFlagQueue.movieFlags[0][queueIdx - 1] = FLD_MVF_CAMERA;
@@ -1295,7 +1295,7 @@ void fld_movieStop(void) {
 void fld_movieFinish(void) {
     FieldMap *field;
 
-    g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL | GD_FLD_TAKEOVER_UNREAD);
+    g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL | GD_FLD_TAKEOVER);
     field = g_gameState->gameData->ctx.field;
     g_fieldMovieFlags &= ~FLD_MVF_PER_MOVIE;
     field->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
@@ -1405,7 +1405,7 @@ void fld_endFrame(void) {
 void fld_startEncounter(void) {
     g_gameState->gameData->ctx.field->area->scene->encounterStep = 0;
     g_fieldFlagQueue.mapFlags[1][3] = FLD_MAP_ACTIVE;
-    g_fieldFlagQueue.gameFlags[0][0] = GD_FLD_TAKEOVER_UNREAD | GD_MENU_OPEN | GD_MENU_DISABLED;
+    g_fieldFlagQueue.gameFlags[0][0] = GD_FLD_TAKEOVER | GD_MENU_OPEN | GD_MENU_DISABLED;
     g_fieldFlagQueue.gameFlags[0][2] = GD_NO_FLIP | GD_HIDE_ALL;
     g_fieldFlagQueue.mapFlags[0][2] = FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_ENCOUNTER_UNREAD | FLD_MAP_NO_VIBRATION
                                        | FLD_MAP_NO_BGI_ANIM | FLD_MAP_NO_WINDOWS; /* the flags fld_updateEncounter clears */
@@ -1527,7 +1527,7 @@ void fld_updateEncounter(void) {
     }
     if ((g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
         && g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -3) {
-        g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_ALL | GD_NO_FLIP | GD_FLD_TAKEOVER_UNREAD);
+        g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_ALL | GD_NO_FLIP | GD_FLD_TAKEOVER);
         g_gameState->gameData->ctx.field->flags &= ~(FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM | FLD_MAP_NO_VIBRATION | FLD_MAP_ENCOUNTER_UNREAD | FLD_MAP_NO_FADE | FLD_MAP_NO_PRELOAD);
         g_padPortMask[0] &= ~BTN_START;
         g_gameState->flags |= GS_FLD_LEAVE;

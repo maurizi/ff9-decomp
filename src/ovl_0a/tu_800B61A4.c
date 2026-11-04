@@ -2871,7 +2871,7 @@ s32 fldbg_initOverlays(u8 *heap, BgSprt **spritesOut) {
     }
     g_fieldBgState.unk73 = 0;
     g_fieldBgState.unk72 = 0;
-    g_fieldBgState.flags &= ~FLDBG_INIT_CLEARED;
+    g_fieldBgState.flags &= ~FLDBG_OVERLAY_STATE;
     return 1;
 }
 

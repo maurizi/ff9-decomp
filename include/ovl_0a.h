@@ -378,7 +378,9 @@ typedef struct {
 #define FLDBG_SCROLL_LIMITS 0x20 /* camera scroll limits in force (fldbg_disableScrollLimits/fldbg_enableScrollLimits) */
 #define FLDBG_FOLLOW 0x40 /* fldbg_setFollow: the camera follows the player; scrolling needs it */
 #define FLDBG_CAMERA_CHANGED 0x80 /* fldbg_setCamera/fldbg_setOverlayPos; fldbg_updateOverlayScroll clears it */
-#define FLDBG_INIT_CLEARED 0xC00 /* fldbg_initOverlays clears these two bits; nothing sets or tests them */
+#define FLDBG_OVERLAY_STATE 0xC00 /* overlay-set state: fldbg_initOverlays resets these two bits with the equally
+                                  * write-only unk72/unk73 once it has built the overlays; nothing sets or tests
+                                  * them, in the US or the JP build */
 
 /* field background file (g_fieldBgData = g_fieldBgCtx.unk10, fld_setupBackground): the header holds
  * offsets (from the file start) of its overlay-animation, overlay and camera tables */

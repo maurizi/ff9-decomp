@@ -2302,9 +2302,11 @@ extern s32 g_padPortMask[];
 #define GD_HIDE_SPRITES 0x10
 #define GD_HIDE_ALL (GD_HIDE_MODELS | GD_HIDE_BG | GD_HIDE_SPRITES) /* 0x1C: menu_onFadedOut sets it, menu_finish clears it */
 #define GD_NO_FLIP 0x20 /* fld/wm_endFrame keep the draw buffer (pause screens) */
-/* 0x40: queued by fld_startEncounter and by fld_movieUpdate for a colour-keyed (movieRgb24) movie,
- * cleared by fld_updateEncounter / fld_movieFinish; no reader found in any binary */
-#define GD_FLD_TAKEOVER_UNREAD 0x40
+/* 0x40: the field hands the whole screen over: queued by fld_startEncounter (with GD_MENU_OPEN | GD_MENU_DISABLED,
+ * then GD_HIDE_ALL) and by fld_movieUpdate for a 24-bit (movieRgb24) movie (with GD_HIDE_MODELS and
+ * FLD_MAP_NO_WINDOWS: nothing of the field is drawn over it); cleared by fld_updateEncounter / fld_movieFinish.
+ * Nothing reads it in any binary, US or JP. */
+#define GD_FLD_TAKEOVER 0x40
 #define GD_PAUSED 0x100
 #define GD_SOUND_REINIT 0x100000 /* battleEnd_exit shut the sound down (snd_quit) before going back to the title; opening_setup runs snd_init and clears it */
 #define GD_MUSIC_STOP_PENDING 0x200000
