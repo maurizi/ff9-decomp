@@ -4,6 +4,10 @@
 /* Effect module fx_03c (dir 13 file 0x3C). */
 #include "btlfx_mod.h"
 
+/* fx_03c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_WIND_WIND_TRAILS 0x2 /* emitter: two spiralling trails with a grey wind-streak strip */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */

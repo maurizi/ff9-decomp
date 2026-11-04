@@ -4,6 +4,15 @@
 /* Effect module fx_04f (dir 13 file 0x4F: Reflect, from runtime traces of btlfx_loadFile). */
 #include "btlfx_mod.h"
 
+/* fx_04f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_REFLECT_HALO_RINGS 0x4 /* emitter: white-pink gouraud rings, golden glow strip, leaf-shaped halo, white-green / white-pink rings */
+#define FX_REFLECT_STAR       0x6 /* model: four-pointed star, sketch texture */
+#define FX_REFLECT_BACKDROP   0xA /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_REFLECT_GLOW_BAND  0xB /* gouraud model: wide ring band */
+#define FX_REFLECT_PANELS     0xC /* model: three curved panels, black / white texture */
+#define FX_REFLECT_BACKDROP_2 0xD /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+
 typedef struct {
     s32 state0; /* state */
     s32 model4; /* models */

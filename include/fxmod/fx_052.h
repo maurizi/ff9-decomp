@@ -4,6 +4,19 @@
 /* Effect module fx_052 (dir 13 file 0x52). */
 #include "btlfx_mod.h"
 
+/* fx_052 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LIMIT_GLOVE_SO_MODEL      0x7 /* 'so' model registered in op80 (look pending) */
+#define FX_LIMIT_GLOVE_GOLD_SPARKLES 0x8 /* emitter: rings of golden sparkles */
+#define FX_LIMIT_GLOVE_GOLD_GLOW     0x9 /* emitter: golden glow, red streak trail, pink dots */
+#define FX_LIMIT_GLOVE_GOLD_GLOW_2   0xA /* emitter: golden glow, red streak trail, pink dots */
+#define FX_LIMIT_GLOVE_SO_MODEL_2    0xB /* 'so' model registered in op80 (look pending) */
+#define FX_LIMIT_GLOVE_BACKDROP      0xC /* backdrop: btlfx_drawBackdrop layer table (screen tint/backdrop; not drawn by the tool) (look pending) */
+#define FX_LIMIT_GLOVE_LIGHT_BEAM    0xD /* emitter: blue glow + pink-white light beam */
+#define FX_LIMIT_GLOVE_GLOW_DOME     0xE /* gouraud model: shallow dome */
+#define FX_LIMIT_GLOVE_BLUE_RINGS    0xF /* emitter: white-cyan / white-blue / grey gouraud rings */
+#define FX_LIMIT_GLOVE_PINK_SPECKS   0x10 /* emitter: faint pink specks */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

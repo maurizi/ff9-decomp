@@ -17,7 +17,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vx = work->pos8.vx;
         work->pos10.vy = work->pos8.vy;
         work->pos10.vz = work->pos8.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIGHT_LIGHT_TRAIL), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_05a_trails;
             work->emit0->trailSlots = 0xA;
@@ -51,13 +51,13 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vy = 0x155;
             work->scale30.vz = 0x155;
         }
-        work->model44 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
+        work->model44 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MIGHT_STAR), 0x117, 0, 0, 0xC0);
         work->rgb40 = -0x14;
         work->tint42 = 0xFF;
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIGHT_SWIRL), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -71,7 +71,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->model44, work->rgb40, work->rgb40, work->rgb40);
                 work->rgb40 -= 4;
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), elapsed);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MIGHT_BACKDROP), elapsed);
         }
         if (frame >= 0x19 && frame < 0x21) {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, work->tint42, work->tint42, work->tint42);

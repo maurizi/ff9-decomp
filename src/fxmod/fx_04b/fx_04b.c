@@ -15,7 +15,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 10:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SANDSTORM_SAND_TRAIL), (s32)&work->pos8);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_04b_trails;
                 work->emit0->trailSlots = 0x82;
@@ -27,7 +27,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_04b_casterPos.vx = work->pos10.vx;
             fx_04b_casterPos.vy = work->pos10.vy;
             fx_04b_casterPos.vz = work->pos10.vz;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SANDSTORM_SAND_TRAIL_2), (s32)&work->pos18);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_04b_trails2;
                 work->emit4->trailSlots = 0xA0;
@@ -80,7 +80,7 @@ s32 fx_04b_op81(s32 mode, Fx04bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_getUnitPos(target, (s16 *)&work->pos4);
         work->pos4.vy -= 0xC8;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SANDSTORM_SAND_CLOUD), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->target14, 0x80);
         }

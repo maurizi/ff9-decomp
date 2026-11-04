@@ -31,25 +31,25 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_05d_morphBlocks[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
-        fxm_rotPosTrackInit(&fx_05d_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, 1));
-        fxm_rotPosTrackInit(&fx_05d_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0x10));
-        fxm_vecTrackInit(&fx_05d_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, 2));
-        fxm_vecTrackInit(&fx_05d_scaleKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0xF));
+        fxm_rotPosTrackInit(&fx_05d_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_PATH));
+        fxm_rotPosTrackInit(&fx_05d_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_PATH_2));
+        fxm_vecTrackInit(&fx_05d_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_SCALE_TRACK));
+        fxm_vecTrackInit(&fx_05d_scaleKeys2, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_SCALE_TRACK_2));
         work->unk58 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_05d_emitPos);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_RED_ORB), (s32)&fx_05d_emitPos);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_TEAL_RING), (s32)&work->pos10);
             break;
         case 0x23:
             fxm_rotPosTrackGet(&fx_05d_rotPosKeys, 0x23, NULL, &work->pos4C);
             work->pos4C.vx += work->pos10.vx;
             work->pos4C.vy += work->pos10.vy;
             work->pos4C.vz += work->pos10.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos4C);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_SCREEN_TRAIL), (s32)&work->pos4C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_TOXIC_CLOUD), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_05d_trails;
                 work->emit8->trailSlots = 0x35;

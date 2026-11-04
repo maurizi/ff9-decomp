@@ -15,14 +15,14 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vy -= 0xB4;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos20);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_JUICE_SPLASH), (s32)&work->pos28);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         frame = entry->frame;
         if (frame == 5) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos20);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_JUICE_SCREEN_TRAIL_2), (s32)&work->pos20);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_03b_trails;
                 work->emitC->trailSlots = 0x28;
@@ -30,8 +30,8 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 8) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_JUICE_SCRIBBLE_RINGS), (s32)&work->pos10);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_JUICE_SCREEN_TRAIL), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_03b_trails2;
                 work->emit8->trailSlots = 0x28;

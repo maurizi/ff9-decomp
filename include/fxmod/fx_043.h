@@ -4,6 +4,12 @@
 /* Effect module fx_043 (dir 13 file 0x43). */
 #include "btlfx_mod.h"
 
+/* fx_043 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_INK_INK_TRAIL  0x1 /* emitter: flat trail + spark sprites (texture not in the file) (look pending) */
+#define FX_INK_INK_SPRAY  0x2 /* emitter: screen trail + spark sprites (texture not in the file) (look pending) */
+#define FX_INK_GREY_RINGS 0x3 /* emitter: grey gouraud rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     u8 pad4[8];

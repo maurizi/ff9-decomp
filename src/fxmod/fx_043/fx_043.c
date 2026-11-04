@@ -36,7 +36,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vx = work->posC.vx;
         env->camera->points[0].vy = work->posC.vy;
         env->camera->points[0].vz = work->posC.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_043_emitPos);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_INK_INK_SPRAY), (s32)&fx_043_emitPos);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_043_trails;
             work->emit0->trailSlots = 0xB;
@@ -64,13 +64,13 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&fx_043_particleFrom, (s16 *)&work->aim20);
         ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->aim20, 0xC8, (s16 *)&work->pos18);
         work->pos18.vy -= 0x64;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_INK_INK_TRAIL), (s32)&work->pos18);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_043_trails2;
             work->emit0->trailSlots = 0x34;
             work->emit0->trailStride = 0x20;
         }
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_INK_GREY_RINGS), (s32)&work->pos10);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }

@@ -157,15 +157,15 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[2].vx = ((SVECTOR *)&pos)[1].vx;
         env->camera->points[2].vy = ((SVECTOR *)&pos)[1].vy;
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
-        file = (u8 *)ex->btlfx_getFileData(entry->file, 2);
-        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, 6), (s32 *)&file, 1, &fx_05e_summon);
+        file = (u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH_SUMMON_TEXTURES);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, FX_DEATH_SUMMON_MODEL), (s32 *)&file, 1, &fx_05e_summon);
         ex->Hi_SetSummonMotion(((Fx05eSummon *)env->loader)->summon54->motion180, ((Fx05eSummon *)env->loader)->model60);
         work->scale34[0] = work->scale34[1] = work->scale34[2] = 0x1000;
         work->rot2C.vx = 0;
         work->rot2C.vz = 0;
         work->rot2C.vy = work->rot10.vy;
         ex->btlfx_initEffModels(fx_05e_effModels, 1);
-        work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
+        work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DEATH_SO_MODEL), 0);
     } else {
         state = work->state0;
         frame = entry->frame;
@@ -174,11 +174,11 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             ratio = (frame << 12) / 24;
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SOUL_ORBS), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_BLUE_TRAIL_2), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_05e_trails;
                     emitter->trailSlots = 0x18;
@@ -248,26 +248,26 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (frame == 0x21) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_GREEN_ORB), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_RED_RINGS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame == 0x26) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_BLUE_TRAIL), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_05e_trails2;
                     emitter->trailSlots = 0x18;
                     emitter->trailStride = 0x44;
                     emitter->otZ = 0x40;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos18);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SMOKE), (s32)&work->pos18);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xB), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEATH_BACKDROP), frame);
             if (frame >= 0x29) {
                 work->state0 = 3;
                 entry->frame = -1;

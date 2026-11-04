@@ -24,16 +24,16 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos1C.vx = work->pos40.vx;
         work->pos1C.vy = work->pos40.vy;
         work->pos1C.vz = work->pos40.vz;
-        work->model52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
-        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
-        work->model56 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE));
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos48);
+        work->model52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_SO_MODEL), 1);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_SO_MODEL_2), 1);
+        work->model56 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GLOW_DOME));
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GOLD_SPARKLES), (s32)&work->pos48);
         work->fadeIn50 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0x1E:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos48);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GOLD_GLOW), (s32)&work->pos48);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_052_trails;
                 work->emit4->trailSlots = 0x14;
@@ -44,7 +44,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->fadeIn50 = 0x18;
             break;
         case 0x50:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos48);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GOLD_GLOW_2), (s32)&work->pos48);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_052_trails2;
                 work->emit8->trailSlots = 0x14;
@@ -73,7 +73,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->model56, work->rgb3C, work->rgb3C, work->rgb3C);
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_BACKDROP), frame);
         if (frame >= 0xC8) {
             ex->btlfx_clearEffModels();
             return 1;
@@ -91,7 +91,7 @@ s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_052_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->posC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_LIGHT_BEAM), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
@@ -99,13 +99,13 @@ s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 15:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_BLUE_RINGS), (s32)&work->posC);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 40:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->posC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_PINK_SPECKS), (s32)&work->posC);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

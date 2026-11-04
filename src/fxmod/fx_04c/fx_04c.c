@@ -15,18 +15,18 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         zWord = ((s32 *)&env->targets->centerX)[1];
         work->pos4.vy = 0;
         ((s32 *)&work->pos4)[1] = zWord;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLOAT_GLOW), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = -0x12C;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLOAT_GLOW_2), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = -0x258;
         }
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 5), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FLOAT_BACKDROP), frame);
             if (frame >= 0x3C) {
                 return 1;
             }
@@ -57,7 +57,7 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state0) {
         case 0:
             work->emit24[work->target38] =
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4[work->target38]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLOAT_STAR_FLASH), (s32)&work->pos4[work->target38]);
             if (work->emit24[work->target38] != NULL) {
                 work->emit24[work->target38]->otZ = ex->btlfx_addRadiusSixth(work->target38, 0x40);
             }
@@ -107,7 +107,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state0) {
         case 0:
             work->emit24[work->target38] =
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4[work->target38]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLOAT_SPECK_RING), (s32)&work->pos4[work->target38]);
             if (work->emit24[work->target38] != NULL) {
                 work->emit24[work->target38]->otZ = ex->btlfx_addRadiusSixth(work->target38, 0x40);
             }
