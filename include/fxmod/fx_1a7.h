@@ -5,6 +5,15 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1a7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MIND_BLAST_WAVE_TRAIL   0x1 /* emitter: orbiting screen trail, blue wavy line / gold pattern strip (sprites render black) */
+#define FX_MIND_BLAST_GREEN_RINGS  0x2 /* emitter: dark-to-pale green gouraud rings, 33 frames */
+#define FX_MIND_BLAST_WAVE_TRAIL_2 0x4 /* emitter: wobbling screen trail, blue wavy line / gold pattern strip (sprites render black) */
+#define FX_MIND_BLAST_TEAL_RINGS   0x5 /* emitter: teal-to-pale-green gouraud rings, 24 frames */
+#define FX_MIND_BLAST_WAVE_TRAIL_3 0x7 /* emitter: wobbling screen trail, white-violet wavy strip (sprites render black) */
+#define FX_MIND_BLAST_VIOLET_ORB   0x18 /* emitter: violet glowing orb with a bright rim (second particle renders black) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

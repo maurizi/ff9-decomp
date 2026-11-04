@@ -13,9 +13,9 @@ s32 fx_19c_op80(s32 mode, Fx19cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         env->otZ = 0x80;
-        ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->pos4, frame, 1, -1);
+        ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDER_SLASH_LIGHTNING), &work->pos4, frame, 1, -1);
         if (frame == 3) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDER_SLASH_SPARKS), (s32)&work->pos4);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

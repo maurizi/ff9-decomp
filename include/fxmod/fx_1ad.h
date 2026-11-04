@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1ad effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_6_LEGS_BACKDROP     0x1 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_6_LEGS_POD_MODEL    0x2 /* 'so' model: rounded pod with an opening (texture page 0x117 renders plain white) (look pending) */
+#define FX_6_LEGS_BUBBLE_TRAIL 0x4 /* emitter: orbiting 3D trail of glass bubbles (sprites render black) */
+#define FX_6_LEGS_GREEN_TRAIL  0x5 /* emitter: screen trail, green striped strip */
+
 typedef struct {
     s32 done0; /* done */
     s32 frame4; /* frame counter */

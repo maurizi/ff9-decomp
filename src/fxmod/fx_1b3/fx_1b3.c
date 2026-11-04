@@ -69,7 +69,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[i] = 0;
             work->emit80[i] = NULL;
         }
-        buf = (s32)ex->btlfx_getFileData(entry->file, 0x93);
+        buf = (s32)ex->btlfx_getFileData(entry->file, FX_DEATH1_SCRATCH_BUF);
         fx_1b3_trails = (Fx1b3Trail *)buf;
         buf += 0xE00;
         fx_1b3_op80Trails0 = buf;
@@ -228,18 +228,18 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[0] = 0x10;
             break;
         case 8:
-            emitter = work->emit80[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos100);
+            emitter = work->emit80[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_TEAL_RINGS), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
-            emitter = work->emit80[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos100);
+            emitter = work->emit80[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_FAN_EMITTER), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
             break;
         case 0x10:
             work->timers0[1] = 0x90;
-            emitter = work->emit80[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos100);
+            emitter = work->emit80[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_DARK_NEBULA), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
@@ -250,10 +250,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 0;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
-            emitter = work->emit80[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos100);
+            emitter = work->emit80[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING_TRAILS), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails0;
                 work->emit80[3]->trailSlots = 0x24;
@@ -280,11 +280,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.spin14 = -0xA;
             work->timers0[4] = 0x3C;
             work->timers0[5] = 0;
-            emitter = work->emit80[16] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
+            emitter = work->emit80[16] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_GREEN_SMOKE), (s32)&work->pos110);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
-            emitter = work->emit80[17] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos110);
+            emitter = work->emit80[17] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCK_DEBRIS), (s32)&work->pos110);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -303,11 +303,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.spin14 = 0xA;
             work->timers0[4] = 0x3C;
             work->timers0[5] = 3;
-            emitter = work->emit80[18] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
+            emitter = work->emit80[18] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_GREEN_SMOKE), (s32)&work->pos110);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
-            emitter = work->emit80[19] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos110);
+            emitter = work->emit80[19] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCK_DEBRIS), (s32)&work->pos110);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -326,11 +326,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.spin14 = 0xE;
             work->timers0[4] = 0x4B;
             work->timers0[5] = 6;
-            emitter = work->emit80[20] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
+            emitter = work->emit80[20] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_GREEN_SMOKE), (s32)&work->pos110);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
-            emitter = work->emit80[21] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos110);
+            emitter = work->emit80[21] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCK_DEBRIS), (s32)&work->pos110);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -340,13 +340,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 1;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
         case 0x106:
             ex->btlfx_getUnitBonePos(0x10, 0x3A, (u16 *)&work->pos118);
-            emitter = work->emit80[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos118);
+            emitter = work->emit80[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_YELLOW_STREAKS), (s32)&work->pos118);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
@@ -355,11 +355,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[4] = 0;
             ex->btlfx_stopEmitter(work->emit80[20]);
             ex->btlfx_stopEmitter(work->emit80[21]);
-            emitter = work->emit80[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos118);
+            emitter = work->emit80[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_EXPLOSIONS), (s32)&work->pos118);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
-            emitter = work->emit80[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos118);
+            emitter = work->emit80[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCKS), (s32)&work->pos118);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
@@ -379,12 +379,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x136:
             ex->btlfx_getUnitBonePos(0x10, 0x3A, (u16 *)&work->pos118);
-            emitter = work->emit80[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos118);
+            emitter = work->emit80[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_TAN_STREAKS), (s32)&work->pos118);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
-            work->emit80[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos118);
-            emitter = work->emit80[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3A), (s32)&work->pos118);
+            work->emit80[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCK_DEBRIS_2), (s32)&work->pos118);
+            emitter = work->emit80[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_SCREEN_TRAIL_2), (s32)&work->pos118);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails1;
                 work->emit80[9]->trailSlots = 0x36;
@@ -405,13 +405,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 2;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
         case 0x157:
             ex->btlfx_getUnitBonePos(0x10, 0x18, (u16 *)&work->pos120);
-            emitter = work->emit80[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos120);
+            emitter = work->emit80[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_YELLOW_STREAKS), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
@@ -421,11 +421,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit80[4]);
             ex->btlfx_stopEmitter(work->emit80[5]);
             ex->btlfx_stopEmitter(work->emit80[6]);
-            emitter = work->emit80[11] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos120);
+            emitter = work->emit80[11] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_EXPLOSIONS), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
-            emitter = work->emit80[12] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos120);
+            emitter = work->emit80[12] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCKS), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
@@ -449,12 +449,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit80[8]);
             ex->btlfx_stopEmitter(work->emit80[9]);
             ex->btlfx_getUnitBonePos(0x10, 0x18, (u16 *)&work->pos120);
-            emitter = work->emit80[13] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos120);
+            emitter = work->emit80[13] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_TAN_STREAKS), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
-            work->emit80[14] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos120);
-            emitter = work->emit80[15] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&work->pos120);
+            work->emit80[14] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCK_DEBRIS_2), (s32)&work->pos120);
+            emitter = work->emit80[15] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_SCREEN_TRAIL), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails1;
                 work->emit80[15]->trailSlots = 0x36;
@@ -475,7 +475,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 3;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
@@ -500,11 +500,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 3, (u16 *)&work->pos1F4);
             work->pos1F4.vx += 0x100;
             work->pos1F4.vy -= 0x80;
-            emitter = work->emit80[22] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1F4);
+            emitter = work->emit80[22] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_EXPLOSIONS), (s32)&work->pos1F4);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
-            emitter = work->emit80[23] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos1F4);
+            emitter = work->emit80[23] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ROCKS), (s32)&work->pos1F4);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
@@ -519,7 +519,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1E3:
-            emitter = work->emit80[24] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos100);
+            emitter = work->emit80[24] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING_TRAILS_2), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails0;
                 work->emit80[24]->trailSlots = 0x24;
@@ -529,9 +529,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x400;
                 }
             }
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1b3_emitPos0);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_1b3_emitPos0);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1b3_emitPos0);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_TEAL_RINGS_2), (s32)&fx_1b3_emitPos0);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_RIPPLE_RINGS), (s32)&fx_1b3_emitPos0);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_TAN_STREAKS_2), (s32)&fx_1b3_emitPos0);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -544,7 +544,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_fadeUnitById(0x10, 0);
             break;
         case 0x264:
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1b3_emitPos0);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_ORANGE_RINGS), (s32)&fx_1b3_emitPos0);
             break;
         case 0x27C:
             work->timers0[12] = 0x20;
@@ -573,7 +573,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         SET_ROT(work->emit80[15], work->rot148);
         SET_ROT(work->emit80[13], work->rot150);
         if (work->emit80[9] != NULL || work->emit80[15] != NULL) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEATH1_BACKDROP), frame);
         }
         if (work->timers0[0] != 0) {
             work->timers0[0]--;
@@ -714,7 +714,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             pt->pad = 0x80;
                         }
                         trailAlpha = fx_1b3_trails[i].timer4C << 10;
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, frame, 0x1000,
                                             trailAlpha, 1, (u8 *)&fx_1b3_trails[i], 0);
                     }
                 }

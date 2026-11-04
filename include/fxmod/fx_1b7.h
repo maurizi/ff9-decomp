@@ -5,6 +5,20 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH_VIOLET_RINGS        0x2 /* emitter: violet / magenta and cream / tan gouraud rings */
+#define FX_DEATH_RED_LIGHTNING_TRAIL 0x3 /* emitter: wobbling 3D trail, red lightning strip */
+#define FX_DEATH_YELLOW_GLOW         0x4 /* emitter: orbiting fan, yellow-green glow streak, 17 frames */
+#define FX_DEATH_ORANGE_RINGS        0x5 /* emitter: pale-yellow / orange gouraud rings */
+#define FX_DEATH_FLARE_STREAK        0x6 /* emitter: red-orange lens-flare streak + white-yellow-red gouraud rings */
+#define FX_DEATH_STAR_SPECKS         0x7 /* emitter: spiral of faint teal glows + white star dots, 39 frames */
+#define FX_DEATH_OLIVE_RINGS         0x8 /* emitter: pale-yellow / olive gouraud rings */
+#define FX_DEATH_SMOKE_TRAIL         0x9 /* emitter: spiralling 3D trail, grey smoke strip */
+#define FX_DEATH_BUBBLE_RINGS        0xA /* emitter: rings textured with olive bubble spots + pink / pale-cyan gouraud rings */
+#define FX_DEATH_BLUE_BEAM           0xB /* emitter: blue cone-beam fan + grey gouraud rings */
+#define FX_DEATH_BLUE_STREAK         0xC /* emitter: one fan, thin blue streak */
+
 typedef struct {
     s32 posX0; /* position, 20.12 */
     s32 posY4;

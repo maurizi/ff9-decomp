@@ -70,7 +70,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         if (frame == 0) {
             for (i = 0; i < 6; i++) {
-                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1a0_emitPos[i]);
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_SLASH_FIRE_BURST), (s32)&fx_1a0_emitPos[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->otZ = 0x20;
                 }
@@ -128,8 +128,8 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->otZ = 0x20;
             }
             if (work->flag18 != 0) {
-                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
-                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_SLASH_FLAME_FLASH), (s32)&work->posC);
+                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_SLASH_RED_RINGS), (s32)&work->posC);
                 if (work->emit4 != NULL) {
                     work->emit4->otZ = 0x80;
                 }
@@ -151,7 +151,7 @@ s32 fx_1a0_op82(s32 mode, Fx1a0Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1a0_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_SLASH_FLAME_RINGS), (s32)&work->pos4);
     } else {
         return entry->frame >= 0x14;
     }

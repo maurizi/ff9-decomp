@@ -5,6 +5,11 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_GOLEM_DEATH_DUST_CLOUD   0x1 /* emitter: tan dust cloud quads, 17 frames (sprites render black) */
+#define FX_GOLEM_DEATH_DUST_CLOUD_2 0x5 /* emitter: orbiting tan dust cloud quads, 17 frames (sprites render black) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_18a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_TRANSFORM_AURA_CYLINDER  0x1 /* model: open cone ring, magenta-violet cloud texture (byte-identical to fx_101 FX_TRANCE_AURA_CYLINDER) */
+#define FX_TRANSFORM_VIOLET_RINGS   0x3 /* rings: white-lilac-violet gouraud rings */
+#define FX_TRANSFORM_VIOLET_RINGS_2 0x4 /* rings: white-violet gouraud rings */
+#define FX_TRANSFORM_VIOLET_TRAIL   0x6 /* trail: violet speckled strip, 12 frames (per pool item) */
+#define FX_TRANSFORM_BLUE_RING      0x9 /* rings: navy-blue gouraud ring */
+#define FX_TRANSFORM_FAN_STREAK     0xA /* emitter: fan elements, a faint thin white-red streak in the render (look pending) */
+#define FX_TRANSFORM_SPRITE_SPIRAL  0xC /* emitter: spiral of sprites + sub-sprites, renders black (look pending) */
+#define FX_TRANSFORM_PINK_STREAKS   0xE /* emitter: orbiting fans, pink-white light streaks */
+#define FX_TRANSFORM_RED_STREAKS    0xF /* emitter: orbiting fans, red light streaks with pink orbs */
+#define FX_TRANSFORM_VIOLET_RING    0x12 /* rings: violet gouraud ring */
+
 typedef struct {
     SVECTOR pos0; /* caster body position */
     SVECTOR rot8; /* angles */

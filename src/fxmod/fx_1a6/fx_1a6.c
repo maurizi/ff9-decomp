@@ -65,7 +65,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1a6_motionTo[work->index48].vx = work->pos18.vx;
         fx_1a6_motionTo[work->index48].vy = work->pos18.vy;
         fx_1a6_motionTo[work->index48].vz = work->pos18.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_PARTICLE), (s32)&work->pos28);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a6_emitFileIds[work->index48]),
                                        (s32)&fx_1a6_emitPos0[work->index48]);
         if (work->emit0 != NULL) {
@@ -94,8 +94,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->index48 != FX_1A6_LAST_SHOT) {
                 fxm_startHitMotionIfActive(0);
             }
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_WATER_JET), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_SPLASH), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_1a6_op80Trails2[work->index48];
                 work->emit8->trailSlots = 0x56;
@@ -152,7 +152,7 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_1a6_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_BUBBLES), (s32)&work->pos4);
     } else {
         return entry->frame >= 0x28;
     }

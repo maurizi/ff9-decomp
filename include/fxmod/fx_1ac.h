@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1ac effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_VIRUS_CRUNCH_MOTHS      0x1 /* emitter: orbiting gold / green / orange moth-wing quads, 24 frames */
+#define FX_VIRUS_CRUNCH_MOTHS_2    0x2 /* emitter: gold / orange / green moth-wing quads, 24 frames */
+#define FX_VIRUS_CRUNCH_CYAN_CLOUD 0x3 /* emitter: white-grey gouraud rings + teal-cyan cloud quads */
+#define FX_VIRUS_CRUNCH_GREY_TRAIL 0x5 /* emitter: flat trail, grey faceted strip */
+
 typedef struct {
     s32 timer0[8]; /* countdowns */
     SVECTOR pos20; /* caster position */

@@ -66,7 +66,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos20);
             ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
-            fx_1ac_emitter = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
+            fx_1ac_emitter = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_CRUNCH_GREY_TRAIL), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1ac_op80Trails;
                 emitter->trailSlots = 4;
@@ -82,22 +82,22 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 20:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos0);
-            work->emit4C[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1ac_emitPos0);
+            work->emit4C[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_CRUNCH_MOTHS), (s32)&fx_1ac_emitPos0);
             work->timer0[3] = 0x10;
             break;
         case 26:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos1);
-            work->emit4C[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1ac_emitPos1);
+            work->emit4C[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_CRUNCH_MOTHS), (s32)&fx_1ac_emitPos1);
             work->timer0[4] = 0x10;
             break;
         case 32:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos2);
-            work->emit4C[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1ac_emitPos2);
+            work->emit4C[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_CRUNCH_MOTHS), (s32)&fx_1ac_emitPos2);
             work->timer0[5] = 0x10;
             break;
         case 46:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos3);
-            work->emit4C[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1ac_emitPos3);
+            work->emit4C[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_CRUNCH_MOTHS_2), (s32)&fx_1ac_emitPos3);
             work->timer0[6] = 0x10;
             break;
         case 50:
@@ -105,7 +105,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_fadeUnitById(0, 0x80);
             ex->btlfx_setUnitRot(0, (s16 *)&work->rot44);
             ex->btlfx_getUnitHomePos(0, (s16 *)&fx_1ac_emitPos4);
-            work->emit4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1ac_emitPos4);
+            work->emit4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_CRUNCH_CYAN_CLOUD), (s32)&fx_1ac_emitPos4);
             work->timer0[7] = 0x10;
             break;
         }

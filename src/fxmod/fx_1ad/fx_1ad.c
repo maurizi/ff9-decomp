@@ -47,7 +47,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1ad_env = env;
         ex->btlfx_initEffModels(fx_1ad_effModels, 1);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
-        work->model24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_6_LEGS_POD_MODEL), 1);
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->pos8);
@@ -58,9 +58,9 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             otz = 0x40;
             tick = work->frame4;
             ex->btlfx_drawScrollMove(tick * 4, 0x200, 0x100, 0x20, otz, ((tick & 3) << 5) + 0x240, ((tick * 16) & 0xC0) + 0x100);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->frame4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_6_LEGS_BACKDROP), work->frame4);
             if (frame == 0) {
-                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
+                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_6_LEGS_GREEN_TRAIL), (s32)&work->pos10);
                 if (work->emit20 != NULL) {
                     work->emit20->trails = (s32)fx_1ad_op80Trails0;
                     work->emit20->trailSlots = 0x48;
@@ -72,7 +72,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit20 != NULL) {
                     work->emit20->file->m.module.update = fx_1ad_op80ParticleMotion;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_6_LEGS_BUBBLE_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_1ad_op80Trails1;
                     emitter->trailSlots = 0x10;

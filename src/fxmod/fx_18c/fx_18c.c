@@ -33,8 +33,8 @@ s32 fx_18c_op80(s32 mode, Fx18cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_18c_timers[i] = 0;
         }
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos0);
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos0);
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIGHT_PARTICLES), (s32)&work->pos0);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIGHT_GREEN_HALO), (s32)&work->pos0);
     } else {
         frame = entry->frame;
         switch (frame) {

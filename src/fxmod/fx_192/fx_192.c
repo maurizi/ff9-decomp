@@ -8,7 +8,7 @@ s32 fx_192_op80(s32 mode, u16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     } else if (mode == 1) {
         fx_192_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0, work);
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)work);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_GREEN_SMOKE), (s32)work);
     } else {
         return entry->frame >= 0x40;
     }

@@ -5,6 +5,14 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH_DARK_QUADS  0x1 /* emitter: anim quads + sprites, render black (byte-identical to fx_1b9 entry 0x2) (look pending) */
+#define FX_DEATH_WATER_WAVE  0x2 /* emitter: green-teal water wave particles, 16 frames */
+#define FX_DEATH_SWIRL       0x6 /* emitter: orbiting white swirl vortex particles (sprites render black) */
+#define FX_DEATH_RIPPLES     0x7 /* emitter: green ripple-circle particles + grey widening ring (byte-identical to fx_1b9 entry 0x1) */
+#define FX_DEATH_WATER_SPOUT 0xE /* emitter: green / blue water spout, 10 frames (byte-identical to fx_1b9 entry 0x7) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

@@ -181,7 +181,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_191_op81PathOrigin.vx = work->pos18.vx;
         fx_191_op81PathOrigin.vy = work->pos18.vy;
         fx_191_op81PathOrigin.vz = work->pos18.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_191_emitPos0);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_GOLD_TRAIL), (s32)&fx_191_emitPos0);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_191_op81Trails0;
             work->emit0->trailSlots = 2;
@@ -193,14 +193,14 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
-        fxm_posPathInit(&fx_191_posPath0, (u8 *)ex->btlfx_getFileData(entry->file, 4));
-        fxm_posPathInit(&fx_191_posPath1, (u8 *)ex->btlfx_getFileData(entry->file, 5));
+        fxm_posPathInit(&fx_191_posPath0, (u8 *)ex->btlfx_getFileData(entry->file, FX_LANCER_PATH));
+        fxm_posPathInit(&fx_191_posPath1, (u8 *)ex->btlfx_getFileData(entry->file, FX_LANCER_PATH_2));
     } else {
         frame = entry->frame;
         fx_191_op81Frame = frame;
         switch (frame) {
         case 5:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_191_emitPos1);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_GOLD_TRAIL_2), (s32)&fx_191_emitPos1);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_191_op81Trails1;
                 work->emit4->trailSlots = 2;
@@ -226,8 +226,8 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos38.vx += work->pos18.vx;
             work->pos38.vy += work->pos18.vy;
             work->pos38.vz += work->pos18.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos30);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_CYAN_SPARKS), (s32)&work->pos30);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_GREEN_RINGS), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -248,8 +248,8 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos48.vx += work->pos18.vx;
             work->pos48.vy += work->pos18.vy;
             work->pos48.vz += work->pos18.vz;
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos40);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos18);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_RED_SPARKS), (s32)&work->pos40);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_ORANGE_RINGS), (s32)&work->pos18);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
