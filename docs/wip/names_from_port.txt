@@ -11537,3 +11537,4 @@ BTL_STEPF_UNTESTED0 BTL_STEPF_IN_BATTLE  # [code] passed only by mid-battle relo
 BTL_STEPF_UNTESTED1 BTL_STEPF_PARTY  # [code] passed with every party-side load; tested by nothing
 GD_FLD_TAKEOVER_UNREAD GD_FLD_TAKEOVER  # [code] field hands the screen over (encounter, 24-bit movie); no reader
 FLDBG_INIT_CLEARED FLDBG_OVERLAY_STATE  # [code]
+WM_STORY_LATE_DATA STORY_WORLD_LATE  # [code] moved to ff9.h

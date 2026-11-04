@@ -221,7 +221,7 @@ s32 wm_afterLoadShadowTexture(void) {
 
 s32 wm_getWorldDataFileId(void) {
     s32 fileId = FILE_WM_DATA;
-    if (g_evtGlobalVars.h[0] >= 0x2B52) {
+    if (g_evtGlobalVars.h[0] >= STORY_WORLD_LATE) {
         fileId = FILE_WM_DATA_LATE;
     }
     return fileId;

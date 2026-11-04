@@ -145,7 +145,6 @@
 #define WM_STORY_FOG_END 0x1766 /* wm_getStoryFog: no fog from here, the navi map's second page (g_worldNaviPage 1) */
                                 /* and WM_NAVI_KNOWN_LATE */
 #define WM_STORY_FOG_BACK 0x2B53 /* ... until here */
-#define WM_STORY_LATE_DATA 0x2B52 /* main wm_getWorldDataFileId: FILE_WM_DATA_LATE (data set 4) from here on */
 #define WM_STORY_FIELD_SONG1 0x2580 /* wm_getSongMusicId: WM_SONG_NORMAL plays WM_SONG_FIELD1 in [0x2580, 0x26A2), */
 #define WM_STORY_FIELD_SONG2 0x26A2 /* WM_SONG_FIELD2 in [0x26A2, 0x26B6); wm_keepEntryMusic keeps the music there */
 #define WM_STORY_FIELD_SONG2_END 0x26B6
@@ -301,7 +300,7 @@ typedef struct WmEffect {
 #define WM_BLOCKFX_DISC4_CORE 6 /* data set 4 only: a sprite, a core model, two counter-rotating shells, 10 random */
                                 /* flashes and 10 expanding rings at (196602, -10882, -82002) */
 #define WM_BLOCKFX_SPINNER 7 /* one model at (280140, -7784, -206465), turning except in [STORY_DISC3, */
-                             /* WM_STORY_LATE_DATA) */
+                             /* STORY_WORLD_LATE) */
 /* wm_cameraFollow: which way the camera target / eye height has to move (y grows downward) */
 #define WM_CAM_HOLD 0
 #define WM_CAM_LOWER 1 /* the wanted height is more than the dead zone below the current one */

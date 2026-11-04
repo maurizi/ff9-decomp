@@ -150,7 +150,7 @@ void battleEnd_preloadScene(void) {
     dst += size;
     if (work->returnMode == GS_MODE_FIELD) {
         id = FILE_FLD_COMMON;
-    } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
+    } else if (g_evtGlobalVars.h[0] >= STORY_WORLD_LATE) {
         id = FILE_WM_DATA_LATE;
     } else {
         id = FILE_WM_DATA;

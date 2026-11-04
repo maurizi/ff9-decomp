@@ -159,7 +159,7 @@ void wm_applyEncounterEvents(void) {
         g_worldAmbientSeDist[i] = 0xFFFF;
         g_worldAmbientSeOn[i] = 0;
     }
-    if (*g_worldStoryCounterPtr - (u32)STORY_DISC3 < WM_STORY_LATE_DATA - STORY_DISC3) {
+    if (*g_worldStoryCounterPtr - (u32)STORY_DISC3 < STORY_WORLD_LATE - STORY_DISC3) {
         g_worldBlockFx7Spin = 0;
     } else {
         g_worldBlockFx7Spin = 1;

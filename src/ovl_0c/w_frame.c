@@ -26,7 +26,7 @@ void wm_systemInit(void) {
         fade_out(1);
     }
     g_worldStoryCounterPtr = g_evtGlobalVars.h;
-    if ((u16)g_evtGlobalVars.h[0] >= 0x2B52) {
+    if ((u16)g_evtGlobalVars.h[0] >= STORY_WORLD_LATE) {
         g_worldDataSet = WM_DATASET_DISC4;
     } else {
         g_worldDataSet = WM_DATASET_DISC1;
