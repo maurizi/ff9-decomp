@@ -208,20 +208,20 @@ s32 btlfx_opBounce(s32 mode, Unk800E4634 *work, Unk800E4634Arg2 *env, s32 *entry
             }
         }
     } else if (btlfx_getBouncePos(work->point, (s16 *)&work->points[work->point], work->rot) == 0) {
-        work->emitters[work->point] = btlfx_startEmitter(btlfx_getCommonData(3), (s32)&work->points[work->point]);
+        work->emitters[work->point] = btlfx_startEmitter(btlfx_getCommonData(BTLFX_COMMON_EMIT_BOUNCE), (s32)&work->points[work->point]);
         if (work->emitters[work->point] != NULL) {
             work->emitters[work->point]->otZ = 0x73;
             if (work->emitters[work->point] != NULL) {
-                work->emitters[work->point]->elems[0].tex = btlfx_getCommonData(7);
+                work->emitters[work->point]->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_A);
                 if (work->emitters[work->point] != NULL) {
-                    work->emitters[work->point]->elems[1].tex = btlfx_getCommonData(6);
+                    work->emitters[work->point]->elems[1].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_B);
                 }
             }
         }
         work->rot[0] = 0x400;
         work->timer = 1;
         work->rot[1] += 0x800;
-        btlfx_playSoundSet(3, work->point + 8);
+        btlfx_playSoundSet(BTLFX_SNDSET_BOUNCE, work->point + 8);
         work->point++;
     } else {
         work->point = -1;
@@ -258,20 +258,20 @@ Pool6CEntry *btlfx_startCastEmitter_def(s32 unitId, s32 kind, Unk800E4A3CArgs po
     posRef = &pos;
     pos.c = posRef->b;
     switch (kind) {
-    case 0:
-    case 2:
-        emitter = btlfx_startEmitter(btlfx_getCommonData(5), (s32)pos.a);
-        if (kind == 0) {
+    case BTLFX_CASTK_SPELL:
+    case BTLFX_CASTK_SPELL_B:
+        emitter = btlfx_startEmitter(btlfx_getCommonData(BTLFX_COMMON_EMIT_CAST), (s32)pos.a);
+        if (kind == BTLFX_CASTK_SPELL) {
             if (emitter != NULL) {
-                emitter->elems[0].tex = btlfx_getCommonData(7);
+                emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_A);
                 goto common;
             }
         } else {
             if (emitter != NULL) {
-                emitter->elems[0].tex = btlfx_getCommonData(8);
+                emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_SPELL_B_A);
             common:
                 if (emitter != NULL) {
-                    emitter->elems[1].tex = btlfx_getCommonData(6);
+                    emitter->elems[1].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_B);
                     emitter->otZ = 8;
                 }
             }
@@ -279,30 +279,30 @@ Pool6CEntry *btlfx_startCastEmitter_def(s32 unitId, s32 kind, Unk800E4A3CArgs po
         if (btlfx_isUnitKind(BTLFX_UNIT_CASTER, 0) == 0) {
             goto zero;
         }
-        btlfx_playSoundSet(1, unitId);
+        btlfx_playSoundSet(BTLFX_SNDSET_CAST_EIKO, unitId);
         break;
-    case 1:
-    case 7:
+    case BTLFX_CASTK_SUMMON:
+    case BTLFX_CASTK_SUMMON_B:
         pos.b[1] -= 0x40;
-        emitter = btlfx_startEmitter(btlfx_getCommonData(1), (s32)pos.a);
+        emitter = btlfx_startEmitter(btlfx_getCommonData(BTLFX_COMMON_EMIT_SUMMON_CAST), (s32)pos.a);
         if (emitter != NULL) {
-            emitter->elems[0].tex = btlfx_getCommonData(0x14);
-            emitter->elems[1].tex = btlfx_getCommonData(6);
-            emitter->elems[2].tex = btlfx_getCommonData(2);
+            emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_SUMMON_A);
+            emitter->elems[1].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_B);
+            emitter->elems[2].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_SUMMON_C);
             emitter->target = *(s32 *)&pos.b;
             emitter->otZ = 0x20;
         }
-        btlfx_playSoundSet(2, unitId);
+        btlfx_playSoundSet(BTLFX_SNDSET_SUMMON_CAST, unitId);
         break;
-    case 4:
-        emitter = btlfx_startEmitter(btlfx_getCommonData(4), (s32)pos.a);
+    case BTLFX_CASTK_ENEMY:
+        emitter = btlfx_startEmitter(btlfx_getCommonData(BTLFX_COMMON_EMIT_ENEMY_CAST), (s32)pos.a);
         if (emitter != NULL) {
-            emitter->elems[0].tex = btlfx_getCommonData(7);
-            emitter->elems[1].tex = btlfx_getCommonData(6);
+            emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_A);
+            emitter->elems[1].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_B);
             emitter->otZ = 0x80;
         }
     zero:
-        btlfx_playSoundSet(0, unitId);
+        btlfx_playSoundSet(BTLFX_SNDSET_CAST, unitId);
         break;
     }
     return emitter;
@@ -362,15 +362,15 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         enemy = btlfx_isEnemyUnit(work->unit);
         work->loopFrames = 100;
         btlfx_setPartyTexAnim(work->unit, 1, 0);
-        if ((noCast != 0 || work->kind == 0xF) && enemy == 0) {
+        if ((noCast != 0 || work->kind == BTLFX_CASTK_NONE) && enemy == 0) {
             work->motionMode = BTLFX_CAST_NONE;
             work->phase = 2;
         } else if (enemy != 0) {
             work->motionMode = BTLFX_CAST_ENEMY;
             work->phase = 2;
-            if (noCast == 0 && work->kind != 0xF) {
+            if (noCast == 0 && work->kind != BTLFX_CASTK_NONE) {
                 btlfx_getUnitBodyPos(work->unit, 0, work->pos);
-                work->emitter = btlfx_startCastEmitter(work->unit, 4, work->pos, work->pos2);
+                work->emitter = btlfx_startCastEmitter(work->unit, BTLFX_CASTK_ENEMY, work->pos, work->pos2);
             } else {
                 work->emitter = NULL;
             }
@@ -418,12 +418,12 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         }
         if (step == 0) {
             level = ((u32)g_btlfxState.flags & BTLFX_HDR_BG_FADE) >> BTLFX_HDR_BG_FADE_SHIFT;
-            if (level != 3) {
-                btlfx_startFadeBackground(level, work->kind == 1 ? 0xC : 0x14);
+            if (level != BTLFX_BG_FADE_NONE) {
+                btlfx_startFadeBackground(level, work->kind == BTLFX_CASTK_SUMMON ? 0xC : 0x14);
             }
         }
         fadeStep = step - 9;
-        if (work->kind == 1) {
+        if (work->kind == BTLFX_CASTK_SUMMON) {
             if (fadeStep >= 0) {
                 if (fadeStep < 16) {
                     fade = (fadeStep * 255) >> 4;
@@ -2024,7 +2024,7 @@ void btlfx_playCmdCamera(s32 flags) {
         msg = btlfx_getCommonData(g_btlfxCmdCameras[4]);
     } else if (caster->flags & BTL_UNIT_PARTY) {
         if ((u8)btl_hasStatus(caster, BTL_STATUS_TRANCE) == 0) {
-            if ((hi >> BTLFX_HDR_CASTER_SHIFT) == 1 || (hi >> BTLFX_HDR_CASTER_SHIFT) == 7) {
+            if ((hi >> BTLFX_HDR_CASTER_SHIFT) == BTLFX_CASTK_SUMMON || (hi >> BTLFX_HDR_CASTER_SHIFT) == BTLFX_CASTK_SUMMON_B) {
                 if (BTL_UNIT_INDEX(caster->flags) == CHR_DAGGER) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[2]);
                 } else {

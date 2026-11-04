@@ -179,7 +179,7 @@ void btlfx_runScript(void) {
         }
         if (btlfx_loadFile(state->effectId) == 0) {
             casterMode = (u8)state->flags >> BTLFX_HDR_CASTER_SHIFT;
-            if (casterMode == 1) {
+            if (casterMode == BTLFX_CASTK_SUMMON) {
                 g_btlfxEnv->targets->kind |= BTL_FXK_PARTY_UNLOAD;
             }
             btlfx_startCasterTask(casterMode);

@@ -1930,14 +1930,14 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         }
     case BTL_FORMULA_STRENGTH_UP:
         target->strength += target->strength / cmd->ability->power;
-        if (target->strength >= 100) {
-            target->strength = 99;
+        if (target->strength > STAT_MAX) {
+            target->strength = STAT_MAX;
         }
         break;
     case BTL_FORMULA_MAGIC_UP:
         target->magic += target->magic / cmd->ability->power;
-        if (target->magic >= 100) {
-            target->magic = 99;
+        if (target->magic > STAT_MAX) {
+            target->magic = STAT_MAX;
         }
         break;
     case BTL_FORMULA_SACRIFICE:
@@ -1954,7 +1954,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 statusSet;
             s32 addResult;
-            if ((u32)(g_gameState->gameData->characters[BTL_UNIT_INDEX(caster->flags)].equip[0] - 7) < 9) {
+            if ((u32)(g_gameState->gameData->characters[BTL_UNIT_INDEX(caster->flags)].equip[0] - ITEM_THIEF_SWORD_FIRST) < ITEM_THIEF_SWORD_LAST - ITEM_THIEF_SWORD_FIRST + 1) {
                 statusSet = g_gameState->gameData->ctx.battle->statusSets[caster->weapon[1]];
                 if (!(statusSet & BTL_STATUS_KO) || btl_guardIfDeathImmune(&calc)) {
                     addResult = btl_addStatuses(target, statusSet);
