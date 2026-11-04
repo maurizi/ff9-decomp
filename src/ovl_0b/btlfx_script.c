@@ -1453,7 +1453,7 @@ s32 btlfx_stepJumpForward(Unk800D7C9C *work, s32 env, s32 *entry) {
         btlfx_getUnitRot(work->unit, rot);
         btlfx_pointAhead(pos, rot, work->dist, work->to);
         if (work->playMotion != 0) {
-            btlfx_playUnitMotion(work->unit, 0x1D);
+            btlfx_playUnitMotion(work->unit, BTL_MOTION_STEP_FORWARD);
         }
         work->frames = btlfx_getMotionLength(work->unit);
     }
@@ -1469,7 +1469,7 @@ s32 btlfx_stepJumpHome(Unk800D955C *work, s32 env, s32 *entry) {
     if (frame == 0) {
         btlfx_getUnitHomePos(work->unit, work->to);
         if (work->playMotion != 0) {
-            btlfx_playUnitMotion(work->unit, 0x1E);
+            btlfx_playUnitMotion(work->unit, BTL_MOTION_STEP_HOME);
         }
         work->frames = btlfx_getMotionLength(work->unit);
     }

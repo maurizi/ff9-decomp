@@ -41,9 +41,9 @@ s32 btlfx_reloadCommonData(s32 poll) {
     return ret;
 }
 
-s32 btlfx_stepBack(s32 unitId, s32 targetId, s32 frame) {
+s32 btlfx_stepForward(s32 unitId, s32 targetId, s32 frame) {
     s32 homePos[2];
-    s32 backPos[2];
+    s32 stepPos[2];
     s32 pos[2];
     s32 rot[2];
     s32 frames;
@@ -56,20 +56,20 @@ s32 btlfx_stepBack(s32 unitId, s32 targetId, s32 frame) {
     }
     if (btlfx_isEnemyUnit(targetId) != 0) {
         btlfx_getUnitRot(unitId, (s16 *)rot);
-        btlfx_pointAhead((s16 *)pos, (s16 *)rot, 400, (s16 *)backPos);
+        btlfx_pointAhead((s16 *)pos, (s16 *)rot, 400, (s16 *)stepPos);
         if (frame == 0) {
-            btlfx_playUnitMotion(unitId, 0x1D);
+            btlfx_playUnitMotion(unitId, BTL_MOTION_STEP_FORWARD);
         }
         frames = btlfx_getMotionLength(unitId);
         if (frame < frames) {
             btlfx_applyFloatHeight(unitId, (s16 *)homePos);
-            btlfx_applyFloatHeight(unitId, (s16 *)backPos);
+            btlfx_applyFloatHeight(unitId, (s16 *)stepPos);
         }
         ratio = ((frame + 1) << 12) / frames;
         if (ratio > 0x1000) {
             ratio = 0x1000;
         }
-        btlfx_lerpVec((s16 *)homePos, (s16 *)backPos, ratio, (s16 *)pos);
+        btlfx_lerpVec((s16 *)homePos, (s16 *)stepPos, ratio, (s16 *)pos);
         btlfx_setUnitPos(unitId, (s16 *)pos);
         return frame >= frames;
     }
@@ -93,7 +93,7 @@ s32 btlfx_moveUnitHome(s32 unitId, s32 frame, s16 *startPos, s32 stopped) {
             return -1;
         }
         if (stopped == 0) {
-            btlfx_playUnitMotion(unitId, 0x1E);
+            btlfx_playUnitMotion(unitId, BTL_MOTION_STEP_HOME);
         }
         btlfx_turnUnitToward(unitId, homePos, 0, 0, 0, 0, 0);
     }
@@ -384,7 +384,7 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
     step = *entry;
     switch (work->phase) {
     case 0:
-        if (btlfx_stepBack(work->unit, work->target, step) != 0) {
+        if (btlfx_stepForward(work->unit, work->target, step) != 0) {
             motion = work->motionMode;
             if (motion != BTLFX_CAST_ITEM) {
                 btlfx_playUnitMotion(work->unit, BTL_MOTION_CAST_START);
@@ -578,7 +578,7 @@ s32 btlfx_opReturnHome(s32 mode, Unk800E5538 *work, Unk800F78A4 *env, s32 *entry
                 return 1;
             }
             if (work->stopped == 0) {
-                btlfx_playUnitMotion(work->unit, 0x20);
+                btlfx_playUnitMotion(work->unit, BTL_MOTION_READY_TO_IDLE);
             }
         }
     } else {

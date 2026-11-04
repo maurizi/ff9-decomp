@@ -343,17 +343,17 @@ void btl_updateKo(BtlUnit *unit) {
         case BTL_KO_START:
             model = unit->model;
             if ((s32)model->motion == unit->motions[BTL_MOTION_READY]) {
-                model->motion = (BtlMotion *)unit->motions[32];
+                model->motion = (BtlMotion *)unit->motions[BTL_MOTION_READY_TO_IDLE];
                 unit->obj->frame = 0;
                 return;
             }
-            if ((s32)model->motion == unit->motions[32] && unit->obj->frame < model->motion->frameCount) {
+            if ((s32)model->motion == unit->motions[BTL_MOTION_READY_TO_IDLE] && unit->obj->frame < model->motion->frameCount) {
                 break;
             }
             unit->koState = BTL_KO_PARTY_FALL;
         case BTL_KO_PARTY_FALL:
             if ((weak = (unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) == 1) {
-                unit->model->motion = (BtlMotion *)unit->motions[8];
+                unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_KO_FALL];
                 unit->koState = BTL_KO_PARTY_DOWN;
             } else {
                 unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_IDLE_TO_WEAK];
@@ -363,7 +363,7 @@ void btl_updateKo(BtlUnit *unit) {
             return;
         case BTL_KO_PARTY_COLLAPSE:
             if (unit->obj->frame >= unit->model->motion->frameCount) {
-                unit->model->motion = (BtlMotion *)unit->motions[8];
+                unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_KO_FALL];
                 unit->obj->frame = 0;
                 unit->koState++;
             }

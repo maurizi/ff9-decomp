@@ -2620,7 +2620,7 @@ ovl_0b btlfx_copyDisplayToDraw 0xe4 0x800e3e08
 ovl_0b btlfx_runFrame 0x1ac 0x800e3eec
 ovl_0b btlfx_initCommonData 0x9c 0x800e4098
 ovl_0b btlfx_reloadCommonData 0xe4 0x800e4134
-ovl_0b btlfx_stepBack 0x154 0x800e4218
+ovl_0b btlfx_stepForward 0x154 0x800e4218
 ovl_0b btlfx_turnUnitTowardFast 0x6c 0x800e436c
 ovl_0b btlfx_moveUnitHome 0x158 0x800e43d8
 ovl_0b btlfx_getCommonSprite 0x1c 0x800e4530

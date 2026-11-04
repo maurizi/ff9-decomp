@@ -463,7 +463,7 @@ void btl_processCmdQueue(Battle *battle) {
         if (!(u8)btl_checkCmdUsable(battle, cmd) || !(u8)btl_validateTargets(battle, cmd) || !(u8)btl_payMpCost(cmd)) {
             btl_releaseItem(cmd);
             if (caster != NULL && (caster->flags & BTL_UNIT_PARTY) && (s32)caster->model->motion == caster->motions[BTL_MOTION_READY]) {
-                caster->model->motion = (BtlMotion *)caster->motions[32];
+                caster->model->motion = (BtlMotion *)caster->motions[BTL_MOTION_READY_TO_IDLE];
             }
             battle->cmdPhase = 3;
             break;
@@ -811,7 +811,7 @@ void btl_updatePartyCmd(BtlCmd *cmd) {
                 return;
             }
             btl_execCmd(caster);
-            caster->model->motion = (BtlMotion *)caster->motions[32];
+            caster->model->motion = (BtlMotion *)caster->motions[BTL_MOTION_READY_TO_IDLE];
             caster->obj->frame = 0;
             return;
         }
@@ -964,7 +964,7 @@ void btl_flushCmdQueue(Battle *battle) {
                 model = caster->model;
                 caster->cmdIssued = 0;
                 if ((s32)model->motion == caster->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(caster->flags)) != CHR_EIKO || PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_SWD_MAG && PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_BLK))) {
-                    model->motion = (BtlMotion *)caster->motions[32];
+                    model->motion = (BtlMotion *)caster->motions[BTL_MOTION_READY_TO_IDLE];
                     caster->obj->frame = 0;
                     caster->flags &= ~BTL_UNIT_CMD_WAITING;
                 }
@@ -995,7 +995,7 @@ void btl_clearCmdQueue(Battle *battle) {
                 model = caster->model;
                 caster->cmdIssued = 0;
                 if ((s32)model->motion == caster->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(caster->flags)) != CHR_EIKO || PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_SWD_MAG && PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_BLK))) {
-                    model->motion = (BtlMotion *)caster->motions[32];
+                    model->motion = (BtlMotion *)caster->motions[BTL_MOTION_READY_TO_IDLE];
                     caster->obj->frame = 0;
                     caster->flags &= ~BTL_UNIT_CMD_WAITING;
                 }

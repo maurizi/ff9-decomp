@@ -550,9 +550,9 @@ typedef struct BtlUnit {
 } BtlUnit; /* 0xD0 */
 
 /* BtlUnit.motions slots (party: 0x22, btl_loadPartyMotions; enemies: BtlEnemyType.motionIds). Runtime: Zidane's model
- * poked to slots 2 and 3; 0x17 / 0x19 seen in Attack. The rest [code]: what btl_setIdleMotion, btl_endPartyHitMotion,
- * btl_setCmd and the command code switch between (docs/battle-models.md). Slots 8, 0x12, 0x13, 0x1D, 0x1E and 0x20
- * are still numbers (docs/wip/literals_runtime.md). */
+ * poked to slots 2 and 3; 0x17 / 0x19 seen in Attack; 8, 0x12, 0x13, 0x1A-0x20 [runtime] (R41: Zidane's model poked
+ * to each slot, and black magic / item traces, docs/runtime-findings.md). The rest [code]: what btl_setIdleMotion,
+ * btl_endPartyHitMotion, btl_setCmd and the command code switch between (docs/battle-models.md). */
 #define BTL_MOTION_IDLE      0
 #define BTL_MOTION_IDLE_WEAK 1 /* idle in weak stance (BTL_UNIT_WEAK_STANCE): Venom, Low HP, Poison, Sleep */
 #define BTL_MOTION_HIT       2 /* short flinch, head back */
@@ -562,6 +562,7 @@ typedef struct BtlUnit {
 #define BTL_MOTION_WEAK_TO_IDLE 5 /* the weak statuses went away (from IDLE_WEAK or GET_UP) */
 #define BTL_MOTION_GET_UP    6 /* after HIT_HEAVY, or when revived from KO; ends in weak stance */
 #define BTL_MOTION_IDLE_TO_WEAK 7 /* a weak status came while in IDLE */
+#define BTL_MOTION_KO_FALL   8 /* kneel, slump and end lying down (btl_updateKo), then KO */
 #define BTL_MOTION_READY     9 /* holds a command (BTL_UNIT_CMD_WAITING) or acts */
 #define BTL_MOTION_IDLE_TO_READY 10 /* + 1 from IDLE_WEAK (WEAK_TO_READY): a command was set (btl_setCmd) */
 #define BTL_MOTION_WEAK_TO_READY 11
@@ -571,13 +572,19 @@ typedef struct BtlUnit {
 #define BTL_MOTION_COVER     15 /* stepped in front of the target (btl_findCover) */
 #define BTL_MOTION_DODGE     16 /* party target dodged (BTL_CALC_DODGED) */
 #define BTL_MOTION_FLEE      17 /* Flee command, or escape held */
+#define BTL_MOTION_VICTORY   0x12 /* crouch, leap, weapon raised: at the victory when Character.info.b.victoryPose */
+#define BTL_MOTION_VICTORY_LOOP 0x13 /* short loop, weapon overhead: each time the motion ends in BTL_PHASE_EXIT */
 #define BTL_MOTION_ATTACK    0x17 /* run in and strike (btlfx_opPlayAttackMotion) */
 #define BTL_MOTION_CAST_START 0x1A /* btlfx_opCast, BTLFX_CAST_PARTY: after stepping forward */
 #define BTL_MOTION_CAST_LOOP  0x1B /* when CAST_START ends, while the cast emitter runs */
 #define BTL_MOTION_CAST_END   0x1C /* once the effect signals (signal 2), then READY */
+#define BTL_MOTION_STEP_FORWARD 0x1D /* step towards the enemies before casting (btlfx_stepForward) */
+#define BTL_MOTION_STEP_HOME  0x1E /* walk back home (btlfx_moveUnitHome) */
 #define BTL_MOTION_ITEM       0x1F /* btlfx_opCast, BTLFX_CAST_ITEM */
+#define BTL_MOTION_READY_TO_IDLE 0x20 /* lower the guard back to idle: home after acting (btlfx_opReturnHome), or a READY
+                                       * unit's command dropped (btl_cmd), or before KO_FALL (btl_updateKo) */
 #define BTL_MOTION_ATTACK_RETURN 0x19 /* jump back after attacking an enemy (btlfx_opPlayAttackReturnMotion) */
-#define BTL_MOTION_CHANGE_ROW 29 /* + BTL_UNIT_ROW: the Change command */
+#define BTL_MOTION_CHANGE_ROW BTL_MOTION_STEP_FORWARD /* + BTL_UNIT_ROW: the Change command reuses the step motions */
 
 /* BtlUnit.flags (bitfields in Square's source: single bits are read as (flags >> NAME_BIT) & 1). Evidence: [code] */
 #define BTL_UNIT_PARTY             (1 << 0) /* party member, else enemy: the side (btl_initPartyUnit sets it, btl_initEnemies clears it) */
@@ -4127,7 +4134,7 @@ typedef struct {
                        * (set by items, the Break skills, Reis's Wind, Eat ...: see the jump-home view) */
         u8 reach; /* btlfx_opMoveTowardTarget (g_btlfxOpArgs.paramB[0]): tenths of the way to the strike point */
     } arg;
-    u8 playMotion; /* btlfx_stepJumpForward plays the caster's motion 0x1D */
+    u8 playMotion; /* btlfx_stepJumpForward plays the caster's BTL_MOTION_STEP_FORWARD */
     s16 dist; /* distance ahead of the target (btlfx_pointAhead) */
     s16 dist2; /* second distance (btlfx_pointAhead) */
     s32 frames; /* move frames */
