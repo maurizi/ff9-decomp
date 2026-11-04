@@ -3418,6 +3418,16 @@ s32 btlfx_isPartyUnit(s32);
 s32 btlfx_getUnitWeapon(s32);
 s32 btlfx_getWeaponScript(s32);
 void btl_unreserveItem(s32);
+/* flags of the battle load steps (btl_loadSoundsStep, btl_loadEnemyModelsStep, btl_load{Weapon,Party}ModelsStep,
+ * btl_reloadPartyStep, btl_swapPartyModelStep) and btl_getPartyModelId. Evidence: [code] */
+#define BTL_STEPF_UNTESTED0   0x01   /* in the callers' words (btl_reloadParty, btl_swapPartyModel); no step tests it */
+#define BTL_STEPF_UNTESTED1   0x02   /* in the callers' words (also btl_loadModelsStep); no step tests it */
+#define BTL_STEPF_RELOAD_UNITS 0x04  /* btl_reloadPartyStep: then reapply the models, textures and motions to the party units */
+#define BTL_STEPF_FLIP_TRANCE 0x10   /* btl_getPartyModelId: the form the unit isn't showing (trance <-> normal); every step clears it */
+#define BTL_STEPF_BASE_MODEL  0x20   /* btl_getPartyModelId: the normal form, without looking at the unit (none exist yet) */
+#define BTL_STEPF_DEP_SOUNDS  0x100  /* btl_loadSoundsStep: also the dependency table's sound banks (type DB_SOUND_BANK, kind 2) */
+#define BTL_STEPF_SOUNDS      0x200  /* btl_reloadPartyStep: load the sound banks first */
+#define BTL_STEPF_BEGIN       0x8000 /* start over: clear the loaded flag, state 1 (or 2) */
 s32 btl_reloadPartyStep(s32);
 s32 btl_swapPartyModelStep(s32, s32);
 u32 btlfx_getUnitStatus(s32, u32);

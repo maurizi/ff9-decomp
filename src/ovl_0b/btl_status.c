@@ -530,10 +530,10 @@ void btl_setStoneClut(BtlUnit *unit, s32 stone) {
     }
     i = 0;
     if (unit->flags & BTL_UNIT_PARTY) {
-        unit->weaponModel->texPages->clut = ((delta + clut_getY(unit->weaponModel->texPages->clut)) << 6) | 0x10;
+        unit->weaponModel->texPages->clut = getClut(VRAM_MODEL_CLUT_X, delta + clut_getY(unit->weaponModel->texPages->clut));
     }
     while (i < db_getModelTexCount(unit->modelId | DB_MODEL)) {
-        unit->model->texPages[i].clut = ((delta + clut_getY(unit->model->texPages[i].clut)) << 6) | 0x10;
+        unit->model->texPages[i].clut = getClut(VRAM_MODEL_CLUT_X, delta + clut_getY(unit->model->texPages[i].clut));
         i++;
     }
 }
@@ -662,11 +662,13 @@ void btl_initDoomCount(Unk800C09D8 *unit) {
     unit->countdownStep = base * g_gameState->gameData->ctx.battle->statusInfo[BTL_STATUS_DOOM_BIT].timerScale;
 }
 
-void btl_interruptUnit(BtlUnit *unit, s32 flags) {
+/* status: the status that interrupts (BTL_CMD_PETRIFY passes BTL_STATUS_PETRIFY); with BTL_STATUS_KO the unit
+ * keeps cmdIssued */
+void btl_interruptUnit(BtlUnit *unit, s32 status) {
     if (btl_cancelUnitCmds(unit) & 0xFF) {
         unit->atb = 0;
         unit->flags &= ~BTL_UNIT_ATB_ACTIVE;
-        if (!(flags & 0x100)) {
+        if (!(status & BTL_STATUS_KO)) {
             unit->cmdIssued = 0;
         }
     }

@@ -691,7 +691,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         caster->flags |= BTL_UNIT_HIT_MOTION;
         return 0;
     case BTL_CMD_PETRIFY:
-        btl_interruptUnit(caster, 1);
+        btl_interruptUnit(caster, BTL_STATUS_PETRIFY);
         caster->status |= BTL_STATUS_PETRIFY;
         caster->flags &= ~BTL_UNIT_ATB_ACTIVE;
         btl_checkSideDefeated(caster);

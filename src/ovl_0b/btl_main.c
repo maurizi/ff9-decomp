@@ -454,14 +454,14 @@ s32 btl_reloadPartyStep(s32 flags) {
     BtlModel *wpnModel;
     u8 parentBone;
 
-    if (flags & 0x8000) {
+    if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_PARTY_LOADED;
         *state = 1;
     }
     switch (*state) {
     case 1:
-        if (flags & 0x200) {
-            btl_loadSoundsStep(g_gameState->gameData->battleId, 0x8000, (Unk800AA24C *)ld);
+        if (flags & BTL_STEPF_SOUNDS) {
+            btl_loadSoundsStep(g_gameState->gameData->battleId, BTL_STEPF_BEGIN, (Unk800AA24C *)ld);
             *state = 2;
             break;
         }
@@ -473,7 +473,7 @@ s32 btl_reloadPartyStep(s32 flags) {
         }
         break;
     case 3:
-        btl_loadWeaponModelsStep(0x8000, ld);
+        btl_loadWeaponModelsStep(BTL_STEPF_BEGIN, ld);
         *state = 4;
         break;
     case 4:
@@ -482,12 +482,12 @@ s32 btl_reloadPartyStep(s32 flags) {
         }
         break;
     case 5:
-        btl_loadPartyModelsStep(0x8000, ld);
+        btl_loadPartyModelsStep(BTL_STEPF_BEGIN, ld);
         *state = 6;
         break;
     case 6:
         if (btl_loadPartyModelsStep(flags, ld) == 0) {
-            if (flags & 4) {
+            if (flags & BTL_STEPF_RELOAD_UNITS) {
                 *state = 7;
             } else {
                 goto done;
@@ -507,7 +507,7 @@ s32 btl_reloadPartyStep(s32 flags) {
                 continue;
             }
             /* model/texture/motion reload: same steps as btl_swapPartyModelStep case 6, which does it for one slot */
-            id = btl_getPartyModelId(i, flags & ~0x10);
+            id = btl_getPartyModelId(i, flags & ~BTL_STEPF_FLIP_TRANCE);
             slot->model->header = db_lookupRegistered(DB_GET_ADDR, id, 0);
             texKey = (id & 0xFFFFFF) | (cid << 24);
             pa = (s32 *)db_getModelTexPages(texKey);
@@ -617,7 +617,7 @@ s32 btl_loadSoundsStep(s16 battleId, s32 flags, Unk800AA24C *task) {
     gd = g_gameState->gameData;
     battle = gd->ctx.battle;
     cd = gd->cdRead;
-    if (flags & 0x8000) {
+    if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
         st->state = 2;
     }
@@ -637,7 +637,7 @@ loop:
         task->fileIds.w[2] = -1;
         task->fileIds.w[3] = -1;
         task->fileIds.h[0] = 0x201;
-        if (flags & 0x100) {
+        if (flags & BTL_STEPF_DEP_SOUNDS) {
             btl_loadSoundsStep_collect(&task->fileIds.h[4], 9, 2);
         }
         st->state = 5;
@@ -714,7 +714,7 @@ s32 btl_loadEnemyModelsStep(s32 battleId, s32 flags, Unk800AA504 *task) {
     st = task;
     battle = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
-    if (flags & 0x8000) {
+    if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
         st->state = 2;
     }
@@ -845,7 +845,7 @@ s32 btl_loadWeaponModelsStep(s32 flags, Unk800AA958 *task) {
     st = task;
     battle = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
-    if (flags & 0x8000) {
+    if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_PARTY_LOADED;
         st->state = 2;
     }
@@ -929,7 +929,7 @@ s32 btl_loadPartyModelsStep(s32 flags, Unk800AA958 *task) {
     st = task;
     battle = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
-    if (flags & 0x8000) {
+    if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_PARTY_LOADED;
         st->state = 1;
     }
@@ -949,7 +949,7 @@ loop:
         task->fileIds.w[2] = 0;
         task->fileIds.w[3] = 0;
         do {
-            *cur = btl_getPartyModelId(cur - h, flags & ~0x10);
+            *cur = btl_getPartyModelId(cur - h, flags & ~BTL_STEPF_FLIP_TRANCE);
             cur--;
         } while (cur >= h);
         st->state = 5;
@@ -1173,17 +1173,17 @@ void btl_getLinkedDepSectors(s32 fileId, s32 *outSector, s32 *outSectors) {
 }
 
 s32 btl_swapPartyModel(s32 slot, s32 begin) {
-    s32 flags = 0x17;
+    s32 flags = BTL_STEPF_FLIP_TRANCE | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
     if (begin != 0) {
-        flags = 0x8017;
+        flags = BTL_STEPF_BEGIN | BTL_STEPF_FLIP_TRANCE | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
     }
     return btl_swapPartyModelStep(slot, flags);
 }
 
 s32 btl_reloadParty(s32 begin) {
-    s32 flags = 0x207;
+    s32 flags = BTL_STEPF_SOUNDS | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
     if (begin != 0) {
-        flags = 0x8207;
+        flags = BTL_STEPF_BEGIN | BTL_STEPF_SOUNDS | BTL_STEPF_RELOAD_UNITS | BTL_STEPF_UNTESTED1 | BTL_STEPF_UNTESTED0;
     }
     return btl_reloadPartyStep(flags);
 }
@@ -1216,27 +1216,27 @@ s16 btl_loadModelsStep(s32 begin) {
     ld = (Unk800AA958 *)state - 1;
     st = state;
     if (begin != 0) {
-        btl_loadSoundsStep(battleId, 0x8100, (Unk800AA24C *)ld);
+        btl_loadSoundsStep(battleId, BTL_STEPF_BEGIN | BTL_STEPF_DEP_SOUNDS, (Unk800AA24C *)ld);
         *state = 1;
     }
     step = *state;
     if (step == 1) {
-        if (btl_loadSoundsStep(battleId, 0x100, (Unk800AA24C *)ld) == 0) {
-            btl_loadEnemyModelsStep(battleId, 0x8000, (Unk800AA504 *)ld);
+        if (btl_loadSoundsStep(battleId, BTL_STEPF_DEP_SOUNDS, (Unk800AA24C *)ld) == 0) {
+            btl_loadEnemyModelsStep(battleId, BTL_STEPF_BEGIN, (Unk800AA504 *)ld);
             (*st)++;
         }
     } else if (step == 2) {
         if (btl_loadEnemyModelsStep(battleId, 0, (Unk800AA504 *)ld) == 0) {
-            btl_loadWeaponModelsStep(0x8000, ld);
+            btl_loadWeaponModelsStep(BTL_STEPF_BEGIN, ld);
             (*st)++;
         }
     } else if (step == 3) {
-        if (btl_loadWeaponModelsStep(0x22, ld) == 0) {
-            btl_loadPartyModelsStep(0x8020, ld);
+        if (btl_loadWeaponModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_UNTESTED1, ld) == 0) {
+            btl_loadPartyModelsStep(BTL_STEPF_BEGIN | BTL_STEPF_BASE_MODEL, ld);
             (*st)++;
         }
     } else if (step == 4) {
-        if (btl_loadPartyModelsStep(0x22, ld) == 0) {
+        if (btl_loadPartyModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_UNTESTED1, ld) == 0) {
             g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
             *state = 0;
         }
@@ -1323,7 +1323,7 @@ s32 btl_getPartyModelId(s32 slot, s32 flags) {
     if (g_gameState->gameData->party[slot] == NULL) {
         return -1;
     }
-    if (!(flags & 0x20)) {
+    if (!(flags & BTL_STEPF_BASE_MODEL)) {
         unit = btl_getUnitBySlot(slot);
         if (unit != NULL) {
             tranceFlag = ((s16)unit->modelId != g_btlCharModelIds[(unit->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : CHR_KIND_NONE]) << 4;
@@ -1331,8 +1331,8 @@ s32 btl_getPartyModelId(s32 slot, s32 flags) {
     }
     idx = g_gameState->gameData->party[slot]->info.w >> CHR_INFO_KIND_SHIFT;
     idx &= 0x1F;
-    if ((flags & 0x10) != tranceFlag) {
-        if (!(flags & 0x20)) {
+    if ((flags & BTL_STEPF_FLIP_TRANCE) != tranceFlag) {
+        if (!(flags & BTL_STEPF_BASE_MODEL)) {
             idx += CHR_KIND_TRANCE;
         }
     }
@@ -1382,7 +1382,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
     st = (Unk800AA958 *)&g_gameState->gameData->ctx.battle->work->loadBuf[0x9FD8 / 4];
     state = &st->state;
     req = (Unk800AA958Req *)&g_gameState->gameData->ctx.battle->work->loadBuf[0x9FA0 / 4];
-    if (flags & 0x8000) {
+    if (flags & BTL_STEPF_BEGIN) {
         st->state = 1;
     }
     switch (*state) {
@@ -1408,7 +1408,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         }
         break;
     case 3:
-        file = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(slot, flags & ~0x10));
+        file = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(slot, flags & ~BTL_STEPF_FLIP_TRANCE));
         src = g_gameState->imgSector + file->sector;
         sz = file->endSector - file->sector;
         req->size0 = file->idHi << 11;
@@ -1420,7 +1420,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         *state = 2;
         break;
     case 5:
-        id = btl_getPartyModelId(slot, flags & ~0x10);
+        id = btl_getPartyModelId(slot, flags & ~BTL_STEPF_FLIP_TRANCE);
         model = db_lookup(st->buf, DB_GET_AT, DB_PACK, 0);
         img = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
         table = (Unk800ABBC4Tbl *)db_lookup(model, DB_GET_AT, DB_MODEL_INFO, 0);
@@ -1441,7 +1441,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
                     file_setTimPos(w, VRAM_MODEL_CLUT_X, y, x, h);
                     file_loadTim(w);
                     pages[j].tpage = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
-                    pages[j].clut = (y << 6) | 0x10;
+                    pages[j].clut = getClut(VRAM_MODEL_CLUT_X, y);
                     uvs[j].tpage = 0;
                     uvs[j].clut = h % 256 - h % 128;
                     texPos[j].w = x;
@@ -1462,7 +1462,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         unit = btl_getUnitBySlot(slot);
         if (unit != NULL) {
             /* same steps as btl_reloadPartyStep case 7 (there per party slot, with pa/pb/pc reused for the weapon) */
-            id2 = btl_getPartyModelId(slot, flags & ~0x10);
+            id2 = btl_getPartyModelId(slot, flags & ~BTL_STEPF_FLIP_TRANCE);
             ent->model->header = db_lookupRegistered(DB_GET_ADDR, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
             pa = db_getModelTexPages(k);
