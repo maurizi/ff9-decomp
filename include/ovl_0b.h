@@ -1275,8 +1275,10 @@ extern s32 g_btlbgScrollCount;
 /* Battle.cmdSlots per unit (btl_initUnitCmds: party slots first, then the enemies'). Evidence: [code] */
 #define BTL_PARTY_CMD_SLOTS 6
 #define BTL_ENEMY_CMD_SLOTS 3
-#define BTL_SOUND_BASE_BANK 0x201 /* DIR_SOUND_BANKS file btl_loadSoundsStep always reads first and loads with
-                                   * akao_loadBankRetry (no slot), before the slot banks. Evidence: [code] (runtime: pending R41, its sounds) */
+#define BTL_SOUND_SE_BANK 0x201 /* the battle's SE instrument bank (instruments 0xC0-0xDF, which akao_remapSeInstrument
+                                 * maps; the field SE banks load at the same SPU address): DIR_SOUND_BANKS file btl_loadSoundsStep
+                                 * always reads first and loads with akao_loadBankRetry (no slot), before the slot banks.
+                                 * Evidence: [code]; [runtime] R41b (one load per battle; instrument 192 keyed by Zidane's attack SE) */
 /* VRAM area of the common effect textures: FILE_BTLFX_COMMON's four 64x128 pages (btlfx_reloadCommonData); an upload
  * inside it sets BTLFX_HDR_COMMON_VRAM (btlfx_markCommonVram). Evidence: [code] */
 #define VRAM_BTLFX_COMMON_X 0x300
@@ -1298,8 +1300,9 @@ extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start *
 #define BTLFX_COMMON_TEX_BLACK_CAST   0x08 /* particle 0 of the BLACK cast emitter */
 #define BTLFX_COMMON_TEX_SUMMON_A     0x14 /* summon cast emitter's particle 0 */
 /* g_btlfxSoundSets rows (btlfx_playSoundSet): 3 common sounds each. Evidence: [code] */
-#define BTLFX_SNDSET_CAST        0 /* enemy cast emitter, and WHITE / BLACK cast emitters of casters other than Eiko */
-#define BTLFX_SNDSET_CAST_EIKO   1 /* WHITE / BLACK cast emitter when the caster's kind is g_btlfxUnitKinds[0] (CHR_KIND_EIKO) */
+#define BTLFX_SNDSET_CAST        0 /* enemy cast emitter, and WHITE / BLACK cast emitters of every other caster kind */
+#define BTLFX_SNDSET_CAST_EIKO   1 /* WHITE / BLACK cast emitter when the caster's kind is g_btlfxUnitKinds[0]: CHR_KIND_EIKO
+                                  * only, not CHR_KIND_EIKO_RACKET (that kind gets set 0). [runtime] R41b */
 #define BTLFX_SNDSET_SUMMON_CAST 2 /* summon cast emitter */
 #define BTLFX_SNDSET_BOUNCE      3 /* each reflected target (btlfx_opBounce) */
 /* Cast kind: the effect header's BTLFX_HDR_CASTER field, passed by btlfx_startCasterTask as the cast op's argument
@@ -2822,15 +2825,18 @@ typedef struct BtlBgHeader {
     u8 shadowShade; /* shadow grey level (BtlShadow.shade) */
     BtlBgScroll scrolls[1]; /* [scrollCount] (g_btlbgScrolls; their step bytes change at run time) */
 } BtlBgHeader;
-/* BtlBgHeader.id scene ids whose extra groups btlbg_draw moves by code, named by that motion. Evidence: [code]
- * btlbg_draw; [data] tools/battle_budget.py / encounter_catalog.py give the file and the encounters
- * (runtime: pending R41, which location each is). */
-#define BTLBG_SCENE_JITTER     7    /* groups 1-2 jump to random y angles (file 160: Nova Dragon, field 2756) */
-#define BTLBG_SCENE_SWING      0x44 /* group 1 swings about z (file 32: Armodullahan, Abomination, Griffin; field 1423) */
-#define BTLBG_SCENE_SWAY       0x6E /* group 1 sways about z, tilted (file 157: Ash, Veteran; field 2902) */
-#define BTLBG_SCENE_TUMBLE     0x70 /* groups 1-3 turn and bob (file 156: Ash, Veteran; field 2906) */
-#define BTLBG_SCENE_SLOW_SPIN  0xA8 /* groups turn slowly about y (file 172: Hades, Stilva, Behemoth; fields 2914, 2921) */
-#define BTLBG_SCENE_ROLL       0xAB /* group 1 rolls about z, group 2 spins tilted (file 162: Trance Kuja, field 2927) */
+/* BtlBgHeader.id scene ids whose extra groups btlbg_draw moves by code. Named by the battle and place: [data]
+ * tools/encounter_catalog.py / battle_models.py give the background file, the encounters and the field that starts
+ * them (field names from the field scripts); [runtime] R41b read g_btlbgId in each of those battles. The motion in
+ * each comment is from the code (btlbg_draw); which on-screen part moves was not isolated at runtime. */
+#define BTLBG_SCENE_NOVA_DRAGON      7    /* sky, no floor (file 160; only encounter 931 Nova Dragon, field 2756 "Red Rose/Bridge"): groups 1-2 jump to random y angles */
+#define BTLBG_SCENE_FOSSIL_ROO       0x44 /* stone tunnel (file 32: Armodullahan, Abomination, Griffin; field 1423 "Fossil Roo/Passage"): group 1 swings about z */
+#define BTLBG_SCENE_MEMORIA_STAIRS   0x6E /* stone colonnade (file 157: Ash, Veteran; field 2902 "Memoria/Stairs of Time"): group 1 sways about z, tilted */
+#define BTLBG_SCENE_MEMORIA_OBLIVION 0x70 /* tall hall (file 156: Ash, Veteran; field 2906 "Memoria/Oblivion"): groups 1-3 turn and bob */
+#define BTLBG_SCENE_MEMORIA_ORIGIN   0xA8 /* void with a red crystal mass (file 172: Hades, Stilva, Behemoth; fields 2914 "Memoria/Birth",
+                                           * 2921 "Memoria/To the Origin"): groups turn slowly about y */
+#define BTLBG_SCENE_CRYSTAL_WORLD    0xAB /* platform in space (file 162: Trance Kuja, field 2927 "Crystal World/Origin"): group 1 rolls
+                                           * about z, group 2 spins tilted */
 
 
 typedef struct {
