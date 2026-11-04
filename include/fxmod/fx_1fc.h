@@ -5,6 +5,22 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1fc effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FENRIR_MORPH_PATH       0x2 /* table: rotation / position path of the morph models (fx_0d2_morphPath) (byte-identical to fx_0d2 entry 0x9) */
+#define FX_FENRIR_UNIT_PATHS       0x6 /* table: offset table of per-unit position paths (op83) (byte-identical to fx_0d2 entry 0x8) */
+#define FX_FENRIR_BLUE_RINGS       0x9 /* emitter: white-blue gouraud rings (byte-identical to fx_0d2 entry 0x3) */
+#define FX_FENRIR_CAMERA_KEYS_3    0xA /* table: camera channel 3 keys (fxm_camChanAdd) */
+#define FX_FENRIR_DUST_CLOUD       0xB /* emitter: tan dust clouds and an orange gouraud ring */
+#define FX_FENRIR_CAMERA_KEYS_2    0xC /* table: camera channel 2 keys (fxm_camChanAdd) */
+#define FX_FENRIR_DUST_DEBRIS      0xD /* emitter: tan dust clouds and gold rock debris quads */
+#define FX_FENRIR_CAMERA_KEYS_1    0xE /* table: camera channel 1 keys (fxm_camChanAdd) */
+#define FX_FENRIR_SLICE_PATH_2     0x13 /* table: rotation / position path (fx_0d2_slicePath2) (byte-identical to fx_0d2 entry 0x28) */
+#define FX_FENRIR_UNIT_OFFSET_PATH 0x17 /* table: position path (fx_1fc_posPath; as fx_0d2 entry 0x14) */
+#define FX_FENRIR_UNIT_SCALE_PATH  0x18 /* table: vector path (fx_1fc_vecPath; as fx_0d2 entry 0x15) */
+#define FX_FENRIR_MORPH_CURVE      0x1A /* table: value path (fx_0d2_morphCurve2) (byte-identical to fx_0d2 entry 0x19) */
+#define FX_FENRIR_MORPH_CURVE_2    0x1B /* table: alternative value path (fx_0d2_morphCurve2) (byte-identical to fx_0d2 entry 0x1A) */
+
 typedef struct {
     s16 x, y, z;
 } Fx1fcKey6;

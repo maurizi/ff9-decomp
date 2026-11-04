@@ -78,10 +78,10 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 15; i >= 0; i--) {
             work->timer0[i] = 0;
         }
-        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 1);
-        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
-        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
-        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BLUE_SMOKE_COLUMN), 1);
+        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BLUE_SMOKE_TWIST), 1);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BROWN_SMOKE_COLUMN), 1);
+        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BROWN_SMOKE_TWIST), 1);
         work->scale80.vx = 0x19B0;
         work->scale80.vy = 0x19B0;
         work->scale80.vz = 0x19B0;
@@ -181,11 +181,11 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (fx_1f0_units[i].delay0 > 0) {
                     ex->btlfx_setUnitPos(i, (s16 *)&fx_1f0_units[i].startPos8);
                     if (fx_1f0_units[i].delay0 == 8) {
-                        fx_1f0_units[i].emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1f0_units[i].emitPos18);
+                        fx_1f0_units[i].emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_GREY_RINGS), (s32)&fx_1f0_units[i].emitPos18);
                         if (fx_1f0_units[i].emit28 != NULL) {
                             fx_1f0_units[i].emit28->otZ = 0x80;
                         }
-                        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_1f0_units[i].pos20);
+                        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_SPRITES), (s32)&fx_1f0_units[i].pos20);
                         if (emitter != NULL) {
                             emitter->otZ = 0x80;
                         }

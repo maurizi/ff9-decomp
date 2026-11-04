@@ -43,8 +43,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         }
         for (i = 0; i < env->targets->targetCount; i++) {
             unit = &fx_1f1_units[i];
-            unit->model18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
-            unit->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
+            unit->model18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DEATH3_RUNE_CYLINDER), 1);
+            unit->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DEATH3_RUNE_CYLINDER_2), 1);
             ex->btlfx_getUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
             setVector(&fx_1f1_units[i].rot20, 0, 0, 0);
             setVector(&fx_1f1_units[i].rot28, 0, 0, 0);
@@ -72,7 +72,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             ex->btlfx_getUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
                             unit->height8 = unit->posC.vy;
                             unit->posC.vy = 0;
-                            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f1_units[i].posC);
+                            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH3_MAGIC_CIRCLE), (s32)&fx_1f1_units[i].posC);
                             if (emitter != NULL) {
                                 emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x100);
                             }

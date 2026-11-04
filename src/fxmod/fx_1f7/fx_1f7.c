@@ -30,7 +30,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1f7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         for (i = 0; i < 6; i++) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&fx_1f7_trails[i], 0);
             fx_1f7_trails[i].count10C = 4;
             fx_1f7_trails[i].index110 = 0x20;
@@ -48,11 +48,11 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x18) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_FLASH), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_LIGHTNING), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }
@@ -103,7 +103,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         env->otZ = 0x200;
                         /* &fx_1f7_trails[i] rather than tr: cse shares the address, so its base is worth hoisting and
                          * tr becomes a giv that loop.c reduces (the original's s1). */
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), 0, NULL, frame, 0x1000, alpha, 1,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, frame, 0x1000, alpha, 1,
                                             (u8 *)&fx_1f7_trails[i], 0);
                         env->otZ = 0;
                         tr->index110 -= 4;
@@ -131,7 +131,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (sp->count8 != 0) {
                     if (--sp->delay10 < 0) {
                         env->otZ = 0x200;
-                        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 5), &fx_1f7_sparkPoints[sp->index0], NULL, 0x4000,
+                        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW), &fx_1f7_sparkPoints[sp->index0], NULL, 0x4000,
                                                 sp->frameC, 1, 0x1000, sp->offsetX4, 0);
                         env->otZ = 0;
                         if (++sp->frameC >= 6) {

@@ -5,6 +5,15 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1f0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_APPEARANCE_GREY_RINGS         0x1 /* emitter: grey / white / blue gouraud rings */
+#define FX_APPEARANCE_BLUE_SMOKE_COLUMN  0x3 /* 'so' model: open cylinder, blue smoke texture */
+#define FX_APPEARANCE_SPRITES            0x4 /* emitter: sprites, render empty (look pending) */
+#define FX_APPEARANCE_BLUE_SMOKE_TWIST   0x5 /* 'so' model: twisted cylinder, blue smoke texture */
+#define FX_APPEARANCE_BROWN_SMOKE_COLUMN 0x6 /* 'so' model: open cylinder, brown smoke texture */
+#define FX_APPEARANCE_BROWN_SMOKE_TWIST  0x7 /* 'so' model: twisted cylinder, brown smoke texture */
+
 typedef struct {
     s32 delay0; /* start delay */
     s32 timer4; /* flight countdown */

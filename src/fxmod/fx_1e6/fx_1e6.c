@@ -66,7 +66,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e6_trailOrigin.vx = work->pos4.vx;
         fx_1e6_trailOrigin.vy = work->pos4.vy;
         fx_1e6_trailOrigin.vz = work->pos4.vz;
-        fxm_posPathInit(&fx_1e6_posPath, (u8 *)ex->btlfx_getFileData(entry->file, 0xD));
+        fxm_posPathInit(&fx_1e6_posPath, (u8 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_PATH_KEYS));
         work->alphaC = 0x1000;
     } else {
         frame = entry->frame;
@@ -76,7 +76,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->alphaC -= 0x400;
             }
             fx_1e6_buildTrail(&fx_1e6_op80Trail, 0x10C, frame * 4);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xE), 0, NULL, 0, 0x1000, work->alphaC, 1, (u8 *)&fx_1e6_op80Trail, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_RED_TRAIL), 0, NULL, 0, 0x1000, work->alphaC, 1, (u8 *)&fx_1e6_op80Trail, 0);
         }
         return (s32)frame >= 0x3C;
     }
@@ -111,8 +111,8 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos24.vy = work->pos48.vy;
         work->pos24.vz = work->pos48.vz;
         work->pos24.vy = -0x3CA;
-        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
-        work->model66 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
+        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_GOLD_BALL), 1);
+        work->model66 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_GOLD_BALL_OPEN), 1);
         work->timer5C = -1;
         work->timer60 = -1;
     } else {
@@ -123,13 +123,13 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos50.vy = work->pos48.vy;
             work->pos50.vz = work->pos48.vz;
             work->pos50.vy -= 0xFA;
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos50);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos50);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos50);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos50);
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos50);
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos50);
-            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos50);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_STREAMER), (s32)&work->pos50);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_STREAMER_2), (s32)&work->pos50);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_STREAMER_3), (s32)&work->pos50);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPIRAL_STREAMER), (s32)&work->pos50);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPIRAL_STREAMER_2), (s32)&work->pos50);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPIRAL_STREAMER_3), (s32)&work->pos50);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPARKLES), (s32)&work->pos50);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->trails = (s32)fx_1e6_op81Trails0;
                 work->emit0[0]->trailSlots = 5;

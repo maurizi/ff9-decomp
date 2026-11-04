@@ -5,6 +5,27 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1ed effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CARBUNCLE_BLUE_RINGS       0x1 /* emitter: pale blue gouraud rings at each target (op 0x81) */
+#define FX_CARBUNCLE_CAMERA_KEYS_3    0x3 /* table: camera key path for fxm_camKeyAdd (target 3) (same call site as fx_0b1 entry 0x17, same kind) */
+#define FX_CARBUNCLE_CAMERA_KEYS      0x4 /* table: camera key path for fxm_camKeyAdd (target 1) (same call site as fx_0b1 entry 0xF, same kind) */
+#define FX_CARBUNCLE_CAMERA_KEYS_2    0x5 /* table: camera key path for fxm_camKeyAdd (target 2) (same call site as fx_0b1 entry 0x19, same kind) */
+#define FX_CARBUNCLE_LENS_FLARE       0xF /* emitter: orbiting white glow trail with a blue lens streak (same call site as fx_0b1 entry 0x9, same kind) */
+#define FX_CARBUNCLE_ORBIT_GLOW       0x10 /* emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0xA, same kind) */
+#define FX_CARBUNCLE_GLOW_RING        0x11 /* emitter: white glow fans and a white / pale green gouraud ring (same call site as fx_0b1 entry 0xC, same kind) */
+#define FX_CARBUNCLE_RING_BURST_2     0x12 /* emitter: cone of white, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x1, same kind) */
+#define FX_CARBUNCLE_LENS_STREAK      0x13 /* emitter: blue-white lens streak and a gouraud ring (same call site as fx_0b1 entry 0xE, same kind) */
+#define FX_CARBUNCLE_FLAME_GLINT      0x14 /* emitter: orange-blue flame-shaped glints, gouraud rings, fans (same call site as fx_0b1 entry 0x13, same kind) */
+#define FX_CARBUNCLE_RING_BURST_3     0x15 /* emitter: cone of white, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x14, same kind) */
+#define FX_CARBUNCLE_LENS_STREAK_2    0x16 /* emitter: blue-white lens streak, sparkle sprites (same call site as fx_0b1 entry 0x15, same kind) */
+#define FX_CARBUNCLE_ORBIT_GLOW_3     0x17 /* emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x24, same kind) */
+#define FX_CARBUNCLE_ORBIT_GLOW_2     0x18 /* emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x16, same kind) */
+#define FX_CARBUNCLE_RING_BURST       0x19 /* emitter: cone of white-yellow, lilac, cyan and blue-grey gouraud rings (same call site as fx_0b1 entry 0x11, same kind) */
+#define FX_CARBUNCLE_CRYSTAL_SPARKLES 0x1A /* emitter: white crystal-flake sprites and blue sparkles, fans (same call site as fx_0b1 entry 0x12, same kind) */
+#define FX_CARBUNCLE_FAN_EMITTER      0x1B /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
+#define FX_CARBUNCLE_LIGHT_BEAM       0x1D /* trail: blue-white light beam, drawn twice (same call site as fx_0b1 entry 0x10, same kind) */
+
 typedef struct {
     u8 pad0[0x180];
     BtlMotion *motion180;

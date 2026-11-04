@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1f7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLUE_SHOCKWAVE_FLASH      0x1 /* emitter: violet glow flash, white-red-blue and pink gouraud rings */
+#define FX_BLUE_SHOCKWAVE_LIGHTNING  0x2 /* emitter: violet lightning fans + spark sprites */
+#define FX_BLUE_SHOCKWAVE_GLOW_TRAIL 0x3 /* trail: violet glow strip */
+#define FX_BLUE_SHOCKWAVE_GLOW       0x5 /* particles: violet glow, 7 frames */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

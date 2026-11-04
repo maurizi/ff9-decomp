@@ -92,8 +92,8 @@ s32 fx_1ea_op80(s32 mode, Fx1eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1ea_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos8);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_FAN_EMITTER), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_SPARKLE_CIRCLE), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -165,7 +165,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale44.vx = 0x1800;
         work->scale44.vy = 0x1800;
         work->scale44.vz = 0x1800;
-        fxm_rotPosPathInit((Fx1eaPath *)&fx_1ea_rotPosPath0, (u16 *)ex->btlfx_getFileData(entry->file, 0xB));
+        fxm_rotPosPathInit((Fx1eaPath *)&fx_1ea_rotPosPath0, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_ROT_PATH_KEYS));
         for (i = 0; i < 5; i++) {
             work->modelA4[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1ea_morphModelFileIds[i]), 1);
         }
@@ -190,34 +190,34 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0xF:
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos84);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos84);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_GREEN_RINGS), (s32)&work->pos84);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_GREEN_EMBLEM), (s32)&work->pos84);
             break;
         case 0x1E:
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos84);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_WHITE_RINGS), (s32)&work->pos84);
             break;
         case 0x37:
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos84);
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos84);
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos84);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_DUST_RINGS), (s32)&work->pos84);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_ROCK_DEBRIS), (s32)&work->pos84);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_FAN_EMITTER_2), (s32)&work->pos84);
             if (work->emit0[3] != NULL) {
                 work->emit0[3]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x3C:
-            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->pos84);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_ROCK_DEBRIS_3), (s32)&work->pos84);
             break;
         case 0x46:
             work->timer9C = 8;
-            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos84);
-            work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos84);
-            work->emit0[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->pos84);
+            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_VIOLET_ENERGY), (s32)&work->pos84);
+            work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_WHITE_EMBLEM), (s32)&work->pos84);
+            work->emit0[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_ROCK_DEBRIS_4), (s32)&work->pos84);
             ex->btlfx_stopEmitter(work->emit0[0]);
             ex->btlfx_stopEmitter(work->emit0[1]);
             ex->btlfx_stopEmitter(work->emit0[2]);
             break;
         case 0x4B:
-            work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos84);
+            work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_ROCK_DEBRIS_2), (s32)&work->pos84);
             break;
         case 0x3D:
             work->timer98 = 8;
@@ -311,7 +311,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_posPathInit(&fx_1ea_ribbon0.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds0[ribbon]));
                 fx_1ea_buildTrail(&fx_1ea_ribbon0.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails0[ribbon], 0x100, fx_1ea_ribbon0.index8, fx_1ea_ribbon0.countA,
                               fx_1ea_ribbon0.width10);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, 0, fx_1ea_ribbon0.scaleE,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_DRAGON_TRAIL), 0, NULL, 0, fx_1ea_ribbon0.scaleE,
                                     fx_1ea_ribbon0.alphaC, 1, fx_1ea_ribbonTrails0[ribbon], 0);
             }
         }
@@ -326,7 +326,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_posPathInit(&fx_1ea_ribbon1.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds1[strand]));
                 fx_1ea_buildTrailRotY(&fx_1ea_ribbon1.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails1[strand], 0x88, fx_1ea_ribbon1.index8, fx_1ea_ribbon1.countA,
                               fx_1ea_ribbon1.width10, ang);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x21), 0, NULL, 0, fx_1ea_ribbon1.scaleE,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_DRAGON_TRAIL_2), 0, NULL, 0, fx_1ea_ribbon1.scaleE,
                                     fx_1ea_ribbon1.alphaC, 1, fx_1ea_ribbonTrails1[strand], 0);
                 if (strand & 1) {
                     ang += 0x555;

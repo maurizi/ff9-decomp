@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1bf_0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_BEAM_LINE      0x5 /* table: trail data for fxm_drawTrailLine, vertical light line at the strand tips and ring centre */
+#define FX_ARK_RED_FLASH_RING 0xA /* rings: red-white flat flash ring */
+#define FX_ARK_RED_RING       0x1C /* rings: white-pink-red gouraud rings (byte-identical to fx_17d_4 entry 0x3) */
+#define FX_ARK_STRAND_POINTS  0x1D /* table: offset table of the 18 strand point lists per layer (drawStrands) */
+
 /* copied */
 extern SVECTOR fx_1bf_0_particleOffsets[3];
 extern s16 fx_1bf_0_particleFileIds[16];

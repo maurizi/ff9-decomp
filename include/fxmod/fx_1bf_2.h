@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1bf_2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_MODEL_3     0x1 /* 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) */
+#define FX_ARK_MODEL_4     0x2 /* 'so' model: flat band; its texture is a placeholder with the kana labels up / left / right / down (byte-identical to fx_17d_8 entry 0x6) */
+#define FX_ARK_BACKDROP    0x3 /* table: background layers for btlfx_drawBackdrop (byte-identical to fx_17d_8 entry 0x7) */
+#define FX_ARK_MODEL_2     0x5 /* 'so' model: shallow dish with a grey cloud texture (byte-identical to fx_17d_8 entry 0x9) */
+#define FX_ARK_GOLD_SPARKS 0x7 /* emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) */
+#define FX_ARK_STARFIELD   0xB /* sprite: faint starfield drawn on screen (byte-identical to fx_17d_8 entry 0x10) */
+#define FX_ARK_MODEL_0     0xD /* 'so' model: hemisphere with an earth-globe texture (byte-identical to fx_17d_8 entry 0x1) */
+#define FX_ARK_MODEL_1     0xF /* 'so' model, empty in the tool's split of group 2 (same call site as fx_17d_8 entry 0x2) (look pending) */
+#define FX_ARK_MODEL_5     0x10 /* 'so' model, empty in the tool's split of group 2 (same call site as fx_17d_8 entry 0x4) (look pending) */
+#define FX_ARK_FIRE_RING   0x11 /* rings, empty in the tool's split of group 2 (same call site as fx_17d_8 entry 0x5) (look pending) */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */

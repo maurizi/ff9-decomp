@@ -5,6 +5,14 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1fa effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CARBUNCLE_YELLOW_RED_RINGS 0x2 /* emitter: white-yellow and white-red gouraud rings at each target (byte-identical to fx_1ee entry 0x2) */
+#define FX_CARBUNCLE_VIOLET_RINGS     0x13 /* emitter: white / pale blue / violet gouraud rings, 24 frames (byte-identical to fx_1ee entry 0x13) */
+#define FX_CARBUNCLE_GREEN_RING       0x14 /* emitter: white-green gouraud ring (byte-identical to fx_1ee entry 0x14) */
+#define FX_CARBUNCLE_CLOCK_FACE       0x17 /* emitter: clock face with Roman numerals and a blue ring glow (byte-identical to fx_1ee entry 0x17) */
+#define FX_CARBUNCLE_ORBIT_GLOW_2     0x1E /* emitter: orbiting particle + sprite, white speckled arcs (same call site as fx_0b1 entry 0x16, same kind) */
+
 typedef struct {
     s32 delay0; /* delay */
     s32 timer4; /* countdown */

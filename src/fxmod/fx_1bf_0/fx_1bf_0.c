@@ -36,7 +36,7 @@ void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 reach, s32
 
     ex = BTLFX_EXPORTS(fx_1bf_0_env);
     layer = 0;
-    data = (u8 *)ex->btlfx_getFileData(entry->file, 0x1D);
+    data = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STRAND_POINTS);
     lineWidth = (lineWidth * 3) >> 1;
     do {
         for (j = 0; j < 18; j++) {
@@ -69,7 +69,7 @@ void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 reach, s32
                         BTLFX_COPY_SVEC(&lineBase, dst);
                         BTLFX_COPY_SVEC(&lineTop, dst);
                         lineTop.vy -= 0x1000;
-                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &lineTop, &lineBase, 0, 0x800, 1, 0x32);
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineTop, &lineBase, 0, 0x800, 1, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
@@ -209,8 +209,8 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 ringTop.vx = ringPos.vx;
                 ringTop.vy = work->pos8.vy - 0x1000;
                 ringTop.vz = ringPos.vz;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &ringPos, NULL, 0xAAA, 0, 1, t);
-                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &ringPos, &ringTop, frame, t, 1, 0x20);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, 0xAAA, 0, 1, t);
+                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &ringTop, frame, t, 1, 0x20);
             }
             env->otZ = 0;
             if (frame >= 0x3E) {
@@ -229,8 +229,8 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             env->otZ = 0x10;
             t = (frame << 12) / 51;
             bright = 0x1000 - t;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &centerPos, NULL, 0xAAA, 0, 1, bright);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &centerPos, &centerTop, frame, bright, 1, (t >> 7) + 0x20);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &centerPos, NULL, 0xAAA, 0, 1, bright);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &centerPos, &centerTop, frame, bright, 1, (t >> 7) + 0x20);
             env->otZ = 0;
             rot.vx = 0x400;
             rot.vz = 0;
@@ -240,14 +240,14 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 s32 ang = (frame << 12) >> 6;
                 s32 ringSize = ex->math_sin(ang) * 5;
                 s32 ringAlpha = ex->math_cos(ang);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &centerPos, &rot, ringSize, 0, 1, ringAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, ringSize, 0, 1, ringAlpha);
             }
             if (frame >= 0x1E) {
                 offsetAlpha = (frame - 0x1E) << 9;
                 if (offsetAlpha > 0x1000) {
                     offsetAlpha = 0x1000;
                 }
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &centerPos, &rot, 0x5000, 0, 1, offsetAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, 0x5000, 0, 1, offsetAlpha);
             }
             flag = 0;
             if (frame < 0x26) {

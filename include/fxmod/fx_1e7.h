@@ -5,6 +5,16 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1e7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_WRONG_RED_SMOKE     0x1 /* emitter: red smoke puffs */
+#define FX_WRONG_RED_BURST     0x7 /* emitter: red-pink explosion burst */
+#define FX_WRONG_RED_RINGS     0x8 /* emitter: dark-to-light red gouraud rings */
+#define FX_WRONG_WHITE_TRAIL   0x11 /* emitter: white screen trail (byte-identical to entry 0x12) */
+#define FX_WRONG_WHITE_TRAIL_2 0x12 /* emitter: white screen trail (byte-identical to entry 0x11) */
+#define FX_WRONG_PATH_KEYS     0x13 /* table: position path keys for fxm_posPathInit (fx_1e7_posPath0) */
+#define FX_WRONG_PATH_KEYS_2   0x14 /* table: position path keys for fxm_posPathInit (fx_1e7_posPath) */
+
 typedef struct {
     s16 x, y, z;
 } Fx1e7Point;
