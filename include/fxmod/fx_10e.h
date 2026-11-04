@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_10e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_THROW_ROD            0x4 /* 'so' model: the thrown rod / flute / staff, drawn on its path (the same model as entry 0xC, 'so' form) (look pending) */
+#define FX_THROW_ROD_IMPACT     0x5 /* emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) */
+#define FX_THROW_ROD_AFTERIMAGE 0xC /* model: rod / flute / staff (54 polys, weapon texture), drawn as fading afterimages along the path */
+
 typedef struct {
     SVECTOR pos0; /* caster */
     SVECTOR pos8; /* target */

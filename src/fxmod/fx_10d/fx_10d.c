@@ -23,8 +23,8 @@ s32 fx_10d_op80(s32 mode, Fx10dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos20.vx = work->pos10.vx;
         work->pos20.vy = work->pos10.vy;
         work->pos20.vz = work->pos10.vz;
-        work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
-        work->model8A = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0x97, 0x3D40, 0, 0);
+        work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_THROW_CLAWS), 1);
+        work->model8A = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_THROW_CLAWS_AFTERIMAGE), 0x97, 0x3D40, 0, 0);
     } else {
         frame = entry->frame;
         if (frame < 0xA) {
@@ -78,7 +78,7 @@ s32 fx_10d_op81(s32 mode, Fx10dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_10d_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THROW_CLAWS_IMPACT), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

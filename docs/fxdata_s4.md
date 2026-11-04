@@ -1,7 +1,7 @@
 # Battle effect data names, slice 4 (fx_0f3 .. fx_128)
 
-Same scheme and tool as the pilot in `docs/fxdata.md`: 19 modules, every `btlfx_getFileData` literal in them
-named (159 module/index defines: 87 by the render, 29 data tables by the export they are passed to, 43 by
+Same scheme and tool as the pilot in `docs/fxdata.md`: 39 modules, every `btlfx_getFileData` literal in them
+named (207 module/index defines: 124 by the render, 29 data tables by the export they are passed to, 54 by
 kind with the look pending). Evidence column: `render` = named by the `tools/fxdata.py --render` contact sheet,
 `kind/usage` = a data table named by its export (backdrop layers, camera keys, ribbon paths), `kind/usage (look
 pending)` = appearance not settled by the render (open questions below).
@@ -71,6 +71,17 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_105 | 0x81 | `FX_ODIN_SUMMON_MODEL_1` | summon data entry 1: model (btlfx_registerEffectModel) |
 | fx_105 | 0x82 | `FX_ODIN_SUMMON_MODEL_2` | summon data entry 2: model (btlfx_registerEffectModel) |
 | fx_105 | 0x83 | `FX_ODIN_SUMMON_MODEL_3` | summon data entry 3: model (btlfx_registerEffectModel) |
+| fx_109 | 0x1 | `FX_THROW_RACKET` | 'so' model: the thrown racket, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10a | 0x1 | `FX_THROW_THIEF_SWORD` | 'so' model: the thrown thief sword, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10b | 0x5 | `FX_THROW_SWORD` | 'so' model: the thrown sword, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10c | 0x5 | `FX_THROW_SPEAR` | 'so' model: the thrown spear, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10d | 0x1 | `FX_THROW_CLAWS` | 'so' model: the thrown claws, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10e | 0x4 | `FX_THROW_ROD` | 'so' model: the thrown rod / flute / staff, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10f | 0x2 | `FX_THROW_FORK` | 'so' model: the thrown fork, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_110 | 0x6 | `FX_THROW_DAGGER` | 'so' model: the thrown dagger, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_112 | 0x2 | `FX_EAT_ORBIT_TRAIL` | emitter: orbiting screen trail, strip mostly dark in the render |
+| fx_115 | 0x5 | `FX_THROW_PINWHEEL` | 'so' model: the thrown pinwheel / rising sun, registered twice |
+| fx_122 | 0x1 | `FX_TENT_MODEL` | 'so' model (btlfx_registerEffectModel), probably the tent |
 
 ## Table
 
@@ -235,3 +246,51 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_106 | 0x3 | `FX_MUCUS_BUBBLE_TRAIL_2` | render | emitter: violet bubble screen trail + speck sprites (texture not in the file) |
 | fx_106 | 0x4 | `FX_MUCUS_YELLOW_RINGS` | render | emitter: yellow-green gouraud rings |
 | fx_106 | 0x5 | `FX_MUCUS_SPLASH_STREAK` | render | emitter: white streaky splash screen trail |
+| fx_109 | 0x1 | `FX_THROW_RACKET` | kind/usage (look pending) | 'so' model: the thrown racket, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_109 | 0x5 | `FX_THROW_RACKET_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_109 | 0xC | `FX_THROW_RACKET_AFTERIMAGE` | render | model: racket (76 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_10a | 0x1 | `FX_THROW_THIEF_SWORD` | kind/usage (look pending) | 'so' model: the thrown thief sword, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10a | 0x5 | `FX_THROW_THIEF_SWORD_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10a | 0xC | `FX_THROW_THIEF_SWORD_AFTERIMAGE` | render | model: thief sword (60 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_10b | 0x4 | `FX_THROW_SWORD_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10b | 0x5 | `FX_THROW_SWORD` | kind/usage (look pending) | 'so' model: the thrown sword, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10b | 0xC | `FX_THROW_SWORD_AFTERIMAGE` | render | model: sword (63 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_10c | 0x4 | `FX_THROW_SPEAR_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10c | 0x5 | `FX_THROW_SPEAR` | kind/usage (look pending) | 'so' model: the thrown spear, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10c | 0xC | `FX_THROW_SPEAR_AFTERIMAGE` | render | model: spear (67 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_10d | 0x1 | `FX_THROW_CLAWS` | kind/usage (look pending) | 'so' model: the thrown claws, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10d | 0x5 | `FX_THROW_CLAWS_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10d | 0xC | `FX_THROW_CLAWS_AFTERIMAGE` | render | model: claws (42 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_10e | 0x4 | `FX_THROW_ROD` | kind/usage (look pending) | 'so' model: the thrown rod / flute / staff, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10e | 0x5 | `FX_THROW_ROD_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10e | 0xC | `FX_THROW_ROD_AFTERIMAGE` | render | model: rod / flute / staff (54 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_10f | 0x1 | `FX_THROW_FORK_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_10f | 0x2 | `FX_THROW_FORK` | kind/usage (look pending) | 'so' model: the thrown fork, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_10f | 0xC | `FX_THROW_FORK_AFTERIMAGE` | render | model: fork (90 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_110 | 0x5 | `FX_THROW_DAGGER_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit (byte-identical in every Throw module) |
+| fx_110 | 0x6 | `FX_THROW_DAGGER` | kind/usage (look pending) | 'so' model: the thrown dagger, drawn on its path (the same model as entry 0xC, 'so' form) |
+| fx_110 | 0xC | `FX_THROW_DAGGER_AFTERIMAGE` | render | model: dagger (48 polys, weapon texture), drawn as fading afterimages along the path |
+| fx_112 | 0x1 | `FX_EAT_SPHERE` | render | model: sphere, white texture |
+| fx_112 | 0x2 | `FX_EAT_ORBIT_TRAIL` | kind/usage (look pending) | emitter: orbiting screen trail, strip mostly dark in the render |
+| fx_112 | 0x3 | `FX_EAT_SMOKE` | render | emitter: grey smoke clouds, 24 animated frames |
+| fx_112 | 0x4 | `FX_EAT_GOLD_CUTLERY` | render | emitter: golden fork, spoon, cup and spinning gold coins |
+| fx_113 | 0x1 | `FX_VIRUS_COMBO_STREAK_TRAIL` | render | emitter: screen trail spiralling in a cone, grey streak strip |
+| fx_113 | 0x2 | `FX_VIRUS_COMBO_BURST` | render | emitter: pink-yellow and white-red gouraud rings + speck sprites (texture not in the file) |
+| fx_113 | 0x3 | `FX_VIRUS_COMBO_BURST_2` | render | emitter: pink-yellow and white-red gouraud rings + speck sprites (texture not in the file) |
+| fx_113 | 0x4 | `FX_VIRUS_COMBO_BURST_3` | render | emitter: pink-yellow and white-red gouraud rings + speck sprites (texture not in the file) |
+| fx_113 | 0x5 | `FX_VIRUS_COMBO_PUFF` | render | emitter: pink-white puffs fading in a cone |
+| fx_115 | 0x4 | `FX_THROW_PINWHEEL_IMPACT` | render | emitter: white-lilac gouraud ring + sprites (render black) at the hit |
+| fx_115 | 0x5 | `FX_THROW_PINWHEEL` | kind/usage (look pending) | 'so' model: the thrown pinwheel / rising sun, registered twice |
+| fx_116 | 0x1 | `FX_ETHER_SPARKLES` | render | emitter: red and violet sparkles orbiting, white-cyan gouraud ring, red glow |
+| fx_117 | 0x4 | `FX_ECHO_SCREEN_SPARKLES` | render | emitter, one per file: Echo Screen (0x117) blue-white puff, violet specks, white-cyan gouraud ring, glow; Dead Pepper (0x120) puff, violet and red sparkles, glow; Gysahl Greens (0x121) green / violet / gold sparkles, ring, glow, leaf sprite |
+| fx_118 | 0x4 | `FX_EYE_DROPS_SPARKLES` | render | emitter: white-lilac gouraud rings, pale sparkles, blue and green glows |
+| fx_119 | 0x4 | `FX_MAGIC_TAG_GLOW` | render | emitter: blue-white glow sprite + a fan element |
+| fx_11a | 0x1 | `FX_VACCINE_GLOW` | render | emitter: white-lilac gouraud ring, green glow sprite + a fan element |
+| fx_11b | 0x1 | `FX_ANNOYNTMENT_SPARKLES` | render | emitter: blue-white puff, pale sparkles, white-cyan gouraud ring, green glow |
+| fx_11f | 0x1 | `FX_DARK_MATTER_YELLOW_RINGS` | render | emitter: yellow and pink gouraud rings + a fan element |
+| fx_11f | 0x2 | `FX_DARK_MATTER_VIOLET_RINGS` | render | emitter: blue and violet gouraud rings |
+| fx_11f | 0x3 | `FX_DARK_MATTER_BOLT_TRAIL` | render | emitter: 3D trail with a violet lightning strip (+ a sprite, render black) |
+| fx_11f | 0x4 | `FX_DARK_MATTER_BOLT_RINGS` | render | emitter: yellow-white gouraud rings, rings textured with violet lightning, pink rings |
+| fx_122 | 0x1 | `FX_TENT_MODEL` | kind/usage (look pending) | 'so' model (btlfx_registerEffectModel), probably the tent |
+| fx_122 | 0x5 | `FX_TENT_SPARKLES` | render | emitter: green and violet sparkles orbiting, white-cyan gouraud ring, glow |
+| fx_124 | 0x1 | `FX_AMETHYST_YELLOW_RINGS` | render | emitter: white-yellow to navy gouraud rings spiralling + sprites (render black); the same file plays every gem item |

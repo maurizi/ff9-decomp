@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_11f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DARK_MATTER_YELLOW_RINGS 0x1 /* emitter: yellow and pink gouraud rings + a fan element */
+#define FX_DARK_MATTER_VIOLET_RINGS 0x2 /* emitter: blue and violet gouraud rings */
+#define FX_DARK_MATTER_BOLT_TRAIL   0x3 /* emitter: 3D trail with a violet lightning strip (+ a sprite, render black) */
+#define FX_DARK_MATTER_BOLT_RINGS   0x4 /* emitter: yellow-white gouraud rings, rings textured with violet lightning, pink rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

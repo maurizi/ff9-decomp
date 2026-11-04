@@ -5,6 +5,10 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_11b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ANNOYNTMENT_SPARKLES 0x1 /* emitter: blue-white puff, pale sparkles, white-cyan gouraud ring, green glow */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

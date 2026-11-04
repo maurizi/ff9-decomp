@@ -63,7 +63,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->timer48 = -1;
         work->timer4A = -1;
         ex->btlfx_initEffModels(fx_122_effModels, 1);
-        work->model4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->model4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_TENT_MODEL), 1);
     } else {
         frame = entry->frame;
         ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, work->model4C);
@@ -92,7 +92,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->pos40.vy = work->posC.vy;
                 work->pos40.vz = work->posC.vz;
                 work->pos40.vy -= 0xC8;
-                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos40);
+                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TENT_SPARKLES), (s32)&work->pos40);
                 if (work->emit0 != NULL) {
                     work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
