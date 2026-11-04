@@ -2741,12 +2741,12 @@ void btl_applyCalcResult(BtlCalc *calc) {
         id = calc->cmd->subNo | (calc->cmd->cmdNo << 8);
         if ((caster->flags & BTL_UNIT_PARTY) && !(target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
             if ((((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(target->flags))->flags >> BTL_ENEMYF_SCRIPT_DEATH_BIT) & 1) && target->hp == 0) {
-                evt_battleTrigger(0x36, who, caster->unitBit, id);
+                evt_battleTrigger(BTL_CMD_ENEMY_DEATH, who, caster->unitBit, id);
             } else if (target->hp != 0 && calc->cmd->cmdNo < BTL_CMD_TABLE_COUNT) {
-                evt_battleTrigger(0x35, who, caster->unitBit, id);
+                evt_battleTrigger(BTL_CMD_ENEMY_COUNTER, who, caster->unitBit, id);
             }
         }
-        evt_battleTrigger(0x37, who, caster->unitBit, id);
+        evt_battleTrigger(BTL_CMD_ENEMY_REACT, who, caster->unitBit, id);
     }
 }
 

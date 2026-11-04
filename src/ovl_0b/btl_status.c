@@ -1065,12 +1065,12 @@ void btl_setUnitBrightness(BtlUnit *unit, u32 brightness) {
     if (brightness < 0x20) {
         i = 0;
         bg = btlbg_getHeader();
-        btl_setModelAbr(unit->model, 0x60);
+        btl_setModelAbr(unit->model, TPAGE_ABR(3));
         for (; i < unit->model->header->meshCount; i++) {
             btl_setMeshRgb(unit->model, i, (s32)((bg->lightR * brightness) << 11) >> 16, (s32)((bg->lightG * brightness) << 11) >> 16, (s32)((bg->lightB * brightness) << 11) >> 16);
         }
         if (unit->weaponModel != NULL) {
-            btl_setModelAbr(unit->weaponModel, 0x60);
+            btl_setModelAbr(unit->weaponModel, TPAGE_ABR(3));
             for (i = 0; i < unit->weaponModel->header->meshCount; i++) {
                 btl_setMeshRgb(unit->weaponModel, i, (s32)((bg->lightR * brightness) << 11) >> 16, (s32)((bg->lightG * brightness) << 11) >> 16, (s32)((bg->lightB * brightness) << 11) >> 16);
             }

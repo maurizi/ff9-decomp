@@ -472,7 +472,7 @@ void btl_updateAtb(void) {
             } else {
                 btlui_queueMenuUnit(unit);
             }
-        } else if (evt_battleTrigger(0x2F, unit->unitBit, 0, 0) != 0) {
+        } else if (evt_battleTrigger(BTL_CMD_ENEMY_TURN, unit->unitBit, 0, 0) != 0) {
             unit->cmdIssued = 1;
         }
     }

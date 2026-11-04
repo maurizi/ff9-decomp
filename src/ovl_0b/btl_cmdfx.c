@@ -16,7 +16,7 @@ void btl_setShadowSize(BtlUnit *unit, s32 width, u32 depth) {
 
 void btl_setUnitFade(BtlUnit *unit, s32 level) {
     BtlBgHeader *bg = btlbg_getHeader();
-    btl_setModelAbr(unit->model, 0x60);
+    btl_setModelAbr(unit->model, TPAGE_ABR(3));
     btl_fillModelRgb(unit->model, (bg->lightR * level) << 11 >> 16, (bg->lightG * level) << 11 >> 16, (bg->lightB * level) << 11 >> 16);
     if (level == 0) {
         unit->flags |= BTL_UNIT_HIDDEN;

@@ -1552,14 +1552,14 @@ void btlfx_setUnitBrightness(BtlUnit *unit, s32 level) {
         shade = level - 0x80;
         btl_setModelRgb(unit->weaponModel, shade, shade, shade);
         if (level < 0x46) {
-            btl_setModelAbr(unit->weaponModel, 0x20);
+            btl_setModelAbr(unit->weaponModel, TPAGE_ABR_ADD);
         }
     }
     if ((*(u32 *)unit->model & (BTL_MODEL_OFFSCREEN | BTL_MODEL_DRAWN)) == BTL_MODEL_DRAWN) {
         shade = level - 0x80;
         btl_setModelRgb(unit->model, shade, shade, shade);
         if (level < 0x46) {
-            btl_setModelAbr(unit->model, 0x20);
+            btl_setModelAbr(unit->model, TPAGE_ABR_ADD);
         }
     }
 }
@@ -1729,7 +1729,7 @@ s32 btlfx_resetIdleMotion(s32 mode, s32 unitId) {
         btlfx_resetIdleMotion(0, BTLFX_UNIT_CASTER);
         ret = 1;
     } else {
-        btlfx_playUnitMotion(BTLFX_UNIT_CASTER, 0x1C);
+        btlfx_playUnitMotion(BTLFX_UNIT_CASTER, BTL_MOTION_CAST_END);
     }
     return ret;
 }

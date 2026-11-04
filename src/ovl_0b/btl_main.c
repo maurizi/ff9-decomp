@@ -1191,10 +1191,10 @@ s32 btl_reloadParty(s32 begin) {
 void btl_unloadPartyModels(void) {
     Battle *battle = g_gameState->gameData->ctx.battle;
     BtlFiles *btlFiles = battle->files;
-    btl_unregisterFiles(btlFiles->weaponFiles, 3);
-    btl_unregisterFiles(btlFiles->partyModels, 3);
-    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->partyModels, 3);
-    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->weaponFiles, 3);
+    btl_unregisterFiles(btlFiles->weaponFiles, PARTY_SIZE - 1);
+    btl_unregisterFiles(btlFiles->partyModels, PARTY_SIZE - 1);
+    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->partyModels, PARTY_SIZE - 1);
+    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->weaponFiles, PARTY_SIZE - 1);
     battle->flags &= ~BTL_FLAG_PARTY_LOADED;
 }
 
