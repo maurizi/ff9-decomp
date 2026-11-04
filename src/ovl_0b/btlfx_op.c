@@ -1198,9 +1198,9 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 camX, s32 ca
     g_btlfxBgTopView.t[0] = -camX;
     g_btlfxBgTopView.t[1] = camY;
     g_btlfxBgTopView.t[2] = camZ + 0x2900;
-    btlbg_setLayerMask(2);
+    btlbg_setLayerMask(BTLBG_SHOW_FRONT);
     g_btlfxEnv->prim = btlbg_draw(&g_btlfxBgTopView, g_gameState->gameData->ctx.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
-    btlbg_setLayerMask(0xF);
+    btlbg_setLayerMask(BTLBG_SHOW_ALL);
     EnterCriticalSection();
     DrawOTagEnv(ot, &envs->env);
     PutDrawEnv(&envs->prev);

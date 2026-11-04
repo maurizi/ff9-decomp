@@ -1169,20 +1169,34 @@ void btlbg_setLayerMask(s32);
 extern s32 g_btlbgId;
 extern s32 g_btlbgSkySpeed;
 extern struct BtlBgHeader *g_btlbgHeader;
-extern s32 g_btlbgLayerMask;
+extern s32 g_btlbgLayerMask; /* BTLBG_SHOW_* */
+/* BtlBgRec.layer: where btlbg_drawRecord sorts the record, and g_btlbgLayerMask: which ones btlbg_draw draws.
+ * Evidence: [code] btlbg_draw, btlbg_drawRecord, btlfx_drawBgOffscreen (draws only BTLBG_SHOW_FRONT) */
+#define BTLBG_LAYER_SCENE 0 /* in the scene OT, depth sorted with the units */
+#define BTLBG_LAYER_FRONT 2 /* background OT, front (index 0) */
+#define BTLBG_LAYER_MID   4 /* background OT, depth sorted */
+#define BTLBG_LAYER_SKY   8 /* background OT, back (0x3FC); turns with g_btlbgSkyAngle */
+#define BTLBG_SHOW_SCENE  0x1
+#define BTLBG_SHOW_FRONT  0x2
+#define BTLBG_SHOW_MID    0x4
+#define BTLBG_SHOW_SKY    0x8
+#define BTLBG_SHOW_ALL    (BTLBG_SHOW_SCENE | BTLBG_SHOW_FRONT | BTLBG_SHOW_MID | BTLBG_SHOW_SKY)
 extern s32 g_btlbgSkyAngle;
 extern struct BtlUnit9C50 *g_btlbgTexAnims;
 extern s32 g_btlbgSkyOwnProj;
 /* battle background: texture scroll entry (g_btlbgScrolls) */
 typedef struct {
     s16 uvOfs; /* the uv pair it moves, offset from the first group (Battle11C0.bgData) */
-    u8 mode;   /* 0 = wrap (step back period x (du, dv)), 1 = bounce (negate du, dv) */
+    u8 mode;   /* BTLBG_SCROLL_* */
     u8 du;
     u8 dv;
     u8 step;   /* frames since the last wrap/bounce (written at run time) */
     u8 period; /* frames per cycle */
     u8 pad7;
 } BtlBgScroll;
+/* BtlBgScroll.mode: what happens after period frames (btlbg_draw). Evidence: [code] */
+#define BTLBG_SCROLL_WRAP   0 /* step back period x (du, dv) */
+#define BTLBG_SCROLL_BOUNCE 1 /* negate du, dv */
 
 /* battle background: group header (0x18 bytes), followed by its records; offsets are from the group, groups
  * follow each other (docs/battle-backgrounds.md). Members marked "data" are not read by the code. */
@@ -1204,7 +1218,7 @@ typedef struct {
 /* battle background: record (draw batch) of a group, 0x10 bytes; offsets are from the record itself
  * (docs/battle-backgrounds.md) */
 typedef struct {
-    u16 layer; /* 8 sky (turns with g_btlbgSkyAngle), 4, 2, 0 (btlbg_draw, g_btlbgLayerMask bits 8/4/2/1);
+    u16 layer; /* BTLBG_LAYER_*: 8 sky (turns with g_btlbgSkyAngle), 4, 2, 0 (btlbg_draw, g_btlbgLayerMask BTLBG_SHOW_*);
                 * btlbg_drawRecord: 0 = scene OT, index from the depth sum << g_btlbgOtShift; else the
                 * background OT: bit 3 = back (0x3FC), bit 1 = front (0), otherwise sum >> 6 (quads) /
                 * >> 4 (triangles) << 2 */

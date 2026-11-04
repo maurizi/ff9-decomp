@@ -27,7 +27,7 @@ void btlbg_init(BtlBgHeader *header, BtlUnit9C50 *texAnims) {
         }
     }
     g_btlbgScrollCount = g_btlbgHeader->scrollCount;
-    btlbg_setLayerMask(0xF);
+    btlbg_setLayerMask(BTLBG_SHOW_ALL);
     g_btlbgSkyAngle = 0;
     g_btlbgRainCount = g_gameState->gameData->rainCount;
     if (g_btlbgRainCount >= 0x1F) {
@@ -81,11 +81,11 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
             g_btlbgScrolls[i].step++;
             if (g_btlbgScrolls[i].step >= g_btlbgScrolls[i].period) {
                 switch (g_btlbgScrolls[i].mode) {
-                case 0:
+                case BTLBG_SCROLL_WRAP:
                     ((u8 *)uvAddr)[0] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].du;
                     ((u8 *)uvAddr)[1] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].dv;
                     break;
-                case 1:
+                case BTLBG_SCROLL_BOUNCE:
                     g_btlbgScrolls[i].du = -g_btlbgScrolls[i].du;
                     g_btlbgScrolls[i].dv = -g_btlbgScrolls[i].dv;
                     break;
@@ -108,7 +108,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
         rec = (BtlBgRec *)((u8 *)grp + grp->recOfs);
         for (i = 0; i < grp->recCount; rec++, i++) {
             switch (rec->layer) {
-            case 8:
+            case BTLBG_LAYER_SKY:
                 if (!done) {
                     g_btlbgSkyAngle += g_btlbgSkySpeed;
                     rot.vy = g_btlbgSkyAngle >> 3;
@@ -117,7 +117,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
                     MulMatrix2(view, &mat);
                     SetRotMatrix(&mat);
                 }
-                if (g_btlbgLayerMask & 8) {
+                if (g_btlbgLayerMask & BTLBG_SHOW_SKY) {
                     if (g_btlbgSkyOwnProj != 0) {
                         SetTransMatrix(&skyMatrix);
                         SetGeomScreen(0x200);
@@ -128,18 +128,18 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
                     }
                 }
                 break;
-            case 4:
-                if (g_btlbgLayerMask & 4) {
+            case BTLBG_LAYER_MID:
+                if (g_btlbgLayerMask & BTLBG_SHOW_MID) {
                     out = btlbg_drawRecord(rec, out, (u32 *)bgOt, grp);
                 }
                 break;
-            case 2:
-                if (g_btlbgLayerMask & 2) {
+            case BTLBG_LAYER_FRONT:
+                if (g_btlbgLayerMask & BTLBG_SHOW_FRONT) {
                     out = btlbg_drawRecord(rec, out, (u32 *)bgOt, grp);
                 }
                 break;
-            case 0:
-                if (g_btlbgLayerMask & 1) {
+            case BTLBG_LAYER_SCENE:
+                if (g_btlbgLayerMask & BTLBG_SHOW_SCENE) {
                     out = btlbg_drawRecord(rec, out, ot, grp);
                 }
                 break;
