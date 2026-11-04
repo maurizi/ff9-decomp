@@ -3922,3 +3922,143 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
 - confidence: high for SHAKE, ZOOM, PAUSE (both bits), SWAY/IDLE_SWAY behaviour, ACCEL behaviour, SAVE_VIEW,
   PICK_VARIANT, RETURN, KEEP_CAMERA, CUE (all measured from patched or natural scripts); the cast-end release of PAUSE
   is code-only.
+
+## R41 runtime pass: pending constant lists  (status: proposed)
+Lists: docs/wip/literals_runtime.md, docs/wip/weak_names_runtime.md, docs/wip/constants_runtime_main.md,
+docs/wip/constants_runtime_overlays.md (2026-11-04). Redux, LuaJIT off. Battle runs: `build/rt3/run3.py` from
+`disc3_malboro_lv99_calm` (`--patch CMD,AB,TGT` rewrites Zidane's first Attack; outputs `build/rt3/r41_*.json` / `.png`).
+Sprite identification: a Lua exec breakpoint on `pen_drawSprite` (a0) and `ui_drawSprite` (a3) rewriting one sprite id
+to a button glyph (4 Cross, 5 Circle, 6 Square), then a screenshot. New state: disc 3 `r41_wm_near_airship` (walker
+teleported under the Hilda Garde 3, Hadris; boarding with Cross did not trigger there).
+
+### constants_runtime_main.md / constants_runtime_overlays.md: already settled
+Both lists were answered by "Constants runtime pass (2026-10-31)" (applied) and the leftovers are now named from that
+evidence or deliberately left: FLD_OBJ_COLOR_WAIT, FLD_EXT_BUILT_UNREAD, GD_FLD_TAKEOVER, WM_ACTOR_*, WM_MOVE_* (boat /
+Invincible confirmed in R37b). Still literal: GameState.mode 5 / 6 (no writer stores them) and BgEntry.type 0x40 (no
+writer reached). Nothing new was run for these lists.
+
+### literals_runtime.md: battle motion slots (ovl_0b BtlUnit.motions)
+Method: `disc3_malboro_lv99_calm` + calm pokes, Zidane's `model->motion` (0x80093BC4) := `motions[n]` (table
+0x80108808) and `obj->frame` (0x80077F3E) := 0, screenshots 3/9/19/34/64 vsyncs later (without the frame reset
+btl_updateUnitModel's frame >= frameCount check sends short motions straight back to idle through btl_setIdleMotion).
+Frame counts (BtlMotion+2) of Zidane's slots: 4 = 1, 8 = 15, 0x12 = 30, 0x13 = 10, 0x1A = 10, 0x1B = 12, 0x1C = 18,
+0x1D = 7, 0x1E = 8, 0x1F = 18, 0x20 = 6. Natural sequences: `run3.py r41_blkmag --patch 0x16,0x19,0x10 --trace
+btlfx_playUnitMotion` and `run3.py r41_item --patch 0x0E,0xEC,0x01` (Potion on Vivi, "150" heal shown).
+- **slot 8 → `BTL_MOTION_KO_FALL`. CONFIRMED.** Zidane kneels, slumps and ends lying on the floor (frame 64); slot 4
+  (BTL_MOTION_KO) is the 1-frame lying pose that follows. Matches btl_updateKo (8 from weak stance, after
+  IDLE_TO_WEAK otherwise) and the revive check (`KO` or `8` → GET_UP). high.
+- **slot 0x12 → `BTL_MOTION_VICTORY`, 0x13 → `BTL_MOTION_VICTORY_LOOP`. CONFIRMED.** 0x12: crouch, leap, stand with the
+  dagger raised (30 frames); 0x13: short loop holding the dagger overhead (10 frames). Code: 0x12 when Character.info
+  bit 10 (`info.b.victoryPose`) at the victory, 0x13 each time the current motion ends in BTL_PHASE_EXIT. high.
+- **slot 0x20 (32) → `BTL_MOTION_READY_TO_IDLE`. CONFIRMED.** Played by btlfx_opReturnHome once the caster is home
+  (f3984 black magic, f4504 item) and by btl_cmd for a READY unit whose command is dropped or flushed; 6 frames, short
+  lowering of the guard back to the idle stance. high.
+- **0x1A / 0x1B / 0x1C / 0x1F: CONFIRMED** (names stay). Black magic: 0x1D f3532 (btlfx_stepBack), 0x1A f3560,
+  0x1B f3599, 0x1C f3651 (btlfx_opCast), 9 READY f3723, 0x1E f3952 (btlfx_moveUnitHome), 0x20 f3984. Item: 0x1F f4296,
+  9 f4368, 0x20 f4504. high.
+- **slot 0x1D → `BTL_MOTION_STEP_FORWARD`, 0x1E → `BTL_MOTION_STEP_HOME`. CONFIRMED; and btlfx_stepBack is misnamed.**
+  btlfx_stepBack plays 0x1D and moves the caster from home to btlfx_pointAhead(home, rot, 400), i.e. 400 units towards
+  the enemies (screenshots `build/rt3/r41_blkmag_11..13.png`: Zidane stands left of his home, then walks back right
+  during 0x1E). Proposed rename `btlfx_stepBack` → `btlfx_stepForward`. Note these are the same slots as
+  `BTL_MOTION_CHANGE_ROW + row` (29 + 0 = 0x1D, 29 + 1 = 0x1E): the Change command reuses them, so CHANGE_ROW can be
+  defined as BTL_MOTION_STEP_FORWARD. high.
+
+### literals_runtime.md: menu sprites (main g_uiSprites)
+- **ATE prompt 0x53 / 0x54 / 0x80-0x82 / 0x1F-0x21: CONFIRMED.** `r36_lindblum_552_ate` (disc 1, g_atePromptMode 1):
+  even 44-tick phase "PRESS [SELECT] TO SEE ATE", odd phase "ACTIVE TIME EVENT" in blue/white. Swaps: 0x53 → Cross
+  replaces "PRESS", 0x54 → Circle replaces "TO SEE ATE"; 0x81 → Cross replaces "TIME" (0x80 "ACTIVE", 0x82 "EVENT").
+  Mode 2: grey "ACTIVE TIME EVENT" blinking; 0x20 → Cross replaces "TIME", so 0x1F / 0x20 / 0x21 = grey ACTIVE / TIME /
+  EVENT. Proposed `UI_SPRITE_ATE_ACTIVE 0x80`, `_ATE_TIME 0x81`, `_ATE_EVENT 0x82`, `UI_SPRITE_ATE_PRESS 0x53`,
+  `UI_SPRITE_ATE_TO_SEE 0x54`, `UI_SPRITE_ATE_ACTIVE_GREY 0x1F` (+1 TIME, +2 EVENT) (or the R41 main list's
+  `UI_SPRITE_ATE_TITLE` / `_TITLE_GREY` bases + 0..2). high.
+- **UI_SPRITE_HELP_TAG 0xB7: CONFIRMED.** `disc3_malboro_lv99_help`: the "HELP" label on the help window's top edge
+  (same style as the "COMMAND" tag); swapped to Cross the label becomes a Cross glyph, once per battle frame. Name fits.
+  high.
+- **UI_SPRITE_NEW 0xB5 / UI_SPRITE_NEW_BLINK 0xB6: CONFIRMED, names slightly off.** `menu_items` → Key: every unseen key
+  item (GameData+0x774 2-bit pairs, bit 1 = seen) shows a yellow "!" badge followed by the word "NEW". Swaps: 0xB5 →
+  Cross replaces the "!" badge, 0xB6 → Cross replaces "NEW". The "NEW" word alternates white / grey (blink argument
+  `g_menuFrame % 48 >= 16`). Proposed `UI_SPRITE_NEW_MARK 0xB5` ("!" badge) and `UI_SPRITE_NEW_TEXT 0xB6` ("NEW", drawn
+  with the blink style), or keep the names with the corrected comments. high.
+
+### literals_runtime.md: world map (ovl_0c)
+- **Topographies 0x36-0x39: water depths, PARTLY CONFIRMED; 0x30 / 0x33 not found.** `r37b_wm_boat_entry`, sailing up
+  then up-left, the boat type's cellAttr (g_worldActorTypeInfo[8] + 8) went 0x35 (31 samples) → 0x36 (5) → 0x39 (4),
+  i.e. shallows → deeper water → open sea; screenshot: the Blue Narciss on open sea off a grassy coast. In `cpass_wm_hadris`
+  `build/verify/topofind.py` found 0x36 / 0x37 polygons at y 0 forming the lake inside the Hadris crater (walker
+  teleported there stands on the blue water surface) and 0x38 / 0x39 at y 0 along the coast (0x39 is the most common
+  topography of the loaded blocks: 1594 polygons). g_worldTerrainHeightOffsets read at runtime (s16 [class][9], index
+  forest, 0x35, 0x36, 0x37, 0x38, 0x39, 0x33, 0x30, other): class 1 (walker) 400, 150, 250, 200, 450, 450, 300, 300, 0;
+  class 2 0, 300 x7, 0. So all eight are water the walker sinks into (0x38/0x39 deepest). Proposed
+  `WM_TOPO_WATER 0x36` (inland lake / water beyond the shallows), `WM_TOPO_WATER_2 0x37`, `WM_TOPO_SEA_2 0x38`,
+  `WM_TOPO_SEA 0x39`, and 0x30 / 0x33 `WM_TOPO_WATER_3` / `_4` (code + table only). medium; the two
+  missing ones need a scan of other areas (topofind from more teleport spots).
+- **w_musicGetID SE numbers: PARTLY.** Observed: 39 (SE_CURSOR) from the moogle's choice window (r37b_wm_moogle_choice,
+  w_frameSetParameter case 20); 38 = 0x5DB on group 0 (wm_seFadeVolume every 6 frames while the Hilda Garde 3 flies,
+  r37b_wm_hg3_entry); 24 (boat loop) below. No script requested 0, 2, 3, 4, 30-35, 37, 40-42 in walking, chocobo
+  choice, airship navi / "Go to" prompt, dig and boat runs (300 frames each). They are world-script requests
+  (w_frameSetParameter "SE Play"); naming them needs the scripted events that play them plus `audio record`.
+  Still unknown.
+- **SE group masks 0x8000 / 0x800: CONFIRMED for the vehicle loops.** `r37b_wm_boat_entry` sailing, trace
+  wm_soundCommand: 50x (0xD301, 0x5D9, 0x8000) and 50x (0xD301, 0x5DA, 0x4000) from wm_seFadeVolume: the two sounds
+  of a two-sound entry get 0x8000 and 0x4000 (the mask shifted right per sound). The airship water loop (38) uses
+  group 0. No mode change stops a loop by group: w_movementChange only stops the boat loop by id (old mode
+  WM_MOVE_BOAT), and wm_stopAllSe stops numbers 0-6 and 20-25 each with its own mask (code). Proposed
+  `WM_SE_GROUP_VEHICLE 0x8000` (+ 0x4000 for the second sound) and `WM_SE_GROUP_AMBIENT 0x800` (+ 0x400), medium for the
+  ambient one (code only).
+
+### literals_runtime.md: battle UI TEXT_PAD_BTN + n
+- **CONFIRMED by runtime data: the offset follows TEXT_BTN_* order, not PAD_SLOT_*.** Disc 1 `menu_items`:
+  g_msgIconSprites (0x8006E67C) bytes 05 04 07 06 08 0A 09 0B 11 12 (Circle, Cross, Triangle, Square, L1, R1, L2, R2,
+  START, SELECT), g_buttonSprites (0x8006BC18) 4 5 7 6 8 10 9 11, GameState.config 0x19AC0 (CFG_BIT_CONTROLLER clear),
+  padMap 0x76543210. With the default config TEXT_PAD_BTN + 0..7 draws Circle, Cross, Triangle, Square, L1, R1, L2, R2
+  (msg_renderText swaps 0/1 into PAD_SLOT order and back; text_buildCode passes PAD_SLOT_CIRCLE for +0). So the cases
+  can't read `TEXT_PAD_BTN + PAD_SLOT_*`; use `TEXT_PAD_BTN + (TEXT_BTN_x - TEXT_BTN_CIRCLE)` or names
+  `TEXT_PAD_CIRCLE 0x60` .. `TEXT_PAD_R2 0x67`. A message using the codes was not rendered. high (tables), medium
+  (rendering).
+
+### weak_names_runtime.md
+1. **ovl_0c g_worldLowBuffer → `g_worldDataArea` (0x80100800 = end of the world heap).** g_worldHeapTop reads 0x800DC000
+   and wm_heapInit reserves 0x24800, which ends exactly at 0x80100800. `cpass_wm_airship9` flying: write watch over
+   0x80100800-0x80138800 (`r41_low`, 97745 hits in 400 frames) by wm_drawMesh / wm_calcBoneMatrices (via
+   wm_drawActorModel) and wm_depthCueClut (wm_setActorFog) in 0x8011E800-0x80125BE0; read watch (`r41_lowr`) by
+   wm_projectMesh / wm_drawMesh (actor model meshes at 0x80108C7C-0x8010A3C8) and evt_runExpr / evt_popAssign (the world
+   event script bytes 0x8011761D-0x8011C8F3). 0x80100800 itself starts with 4-bit image data. So the range holds the
+   loaded world data (actor models, the world script, images). Proposed `g_worldDataArea` (pointer still never read).
+   medium (who loads it there not traced).
+2. **ovl_0c g_worldCameraInitFlag / g_worldMoveInitWord / g_worldSysInitFlag: CONFIRMED write-only.** Disc 1, walked
+   out of `field_ice_300` onto world 9000 with log breakpoints (write and read) on all three, ~1200 frames incl.
+   walking: writes only from CD_getsector (the overlay load, f5897) and once each from wm_initCamera+0x88,
+   wm_initMovement+0xA4, wm_systemInit+0xF0 (f6120); 0 reads. Also 0 reads / writes in 300-frame runs of
+   `cpass_wm_hadris`, `cpass_wm_airship9`, `r37b_wm_chocobo_ride` (walk, Triangle menu, Circle). Names fit. high.
+3. **main g_menu.result: CONFIRMED only cleared.** Write watch on 0x80077DCC while closing `menu_main`,
+   `menu_shop_weapons`, `menu_name_entry`, `menu_save`, `menu_chocograph`, `menu_card`, `menu_party_select` (Circle x3,
+   Cross, Circle; 300 frames each): 0 writes. From `field_dali_inn`, Triangle → main menu: 1 write, menu_doOpen+0x64
+   storing 0. menu_getResult 0 calls. Name fits. high.
+4. **ovl_15 g_messagesFrameWord / g_theEndInitWord: CONFIRMED write-only.** Disc 4, `tools/rt/bj_force.py` variant
+   (scratch) with write/read log breakpoints: THE END path: g_theEndInitWord written once (ending_theEndInit+0xC0,
+   f2086), 0 reads in 1500 frames. Forcing ending_messages (ending_main state 1, "never reached" naturally) by
+   setting pc = 0x800AD7DC at the ending_playMovie break: ending_messagesInit once, ending_messagesSwap 1015 times,
+   g_messagesFrameWord 1016 writes (messagesInit+0x3C, messagesSwap+0xFC), 0 reads. high.
+5. **fx_0b8_scrollInitWord / fx_1be_scrollInitWord: CONFIRMED write-only.** Atomos full (`--patch 0x10,0x37,0x10`,
+   support poke 0x8008B31B |= 8, btlfx_start 0xB8): 0x801EC1B0 written once (module 0x801E7960) and read 0 times in
+   2000 frames. Atomos short (btlfx_start 0x1BE): 0x801E95D0 written once (0x801E7A44), 0 reads in 1200 frames. high.
+6. **fx_17d_4_buf400 / fx_1bf_0_buf400: REFUTED "unused": the start of each is live trail storage.** Group residency
+   from `btlfx_runFrame` dumps of the module header word. Ark full (`r41_ark4`, 4000 frames): fx_17d_4 resident
+   f28649-f30157; in that window writes to 0x801EB25C+: op80 mode 1 byte 0 (0x801E8258, once), btlfx_pushTrailPoint
+   (ra 0x800D1574) 13x into 0x801EB26C-0x801EB2D0, and module code 0x801E7A8C / 0x801E7A98 (fx_17d_4_drawStrands,
+   btlfx_drawTrail state of the last strands: strandTrails[17] = 0x801EB1EC + layer * 36 runs into it) 676x into
+   0x801EB25C-0x801EB284. Ark short (first-use bits GameData+0x55E set first, `r41_arks2`): fx_1bf_0 resident
+   f32147-f32857: op80 byte 0 once, module 0x801E7A70 / 0x801E7A7C 676x into 0x801EA1FC-0x801EA224. The rest of the
+   0x400 bytes was written only while other groups were resident (their own model buffers). Proposed
+   `fx_17d_4_strandTrailTail` / `fx_1bf_0_strandTrailTail` (spill area of the strand trail buffers, not a separate
+   buffer), remove "no other access" from the comments. high.
+   Side note: Ark without the first-use bits plays the full 0x17D modules even when btlfx_start gets 0x1BF.
+7. **ovl_0b btlui_perfMark: CONFIRMED.** `disc3_malboro_lv99_calm`, `trace btlui_perfMark --frames 60`: 120 calls, 60
+   with a0 0xBA from btlui_vsync+0xBC and 60 with 0xBB from btlui_vsync+0xFC; no other arguments. It is called from
+   the VSync callback, so twice per vsync (bracketing the UI frame), not per battle frame. high.
+8. **main pad_onStartPressed: CONFIRMED.** `menu_shop_weapons`, Cross into Buy, Start: 1 call per press from
+   shopBuy_update+0x20 [ovl_3c] (2 presses → 2 hits); holding Start 150 frames → 1 hit (no auto-repeat). From
+   `field_dali_inn` (Start in the field, main menu, item screen): 0 hits. high.
+9. **ovl_0b nop exports 0x090/0x094/0x0A4/0x29C/0x300/0x308/0x30C: CONFIRMED never reached** in black magic (effect 0),
+   Leviathan full (0xB3), Fenrir full (0xD2), Throw (0x110), the Malboro's own attacks (0x64, 0x18) and Atomos / Ark
+   (above, those runs did not trace them). Exec breakpoints on all seven: 0 hits. high.
