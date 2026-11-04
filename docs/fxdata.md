@@ -36,7 +36,10 @@ or dir-13 file ids; stdlib only, PNG written with zlib). Per file it:
    `{next, imgs, nimgs}` + images (CLUTs and small textures) then 64x128 pages to the rects at `next`, type 1 =
    more pages (btlfx_uploadTextures' rect walk), on top of the common effect pages every battle keeps
    (dir 1 file 0x2BF: four pages at (0x300, 0x100), CLUT rows at y 0xF0);
-2. splits the type 2 (+10) data chunk at its offset table; entry 0 is the slot's heap;
+2. splits the type 2 (+10) data chunk at its offset table; entry 0 is the slot's heap. The data ring is replayed
+   as btlfx_updateLoader fills it (a flagged chunk restarts it, a type 2 chunk that reaches the ring end wraps the
+   cursor), so a type 10 chunk loaded after a wrap lands below its group's data, which indexes it with negative
+   offsets (Ark groups 2, 4, 7, Ark short group 2);
 3. classifies each entry by content (AKAO sound; `'so'` model; emitter = EffEmit [+EffSub+EffEmit] +
    EffElemHdr + EffElem[] + EffTail as btlfx_spawnEmitter walks it; BtlModelHeader with in-range offsets) and by
    use: which export the module's C passes it to (also through a local variable), and which effect-script op

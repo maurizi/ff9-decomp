@@ -25,14 +25,25 @@ Notes:
 
 `tools/fxdata.py` at d6121033 renders the summon data (indices 0x80+), so the Ark summon-data literals are named
 now (evidence `render (fxdata d6121033)`), as are fx_17d_2's entries 1-3. For some groups the tool's slot split
-still disagrees with the C (entries the C registers as models or draws as trails or rings come out empty), so
-these stay numbers:
+disagreed with the C (entries the C registers as models or draws as trails or rings came out empty). The cause
+(fixed in the consistency pass, `docs/fxdata.md`): a group's type 10 chunk goes where the data ring's cursor is,
+and when the group's type 2 chunk reached the end of the ring the cursor wrapped, so the type 10 data sits
+*below* the group's data and the table indexes it with negative offsets (Ark groups 2, 4, 7 and Ark short group
+2). Those entries are named now:
 
-| module | indices left as literals | why |
-|---|---|---|
-| fx_17d_2 | 5, 7, 8, 9, 0xA, 0xB | the tool's group 2 slot has 0x5-0xC empty (entry 4 is 0x8210 bytes), so the split is wrong |
-| fx_17d_4 | 0x1D, 0x1F, 0x20, 0x21 | empty in the tool's split |
-| fx_17d_7 | 0x11 | empty in the tool's split |
+| module | index | name | evidence | what it is |
+|---|---|---|---|---|
+| fx_17d_2 | 0x5 | `FX_ARK_FLAME_SPIRAL_CONE` | render | 'so' model: deep closed cone with a spiral fire texture |
+| fx_17d_2 | 0x7 | `FX_ARK_BLUE_ENERGY_SHELL` | render | 'so' model: sphere band with a blue-red energy texture |
+| fx_17d_2 | 0x8 | `FX_ARK_GREEN_GLOW_SPRITE` | render | sprite: small green-blue swirl glow drawn on screen |
+| fx_17d_2 | 0x9 | `FX_ARK_STATIC_SPRITE` | render | sprite: grey static-noise tiles drawn on screen |
+| fx_17d_2 | 0xA | `FX_ARK_FLAME_SPIRAL_DISH` | render | 'so' model: shallow dish with a spiral fire texture |
+| fx_17d_2 | 0xB | `FX_ARK_SMOKE_CONE` | render | 'so' model: deep closed cone with a grey smoke texture |
+| fx_17d_4 | 0x1D | `FX_ARK_SMOKE_TORUS` | render | 'so' model: flat torus with a grey smoke texture |
+| fx_17d_4 | 0x1F | `FX_ARK_SMOKE_CYLINDER` | render | 'so' model: open cylinder with a grey smoke texture |
+| fx_17d_4 | 0x20 | `FX_ARK_BEAM_LINE` | usage | table: fxm_drawTrailLine data, the vertical light line (same use as fx_1bf_0's) |
+| fx_17d_4 | 0x21 | `FX_ARK_FLAME_BOWL` | render | 'so' model: shallow bowl with an orange-white fire texture |
+| fx_17d_7 | 0x11 | `FX_ARK_PEACH_RING` | render | rings: white-peach-mauve gouraud rings (byte-identical to fx_17d_6 0xB) |
 
 Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModelFileIds`, `fx_17d_4_strandInfo`,
 `fx_17d_4_pointFileIds`, `fx_17d_4_particleFileIds`, `fx_12b_pathFileIds*`, `fx_138_*FileIds`,
@@ -183,7 +194,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_1 | 0x9E | `FX_ARK_STREAK_SHELL` | render (fxdata d6121033) | summon data: 'so' model, barrel-shaped shell with a grey streak texture |
 | fx_17d_1 | 0x9F | `FX_ARK_ORANGE_SPARKLES_2` | render (fxdata d6121033) | summon data: emitter, orange square sparkles |
 | fx_17d_2 | 0x1 | `FX_ARK_FIRE_RING` | render (fxdata d6121033) | rings: white-yellow-red gouraud rings (as fx_17d_1's) |
-| fx_17d_2 | 0x2 | `FX_ARK_THIN_ARCH` | kind/usage (look pending) | 'so' model: thin arch, its texture reads as noise in the render (and the group 2 split is suspect) |
+| fx_17d_2 | 0x2 | `FX_ARK_THIN_ARCH` | kind/usage (look pending) | 'so' model: thin arch, its texture reads as noise in the render |
 | fx_17d_2 | 0x3 | `FX_ARK_ORANGE_SPARKLES` | render (fxdata d6121033) | emitter: spiral of orange square sparkles (as fx_17d_1's) |
 | fx_17d_3 | 0x1 | `FX_ARK_SMOKE_TRAIL` | render | emitter: spiralling screen trail with a blue-grey smoke texture, orange embers |
 | fx_17d_3 | 0x2 | `FX_ARK_CLOUD_TRAIL` | render | emitter: two spiralling screen trails with a grey cloud texture |
@@ -348,7 +359,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_179 | 0xb | `FX_MEDEO_SPRITE_BURST` | emitter: two sprite elements; the render is still all transparent |
 | fx_17a | 0x11 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file (magenta in the render) |
 | fx_17d_0 | 0x1c | `FX_ARK_SO_MODEL` | 'so' model registered at the start of op 0x80: a sphere, its texture reads as white noise in the render |
-| fx_17d_2 | 0x2 | `FX_ARK_THIN_ARCH` | 'so' model: thin arch, its texture reads as noise in the render (and the group 2 split is suspect) |
+| fx_17d_2 | 0x2 | `FX_ARK_THIN_ARCH` | 'so' model: thin arch, its texture reads as noise in the render |
 | fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | trail: strip texture not resolved (noise and green in the render) |
 | fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | trail: strip texture not resolved (noise and green in the render) |
 | fx_17d_5 | 0xd | `FX_ARK_SPRITE_LINE` | sprite line: textures partly not resolved (almost empty in the render) |

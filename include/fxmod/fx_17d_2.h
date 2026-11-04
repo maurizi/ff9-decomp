@@ -5,11 +5,17 @@
 #include "btlfx_mod.h"
 
 /* fx_17d_2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
- * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). Indices 5, 7, 8, 9, 0xA
- * and 0xB stay literals: the tool's group 2 slot has entries 5-0xC empty (entry 4 is 0x8210 bytes). */
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). Entries 5-0xC are the
+ * group's type 10 chunk, which the data ring wrapped to below the type 2 data (negative table offsets). */
 #define FX_ARK_FIRE_RING 0x1 /* rings: white-yellow-red gouraud rings (as fx_17d_1's) */
-#define FX_ARK_THIN_ARCH 0x2 /* 'so' model: thin arch, its texture reads as noise in the render (and the group 2 split is suspect) (look pending) */
+#define FX_ARK_THIN_ARCH 0x2 /* 'so' model: thin arch, its texture reads as noise in the render (look pending) */
 #define FX_ARK_ORANGE_SPARKLES 0x3 /* emitter: spiral of orange square sparkles (as fx_17d_1's) */
+#define FX_ARK_FLAME_SPIRAL_CONE 0x5 /* 'so' model: deep closed cone with a spiral fire texture */
+#define FX_ARK_BLUE_ENERGY_SHELL 0x7 /* 'so' model: sphere band with a blue-red energy texture */
+#define FX_ARK_GREEN_GLOW_SPRITE 0x8 /* sprite: small green-blue swirl glow drawn on screen */
+#define FX_ARK_STATIC_SPRITE 0x9 /* sprite: grey static-noise tiles drawn on screen */
+#define FX_ARK_FLAME_SPIRAL_DISH 0xA /* 'so' model: shallow dish with a spiral fire texture */
+#define FX_ARK_SMOKE_CONE 0xB /* 'so' model: deep closed cone with a grey smoke texture */
 
 typedef struct {
     s16 unk0; /* write-only: state (cleared at spawn) */

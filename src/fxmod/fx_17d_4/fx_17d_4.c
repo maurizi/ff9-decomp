@@ -69,7 +69,7 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
                         BTLFX_COPY_SVEC(&lineTo, dst);
                         BTLFX_COPY_SVEC(&lineFrom, dst);
                         lineFrom.vy -= 0x1000;
-                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &lineFrom, &lineTo, 0, 0x800, 1, 0x32);
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineFrom, &lineTo, 0, 0x800, 1, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
@@ -215,10 +215,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fx_17d_4_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_4_effModels, 5);
-        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1F), 1);
-        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), 1);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_CYLINDER), 1);
+        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TORUS), 1);
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_STREAK_BOWL), 1);
-        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 0);
+        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_FLAME_BOWL), 0);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SWIRL_DOME), 1);
         ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion19C, SUMMON(env)->model60);
         work->pos48.vx = 0;
@@ -492,7 +492,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&lineFrom, &work->pos10);
             lineFrom.vy += ex->math_sin(bobT >> 2) >> 3;
             lineFrom.vz -= 0x400;
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &lineFrom, &work->pos10, frame, lineFade, 1, 0x18);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineFrom, &work->pos10, frame, lineFade, 1, 0x18);
             env->otZ = 0;
             if (frame >= 0x14) {
                 work->state0 = 5;
@@ -523,7 +523,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             lineTop.vy = work->pos8.vy - 0x1000;
             lineTop.vz = ringPos.vz;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, 0xAAA, 0, 1, phase);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &ringPos, &lineTop, frame, phase, 1, 0x20);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &lineTop, frame, phase, 1, 0x20);
             env->otZ = 0;
             if (frame >= 0x18) {
                 work->state0 = 6;
@@ -541,7 +541,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ramp = (frame << 12) / 51;
             fadeOut = 0x1000 - ramp;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &basePos, NULL, 0xAAA, 0, 1, fadeOut);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &basePos, &baseTop, frame, fadeOut, 1,
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &basePos, &baseTop, frame, fadeOut, 1,
                           (ramp >> 7) + 0x20);
             env->otZ = 0;
             flatRot.vx = 0x400;

@@ -407,7 +407,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 env->otZ = 0x100;
                 ringT = ((frame - 35) << 12) / 35;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->pos8, NULL, ringT + 0xAAA, 0, 1, ringT);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos8, NULL, ringT + 0xAAA, 0, 1, ringT);
                 env->otZ = 0;
             }
             if (frame >= 58) {

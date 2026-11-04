@@ -25,7 +25,7 @@ Notes:
   gold glow (fx_1f4 Vanish draws the same three emitters, in other bytes). The short forms carry the payload names.
 - Sealion appears (fx_1cc) is Blizzaga's crystal data byte for byte (fx_097 / fx_098), named `FX_SEALION_APPEARS_`
   + Blizzaga's `<WHAT>`.
-- Ark short, group 2 (fx_1bf_2): entry 2 (`FX_ARK_MODEL_4`, byte-identical to fx_17d_8 entry 6) is textured with a
+- Ark short, group 2 (fx_1bf_2): entry 2 (`FX_ARK_FLAT_PANEL`, byte-identical to fx_17d_8 entry 6) is textured with a
   placeholder page carrying the kana labels "up / left / right / down" (an orientation test texture).
 - fx_1f2 (Grand Cross) and fx_1bf_1 use summon data (0x80+): Grand Cross's planets, moon, earth globe, vortices;
   Ark short's beam, tori, rocks and flame pieces, all named by the new 'so' model renders.
@@ -45,7 +45,6 @@ Notes:
 | fx_1f6 | 0x1, 0x3, 0x6, 0x8, 0xC | `FX_AERA_*` | carried from fx_0cd with their pending state |
 | fx_1fd | 0x5, 0x6, 0x16 | `FX_FENRIR_EFFECT_MODEL(_2)`, `FX_FENRIR_SPARKS` | carried from fx_0e2 with their pending state |
 | fx_1fe | 0x16 | `FX_PHOENIX_EMBERS` | sprites render empty here; named after fx_0d3 entry 0xF (same call site and kind) |
-| fx_1bf_2 | 0xF, 0x10, 0x11 | `FX_ARK_MODEL_1`, `FX_ARK_MODEL_5`, `FX_ARK_FIRE_RING` | empty in the tool's split of group 2; named from fx_17d_8's call sites |
 
 ## Table
 
@@ -364,13 +363,13 @@ Notes:
 | fx_1bf_1 | 0x92 | `FX_ARK_ROCK_2` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x93 | `FX_ARK_ROCK_3` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x94 | `FX_ARK_FIRE_ARC` | render | summon data: 'so' model, curved band with an orange flame texture |
-| fx_1bf_2 | 0x1 | `FX_ARK_MODEL_3` | render | 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) |
-| fx_1bf_2 | 0x2 | `FX_ARK_MODEL_4` | render | 'so' model: flat band; its texture is a placeholder with the kana labels up / left / right / down (byte-identical to fx_17d_8 entry 0x6) |
+| fx_1bf_2 | 0x1 | `FX_ARK_ORANGE_BEAM` | render | 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) |
+| fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band; its texture is a placeholder with the kana labels up / left / right / down (byte-identical to fx_17d_8 entry 0x6) |
 | fx_1bf_2 | 0x3 | `FX_ARK_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_17d_8 entry 0x7) |
-| fx_1bf_2 | 0x5 | `FX_ARK_MODEL_2` | render | 'so' model: shallow dish with a grey cloud texture (byte-identical to fx_17d_8 entry 0x9) |
+| fx_1bf_2 | 0x5 | `FX_ARK_GREY_STAR_DISC` | render | 'so' model: shallow dish with a grey cloud texture (byte-identical to fx_17d_8 entry 0x9) |
 | fx_1bf_2 | 0x7 | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) |
 | fx_1bf_2 | 0xB | `FX_ARK_STARFIELD` | render | sprite: faint starfield drawn on screen (byte-identical to fx_17d_8 entry 0x10) |
-| fx_1bf_2 | 0xD | `FX_ARK_MODEL_0` | render | 'so' model: hemisphere with an earth-globe texture (byte-identical to fx_17d_8 entry 0x1) |
-| fx_1bf_2 | 0xF | `FX_ARK_MODEL_1` | kind/usage (look pending) | 'so' model, empty in the tool's split of group 2 (same call site as fx_17d_8 entry 0x2) |
-| fx_1bf_2 | 0x10 | `FX_ARK_MODEL_5` | kind/usage (look pending) | 'so' model, empty in the tool's split of group 2 (same call site as fx_17d_8 entry 0x4) |
-| fx_1bf_2 | 0x11 | `FX_ARK_FIRE_RING` | kind/usage (look pending) | rings, empty in the tool's split of group 2 (same call site as fx_17d_8 entry 0x5) |
+| fx_1bf_2 | 0xD | `FX_ARK_PLANET` | render | 'so' model: hemisphere with an earth-globe texture (byte-identical to fx_17d_8 entry 0x1) |
+| fx_1bf_2 | 0xF | `FX_ARK_RED_GLOW_DOME` | render (type 10 split fix) | 'so' model: shallow red-orange gouraud glow dome (byte-identical to fx_17d_8 entry 0x2) |
+| fx_1bf_2 | 0x10 | `FX_ARK_DARK_BLUE_RING` | render (type 10 split fix) | 'so' model: flat ring with a dark blue texture (byte-identical to fx_17d_8 entry 0x4) |
+| fx_1bf_2 | 0x11 | `FX_ARK_FIRE_RING` | render (type 10 split fix) | rings: white-yellow-red gouraud rings (byte-identical to fx_17d_8 entry 0x5) |

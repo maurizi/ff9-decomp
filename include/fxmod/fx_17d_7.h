@@ -13,6 +13,7 @@
 #define FX_ARK_VIOLET_RING   0x7 /* emitter: white-cream-violet and white-purple-blue gouraud rings */
 #define FX_ARK_GOLD_GLOW     0xA /* emitter: golden glow flash */
 #define FX_ARK_ORANGE_RING   0xD /* emitter: two fans (not rendered) + white-orange gouraud rings */
+#define FX_ARK_PEACH_RING    0x11 /* rings: white-peach-mauve gouraud rings (byte-identical to fx_17d_6 entry 0xB, fx_1bf_1 entry 0xC) */
 #define FX_ARK_ORANGE_BEAM 0x8C /* summon data: 'so' model, long orange gouraud beam */
 #define FX_ARK_TEAL_RING 0x8E /* summon data: 'so' model, flat ring with a dark teal texture */
 #define FX_ARK_FLAME_TEX_RING 0x8F /* summon data: 'so' model, flat ring with an orange flame texture */

@@ -281,8 +281,16 @@ class FxFile:
         self.common_tex = []   # type 9: [(x, y)] common pages the file uploads
         summon_raw, loadbuf, ring_group = [], None, None
         rects, tex_index = [], 0
+        # the data ring as btlfx_updateLoader fills it: a flagged type 2 chunk restarts it (ringBase = RING + its
+        # common part, ringSize = 0xC800 - that), each type 2 chunk goes at the cursor, which wraps to ringBase when
+        # it reaches the end; a type 10 chunk goes at the (possibly wrapped) cursor, so it can land *below* its
+        # group's data, which then indexes it with negative offsets (Ark groups 2, 4, 7).
+        ring_cur, ring_size = None, 0xC800
+        self.slot_cuts = []    # per slot: extra entry bounds (ends of the pieces of such a split slot)
+        self.slot_base = []    # per slot: buffer offset of the data start (bytes of type 10 data placed below it)
         for gi, g in enumerate(self.groups):
             data = None
+            data_pos, below = None, []
             for c in g['chunks']:
                 n = c['sectors'] + c['extra']
                 raw = img.read(cur * SECTOR, n * SECTOR)
@@ -317,8 +325,20 @@ class FxFile:
                     data = bytearray(raw[ex:])
                     if c['flag'] and ring_group is None:
                         ring_group = gi
+                    if c['flag']:
+                        ring_cur, ring_size = 0, 0xC800 - ex
+                    data_pos = ring_cur
+                    if ring_cur is not None:
+                        ring_cur += len(data)
+                        if ring_cur >= ring_size:
+                            ring_cur = 0
                 elif c['type'] == 10 and data is not None:
-                    data += raw
+                    if ring_cur is not None and data_pos is not None and ring_cur != data_pos + len(data):
+                        below.append((ring_cur - data_pos, raw))
+                    else:
+                        data += raw
+                    if ring_cur is not None:
+                        ring_cur += len(raw)
                 elif c['type'] == 4:
                     self._summon_tex(raw)
                 elif c['type'] == 6:
@@ -327,7 +347,21 @@ class FxFile:
                     loadbuf = raw
                 elif c['type'] == 9:
                     self._common_tex(raw, c['flag'])
+            base, cuts = 0, set()
+            if data is not None and below:
+                lo = min(0, min(r for r, _ in below))
+                hi = max(len(data), max(r + len(b) for r, b in below))
+                buf = bytearray(hi - lo)
+                base = -lo
+                buf[base:base + len(data)] = data
+                for r, b in below:
+                    buf[base + r:base + r + len(b)] = b
+                    cuts.add(base + r + len(b))
+                cuts.add(base)
+                data = buf
             self.slots.append(bytes(data) if data is not None else None)
+            self.slot_base.append(base)
+            self.slot_cuts.append(cuts)
         # extra slots for the shared data (btlfx_getFileData 0x40+ / 0x80+ / 0xC0+)
         self.ring_slot = None   # 0x40-0x7F: RAM_BTLFX_RING = the first ring-start data chunk (its common part)
         if self.common:
@@ -343,6 +377,8 @@ class FxFile:
         if loadbuf is not None:
             self.loadbuf_slot = len(self.slots)
             self.slots.append(bytes(loadbuf))
+        self.slot_base += [0] * (len(self.slots) - len(self.slot_base))
+        self.slot_cuts += [set()] * (len(self.slots) - len(self.slot_cuts))
         self.script = self._script()
 
     def summon_slot(self, group):
@@ -415,13 +451,15 @@ class FxFile:
         d = self.slots[slot]
         if not d:
             return []
-        first = u32(d, 0)
-        if first == 0 or first % 4 or first > len(d):
+        base = self.slot_base[slot]
+        first = u32(d, base)
+        if first == 0 or first % 4 or base + first > len(d):
             return []
-        offs = [u32(d, i * 4) for i in range(first // 4)]
+        # buffer offsets: the table's offsets are relative to the data start (negative = type 10 data below it)
+        offs = [base + (s32(d, base + i * 4) if base else u32(d, base + i * 4)) for i in range(first // 4)]
         end = len(d)
         # the table's last offset is usually the end of the data; trailing 0xFF / 0 fill is not data
-        bounds = sorted(set(o for o in offs if o <= end) | {end})
+        bounds = sorted(set(o for o in offs if o <= end) | {end} | self.slot_cuts[slot])
         out = []
         for i, o in enumerate(offs):
             if o > end:

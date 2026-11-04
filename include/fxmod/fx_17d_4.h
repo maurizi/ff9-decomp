@@ -10,6 +10,10 @@
 #define FX_ARK_RED_RING       0x3 /* rings: white-pink-red gouraud rings */
 #define FX_ARK_RED_FLASH_RING 0x5 /* rings: red-white flat flash ring */
 #define FX_ARK_MAGENTA_RING   0x17 /* emitter: grey noise rings and white-magenta-purple gouraud rings */
+#define FX_ARK_SMOKE_TORUS    0x1D /* 'so' model: flat torus with a grey smoke texture (type 10 data below the group's slot) */
+#define FX_ARK_SMOKE_CYLINDER 0x1F /* 'so' model: open cylinder with a grey smoke texture (type 10 data below the group's slot) */
+#define FX_ARK_BEAM_LINE      0x20 /* table: trail data for fxm_drawTrailLine, vertical light line at the strand tips and ring centre (same use as fx_1bf_0's FX_ARK_BEAM_LINE) */
+#define FX_ARK_FLAME_BOWL     0x21 /* 'so' model: shallow bowl with an orange-white fire texture (byte-identical to fx_1bf_0 entry 0x6) */
 #define FX_ARK_STREAK_BOWL 0x84 /* summon data: 'so' model, bowl ring with a grey streak texture */
 #define FX_ARK_SWIRL_DOME 0x86 /* summon data: 'so' model, dome with a grey swirl texture */
 #define FX_ARK_STRAND_TABLE 0x8A /* summon data: table read by fx_17d_4_drawStrands */
