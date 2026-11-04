@@ -49,8 +49,40 @@ or dir-13 file ids; stdlib only, PNG written with zlib). Per file it:
    uses (`0F E1` = entry 0xF element 1, `B` = its second draw, `M` model, `D` drawn directly). Texels
    nothing uploaded show as a magenta checker (textures from elsewhere, see open questions).
 
-Limits: `'so'` models (btlfx_registerEffectModel) and fans are not drawn; a tpage the C computes (`tmp`) is
-not resolved; summon files' later groups are only analysed with `fx_17d_4`-style module names.
+5. lists the shared data the module can index after the file's own entries, with the full index, classified and
+   rendered the same way (sheet labels `S85 M`, `S9E E0`; `R` = 0x40+, `L` = 0xC0+):
+   - 0x80-0xBF: `g_btlfxLoader.summon->data[0]`, which BTLFX_LDCMD_SUMMON_DATA points at the summon file's
+     **type 6 chunk** (btlfx_updateLoader). A group module sees the last type 6 chunk loaded up to its group
+     (Ark reloads it in group 3). Every 0x80+ literal in the module C now resolves to an entry (232 use sites,
+     207 entries: 107 'so' models, 24 emitters, 24 models, 51 tables, 1 rings set).
+   - 0xC0+: the battle load buffer, filled by a type 8 chunk (only file 0x197, Diamond Dust / Shiva (short):
+     0xD8 / 0xD9 are 'so' models).
+   - 0x40-0x7F: the ring start (first ring-start type 2 chunk, or 0xFB's extra-sector common part), listed only
+     when the C uses it (no module does yet).
+6. replays the summon textures too: type 4 (BTLFX_LDCMD_SUMMON_TEX: header Unk80100DC054, texCount pages at its
+   tpage / y, CLUT rows at (0x100, 0xE6)) and type 9 (BTLFX_LDCMD_COMMON_TEX: mask bits 0/1 = two pages each at
+   (0x300 / 0x340, 0x100), bits 2-5 one page each at (0x140 / 0x180, 0x100 / 0x180)).
+
+Drawing: `'so'` models (Unk800E8F50: texture list of (tpage, clut) + uv offsets, a polygon's texture byte picks
+one) and BtlModelHeader models are rendered textured from front, top and an oblique angle (flat-shaded, painter's
+order, rest pose) next to an oblique wireframe and the UV boxes; a Hi_RegisterTexListModel call whose BtlTexInfo
+and offsets are module symbols (fx_0e2's Fenrir model) reads them from `disks/us/fxmod/<module>.bin`. Calls
+through a cast export (`((T)ex->Hi_RegisterTexListModel)(...)`) are recognised. Fans (element kind 7 /
+btlfx_drawFan, Unk800D2938): textured = the frame's (u, v, w, h) rect tinted with the point colour; gouraud =
+btlfx_emitFrameFan's three triangles in the x/z plane with the inner / outer colours, scaled per frame. Kind-3
+sprite data with tpage 0 is drawn by btlfx_emitDots as 1-pixel dots (TILE_1) in the colour-table colour: these
+were the "spark sprites with textures outside the file" (magenta) of the pilot.
+
+Limits: a tpage the C computes (`tmp`) is not resolved; indices taken from module data tables
+(`fx_026_op81ModelBlocks`) are not followed; models are drawn in the rest pose (bone lengths along z only).
+Summon modules take about 30 s with `--render` (the textured model views).
+
+Still not resolved by the render (not texture-source problems the file could answer):
+- page (0x1C0, 0x100), 4-bit u 0x00-0x8F, v 0x00-0x0F is blank (zero) in fx_005 / fx_018's own upload, and that is where
+  `FX_THUNDARA_ORB_SPARKS(_2)` and `FX_THUNDAGA_CYL_EMITTER(_2)` sample: probably filled at run time (a VRAM
+  dump while the spell plays would show it).
+- `FX_THUNDAGA_DISC` reads 15-bit page 0x119 = (0x240, 0x100), which holds the file's 4-bit pages: the disc
+  samples something drawn there at run time (screen copy?), not file data.
 
 ## How well appearance worked (pilot)
 

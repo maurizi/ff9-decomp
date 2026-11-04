@@ -20,6 +20,13 @@ What an effect file holds (docs/ff9img.md "Battle effect files", docs/fxdata.md)
   keeps (FF9.IMG dir 1 file 0x2BF, btlfx_reloadCommonData: four pages at (0x300, 0x100), CLUT rows at y 0xF0).
 - chunk type 2 (+10 appended): effect data, read by btlfx_getFileData(slot, i) = base + base[i]: a table of s32
   offsets (count = first offset / 4); entry i runs to the next larger offset. Entry 0 is the slot's heap.
+- shared data (btlfx_getFileData's other bases, listed after the file's own entries with the full index):
+  0x40+ the ring start (the first ring-start type 2 chunk, or its extra-sector common part; only when the C uses
+  it), 0x80+ the summon data = g_btlfxLoader.summon->data[0] = the last type 6 chunk (BTLFX_LDCMD_SUMMON_DATA)
+  loaded up to the module's group, 0xC0+ the battle load buffer when a type 8 chunk fills it.
+- summon files also upload: type 4 (BTLFX_LDCMD_SUMMON_TEX: texCount 64x128 pages at the header's tpage/y, CLUT
+  rows at (0x100, 0xE6)) and type 9 (BTLFX_LDCMD_COMMON_TEX: pages by mask at (0x300/0x340, 0x100) and 0x140 /
+  0x180); the tool replays both into the VRAM.
 - the effect script: 3-byte ops at offset 0x400 of the header sector. Ops naming data: 0x23 / 0x29 camera,
   0x2D sound, 0x63 / 0x64 party motion (b), control 0x0F vibration (a, when b = 0); 0x80+ run the module's ops.
 
@@ -28,9 +35,13 @@ Kinds (content checks, then how the module's C uses the entry, which wins):
   header, btlfx_registerEffectModel), model (BtlModelHeader, Hi_RegisterTexEffModel), camera (btlcam script),
   motion, vibration, sprite sets by draw call (rings, trail, sprite, quads, fan), table (anything else).
 Rendering: emitter elements draw frame 0..7 of their sprite data (kinds 0-3: 10-byte quads / 3-byte sprites,
-trails: the strip texture, rings: the texture UV box or the ring colours), models their UV box from VRAM plus a
-front/top wireframe, standalone sprite sets the same as emitter elements. Sprites read pixels from the replayed
-VRAM with their tpage/CLUT; texels nobody uploaded show as a magenta checker.
+trails: the strip texture, rings: the texture UV box or the ring colours, fans: the textured frame rect or the
+gouraud triangles of btlfx_emitFrameFan; kind-3 sprites with tpage 0 are btlfx_emitDots' 1-pixel dots), models
+(BtlModelHeader and 'so') front / top / oblique textured renders (per-polygon texture from the 'so' texture list or
+a Hi_RegisterTexListModel table read from the module binary) plus an oblique wireframe and the UV boxes,
+standalone sprite sets the same as emitter elements. Sprites read pixels from the replayed VRAM with their
+tpage/CLUT; texels nobody uploaded show as a magenta checker. Sheet labels: R/S/L prefix = ring / summon / load
+buffer index.
 """
 import argparse
 import json
@@ -264,10 +275,13 @@ class FxFile:
             self.vram.mem = list(common_vram.mem)
             self.vram.set = bytearray(common_vram.set)
         self.common_set = bytearray(self.vram.set)
-        self.slots = []        # per group: data bytes of the slot (type 2 + appended type 10)
+        self.slots = []        # per group: data bytes of the slot (type 2 + appended type 10); extra slots follow
         self.common = None     # data before the ring base (extra sectors), if any
+        self.summon_hdr = None  # type 4: the summon file header (Unk80100DC054) whose textures were uploaded
+        self.common_tex = []   # type 9: [(x, y)] common pages the file uploads
+        summon_raw, loadbuf, ring_group = [], None, None
         rects, tex_index = [], 0
-        for g in self.groups:
+        for gi, g in enumerate(self.groups):
             data = None
             for c in g['chunks']:
                 n = c['sectors'] + c['extra']
@@ -301,10 +315,71 @@ class FxFile:
                     if ex:
                         self.common = raw[:ex]
                     data = bytearray(raw[ex:])
+                    if c['flag'] and ring_group is None:
+                        ring_group = gi
                 elif c['type'] == 10 and data is not None:
                     data += raw
+                elif c['type'] == 4:
+                    self._summon_tex(raw)
+                elif c['type'] == 6:
+                    summon_raw.append((gi, raw))
+                elif c['type'] == 8:
+                    loadbuf = raw
+                elif c['type'] == 9:
+                    self._common_tex(raw, c['flag'])
             self.slots.append(bytes(data) if data is not None else None)
+        # extra slots for the shared data (btlfx_getFileData 0x40+ / 0x80+ / 0xC0+)
+        self.ring_slot = None   # 0x40-0x7F: RAM_BTLFX_RING = the first ring-start data chunk (its common part)
+        if self.common:
+            self.ring_slot = len(self.slots)
+            self.slots.append(bytes(self.common))
+        elif ring_group is not None:
+            self.ring_slot = ring_group
+        self.summon_slots = []  # [(group, slot)]: 0x80-0xBF = summon->data[0] = the type 6 chunk (SUMMON_DATA)
+        for gi, raw in summon_raw:
+            self.summon_slots.append((gi, len(self.slots)))
+            self.slots.append(bytes(raw))
+        self.loadbuf_slot = None  # 0xC0+: the battle load buffer, which a type 8 chunk fills
+        if loadbuf is not None:
+            self.loadbuf_slot = len(self.slots)
+            self.slots.append(bytes(loadbuf))
         self.script = self._script()
+
+    def summon_slot(self, group):
+        """Slot of the summon data a group's module sees (the last type 6 chunk loaded up to that group)."""
+        s = [slot for gi, slot in self.summon_slots if gi <= group]
+        return s[-1] if s else None
+
+    def _summon_tex(self, raw):
+        """BTLFX_LDCMD_SUMMON_TEX: texCount 64x128 pages at the header's tpage / y, CLUT rows at (0x100, 0xE6)."""
+        data_ofs, motions, ntex, clut_rows = struct.unpack_from('<hhhH', raw, 0)
+        clut_ofs = s32(raw, 8)
+        tp = struct.unpack_from('<6H', raw, 0x18)
+        ty = struct.unpack_from('<6H', raw, 0x30)
+        self.summon_hdr = {'dataOfs': data_ofs, 'motions': motions, 'textures': ntex, 'clutRows': clut_rows,
+                           'tpages': list(tp[:max(0, min(ntex, 6))])}
+        for i in range(max(0, min(ntex, 6))):
+            src = data_ofs + i * 0x4000
+            if src + 0x4000 <= len(raw):
+                self.vram.load((tp[i] & 0xF) << 6, ty[i] + ((tp[i] & 0x10) << 4), 64, 128, raw, src)
+        src = data_ofs + clut_ofs
+        if 0 < clut_rows <= 26 and src + clut_rows * 0x200 <= len(raw):
+            self.vram.load(0x100, 0xE6, 0x100, clut_rows, raw, src)
+
+    def _common_tex(self, raw, mask):
+        """BTLFX_LDCMD_COMMON_TEX: mask bits 0/1 = two pages each at (0x300 / 0x340, 0x100), bits 2-5 one page each
+        at (0x140, 0x100), (0x140, 0x180), (0x180, 0x100), (0x180, 0x180)."""
+        bit, off = 1, 0
+        for i in range(8):
+            if bit & mask:
+                x = ((i >> 1) << 6) + 0x300 if i < 4 else (((i - 4) >> 1) << 6) + 0x140
+                y = ((i & 1) << 7) + 0x100
+                if off + 0x4000 <= len(raw):
+                    self.vram.load(x, y, 64, 128, raw, off)
+                    self.common_tex.append((x, y))
+                off += 0x4000
+            if i >= 4 or (i & 1):
+                bit <<= 1
 
     def _pages(self, raw, off, count, rects, tex_index):
         for _ in range(count):
@@ -460,8 +535,14 @@ PRIMS = [('FT4', 0x18, 4, 0, 8, 0x13), ('FT3', 0x14, 3, 0, 0xC, 0x6), ('GT4', 0x
          ('F4', 0x10, 4, 0, None, None), ('F3', 0xC, 3, 0, None, None)]
 
 
-def model_geometry(d, o, m):
-    """(vertices [(x, y, z)], polys [(name, [vi], [uv])]) of a BtlModelHeader, bones at rest (z offsets)."""
+# per primitive kind: colour field offset and whether it holds rgb directly (flat) or colour-table indices (gouraud)
+PRIM_COLOR = {'FT4': (0x10, 'rgb'), 'FT3': (8, 'rgb'), 'GT4': (0x10, 'idx'), 'GT3': (0x10, 'idx'), 'G4': (8, 'idx'),
+              'G3': (8, 'idx'), 'F4': (8, 'rgb'), 'F3': (8, 'rgb')}
+
+
+def model_polys(d, o, m):
+    """(vertices, [{'name', 'v': [vi], 'uv': [(u, v)], 'tex': texture index or None, 'col': [(r, g, b)]}]): the
+    model's polygons with what btl_applyModelTextures / btl_drawMesh read (WmSrc* layouts, include/ovl_0c.h)."""
     nb = m['bones']
     bone_z = [0] * nb
     for b in range(nb):
@@ -469,7 +550,7 @@ def model_geometry(d, o, m):
         bone_z[b] = (bone_z[parent] if b and parent < b else 0) + length
     verts, polys = [], []
     for mesh in m['meshes']:
-        vc_o, v_o, p_o, uv_o, _ = (o + x for x in mesh['ptrs'])
+        vc_o, v_o, p_o, uv_o, col_o = (o + x for x in mesh['ptrs'])
         base = len(verts)
         counts = struct.unpack_from(f'<{nb}H', d, vc_o)
         k = 0
@@ -480,15 +561,40 @@ def model_geometry(d, o, m):
                 k += 1
         p = p_o
         for (name, sz, nv, vf, uf, tf), n in zip(PRIMS, mesh['counts']):
+            co, ck = PRIM_COLOR[name]
             for _ in range(n):
                 vi = [base + i for i in struct.unpack_from(f'<{nv}H', d, p + vf)]
                 uvs = []
                 if uf is not None:
                     for ui in struct.unpack_from(f'<{nv}H', d, p + uf):
                         uvs.append(tuple(d[uv_o + ui * 2:uv_o + ui * 2 + 2]))
-                polys.append((name, vi, uvs))
+                if ck == 'rgb':
+                    cols = [tuple(d[p + co:p + co + 3])] * nv
+                else:
+                    cols = [tuple(d[col_o + ci * 4:col_o + ci * 4 + 3])
+                            for ci in struct.unpack_from(f'<{nv}H', d, p + co)]
+                polys.append({'name': name, 'v': vi, 'uv': uvs, 'tex': d[p + tf] if tf is not None else None,
+                              'col': cols})
                 p += sz
     return verts, polys
+
+
+def parse_somodel(d, o, size):
+    """'so' effect model (btlfx_registerEffectModel, Unk800E8F50): {textured, tex: [(tpage, clut, du, dv)],
+    model_ofs, model} or None. Texture i is what a polygon's texture byte selects; (du, dv) is added to its uvs."""
+    if not check_somodel(d, o, size):
+        return None
+    textured, mofs, pofs = u16(d, o + 2), u16(d, o + 4), u16(d, o + 6)
+    if not (8 <= mofs < size):
+        return None
+    ntex = max(0, (mofs - 8) >> 3)
+    tex = []
+    for i in range(min(ntex, 16)):
+        tp, clut = u16(d, o + 8 + i * 4), u16(d, o + 10 + i * 4)
+        du, dv = (s16(d, o + pofs + i * 4), s16(d, o + pofs + i * 4 + 2)) if pofs + i * 4 + 4 <= size else (0, 0)
+        tex.append((tp, clut, du, dv))
+    mdl = check_model(d, o + mofs, size - mofs)
+    return {'textured': bool(textured), 'tex': tex, 'model_ofs': mofs, 'model': mdl}
 
 
 def check_akao(d, o, size):
@@ -519,14 +625,100 @@ def sprite_info(d, t, kind):
             return {'frames': nf, 'tex': sorted(pages)}
         if kind in (2, 3):
             nf = u16(d, t) & 0x7FFF
-            return {'frames': nf, 'tex': [(u16(d, t + 2), u16(d, t + 4))], 'size': (d[t + 7], d[t + 6])}
+            out = {'frames': nf, 'tex': [(u16(d, t + 2), u16(d, t + 4))], 'size': (d[t + 7], d[t + 6])}
+            if kind == 3 and u16(d, t + 2) == 0:
+                out['dots'] = True  # btlfx_drawSprites mode 0: untextured 1-pixel dots
+            return out
         if kind in (4, 5, 8):
             return {'frames': u16(d, t), 'tex': [(u16(d, t + 4), u16(d, t + 6))], 'size': (d[t + 9], d[t + 8])}
         if kind == 6:
             return rings_info(d, t)
+        if kind == 7:
+            return fan_info(d, t)
     except struct.error:
         return None
     return {}
+
+
+def fan_info(d, t):
+    """btlfx_drawFan data (Unk800D2938 {frameCount, otZ, gouraud, pointCount} + 12-byte part + per-point colours
+    (4 bytes, gouraud: 8 = inner / outer) + per-frame scale (vz, vx) + per-frame uv (textured))."""
+    nf, otz, gour, npt = u16(d, t), s16(d, t + 2), u16(d, t + 4), u16(d, t + 6)
+    out = {'frames': nf, 'points': npt, 'gouraud': bool(gour)}
+    b = t + 8 + 0xC + npt * (8 if gour else 4)
+    out['scale'] = [(u16(d, b + f * 4 + 2), u16(d, b + f * 4)) for f in range(min(nf, 64))]  # (x, z)
+    if gour:
+        out['shape'] = [s16(d, t + 8 + i * 2) * 4 for i in range(5)]
+        out['colors'] = [(tuple(d[t + 0x14 + i * 8:t + 0x17 + i * 8]), tuple(d[t + 0x18 + i * 8:t + 0x1B + i * 8]))
+                         for i in range(min(npt, 16))]
+    else:
+        out['tex'] = [(u16(d, t + 8), u16(d, t + 10))]
+        out['size'] = (u16(d, t + 16), u16(d, t + 18))
+        out['quad'] = (u16(d, t + 14) * 2, u16(d, t + 12) * 4)
+        out['colors'] = [tuple(d[t + 0x14 + i * 4:t + 0x17 + i * 4]) for i in range(min(npt, 16))]
+        uvb = b + nf * 4
+        out['uv'] = [(d[uvb + f * 2], d[uvb + f * 2 + 1]) for f in range(min(nf, 64))]
+    return out
+
+
+def render_fan(vram, d, t, max_frames=8):
+    """Frames of a fan: textured = the frame's texture rect tinted with its point colour, stretched to the frame's
+    scale; gouraud = the three triangles of btlfx_emitFrameFan in the x/z plane with their colours."""
+    fi = fan_info(d, t)
+    nf = fi['frames']
+    if not nf or nf > 512:
+        return None
+    picks = sorted(set(int(i * nf / max_frames) for i in range(max_frames))) if nf > max_frames else range(nf)
+    frames, miss = [], 0
+    npt = max(1, fi['points'])
+    for f in picks:
+        pi = f * (npt - 1) // (nf - 1) if nf > 1 else 0
+        sx, sz = fi['scale'][min(f, len(fi['scale']) - 1)] if fi['scale'] else (0x1000, 0x1000)
+        if not fi['gouraud']:
+            tp, clut = fi['tex'][0]
+            w, h = fi['size']
+            u, v = fi['uv'][min(f, len(fi['uv']) - 1)]
+            col = fi['colors'][min(pi, len(fi['colors']) - 1)] if fi['colors'] else (128, 128, 128)
+            c, m = tex_rect(vram, tp, clut, u, v, w, h, col)
+            miss += m
+            frames.append(c)
+            continue
+        p0, p1, p2, p3, p4 = fi['shape']
+        inner, outer = fi['colors'][min(pi, len(fi['colors']) - 1)]
+        # btlfx_emitFrameFan: (x, z) corners and colours of its three triangles (ot z offset left out)
+        A, B, Cc, D = (0, 0), (-p1, p2), (-p3, p4), (p1, p0)
+        tris = [((A, (0, 0, 0)), (B, (0, 0, 0)), (Cc, outer)), ((B, (0, 0, 0)), (D, (0, 0, 0)), (Cc, outer)),
+                ((Cc, outer), (D, (0, 0, 0)), (A, inner))]
+        tris = [tuple(((x * sx // 0x1000, z * sz // 0x1000), col) for (x, z), col in tri) for tri in tris]
+        xs = [p[0][0] for tri in tris for p in tri]
+        zs = [p[0][1] for tri in tris for p in tri]
+        span = max(max(xs) - min(xs), max(zs) - min(zs), 1)
+        S = 96
+        c = Canvas(S, S)
+        k = (S - 5) / span
+        for tri in tris:
+            P = [((x - min(xs)) * k + 2, (S - 3) - (z - min(zs)) * k, col) for (x, z), col in tri]
+            (ax_, ay_, ca), (bx, by, cb), (cx, cy, cc) = P
+            den = (by - cy) * (ax_ - cx) + (cx - bx) * (ay_ - cy)
+            if abs(den) < 1e-6:
+                continue
+            for yy in range(S):
+                for xx in range(S):
+                    w0 = ((by - cy) * (xx - cx) + (cx - bx) * (yy - cy)) / den
+                    w1 = ((cy - ay_) * (xx - cx) + (ax_ - cx) * (yy - cy)) / den
+                    w2 = 1 - w0 - w1
+                    if min(w0, w1, w2) < -0.01:
+                        continue
+                    c.put(xx, yy, tuple(max(0, min(255, int(2 * (ca[q] * w0 + cb[q] * w1 + cc[q] * w2))))
+                                        for q in range(3)))
+        frames.append(c)
+    W = sum(c.w for c in frames) + 4 * (len(frames) - 1)
+    out = Canvas(W, max(c.h for c in frames), (24, 24, 24))
+    x = 0
+    for c in frames:
+        out.blit(c, x, 0)
+        x += c.w + 4
+    return out, nf, miss
 
 
 def rings_info(d, t):
@@ -592,6 +784,9 @@ def render_frame(vram, d, t, kind, f):
             uv = u16(d, uvtab + (b & 0xF) * 2)
             tint = tuple(d[coltab + (b >> 4) * 4:coltab + (b >> 4) * 4 + 3])
             u0, v0 = uv & 0xFF, uv >> 8
+            if kind == 3 and tp == 0:  # btlfx_drawSprites mode 0: untextured 1-pixel dots (TILE_1, btlfx_emitDots)
+                sprites.append((x, y, 2, 2, None, None, 0, 0, 0, 0, tint))
+                continue
             sprites.append((x - ww // 2, y - hh // 2, ww, hh, tp, clut, u0, v0, u0 + ww, v0 + hh, tint))
     if not sprites:
         return None, 0
@@ -603,6 +798,11 @@ def render_frame(vram, d, t, kind, f):
     c = Canvas(W, H)
     miss = 0
     for (x, y, sw, sh, tp, clut, u0, v0, u1, v1, tint) in sprites:
+        if tp is None:
+            for j in range(sh):
+                for i in range(sw):
+                    c.put(x - x0 + i, y - y0 + j, tuple(min(255, 2 * t) for t in tint))
+            continue
         for j in range(sh):
             for i in range(sw):
                 uu = u0 + ((u1 - u0) * i // sw if sw else 0)
@@ -671,6 +871,8 @@ def render_sprite_data(vram, d, t, kind, max_frames=8):
             out.blit(c, 0, y)
             y += c.h + 4
         return out, cnt, sum(p[2] for p in parts)
+    if kind == 7:
+        return render_fan(vram, d, t, max_frames)
     if kind == 6:
         ri = rings_info(d, t)
         if 'uvbox' in ri:
@@ -691,47 +893,174 @@ def render_sprite_data(vram, d, t, kind, max_frames=8):
     return None
 
 
-def render_model(vram, d, o, m, tex):
-    """Front (x, y) and top (x, z) wireframes, plus the UV box from VRAM when tex = (tpage, clut, u, v)."""
-    verts, polys = model_geometry(d, o, m)
+def project(verts, ax, S=160):
+    """Screen points (x, y, depth) of the vertices fitted into S x S. ax: 'front' (x, y), 'top' (x, z), 'side'
+    (z, y), 'oblique' (turned 35 degrees about y, tilted 25 degrees)."""
+    import math
+    if ax == 'oblique':
+        ca, sa, cb, sb = math.cos(0.61), math.sin(0.61), math.cos(0.44), math.sin(0.44)
+        pv = []
+        for x, y, z in verts:
+            x, z = x * ca + z * sa, -x * sa + z * ca
+            y, z = y * cb - z * sb, y * sb + z * cb
+            pv.append((x, y, z))
+    else:
+        i, j, k = {'front': (0, 1, 2), 'top': (0, 2, 1), 'side': (2, 1, 0)}[ax]
+        pv = [(v[i], v[j], v[k] if ax != 'top' else -v[k]) for v in verts]
+    xs, ys = [v[0] for v in pv], [v[1] for v in pv]
+    span = max(max(xs) - min(xs), max(ys) - min(ys), 1)
+    sc = (S - 9) / span
+    ox = (S - (max(xs) - min(xs)) * sc) / 2 - min(xs) * sc
+    oy = (S - (max(ys) - min(ys)) * sc) / 2 - min(ys) * sc
+    return [(v[0] * sc + ox, v[1] * sc + oy, v[2]) for v in pv]
+
+
+def raster_view(vram, verts, polys, texfn, ax, S=160, bg=(16, 16, 32)):
+    """Painter's-order textured / gouraud render of the polygons (see project for ax); (canvas, missing texels)."""
+    pts = project(verts, ax, S)
+    c = Canvas(S, S, bg)
+    miss = 0
+    order = []
+    for p in polys:
+        if any(i >= len(pts) for i in p['v']):
+            continue
+        order.append((-sum(pts[i][2] for i in p['v']) / len(p['v']), p))
+    order.sort(key=lambda t: t[0])
+    for _, p in order:
+        a, b, cc = (verts[i] for i in p['v'][:3])
+        ux, uy, uz = b[0] - a[0], b[1] - a[1], b[2] - a[2]
+        vx, vy, vz = cc[0] - a[0], cc[1] - a[1], cc[2] - a[2]
+        nx, ny, nz = uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx
+        nl = (nx * nx + ny * ny + nz * nz) ** 0.5 or 1
+        shade = 0.45 + 0.55 * abs(nx * 0.4 - ny * 0.7 + nz * 0.6) / nl / 1.0099  # flat light from up-front-right
+        n = len(p['v'])
+        tris = [(0, 1, 2)] if n == 3 else [(0, 1, 2), (1, 3, 2)]
+        tx = texfn(p) if p['uv'] else None
+        for tri in tris:
+            P = [pts[p['v'][t]] for t in tri]
+            UV = [p['uv'][t] for t in tri] if tx else None
+            C = [p['col'][t] for t in tri]
+            x0, x1 = max(0, int(min(q[0] for q in P))), min(S - 1, int(max(q[0] for q in P)) + 1)
+            y0, y1 = max(0, int(min(q[1] for q in P))), min(S - 1, int(max(q[1] for q in P)) + 1)
+            (ax_, ay_, _), (bx, by, _), (cx, cy, _) = P
+            den = (by - cy) * (ax_ - cx) + (cx - bx) * (ay_ - cy)
+            if abs(den) < 1e-6:
+                continue
+            for yy in range(y0, y1 + 1):
+                for xx in range(x0, x1 + 1):
+                    px, py = xx + 0.5, yy + 0.5
+                    w0 = ((by - cy) * (px - cx) + (cx - bx) * (py - cy)) / den
+                    w1 = ((cy - ay_) * (px - cx) + (ax_ - cx) * (py - cy)) / den
+                    w2 = 1 - w0 - w1
+                    if w0 < -0.01 or w1 < -0.01 or w2 < -0.01:
+                        continue
+                    col = tuple(max(0, min(255, int(C[0][q] * w0 + C[1][q] * w1 + C[2][q] * w2))) for q in range(3))
+                    if tx:
+                        tp, clut, du, dv = tx
+                        u = int(UV[0][0] * w0 + UV[1][0] * w1 + UV[2][0] * w2) + du
+                        v = int(UV[0][1] * w0 + UV[1][1] * w1 + UV[2][1] * w2) + dv
+                        t = vram.texel(tp, clut, u, v)
+                        if t == 'missing':
+                            miss += 1
+                            c.put(xx, yy, (255, 0, 255) if (xx // 4 + yy // 4) & 1 else (96, 0, 96), add=False)
+                            continue
+                        if t is None:
+                            continue
+                        col = tuple(min(255, t[q] * col[q] // 128) for q in range(3)) if any(col) else t
+                    c.put(xx, yy, tuple(int(q * shade) for q in col), add=False)
+    return c, miss
+
+
+def render_textured_model(vram, verts, polys, texfn, uvboxes=()):
+    """Front / top / oblique renders and an oblique wireframe, then the texture boxes [(tpage, clut, u0, v0, w, h)]."""
+    views, miss = [], 0
+    for ax in ('front', 'top', 'oblique'):
+        c, m = raster_view(vram, verts, polys, texfn, ax)
+        views.append(c)
+        miss += m
+    wire = Canvas(160, 160, (16, 16, 32))
+    pts = project(verts, 'oblique')
+    for p in polys:
+        vi = p['v'] if len(p['v']) == 3 else [p['v'][0], p['v'][1], p['v'][3], p['v'][2]]
+        for a, b in zip(vi, vi[1:] + vi[:1]):
+            if a < len(pts) and b < len(pts):
+                wire.line(int(pts[a][0]), int(pts[a][1]), int(pts[b][0]), int(pts[b][1]), (200, 200, 255))
+    views.append(wire)
+    for (tp, clut, u0, v0, w, h) in uvboxes:
+        t, m = tex_rect(vram, tp, clut, u0, v0, w, h)
+        views.append(scale_canvas(t, 2) if t.w <= 80 and t.h <= 80 else t)
+    W = sum(v.w for v in views) + 4 * (len(views) - 1)
+    out = Canvas(W, max(v.h for v in views), (24, 24, 24))
+    x = 0
+    for v in views:
+        out.blit(v, x, 0)
+        x += v.w + 4
+    return out, miss
+
+
+def model_info(verts, polys):
+    xs, ys, zs = [v[0] for v in verts], [v[1] for v in verts], [v[2] for v in verts]
+    return {'vertices': len(verts), 'polys': len(polys),
+            'size': (max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs))}
+
+
+def render_model(vram, d, o, m, tex, texlist=None):
+    """BtlModelHeader drawn with one texture (Hi_RegisterTexEffModel: tex = (tpage, clut, u, v) the C passes; else
+    untextured): front / top / oblique renders, oblique wireframe and the UV box."""
+    verts, polys = model_polys(d, o, m)
     if not verts:
         return None, {}
-    xs, ys, zs = [v[0] for v in verts], [v[1] for v in verts], [v[2] for v in verts]
-    span = max(max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs), 1)
-    S = 160
-    views = []
-    for ax, ay in ((0, 1), (0, 2), (2, 1)):
-        c = Canvas(S, S, (16, 16, 32))
-        lo = (min(v[ax] for v in verts), min(v[ay] for v in verts))
-        pts = [(int((v[ax] - lo[0]) * (S - 9) / span) + 4, int((v[ay] - lo[1]) * (S - 9) / span) + 4) for v in verts]
-        for name, vi, _ in polys:
-            order = vi if len(vi) == 3 else [vi[0], vi[1], vi[3], vi[2]]
-            for a, b in zip(order, order[1:] + order[:1]):
-                if a < len(pts) and b < len(pts):
-                    c.line(*pts[a], *pts[b], (200, 200, 255))
-        views.append(c)
-    info = {'vertices': len(verts), 'polys': len(polys), 'size': (max(xs) - min(xs), max(ys) - min(ys),
-                                                                   max(zs) - min(zs))}
-    uv = [x for _, _, uvs in polys for x in uvs]
-    texc = None
+    info = model_info(verts, polys)
+    uv = [x for p in polys for x in p['uv']]
+    boxes = []
     if uv and tex:
         tp, clut, uo, vo = tex
         us, vs = [a[0] for a in uv], [a[1] for a in uv]
         box = (min(us), min(vs), max(us) + 1, max(vs) + 1)
         info['uvbox'] = box
-        texc, miss = tex_rect(vram, tp, clut, uo + box[0], vo + box[1], box[2] - box[0], box[3] - box[1])
-        info['tex_missing'] = miss
-        texc = scale_canvas(texc, 2) if texc.w <= 128 and texc.h <= 128 else texc
-    W = sum(v.w for v in views) + 8 + (texc.w + 4 if texc else 0)
-    H = max(S, texc.h if texc else 0)
-    out = Canvas(W, H, (24, 24, 24))
-    x = 0
-    for v in views:
-        out.blit(v, x, 0)
-        x += v.w + 4
-    if texc:
-        out.blit(texc, x + 4, 0)
-    return out, info
+        boxes.append((tp, clut, uo + box[0], vo + box[1], box[2] - box[0], box[3] - box[1]))
+    if texlist:
+        def texfn(p):
+            return texlist[p['tex']] if p['tex'] is not None and p['tex'] < len(texlist) else None
+        boxes = []
+        for ti, (tp, cl, du, dv) in enumerate(texlist[:3]):
+            tuv = [x for p in polys if p['tex'] == ti for x in p['uv']]
+            if tuv:
+                us, vs = [a[0] for a in tuv], [a[1] for a in tuv]
+                boxes.append((tp, cl, du + min(us), dv + min(vs), max(us) + 1 - min(us), max(vs) + 1 - min(vs)))
+    else:
+        def texfn(p):
+            return tex
+    c, miss = render_textured_model(vram, verts, polys, texfn, boxes)
+    info['tex_missing'] = miss
+    return c, info
+
+
+def render_somodel(vram, d, o, size):
+    """'so' effect model: the model drawn with its texture list (texture byte -> (tpage, clut) + uv offset)."""
+    so = parse_somodel(d, o, size)
+    if not so or not so['model']:
+        return None, {}
+    mo = o + so['model_ofs']
+    verts, polys = model_polys(d, mo, so['model'])
+    if not verts:
+        return None, {}
+    info = model_info(verts, polys)
+    info['textured'] = so['textured']
+    info['tex'] = [f'{tp:#x}/{cl:#x}+({du},{dv})' for tp, cl, du, dv in so['tex']]
+    texl = so['tex'] if so['textured'] else []
+
+    def texfn(p):
+        return texl[p['tex']] if p['tex'] is not None and p['tex'] < len(texl) else None
+    boxes = []
+    for ti, (tp, cl, du, dv) in enumerate(texl[:3]):
+        uv = [x for p in polys if p['tex'] == ti for x in p['uv']]
+        if uv:
+            us, vs = [a[0] for a in uv], [a[1] for a in uv]
+            boxes.append((tp, cl, du + min(us), dv + min(vs), max(us) + 1 - min(us), max(vs) + 1 - min(vs)))
+    c, miss = render_textured_model(vram, verts, polys, texfn, boxes)
+    info['tex_missing'] = miss
+    return c, info
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -740,6 +1069,7 @@ def render_model(vram, d, o, m, tex):
 
 GETFD = re.compile(r'getFileData\(\s*([^,()]+(?:\([^()]*\))?)\s*,\s*(0x[0-9A-Fa-f]+|\d+|[A-Z_][A-Z0-9_]*)\s*\)')
 CALL = re.compile(r'(?:->|\b)([A-Za-z_][A-Za-z0-9_]*)\s*$')
+CAST_CALL = re.compile(r'\(\s*\(\s*\w+\s*\*?\s*\)\s*(?:\w+->)?(\w+)\s*\)\s*$')
 
 
 def enclosing_call(src, pos):
@@ -753,6 +1083,8 @@ def enclosing_call(src, pos):
         elif ch == '(':
             if depth == 0:
                 m = CALL.search(src[max(0, i - 80):i])
+                if not m:  # ((FnType)ex->name)(...): a call through a cast export
+                    m = CAST_CALL.search(src[max(0, i - 120):i])
                 if m and m.group(1) not in ('if', 'while', 'for', 'switch', 'return', 'sizeof'):
                     return m.group(1), i
                 if not m:
@@ -844,14 +1176,47 @@ def c_usage(module):
     return out
 
 
+def module_table(module, sym, count, fmt='<2h'):
+    """count records of a module's data symbol, read from disks/us/fxmod/<module>.bin at its address
+    (config/fxmod/<module>.syms.txt), or None."""
+    sp = os.path.join(ROOT, 'config', 'fxmod', module + '.syms.txt')
+    bp = os.path.join(ROOT, 'disks', 'us', 'fxmod', module + '.bin')
+    if not (os.path.exists(sp) and os.path.exists(bp)):
+        return None
+    m = re.search(r'^' + re.escape(sym) + r'\s*=\s*(0x[0-9A-Fa-f]+)', open(sp).read(), re.M)
+    vram = next((int(line.split()[1], 16) for line in open(os.path.join(ROOT, 'config', 'fxmods.us.txt'))
+                 if line.split()[:1] == [module]), None)
+    if not m or vram is None:
+        return None
+    img = open(bp, 'rb').read()
+    o, sz = int(m.group(1), 16) - vram, struct.calcsize(fmt)
+    if not (0 <= o and o + count * sz <= len(img)):
+        return None
+    return [struct.unpack_from(fmt, img, o + i * sz) for i in range(count)]
+
+
+def texlist_from_use(module, uses):
+    """[(tpage, clut, du, dv)] of a Hi_RegisterTexListModel call whose BtlTexInfo / offsets are module symbols."""
+    for u in uses:
+        a = u.get('args') or []
+        if u.get('call') == 'Hi_RegisterTexListModel' and len(a) >= 3 and module:
+            syms = [re.sub(r'^\(.*?\)\s*|^&', '', x).strip() for x in a[1:3]]
+            pages = module_table(module, syms[0], 6, '<2H')
+            ofs = module_table(module, syms[1], 6) if syms[1] != 'NULL' else [(0, 0)] * 6
+            if pages and ofs:
+                return [(tp, cl, du, dv) for (tp, cl), (du, dv) in zip(pages, ofs)]
+    return None
+
+
 USE_KIND = {
     'btlfx_startEmitter': 'emitter', 'Hi_RegisterTexEffModel': 'model', 'Hi_RegisterTexListEffModel': 'model',
+    'Hi_RegisterTexListModel': 'model', 'Hi_RegisterTexPtrModel': 'model',
     'Hi_RegisterGouEffModel': 'model', 'Hi_RegisterSolidEffModel': 'model', 'btlfx_registerEffectModel': 'somodel',
     'btlfx_drawRings': 'rings', 'btlfx_drawTrail': 'trail', 'btlfx_drawSprite': 'sprite',
     'btlfx_drawSpriteAtOt': 'sprite', 'btlfx_drawParticles': 'particles', 'btlfx_drawAnimQuads': 'animquads',
     'btlfx_drawSprites': 'sprites', 'btlfx_drawFan': 'fan', 'btlfx_sampleGradient': 'gradient', 'btlfx_drawSpriteLine': 'spriteline',
 }
-DRAW_KIND = {'rings': 6, 'trail': 4, 'sprite': 1, 'particles': 0, 'animquads': 2, 'sprites': 3, 'spriteline': 'line'}
+DRAW_KIND = {'fan': 7, 'rings': 6, 'trail': 4, 'sprite': 1, 'particles': 0, 'animquads': 2, 'sprites': 3, 'spriteline': 'line'}
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -935,11 +1300,27 @@ def classify(fx, slot, idx, o, size, use, sref):
                         'polys': sum(sum(m['counts']) for m in mdl['meshes'])}
         for u in use:
             a = u.get('args')
-            if u.get('call', '').startswith('Hi_Register') and a and len(a) >= 5:
+            if (u.get('call') or '').startswith('Hi_Register') and a and len(a) >= 5:
                 rec['model']['tex'] = a[1:5]
+    if kind == 'somodel':
+        so = parse_somodel(d, o, size)
+        if so:
+            rec['somodel'] = {'textured': so['textured'],
+                              'tex': [f'{tp:#x}/{cl:#x}+({du},{dv})' for tp, cl, du, dv in so['tex']]}
+            if so['model']:
+                rec['somodel']['polys'] = sum(sum(m['counts']) for m in so['model']['meshes'])
     if kind in DRAW_KIND:
-        rec['sprite'] = jsonable(sprite_info(d, o, DRAW_KIND[kind]))
+        try:
+            rec['sprite'] = jsonable(sprite_info(d, o, DRAW_KIND[kind]))
+        except (struct.error, IndexError):
+            rec['sprite'] = None
     return rec
+
+
+def idx_label(idx):
+    """Sheet / file label of a getFileData index: R = ring data (0x40+), S = summon data (0x80+), L = battle load
+    buffer (0xC0+)."""
+    return ('R' if idx < 0x80 else 'S' if idx < 0xC0 else 'L') + f'{idx:02X}' if idx >= 0x40 else f'{idx:02X}'
 
 
 def jsonable(x):
@@ -981,7 +1362,7 @@ def render_entry(fx, slot, rec, outdir, sheet=None):
                     upscale(c).save(name)
                     written.append((os.path.basename(name), nf, miss))
                     if sheet is not None:
-                        sheet.append((f'{idx:02X} E{i}{which.upper()}', upscale(c, 64, 1100)))
+                        sheet.append((f'{idx_label(idx)} E{i}{which.upper()}', upscale(c, 64, 1100)))
     elif rec['kind'].startswith('model'):
         mdl = check_model(d, o, rec['size'])
         tex = None
@@ -989,7 +1370,8 @@ def render_entry(fx, slot, rec, outdir, sheet=None):
         if t and all(lit(x) is not None for x in t):
             tex = tuple(lit(x) for x in t)
         try:
-            c, info = render_model(fx.vram, d, o, mdl, tex)
+            tl = rec.get('model', {}).get('texlist')
+            c, info = render_model(fx.vram, d, o, mdl, tex, [tuple(t) for t in tl] if tl else None)
         except (struct.error, IndexError):
             c, info = None, {}
         if c:
@@ -997,8 +1379,20 @@ def render_entry(fx, slot, rec, outdir, sheet=None):
             c.save(name)
             written.append((os.path.basename(name), info.get('polys'), info.get('tex_missing', 0)))
             if sheet is not None:
-                sheet.append((f'{idx:02X} M', c))
+                sheet.append((f'{idx_label(idx)} M', c))
             rec.setdefault('model', {}).update(jsonable(info))
+    elif rec['kind'] == 'somodel':
+        try:
+            c, info = render_somodel(fx.vram, d, o, rec['size'])
+        except (struct.error, IndexError):
+            c, info = None, {}
+        if c:
+            name = f'{pre}_somodel.png'
+            c.save(name)
+            written.append((os.path.basename(name), info.get('polys'), info.get('tex_missing', 0)))
+            if sheet is not None:
+                sheet.append((f'{idx_label(idx)} M', c))
+            rec.setdefault('somodel', {}).update(jsonable(info))
     elif rec['kind'] in DRAW_KIND:
         try:
             r = render_sprite_data(fx.vram, d, o, DRAW_KIND[rec['kind']])
@@ -1010,7 +1404,7 @@ def render_entry(fx, slot, rec, outdir, sheet=None):
             upscale(c).save(name)
             written.append((os.path.basename(name), nf, miss))
             if sheet is not None:
-                sheet.append((f'{idx:02X} D', upscale(c, 64, 1100)))
+                sheet.append((f'{idx_label(idx)} D', upscale(c, 64, 1100)))
     rec['png'] = [w[0] for w in written]
     rec['png_missing_texels'] = sum(w[2] or 0 for w in written)
     return written
@@ -1021,7 +1415,8 @@ GLYPH = {
     '0': [7, 5, 5, 5, 7], '1': [2, 6, 2, 2, 7], '2': [7, 1, 7, 4, 7], '3': [7, 1, 7, 1, 7], '4': [5, 5, 7, 1, 1],
     '5': [7, 4, 7, 1, 7], '6': [7, 4, 7, 5, 7], '7': [7, 1, 1, 1, 1], '8': [7, 5, 7, 5, 7], '9': [7, 5, 7, 1, 7],
     'A': [2, 5, 7, 5, 5], 'B': [6, 5, 6, 5, 6], 'C': [7, 4, 4, 4, 7], 'D': [6, 5, 5, 5, 6], 'E': [7, 4, 6, 4, 7],
-    'F': [7, 4, 6, 4, 4], 'M': [5, 7, 7, 5, 5], ' ': [0, 0, 0, 0, 0],
+    'F': [7, 4, 6, 4, 4], 'M': [5, 7, 7, 5, 5], 'S': [7, 4, 7, 1, 7], 'L': [4, 4, 4, 4, 7], 'R': [6, 5, 6, 5, 5],
+    ' ': [0, 0, 0, 0, 0],
 }
 
 
@@ -1111,34 +1506,59 @@ def resolve(args):
     return out
 
 
+def data_slots(fx, group, use):
+    """[(slot, first index, what)]: the group's own data, then the shared data its module can index: the ring
+    (0x40+, only when the C uses it), the summon data (0x80+) and the load buffer (0xC0+)."""
+    out = [(group, 0, 'file data')]
+    if fx.ring_slot is not None and any(0x40 <= i < 0x80 for i in use):
+        out.append((fx.ring_slot, 0x40, 'ring data (RAM_BTLFX_RING' + (', common part)' if fx.common else ')')))
+    s = fx.summon_slot(group)
+    if s is not None:
+        g = next(gi for gi, sl in fx.summon_slots if sl == s)
+        out.append((s, 0x80, f'summon data (type 6 chunk of group {g}: g_btlfxLoader.summon->data[0])'))
+    if fx.loadbuf_slot is not None:
+        out.append((fx.loadbuf_slot, 0xC0, 'load buffer (type 8 chunk)'))
+    return out
+
+
 def analyse(img, common, module, fid, group, outdir, render):
     fx = FxFile(img, fid, common)
     use = c_usage(module) if module else {}
     sref, mods = script_refs(fx)
-    slot = group if group < len(fx.slots) else 0
-    recs = []
-    for idx, o, size in fx.entries(slot):
-        recs.append(classify(fx, slot, idx, o, size, [u for u in use.get(idx, [])], sref.get(idx, [])))
-        # keep the full args for model textures
-        for r in recs[-1:]:
+    if group >= len(fx.groups):
+        group = 0
+    recs, slot_of, parts = [], {}, []
+    for slot, base, what in data_slots(fx, group, use):
+        ents = fx.entries(slot)
+        if base:
+            ents = ents[:0x40]
+        parts.append({'base': base, 'what': what, 'entries': len(ents)})
+        for k, o, size in ents:
+            idx = base + k
+            r = classify(fx, slot, idx, o, size, use.get(idx, []), sref.get(idx, []))
             if r['kind'].startswith('model'):
-                full = use.get(idx, [])
-                for u in full:
-                    if u.get('call', '').startswith('Hi_Register') and len(u.get('args', [])) >= 5:
+                for u in use.get(idx, []):
+                    if (u.get('call') or '').startswith('Hi_Register') and len(u.get('args', [])) >= 5:
                         r.setdefault('model', {})['tex'] = u['args'][1:5]
+                tl = texlist_from_use(module, use.get(idx, []))
+                if tl:
+                    r.setdefault('model', {})['texlist'] = [list(t) for t in tl]
+            recs.append(r)
+            slot_of[idx] = slot
     fdir = os.path.join(outdir, f'{fid:03x}' + (f'_{group}' if group else ''))
     if render:
         os.makedirs(fdir, exist_ok=True)
         fx.vram.save(os.path.join(fdir, 'vram.png'))
         sheet = []
         for r in recs:
-            render_entry(fx, slot, r, fdir, sheet if r['uses'] else None)
+            render_entry(fx, slot_of[r['index']], r, fdir, sheet if r['uses'] else None)
         save_sheet(sheet, os.path.join(fdir, 'sheet.png'))
     used = sorted(set(use) - {r['index'] for r in recs})
     return {'module': module, 'file': fid, 'group': group, 'groups': len(fx.groups),
             'chunks': [[{k: v for k, v in c.items() if k in ('type', 'flag', 'sectors', 'extra', 'images', 'rects')}
                         for c in g['chunks']] for g in fx.groups],
-            'entries': recs, 'module_ops': mods, 'indices_not_in_table': used,
+            'entries': recs, 'parts': parts, 'module_ops': mods, 'indices_not_in_table': used,
+            'common_tex': fx.common_tex, 'summon_tex': fx.summon_hdr,
             'script': [(op, a, b) for _, op, a, b in fx.script], 'pngdir': fdir if render else None}
 
 
@@ -1152,10 +1572,16 @@ def fmt_entry(r):
         bits.append(f"{e['motion']}/{e['shape']}{' +sub' if e['sub'] else ''} [{els}]")
     if 'model' in r:
         m = r['model']
-        bits.append(f"{m.get('polys')} polys" + (f" tex {','.join(m['tex'])}" if m.get('tex') else ''))
+        bits.append(f"{m.get('polys')} polys" + (f" tex {','.join(m['tex'])}" if m.get('tex') else '') +
+                    (' texlist ' + ' '.join(f'{t[0]:#x}/{t[1]:#x}+({t[2]},{t[3]})' for t in m['texlist'])
+                     if m.get('texlist') else ''))
+    if 'somodel' in r:
+        m = r['somodel']
+        bits.append(f"{m.get('polys')} polys " + (f"tex {' '.join(m['tex'])}" if m.get('textured') else 'gouraud'))
     if r.get('sprite'):
         s = r['sprite']
-        bits.append(' '.join(f'{k}={v}' for k, v in s.items() if k in ('frames', 'rings', 'segments', 'type')))
+        bits.append(' '.join(f'{k}={v}' for k, v in s.items()
+                             if k in ('frames', 'rings', 'segments', 'type', 'points', 'gouraud')))
     uses = sorted({f"{u.get('call') or ('=' + str(u.get('var')))}@{u.get('func')}" for u in r['uses']})
     return ' '.join(bits), uses
 
@@ -1191,6 +1617,15 @@ def main():
     for res in results:
         md.append(f"## {res['module']} (file {res['file']:#05x}, group {res['group']}): {res['label']}\n")
         md.append(f"module ops run by the script: {', '.join(f'{o:#x}({a},{b})' for o, a, b in res['module_ops'])}")
+        for pt in res['parts'][1:]:
+            md.append(f"{pt['base']:#x}+: {pt['what']}, {pt['entries']} entries")
+        if res['common_tex']:
+            md.append('common pages the file uploads (type 9): ' +
+                      ' '.join(f'({x:#x}, {y:#x})' for x, y in res['common_tex']))
+        if res['summon_tex']:
+            st = res['summon_tex']
+            md.append(f"summon textures (type 4): {st['textures']} pages, tpages "
+                      f"{' '.join(f'{t:#x}' for t in st['tpages'])}, {st['clutRows']} CLUT rows at y 0xE6")
         if res['indices_not_in_table']:
             md.append(f"indices the C uses that are not in the table: {res['indices_not_in_table']}")
         md.append('')
