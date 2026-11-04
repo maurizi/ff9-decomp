@@ -101,13 +101,14 @@ def parse(text):
 def glue(items):
     """Rodata that splat migrated into a function's asm has no slot of its own; keep it glued to the
     function that directly follows it (only INCLUDE_RODATA lines in between). Same for file-local
-    helpers (`static [inline] f(...) {...}`) written next to their user. Returns (items, names of
-    INCLUDE_RODATA lines now carried inside a glued chunk)."""
+    helpers (`static inline f(...) {...}`) written next to their user. A plain `static` function is a real
+    function with its own slot (the effect modules' file-local fxm_* helpers and pool tasks), not a helper.
+    Returns (items, names of INCLUDE_RODATA lines now carried inside a glued chunk)."""
     out, absorbed, i = [], set(), 0
     while i < len(items):
         it = items[i]
         helper = it.kind == "def" and (it.data or it.body.lstrip().startswith(("static", "/*"))
-                                       and re.search(r"^static\b", it.body, re.M))
+                                       and re.search(r"^static\s+(?:__)?inline\b", it.body, re.M))
         j = i + 1
         while j < len(items) and items[j].kind == "rodata":
             j += 1
