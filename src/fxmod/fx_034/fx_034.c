@@ -140,7 +140,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos44);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4C);
-        work->emit0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4C);
+        work->emit0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COLD_BREATH_ICE_CHUNKS), (s32)&work->pos4C);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_034_trails;
             work->emit0->trailSlots = 0x28;
@@ -170,14 +170,14 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale20.vy = 0x800;
         work->scale20.vz = 0x800;
         work->rgb30 = -0x20;
-        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x99, 0x3D80, 0, 0);
-        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0x9A, 0x3DC0, 0, 0x80);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COLD_BREATH_ICE_CRYSTAL), 0x99, 0x3D80, 0, 0);
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COLD_BREATH_ICE_CRYSTAL_2), 0x9A, 0x3DC0, 0, 0x80);
         work->scroll6C = 0;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 15:
-            work->emit4 = emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos64);
+            work->emit4 = emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COLD_BREATH_FROST_BREATH), (s32)&work->pos64);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }

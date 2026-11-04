@@ -4,6 +4,19 @@
 /* Effect module fx_041 (dir 13 file 0x41). */
 #include "btlfx_mod.h"
 
+/* fx_041 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_WHIRL_SLASH_WIND_RINGS  0x1 /* emitter: white-cyan-green and blue-white gouraud rings, teal glints, sparks */
+#define FX_WHIRL_SLASH_DUST_CLOUD  0x2 /* emitter: brown dust cloud + green glints, sparks */
+#define FX_WHIRL_SLASH_DUST_PUFF   0x3 /* emitter: beige dust puff + sparks */
+#define FX_WHIRL_SLASH_SLASH_TRAIL 0x4 /* emitter: trail with a blue-white slash streak */
+#define FX_WHIRL_SLASH_CYAN_RINGS  0x5 /* emitter: white-cyan-teal gouraud rings */
+#define FX_WHIRL_SLASH_SMOKE       0x6 /* emitter: grey smoke puffs */
+#define FX_WHIRL_SLASH_DUST_PUFF_2 0x7 /* emitter: beige dust puff + sparks */
+#define FX_WHIRL_SLASH_PATH        0x8 /* point list: the slash path (fxm_posPathInit) */
+#define FX_WHIRL_SLASH_GLINTS      0xF /* emitter: fan + yellow glints, sparks */
+#define FX_WHIRL_SLASH_GOLD_RINGS  0x10 /* emitter: white-yellow-brown and white-red gouraud rings */
+
 typedef struct {
     s16 x, y, z;
 } Fx041Point;

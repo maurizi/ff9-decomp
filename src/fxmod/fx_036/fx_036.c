@@ -32,24 +32,24 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (frame) {
         case 1:
             ex->btlfx_getUnitBonePos(0x10, 1, (u16 *)&work->pos1C);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos1C);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_RED_RING), (s32)&work->pos1C);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 5:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos1C);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos1C);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos1C);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_EXPLOSION), (s32)&work->pos1C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_BIG_EXPLOSION), (s32)&work->pos1C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SMOKE), (s32)&work->pos1C);
             break;
         case 9:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos24);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_EXPLOSION_SMOKE), (s32)&work->pos24);
             if (work->emit10 != NULL) {
                 work->emit10->tail->shape = -1;
                 work->emit10->tail->s.module.spawnFn = fx_036_op80SpawnPoint;
             }
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&env->targets->centerX);
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&env->targets->centerX);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SPARKS), (s32)&env->targets->centerX);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SPARKS_2), (s32)&env->targets->centerX);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = 0x100;
             }

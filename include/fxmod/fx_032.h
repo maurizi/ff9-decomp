@@ -4,6 +4,14 @@
 /* Effect module fx_032 (dir 13 file 0x32). */
 #include "btlfx_mod.h"
 
+/* fx_032 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_GLOWING_EYES_SPARKS       0x1 /* emitter: cone of spark sprites (texture not in the file) (look pending) */
+#define FX_GLOWING_EYES_GLOW_RINGS   0x2 /* emitter: olive-yellow and white-cyan gouraud rings */
+#define FX_GLOWING_EYES_GLOW_RINGS_2 0x3 /* emitter: olive-yellow and white-cyan gouraud rings */
+#define FX_GLOWING_EYES_SMOKE        0x4 /* emitter: grey smoke wisps */
+#define FX_GLOWING_EYES_SWIRL        0x5 /* emitter: pale green swirling vortex */
+
 typedef struct {
     SVECTOR pos0; /* target body position */
     SVECTOR pos8;

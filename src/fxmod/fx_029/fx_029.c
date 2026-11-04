@@ -14,7 +14,7 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         zWord = ((s32 *)&env->targets->centerX)[1];
         work->pos8.vy -= 0xFA;
         ((s32 *)&work->pos8)[1] = zWord;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHITE_WIND_GLOW), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = 0x80;
         }

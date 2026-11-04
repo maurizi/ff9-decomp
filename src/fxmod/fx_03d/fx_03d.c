@@ -10,8 +10,8 @@ s32 fx_03d_op80(s32 mode, Fx03dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_03d_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos8);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUNA_FAN_EMITTER_2), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUNA_SPARKLE_CIRCLE), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -56,7 +56,7 @@ s32 fx_03d_op81(s32 mode, Fx03dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos18.vy = 0;
         work->pos18.vz = 0;
         fx_03d_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUNA_RED_TRAIL), (s32)&work->pos18);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_03d_trails;
             work->emit0->trailSlots = 9;
@@ -65,11 +65,11 @@ s32 fx_03d_op81(s32 mode, Fx03dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 0x10) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUNA_GOLD_RINGS), (s32)&work->pos18);
         }
         if (frame == 0x28) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUNA_MAGENTA_RING), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUNA_FAN_EMITTER), (s32)&work->pos18);
         }
         return frame >= 0x3C;
     }
@@ -98,8 +98,8 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale28.vx = 0x1000;
         work->scale28.vy = 0x1000;
         work->scale28.vz = 0x1000;
-        work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
-        work->model42 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
+        work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LUNA_SO_MODEL), 1);
+        work->model42 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LUNA_SO_MODEL_2), 1);
         work->fadeIn3C = -1;
         work->fadeOut3E = -1;
     } else {

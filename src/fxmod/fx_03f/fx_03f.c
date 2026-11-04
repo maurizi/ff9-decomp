@@ -17,9 +17,9 @@ s32 fx_03f_op80(s32 mode, Fx03fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos28.vz = work->pos20.vz;
         work->pos18.vy -= 0xFA;
         work->pos28.vy += 0xFA;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos28);
-        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHELL_BARRIER_RING), (s32)&work->pos18);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHELL_BARRIER_RING), (s32)&work->pos28);
+        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHELL_FAN_EMITTER), (s32)&work->pos20);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
@@ -32,8 +32,8 @@ s32 fx_03f_op80(s32 mode, Fx03fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0xA) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos18);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos28);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHELL_BARRIER_RING_2), (s32)&work->pos18);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHELL_BARRIER_RING_2), (s32)&work->pos28);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
@@ -42,7 +42,7 @@ s32 fx_03f_op80(s32 mode, Fx03fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0x14) {
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos20);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHELL_BLUE_RINGS), (s32)&work->pos20);
         }
         if (frame == 0xB) {
             ex->btlfx_stopEmitter(work->emit0);

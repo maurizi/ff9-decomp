@@ -4,6 +4,12 @@
 /* Effect module fx_035 (dir 13 file 0x35). */
 #include "btlfx_mod.h"
 
+/* fx_035 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEVILS_CANDLE_FLAME   0x3 /* emitter: teal / tan flame quads */
+#define FX_DEVILS_CANDLE_FLAME_2 0x8 /* emitter: teal / tan flame quads */
+#define FX_DEVILS_CANDLE_FIRE    0x9 /* emitter: red-orange-yellow flame tongues + red glow */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

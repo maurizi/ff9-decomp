@@ -4,6 +4,13 @@
 /* Effect module fx_058 (dir 13 file 0x58). */
 #include "btlfx_mod.h"
 
+/* fx_058 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MATRA_MAGIC_MISSILE_TRAIL 0x2 /* trail: blue streak behind each homing missile */
+#define FX_MATRA_MAGIC_BLAST         0x8 /* particles: violet-white radial blast */
+#define FX_MATRA_MAGIC_SMOKE         0x9 /* particles: pink-violet smoke puff */
+#define FX_MATRA_MAGIC_SO_MODEL      0xA /* 'so' model registered in op80 (look pending) */
+
 /* homing particle, one pool item */
 typedef struct {
     s32 state0; /* state */

@@ -4,6 +4,12 @@
 /* Effect module fx_04b (dir 13 file 0x4B). */
 #include "btlfx_mod.h"
 
+/* fx_04b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SANDSTORM_SAND_CLOUD   0x1 /* emitter: beige sand particle quads */
+#define FX_SANDSTORM_SAND_TRAIL   0x2 /* emitter: homing trail with a grey streak strip */
+#define FX_SANDSTORM_SAND_TRAIL_2 0x3 /* emitter: screen trail with a grey streak strip */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

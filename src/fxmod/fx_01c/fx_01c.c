@@ -16,8 +16,8 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos1C.vy = env->targets->centerY;
             work->pos1C.vz = env->targets->centerZ;
         }
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_BUBBLE), (s32)&work->pos14);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_BLUE_RING), (s32)&work->pos14);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -29,8 +29,8 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 30:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_WAVE_RING), (s32)&work->pos14);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_BUBBLES), (s32)&work->pos14);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_01c_trails;
                 work->emitC->trailSlots = 8;
@@ -38,7 +38,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 50:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos1C);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_WATER_DROPS), (s32)&work->pos1C);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = 0x80;
             }

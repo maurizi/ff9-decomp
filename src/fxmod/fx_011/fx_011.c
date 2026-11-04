@@ -10,11 +10,11 @@ s32 fx_011_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else if (mode == 1) {
         fx_011_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)work);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)work);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIFE_HALO_RINGS), (s32)work);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)work);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIFE_FEATHER_TRAILS), (s32)work);
         if (emitter != NULL) {
             emitter->trails = (s32)fx_011_trails;
             emitter->trailSlots = 0x19;
@@ -24,7 +24,7 @@ s32 fx_011_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else {
         frame = entry->frame;
         if (frame == 6) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)work);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIFE_WINGS), (s32)work);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

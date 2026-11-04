@@ -15,11 +15,11 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         zWord = ((s32 *)&env->targets->centerX)[1];
         work->pos4.vy -= 0x180;
         ((s32 *)&work->pos4)[1] = zWord;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_PINK_VORTEX), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = 0xA0;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_RED_GLOW_2), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = 0xA0;
         }
@@ -27,20 +27,20 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->hold0 == 0) {
             if (frame == 0x18) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_WHITE_RINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0xC8;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_RED_GLOW), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0xC8;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_PINK_RINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0xC8;
                 }
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xD), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_01F_BACKDROP), frame);
             if (frame >= 0x3C) {
                 return 1;
             }

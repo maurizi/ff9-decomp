@@ -4,6 +4,17 @@
 /* Effect module fx_05d (dir 13 file 0x5D). */
 #include "btlfx_mod.h"
 
+/* fx_05d effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BIO_PATH          0x1 /* track: rotation / position keys (fxm_rotPosTrackInit) */
+#define FX_BIO_SCALE_TRACK   0x2 /* track: vector keys (fxm_vecTrackInit), paired with FX_BIO_PATH */
+#define FX_BIO_SCALE_TRACK_2 0xF /* track: vector keys (fxm_vecTrackInit), paired with FX_BIO_PATH_2 */
+#define FX_BIO_PATH_2        0x10 /* track: rotation / position keys (fxm_rotPosTrackInit) */
+#define FX_BIO_SCREEN_TRAIL  0x11 /* emitter: orbiting screen trail, render all black (look pending) */
+#define FX_BIO_TEAL_RING     0x12 /* emitter: ring with a teal glow texture */
+#define FX_BIO_TOXIC_CLOUD   0x13 /* emitter: green toxic cloud + grey glow */
+#define FX_BIO_RED_ORB       0x14 /* emitter: red-veined orbs + crimson glow */
+
 /* keyframe tracks read from the effect file: count, then the keys */
 typedef struct {
     s16 px0, py2, pz4; /* position */

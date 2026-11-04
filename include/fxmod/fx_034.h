@@ -4,6 +4,13 @@
 /* Effect module fx_034 (dir 13 file 0x34). */
 #include "btlfx_mod.h"
 
+/* fx_034 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_COLD_BREATH_ICE_CRYSTAL   0x1 /* model: ice crystal shape with a cracked-ice texture */
+#define FX_COLD_BREATH_FROST_BREATH  0x2 /* emitter: violet-white frost mist streams */
+#define FX_COLD_BREATH_ICE_CHUNKS    0x3 /* emitter: grey ice lumps + teal glows */
+#define FX_COLD_BREATH_ICE_CRYSTAL_2 0xA /* model: the same crystal shape, texture page 0x9A not in the file (look pending) */
+
 typedef struct {
     s16 x, y, z;
 } Fx034Point;

@@ -16,7 +16,7 @@ s32 fx_00a_op80(s32 mode, Fx00aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->hold0 == 0) {
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VENOM_POWDER_POWDER_CLOUD), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }

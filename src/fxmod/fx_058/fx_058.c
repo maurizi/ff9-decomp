@@ -17,7 +17,7 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
         switch (it->state0) {
         case 0:
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->posC, NULL, -1, 0, 0, 0, it->trail1C,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_MISSILE_TRAIL), (s32)&it->posC, NULL, -1, 0, 0, 0, it->trail1C,
                                   0);
             }
             it->speed4 += 0x20;
@@ -45,7 +45,7 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             it->rot14.vx += 0x800;
             ex->Hi_DrawEffModel(&it->rot14, &pos, (s32)&scale, work->model24);
             it->rot14.vx -= 0x800;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_MISSILE_TRAIL), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
                               it->trail1C, 0);
             vec.vx = work->pos4.vx - it->posC.vx;
             vec.vy = work->pos4.vy - it->posC.vy;
@@ -66,14 +66,14 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             BTLFX_COPY_SVEC(&vec, &it->posC);
             vec.vy -= frame * 4;
             env->otZ = 0x40;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 9), &vec, NULL, 0x4000, frame, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_SMOKE), &vec, NULL, 0x4000, frame, 1, -1, 0, 0);
             env->otZ = 0;
             if (frame < 0x10) {
                 BTLFX_COPY_SVEC(&vec, &it->posC);
                 vec.vy = 0;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 8), &vec, &ang, 0x1800, frame, 1, -1, 0, 0);
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_BLAST), &vec, &ang, 0x1800, frame, 1, -1, 0, 0);
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_MISSILE_TRAIL), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
                               it->trail1C, 0);
             if (frame >= 0x18) {
                 return 1;
@@ -105,7 +105,7 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         work->rot14.vy += 0x800;
         ex->btlfx_initEffModels(fx_058_effModels, 1);
-        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_SO_MODEL), 1);
     } else if (work->hold0 == 0) {
         if (work->count1C < 0x20) {
             work->count1C++;

@@ -4,6 +4,13 @@
 /* Effect module fx_059 (dir 13 file 0x59: Haste, from runtime traces of btlfx_loadFile). */
 #include "btlfx_mod.h"
 
+/* fx_059 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_HASTE_YELLOW_RED_RINGS 0x2 /* emitter: white-yellow and white-red gouraud rings */
+#define FX_HASTE_VIOLET_RINGS     0x13 /* emitter: white-cyan-violet gouraud rings */
+#define FX_HASTE_ORANGE_RINGS     0x14 /* emitter: white-grey-violet-orange gouraud rings */
+#define FX_HASTE_CLOCK_FACE       0x18 /* emitter: clock face with Roman numerals + blue glow */
+
 typedef struct {
     s32 state0; /* state */
     s32 depthZ4; /* spiral head's distance into the screen in the view-rotation frame, grows 0xC8 per frame */

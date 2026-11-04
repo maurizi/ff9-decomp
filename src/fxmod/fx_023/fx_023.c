@@ -30,8 +30,8 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->target2C.vy = work->pos1C.vy;
             work->target2C.vz = work->pos1C.vz;
             work->target2C.vy = -1000;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos24);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_GLYPH_ORBS), (s32)&work->pos24);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RINGS), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -40,7 +40,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->fall36 = 3;
             work->held38 = 0;
             work->target2C.vy = work->pos1C.vy;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RINGS_2), (s32)&work->pos14);
             break;
         }
         if (work->rise34 >= 0) {
@@ -68,8 +68,8 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);
                 work->pos1C.vx = work->pos14.vx;
                 work->pos1C.vz = work->pos14.vz;
-                work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
-                work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
+                work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_GREY_RINGS), (s32)&work->pos14);
+                work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_SCREEN_TRAILS), (s32)&work->pos14);
                 if (work->emit10 != NULL) {
                     work->emit10->trails = (s32)fx_023_trails;
                     work->emit10->trailSlots = 0x3C;

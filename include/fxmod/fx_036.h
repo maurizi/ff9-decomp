@@ -4,6 +4,16 @@
 /* Effect module fx_036 (dir 13 file 0x36). */
 #include "btlfx_mod.h"
 
+/* fx_036 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLOWUP_EXPLOSION       0x1 /* emitter: fire explosion + red gouraud rings */
+#define FX_BLOWUP_EXPLOSION_SMOKE 0x2 /* emitter: fire explosion + grey smoke puffs */
+#define FX_BLOWUP_BIG_EXPLOSION   0x3 /* emitter: three fire explosions */
+#define FX_BLOWUP_RED_RING        0x4 /* emitter: fan + white-red gouraud ring */
+#define FX_BLOWUP_SPARKS          0xB /* emitter: spark sprites (texture not in the file), at the targets (look pending) */
+#define FX_BLOWUP_SPARKS_2        0xC /* emitter: spark sprites (texture not in the file), at the targets (look pending) */
+#define FX_BLOWUP_SMOKE           0xD /* emitter: grey smoke puffs */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -89,15 +89,15 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_059_env = env;
         work->hold0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HASTE_YELLOW_RED_RINGS), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HASTE_ORANGE_RINGS), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HASTE_CLOCK_FACE), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
@@ -120,7 +120,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->hold0 = 0;
         fx_059_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HASTE_VIOLET_RINGS), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }

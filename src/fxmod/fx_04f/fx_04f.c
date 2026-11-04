@@ -65,9 +65,9 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (mode == 1) {
         fx_04f_env = env;
         ex->btlfx_initEffModels(fx_04f_effModels, 4);
-        work->model4 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB));
-        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 6), 0x117, 0xFFFF, 0, 0x80);
-        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0x117, 0xFFFF, 0, 0);
+        work->model4 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_REFLECT_GLOW_BAND));
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_REFLECT_STAR), 0x117, 0xFFFF, 0, 0x80);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_REFLECT_PANELS), 0x117, 0xFFFF, 0, 0);
         work->state0 = 0;
         work->frame48 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
@@ -96,7 +96,7 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 8) {
                 work->state0 = 1;
                 entry->frame = -1;
-                work->emit44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos1C);
+                work->emit44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REFLECT_HALO_RINGS), (s32)&work->pos1C);
                 if (work->emit44 != NULL) {
                     work->emit44->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
@@ -162,8 +162,8 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_ModifyEffModelAbr(work->model10, 1);
         ex->Hi_ModifyEffModelRGB(work->model10, (glow * 2 / 3 >> 5) - 0x80, (glow * 2 / 3 >> 5) - 0x80, (glow * 2 / 3 >> 5) - 0x80);
         work->rot38.vz = 0;
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), work->frame48);
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xD), work->frame48);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REFLECT_BACKDROP), work->frame48);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REFLECT_BACKDROP_2), work->frame48);
         work->frame48++;
     }
     }

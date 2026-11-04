@@ -9,7 +9,7 @@ s32 fx_00d_op80(s32 mode, Fx00dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_00d_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_STONA_LIGHT_TRAIL), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_00d_trails;
             work->emit0->trailSlots = 0x13;
@@ -18,8 +18,8 @@ s32 fx_00d_op80(s32 mode, Fx00dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0xF) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->posC);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_STONA_BLUE_ORBS), (s32)&work->posC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_STONA_GOLD_RINGS), (s32)&work->posC);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

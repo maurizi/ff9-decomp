@@ -17,7 +17,7 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos54.vy = work->pos5C.vy;
         work->pos54.vz = work->pos5C.vz;
         work->pos54.vy -= 0x1C2;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos5C);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_STAR_FLARES), (s32)&work->pos5C);
         work->rot20.vx = 0;
         work->rot20.vy = 0;
         work->rot20.vz = 0;
@@ -28,15 +28,15 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos28.vy = work->pos5C.vy;
         work->pos28.vz = work->pos5C.vz;
         ex->btlfx_initEffModels(fx_001_effModels, 2);
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), 0x1B, 0x3D09, 0, 0);
-        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x1B, 0x3D09, 0, 0);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_LIGHT_SPIRES), 0x1B, 0x3D09, 0, 0);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_LIGHT_RING), 0x1B, 0x3D09, 0, 0);
         work->fadeOut68 = work->fadeIn64 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 6:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos5C);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos5C);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_BLUE_SWIRL), (s32)&work->pos5C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_GOLD_RINGS), (s32)&work->pos5C);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_001_trails;
                 work->emit4->trailSlots = 9;
@@ -44,15 +44,15 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 22:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos5C);
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos5C);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_WHITE_RINGS), (s32)&work->pos5C);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_SPARKLE_BURST), (s32)&work->pos5C);
             work->fadeIn64 = 0x12;
             break;
         case 28:
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos54);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_SPARKLES), (s32)&work->pos54);
             break;
         case 42:
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos4C);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DAGGERS_MAGIC_SPARKLE_SHOWER), (s32)&work->pos4C);
             break;
         case 36:
             work->fadeOut68 = 0x18;

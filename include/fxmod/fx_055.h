@@ -4,6 +4,11 @@
 /* Effect module fx_055 (dir 13 file 0x55). */
 #include "btlfx_mod.h"
 
+/* fx_055 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CHAKRA_DOT_RINGS   0x6 /* emitter: fans, rings of violet / yellow dots, teal-white rings */
+#define FX_CHAKRA_STAR_GLINTS 0x7 /* emitter: blue star glints + light streak, small glints */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

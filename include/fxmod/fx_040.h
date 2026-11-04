@@ -4,6 +4,12 @@
 /* Effect module fx_040 (dir 13 file 0x40). */
 #include "btlfx_mod.h"
 
+/* fx_040 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BUBBLES_BUBBLE_POP 0x3 /* emitter: white bubble-shine quads */
+#define FX_BUBBLES_CYAN_RING  0xA /* emitter: cyan-white gouraud ring */
+#define FX_BUBBLES_BUBBLES    0xB /* emitter: iridescent soap bubbles */
+
 typedef struct {
     Pool6CEntry *emit0[4];
     u8 pad10[8];

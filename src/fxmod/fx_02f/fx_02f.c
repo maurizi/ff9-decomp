@@ -21,7 +21,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vy = 0;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos18, (s16 *)&work->aim0);
-        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_FLAME_STREAK), (s32)&work->pos8);
         if (work->emit20 != NULL) {
             work->emit20->trails = (s32)fx_02f_trails;
             work->emit20->trailSlots = 0x40;
@@ -52,7 +52,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0x10) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_02f_targetPos[i]);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_FIREBALL), (s32)&fx_02f_targetPos[i]);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x40);
                 }

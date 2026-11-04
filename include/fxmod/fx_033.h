@@ -4,6 +4,10 @@
 /* Effect module fx_033 (dir 13 file 0x33). */
 #include "btlfx_mod.h"
 
+/* fx_033 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SNORT_BREATH_TRAILS 0x5 /* emitter: two spiralling screen trails (texture mostly not in the file) (look pending) */
+
 typedef struct {
     s32 timer0; /* knockback countdown */
     SVECTOR pos4;

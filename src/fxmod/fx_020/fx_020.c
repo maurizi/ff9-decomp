@@ -9,7 +9,7 @@ s32 fx_020_op80(s32 mode, Fx020Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_020_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REGEN_LIGHT_TRAIL), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_020_trails;
             work->emit0->trailSlots = 0x14;
@@ -18,7 +18,7 @@ s32 fx_020_op80(s32 mode, Fx020Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x14) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REGEN_GLINTS), (s32)&work->pos8);
         }
         if (frame >= 0x14 && work->emit4 != NULL) {
             if (work->emit4->state == BTLFX_EMIT_DONE) {

@@ -107,10 +107,10 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos38.vz = env->targets->centerZ;
             work->pos30.vx -= 0xC8;
             work->pos38.vx += 0xC8;
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos30);
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos38);
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos28);
-            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos28);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUBBLES_BUBBLE_POP), (s32)&work->pos30);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUBBLES_BUBBLE_POP), (s32)&work->pos38);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUBBLES_CYAN_RING), (s32)&work->pos28);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUBBLES_BUBBLES), (s32)&work->pos28);
         }
         return frame >= 0x3C;
     }

@@ -4,6 +4,19 @@
 /* Effect module fx_016 (dir 13 file 0x16). */
 #include "btlfx_mod.h"
 
+/* fx_016 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_WATER_SPLASH_DROPS  0x1 /* emitter: water droplet clusters, blue glow, small bubbles */
+#define FX_WATER_GLOBE_1       0x2 /* model: flared water bowl, second morph stage */
+#define FX_WATER_GLOBE_2       0x3 /* model: water vase shape, third morph stage */
+#define FX_WATER_GLOBE_3       0x4 /* model: bulging water bowl, fourth morph stage */
+#define FX_WATER_GLOBE_0       0x5 /* model: flat water dish, first morph stage of the growing water globe */
+#define FX_WATER_SPLASH_FUNNEL 0x7 /* model: flared funnel, misty water texture */
+#define FX_WATER_SPLASH_COLUMN 0x8 /* model: open cylinder, misty water texture; morphs to the funnel as the globe bursts */
+#define FX_WATER_BASE_DISC     0x9 /* model: flat disc (water texture) drawn under the globe */
+#define FX_WATER_BLUE_RING     0xA /* emitter: white-blue gouraud ring */
+#define FX_WATER_GLOBE         0xE /* model: full water sphere, last morph stage, then fades */
+
 typedef struct {
     SVECTOR home0[8]; /* target home positions */
     s32 count40; /* target count */

@@ -4,6 +4,17 @@
 /* Effect module fx_03d (dir 13 file 0x3D). */
 #include "btlfx_mod.h"
 
+/* fx_03d effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LUNA_MAGENTA_RING   0x1 /* emitter: white-magenta gouraud ring + two fans */
+#define FX_LUNA_GOLD_RINGS     0x2 /* emitter: white-gold and dark magenta gouraud rings */
+#define FX_LUNA_RED_TRAIL      0x3 /* emitter: flat trail with a red strip + green sparkles, sparks (texture not in the file) */
+#define FX_LUNA_FAN_EMITTER    0x7 /* emitter: four fan elements (not rendered) (look pending) */
+#define FX_LUNA_FAN_EMITTER_2  0x10 /* emitter: one fan element (not rendered) (look pending) */
+#define FX_LUNA_SPARKLE_CIRCLE 0x11 /* emitter: circle of gold / white sparkle quads + blue-green specks */
+#define FX_LUNA_SO_MODEL_2     0x16 /* 'so' model registered in op82 (look pending) */
+#define FX_LUNA_SO_MODEL       0x17 /* 'so' model registered in op82 (look pending) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

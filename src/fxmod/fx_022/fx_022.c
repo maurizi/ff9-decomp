@@ -13,7 +13,7 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vx = work->pos4.vx;
         env->camera->points[0].vy = work->pos4.vy;
         env->camera->points[0].vz = work->pos4.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TENTACLE_GONE_BUBBLES), (s32)&work->pos4);
     } else {
         frame = entry->frame;
         if (work->emit0 != NULL) {

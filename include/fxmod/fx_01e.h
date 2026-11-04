@@ -4,6 +4,11 @@
 /* Effect module fx_01e (dir 13 file 0x1E). */
 #include "btlfx_mod.h"
 
+/* fx_01e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_1000_NEEDLES_NEEDLE_BURST  0x4 /* emitter: orange specks, pink starbursts, white shard sprites, sparks (texture not in the file) */
+#define FX_1000_NEEDLES_NEEDLE_TRAILS 0x8 /* emitter: flat trails with a white needle-streak strip */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     Pool6CEntry *emit4;
