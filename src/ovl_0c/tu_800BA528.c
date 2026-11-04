@@ -85,7 +85,7 @@ void wm_setupWorldData(void) {
     if (g_gameState->gameData->chocograph != 0) {
         wm_loadTim((u32 *)files[3], g_gameState->gameData->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
     }
-    if (*g_worldStoryCounterPtr >= WM_STORY_FOG_END) {
+    if (*g_worldStoryCounterPtr >= WM_STORY_MIST_GONE) {
         g_worldNaviPage = 1;
     } else {
         g_worldNaviPage = 0;
@@ -95,16 +95,16 @@ void wm_setupWorldData(void) {
     wm_loadTim((u32 *)files[2], 4, 0, 0, 0, 0, 0);
     g_worldTitleId = -1;
     switch (*g_worldStoryCounterPtr) {
-    case WM_STORY_TITLE_0:
+    case WM_STORY_TITLE_MIST:
         g_worldTitleId = 0;
         break;
-    case WM_STORY_TITLE_1:
+    case WM_STORY_TITLE_OUTER:
         g_worldTitleId = 1;
         break;
-    case WM_STORY_TITLE_2:
+    case WM_STORY_TITLE_FORGOTTEN:
         g_worldTitleId = 2;
         break;
-    case WM_STORY_TITLE_3:
+    case WM_STORY_TITLE_LOST:
         g_worldTitleId = 3;
         break;
     }
@@ -254,13 +254,13 @@ void wm_updateMap(void) {
             g_worldCameraTarget[2] += rand() % shake - shake / 2;
         }
     }
-    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == WM_TOPO_PUSHBACK && playerType - 1 < 7U) {
+    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == WM_TOPO_GUSTY_VALLEY && playerType - 1 < 7U) {
         g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
         if (g_worldPlayer->pos.vx == g_worldPlayer->prevPos.vx && g_worldPlayer->pos.vz == g_worldPlayer->prevPos.vz) {
             g_worldPlayer->prevPos.vx++;
         }
     }
-    if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == 8 || g_evtGlobalVars.b[EVT_GB_WM_FILE] == 0) {
+    if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == WM_FILE_DISC4 || g_evtGlobalVars.b[EVT_GB_WM_FILE] == WM_FILE_DISC1) {
         dx = (g_worldPlayer->pos.vx >> 3) - 0x790A;
         dz = (g_worldPlayer->pos.vz >> 3) + 0x5ACB;
         dist = SquareRoot0(dx * dx + ((g_worldPlayer->pos.vy >> 3) + 0x66) * ((g_worldPlayer->pos.vy >> 3) + 0x66) * 8 + dz * dz);
@@ -1445,7 +1445,7 @@ void wm_naviInit(void) {
     g_worldNaviVisible = 1;
     g_worldNaviMode = (globalVars = g_evtGlobalVars.b)[0x64];
     i = WM_NAVI_KNOWN_VAR;
-    if (*g_worldStoryCounterPtr >= WM_STORY_FOG_END) {
+    if (*g_worldStoryCounterPtr >= WM_STORY_MIST_GONE) {
         g_evtGlobalVars.h[i] |= WM_NAVI_KNOWN_LATE;
         if (g_evtGlobalVars.h[i] & WM_NAVI_KNOWN_PAIR) {
             g_evtGlobalVars.h[i] |= WM_NAVI_KNOWN_PAIR;

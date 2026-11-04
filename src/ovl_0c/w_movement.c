@@ -1398,7 +1398,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
     memset(&tryPos, 0, sizeof(tryPos));
     ok = 0;
-    if (g_worldAmbientSeDist[1] < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == WM_TOPO_PUSHBACK) {
+    if (g_worldAmbientSeDist[1] < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == WM_TOPO_GUSTY_VALLEY) {
         return 0;
     }
     g_worldFlyTurning = 0;

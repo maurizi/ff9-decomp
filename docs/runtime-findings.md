@@ -4063,7 +4063,7 @@ btlfx_playUnitMotion` and `run3.py r41_item --patch 0x0E,0xEC,0x01` (Potion on V
    Leviathan full (0xB3), Fenrir full (0xD2), Throw (0x110), the Malboro's own attacks (0x64, 0x18) and Atomos / Ark
    (above, those runs did not trace them). Exec breakpoints on all seven: 0 hits. high.
 
-## R41b runtime pass: R41 question files  (status: proposed)
+## R41b runtime pass: R41 question files  (status: applied: BTLBG_SCENE_* by place, BTL_SOUND_SE_BANK, TM_MUSIC_BANK / TM_SE_BANK / TM_FILE_*, SND_BANK_COMMON, MUSIC_WORLD_MAP / CHOCOBO / AIRSHIP / WORLD_DISC4, WM_SE_WIND_LOOP, WM_TOPO_GUSTY_VALLEY / CHOCOBO_TRACKS_* / WATERFALL / RIVER, WM_STORY_TITLE_* / MIST_*, WM_BLOCKFX_MEMORIA_ORB / WINDMILL / KIERA_DESERT, WM_FILE_*; comments for CAST_EIKO, TM_AI_*, EVT_FUNC_MENU / RESUME, NO_LANDING. Still pending: WM_BLOCKFX_CLAY, GULUG_SUMMIT, topography 0x16, which part of each battle scene moves)
 Lists: docs/wip/r41_runtime_ovl_0b.md (Q1-Q3), docs/wip/r41_runtime_main.md (rows 2-5; row 1, the ATE sprites, was
 answered by "R41 runtime pass" above), docs/wip/r41_runtime_overlays.md (Q1-Q11). Redux, LuaJIT off, 2026-11-04.
 Scratch in `build/r41b/` (`tp.py` world-map teleport + topography/area readout, `toposweep.py` airship grid sweep with

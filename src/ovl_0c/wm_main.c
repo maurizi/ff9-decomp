@@ -148,9 +148,9 @@ s32 wm_loadSoundBanks(void) {
 }
 
 s32 wm_loadResidentMusic(void) {
-    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_MUSIC | WM_MUSIC_RESIDENT, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_MUSIC | MUSIC_CHOCOBO, 0);
 
-    wm_copyViaVram(g_gameState->gameData->musicSeq2, addr, (s32)db_lookupRegistered(DB_GET_SIZE, DB_MUSIC | WM_MUSIC_RESIDENT, 0));
+    wm_copyViaVram(g_gameState->gameData->musicSeq2, addr, (s32)db_lookupRegistered(DB_GET_SIZE, DB_MUSIC | MUSIC_CHOCOBO, 0));
     DrawSync(0);
     return 0;
 }

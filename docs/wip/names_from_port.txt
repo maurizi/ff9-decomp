@@ -11556,3 +11556,33 @@ TEXT_PAD_BTN+n TEXT_PAD_CIRCLE..TEXT_PAD_R2  # [runtime] R41: g_msgIconSprites /
 g_worldLowBuffer g_worldDataArea  # [runtime] R41: 0x80100800 is the end of the world heap; write/read watches show actor meshes, the world event script and image data there
 fx_17d_4_buf400 fx_17d_4_strandTrailTail  # [runtime] R41: written by fx_17d_4_drawStrands and btlfx_pushTrailPoint (spill area of the strand trails)
 fx_1bf_0_buf400 fx_1bf_0_strandTrailTail  # [runtime] R41: written by fx_1bf_0_drawStrands (spill area of the strand trails)
+# R41b runtime pass (docs/runtime-findings.md "R41b runtime pass: R41 question files"): defines and literals
+BTLBG_SCENE_JITTER BTLBG_SCENE_NOVA_DRAGON  # [runtime] R41b: g_btlbgId 7 in encounter 931 (Nova Dragon only), field 2756 "Red Rose/Bridge"
+BTLBG_SCENE_SWING BTLBG_SCENE_FOSSIL_ROO  # [runtime] R41b: 0x44, encounter 84, field 1423 "Fossil Roo/Passage"
+BTLBG_SCENE_SWAY BTLBG_SCENE_MEMORIA_STAIRS  # [runtime] R41b: 0x6E, encounter 924, field 2902 "Memoria/Stairs of Time"
+BTLBG_SCENE_TUMBLE BTLBG_SCENE_MEMORIA_OBLIVION  # [runtime] R41b: 0x70, encounter 925, field 2906 "Memoria/Oblivion"
+BTLBG_SCENE_SLOW_SPIN BTLBG_SCENE_MEMORIA_ORIGIN  # [runtime] R41b: 0xA8, encounters 191/952/960, fields 2914 "Memoria/Birth", 2921 "Memoria/To the Origin"
+BTLBG_SCENE_ROLL BTLBG_SCENE_CRYSTAL_WORLD  # [runtime] R41b: 0xAB, encounter 937 Trance Kuja, field 2927 "Crystal World/Origin"
+BTL_SOUND_BASE_BANK BTL_SOUND_SE_BANK  # [runtime] R41b: bank 0x201 holds the battle SE instruments 0xC0-0xDF
+0xE2 TM_MUSIC_BANK  # [runtime] R41b: ovl_0d tm_soundCmd musicBank[0]; + TM_SE_BANK 0xFA (the TM data file's other bank)
+6/7/8/0xA TM_FILE_RESULT_TEXT/TM_FILE_SCORE_DIGITS/TM_FILE_COIN/TM_FILE_SELECT_PARTS  # [runtime] R41b: TIMs decoded from RAM (ovl_0d tm_setup)
+FLD_SOUND_BANK_NO_UPLOAD SND_BANK_COMMON  # [runtime] R41b: 0x84 is the resident system SE bank (main game_loadCommonAkao, snd_ids.h)
+WM_MUSIC_RESIDENT MUSIC_CHOCOBO  # [runtime] R41b: 0x64 plays while riding; + MUSIC_WORLD_MAP 0x45, MUSIC_AIRSHIP 0x70, MUSIC_WORLD_DISC4 0x2D (snd_ids.h)
+WM_SE_VORTEX_LOOP WM_SE_WIND_LOOP  # [runtime] R41b: 26 at the Gusty Valley source, recorded as wind
+WM_TOPO_PUSHBACK WM_TOPO_GUSTY_VALLEY  # [runtime] R41b: 0x17 only next to source 1, area 45 "Gusty Valley"
+WM_TOPO_CHOCOBO_CALL_A WM_TOPO_CHOCOBO_TRACKS_GRASS  # [runtime] R41b: 0x03, chocobo footprints on grass
+WM_TOPO_CHOCOBO_CALL_B WM_TOPO_CHOCOBO_TRACKS_EARTH  # [runtime] R41b: 0x12, footprints on brown earth
+WM_TOPO_CHOCOBO_CALL_C WM_TOPO_CHOCOBO_TRACKS_EARTH_2  # [runtime] R41b: 0x15, footprints on brown earth (Forgotten Continent)
+WM_TOPO_CHOCOBO_CALL_D WM_TOPO_CHOCOBO_TRACKS_5  # [code] 0x16 not found on the map (still pending)
+WM_TOPO_CHOCOBO_CALL_E WM_TOPO_CHOCOBO_TRACKS_SNOW  # [runtime] R41b: 0x1C, footprints on snow
+0x30/0x33 WM_TOPO_WATERFALL/WM_TOPO_RIVER  # [runtime] R41b (medium): topography sweep near the waterfalls
+WM_STORY_TITLE_0 WM_STORY_TITLE_MIST  # [runtime] R41b: 0x960 shows "Mist Continent"
+WM_STORY_TITLE_1 WM_STORY_TITLE_OUTER  # [runtime] R41b: 0x1766 shows "Outer Continent"
+WM_STORY_TITLE_2 WM_STORY_TITLE_FORGOTTEN  # [runtime] R41b: 0x2585 shows "Forgotten Continent"
+WM_STORY_TITLE_3 WM_STORY_TITLE_LOST  # [runtime] R41b: 0x26A2 shows "Lost Continent"
+WM_STORY_FOG_END WM_STORY_MIST_GONE  # [runtime] R41b: 0x1765 hazy, 0x1766 clear
+WM_STORY_FOG_BACK WM_STORY_MIST_BACK  # [runtime] R41b: disc 4 has the haze again (0x2B53 itself not entered)
+WM_BLOCKFX_DISC4_CORE WM_BLOCKFX_MEMORIA_ORB  # [runtime] R41b: the purple sphere over the Iifa Tree mound
+WM_BLOCKFX_SPINNER WM_BLOCKFX_WINDMILL  # [runtime] R41b: windmill sails in Nolrich Heights
+WM_BLOCKFX_STORY WM_BLOCKFX_KIERA_DESERT  # [runtime] R41b (medium): emitters in area 39 Kiera Desert
+EVT_GB_WM_FILE==0/==8 WM_FILE_DISC1/WM_FILE_DISC4  # [runtime] R41b: b[0x66] = worldId - 9000 (ovl_0c.h)

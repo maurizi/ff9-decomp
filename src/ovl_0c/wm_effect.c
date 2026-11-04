@@ -266,7 +266,7 @@ void wm_drawBlockFx(u8 fxId) {
             }
         }
         break;
-    case WM_BLOCKFX_SPINNER:
+    case WM_BLOCKFX_WINDMILL:
         math_rotMatrixXYZ(&g_worldBlockFx7Rot, &mtx);
         wm_worldToView(&g_worldBlockFx7Pos, (VECTOR *)mtx.t, &view, 0);
         CompMatrix(g_worldViewMatrix, &mtx, &mtx);
@@ -274,7 +274,7 @@ void wm_drawBlockFx(u8 fxId) {
         SetTransMatrix(&mtx);
         wm_drawModel(WM_PACK0(WM_PACK_SPINNER_MODEL), 0, 1);
         break;
-    case WM_BLOCKFX_DISC4_CORE:
+    case WM_BLOCKFX_MEMORIA_ORB:
         if (g_worldDataSet == WM_DATASET_DISC4) {
             SVECTOR pos;
             u32 *ot;
@@ -433,12 +433,12 @@ void wm_updateBlockFx(s32 fxId) {
             on = 1;
         }
         break;
-    case WM_BLOCKFX_STORY:
+    case WM_BLOCKFX_KIERA_DESERT:
         if ((u16)(*g_worldStoryCounterPtr - WM_STORY_BLOCKFX3_ON) < WM_STORY_BLOCKFX3_OFF - WM_STORY_BLOCKFX3_ON) {
             on = 1;
         }
         break;
-    case WM_BLOCKFX_SPINNER:
+    case WM_BLOCKFX_WINDMILL:
         if (g_worldBlockFx7Spin != 0) {
             g_worldBlockFx7Rot.vy += 0x40;
         }
@@ -450,7 +450,7 @@ void wm_updateBlockFx(s32 fxId) {
         g_worldBlockFx4PartRots[1].vy -= 0x40;
         g_worldBlockFx4PartRots[2].vy -= 0x180;
         break;
-    case WM_BLOCKFX_DISC4_CORE:
+    case WM_BLOCKFX_MEMORIA_ORB:
         g_worldBlockFx6RotA.vz -= 8;
         g_worldBlockFx6RotA.vy -= 0x10;
         g_worldBlockFx6RotB.vz -= 0x10;

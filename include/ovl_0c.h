@@ -79,9 +79,9 @@
 #define WM_ATTR_TOPOGRAPHY(a) (((a) & WM_ATTR_TOPO_MASK) >> 2)
 /* topography values (WM_ATTR_TOPOGRAPHY) the code tests by number. Which move modes may enter a topography is data
  * (WmMoveMode.allowedCells: the Reef chocobo adds 0x33 0x35-0x37 0x3D, Mountain 0x31 0x32, Ocean 0x30 0x38 0x39, the
- * flying ones 0x3A-0x3C 0x3E; the boat only 0x35 0x36 0x39). Evidence: R37 in docs/runtime-findings.md. The chocobo
- * call cells, 0x17 and 0x2D/0x2E are named by behaviour below; 0x1E/0x23 (beach splash like WM_TOPO_BEACH) and the
- * water depths 0x30 / 0x33 (sunk into like the other waters, not found on the map) stay numbers. */
+ * flying ones 0x3A-0x3C 0x3E; the boat only 0x35 0x36 0x39). Evidence: R37 in docs/runtime-findings.md; the chocobo
+ * track cells, 0x17, 0x2D/0x2E, 0x30 and 0x33 from R41b (airship sweep of the topography grid, walker teleported onto
+ * each). 0x1E/0x23 (beach splash like WM_TOPO_BEACH) stay numbers. */
 #define WM_TOPO_BEACH        0x22 /* runtime: sand at the water's edge; walking spawns WM_FX_BEACH_SPLASH */
 #define WM_TOPO_FOREST       0x24 /* runtime: the walker sinks into the trees (wm_getTerrainHeightOffset class 0), */
 #define WM_TOPO_FOREST_2     0x25 /* walking spawns WM_FX_FOREST_LEAVES; 0x24-0x26 are always handled together and */
@@ -89,6 +89,9 @@
 #define WM_TOPO_SAND         0x29 /* runtime: sandy plain; WM_FX_SAND_DUST walking, WM_FX_AIRSHIP_SAND / WM_FX_CHOCOBO_SAND flying low */
 #define WM_TOPO_MOUNTAIN     0x31 /* runtime (airship climbs over it) and data (Mountain chocobo); the camera eye rises faster */
 #define WM_TOPO_NO_ENCOUNTER 0x34 /* code: script battles are dropped while the player stands on it, no getting off onto it */
+/* runtime (R41b, medium): neither can be walked on, the walker sinks into them like the other waters */
+#define WM_TOPO_WATERFALL    0x30 /* the waterfalls and their basin (polygons falling from y -6736 to -684), a flat pool */
+#define WM_TOPO_RIVER        0x33 /* thin strips running down into WM_TOPO_SHALLOWS / WM_TOPO_WATER (a river mouth, below the falls) */
 #define WM_TOPO_SHALLOWS     0x35 /* data: Reef chocobo and boat water, shallowest sinking; the boat can only be left here */
 /* deeper water. Runtime (R41): the boat's cell went 0x35 -> 0x36 -> 0x39 sailing out to open sea; 0x36 / 0x37 form the
  * lake in the Hadris crater, 0x38 / 0x39 the coast (0x39 the most common topography). The walker sinks by
@@ -97,16 +100,22 @@
 #define WM_TOPO_WATER_2      0x37
 #define WM_TOPO_SEA_2        0x38 /* deepest sinking, like WM_TOPO_SEA; Ocean chocobo only */
 #define WM_TOPO_SEA          0x39 /* open sea; boat and Ocean chocobo */
-/* by behaviour only (code); what they are on the map is a runtime question (docs/wip/r41_runtime_overlays.md) */
-#define WM_TOPO_CHOCOBO_CALL_A 0x03 /* wm_canCallChocobo: a walker may call the chocobo only on these five (runtime: pending R41) */
-#define WM_TOPO_CHOCOBO_CALL_B 0x12
-#define WM_TOPO_CHOCOBO_CALL_C 0x15
-#define WM_TOPO_CHOCOBO_CALL_D 0x16
-#define WM_TOPO_CHOCOBO_CALL_E 0x1C
-#define WM_TOPO_PUSHBACK     0x17 /* wm_updateMap: within 0x22 of ambient sound source 1 a walker or chocobo on it is pushed */
-                                  /* towards +z; wm_findGetoffPos refuses within 0x16 of it (runtime: pending R41) */
-#define WM_TOPO_NO_LANDING   0x2D /* wm_findGetoffPos: the airships can't set down on 0x2D, 0x2E (and WM_TOPO_NO_ENCOUNTER) */
-#define WM_TOPO_NO_LANDING_2 0x2E /* (runtime: pending R41) */
+/* chocobo tracks: wm_canCallChocobo lets a walker call the chocobo only on these five [code]. Runtime (R41b): every
+ * one found shows chocobo footprints; they differ by the ground (0x03 grass, 0x12 / 0x15 brown earth, 0x1C snow),
+ * not by region. 0x15 was seen only on the Forgotten Continent side (Blairsurpass Plains). */
+#define WM_TOPO_CHOCOBO_TRACKS_GRASS   0x03
+#define WM_TOPO_CHOCOBO_TRACKS_EARTH   0x12
+#define WM_TOPO_CHOCOBO_TRACKS_EARTH_2 0x15
+#define WM_TOPO_CHOCOBO_TRACKS_5       0x16 /* (runtime: pending R41; not present in the disc 3 world, its ground is unknown) */
+#define WM_TOPO_CHOCOBO_TRACKS_SNOW    0x1C
+#define WM_TOPO_GUSTY_VALLEY 0x17 /* wm_updateMap: within 0x22 of ambient sound source 1 a walker or chocobo on it is pushed */
+                                  /* towards +z; wm_findGetoffPos refuses within 0x16 of it. Runtime (R41b): only in the */
+                                  /* cells next to source 1, area 45 "Gusty Valley"; a walker there drifts toward +z */
+/* wm_findGetoffPos: the airships can't set down on 0x2D, 0x2E (and WM_TOPO_NO_ENCOUNTER) [code]. Runtime (R41b,
+ * medium): rocky plateau tops of the Forgotten Continent; the refusal itself was not isolated (Circle over them landed
+ * on a nearby cell). */
+#define WM_TOPO_NO_LANDING   0x2D /* plateaus around Ipsen's Castle (areas 43 Yuanshao Peninsula, 42) */
+#define WM_TOPO_NO_LANDING_2 0x2E /* Seaways Canyon / Gusty Valley plateaus (areas 41, 45) */
 
 /* g_worldMapDebugFlags bits: each gates one group of debug prints */
 #define WM_DEBUG_MUSIC 0x4 /* w_music */
@@ -143,19 +152,29 @@
 #define WM_DATASET_DISC1 1
 #define WM_DATASET_DISC4 4
 
+/* g_evtGlobalVars.b[EVT_GB_WM_FILE]: world file index (worldId - FIELD_ID_WORLD_FIRST), written by the world script.
+ * Runtime (R41b): 0 = disc 1 Mist-continent world, 3 = boat era, 7 = disc 3 free world, 8 = disc 4 (which story spans
+ * each covers: medium). The code tests only these two (wm_updateMap's rain spot, wm_weatherAuto's area check). */
+#define WM_FILE_DISC1 0
+#define WM_FILE_DISC4 8
+
 /* story counter (g_evtGlobalVars.h[0], *g_worldStoryCounterPtr) values the world map tests. Evidence: [code] what
- * changes at each; which story event each one is is a runtime question (docs/wip/r41_runtime_overlays.md). */
-#define WM_STORY_TITLE_0 0x960 /* entering at exactly these four shows area title g_worldTitleId 0-3 */
-#define WM_STORY_TITLE_1 0x1766 /* (WM_ITEM_NAVI_TIMS images 5-12; runtime: pending R41) */
-#define WM_STORY_TITLE_2 0x2585
-#define WM_STORY_TITLE_3 0x26A2
-#define WM_STORY_FOG_END 0x1766 /* wm_getStoryFog: no fog from here, the navi map's second page (g_worldNaviPage 1) */
-                                /* and WM_NAVI_KNOWN_LATE */
-#define WM_STORY_FOG_BACK 0x2B53 /* ... until here */
+ * changes at each; [runtime] R41b where noted. */
+/* entering at exactly these four shows continent title g_worldTitleId 0-3 (WM_ITEM_NAVI_TIMS images 5-12); runtime
+ * (R41b): the title shown at each */
+#define WM_STORY_TITLE_MIST      0x960  /* "Mist Continent" */
+#define WM_STORY_TITLE_OUTER     0x1766 /* "Outer Continent" */
+#define WM_STORY_TITLE_FORGOTTEN 0x2585 /* "Forgotten Continent" */
+#define WM_STORY_TITLE_LOST      0x26A2 /* "Lost Continent" */
+/* wm_getStoryFog: the fog is the Mist. Runtime (R41b, medium): 0x1765 shows the Mist Continent under haze, 0x1766
+ * clear (the data set and the navi map change at the same value); disc 4 (0x2B5C) has it again. 0x2B53 itself was
+ * not entered (the world init stalled on disc 1). */
+#define WM_STORY_MIST_GONE 0x1766 /* no fog from here, the navi map's second page (g_worldNaviPage 1) and WM_NAVI_KNOWN_LATE */
+#define WM_STORY_MIST_BACK 0x2B53 /* ... until here */
 #define WM_STORY_FIELD_SONG1 0x2580 /* wm_getSongMusicId: WM_SONG_NORMAL plays WM_SONG_FIELD1 in [0x2580, 0x26A2), */
 #define WM_STORY_FIELD_SONG2 0x26A2 /* WM_SONG_FIELD2 in [0x26A2, 0x26B6); wm_keepEntryMusic keeps the music there */
 #define WM_STORY_FIELD_SONG2_END 0x26B6
-#define WM_STORY_BLOCKFX3_ON 0x24EA /* WM_BLOCKFX_STORY emits in [0x24EA, 0x26A3) */
+#define WM_STORY_BLOCKFX3_ON 0x24EA /* WM_BLOCKFX_KIERA_DESERT emits in [0x24EA, 0x26A3) */
 #define WM_STORY_BLOCKFX3_OFF 0x26A3
 
 /* g_worldFog / wm_setWeather fog argument */
@@ -298,16 +317,19 @@ typedef struct WmEffect {
 /* wm_updateBlockFx / wm_drawBlockFx block ids (the emitter table is data pack entry id + 0x28) */
 #define WM_BLOCKFX_WATERFALLS 5 /* runtime: always on, emits WM_FX_WATERFALL_MIST at three waterfalls */
 #define WM_BLOCKFX_WATER_SHRINE 10 /* code: on while WM_FORM_HOKORA_MIZU ("HOKORA(MIZU)") is set */
-/* by behaviour (code, positions from the overlay's data); runtime: pending R41 */
+/* by behaviour (code, positions from the overlay's data); places from R41b where noted */
 #define WM_BLOCKFX_GULUG_SUMMIT 2 /* R37: its block is Mount Gulug's summit; always emits, and turns the CLUT animations */
-                                  /* 12-17 on (g_worldClutAnimFx2) */
-#define WM_BLOCKFX_STORY 3 /* emits only while the story counter is in [WM_STORY_BLOCKFX3_ON, WM_STORY_BLOCKFX3_OFF) */
+                                  /* 12-17 on (g_worldClutAnimFx2) (runtime: pending R41, the effect was never seen) */
+#define WM_BLOCKFX_KIERA_DESERT 3 /* emits effect type 4 only while the story counter is in [WM_STORY_BLOCKFX3_ON, */
+                                  /* WM_STORY_BLOCKFX3_OFF); runtime (R41b, medium): its three emitters are in area 39 */
+                                  /* Kiera Desert (seen spawning; the effect itself was not visible) */
 #define WM_BLOCKFX_CLAY 4 /* five spinning models at (229007, 0, -198927), drawn on data set 1 until form WM_FORM_CLAY; */
-                          /* ambient sound 0 (WM_SE_VORTEX_LOOP) sits there too */
-#define WM_BLOCKFX_DISC4_CORE 6 /* data set 4 only: a sprite, a core model, two counter-rotating shells, 10 random */
-                                /* flashes and 10 expanding rings at (196602, -10882, -82002) */
-#define WM_BLOCKFX_SPINNER 7 /* one model at (280140, -7784, -206465), turning except in [STORY_DISC3, */
-                             /* STORY_WORLD_LATE) */
+                          /* ambient sound 0 (WM_SE_WIND_LOOP) sits there too (runtime: pending R41, not reached in R41b) */
+#define WM_BLOCKFX_MEMORIA_ORB 6 /* data set 4 only: a sprite, a core model, two counter-rotating shells, 10 random */
+                                 /* flashes and 10 expanding rings at (196602, -10882, -82002); runtime (R41b): the */
+                                 /* huge purple glowing sphere over the Iifa Tree mound ("???", Pualei Plains) */
+#define WM_BLOCKFX_WINDMILL 7 /* one model at (280140, -7784, -206465), turning except in [STORY_DISC3, */
+                              /* STORY_WORLD_LATE); runtime (R41b): windmill sails on a stone hut in Nolrich Heights */
 /* wm_cameraFollow: which way the camera target / eye height has to move (y grows downward) */
 #define WM_CAM_HOLD 0
 #define WM_CAM_LOWER 1 /* the wanted height is more than the dead zone below the current one */
@@ -328,9 +350,10 @@ typedef struct WmEffect {
 #define WM_SE_HILDA_GARDE_LOOP 23 /* data: loopSe of WM_MOVE_HILDA_GARDE (0x554 + 0x555) */
 #define WM_SE_BOAT_LOOP 24 /* data: loopSe of WM_MOVE_BOAT, volume follows its speed (wm_controlSteer; 0x5D9 + 0x5DA) */
 #define WM_SE_RUMBLE_LOOP 25 /* data: g_worldAmbientSe[2], the source that also shakes the camera within 0x28 */
-                             /* (wm_updateMap; 0x37D + 0x37E; runtime: pending R41) */
-#define WM_SE_VORTEX_LOOP 26 /* data: g_worldAmbientSe[0] (at WM_BLOCKFX_CLAY, silenced by WM_FORM_CLAY) and [1] (the */
-                             /* WM_TOPO_PUSHBACK source) (0x37F + 0x380; runtime: pending R41) */
+                             /* (wm_updateMap; 0x37D + 0x37E); runtime (R41b): played there (Triquai Plains) */
+#define WM_SE_WIND_LOOP 26 /* data: g_worldAmbientSe[0] (at WM_BLOCKFX_CLAY, silenced by WM_FORM_CLAY) and [1] (the */
+                           /* WM_TOPO_GUSTY_VALLEY source) (0x37F + 0x380); runtime (R41b): played at source 1, */
+                           /* recorded as low-frequency wind and hiss */
 #define WM_SE_AIRSHIP_WATER 38 /* the airships' loop over water: started with the Hilda Garde / Invincible move modes, volume follows speed and height over water (w_movementChange, wm_controlFly) */
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
@@ -1081,7 +1104,9 @@ extern WmWeatherData g_worldWeatherData;
 extern char s_wmStrFrameMapDestructor[]; /* "w_frameMapDestructor:\n" */
 extern char s_wmStrFramePackGetPtrRange[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
 extern void (*s_menuMainInput[])(void);
-extern u8 g_worldSongMusicIds[];
+extern u8 g_worldSongMusicIds[]; /* [WM_SONG_*] -> music id: MUSIC_WORLD_MAP, MUSIC_CHOCOBO, MUSIC_AIRSHIP,
+                                   * MUSIC_WORLD_DISC4, 0x5F, 0x60 (the two field songs, not heard). Data, the same on
+                                   * every disc ([runtime] R41b) */
 extern WmCameraState *g_worldCamera;
 extern s8 g_worldMoveMode;
 extern s32 g_worldHeapUsed;
@@ -1678,7 +1703,7 @@ s32 wm_getModelCacheBottom(void);
 /* resources wm_load* takes from the registered world db. Evidence: [code] what each loader does with it */
 #define WM_SOUND_BANK 0x139 /* DB_SOUND_BANK id uploaded to the SPU (wm_loadSoundBanks) */
 #define WM_SOUND_BANK_PARKED 0x17B /* DB_SOUND_BANK id parked in VRAM beside the draw buffer (wm_uploadParkedSound) */
-#define WM_MUSIC_RESIDENT 0x64 /* DB_MUSIC id copied to GameData.musicSeq2 (wm_loadResidentMusic; runtime: pending R41) */
+/* wm_loadResidentMusic copies DB_MUSIC | MUSIC_CHOCOBO to GameData.musicSeq2: the resident song is the chocobo's */
 
 /* main exe: candidates for ff9.h (sound) */
 s32 akao_playMusic(void *);
@@ -1832,8 +1857,8 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
 #define WM_PACK_CLAY_MODEL 0x35 /* WM_BLOCKFX_CLAY: 0x35, then the three spinning parts 0x36-0x38 and 0x3A */
 #define WM_PACK_CLAY_PARTS 0x36
 #define WM_PACK_CLAY_OUTER 0x3A
-#define WM_PACK_SPINNER_MODEL 0x39 /* WM_BLOCKFX_SPINNER */
-#define WM_PACK_CORE_SPRITE 0x25 /* WM_BLOCKFX_DISC4_CORE: its sprite (= WM_PACK_FX_SPRITE(30)) and models */
+#define WM_PACK_SPINNER_MODEL 0x39 /* WM_BLOCKFX_WINDMILL */
+#define WM_PACK_CORE_SPRITE 0x25 /* WM_BLOCKFX_MEMORIA_ORB: its sprite (= WM_PACK_FX_SPRITE(30)) and models */
 #define WM_PACK_CORE_SHELL_A 0x3C
 #define WM_PACK_CORE_SHELL_B 0x3D
 #define WM_PACK_CORE_RING 0x3E
@@ -1847,7 +1872,7 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
 /* navigation map: which places are known, one bit per place (wm_naviIsPlaceKnown), places 0-15 in event global
  * u16 var WM_NAVI_KNOWN_VAR, 16-31 in the next, up to 63. Evidence: [code] */
 #define WM_NAVI_KNOWN_VAR 0x2E /* g_evtGlobalVars.h index */
-#define WM_NAVI_KNOWN_LATE 0x7C0 /* places 6-10: wm_naviInit marks them known once the story counter is >= WM_STORY_FOG_END */
+#define WM_NAVI_KNOWN_LATE 0x7C0 /* places 6-10: wm_naviInit marks them known once the story counter is >= WM_STORY_MIST_GONE */
 #define WM_NAVI_KNOWN_PAIR 0xC000 /* places 14 and 15: then knowing either marks both */
 
 #endif

@@ -178,7 +178,7 @@ void wm_weatherAuto(void) {
         g_worldWeatherAutoMode = id;
         wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);
     }
-    if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == 0 && g_worldReadyFrameCount == 10) {
+    if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == WM_FILE_DISC1 && g_worldReadyFrameCount == 10) {
         switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr)) {
         case 9:
         case 12:
@@ -386,7 +386,7 @@ void wm_weatherStart(void) {
 }
 
 s32 wm_getStoryFog(void) {
-    return (u32)(*g_worldStoryCounterPtr - WM_STORY_FOG_END) >= WM_STORY_FOG_BACK - WM_STORY_FOG_END;
+    return (u32)(*g_worldStoryCounterPtr - WM_STORY_MIST_GONE) >= WM_STORY_MIST_BACK - WM_STORY_MIST_GONE;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frmbuf", s_wmStrIllegalWeatherMode);
