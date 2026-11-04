@@ -266,7 +266,7 @@ s32 btlcam_step(void) {
         if (g_btlCamScript.pc != NULL) {
             for (cmdIdx = 0; cmdIdx < 10; cmdIdx++) {
                 cmd = (u16 *)g_btlCamScript.pc;
-                if (g_btlCamScript.frame != (cmd[0] & 0x3FF)) {
+                if (g_btlCamScript.frame != (cmd[0] & BTLCAM_CMD_FRAME_MASK)) {
                     break;
                 }
                 if (!(g_btlCamera.flags & 1)) {
@@ -276,7 +276,7 @@ s32 btlcam_step(void) {
                 flags = cmd[1] | ((cmd[0] >> 10) << 16);
                 g_btlCamScript.pc += 4;
                 for (i = 0; i < 2; i++) {
-                    pathMode = (flags >> (i * 3)) & 7;
+                    pathMode = (flags >> (i * BTLCAM_CMD_PATH_BITS)) & 7;
                     if ((u32)(pathMode - 2) < 2 && (u32)(g_btlCamera.paths[i].mode - 2) < 2 && g_btlCamera.paths[i].framesLeft != 0) {
                         btlcam_evalPath(1, &g_btlCamera.paths[i], g_btlCamera.paths[i].keys[1].pos);
                     }
@@ -296,25 +296,25 @@ s32 btlcam_step(void) {
                     }
                     g_btlCamera.paths[i].locked = 0;
                 }
-                if (flags & 0x40) {
+                if (flags & BTLCAM_OP_ACCEL) {
                     g_btlCamScript.accel = *g_btlCamScript.pc;
                     g_btlCamScript.pc += 2;
                 }
-                if (flags & 0x80) {
+                if (flags & BTLCAM_OP_SAVE_VIEW) {
                     g_btlCamScript.saveView = 1;
                 }
-                if (flags & 0x100100) {
+                if (flags & (BTLCAM_OP_PAUSE | BTLCAM_OP_PAUSE_HI)) {
                     g_btlCamera.paused = 1;
                 }
-                if (flags & 0x200) {
+                if (flags & BTLCAM_OP_SWAY) {
                     g_btlCamScript.sway = *g_btlCamScript.pc;
                     g_btlCamScript.pc += 2;
                 }
-                if (flags & 0x400) {
+                if (flags & BTLCAM_OP_IDLE_SWAY) {
                     g_btlCamera.idleSway = *g_btlCamScript.pc;
                     g_btlCamScript.pc += 2;
                 }
-                if (flags & 0x800) {
+                if (flags & BTLCAM_OP_ZOOM) {
                     g_btlCamScript.zoomFrames = g_btlCamScript.zoomLeft = g_btlCamScript.pc[0];
                     g_btlCamScript.zoomTarget = g_btlCamScript.pc[1];
                     g_btlCamScript.zoomFrom = g_btlCamera.projDist;
@@ -325,26 +325,26 @@ s32 btlcam_step(void) {
                     g_btlCamScript.zoomTo = zoomDist;
                     g_btlCamScript.pc += 4;
                 }
-                if (flags & 0x1000) {
+                if (flags & BTLCAM_OP_SHAKE) {
                     g_btlCamScript.shakeFrom = g_btlCamScript.pc[0];
                     g_btlCamScript.shakeTo = g_btlCamScript.pc[1];
                     g_btlCamScript.shakeFrames = g_btlCamScript.shakeLeft = g_btlCamScript.pc[2];
                     g_btlCamScript.shakeAxes = g_btlCamScript.pc[3] & 3;
                     g_btlCamScript.pc += 4;
                 }
-                if (flags & 0x2000) {
+                if (flags & BTLCAM_OP_PICK_VARIANT) {
                     g_btlCamera.effectPick = g_btlCamera.variant;
                 }
-                if (flags & 0x4000) {
+                if (flags & BTLCAM_OP_CUE) {
                     arg = *g_btlCamScript.pc;
-                    if (arg == 1) {
+                    if (arg == BTLCAM_CUE_END_INTRO) {
                         g_btlCamera.endIntro = arg;
                     } else {
                         g_gameState->gameData->ctx.battle->subPhase++;
                     }
                     g_btlCamScript.pc += 2;
                 }
-                if (flags & 0x8000) {
+                if (flags & BTLCAM_OP_RETURN) {
                     btlcam_finishPaths();
                     for (j = 0; j < 2; j++) {
                         g_btlCamera.paths[j].locked = 1;
@@ -358,7 +358,7 @@ s32 btlcam_step(void) {
                     g_btlCamera.projDist = g_btlCamera.baseProjDist;
                     return 1;
                 }
-                if (flags & 0x80000) {
+                if (flags & BTLCAM_OP_KEEP_CAMERA) {
                     g_btlCamScript.keepCamera = 1;
                 }
             }
