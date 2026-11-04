@@ -139,7 +139,7 @@ commented write-only globals are write-only in JP too:
 | `g_msgPadCopyDst` | 0x8007B998 | 0x8007AE58 | store in `msg_update` only |
 | `g_msgDrawBufMode`, `g_msgDrawPktStart` | 0x8007B9A0/A4 | 0x8007AE60/64 | stores only |
 | `g_akaoInitDone`, `g_akaoChannelsPtr` | 0x8007F8E0, 0x800809EC | 0x8007EDA0, 0x8007FEAC | `akao_init` stores only |
-| `g_worldCameraInitFlag`, `g_worldMoveInitWord`, `g_worldLowBuffer`, `g_worldSysInitFlag`, `g_worldGetoffSearching` | ovl_0c 0x800CE1E1 ... | +0x2698 | stores only |
+| `g_worldCameraInitFlag`, `g_worldMoveInitWord`, `g_worldDataArea`, `g_worldSysInitFlag`, `g_worldGetoffSearching` | ovl_0c 0x800CE1E1 ... | +0x2698 | stores only |
 | `g_worldEffectPos`, `g_worldEffectRot` | ovl_0c 0x800D4960/49F0 | 0x800D6FF8/7088 | `wm_initEffects` only |
 | `g_theEndInitWord`, `g_messagesFrameWord` | ovl_15 0x800AE430/A8 | 0x800B0C9C/0D14 | stores only |
 

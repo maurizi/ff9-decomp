@@ -117,7 +117,7 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
                 break;
             }
             if (se.seIds[0] != -1) {
-                se.channelMask = 0x8000;
+                se.channelMask = WM_SE_GROUP_VEHICLE;
                 se.count = 1;
                 *out = se;
                 return 1;
@@ -131,37 +131,37 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
                     se.seIds[1] = 0x37B;
                     break;
                 case 20:
-                    se.channelMask = 0x8000;
+                    se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x374;
                     se.seIds[1] = 0x375;
                     break;
                 case 21:
-                    se.channelMask = 0x8000;
+                    se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x376;
                     se.seIds[1] = 0x377;
                     break;
                 case WM_SE_INVINCIBLE_LOOP:
-                    se.channelMask = 0x8000;
+                    se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x378;
                     se.seIds[1] = 0x379;
                     break;
                 case WM_SE_HILDA_GARDE_LOOP:
-                    se.channelMask = 0x8000;
+                    se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x554;
                     se.seIds[1] = 0x555;
                     break;
                 case WM_SE_BOAT_LOOP:
-                    se.channelMask = 0x8000;
+                    se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x5D9;
                     se.seIds[1] = 0x5DA;
                     break;
                 case 25:
-                    se.channelMask = 0x800;
+                    se.channelMask = WM_SE_GROUP_AMBIENT;
                     se.seIds[0] = 0x37D;
                     se.seIds[1] = 0x37E;
                     break;
                 case 26:
-                    se.channelMask = 0x800;
+                    se.channelMask = WM_SE_GROUP_AMBIENT;
                     se.seIds[0] = 0x37F;
                     se.seIds[1] = 0x380;
                     break;

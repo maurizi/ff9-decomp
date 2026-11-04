@@ -8,7 +8,7 @@ void wm_initBuffers(void) {
     g_worldTexBuffers[0] = PSX_RAM(s32 *, 0x80180800);
     g_worldTexBuffers[1] = PSX_RAM(s32 *, 0x8018A000);
     g_worldTexBuffers[2] = PSX_RAM(s32 *, 0x80193800);
-    g_worldLowBuffer = (s32)PSX_RAM(u8 *, 0x80100800);
+    g_worldDataArea = (s32)PSX_RAM(u8 *, 0x80100800);
     g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
 }
 

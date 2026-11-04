@@ -81,7 +81,7 @@
  * (WmMoveMode.allowedCells: the Reef chocobo adds 0x33 0x35-0x37 0x3D, Mountain 0x31 0x32, Ocean 0x30 0x38 0x39, the
  * flying ones 0x3A-0x3C 0x3E; the boat only 0x35 0x36 0x39). Evidence: R37 in docs/runtime-findings.md. The chocobo
  * call cells, 0x17 and 0x2D/0x2E are named by behaviour below; 0x1E/0x23 (beach splash like WM_TOPO_BEACH) and the
- * water depths stay numbers. */
+ * water depths 0x30 / 0x33 (sunk into like the other waters, not found on the map) stay numbers. */
 #define WM_TOPO_BEACH        0x22 /* runtime: sand at the water's edge; walking spawns WM_FX_BEACH_SPLASH */
 #define WM_TOPO_FOREST       0x24 /* runtime: the walker sinks into the trees (wm_getTerrainHeightOffset class 0), */
 #define WM_TOPO_FOREST_2     0x25 /* walking spawns WM_FX_FOREST_LEAVES; 0x24-0x26 are always handled together and */
@@ -90,6 +90,13 @@
 #define WM_TOPO_MOUNTAIN     0x31 /* runtime (airship climbs over it) and data (Mountain chocobo); the camera eye rises faster */
 #define WM_TOPO_NO_ENCOUNTER 0x34 /* code: script battles are dropped while the player stands on it, no getting off onto it */
 #define WM_TOPO_SHALLOWS     0x35 /* data: Reef chocobo and boat water, shallowest sinking; the boat can only be left here */
+/* deeper water. Runtime (R41): the boat's cell went 0x35 -> 0x36 -> 0x39 sailing out to open sea; 0x36 / 0x37 form the
+ * lake in the Hadris crater, 0x38 / 0x39 the coast (0x39 the most common topography). The walker sinks by
+ * g_worldTerrainHeightOffsets[1]: 150 (0x35), 250, 200, 450, 450 (0x39) */
+#define WM_TOPO_WATER        0x36 /* inland lake / water beyond the shallows; boat water */
+#define WM_TOPO_WATER_2      0x37
+#define WM_TOPO_SEA_2        0x38 /* deepest sinking, like WM_TOPO_SEA; Ocean chocobo only */
+#define WM_TOPO_SEA          0x39 /* open sea; boat and Ocean chocobo */
 /* by behaviour only (code); what they are on the map is a runtime question (docs/wip/r41_runtime_overlays.md) */
 #define WM_TOPO_CHOCOBO_CALL_A 0x03 /* wm_canCallChocobo: a walker may call the chocobo only on these five (runtime: pending R41) */
 #define WM_TOPO_CHOCOBO_CALL_B 0x12
@@ -306,8 +313,13 @@ typedef struct WmEffect {
 #define WM_CAM_LOWER 1 /* the wanted height is more than the dead zone below the current one */
 #define WM_CAM_RAISE 2 /* ... above it */
 /* world-map sound numbers (w_musicGetID; wm_sePlay & co., script requests WM_REQ_SE_*, WmMoveMode.loopSe,
- * g_worldAmbientSe). 0-5 and 39 play on SND_SE_GROUP_MENU, 6-7 and 20-24 on channel 0x8000, 25-26 on 0x800;
- * 20-26 and 33 are two-voice sounds. Only those the code ties to something are named. */
+ * g_worldAmbientSe). 0-5 and 39 play on SND_SE_GROUP_MENU, 6-7 and 20-24 on WM_SE_GROUP_VEHICLE, 25-26 on
+ * WM_SE_GROUP_AMBIENT; 20-26 and 33 are two-voice sounds. Only those the code ties to something are named. */
+/* SE group masks (WmSeIds.channelMask): wm_sePlay shifts the mask right by one per sound, so a two-sound entry's
+ * second sound plays on mask >> 1. Runtime (R41): sailing, wm_soundCommand got (0xD301, 0x5D9, 0x8000) and
+ * (0xD301, 0x5DA, 0x4000) for WM_SE_BOAT_LOOP. WM_SE_GROUP_AMBIENT is code only. */
+#define WM_SE_GROUP_VEHICLE 0x8000 /* vehicle loops 20-24 (second sound 0x4000), and 6-7 */
+#define WM_SE_GROUP_AMBIENT 0x800  /* the ambient sources 25-26 (second sound 0x400) */
 #define WM_SE_BUZZER 1 /* SE_BUZZER */
 #define WM_SE_HELP_OPEN 5 /* SE_HELP_OPEN */
 #define WM_SE_CURSOR 39 /* SE_CURSOR */
@@ -1014,7 +1026,7 @@ extern RECT g_worldVramParkRect;
 extern char s_wmStrFrameSystemDestructor[]; /* "w_frameSystemDestructor:\n" */
 extern WmNaviPlace g_worldNaviPlaces[][64];
 extern s32 *g_worldTexBuffers[3];
-extern s32 g_worldLowBuffer;
+extern s32 g_worldDataArea; /* 0x80100800, end of the world heap: loaded actor meshes, world script, images */
 extern u8 g_worldPointFxBuf[];
 extern u8 *g_worldPointFxBufPtr;
 extern s32 g_worldPrimBuffers[];

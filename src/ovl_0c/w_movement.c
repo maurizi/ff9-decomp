@@ -1485,16 +1485,16 @@ u8 wm_findGetoffPos(ActorPos *out) {
             case WM_TOPO_SHALLOWS:
                 k = 1;
                 break;
-            case 0x36:
+            case WM_TOPO_WATER:
                 k = 2;
                 break;
-            case 0x37:
+            case WM_TOPO_WATER_2:
                 k = 3;
                 break;
-            case 0x38:
+            case WM_TOPO_SEA_2:
                 k = 4;
                 break;
-            case 0x39:
+            case WM_TOPO_SEA:
                 k = 5;
                 break;
             case 0x33:
@@ -2218,16 +2218,16 @@ s32 wm_getTerrainHeightOffset(s32 terrainClass, u32 cellAttr, u8 *outFlat) {
     case WM_TOPO_SHALLOWS:
         i = 1;
         break;
-    case 0x36:
+    case WM_TOPO_WATER:
         i = 2;
         break;
-    case 0x37:
+    case WM_TOPO_WATER_2:
         i = 3;
         break;
-    case 0x38:
+    case WM_TOPO_SEA_2:
         i = 4;
         break;
-    case 0x39:
+    case WM_TOPO_SEA:
         i = 5;
         break;
     case 0x33:
