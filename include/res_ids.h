@@ -43,10 +43,12 @@
 #define DB_DEP_TABLE 0x140000 /* dependency table (GameData.depTable) */
 #define DB_SPRITE 0x160000
 #define DB_IMAGE_PACK 0x170000
+#define DB_SND_STREAM 0x180000 /* streamed sound (SND_TYPE_STREAM, fld_soundCommand) */
 #define DB_TEX_ANIM 0x190000 /* model texture animations */
 #define DB_BTL_BG_HEADER 0x1A0000 /* battle background header (BtlBgHeader, Battle11C0.bgHeader) */
 #define DB_PACK 0x1B0000 /* nested container inside field/world files */
 #define DB_VRAM_ALLOC 0x1C0000 /* field VRAM allocation cursors (FieldVramPos; fld_getShadowTexPos) */
+#define DB_VIBRATION 0x1E0000 /* field vibration data, id = field id (fld_loadVibration -> vib_init) */
 #define DB_LIGHTS 0x1F0000
 
 /* single resources */

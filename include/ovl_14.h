@@ -313,14 +313,6 @@ void opening_setWorldCamKeepLoad(void);
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void game_updateWindows(void); /* main */
 
-/* main exe: candidates for ff9.h (flag names used by ovl_14). Evidence: [code] */
-#define TPAGE_ABR_ADD 0x20 /* texture page abr 1 (bits 5-6): back + front */
-/* menu_open(MENU_DISC, arg): the wanted disc in bits 14-15, the next location in bits 0-13 (ovl_3e DISC_REQ_*) */
-#define MENU_DISC_ARG(disc, loc) ((((disc) & 3) << 14) | (loc))
-#define DISC_NO_LOCATION 15000 /* MENU_DISC location: ovl_3e doesn't call evt_setNextLocation on exit (as in ovl_3e.h) */
-
-#define DISC_ALL 0xF /* GameState.disc: the four disc bits (DISC_1..DISC_4); main exe candidate for ff9.h */
-
 /* mbg_getStatus (main) result bits, main exe candidates for ff9.h: 1 a movie is loaded or playing, 2 its frames are
  * running (g_mbgFrame > 0), 4 g_mbgRgb24, 8 g_mbgIsBackground, 0x10 g_mbgPaused. Evidence: [code] */
 #ifndef MBG_STATUS_FRAMES

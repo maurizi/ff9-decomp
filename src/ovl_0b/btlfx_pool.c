@@ -505,8 +505,8 @@ ringOfs = *cmdPtr++ << 11; readSize += ringOfs; loader->ringBase = RAM_BTLFX_RIN
                     LoadImage(&rect.r, (u32 *)(dst + summon->clutOfs));
                     k = summon->texCount;
                     for (src = dst; texIdx < k; src += 0x4000, texIdx++) {
-                        rect.r.x = (summon->texTpage[texIdx] & TPAGE_X) << 6;
-                        rect.r.y = summon->texY[texIdx] + ((summon->texTpage[texIdx] & TPAGE_Y) << 4);
+                        rect.r.x = (summon->texTpage[texIdx] & TPAGE_X_MASK) << 6;
+                        rect.r.y = summon->texY[texIdx] + ((summon->texTpage[texIdx] & TPAGE_Y_BIT) << 4);
                         rect.r.w = 0x40;
                         rect.r.h = 0x80;
                         LoadImage(&rect.r, (u32 *)src);

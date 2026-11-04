@@ -255,16 +255,6 @@ extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Mag
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
-#define CHR_INFO_KIND_VALUE (CHR_INFO_KIND >> CHR_INFO_KIND_SHIFT) /* the kind once shifted down: (info.w >> CHR_INFO_KIND_SHIFT) & this */
-/* GPU packet words (psyq.h neighbours: GPU_POLY_*, GPU_CODE, TPAGE_ABR_MASK, get_mode). Evidence: [code] the GP0 command
- * layout libgpu's get_mode/getTPage build */
-#define GPU_DRAW_MODE   0xE1  /* GP0(E1h) draw-mode word's code byte (DR_TPAGE, get_mode) */
-#define GPU_DRAW_DITHER 0x200 /* draw-mode word bit 9: dither (get_mode's dtd) */
-#define TPAGE_ABR_SHIFT 5     /* texture page / draw-mode word: semi-transparency rate at bits 5-6 (TPAGE_ABR_MASK) */
-#define GPU_POLY_KIND   0x3C  /* polygon code bits that pick the GPU_POLY_* kind, without GPU_ABE and GPU_TGE */
-#define TPAGE_X         0x0F  /* texture page word: x / 64 (getTPage) */
-#define TPAGE_Y         0x10  /* texture page word: y 256 (getTPage) */
-
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
     DRAWENV env;
@@ -948,7 +938,7 @@ typedef struct {
     s16 itemCount; /* count of items */
     u16 throwCount; /* count of throwItems */
     UnkPair *items[31]; /* inventory slots with item ids >= 0xE0 (btlui_buildItemList) */
-    UnkPair *throwItems[0x58]; /* inventory slots of throwable weapons (g_weaponTable flag 4, btlui_buildThrowList) */
+    UnkPair *throwItems[WEAPON_COUNT]; /* inventory slots of throwable weapons (WEAPON_THROWABLE, btlui_buildThrowList) */
     u8 reserved[0x100]; /* per item id: count reserved by queued commands (btlui_reserveItem) */
 } Unk80104FA8;
 extern Unk80104FA8 *g_btluiItems;
@@ -2800,7 +2790,7 @@ typedef struct Unk80100DC054 {
     u8 padC[0x10 - 0xC];
     s32 workOfs; /* work area offset (work area: 0x50000 - workOfs bytes) */
     s32 texAnimOfs; /* texture animation offset */
-    u16 texTpage[6]; /* per texture: tpage (TPAGE_X / TPAGE_Y) */
+    u16 texTpage[6]; /* per texture: tpage (TPAGE_X_MASK / TPAGE_Y_BIT) */
     u16 texClut[6]; /* per texture: clut */
     u16 texY[6]; /* per texture: y in its page */
     u8 *modelHdr; /* model header */
@@ -3084,9 +3074,6 @@ void pad_resetRepeats(s32);
 void win_close(Window *);
 Window *win_get(s32);
 ItemSlot *item_findSlot(s32);
-/* WeaponEntry.flags (g_weaponTable, ff9.h). Evidence: [code] */
-#define BTL_WEAPON_THROWABLE 0x04 /* listed by Throw (btlui_buildThrowList, btlui_addItem, btlui_removeItem) */
-#define BTL_WEAPON_COUNT     0x58 /* item ids below this are weapons (g_weaponTable; g_armorDefs from here) */
 void VSyncCallback(void (*)(void));
 void text_uploadPartyNames(s32);
 s32 akao_playSe(s32, s32, s32, s32);

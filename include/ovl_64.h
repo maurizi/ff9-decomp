@@ -276,16 +276,6 @@ typedef struct {
     u32 pad : 24;
 } Ovl64Cfg; /* view of GameState.unk24, the config word */
 
-/* PsyQ inline_c.h; candidate for psyq.h */
-#define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
-    "sll\t$12, %0, 16;"                              \
-    "sll\t$13, %1, 16;"                              \
-    "ctc2\t$12, $24;"                                \
-    "ctc2\t$13, $25"                                 \
-    :                                                \
-    : "r"(r0), "r"(r1)                               \
-    : "$12", "$13")
-
 typedef struct {
     u16 runMasked; /* current run: nonzero = pixels get the mask bit */
     u16 runLength; /* pixels left in the current run */

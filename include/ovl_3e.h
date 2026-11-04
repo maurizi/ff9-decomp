@@ -7,22 +7,6 @@
  * different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
-/* main exe: candidates for ff9.h */
-/* libcd (PsyQ libcd.h names) */
-#define CdlNop           0x01
-#define CdlStandby       0x07
-#define CdlSetmode       0x0E
-#define CdlSeekL         0x15
-#define CdlModeSpeed     0x80
-#define CdlStatError     0x01
-#define CdlStatStandby   0x02
-#define CdlStatShellOpen 0x10
-#define CdlComplete      0x02
-#define CdlDiskError     0x05
-#define CdlStatNoDisk    0
-#define CdlOtherFormat   1
-#define CdlCdromFormat   2
-
 /* ---- overlay ---- */
 
 /* DiscChange.state: index into s_discChange{Input,Draw,Poll}Funcs */
@@ -48,8 +32,6 @@ enum {
 /* g_menu.arg when the menu opens: wanted disc in bits 14-15, next location in bits 0-13 */
 #define DISC_REQ_DISC(x)     (((x) >> 14) & 3)
 #define DISC_REQ_LOCATION(x) ((u16)(x) & 0x3FFF)
-#define DISC_NO_LOCATION     15000 /* don't call evt_setNextLocation on exit */
-
 #define DISC_PICTURE_W 160 /* the 320x224 16-bit picture is read and drawn as two halves */
 #define DISC_PICTURE_HALF_BYTES 0x11800 /* 160 * 224 * 2 */
 #define DISC_PICTURE_HALF_SECTORS 0x23
@@ -90,9 +72,5 @@ void discChange_startCheck(void);
 void discChange_doCheck(void);
 void discChange_closeError(void);
 void discChange_resetState(void);
-
-/* main exe: candidates for ff9.h (texture page word fields, getTPage's layout). Evidence: [code] */
-#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
-#define TPAGE_15BIT 0x100 /* bits 7-8: colour mode 2 (15-bit direct) */
 
 #endif

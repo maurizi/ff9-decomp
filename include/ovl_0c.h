@@ -1735,8 +1735,4 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
 #define WM_NAVI_KNOWN_LATE 0x7C0 /* places 6-10: wm_naviInit marks them known once the story counter is >= 0x1766 */
 #define WM_NAVI_KNOWN_PAIR 0xC000 /* places 14 and 15: then knowing either marks both */
 
-/* main exe: candidates for ff9.h (flag names used by ovl_0c). Evidence: [code] */
-#define BTN_SELECT_ALT 0x2000000 /* the second game bit config_applyPadMapping maps to raw Select (with BTN_SELECT) */
-#define TPAGE_ABR_ADD 0x20 /* texture page abr 1 (bits 5-6): back + front */
-
 #endif

@@ -255,15 +255,4 @@ typedef struct BtlfxModHeader {
  * component k, each the env->camera vector index + 1 it writes (or reads) that key into, 0 = none. Evidence: [code] */
 #define BTLFX_CAM_SLOT(word, k) ((((word) >> ((k) * 4)) & 0xF) - 1)
 
-/* main exe: candidates for ff9.h (texture page word fields, getTPage's layout; pixel bits). Evidence: [code] */
-#ifndef TPAGE_X_MASK
-#define TPAGE_X_MASK 0xF /* bits 0-3: x / 64 (the texel copy helpers: x = (tp & TPAGE_X_MASK) * 64) */
-#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
-#define TPAGE_ABR(abr) (((abr) & 3) << 5) /* bits 5-6: semi-transparency rate */
-#define TPAGE_ABR_ADD 0x20 /* TPAGE_ABR(1): back + front */
-#endif
-#ifndef RGB15_STP
-#define RGB15_STP 0x8000 /* 15-bit pixel bit 15 (semi-transparency / mask); with it a black pixel isn't transparent */
-#endif
-
 #endif

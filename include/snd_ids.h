@@ -208,6 +208,7 @@
 #define SE_SET 0x6B /* runtime: equipment changed (ovl_33); code: chocograph set or cleared (ovl_32) */
 #define SE_HELP_OPEN 0x2AA /* runtime: Select opens the help window (help_toggle, btlui_toggleHelp) */
 #define SE_WINDOW_OPEN 0x414 /* runtime: battle command menu opens; code: save file list fades in (ovl_39) */
+#define SE_SHOP 0x415 /* code: Cross in a shop quantity window: buy / sell / synthesize (ovl_3c) */
 #define SE_MESSAGE 0x416 /* code: a message window opens (ovl_39 save, ovl_65 "cannot carry more") */
 #define SE_PAGE 0x417 /* runtime: menuList page, L1/R1 member switch, battle command side switch */
 #define SE_COMPLETE 0x4ED /* code: save/load finished (ovl_39), the right disc was found (ovl_3e) */

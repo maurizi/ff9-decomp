@@ -1747,27 +1747,6 @@ s32 tpage_getX(s32 tpage); /* main */
 s32 tpage_getY(s16 tpage); /* main */
 s32 vib_update(void); /* main */
 
-/* main exe: candidates for ff9.h (flag names used by ovl_0a). Evidence: [code] */
-/* every controller button bit of g_padPortMask's low half (all PAD_* but the unnamed 0x2/0x4); the event script's
- * EVT_OP_PAD_MASK_SET can only set these, and fld_load/fld_exit clear them all with g_padPortMask[0] &= ~PAD_ALL */
-#define PAD_ALL (PAD_SELECT | PAD_START | PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 \
-                 | PAD_TRIANGLE | PAD_CIRCLE | PAD_CROSS | PAD_SQUARE) /* 0xFFF9 */
-#define DB_SND_STREAM 0x180000 /* streamed sound (SND_TYPE_STREAM, fld_soundCommand) */
-#define DB_VIBRATION 0x1E0000 /* field vibration data, id = field id (fld_loadVibration -> vib_init) */
-/* GameData.flags 0x40: queued by fld_startEncounter and by fld_movieUpdate for a colour-keyed (movieRgb24) movie,
- * cleared by fld_updateEncounter / fld_movieFinish; no reader found in any binary */
-#define GD_FLD_TAKEOVER_UNREAD 0x40
-/* texture page word fields (getTPage's layout) */
-#define TPAGE_X_MASK 0xF /* bits 0-3: x / 64 */
-#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
-#define TPAGE_ABR(abr) (((abr) & 3) << 5) /* bits 5-6: semi-transparency rate */
-#define TPAGE_ABR_ADD 0x20 /* TPAGE_ABR(1): back + front */
-#define TPAGE_8BIT 0x80 /* bits 7-8: colour mode 1 (8-bit CLUT) */
-#define TPAGE_15BIT 0x100 /* colour mode 2 (15-bit direct) */
-#define PRIM_ADDR_MASK 0xFFFFFF /* a packet's tag word: the OT link (P_TAG.addr, getaddr); fldmdl_tint* only recolour linked packets */
-/* menu_open(MENU_DISC, arg): the wanted disc in bits 14-15, the next location in bits 0-13 (ovl_3e DISC_REQ_*) */
-#define MENU_DISC_ARG(disc, loc) ((((disc) & 3) << 14) | (loc))
-
 /* mbg_getStatus (main) result bits, main exe candidates for ff9.h: 1 a movie is loaded or playing, 2 its frames are
  * running (g_mbgFrame > 0), 4 g_mbgRgb24, 8 g_mbgIsBackground, 0x10 g_mbgPaused. Evidence: [code] */
 #ifndef MBG_STATUS_FRAMES

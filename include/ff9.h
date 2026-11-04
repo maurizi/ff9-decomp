@@ -136,6 +136,7 @@ typedef union {
 #define CHR_INFO_ID 0xF
 #define CHR_INFO_KIND_SHIFT 4
 #define CHR_INFO_KIND 0x1F0
+#define CHR_INFO_KIND_VALUE (CHR_INFO_KIND >> CHR_INFO_KIND_SHIFT) /* the kind once shifted down: (info.w >> CHR_INFO_KIND_SHIFT) & this */
 #define CHR_INFO_BATTLE_ROW_BIT 9
 #define CHR_INFO_BATTLE_ROW (1 << CHR_INFO_BATTLE_ROW_BIT)
 #define CHR_INFO_VICTORY_POSE_BIT 10
@@ -486,6 +487,7 @@ extern GameState *g_gameState;
 #define DISC_NONE 0xFF /* no disc read (file_initImg, db.c reset) */
 #define DISC_1    1
 #define DISC_4    8
+#define DISC_ALL  0xF /* the four disc bits (DISC_1..DISC_4) */
 void file_loadDirTables(); /* game_initState calls it without arguments */
 
 /* Inlined copy of chr_testSupportBit (support ability bit test). */
@@ -615,7 +617,7 @@ extern u8 g_chrStatCaps[4]; /* stat caps */
 extern u8 g_armorDefs[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
 /* weapon table entry (0xC bytes), indexed by item id < 0x58 */
 typedef struct {
-    u8 flags; /* BTL_WEAPON_* (ovl_0b.h) */
+    u8 flags; /* WEAPON_* */
     u8 pad1;
     u16 modelId; /* weapon model: FF9.IMG dir 8 file id (| 0x20000: db key; ovl_0b btl_initWeapon) */
     u8 pad4;
@@ -623,6 +625,9 @@ typedef struct {
     u8 pad6[0xC - 6];
 } WeaponEntry;
 extern WeaponEntry g_weaponTable[];
+/* WeaponEntry.flags. Evidence: [code] */
+#define WEAPON_THROWABLE 0x04 /* listed by Throw (ovl_0b btlui_buildThrowList, btlui_addItem, btlui_removeItem) */
+#define WEAPON_COUNT ITEM_FIRST_ARMOR /* g_weaponTable entries: item ids below this are weapons */
 extern u8 g_equipSlotMasks[];
 extern u8 g_newGameItems[];
 
@@ -2247,9 +2252,14 @@ extern s32 g_padPortMask[];
 #define BTN_L2       0x400000
 #define BTN_R2       0x800000
 #define BTN_TRIANGLE_ALT 0x1000000 /* set with BTN_TRIANGLE (runtime); btlui_cmdInput passes the turn on it */
+#define BTN_SELECT_ALT 0x2000000 /* the second game bit config_applyPadMapping maps to raw Select (with BTN_SELECT) */
 #define BTN_START    0x4000000  /* raw Start (pad_setMapping in config_applyPadMapping) */
 #define BTN_SELECT   0x8000000  /* raw Select; toggles the help window (help_update) */
 #define PAD_SOFT_RESET (PAD_SELECT | PAD_START | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1) /* 0xF09: fld/wm_endFrame set GS_RESET when all are held */
+/* every controller button bit of g_padPortMask's low half (all PAD_* but the unnamed 0x2/0x4); the event script's
+ * EVT_OP_PAD_MASK_SET can only set these, and fld_load/fld_exit clear them all with g_padPortMask[0] &= ~PAD_ALL */
+#define PAD_ALL (PAD_SELECT | PAD_START | PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 \
+                 | PAD_TRIANGLE | PAD_CIRCLE | PAD_CROSS | PAD_SQUARE) /* 0xFFF9 */
 #define PAD_TYPE(hdr) (((hdr) >> 12) & 0xF) /* PadBuf hdr: the controller type (PAD_ID_*) */
 #define PAD_ID_DIGITAL 4 /* a PAD_TYPE pad_update accepts */
 #define PAD_ID_ANALOG 7 /* pad_update reads the stick bytes only for this type */
@@ -2292,6 +2302,9 @@ extern s32 g_padPortMask[];
 #define GD_HIDE_SPRITES 0x10
 #define GD_HIDE_ALL (GD_HIDE_MODELS | GD_HIDE_BG | GD_HIDE_SPRITES) /* 0x1C: menu_onFadedOut sets it, menu_finish clears it */
 #define GD_NO_FLIP 0x20 /* fld/wm_endFrame keep the draw buffer (pause screens) */
+/* 0x40: queued by fld_startEncounter and by fld_movieUpdate for a colour-keyed (movieRgb24) movie,
+ * cleared by fld_updateEncounter / fld_movieFinish; no reader found in any binary */
+#define GD_FLD_TAKEOVER_UNREAD 0x40
 #define GD_PAUSED 0x100
 #define GD_SOUND_REINIT 0x100000 /* battleEnd_exit shut the sound down (snd_quit) before going back to the title; opening_setup runs snd_init and clears it */
 #define GD_MUSIC_STOP_PENDING 0x200000
@@ -2721,7 +2734,10 @@ void game_startFade(s32, s32, s32, s32);
 #define MENU_PARTY 3      /* party select (event op 0xB2, arg = request) */
 #define MENU_SAVE 4       /* save / load (ovl_39); argument 1 = title Continue */
 #define MENU_CHOCOGRAPH 5 /* chocograph */
-#define MENU_DISC 8       /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id */
+#define MENU_DISC 8       /* "Change to DISC" (ovl_3e); argument MENU_DISC_ARG */
+/* menu_open(MENU_DISC, arg): the wanted disc in bits 14-15, the next location in bits 0-13 (ovl_3e DISC_REQ_*) */
+#define MENU_DISC_ARG(disc, loc) ((((disc) & 3) << 14) | (loc))
+#define DISC_NO_LOCATION 15000 /* MENU_DISC location: ovl_3e doesn't call evt_setNextLocation on exit */
 void menu_open(s32, s32);
 void menu_initNewGame(void);
 void menu_initForMode(void);
@@ -3861,6 +3877,11 @@ void akao_channelsToVoiceMask(AkaoChannel *, u32 *, u32, u32);
 #define CFG_SHIFT_CHAR_PORT   20 /* one bit per character: 1 = controller port 2 */
 #define CFG_BTL_SPEED_MAX     2
 #define CFG_MSG_SPEED_MAX     6
+#define CFG_SPEED_MASK        7 /* the 3-bit CFG_SHIFT_*_SPEED fields (ovl_34 menuConfig_stepSlider wraps within it) */
+/* GameState.padMap: 4 bits per button slot (CFG_PADMAP_SHIFT(slot)), of which the config screen keeps the
+ * low 3: the action (ovl_34 s_menuConfigPadActions index) mapped to that slot. Evidence: [code] */
+#define CFG_PADMAP_SHIFT(slot) ((slot) * 4)
+#define CFG_PADMAP_ACTION_MASK 7
 #define CONFIG_WINDOW_COLOR() ((g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1) /* CFG_BIT_WINDOW_COLOR: the window palette (pal/abr) of all window drawing */
 
 /* GameState.config/padMap viewed as a pair: the config menu's settings (saved by ovl_39) */

@@ -957,7 +957,7 @@ void btlui_removeItem(s32 itemId) {
                 g_btluiItems->itemCount--;
             }
         }
-        if (itemId < BTL_WEAPON_COUNT && (g_weaponTable[itemId].flags & BTL_WEAPON_THROWABLE)) {
+        if (itemId < WEAPON_COUNT && (g_weaponTable[itemId].flags & WEAPON_THROWABLE)) {
             i = btlui_findThrowListEntry(itemId);
             if (i != 0xFF && g_btluiItems->throwItems[i]->count == 0) {
                 g_btluiItems->throwItems[i] = 0;
@@ -986,7 +986,7 @@ void btlui_addItem(s32 itemId) {
     if (itemId >= ITEM_FIRST_USABLE && btlui_findItemListEntry(itemId) == 0xFF) {
         btlui_addItemListEntry(itemId);
     }
-    if (itemId < BTL_WEAPON_COUNT && (g_weaponTable[itemId].flags & BTL_WEAPON_THROWABLE) && btlui_findThrowListEntry(itemId) == 0xFF) {
+    if (itemId < WEAPON_COUNT && (g_weaponTable[itemId].flags & WEAPON_THROWABLE) && btlui_findThrowListEntry(itemId) == 0xFF) {
         btlui_addThrowListEntry(itemId);
     }
 }
@@ -1035,12 +1035,12 @@ void btlui_buildThrowList(void) {
     Unk80104FA8 *lists = g_btluiItems;
     slot = g_gameState->gameData->items.slots;
     for (; i < ITEM_SLOT_COUNT; i++, slot++) {
-        if (slot->count != 0 && slot->id != ITEM_NONE && slot->id < BTL_WEAPON_COUNT && (g_weaponTable[slot->id].flags & BTL_WEAPON_THROWABLE)) {
+        if (slot->count != 0 && slot->id != ITEM_NONE && slot->id < WEAPON_COUNT && (g_weaponTable[slot->id].flags & WEAPON_THROWABLE)) {
             lists->throwItems[count] = slot;
             count++;
         }
     }
-    for (i = count; i < BTL_WEAPON_COUNT; i++) {
+    for (i = count; i < WEAPON_COUNT; i++) {
         g_btluiItems->throwItems[i] = NULL;
     }
     g_btluiItems->throwCount = count;

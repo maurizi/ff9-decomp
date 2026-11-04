@@ -67,7 +67,7 @@
 /* ---- items: GameData.items ids, Character.equip, BtlCmd.subNo of Item commands. [text items] */
 #define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
 #define ITEM_NONE       0xFF  /* empty item id / equipment slot */
-#define ITEM_FIRST_ARMOR 0x58 /* weapons below (g_weaponTable), armour and accessories up to ITEM_FIRST_USABLE (g_armorDefs; ovl_0b BTL_WEAPON_COUNT) */
+#define ITEM_FIRST_ARMOR 0x58 /* weapons below (g_weaponTable), armour and accessories up to ITEM_FIRST_USABLE (g_armorDefs; WEAPON_COUNT) */
 #define ITEM_FIRST_USABLE 0xE0 /* items from here have a use entry in g_usableItemTable (index id - this) */
 /* ItemInfo.icon (g_itemTable +8): the item kind, drawn as sprite 0x5C + it (text_buildBlock); weapon kinds are tested
  * by chr_calcAppearance and Throw (btl_startCmdEffect). Names from the items carrying them ([text items]). */
