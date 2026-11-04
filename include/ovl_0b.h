@@ -261,6 +261,8 @@ void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix
 #define GPU_DRAW_DITHER 0x200 /* draw-mode word bit 9: dither (get_mode's dtd) */
 #define TPAGE_ABR_SHIFT 5     /* texture page / draw-mode word: semi-transparency rate at bits 5-6 (TPAGE_ABR_MASK) */
 #define GPU_POLY_KIND   0x3C  /* polygon code bits that pick the GPU_POLY_* kind, without GPU_ABE and GPU_TGE */
+#define TPAGE_X         0x0F  /* texture page word: x / 64 (getTPage) */
+#define TPAGE_Y         0x10  /* texture page word: y 256 (getTPage) */
 
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
@@ -739,6 +741,13 @@ typedef struct BtlScript {
 } BtlScript;
 
 /* BtlScript.flags (Battle122C.flags). Evidence: [code] */
+/* btlseq_opTurn angle word. Evidence: [code] */
+#define BTLSEQ_TURN_SPECIAL     0x8000 /* the low bits pick a direction (BTLSEQ_TURN_*), else they are the angle */
+#define BTLSEQ_TURN_MODE        0x7FFF
+#define BTLSEQ_TURN_MODEL       0      /* the model's own rotation */
+#define BTLSEQ_TURN_TARGETS     1      /* ratan2 of the unit minus the targets' centre (btlseq_getTargetCenter) */
+/* btlseq_opShowName argument. Evidence: [code] */
+#define BTLSEQ_NAME_CMD         0x80   /* the command's ability name (else the enemy's ability idx) */
 #define BTLSEQ_F_WAIT_HIT       0x01 /* btlseq_opEffect started an effect; the effect's seqSync turns it into HIT */
 #define BTLSEQ_F_HIT_BIT        1
 #define BTLSEQ_F_HIT            (1 << BTLSEQ_F_HIT_BIT) /* the effect hit (btlseq_opWaitEffectHit goes on) */
@@ -2225,6 +2234,7 @@ typedef struct EffElem {
     s32 tex2; /* second texture data, relocated on load */
     void (*draw)(); /* kind 9: set by the effect module; (particle, emitter, pos, rot, &scale, &alpha, &blend, frame, frames) */
 } EffElem; /* 0x28 */
+#define BTLFX_TEX_ADDR 0x80000000 /* EffElem.tex/tex2 already hold an address (btlfx_getCommonData, sprites): not relocated (btlfx_spawnEmitter). Evidence: [code] */
 
 /* EffElem.flags (btlfx_updateParticles). Evidence: [code] */
 #define BTLFX_ELEM_NO_ROT      0x01 /* no element rotation */
@@ -2781,7 +2791,7 @@ typedef struct Unk80100DC054 {
     u8 padC[0x10 - 0xC];
     s32 workOfs; /* work area offset (work area: 0x50000 - workOfs bytes) */
     s32 texAnimOfs; /* texture animation offset */
-    u16 texTpage[6]; /* per texture: tpage (bits 0-3 x / 64, bit 4 y + 256) */
+    u16 texTpage[6]; /* per texture: tpage (TPAGE_X / TPAGE_Y) */
     u16 texClut[6]; /* per texture: clut */
     u16 texY[6]; /* per texture: y in its page */
     u8 *modelHdr; /* model header */
