@@ -59,8 +59,8 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->pos44.vy = work->pos10.vy;
                     work->pos44.vz = work->pos10.vz;
                     work->pos44.vy = 0;
-                    work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos44);
-                    work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos34);
+                    work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FROG_DROP_IMPACT_DEBRIS), (s32)&work->pos44);
+                    work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FROG_DROP_STARS), (s32)&work->pos34);
                 }
             }
             work->ringScale5C += 0x200;
@@ -69,7 +69,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ringScale = 0x1000;
             }
             work->ringScale5C = ringScale;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->ringPos4C, &work->ringRot54, work->ringScale5C,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_FROG_DROP_DUST_RING), &work->ringPos4C, &work->ringRot54, work->ringScale5C,
                               tick, 2, work->ringAlpha5E);
             switch (work->state64) {
             case 0:

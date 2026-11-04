@@ -14,13 +14,13 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->linePosC.vy = work->pos4.vy;
         work->linePosC.vz = work->pos4.vz;
         work->linePosC.vy = -0x9C4;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THIEVERY_GOLD_GLITTER), (s32)&work->pos4);
         work->lineAlpha16 = 0x1000;
         work->lineFrame14 = 0;
     } else {
         frame = entry->frame;
         if (frame >= 0x23 && frame < 0x30) {
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->linePosC, work->lineFrame14, work->lineAlpha16);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_THIEVERY_LENS_FLARES), &work->linePosC, work->lineFrame14, work->lineAlpha16);
             if (frame - 0x23 >= 5) {
                 work->lineAlpha16 -= 0x200;
             }
@@ -64,9 +64,9 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale2C.vy = 0x2000;
         work->scale2C.vz = 0x2000;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->model78 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 2), fx_0e7_texPages,
+        work->model78 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_THIEVERY_CHEST_BOX), fx_0e7_texPages,
                                                                fx_0e7_texPos);
-        work->model7A = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 1), fx_0e7_texPages,
+        work->model7A = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_THIEVERY_CHEST_LID), fx_0e7_texPages,
                                                                fx_0e7_texPos);
         work->blend68 = -1;
         work->fadeTimer6C = -1;
@@ -83,7 +83,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos50.vy = work->pos1C.vy;
             work->pos50.vz = work->pos1C.vz;
             work->pos50.vy = 0;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos50);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THIEVERY_WHITE_PUFF), (s32)&work->pos50);
             break;
         case 8:
             work->tiltTimer74 = 8;
@@ -91,7 +91,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos58.vy = work->pos1C.vy;
             work->pos58.vz = work->pos1C.vz;
             work->pos58.vy = -0xC8;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos58);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THIEVERY_GOLD_RINGS), (s32)&work->pos58);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x80;
             }
@@ -100,7 +100,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos60.vx = work->pos40.vx;
             work->pos60.vy = work->pos40.vy;
             work->pos60.vz = work->pos40.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos60);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THIEVERY_GOLD_BURST), (s32)&work->pos60);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

@@ -6,6 +6,10 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0f1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FREE_ENERGY_RUNE_BURST 0x2 /* emitter: white rune glyphs with blue-white rings, then a fire burst */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

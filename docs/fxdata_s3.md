@@ -15,6 +15,10 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
   with the summon load, so its models render as shape only. All groups of a summon file share it (Bahamut's
   0x85 is the same entry in fx_0e3_0 and fx_0e3_1). Most summon entries are `'so'` models, which the tool does not
   draw; they are named by what the C does with them (morph source/target, drawn stacked as a cone, ...).
+- Tool note: `fxdata.py` crashes in `classify` (`u.get('call', '').startswith`) on a use record whose call is
+  `None` (seen with fx_0e2's summon-data uses and in the fx_0e4..fx_0f2 run); the runs here wrapped `c_usage` to map `None` to `''`.
+- Enemy-only modules use the enemy skill name from docs/effect-modules.md (Stone, Escape, Psychokinesis, Mirror,
+  Red Clipper, Zombie Powder).
 - Evidence column: `render` = named by the `tools/fxdata.py --render` contact sheet; `usage` = a data table
   named by what the C does with it (settled); `kind/usage (look pending)` = appearance not settled (open
   questions below); `byte-identical` = the entry's bytes equal a named entry of another module.
@@ -319,6 +323,159 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x84 | `FX_BAHAMUT_DISC_MODEL` | kind/usage (look pending) | summon data: 'so' model, disc |
 | 0x85 | `FX_BAHAMUT_FADE_MODEL` | kind/usage (look pending) | summon data: 'so' model drawn fading at the end (same entry as fx_0e3_0's) |
 
+### fx_0e4: Frog Drop (FX_FROG_DROP_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x5 | `FX_FROG_DROP_STARS` | render | emitter: yellow stars orbiting (dizzy stars) |
+| 0x6 | `FX_FROG_DROP_DUST_RING` | render | rings: white-grey gouraud rings |
+| 0x7 | `FX_FROG_DROP_IMPACT_DEBRIS` | render | emitter: ring of white debris sprites + white-cyan-blue rings |
+
+### fx_0e5: Soul Blade (FX_SOUL_BLADE_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x6 | `FX_SOUL_BLADE_LIGHT_FLASH` | render | emitter: lilac / blue-white rings + white light streak |
+| 0x8 | `FX_SOUL_BLADE_SPIRIT_WISPS` | render | emitter: blue rings, white sparkles, golden smoke wisps |
+| 0x9 | `FX_SOUL_BLADE_LENS_FLARES` | render | sprite line: lens-flare circles and rings |
+
+### fx_0e6: enemy Stone (Mu; FX_STONE_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x2 | `FX_STONE_ROCK_SHELL` | render | model: ball with a rock texture |
+| 0x8 | `FX_STONE_RED_RINGS` | render | emitter: white-pink-red gouraud rings + spark sprites (texture not in the file) |
+| 0x9 | `FX_STONE_ROCK_STRIP` | render | trail: strip with a rock texture |
+
+### fx_0e7: Thievery (FX_THIEVERY_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_THIEVERY_CHEST_LID` | render | model: treasure chest lid (Hi_RegisterTexListModel; shape only) |
+| 0x2 | `FX_THIEVERY_CHEST_BOX` | render | model: treasure chest box (shape only) |
+| 0x3 | `FX_THIEVERY_LENS_FLARES` | render | sprite line: lens-flare circles and rings |
+| 0x4 | `FX_THIEVERY_GOLD_GLITTER` | render | emitter: gold glitter + small glows |
+| 0x5 | `FX_THIEVERY_WHITE_PUFF` | render | emitter: white smoke puff |
+| 0xC | `FX_THIEVERY_GOLD_RINGS` | render | emitter: fans + white-yellow-orange gouraud rings |
+| 0xD | `FX_THIEVERY_GOLD_BURST` | render | emitter: golden puffs + yellow-orange / cyan-blue rings |
+
+### fx_0e8: enemy Escape (Magic Vice, ...; FX_ESCAPE_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_ESCAPE_RAINBOW_STREAKS` | render | emitter: cyan-yellow / magenta-violet flame streaks |
+| 0x2 | `FX_ESCAPE_WIND_TRAIL` | render | emitter: spiralling trail with a grey streak texture |
+| 0x3 | `FX_ESCAPE_SMOKE` | render | emitter: grey-teal smoke puffs |
+| 0x4 | `FX_ESCAPE_CYAN_RING` | render | emitter: pale cyan gouraud rings fading |
+| 0x5 | `FX_ESCAPE_FLASH_RINGS` | render | emitter: white-red and cream rings |
+
+### fx_0e9: Annoy (FX_ANNOY_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x2 | `FX_ANNOY_PINK_WISPS` | render | emitter: rising pink wisps, orange shimmer, sparks, light streak |
+| 0x6 | `FX_ANNOY_ORANGE_SHIMMER` | render | emitter: three orange shimmering quad animations |
+
+### fx_0ea: Sacrifice (FX_SACRIFICE_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_SACRIFICE_RED_PETALS` | render | emitter: spiral of red petals + red glitter |
+| 0x2 | `FX_SACRIFICE_LIGHT_FLASH` | render | emitter: lilac / blue-white rings + white light streaks |
+| 0x5 | `FX_SACRIFICE_FAN_EMITTER` | kind/usage (look pending) | emitter: fans + faint sprites with cyan-white rings |
+| 0x9 | `FX_SACRIFICE_LENS_FLARES` | render | sprite line: lens-flare circles and rings |
+
+### fx_0eb: enemy Psychokinesis (Nova Dragon, ...; FX_PSYCHOKINESIS_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_PSYCHOKINESIS_WHITE_RING` | render | emitter: white gouraud rings |
+| 0x2 | `FX_PSYCHOKINESIS_WHITE_RING_2` | render | emitter: white gouraud rings |
+| 0x3 | `FX_PSYCHOKINESIS_PSYCHIC_ORBS` | render | emitter: homing violet-to-pink orbs |
+| 0x7 | `FX_PSYCHOKINESIS_SHOCK_RING` | render | emitter: white-to-grey gouraud rings, 8 frames |
+| 0x8 | `FX_PSYCHOKINESIS_DARK_BUBBLES` | render | emitter: dark bubble screen trails |
+
+### fx_0ec: Doom (FX_DOOM_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_DOOM_GOLD_FRAME` | render | model: ornate gold frame, rises sliced |
+| 0x3 | `FX_DOOM_GOLD_PANEL` | render | model: carved gold panel, rises sliced |
+| 0x4 | `FX_DOOM_REAPER_PICTURE` | render | model: panel with the picture of Death |
+| 0x6 | `FX_DOOM_PARTICLES` | kind/usage (look pending) | particles (texture not in the file) |
+| 0x7 | `FX_DOOM_GOLD_LATTICE` | render | model: capsule with a gold lattice texture |
+| 0x8 | `FX_DOOM_PINK_RINGS` | render | emitter: pink-white rings (+ particles, texture not in the file) |
+| 0x9 | `FX_DOOM_CAMERA_POINT` | usage | table: SVECTOR whose pad sets the camera point height |
+| 0xB | `FX_DOOM_RED_RING` | render | emitter: glowing red ring sprite |
+| 0xC | `FX_DOOM_PINK_SMOKE` | render | emitter: pink-violet smoke |
+| 0xD | `FX_DOOM_GLOW_SHELL` | kind/usage (look pending) | model: capsule, additive, texture page computed (drawn twice) |
+| 0xE | `FX_DOOM_CYAN_SPARKLES` | render | emitter: cyan sparkles in a tube |
+| 0xF | `FX_DOOM_REAPER_PICTURE_2` | render | model: second panel with the picture of Death |
+| 0x10 | `FX_DOOM_WHITE_SHELL` | kind/usage (look pending) | model: capsule, 15-bit texture page 0x119 |
+| 0x11 | `FX_DOOM_BACKDROP` | kind/usage (look pending) | backdrop layers (btlfx_drawBackdrop, not rendered) |
+| 0x13 | `FX_DOOM_GOURAUD_SHELL` | kind/usage (look pending) | model: gouraud capsule (colours not rendered) |
+
+### fx_0ed: Roulette (FX_ROULETTE_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x2 | `FX_ROULETTE_SUMMON_MODEL_DATA` | usage | model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL |
+| 0x4 | `FX_ROULETTE_BACKDROP` | kind/usage (look pending) | backdrop layers (btlfx_drawBackdrop, not rendered) |
+| 0x6 | `FX_ROULETTE_TARGET_RING` | render | sprite: white ring outline on the chosen target |
+| 0x7 | `FX_ROULETTE_SUMMON_MODEL` | kind/usage (look pending) | 'so' summon model (btlfx_registerSummonModel, not rendered) |
+| 0x8 | `FX_ROULETTE_SO_MODEL` | kind/usage (look pending) | 'so' model (not rendered) |
+| 0xA | `FX_ROULETTE_BLUE_BEAM` | render | emitter: spiralling blue light-beam trail |
+| 0xB | `FX_ROULETTE_GLOW_RINGS` | render | emitter: green glows + white-salmon-violet rings |
+| 0xC | `FX_ROULETTE_RED_SPARKS` | render | emitter: pink-red spark sprites + white-red rings |
+| 0x10 | `FX_ROULETTE_WHITE_GLOW` | render | emitter: white glow puffs |
+| 0x11 | `FX_ROULETTE_BLUE_BUBBLES` | render | emitter: blue bubbles |
+| 0x1D | `FX_ROULETTE_BLUE_BEAM_2` | render | emitter: spiralling blue light-beam trail |
+
+### fx_0ee: enemy Mirror (FX_MIRROR_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_MIRROR_WHITE_RINGS` | render | emitter: white rings + green glow |
+| 0x2 | `FX_MIRROR_WHITE_RINGS_2` | render | emitter: white rings + green glow |
+| 0x3 | `FX_MIRROR_GREEN_SWIRL` | render | emitter: white rings + green swirl particle |
+| 0x5 | `FX_MIRROR_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+
+### fx_0ef: enemy Red Clipper (Stilva; FX_RED_CLIPPER_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x8 | `FX_RED_CLIPPER_RED_SLASH` | render | emitter: red slash texture + yellow rings + sparks (texture not in the file) |
+| 0xE | `FX_RED_CLIPPER_PINK_SMOKE` | render | emitter: pink smoke puffs |
+| 0xF | `FX_RED_CLIPPER_RED_SMOKE` | render | emitter: brown-red smoke puffs |
+
+### fx_0f0: enemy Zombie Powder (Whale Zombie; FX_ZOMBIE_POWDER_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x1 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | kind/usage (look pending) | emitter: animated quads, render all black |
+| 0x2 | `FX_ZOMBIE_POWDER_SPORE_TRAIL` | render | emitter: homing green spores, yellow puffs, sparkles |
+| 0x3 | `FX_ZOMBIE_POWDER_YELLOW_PUFFS` | render | emitter: yellow powder puffs |
+| 0x4 | `FX_ZOMBIE_POWDER_YELLOW_CLOUD` | render | emitter: yellow powder cloud |
+| 0x5 | `FX_ZOMBIE_POWDER_VIOLET_CLOUD` | render | emitter: violet powder cloud |
+| 0x6 | `FX_ZOMBIE_POWDER_MIST_TRAIL` | render | emitter: green-grey mist screen trails |
+| 0x7 | `FX_ZOMBIE_POWDER_MIST_TRAIL_2` | render | emitter: green-grey mist screen trails |
+| 0x15 | `FX_ZOMBIE_POWDER_DUST_WAVE` | render | emitter: yellow-green dust half ring |
+
+### fx_0f1: Free Energy (FX_FREE_ENERGY_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x2 | `FX_FREE_ENERGY_RUNE_BURST` | render | emitter: white rune glyphs with blue-white rings, then a fire burst |
+
+### fx_0f2: Tidal Flame (FX_TIDAL_FLAME_)
+
+| index | name | evidence | what it is |
+|---|---|---|---|
+| 0x2 | `FX_TIDAL_FLAME_DOME` | kind/usage (look pending) | model: hemisphere, texture page 0x11A not in the file |
+| 0x3 | `FX_TIDAL_FLAME_BACKDROP` | kind/usage (look pending) | backdrop layers (btlfx_drawBackdrop, not rendered) |
+| 0x8 | `FX_TIDAL_FLAME_RUNE_BURST` | render | emitter: white rune glyphs with cyan-blue rings, embers, blue light streak |
+| 0x9 | `FX_TIDAL_FLAME_FLAME_CLOUD` | render | emitter: embers + orange flame cloud |
+
 ## Open questions (emulator)
 
 Each wants one screenshot of the effect at the frame the C starts the entry, or a VRAM dump while it
@@ -334,5 +491,11 @@ plays (textures not in the file), as in `docs/fxdata.md`.
 - fx_0e2: `FX_FENRIR_EFFECT_MODEL` ('so' model (op84, not rendered)); `FX_FENRIR_SPARKS` (emitter: spiral of spark sprites (texture not in the file)); `FX_FENRIR_EFFECT_MODEL_2` ('so' model (op84, not rendered)); `FX_FENRIR_SHELL_MODEL_2` ('so' model drawn with SHELL_MODEL (not rendered)); `FX_FENRIR_SHELL_MODEL` ('so' model (not rendered)); `FX_FENRIR_BLOCK_MODEL` (summon data: 'so' model drawn sliced as falling blocks (Hi_DrawSliceEffModel)); `FX_FENRIR_CLUSTER_MODEL_0` (summon data: 'so' model, drawn with CLUSTER_MODEL_1/2); `FX_FENRIR_CLUSTER_MODEL_1` (summon data: 'so' model); `FX_FENRIR_CLUSTER_MODEL_2` (summon data: 'so' model); `FX_FENRIR_MORPH_MODEL_1` (summon data: 'so' model, morph target); `FX_FENRIR_MORPH_MODEL_0` (summon data: 'so' model, morph source); `FX_FENRIR_WIND_TRAIL_EMITTER` (summon data: emitter, screen trail + sprites (texture not in the file))
 - fx_0e3_0: `FX_BAHAMUT_TEAL_PUFF` (particles: teal puff (pool task; texture partly outside the file)); `FX_BAHAMUT_CORE_MODEL` ('so' model drawn with a fading core colour); `FX_BAHAMUT_WHITE_BOLT` (trail: faint white strip (fxm_drawOffsetTrail0)); `FX_BAHAMUT_GLOW_MODEL` ('so' model drawn with a fading colour); `FX_BAHAMUT_PILLAR_MODEL` (summon data: 'so' model, the pillar (pillarRgb)); `FX_BAHAMUT_FADE_MODEL` (summon data: 'so' model drawn fading at the end); `FX_BAHAMUT_CONE_RING_MODEL` (summon data: 'so' model stacked nine times as a cone)
 - fx_0e3_1: `FX_BAHAMUT_COLUMN_MODEL` ('so' model, the column); `FX_BAHAMUT_FLARE_LINE` (sprite line (texture not in the file)); `FX_BAHAMUT_FLARE_PILLAR_MODEL` ('so' model, the pillar); `FX_BAHAMUT_BLAST_MODEL_2` ('so' model drawn with BLAST_MODEL); `FX_BAHAMUT_FAN_EMITTER` (emitter: fan elements (not rendered)); `FX_BAHAMUT_BLAST_MODEL` ('so' model); `FX_BAHAMUT_WHITE_BOLT_2` (trail: faint white strip (fxm_drawOffsetTrail1)); `FX_BAHAMUT_WHITE_BOLT` (trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8)); `FX_BAHAMUT_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_BAHAMUT_FAN_EMITTER_2` (emitter: fan element (not rendered)); `FX_BAHAMUT_ORB_MODEL` ('so' model drawn at the blast centre); `FX_BAHAMUT_BURST_MODEL` ('so' model drawn for the burst and the flash); `FX_BAHAMUT_BLAST_MODEL_3` ('so' model); `FX_BAHAMUT_FAN_EMITTER_3` (emitter: fan element (not rendered)); `FX_BAHAMUT_ORB_SHELL_MODEL` (summon data: 'so' model drawn around the orb); `FX_BAHAMUT_DISC_MODEL` (summon data: 'so' model, disc); `FX_BAHAMUT_FADE_MODEL` (summon data: 'so' model drawn fading at the end (same entry as fx_0e3_0's))
+- fx_0ea: `FX_SACRIFICE_FAN_EMITTER` (emitter: fans + faint sprites with cyan-white rings)
+- fx_0ec: `FX_DOOM_PARTICLES` (particles (texture not in the file)); `FX_DOOM_GLOW_SHELL` (model: capsule, additive, texture page computed (drawn twice)); `FX_DOOM_WHITE_SHELL` (model: capsule, 15-bit texture page 0x119); `FX_DOOM_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_DOOM_GOURAUD_SHELL` (model: gouraud capsule (colours not rendered))
+- fx_0ed: `FX_ROULETTE_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered)); `FX_ROULETTE_SUMMON_MODEL` ('so' summon model (btlfx_registerSummonModel, not rendered)); `FX_ROULETTE_SO_MODEL` ('so' model (not rendered))
+- fx_0ee: `FX_MIRROR_FAN_EMITTER` (emitter: two fan elements (not rendered))
+- fx_0f0: `FX_ZOMBIE_POWDER_ANIM_EMITTER` (emitter: animated quads, render all black)
+- fx_0f2: `FX_TIDAL_FLAME_DOME` (model: hemisphere, texture page 0x11A not in the file); `FX_TIDAL_FLAME_BACKDROP` (backdrop layers (btlfx_drawBackdrop, not rendered))
 
-65 look-pending names.
+78 look-pending names.

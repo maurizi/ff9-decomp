@@ -6,6 +6,13 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ea effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SACRIFICE_RED_PETALS  0x1 /* emitter: spiral of red petals + red glitter */
+#define FX_SACRIFICE_LIGHT_FLASH 0x2 /* emitter: lilac / blue-white rings + white light streaks */
+#define FX_SACRIFICE_FAN_EMITTER 0x5 /* emitter: fans + faint sprites with cyan-white rings (look pending) */
+#define FX_SACRIFICE_LENS_FLARES 0x9 /* sprite line: lens-flare circles and rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

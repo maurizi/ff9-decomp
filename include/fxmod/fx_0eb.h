@@ -6,6 +6,14 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0eb effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_PSYCHOKINESIS_WHITE_RING   0x1 /* emitter: white gouraud rings */
+#define FX_PSYCHOKINESIS_WHITE_RING_2 0x2 /* emitter: white gouraud rings */
+#define FX_PSYCHOKINESIS_PSYCHIC_ORBS 0x3 /* emitter: homing violet-to-pink orbs */
+#define FX_PSYCHOKINESIS_SHOCK_RING   0x7 /* emitter: white-to-grey gouraud rings, 8 frames */
+#define FX_PSYCHOKINESIS_DARK_BUBBLES 0x8 /* emitter: dark bubble screen trails */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -6,6 +6,12 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ef effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_RED_CLIPPER_RED_SLASH  0x8 /* emitter: red slash texture + yellow rings + sparks (texture not in the file) */
+#define FX_RED_CLIPPER_PINK_SMOKE 0xE /* emitter: pink smoke puffs */
+#define FX_RED_CLIPPER_RED_SMOKE  0xF /* emitter: brown-red smoke puffs */
+
 typedef struct {
     Pool6CEntry *emit0[5];
     Pool6CEntry *emit14[5];

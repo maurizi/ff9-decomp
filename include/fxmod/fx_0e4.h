@@ -7,6 +7,12 @@
  * pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FROG_DROP_STARS         0x5 /* emitter: yellow stars orbiting (dizzy stars) */
+#define FX_FROG_DROP_DUST_RING     0x6 /* rings: white-grey gouraud rings */
+#define FX_FROG_DROP_IMPACT_DEBRIS 0x7 /* emitter: ring of white debris sprites + white-cyan-blue rings */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
