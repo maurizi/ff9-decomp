@@ -11528,3 +11528,12 @@ BTLCAM_SWAY_AMP BTLCAM_BOB_AMP  # [runtime]
 BTLCAM_SWAY_SPEED BTLCAM_BOB_SPEED  # [runtime]
 # FIELDS include/ovl_0b.h Unk800FE488 (g_btlCamScript): accel->easeSpeed, sway->bob, swayPhase->bobPhase, saveView->setHomeView; Unk800FE3B8 (g_btlCamera): idleSway->idleBob, idleSwayPhase->idleBobPhase
 # NOTE BTLCAM_EASE_IN (now 1) / BTLCAM_EASE_OUT (now 2) swapped values: names were reversed (runtime)
+# 2026-11-04 flag-naming spree: renames of names that were briefly on main
+BTL_WEAPON_THROWABLE WEAPON_THROWABLE  # [code] moved to ff9.h
+BTL_WEAPON_COUNT WEAPON_COUNT  # [code] = ITEM_FIRST_ARMOR
+TPAGE_X TPAGE_X_MASK  # psyq.h
+TPAGE_Y TPAGE_Y_BIT  # psyq.h
+BTL_STEPF_UNTESTED0 BTL_STEPF_IN_BATTLE  # [code] passed only by mid-battle reloads; tested by nothing
+BTL_STEPF_UNTESTED1 BTL_STEPF_PARTY  # [code] passed with every party-side load; tested by nothing
+GD_FLD_TAKEOVER_UNREAD GD_FLD_TAKEOVER  # [code] field hands the screen over (encounter, 24-bit movie); no reader
+FLDBG_INIT_CLEARED FLDBG_OVERLAY_STATE  # [code]
