@@ -11564,7 +11564,7 @@ BTLBG_SCENE_TUMBLE BTLBG_SCENE_MEMORIA_OBLIVION  # [runtime] R41b: 0x70, encount
 BTLBG_SCENE_SLOW_SPIN BTLBG_SCENE_MEMORIA_ORIGIN  # [runtime] R41b: 0xA8, encounters 191/952/960, fields 2914 "Memoria/Birth", 2921 "Memoria/To the Origin"
 BTLBG_SCENE_ROLL BTLBG_SCENE_CRYSTAL_WORLD  # [runtime] R41b: 0xAB, encounter 937 Trance Kuja, field 2927 "Crystal World/Origin"
 BTL_SOUND_BASE_BANK BTL_SOUND_SE_BANK  # [runtime] R41b: bank 0x201 holds the battle SE instruments 0xC0-0xDF
-0xE2 TM_MUSIC_BANK  # [runtime] R41b: ovl_0d tm_soundCmd musicBank[0]; + TM_SE_BANK 0xFA (the TM data file's other bank)
+0xE2 TM_SOUND_BANK_MUSIC  # [runtime] R41b: ovl_0d tm_soundCmd musicBank[0]; + TM_SOUND_BANK_SE 0xFA (the TM data file's other bank)
 6/7/8/0xA TM_FILE_RESULT_TEXT/TM_FILE_SCORE_DIGITS/TM_FILE_COIN/TM_FILE_SELECT_PARTS  # [runtime] R41b: TIMs decoded from RAM (ovl_0d tm_setup)
 FLD_SOUND_BANK_NO_UPLOAD SND_BANK_COMMON  # [runtime] R41b: 0x84 is the resident system SE bank (main game_loadCommonAkao, snd_ids.h)
 WM_MUSIC_RESIDENT MUSIC_CHOCOBO  # [runtime] R41b: 0x64 plays while riding; + MUSIC_WORLD_MAP 0x45, MUSIC_AIRSHIP 0x70, MUSIC_WORLD_DISC4 0x2D (snd_ids.h)

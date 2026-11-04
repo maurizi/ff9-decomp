@@ -240,8 +240,8 @@ typedef struct {
 #define TM_PRIM_BUF_SIZE  0x4B000
 /* DB_SOUND_BANK ids of the two banks in FILE_TM_DATA (tm_loadSoundBlocks uploads both). [runtime] R41b: keys 0x900E2 /
  * 0x900FA looked up; afterwards GameData.musicBank[0] = 0xE2. */
-#define TM_MUSIC_BANK 0xE2 /* the Tetra Master song's instrument bank (96 instruments, SPU slot 0), GameData.musicBank[0] */
-#define TM_SE_BANK    0xFA /* the card game's sound effects (32 instruments, slot 160) */
+#define TM_SOUND_BANK_MUSIC 0xE2 /* the Tetra Master song's instrument bank (96 instruments, SPU slot 0), GameData.musicBank[0] */
+#define TM_SOUND_BANK_SE    0xFA /* the card game's sound effects (32 instruments, slot 160) */
 #define TM_FILE_CARDS     0 /* the 100 card picture TIMs, 0xA80 bytes each */
 #define TM_FILE_CARD_DATA 1 /* -> g_tmCardData */
 #define TM_FILE_DECKS     2 /* -> g_tmDecks */
