@@ -636,7 +636,7 @@ loop:
         task->fileIds.w[1] = -1;
         task->fileIds.w[2] = -1;
         task->fileIds.w[3] = -1;
-        task->fileIds.h[0] = 0x201;
+        task->fileIds.h[0] = BTL_SOUND_BASE_BANK;
         if (flags & BTL_STEPF_DEP_SOUNDS) {
             btl_loadSoundsStep_collect(&task->fileIds.h[4], 9, 2);
         }
@@ -647,7 +647,7 @@ loop:
         sector = btl_findNearestFile(DIR_SOUND_BANKS, (u16 *)ids, (u16 *)&task->fileIds.h[6], (u16 **)&found, &sz);
         if (sector != -1) {
             cdRead_init(cd, sector, sz << 11, (void *)task->buf, 0, -1, 0);
-            if (*found == 0x201) {
+            if (*found == BTL_SOUND_BASE_BANK) {
                 task->bank = -1;
             } else {
                 task->bank = found - ids;

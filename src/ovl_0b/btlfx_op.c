@@ -766,9 +766,9 @@ s32 btlfx_opApplyResult(s32 mode, void *work, Unk800F78A4 *env, void *entry, s32
     if (mode == 1) {
         argp = args;
         id = argp[0];
-        if (id == 0xFF) {
+        if (id == BTLFX_UNIT_NONE) {
             id = -1;
-        } else if (id == 0xFE) {
+        } else if (id == BTLFX_UNIT_RANDOM_TARGET) {
             id = btlfx_rand() % g_btlfxEnv->targets->targetCount;
         }
         if (argp[1] == 0) {
@@ -776,7 +776,7 @@ s32 btlfx_opApplyResult(s32 mode, void *work, Unk800F78A4 *env, void *entry, s32
             return 1;
         }
         if (argp[1] == 1) {
-            if (g_btlfxWeaponScriptId == 0x16D || (u32)((u16)g_btlfxState.effectId - 0x6B) >= 2 || id != 0x10) {
+            if (g_btlfxWeaponScriptId == BTLFX_EFFECT_BLOOD_SWORD || (u32)((u16)g_btlfxState.effectId - (BTLFX_EFFECT_ATTACK + CHR_KIND_STEINER)) >= 2 || id != BTLFX_UNIT_CASTER) {
                 btlfx_showPopups(id);
             }
             return 1;

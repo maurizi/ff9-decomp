@@ -780,6 +780,7 @@ typedef struct {
 #define BTLFX_UNIT_CASTER  0x10 /* BtlUnitList.caster */
 #define BTLFX_UNIT_PARTNER 0x11 /* BtlUnitList.partner */
 #define BTLFX_UNIT_NONE    0xFF /* no unit: the effect ops skip it or use the targets' centre */
+#define BTLFX_UNIT_RANDOM_TARGET 0xFE /* btlfx_opApplyResult: a random one of the targets */
 #define BTLFX_UNIT_MODEL_RADIUS 0x100 /* btlfx_getUnitRadius: | id: the model's radius even for an enemy (else the enemy type's) */
 /* btlfx_fadeUnitGroup groups (op 0x24 btlfx_opFadeUnits: arg 1 & BTLFX_FADE_GROUP; cast task). Evidence: [code] */
 #define BTLFX_FADE_PARTY       0 /* the party units */
@@ -1271,6 +1272,8 @@ extern s32 g_btlbgScrollCount;
 /* Battle.cmdSlots per unit (btl_initUnitCmds: party slots first, then the enemies'). Evidence: [code] */
 #define BTL_PARTY_CMD_SLOTS 6
 #define BTL_ENEMY_CMD_SLOTS 3
+#define BTL_SOUND_BASE_BANK 0x201 /* DIR_SOUND_BANKS file btl_loadSoundsStep always reads first and loads with
+                                   * akao_loadBankRetry (no slot), before the slot banks. Evidence: [code] (runtime: pending R41, its sounds) */
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle
@@ -2021,6 +2024,11 @@ extern s32 g_btlfxInCall;
 extern u8 *g_btlfxReturnPc;
 extern s16 g_btlfxWeaponScriptId;
 extern u16 g_btlfxWeaponScripts[];
+/* g_btlfxWeaponScripts: the hit script per weapon item id (btlfx_getUnitWeapon); ids from the count on use entry 0.
+ * Evidence: [code] btlfx_getWeaponScript, [data] the table */
+#define BTLFX_WEAPON_SCRIPT_COUNT 0x55
+#define BTLFX_EFFECT_BLOOD_SWORD 0x16D /* g_btlfxWeaponScripts[0x13], [text items] "Blood Sword": btlfx_opApplyResult still shows the
+                                   * caster's popups for it in Steiner's Attack (the HP drain) */
 
 typedef struct LinkNode {
     struct LinkNode *next;

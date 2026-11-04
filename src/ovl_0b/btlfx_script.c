@@ -1726,7 +1726,7 @@ s32 btlfx_getKindTiming(s32 unitId, s32 timing) {
 
 s32 btlfx_getWeaponScript(s32 unitId) {
     s32 weapon = btlfx_getUnitWeapon(unitId);
-    if (weapon >= 0x55) {
+    if (weapon >= BTLFX_WEAPON_SCRIPT_COUNT) {
         weapon = 0;
     }
     return g_btlfxWeaponScripts[weapon];
