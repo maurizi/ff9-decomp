@@ -454,8 +454,8 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0d3_env = env;
         ex->btlfx_initEffModels(fx_0d3_effModels, 7);
-        fx_0d3_sharedModel = work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
-        model = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x26), 1);
+        fx_0d3_sharedModel = work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL), 1);
+        model = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_5), 1);
         work->rot28.vy = 0x800;
         work->summonScale1C.vx = 0x1000;
         work->summonScale1C.vy = 0x1000;
@@ -482,13 +482,13 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->state0 == 0) {
             t = (frame << 12) / 75;
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_RED_RINGS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x28) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_TRAILS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0d3_trails;
                     emitter->trailSlots = 0xC0;
@@ -497,14 +497,14 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x32) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_3), (s32)&work->pos8);
                 work->emit30 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x1E) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER), (s32)&work->pos8);
                 work->emit34 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
@@ -647,9 +647,9 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0d3_env = env;
-        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
-        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xC), 1);
-        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_2), 1);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_3), 1);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_MODEL_4), 1);
         work->model60 = fx_0d3_sharedModel;
         work->pos8.vx = fx_0d3_centerPos.vx;
         work->pos8.vy = fx_0d3_centerPos.vy;
@@ -685,21 +685,21 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                ((Fx0d3Summon81 *)env->loader)->model60, 1);
         work->summonPos10.vy -= 0xC00;
         if (frame_119 == 0) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_GLOW_RINGS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_2), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = -0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_3), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = -0x80;
             }
         }
         if (frame_119 == 1) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_TRAILS_2), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_0d3_trails2;
                 emitter->trailSlots = 0x4A;
@@ -708,11 +708,11 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame_119 == 7) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FLAME_FEATHERS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_EMBERS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
@@ -738,11 +738,11 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             lineFrame = frame_119 - 0x18;
             lineT = (lineFrame << 12) / 42;
             env->otZ = 0x80;
-            data = (u8 *)ex->btlfx_getFileData(entry->file, 7);
+            data = (u8 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_SPRITE_LINE);
             ex->btlfx_drawSpriteLine(data, &work->pos8, lineFrame, ex->math_sin(lineT >> 2));
             env->otZ = 0;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x15), frame_119);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_BACKDROP), frame_119);
         work->camAt40.vy = work->summonPos10.vy;
         work->camAt40.vx = work->summonPos10.vx;
         work->camAt40.vz = work->summonPos10.vz;
@@ -768,7 +768,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             BTLFX_COPY_SVEC(&work->pos30, &fx_0d3_centerPos);
             work->pos30.vy -= 0x1000;
             work->pos30.vz -= 0x200;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos30);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_FEATHERS), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_0d3_trails3;
                 emitter->trailSlots = 0x40;
@@ -778,11 +778,11 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             BTLFX_COPY_SVEC(&work->pos38, &fx_0d3_centerPos);
             work->pos38.vy -= 0x1000;
             work->pos38.vz += 0xFF;
-            work->emit4C = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos38);
+            work->emit4C = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_4), (s32)&work->pos38);
             if (trackedEmitter != NULL) {
                 trackedEmitter->otZ = 0x80;
             }
-            work->emit50 = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos38);
+            work->emit50 = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_5), (s32)&work->pos38);
             if (trackedEmitter != NULL) {
                 trackedEmitter->otZ = 0x80;
             }
@@ -809,7 +809,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 2:
         if (frame_119 == 0) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_0d3_centerPos);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_PINK_RINGS), (s32)&fx_0d3_centerPos);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -817,14 +817,14 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos30.vy = fx_0d3_centerPos.vy;
             work->pos30.vz = fx_0d3_centerPos.vz;
             work->pos30.vy -= 0x200;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos30);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FLAME_FEATHERS_2), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
         }
         if (frame_119 == 7) {
             ex->btlfx_initParticleSystem();
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&fx_0d3_centerPos);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_GOLD_FEATHERS), (s32)&fx_0d3_centerPos);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -961,11 +961,11 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos30.vx = work->camAt40.vx;
             work->pos30.vy = work->camAt40.vy;
             work->pos30.vz = work->camAt40.vz;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos30);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_EMBERS_2), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x10;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos30);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_COPPER_RINGS), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x10;
             }
@@ -1000,7 +1000,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                ((Fx0d3Summon81 *)env->loader)->model60, 0);
         if (frame_119 == 0) {
             ex->btlfx_initParticleSystem();
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_GOLD_FEATHERS_2), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->tail->shape = -1;
                 *(s32 *)&emitter->tail->s.module.spawnFn = (s32)fx_0d3_op81SpawnPoint;
@@ -1084,7 +1084,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos30.vy = fx_0d3_summonPos.vy;
             work->pos30.vz = fx_0d3_summonPos.vz - 0x100;
             work->pos30.vy -= 0x400;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos30);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_EMBERS_3), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x10;
             }
@@ -1094,7 +1094,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos38.vy = fx_0d3_summonPos.vy;
             work->pos38.vz = fx_0d3_summonPos.vz;
             work->pos30.vz -= 0x100;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos38);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FLAME_FEATHERS_3), (s32)&work->pos38);
             if (emitter != NULL) {
                 emitter->otZ = 0x10;
             }

@@ -11,7 +11,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
 
     if (mode == 1) {
         part->state0 = 0;
-        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&part->pos4);
+        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEORITE_TRAIL_EMITTER), (s32)&part->pos4);
         if (part->emitC != NULL) {
             part->emitC->otZ = 0;
         }
@@ -33,7 +33,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model10);
             env->otZ = 0x80;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &part->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_RED_GLOW), &part->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
             env->otZ = 0;
             if (frame >= 0x14) {
                 part->state0 = 1;
@@ -53,12 +53,12 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             BTLFX_COPY_SVEC(&pos, &part->pos4);
             pos.vy -= frame * 4;
             env->otZ = 0x10;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_SMOKE), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
             if (frame < 0x10) {
                 env->otZ = 0x64;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &pos, NULL, -1, frame, 1, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_RING), &pos, NULL, -1, frame, 1, -1);
                 env->otZ = 0;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), &part->pos4, &rot, 0x1000, frame, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_FLASH), &part->pos4, &rot, 0x1000, frame, 1,
                                   -1, 0, 0);
             }
             env->otZ = 0;
@@ -86,7 +86,7 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->spawnCountC = 0;
         fx_0cc_env = env;
         ex->btlfx_initEffModels(fx_0cc_effModels, 1);
-        work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 0);
+        work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_ROCK), 0);
         BTLFX_COPY_SVEC(&work->pos4, &env->targets->centerX);
         work->pos4.vy = 0;
     } else {

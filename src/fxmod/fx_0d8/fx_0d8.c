@@ -96,12 +96,12 @@ static void fx_0d8_op83ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, S
     BTLFX_COPY_SVEC(&elemRot, rot);
     entry = fx_0d8_task;
     fade = ex->math_sin((frame << 11) / n);
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), pos, &elemRot, *scale * 3 / 2, frame, 1, fade, 0, 0);
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x19), pos, &elemRot, *scale * 3 / 2, frame, 1, fade, 2, 2);
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), pos, &elemRot, *scale * 5 / 2, frame, 1, fade, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB), pos, &elemRot, *scale * 3 / 2, frame, 1, fade, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_FADE), pos, &elemRot, *scale * 3 / 2, frame, 1, fade, 2, 2);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_LENS_FLARES), pos, &elemRot, *scale * 5 / 2, frame, 1, fade, 0, 0);
     spriteScale = (frame << 12) / n + 0x1800;
-    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), pos, &elemRot, spriteScale, frame, 1, *alpha);
-    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), pos, &elemRot, spriteScale, frame, 1, *alpha);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_SPARKS), pos, &elemRot, spriteScale, frame, 1, *alpha);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_SPARKS_2), pos, &elemRot, spriteScale, frame, 1, *alpha);
 }
 
 static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -128,13 +128,13 @@ static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk8
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18, part->branchAt12, fade, (0x1000 - t) >> 6, part->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18 + 3, part->branchAt13, fade, (0x1000 - t) >> 6, part->kind14);
             if (frame == 0) {
-                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&part->pos0);
+                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SPARKS), (s32)&part->pos0);
                 if (part->emit1C != NULL) {
                     part->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 if (part->strip10 & 1) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&part->pos0);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_IMPACT_FLASH), (s32)&part->pos0);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     }
@@ -154,7 +154,7 @@ static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk8
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18, part->branchAt12, fade, (0x1000 - t) >> 6, part->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, part->jitter18 + 3, part->branchAt13, fade, (0x1000 - t) >> 6, part->kind14);
             if (frame == 0) {
-                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&part->pos0);
+                part->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SPARKS), (s32)&part->pos0);
                 if (part->emit1C != NULL) {
                     part->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
@@ -269,11 +269,11 @@ s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         it->width15 = 0x80;
                     }
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_IMPACT_FLASH), (s32)&work->pos0);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_IMPACT_RING), (s32)&work->pos8);
             }
         }
         if (frame == 15) {
@@ -284,11 +284,11 @@ s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 1, tint >> 1, tint);
         }
         if (frame == 20) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_IMPACT_RING), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos0);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_ORB_EMITTER), (s32)&work->pos0);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 emitter->elems->draw = (void (*)())fx_0d8_op83ElemDraw;
@@ -369,8 +369,8 @@ s32 fx_0d8_op84(s32 mode, Fx0d8Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDARA_SWORD_GLINT_2), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

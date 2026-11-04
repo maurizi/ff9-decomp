@@ -6,6 +6,11 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0b7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_HEAVY_FAN_EMITTER 0x2 /* emitter: orbiting fan elements (not rendered) (look pending) */
+#define FX_HEAVY_GREEN_SWIRL 0x6 /* emitter: green swirl ring particle + pink-white gouraud rings */
+
 typedef struct {
     SVECTOR pos0; /* caster position */
 } Fx0b7Work;

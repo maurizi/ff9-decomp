@@ -5,6 +5,10 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0cf effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_STOCK_BREAK_SLASH_ARC 0x1 /* emitter: blue slash arc, fans */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* position: env->targets->centerX..Z */

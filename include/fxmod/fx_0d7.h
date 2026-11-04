@@ -7,6 +7,14 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0d7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SWDMAG_THUNDER_SMOKE         0x7 /* emitter: yellow / blue smoke puffs after the strike (byte-identical to fx_003 entry 0xa) */
+#define FX_SWDMAG_THUNDER_IMPACT_RING   0x8 /* rings: cyan gouraud rings at the strike (byte-identical to fx_003 entry 0xb) */
+#define FX_SWDMAG_THUNDER_IMPACT_FLASH  0x9 /* emitter: four-point star flash, white rings, sparks (byte-identical to fx_003 entry 0xc) */
+#define FX_SWDMAG_THUNDER_SWORD_GLINT   0xF /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
+#define FX_SWDMAG_THUNDER_SWORD_GLINT_2 0x10 /* rings: white gouraud ring flash at the sword, rotated */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */

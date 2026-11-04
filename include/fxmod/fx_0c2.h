@@ -6,6 +6,13 @@
  * pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0c2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_NO_MERCY_FLASH_BURST  0xA /* emitter: white star flash with a lens flare, grey-blue smoke, sparkles (same call site as fx_0c1 entry 0xc) */
+#define FX_NO_MERCY_IMPACT_BURST 0xB /* emitter: white / blue / orange rings, white glow, grey-blue smoke (same call site as fx_0c1 entry 0xd) */
+#define FX_NO_MERCY_BLUE_RING    0xC /* emitter: white / dark blue / cyan gouraud ring, fans (byte-identical to fx_0c1 entry 0x7) */
+#define FX_NO_MERCY_DUST_PLUME   0xD /* emitter: rising tan dust column and blue smoke (same call site as fx_0c1 entry 0xb) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* unit 0x10 bone 0x17 position */

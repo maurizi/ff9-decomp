@@ -66,8 +66,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0ba_env = env;
         ex->btlfx_initEffModels(fx_0ba_effModels0, 6);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x20), 0);
-        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x18), 0);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_4), 0);
+        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_2), 0);
         work->summonPos48.vx = 0;
         work->rot60.vy = 0x800;
         work->summonScale54.vx = 0x1000;
@@ -172,8 +172,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 0x3C) {
                 if (frame == 0x3C) {
-                    work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 1);
-                    work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 1);
+                    work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_1), 1);
+                    work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_0), 1);
                     work->pos10.vx = work->summonPos48.vx;
                     work->pos10.vy = work->summonPos48.vy;
                     work->pos10.vz = work->summonPos48.vz;
@@ -182,11 +182,11 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fx_0ba_orbPos.vx = work->pos10.vx;
                     fx_0ba_orbPos.vy = work->pos10.vy;
                     fx_0ba_orbPos.vz = work->pos10.vz;
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x86), (s32)&work->pos10);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_EMITTER_6), (s32)&work->pos10);
                     if (emitter != NULL) {
                         emitter->otZ = 0x37;
                     }
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x84), (s32)&work->pos10);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_EMITTER_4), (s32)&work->pos10);
                     if (emitter != NULL) {
                         emitter->otZ = 0x37;
                     }
@@ -194,7 +194,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 bright = 0;
                 ex->btlfx_rangeProgress(frame, 0x3C, 0x23, 0, 0x1000, &fade);
-                keys = (s16 *)ex->btlfx_getFileData(entry->file, 0x85);
+                keys = (s16 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_KEYS_5);
                 keyIdx = frame - 0x3C;
                 if (keyIdx >= 0x1E) {
                     keyIdx = 0x1D;
@@ -211,7 +211,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 mpos.vz += 0x400;
                 ex->Hi_DrawMorphEffModel(&work->rot68, &mpos, (s32)&scale, work->model84, work->model88, key);
                 env->otZ = 0x100;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x27), &work->pos10, NULL, fade * 3 + 0x1000,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_WHITE_RING), &work->pos10, NULL, fade * 3 + 0x1000,
                                   0, 1, ex->math_cos(fade >> 2));
                 env->otZ = 0;
                 summonRgb = ((fade * 3 / 4 + 0x400) >> 5) - 0x80;
@@ -238,8 +238,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[2].vx = work->pos18.vx;
                 env->camera->points[2].vy = work->pos18.vy;
                 env->camera->points[2].vz = work->pos18.vz;
-                work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x82), 1);
-                work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x83), 1);
+                work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_2), 1);
+                work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_3), 1);
             }
             break;
         case 2:
@@ -319,7 +319,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *trail, SVEC
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x100);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ORANGE_TRAIL), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
 s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
@@ -399,11 +399,11 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
         work->frame4 = 0;
         fx_0ba_env = env;
         ex->btlfx_initEffModels(fx_0ba_effModels1, 5);
-        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1F), 1);
-        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x26), 0);
-        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x18), 0);
-        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 0);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x83), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_3), 1);
+        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_5), 0);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_2), 0);
+        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL), 0);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SUMMON_MODEL_3), 1);
         work->pos8.vx = 0;
         work->pos8.vy = 0;
         work->pos8.vz = 0;
@@ -426,7 +426,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
         trailAmp = 0;
         switch (work->state0) {
         case 0: {
-            key = (Fx0baPKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, 0x1A) + (frame * 12 + 4));
+            key = (Fx0baPKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MOTION_KEYS) + (frame * 12 + 4));
             work->pos48[0] = key->x + work->pos8.vx;
             work->pos48[1] = key->y + work->pos8.vy;
             work->pos48[2] = key->z + work->pos8.vz;
@@ -445,7 +445,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 rot.vy = 0;
                 rot.vz = frame * 0x18;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x21), &work->pos8, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_GREY_RING), &work->pos8, &rot,
                                   ex->math_sin(spE8 >> 2), 0, 1, ex->math_cos(spE8 >> 2));
                 env->otZ = 0;
                 glowBright = ex->math_cos(spE8 >> 2) >> 1;
@@ -547,7 +547,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame > 0) {
                 SVECTOR rot;
 
-                keys = (Fx0baPKeys *)ex->btlfx_getFileData(entry->file, 7);
+                keys = (Fx0baPKeys *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LENS_FLASH_KEYS);
                 c6k = frame + 9;
                 if (c6k >= 36) {
                     keyH = *(s16 *)((u8 *)keys + (36 * 6 + 4)) * 2 / 3 + ((frame - 27) << 6);
@@ -573,30 +573,30 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 }
                 env->otZ = 0x140;
                 if (frame >= 15) {
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x15), &work->pos10, NULL, keyH * 5 / 2,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LENS_FLASH), &work->pos10, NULL, keyH * 5 / 2,
                                             frame & 1, 1, ex->math_cos(t >> 2), 0, 0);
                 }
                 rot.vx = rot.vy = 0x200;
                 rot.vz = frame * 0x2C;
                 rot.pad = 0;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), &work->pos10, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CYAN_RING), &work->pos10, &rot,
                                   ex->btlfx_randCentered(0x1000) + 0x4000, 0, 1, 0x1000);
                 env->otZ = 0;
             }
             if (frame >= 20) {
                 ringT = ((frame - 20) << 12) / 31;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->pos10, NULL, (ringT >> 2) + 0x2800, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_RING), &work->pos10, NULL, (ringT >> 2) + 0x2800, 0, 1,
                                   ex->math_sin(ringT >> 1));
             }
             if (frame == 20) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_GLOW_RINGS), (s32)&work->pos10);
                 work->emit6C = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }
             }
             if (frame == 14) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_BURST), (s32)&work->pos8);
                 work->emit68 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = -0x20;
@@ -681,7 +681,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2C), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_PARTICLE), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }
@@ -735,7 +735,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 rot.vz = rot.vy = rot.vx = 0;
                 ex->btlfx_drawScreenGrid(2, 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
             }
-            key = (Fx0baPKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, 0x19) + (frame * 12 + 4));
+            key = (Fx0baPKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MOTION_KEYS_2) + (frame * 12 + 4));
             work->pos48[0] = key->x + work->pos8.vx;
             work->pos48[1] = key->y + work->pos8.vy - 0x2EE;
             work->pos48[2] = key->z + work->pos8.vz;
@@ -829,9 +829,9 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                     pt->pad = pad;
                     pt++;
                 }
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), 0, NULL, (work->frame4 + k) & 7, type, alpha,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LIGHTNING_RIBBON), 0, NULL, (work->frame4 + k) & 7, type, alpha,
                                     1, (u8 *)ta, 2);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xD), 0, NULL, (work->frame4 + k) & 7, type,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LIGHTNING_RIBBON_2), 0, NULL, (work->frame4 + k) & 7, type,
                                     alpha, 1, (u8 *)tb, 2);
             }
         }
@@ -856,7 +856,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                     pt2->pad = 0xC8;
                     pt2++;
                 }
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x16), 0, (s32 *)&work->pos8,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LIGHTNING_BOLT), 0, (s32 *)&work->pos8,
                                     (work->frame4 + rib) & 7, arr90[rib], arr60[rib], 1, (u8 *)tc, 1);
             }
         }
@@ -879,7 +879,7 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_0ba_env = env;
     } else {
         frame = entry->frame;
-        keys = (s16 *)ex->btlfx_getFileData(entry->file, 0x2E);
+        keys = (s16 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAMERA_KEYS);
         keyIdx = frame;
         if (keyIdx >= keys[1]) {
             keyIdx = keys[1] - 1;
@@ -891,7 +891,7 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         env->camera->points[0].vx = camPt.vx;
         env->camera->points[0].vy = camPt.vy;
         env->camera->points[0].vz = camPt.vz;
-        keys = (s16 *)ex->btlfx_getFileData(entry->file, 0x2F);
+        keys = (s16 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAMERA_KEYS_2);
         keyIdx = frame;
         if (keyIdx >= keys[1]) {
             keyIdx = keys[1] - 1;
@@ -1026,7 +1026,7 @@ static s32 fx_0ba_op83PoolTask(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk8010
                 ang.vx = 0;
                 ang.vz = 0;
                 env->otZ = 0x400;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x29), &p->pos0, NULL, (ringT >> 2) + 0x2000, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_RING), &p->pos0, NULL, (ringT >> 2) + 0x2000, 0, 1,
                                   0x1000 - ringT * 2 / 3);
                 env->otZ = 0;
             }
@@ -1036,7 +1036,7 @@ static s32 fx_0ba_op83PoolTask(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk8010
                 ang.vx = 0;
                 ang.vz = 0;
                 env->otZ = 0x400;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x29), &p->pos8, NULL, (ringT >> 2) + 0x2000, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_RING), &p->pos8, NULL, (ringT >> 2) + 0x2000, 0, 1,
                                   0x1000 - ringT * 2 / 3);
                 env->otZ = 0;
             }
@@ -1229,7 +1229,7 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if ((fx_0ba_preOrb != 0 || !(frame & 1)) && fx_0ba_summonDone == 0) {
                 do {
                     ptIdx = ex->btlfx_rand() % 10;
-                    pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->file, 0x23) + 4) + ptIdx;
+                    pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_POINTS) + 4) + ptIdx;
                     b.vx = -pt->vx + fx_0ba_summonPos.vx;
                     b.vy = pt->vy + fx_0ba_summonPos.vy;
                     b.vz = -pt->vz + fx_0ba_summonPos.vz;
@@ -1240,7 +1240,7 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         b.vy += 0x400;
                     } else {
                         ptIdx = ex->btlfx_rand() % 10;
-                        pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->file, 0x24) + 4) + ptIdx;
+                        pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_POINTS_2) + 4) + ptIdx;
                         boltFrom.vx = -pt->vx + fx_0ba_summonPos.vx;
                         boltFrom.vy = pt->vy + fx_0ba_summonPos.vy;
                         boltFrom.vz = -pt->vz + fx_0ba_summonPos.vz;
@@ -1294,7 +1294,7 @@ static s32 fx_0ba_op85PoolTask(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk8010
         if (p->pointIdx16 == 0) {
             p->point18[-0x10] = p->point18[-0xE] = 0x10;
             p->point18[-0xF] = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x32), 0, NULL, frame, 0x1000, fade, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_POOL_TRAIL), 0, NULL, frame, 0x1000, fade, 1,
                               p->point18 - 4, 0);
         }
         if (frame >= 5) {

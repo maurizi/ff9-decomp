@@ -6,6 +6,11 @@
  * pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0bf effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_THUNDER_SLASH_SPARKS    0x1 /* emitter: cone of blue-green electric wisps, orange sparks and white glints */
+#define FX_THUNDER_SLASH_LIGHTNING 0x2 /* sprite: blue / red lightning streak, 12 frames (drawn directly) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */

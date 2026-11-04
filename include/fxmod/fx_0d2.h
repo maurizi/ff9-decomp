@@ -6,6 +6,62 @@
  * the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_0d2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FENRIR_FAN_EMITTER           0x1 /* emitter: orbiting fan element (not rendered) (look pending) */
+#define FX_FENRIR_DUST_CLOUD            0x2 /* emitter: tan dust clouds and an orange gouraud ring */
+#define FX_FENRIR_BLUE_RINGS            0x3 /* emitter: white-blue gouraud rings */
+#define FX_FENRIR_ORANGE_RING           0x4 /* emitter: orange gouraud ring */
+#define FX_FENRIR_BACKDROP              0x5 /* table: background layers for btlfx_drawBackdrop */
+#define FX_FENRIR_UNIT_PATHS            0x8 /* table: offset table of per-unit position paths (op83) */
+#define FX_FENRIR_MORPH_PATH            0x9 /* table: rotation / position path of the morph models (fx_0d2_morphPath) */
+#define FX_FENRIR_UNIT_OFFSET_PATH      0x14 /* table: position path (fx_0d2_unitOffsetPath) */
+#define FX_FENRIR_UNIT_SCALE_PATH       0x15 /* table: vector path (fx_0d2_unitScalePath) */
+#define FX_FENRIR_MORPH_CURVE           0x19 /* table: value path (fx_0d2_morphCurve2) */
+#define FX_FENRIR_MORPH_CURVE_2         0x1A /* table: alternative value path (fx_0d2_morphCurve2) */
+#define FX_FENRIR_ROCK_STREAK           0x1B /* trail: brown rock-textured streak, drawn along 9 paths */
+#define FX_FENRIR_CAMERA_KEYS_2         0x1D /* table: camera channel 2 keys from frame 0xDE (fxm_camChanAdd) */
+#define FX_FENRIR_CAMERA_KEYS_3         0x1E /* table: camera channel 3 keys from frame 0xDD */
+#define FX_FENRIR_CAMERA_KEYS_1         0x1F /* table: camera channel 1 keys from frame 0xDE */
+#define FX_FENRIR_CAMERA_KEYS_4         0x20 /* table: camera channel 4 keys from frame 0xDD */
+#define FX_FENRIR_DUST_DEBRIS           0x21 /* emitter: tan dust clouds and rock debris quads */
+#define FX_FENRIR_ROCK_STREAK_2         0x25 /* trail: brown rock-textured streak, drawn along 11 paths */
+#define FX_FENRIR_SLICE_PATH_2          0x28 /* table: rotation / position path (fx_0d2_slicePath2) */
+#define FX_FENRIR_SUMMON_STREAK_PATHS_0 0x80 /* summon data entry 0: offset table of the rock-streak position paths */
+#define FX_FENRIR_SUMMON_STREAK_PATHS_1 0x81 /* summon data entry 1: offset table of the rock-streak position paths */
+#define FX_FENRIR_SUMMON_EMIT_PATH_2    0x82 /* summon data entry 2: position path of the emitters (fx_0d2_emitPath) */
+#define FX_FENRIR_SUMMON_EMITTER_3      0x83 /* summon data entry 3: emitter (look pending) */
+#define FX_FENRIR_SUMMON_RING_PATH_4    0x84 /* summon data entry 4: rotation / position path (fx_0d2_ringPath) */
+#define FX_FENRIR_SUMMON_MODEL_5        0x85 /* summon data entry 5: 'so' model (look pending) */
+#define FX_FENRIR_SUMMON_MODEL_6        0x86 /* summon data entry 6: 'so' model (look pending) */
+#define FX_FENRIR_SUMMON_MODEL_13       0x8D /* summon data entry 13: 'so' model (look pending) */
+#define FX_FENRIR_SUMMON_MODEL_14       0x8E /* summon data entry 14: 'so' model (look pending) */
+#define FX_FENRIR_SUMMON_MORPH_CURVE_15 0x8F /* summon data entry 15: value path (fx_0d2_morphCurve) */
+#define FX_FENRIR_SUMMON_SLICE_PATHS_16 0x90 /* summon data entry 16: offset table of six rotation / position paths (fx_0d2_slicePaths) */
+#define FX_FENRIR_SUMMON_SLICE_PATHS_17 0x91 /* summon data entry 17: offset table of six rotation / position paths (fx_0d2_slicePaths) */
+#define FX_FENRIR_SUMMON_PATH_18        0x92 /* summon data entry 18: position path of the summon (fx_0d2_summonPath) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_19 0x93 /* summon data entry 19: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_20 0x94 /* summon data entry 20: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_21 0x95 /* summon data entry 21: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_22 0x96 /* summon data entry 22: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_23 0x97 /* summon data entry 23: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_24 0x98 /* summon data entry 24: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_25 0x99 /* summon data entry 25: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_26 0x9A /* summon data entry 26: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_27 0x9B /* summon data entry 27: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_28 0x9C /* summon data entry 28: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_29 0x9D /* summon data entry 29: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_MODEL_30       0x9E /* summon data entry 30: 'so' model (look pending) */
+#define FX_FENRIR_SUMMON_PATH_31        0x9F /* summon data entry 31: position path of the summon (fx_0d2_summonPath) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_32 0xA0 /* summon data entry 32: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_33 0xA1 /* summon data entry 33: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_34 0xA2 /* summon data entry 34: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_CAMERA_KEYS_35 0xA3 /* summon data entry 35: camera channel keys (fxm_camChanAdd, op80) */
+#define FX_FENRIR_SUMMON_EMITTER_36     0xA4 /* summon data entry 36: emitter (look pending) */
+#define FX_FENRIR_SUMMON_EMITTER_37     0xA5 /* summon data entry 37: emitter (look pending) */
+#define FX_FENRIR_SUMMON_EMITTER_38     0xA6 /* summon data entry 38: emitter (look pending) */
+#define FX_FENRIR_SUMMON_SLICE_PATH_39  0xA7 /* summon data entry 39: rotation / position path (fx_0d2_slicePath) */
+
 typedef struct {
     u16 unk0; /* not read by the module */
     u16 count2; /* count */

@@ -16,7 +16,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0d5_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_FLAME_BURST), (s32)&work->posC);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
@@ -35,31 +35,31 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos4, &rot, ringScale * 2 / 3, 0xC, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_GROUND_RING), &work->pos4, &rot, ringScale * 2 / 3, 0xC, 1,
                                   ex->math_sin(t >> 1));
             }
             if (frame == 5) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SMOKE), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame == 0x12) {
-                trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+                trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_FLAME_SWIRL), (s32)&work->pos4);
                 if (trailEmitter != NULL) {
                     trailEmitter->otZ = 0x80;
                     trailEmitter->trails = (s32)fx_0d5_trails;
                     trailEmitter->trailSlots = 0x15;
                     trailEmitter->trailStride = 0xAC;
                 }
-                trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
+                trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_FLAME_BURST_2), (s32)&work->posC);
                 if (trailEmitter != NULL) {
                     trailEmitter->otZ = 0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos4);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_HEAT_RING), (s32)&work->pos4);
             }
             if (frame == 0x17) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SMOKE_2), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
@@ -141,8 +141,8 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SWORD_GLINT_2), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

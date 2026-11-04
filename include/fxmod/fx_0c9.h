@@ -5,6 +5,16 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0c9 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_JEWEL_GEM          0x1 /* model: faceted gem (polyhedron, white texture) */
+#define FX_JEWEL_GEM_SPARKLES 0x2 /* emitter: stone / crystal glint particles and star sparkles (+ sprites, texture not in the file) */
+#define FX_JEWEL_FAN_EMITTER  0x3 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_JEWEL_LIGHT_BURST  0x4 /* emitter: white / lilac / cyan rings and violet light streaks */
+#define FX_JEWEL_ORE_GLINT    0x5 /* emitter: green ore glint, lilac / cyan ring, star sparkles */
+#define FX_JEWEL_BACKDROP     0x6 /* table: background layers for btlfx_drawBackdrop */
+#define FX_JEWEL_GLOW_RING    0x10 /* emitter: white-cyan gouraud ring, fans */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

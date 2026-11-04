@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0c0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SHOCK_SPARKLES_2 0x7 /* emitter: blue sparkle sprites (+ a dark sprite element, fans) */
+#define FX_SHOCK_ENERGY_ORB 0x9 /* emitter: blue-white energy orb particle */
+#define FX_SHOCK_FLAME_RING 0xB /* emitter: ring textured with blue flames */
+#define FX_SHOCK_SPARKLES   0xD /* emitter: blue sparkle sprites, fan */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

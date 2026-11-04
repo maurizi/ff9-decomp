@@ -83,13 +83,13 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos34);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_SPRITE_SWIRL), (s32)&work->pos34);
             break;
         case 8:
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos34);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_WIND_RING), (s32)&work->pos34);
             break;
         case 20:
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->pos34);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_WIND_TRAIL), (s32)&work->pos34);
             if (work->emit18 != NULL) {
                 work->emit18->trails = (s32)fx_0b4_trails2;
                 work->emit18->trailSlots = 0x12;
@@ -97,10 +97,10 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 25:
-            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos2C);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_GREEN_BURST), (s32)&work->pos2C);
             break;
         case 45:
-            work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos34);
+            work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_GREEN_RING), (s32)&work->pos34);
             break;
         }
         tm = fx_0b4_timers;

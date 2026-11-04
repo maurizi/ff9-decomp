@@ -239,8 +239,8 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos14.vy = work->posC.vy;
         work->pos14.vz = work->posC.vz;
         ex->btlfx_initEffModels(fx_0cb_effModels, 3);
-        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x12), 1);
-        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
+        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_MODEL), 1);
+        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_MODEL_2), 1);
     } else {
         frame = entry->frame;
         if (work->state0 == 0) {
@@ -251,7 +251,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tint = 0x78 - (frame - 1) * 0x14;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), work->frame4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP), work->frame4);
             ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
             if (frame < 0x20) {
                 if (frame == frame / 3 * 3) {
@@ -283,19 +283,19 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ang = t >> 2;
             alpha = ex->math_cos(ang);
             env->otZ = work->otZ8 + 0x46;
-            data = (u8 *)ex->btlfx_getFileData(entry->file, 5);
+            data = (u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RINGS);
             ex->btlfx_drawRings(data, &work->posC, &rot, ex->math_cos(ang) / 3 + 0x2AA, 0, 1, alpha);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), work->frame4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP_2), work->frame4);
             rot.vx = 0x200;
             rot.vy = 0x590;
             rot.vz = 0x80;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_TEXTURED_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
             rot.vx = 0x600;
             rot.vy = 0x990;
             rot.vz = 0x80;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_TEXTURED_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
             env->otZ = 0;
             if (frame >= 0x32) {
                 ex->btlfx_clearEffModels();

@@ -6,6 +6,14 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0b4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_AERO_GREEN_RING   0xE /* emitter: orbiting green gouraud rings */
+#define FX_AERO_WIND_RING    0xF /* emitter: orbiting pale green wind-ring particles */
+#define FX_AERO_GREEN_BURST  0x10 /* emitter: green gust puffs fading to blue */
+#define FX_AERO_SPRITE_SWIRL 0x11 /* emitter: spiralling sprites, render all black (look pending) */
+#define FX_AERO_WIND_TRAIL   0x19 /* emitter: white 3D wind trail spiralling */
+
 typedef struct {
     s16 pos0[3]; /* position */
     s16 rot6[3]; /* rotation */

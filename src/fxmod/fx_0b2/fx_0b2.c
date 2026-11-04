@@ -28,7 +28,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     } while (i < 25);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_WIND_STREAK), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
 void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s32 radius1, s32 bright, s32 tpage, s32 clut, s32 texU,
@@ -237,7 +237,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1, alpha / 2, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, alpha / 2, 0,
                               0);
             scale.vy = 0x2000;
             scale.vx = 0x2000;
@@ -267,7 +267,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1,
                               t / 2 + 0x800, 0, 0);
             scale.vz = scale.vx = scale.vy = 0x2000;
             radius = 0x1C8 - (t >> 5);
@@ -281,7 +281,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                 work->state0 = 2;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TWISTER_DUST_CLOUDS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x58;
                 }
@@ -303,7 +303,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1, alpha, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, alpha, 0, 0);
             scale.vx = scale.vy = scale.vz = size;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, drift,
                           work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
@@ -329,7 +329,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1, 0x1000 - t, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, 0x1000 - t, 0,
                               0);
             scale.vx = scale.vy = scale.vz = 0x2800;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 5, 0x1A, 0x3D01, 0, 0, 0x140,
@@ -345,7 +345,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         }
         work->rot18.vz += -0x10 - work->frame4 * 2;
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 2), work->frame4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TWISTER_BACKDROP), work->frame4);
         ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, 0x1C0, 0x170, 0x1C, 0x70, 0x1DC, 0x170);
         ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, 0x280, 0x100, 0x1C, 0x70, 0x29C, 0x100);
         i = 0;
