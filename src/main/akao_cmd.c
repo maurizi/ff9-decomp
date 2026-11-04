@@ -39,9 +39,9 @@ u32 akao_getVoiceMask(AkaoChannel *chan, u32 chBits) {
     u32 voices;
     u32 i;
     voices = i = 0;
-    for (; i < 32; i++) {
+    for (; i < AKAO_NUM_CHANNELS; i++) {
         if (chBits & (1 << i)) {
-            if (chan->voice < 0x18) {
+            if (chan->voice < AKAO_NO_VOICE) {
                 voices |= 1 << chan->voice;
             }
         }
@@ -91,7 +91,7 @@ void akao_startSeq(s32 addr, s32 channelMask) {
     i = 0;
     chan = g_akaoChannels;
     ofs = (u16 *)(addr + 0x40);
-    for (; i < 32; i++) {
+    for (; i < AKAO_NUM_CHANNELS; i++) {
         if (active & bit & channelMask) {
             chan->pc = (u8 *)ofs + *ofs;
             chan->noteTicks = 4;
@@ -142,7 +142,7 @@ void akao_startSeq(s32 addr, s32 channelMask) {
             chan->voiceDirty |= AKAO_VD_RELEASE_MODE | AKAO_VD_RELEASE_RATE;
             chan->voiceAdsr2 = (chan->voiceAdsr2 & ~SPU_ADSR2_RELEASE_RATE) | 5;
         }
-        chan->voice = 0x18;
+        chan->voice = AKAO_NO_VOICE;
         active &= ~bit;
         chan++;
         bit <<= 1;
@@ -171,7 +171,7 @@ void akao_stopSeq(AkaoSeq *seq, AkaoChannel *chan, s32 id) {
     u32 i;
     if (seq->activeMask != 0 && (id == 0 || id == seq->musicId)) {
         seq->keyOffMask = -1;
-        for (i = 32; i != 0; i--) {
+        for (i = AKAO_NUM_CHANNELS; i != 0; i--) {
             chan->noteTicks = 3;
             chan->gateTicks = 1;
             chan->pc = g_akaoEmptyTrack;
@@ -180,7 +180,7 @@ void akao_stopSeq(AkaoSeq *seq, AkaoChannel *chan, s32 id) {
         seq->musicId = 0;
         seq->playingMask = 0;
         seq->keyOnMask = 0;
-        for (i = 0; i < 24; i++) {
+        for (i = 0; i < SPU_NUM_VOICES; i++) {
             if (g_akaoVoiceOwner[i] == seq) {
                 g_akaoVoiceOwner[i] = NULL;
                 akao_setVoiceRelease(i, 5, AKAO_ENV_LINEAR_DEC);
@@ -200,7 +200,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
     chan = g_akaoSeChannels;
     active = g_akaoSeState.activeMask | g_akaoSeState.pausedMask;
     if (seFilter & AKAO_SE_STOP_GROUPS) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & seFilter)) {
                 if (chan->flags & AKAO_CH_STOP_AT_LOOP) {
                     chan->flags |= AKAO_CH_STOP_REQUESTED;
@@ -224,7 +224,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
         }
         return;
     } else if (seFilter & AKAO_SE_STOP_OLDEST) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if (chan->seMask != 0) {
                 active &= ~bit;
             }
@@ -232,7 +232,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
         chan = g_akaoSeChannels;
         bit = AKAO_SE_CH_BIT(0);
         max = 0;
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if (active & bit) {
                 if (max < chan->age) {
                     max = chan->age;
@@ -241,7 +241,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
         }
         chan = g_akaoSeChannels;
         bit = AKAO_SE_CH_BIT(0);
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && max == chan->age) {
                 if (chan->flags & AKAO_CH_STOP_AT_LOOP) {
                     chan->flags |= AKAO_CH_STOP_REQUESTED;
@@ -253,7 +253,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if (active & bit) {
                 if (id == -1) {
                     if (chan->seHandle < 0) {
@@ -312,9 +312,9 @@ void akao_startSeChannel(AkaoChannel *chan, VoiceParams *params, s32 chBit, u8 *
     g_akaoSeState.reverbMask &= chBit;
     g_akaoSeState.pitchModMask &= chBit;
     if (g_akaoPauseFlags & AKAO_PAUSED_SE) {
-        chBit = 0x100;
+        chBit = AKAO_SE_CH_BIT(0);
         chan = g_akaoSeChannels;
-        left = 16;
+        left = AKAO_NUM_SE_CHANNELS;
         do {
             if ((g_akaoSeState.activeMask & chBit) && !(chan->seMask & AKAO_SE_DEFAULT)) {
                 g_akaoSeState.activeMask &= ~chBit;
@@ -329,10 +329,10 @@ void akao_startSeChannel(AkaoChannel *chan, VoiceParams *params, s32 chBit, u8 *
 
 void akao_releaseVoice(AkaoChannel *chan, u32 voice) {
     u32 i;
-    if (voice < 0x18) {
-        for (i = 0; i < 32; i++) {
+    if (voice < AKAO_NO_VOICE) {
+        for (i = 0; i < AKAO_NUM_CHANNELS; i++) {
             if (chan->voice == voice) {
-                chan->voice = 0x18;
+                chan->voice = AKAO_NO_VOICE;
                 g_akaoSeq->playingMask &= ~(1 << i);
             }
             chan++;
@@ -371,7 +371,7 @@ void akao_startSe(VoiceParams *params, u8 *track0, u8 *track1, s32 flag) {
                 goto loop;
             }
         } else {
-            left = 16;
+            left = AKAO_NUM_SE_CHANNELS;
         loop2:
             if (busy & bit) {
                 left--;
@@ -482,7 +482,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     g_akaoSeq->flags = flags;
     g_akaoSeq->flags = seq->instrumentSet == g_akaoAltInstrumentSet ? flags | AKAO_SEQ_INSTR_ALT : flags | AKAO_SEQ_INSTR_MAIN;
     chan = g_akaoChannels;
-    left = 32;
+    left = AKAO_NUM_CHANNELS;
     old = g_akaoSeq->data;
     g_akaoSeq->data = (u8 *)seq;
     g_akaoSeq->keyOnMask = 0;
@@ -510,7 +510,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
             chan->gateTicks = 2;
             chan->pc = g_akaoEmptyTrack;
         }
-        chan->voice = 0x18;
+        chan->voice = AKAO_NO_VOICE;
         left--;
         chan++;
         bit <<= 1;
@@ -577,7 +577,7 @@ void akao_cmdSaveMusic(void) {
     if (g_akaoSeq->activeMask != 0) {
         akao_copy(g_akaoSeq, &g_akaoSavedSeq, 0x7C);
         akao_copy(g_akaoChannels, g_akaoSavedChannels, 0x2680);
-        for (i = 0, chan = g_akaoSavedChannels; i < 0x20; i++, chan++) {
+        for (i = 0, chan = g_akaoSavedChannels; i < AKAO_NUM_CHANNELS; i++, chan++) {
             akao_shiftInstrumentDown(g_akaoSavedSeq.flags, chan);
         }
     }
@@ -909,7 +909,7 @@ void akao_cmdSetSeVolume(AkaoArgs *args) {
     u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     if (args->arg1 != 0) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & args->arg1)) {
                 chan->seVolume = ((u16)args->arg2 & 0x7F) << 8;
                 chan->seVolumeSlideLen = 0;
@@ -917,7 +917,7 @@ void akao_cmdSetSeVolume(AkaoArgs *args) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && chan->seHandle == args->arg0) {
                 chan->seVolume = ((u16)args->arg2 & 0x7F) << 8;
                 chan->seVolumeSlideLen = 0;
@@ -935,7 +935,7 @@ void akao_cmdFadeSeVolume(AkaoArgs *args) {
     s16 frames;
 
     if (args->arg1 != 0) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & args->arg1)) {
                 frames = 1;
                 if (args->arg2 != 0) {
@@ -946,7 +946,7 @@ void akao_cmdFadeSeVolume(AkaoArgs *args) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && chan->seHandle == args->arg0) {
                 frames = 1;
                 if (args->arg2 != 0) {
@@ -964,7 +964,7 @@ void akao_cmdSetAllSeVolume(u16 *args) {
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *chan = g_akaoSeChannels;
-    for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+    for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
         if (active & bit) {
             if (!(chan->seMask & AKAO_SE_DEFAULT)) {
                 chan->seVolume = (*args & 0x7F) << 8;
@@ -982,7 +982,7 @@ void akao_cmdFadeAllSeVolume(AkaoArgs *args) {
     AkaoChannel *chan = g_akaoSeChannels;
     s16 frames;
 
-    for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+    for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
         if ((active & bit) && !(chan->seMask & AKAO_SE_DEFAULT)) {
             frames = 1;
             if (args->arg0 != 0) {
@@ -1000,7 +1000,7 @@ void akao_cmdSetSePan(AkaoArgs *args) {
     u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     if (args->arg1 != 0) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & args->arg1)) {
                 chan->sePan = (u8)args->arg2 << 8;
                 chan->sePanSlideLen = 0;
@@ -1008,7 +1008,7 @@ void akao_cmdSetSePan(AkaoArgs *args) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && chan->seHandle == args->arg0) {
                 chan->sePan = (u8)args->arg2 << 8;
                 chan->sePanSlideLen = 0;
@@ -1026,7 +1026,7 @@ void akao_cmdFadeSePan(AkaoArgs *args) {
     s16 frames;
 
     if (args->arg1 != 0) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & args->arg1)) {
                 frames = 1;
                 if (args->arg2 != 0) {
@@ -1037,7 +1037,7 @@ void akao_cmdFadeSePan(AkaoArgs *args) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && chan->seHandle == args->arg0) {
                 frames = 1;
                 if (args->arg2 != 0) {
@@ -1055,7 +1055,7 @@ void akao_cmdSetAllSePan(u8 *args) {
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *chan = g_akaoSeChannels;
-    for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+    for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
         if (active & bit) {
             if (!(chan->seMask & AKAO_SE_DEFAULT)) {
                 chan->sePan = *args << 8;
@@ -1073,7 +1073,7 @@ void akao_cmdFadeAllSePan(AkaoArgs *args) {
     AkaoChannel *chan = g_akaoSeChannels;
     s16 frames;
 
-    for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+    for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
         if ((active & bit) && !(chan->seMask & AKAO_SE_DEFAULT)) {
             frames = 1;
             if (args->arg0 != 0) {
@@ -1091,7 +1091,7 @@ void akao_cmdSetSePitch(AkaoArgs *args) {
     u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     if (args->arg1 != 0) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & args->arg1)) {
                 chan->sePitch = (u8)args->arg2 << 8;
                 chan->sePitchSlideLen = 0;
@@ -1099,7 +1099,7 @@ void akao_cmdSetSePitch(AkaoArgs *args) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && chan->seHandle == args->arg0) {
                 chan->sePitch = (u8)args->arg2 << 8;
                 chan->sePitchSlideLen = 0;
@@ -1117,7 +1117,7 @@ void akao_cmdFadeSePitch(AkaoArgs *args) {
     s16 frames;
 
     if (args->arg1 != 0) {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & args->arg1)) {
                 frames = 1;
                 if (args->arg2 != 0) {
@@ -1128,7 +1128,7 @@ void akao_cmdFadeSePitch(AkaoArgs *args) {
             }
         }
     } else {
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((active & bit) && chan->seHandle == args->arg0) {
                 frames = 1;
                 if (args->arg2 != 0) {
@@ -1144,7 +1144,7 @@ void akao_cmdFadeSePitch(AkaoArgs *args) {
 void akao_cmdSetAllSePitch(u8 *args) {
     s32 i;
     AkaoChannel *chan = g_akaoSeChannels;
-    for (i = 16; i != 0; i--) {
+    for (i = AKAO_NUM_SE_CHANNELS; i != 0; i--) {
         if (!(chan->seMask & AKAO_SE_DEFAULT)) {
             chan->sePitch = *args << 8;
             chan->sePitchSlideLen = 0;
@@ -1161,7 +1161,7 @@ void akao_cmdFadeAllSePitch(AkaoArgs *args) {
     AkaoChannel *chan = g_akaoSeChannels;
     s16 frames;
 
-    for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+    for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
         if ((active & bit) && !(chan->seMask & AKAO_SE_DEFAULT)) {
             frames = 1;
             if (args->arg0 != 0) {
@@ -1245,7 +1245,7 @@ void akao_cmdStopAllSe(void) {
     AkaoChannel *chan = g_akaoSeChannels;
     u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
-    for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+    for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
         if ((g_akaoSeState.activeMask & bit) && !(chan->seMask & AKAO_SE_DEFAULT)) {
             g_akaoSeState.keyOffMask |= bit;
             akao_stopSeChannel(chan, bit);
@@ -1278,7 +1278,7 @@ void akao_cmdSetMuteMask(s32 *args) {
     AkaoChannel *ch;
     g_akaoMuteMask = *args;
     ch = g_akaoChannels;
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < AKAO_NUM_CHANNELS; i++) {
         ch->voiceDirty |= AKAO_VD_VOL;
         ch++;
     }
@@ -1356,13 +1356,13 @@ void akao_cmdPauseSe(void) {
         paused = g_akaoSeState.activeMask;
         chan = g_akaoSeChannels;
         bit = AKAO_SE_CH_BIT(0);
-        for (i = 0; i < 16; i++, chan++, bit <<= 1) {
+        for (i = 0; i < AKAO_NUM_SE_CHANNELS; i++, chan++, bit <<= 1) {
             if ((paused & bit) && (chan->seMask & AKAO_SE_DEFAULT)) {
                 paused &= ~bit;
             }
         }
         bit = AKAO_SE_CH_BIT(0);
-        voice = 8;
+        voice = AKAO_SE_FIRST_VOICE;
         g_akaoSeState.pausedMask = paused;
         g_akaoSeState.activeMask &= ~paused;
         while (paused != 0) {

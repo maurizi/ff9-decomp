@@ -6,7 +6,7 @@ void card_initAll(void) {
     g_cards.wins = 0;
     g_cards.losses = 0;
     g_cards.draws = 0;
-    for (i = 0x68; i >= 0; i--) {
+    for (i = CARD_SLOTS - 1; i >= 0; i--) {
         g_cards.cards[i].id = emptyId;
     }
 }
@@ -18,10 +18,10 @@ void card_resetGameResult(void) {
 s32 card_add(s32 cardId) {
     s32 i;
 
-    if (card_countAll() >= 100) {
+    if (card_countAll() >= CARD_MAX) {
         return -1;
     }
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < CARD_MAX; i++) {
         if (g_cards.cards[i].id == CARD_NONE) {
             card_rollStats(&g_cards.cards[i], cardId);
             return card_countOf(cardId) == 1;
@@ -32,7 +32,7 @@ s32 card_add(s32 cardId) {
 
 s32 card_addWithStats(u8 id, u8 arrows, u8 power, u8 type, u8 physDef, u8 magicDef) {
     s32 i;
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < CARD_SLOTS; i++) {
         if (g_cards.cards[i].id == CARD_NONE) {
             g_cards.cards[i].id = id;
             g_cards.cards[i].arrows = arrows;
@@ -81,7 +81,7 @@ s32 card_countOf(cardId)
 {
     s32 count = 0;
     s32 i;
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < CARD_SLOTS; i++) {
         if (g_cards.cards[i].id == cardId) {
             count++;
         }
@@ -92,7 +92,7 @@ s32 card_countOf(cardId)
 CardEntry *card_find(s32 id, s32 nth) {
     s32 k = 0;
     s32 i;
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < CARD_SLOTS; i++) {
         if (g_cards.cards[i].id == (u8)id) {
             if (nth == k) {
                 return &g_cards.cards[i];
@@ -106,7 +106,7 @@ CardEntry *card_find(s32 id, s32 nth) {
 s32 card_countAll(void) {
     s32 count = 0;
     s32 i;
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < CARD_SLOTS; i++) {
         if (g_cards.cards[i].id != CARD_NONE) {
             count++;
         }
@@ -115,23 +115,23 @@ s32 card_countAll(void) {
 }
 
 s32 card_countKinds(void) {
-    u8 cnt[100];
+    u8 cnt[CARD_KINDS];
     u8 *p;
     s32 i;
     s32 kinds;
 
-    i = 99;
+    i = CARD_KINDS - 1;
     p = &cnt[i];
     for (; i >= 0; i--) {
         *p-- = 0;
     }
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < CARD_SLOTS; i++) {
         if (g_cards.cards[i].id != CARD_NONE) {
             cnt[g_cards.cards[i].id]++;
         }
     }
     kinds = 0;
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < CARD_KINDS; i++) {
         if (cnt[i] != 0) {
             kinds++;
         }
@@ -142,7 +142,7 @@ s32 card_countKinds(void) {
 s32 card_remove(s32 id, s32 nth) {
     s32 k = 0;
     s32 i;
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < CARD_SLOTS; i++) {
         if (g_cards.cards[i].id == (u8)id) {
             if (k == nth) {
                 g_cards.cards[i].id = CARD_NONE;
@@ -157,7 +157,7 @@ s32 card_remove(s32 id, s32 nth) {
 void card_clearAll(void) {
     s32 emptyId = 0xFF;
     s32 i;
-    for (i = 0x68; i >= 0; i--) {
+    for (i = CARD_SLOTS - 1; i >= 0; i--) {
         g_cards.cards[i].id = emptyId;
     }
 }
@@ -178,23 +178,23 @@ s32 card_getNameWidth(s32 cardId) {
     return text_measureWidth(card_getName(cardId));
 }
 
-s32 card_getRarity(s32 x) {
-    if (x < 0x38) {
+s32 card_getRarity(s32 id) {
+    if (id < CARD_HOLY) {
         return 0;
     }
-    if (x < 0x46) {
+    if (id < CARD_EXCALIBUR_II) {
         return 1;
     }
-    if (x < 0x50) {
+    if (id < CARD_BLUE_NARCISS) {
         return 2;
     }
-    if (x < 0x58) {
+    if (id < CARD_CHOCOBO) {
         return 3;
     }
-    if (x < 0x5D) {
+    if (id < CARD_ALEXANDRIA) {
         return 4;
     }
-    if (x < 0x5F) {
+    if (id < CARD_TWO_MOONS) {
         return 5;
     }
     return 6;
@@ -268,7 +268,7 @@ void card_rollStats(CardEntry *card, u8 id) {
     }
     card->type = tbl[id].type;
     if (!(rand() & 0x7F)) {
-        card->type = 2;
+        card->type = TM_TYPE_X;
     }
 }
 

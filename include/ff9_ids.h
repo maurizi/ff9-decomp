@@ -109,6 +109,21 @@
 #define ITEM_ID_KEY_FIRST  0x100
 #define ITEM_ID_CARD_FIRST 0x200
 #define CARD_NONE 0xFF /* empty CardEntry.id (card_add, card_remove) */
+/* Tetra Master card counts [code]: ids 0-99 ([text cards], g_cardNames, ovl_0d g_tmCardData[100]); a player may hold
+ * CARD_MAX cards (card_add refuses more, ovl_65 offers no card reward, ovl_0d asks to discard above it: TM_TEXT_OVER_100),
+ * and the inventory has CARD_SLOTS for the cards won in a game that ends above CARD_MAX */
+#define CARD_KINDS 100
+#define CARD_MAX 100
+#define CARD_SLOTS 105
+/* First card of each group card_getRarity tells apart (it returns 0-6 for them; ovl_36 draws grid cell sprite
+ * CARD_SPR_CELL + that): monsters 0x00-0x37, magic and summons, weapons and items, ships, creatures, places, the
+ * last five */
+#define CARD_HOLY           0x38 /* [text cards] "Holy" */
+#define CARD_EXCALIBUR_II   0x46 /* [text cards] "Excalibur II" */
+#define CARD_BLUE_NARCISS   0x50 /* [text cards] "Blue Narciss" */
+#define CARD_CHOCOBO        0x58 /* [text cards] "Chocobo" */
+#define CARD_ALEXANDRIA     0x5D /* [text cards] "Alexandria" */
+#define CARD_TWO_MOONS      0x5F /* [text cards] "Two Moons" */
 
 /* ---- abilities: ids 0x00-0xBF are action abilities (BtlCmd.subNo, Battle.abilities), 0xC0-0xFF support abilities
  * (g_abilityRows, AbilityEntry.id). [text abilities] = the menus' action ability names (ovl_33

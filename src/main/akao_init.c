@@ -84,7 +84,7 @@ void akao_initState(void) {
 
     g_akaoSeq = &g_akaoMainSeq;
     cnt = (u16 *)SPU_CTRL;
-    voiceVal = 0x18;
+    voiceVal = AKAO_NO_VOICE;
     g_akaoSubSeq = NULL;
     g_akaoChannelsPtr = g_akaoChannels;
     g_akaoSubChannels = NULL;
@@ -159,11 +159,11 @@ loop1:
     ((AkaoChannel *)(biasedChan - 0x88))->isSe = 0;
     ((AkaoChannel *)(biasedChan - 0x88))->age = 0;
     biasedChan += sizeof(AkaoChannel);
-    if (i < 32) {
+    if (i < AKAO_NUM_CHANNELS) {
         goto loop1;
     }
     chan = g_akaoSeChannels;
-    for (i = 8; i < 24;) {
+    for (i = AKAO_SE_FIRST_VOICE; i < AKAO_SE_FIRST_VOICE + AKAO_NUM_SE_CHANNELS;) {
         chan->flags = 0;
         chan->voice = i;
         i++;
@@ -190,7 +190,7 @@ loop1:
     g_akaoFlags.dirty |= AKAO_DIRTY_REVERB_DEPTH;
     akao_setReverbMode(4);
     SpuSetReverb(1);
-    for (i = 0; i < 24; i++) {
+    for (i = 0; i < SPU_NUM_VOICES; i++) {
         akao_setVoiceLoopAddr(i, AKAO_SPU_SILENCE_LOOP);
     }
     g_akaoVsyncs[1] = 0;

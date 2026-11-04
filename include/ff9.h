@@ -1910,11 +1910,20 @@ extern AkaoArgs g_akaoArgs;
 extern AkaoArgs g_akaoCommandBlock; /* command block passed to the handlers */
 extern void (*g_akaoCommandHandlers[])(AkaoArgs *); /* sound command handlers */
 
+/* Card types (CardEntry.type, ovl_0d TmCard.type): what the power is tested against (ovl_0d tm_getBattleValues)
+ * and the letter tm_drawCardStats shows. card_rollStats makes 1 card in 128 TM_TYPE_X whatever its id. */
+enum {
+    TM_TYPE_P, /* "P": power against pdef */
+    TM_TYPE_M, /* "M": power against mdef */
+    TM_TYPE_X, /* "X": power against the lower defence */
+    TM_TYPE_A  /* "A": the highest own stat against the lowest of the target */
+};
+
 typedef struct {
     u8 id; /* card id, 0xFF = none */
     u8 arrows; /* arrow bits (card_rollStats; tm_game copies it to the board card) */
     u8 power; /* (tm_game power, card_rollStats) */
-    u8 type; /* (tm_game type) */
+    u8 type; /* TM_TYPE_* */
     u8 physDef; /* (tm_game pdef) */
     u8 magicDef; /* (tm_game mdef) */
 } CardEntry; /* card inventory entry */
@@ -1924,7 +1933,7 @@ typedef struct {
     s16 wins;
     s16 losses;
     s16 draws;
-    CardEntry cards[105]; /* id 0xFF = empty */
+    CardEntry cards[CARD_SLOTS]; /* id 0xFF = empty */
 } CardInventory;
 extern CardInventory g_cards;
 

@@ -79,7 +79,7 @@ void game_resetData(void) {
         gd->musicId[i] = MUSIC_NONE;
         gd->musicBank[i] = 0xFFFF;
         gd->musicHandle[i] = 0;
-        gd->musicVolume[i] = 0x7F;
+        gd->musicVolume[i] = SND_VOL_MAX;
     }
     gd->musicFadeFrames = 0x1E;
     gd->savedMusicId = MUSIC_NONE;

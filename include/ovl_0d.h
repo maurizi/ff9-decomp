@@ -55,6 +55,8 @@ enum { TM_RESULT_WIN, TM_RESULT_LOSE, TM_RESULT_DRAW };
 
 #define TM_HAND_SIZE 5 /* cards 0-4 the player's, 5-9 the enemy's */
 #define TM_NUM_CARDS 10
+#define TM_BOARD_SIZE 4 /* the board is 4 x 4 squares (tm_getCell, TmState.board) */
+#define TM_MAX_BLOCKS 6 /* block stones per game (tm_placeBlocks, TmState.blocks) */
 
 /* Board on screen: square x, y is at (x * TM_SQUARE_W + TM_BOARD_X, y * TM_SQUARE_H + TM_BOARD_Y). */
 #define TM_SQUARE_W 43
@@ -72,6 +74,7 @@ enum { TM_DIR_UP, TM_DIR_UP_RIGHT, TM_DIR_RIGHT, TM_DIR_DOWN_RIGHT, TM_DIR_DOWN,
 /* Opponents 0x7C-0x7F (TmState.opponent): no "Cancel game" in the stock, no quitting, no rematch, and a draw
  * plays again (EXTENSION). */
 #define TM_OPP_FORCED 0x7C
+#define TM_OPP_FORCED_NUM 4
 
 /* tm_playSe / tm_stopSe index into g_tmSeIds */
 enum {
@@ -127,14 +130,7 @@ enum {
 #define TM_TEXT_STOCK           0x33 /* "Stock: " */
 #define TM_TEXT_STOCK_END       0x34 /* "" after the count */
 
-/* Card types (TmCard.type): what the power is tested against (tm_getBattleValues) and the
- * letter tm_drawCardStats shows. */
-enum {
-    TM_TYPE_P, /* "P": power against pdef */
-    TM_TYPE_M, /* "M": power against mdef */
-    TM_TYPE_X, /* "X": power against the lower defence */
-    TM_TYPE_A  /* "A": the highest own stat against the lowest of the target */
-};
+/* Card types (TmCard.type): TM_TYPE_* in ff9.h (CardEntry.type) */
 
 /* A card in a hand or on the board. Stats are hex digits on screen (value >> 4). */
 /* TmState.timer in TM_TASK_BATTLE (tm_taskBattle): the values show, then the clash sprite with TM_SE_BATTLE,
@@ -165,6 +161,11 @@ typedef struct {
     s32 visible;
     u8 pad38[0x3C - 0x38];
 } TmCard; /* 0x3C */
+
+/* TmState.aiLevel (TmOpponent.aiLevel), tm_enemySelect [code]: levels 0-2 score the free squares only 29, 63 and
+ * 93 percent of the time (else every free square scores 0 and the pick is random); TM_AI_EXPERT always scores them
+ * and also weighs the odds of the battles a square starts. Names by that order. */
+enum { TM_AI_WEAK, TM_AI_FAIR, TM_AI_STRONG, TM_AI_EXPERT };
 
 /* TmCell.state */
 enum {
@@ -226,7 +227,7 @@ typedef struct {
 
 typedef struct {
     u8 deck;    /* index into g_tmDecks */
-    u8 aiLevel; /* TmState.aiLevel */
+    u8 aiLevel; /* TmState.aiLevel, TM_AI_* */
 } TmOpponent; /* g_tmOpponents entry */
 
 /* Image file (file 0x44C of directory 1, tm_loadImageFile): a table of {sector offset, ?} entries, then the
@@ -265,11 +266,11 @@ typedef struct {
     s32 boardX;   /* board cursor (PLAYER CARD SET, BATTLE SELECT) */
     s32 boardY;
     TmCard cards[10]; /* 0-4 player hand, 5-9 enemy hand */
-    TmCell board[4][4]; /* [y][x] */
+    TmCell board[TM_BOARD_SIZE][TM_BOARD_SIZE]; /* [y][x] */
     s32 timer;    /* frames in the current task, reset by most task changes (TM_FIGHT_*) */
     u8 brightness;
     u8 pad2ED[3];
-    TmBlock blocks[6];
+    TmBlock blocks[TM_MAX_BLOCKS];
     TmFlip flips[10];
     s32 phase;    /* sub-step of the current task or animation */
     s32 flipOwner; /* owner the flipped cards get */
@@ -284,7 +285,7 @@ typedef struct {
     s32 losses;
     s32 draws;
     s32 deck;     /* opponent's deck, index into g_tmDecks */
-    s32 aiLevel;  /* opponent's AI level 0-3 (tm_enemySelect) */
+    s32 aiLevel;  /* TM_AI_* (tm_enemySelect) */
     s32 opponent; /* opponent id from GameData.unk8B2, index into g_tmOpponents */
     s32 unk454; /* write-only (set to 1) */
     Window *msgWin; /* confirm / rematch / trade window */

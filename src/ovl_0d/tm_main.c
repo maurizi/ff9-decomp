@@ -44,8 +44,8 @@ s32 tm_loadSoundBlocks(void) {
 }
 
 s32 tm_loadMusic(void) {
-    s32 seq = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70042, 0);
-    memmove(g_gameState->gameData->musicSeq, (void *)seq, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70042, 0));
+    s32 seq = (s32)db_lookupRegistered(DB_GET_ADDR, DB_MUSIC | MUSIC_TETRA_MASTER, 0);
+    memmove(g_gameState->gameData->musicSeq, (void *)seq, (s32)db_lookupRegistered(DB_GET_SIZE, DB_MUSIC | MUSIC_TETRA_MASTER, 0));
     return 0;
 }
 
@@ -104,7 +104,7 @@ s32 tm_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 g_gameState->gameData->musicBank[0] = 0xE2;
                 g_gameState->gameData->musicId[0] = soundId;
-                g_gameState->gameData->musicVolume[0] = 0x7F;
+                g_gameState->gameData->musicVolume[0] = SND_VOL_MAX;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             gd = g_gameState->gameData;
@@ -116,7 +116,7 @@ s32 tm_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             return 0;
         case SND_CMD_STOP:
             akao_stopMusic(g_gameState->gameData->musicHandle[0]);
-            g_gameState->gameData->musicVolume[0] = 0x7F;
+            g_gameState->gameData->musicVolume[0] = SND_VOL_MAX;
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
         case SND_CMD_SET:

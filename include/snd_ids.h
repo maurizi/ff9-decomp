@@ -244,6 +244,15 @@
 #define AKAO_SPU_STREAM_BLOCK(n) (0x1100 + (n) * 0x800) /* the stream's 0x800-byte SPU buffers: mono A/B = 0/2, stereo
                                                          * left/right = 0/1 then 2/3, the four-voice ring 4-7 */
 #define SPU_VOICE_ALL 0xFFFFFF /* the 24 voice bits */
+#define SPU_NUM_VOICES 24
+/* AKAO channels and voices [code]: a sequence has AKAO_NUM_CHANNELS channels (g_akaoChannels, g_akaoSubChannels,
+ * g_akaoSavedChannels; channel bit i in the AkaoSeq masks). SE channel i (g_akaoSeChannels[i], AKAO_SE_CH_BIT(i))
+ * owns voice AKAO_SE_FIRST_VOICE + i (akao_initState, akao_cmdPauseSe); music channels take any free voice
+ * (akao_assignVoices) */
+#define AKAO_NUM_CHANNELS 32
+#define AKAO_NUM_SE_CHANNELS 16
+#define AKAO_SE_FIRST_VOICE 8
+#define AKAO_NO_VOICE SPU_NUM_VOICES /* AkaoChannel.voice: none; akao_findFreeVoice / akao_stealVoice found none */
 #define SPU_VOICE_BASE 0x1F801C00 /* 24 voices x 16 bytes (SpuVoiceReg) */
 /* voice register offsets (r of SPU_VOICE_REG; SpuVoiceReg fields) */
 #define SPU_VOICE_VOL_L 0x0
