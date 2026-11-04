@@ -799,6 +799,9 @@ void btl_checkSideDefeated(BtlUnit *unit) {
         if (!found) {
             return;
         }
+        /* subPhase only means the end kind in BTL_PHASE_END; in combat it is 0 on the PS1 (camera cues with an
+         * argument other than BTLCAM_CUE_END_INTRO are only in victory cameras), so this only keeps a defeat
+         * decided earlier in the same step. A stray nonzero subPhase here turns the win into a defeat. */
         if (battle->subPhase != BTL_END_DEFEAT) {
             battle->subPhase = BTL_END_VICTORY;
         }
