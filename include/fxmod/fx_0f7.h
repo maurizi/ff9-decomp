@@ -6,6 +6,16 @@
  * id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0f7 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SOLUTION_9_BACKDROP_2 0x2 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SOLUTION_9_BACKDROP   0x4 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SOLUTION_9_RUNES      0x5 /* sprite: red glowing rune glyphs (large) */
+#define FX_SOLUTION_9_BLUE_RINGS 0xB /* emitter: white-blue gouraud rings + textured rings (texture not resolved) */
+#define FX_SOLUTION_9_RUNES_2    0xC /* sprite: red glowing rune glyphs (small) */
+#define FX_SOLUTION_9_RUNE_RINGS 0xE /* emitter: white-blue gouraud rings + red rune particles, fan elements */
+#define FX_SOLUTION_9_HALO_RINGS 0xF /* emitter: white-blue gouraud rings + dark ring with a rainbow rim */
+
 typedef struct {
     s32 timer0; /* countdown */
     SVECTOR pos4; /* target body position */

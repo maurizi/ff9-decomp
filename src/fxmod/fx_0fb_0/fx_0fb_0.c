@@ -477,7 +477,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos24.vy = fx_0fb_0_origin.vy;
                 work->pos24.vz = fx_0fb_0_origin.vz;
                 work->pos24.vy += 0x640;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos24);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -490,19 +490,19 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                                                 0x9A, 0x3E00, 0, 0);
                 }
                 work->rockCount8 = 0;
-                work->model118 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
-                work->model11C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
-                work->model120 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x84), 0x7C, 0x3D02, 0, 0);
-                work->model124 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x94), 0xBD, 0x3E40, 0, 0);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos1C);
+                work->model118 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_2), 0x96, 0x3D40, 0, 0);
+                work->model11C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_7), 0x9A, 0x3E00, 0, 0);
+                work->model120 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_4), 0x7C, 0x3D02, 0, 0);
+                work->model124 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SUMMON_MODEL_20), 0xBD, 0x3E40, 0, 0);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_DUST_CLOUD), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x180;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_ROCK_SPIRAL), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x200;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_SPECKS), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
@@ -585,7 +585,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos14.vx = work->basePosC.vx;
                 work->pos14.vz = work->basePosC.vz;
                 work->pos14.vy = work->basePosC.vy - 0x2800;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_ROCKS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -680,7 +680,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 3) {
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, 0x5B, (u16 *)&work->pos1C);
                 work->pos1C.vy += 0x10;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_ROCK_DUST), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -697,8 +697,8 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vz = work->pos5C.vz;
                 work->posD8.vz -= 0x5C00;
                 work->posD8.vx -= 0x5C00;
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4C);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos54);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_SPECKS), (s32)&work->pos4C);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_SPECKS), (s32)&work->pos54);
             }
         }
         } break;
@@ -735,7 +735,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 for (strip = 0; strip < 10; strip++) {
                     ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->summonModel60, fx_0fb_0_trailBones[strip], &m);
                     ex->btlfx_matrixPointAhead((MATRIX *)&m, 0x46, (s32)&ptA);
-                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&ptA, 0, -1, 0x1000, 0x1000, 1,
+                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_TRAIL), (s32)&ptA, 0, -1, 0x1000, 0x1000, 1,
                                         (u8 *)&fx_0fb_0_strips[strip], 2);
                 }
             }
@@ -754,10 +754,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->summonModel60, fx_0fb_0_trailBones[strand], &m2);
                 ex->btlfx_matrixPointAhead((MATRIX *)&m2, 0x46, (s32)&ptA);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&ptA, 0, 0, 0x800, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_TRAIL), (s32)&ptA, 0, 0, 0x800, 0x1000, 1,
                                     (u8 *)(pp = &fx_0fb_0_strips[strand]), 2);
                 env->otZ = 0x18;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &ptA, NULL, glowScale >> 1, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_GLOW), &ptA, NULL, glowScale >> 1, 0, 1,
                                         ex->math_sin(t >> 2), 0, 0);
                 env->otZ = 0;
                 j = 0;
@@ -800,7 +800,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->summonModel60, fx_0fb_0_trailBones[node], &m);
                 ex->btlfx_matrixPointAhead((MATRIX *)&m, 0x46, (s32)&ptA);
                 env->otZ = 0x18;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &ptA, NULL, sparkScale, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_GLOW), &ptA, NULL, sparkScale, 0, 1,
                                         0x1000, 0, 0);
                 env->otZ = 0;
                 if (node == 0) {
@@ -817,7 +817,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->summonModel60, fx_0fb_0_trailBones[node], &m2);
                 ex->btlfx_matrixPointAhead((MATRIX *)&m2, 0x46, (s32)&ptA);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&ptA, 0, 0, 0x800, 0x1000 - t, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_VIOLET_TRAIL), (s32)&ptA, 0, 0, 0x800, 0x1000 - t, 1,
                                     (u8 *)(pp = &fx_0fb_0_strips[node]), 2);
                 j = 0;
                 fadeWidth = (s16 *)pp + 3;
@@ -826,26 +826,26 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     fadeWidth += 4;
                 }
             }
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos14, NULL, (t >> 1) + 0xAAA, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_WHITE_RINGS), &work->pos14, NULL, (t >> 1) + 0xAAA, 0, 1,
                               t >> 1);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos1C, NULL, (t >> 1) + 0xAAA, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_WHITE_RINGS), &work->pos1C, NULL, (t >> 1) + 0xAAA, 0, 1,
                               t >> 1);
             if (frame == 4) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_2), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_FAN_EMITTER_2), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
             if (frame == 7) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_RING_2), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_RING_2), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -880,7 +880,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_matrixPointAhead((MATRIX *)&pos, 0x46, (s32)&fx_0fb_0_bonePts[bone]);
             }
             for (bone = 0; bone < 2; bone++) {
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &fx_0fb_0_bonePts1[bone * 5], NULL, 0x1000, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_RINGS), &fx_0fb_0_bonePts1[bone * 5], NULL, 0x1000, 0, 1,
                                   0x1000);
             }
             env->otZ = 0;
@@ -959,7 +959,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame == 4) {
                 for (bone = 0; bone < 2; bone++) {
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&fx_0fb_0_bonePts1[bone * 5]);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_RING), (s32)&fx_0fb_0_bonePts1[bone * 5]);
                     if (emitter != NULL) {
                         emitter->otZ = 0x100;
                     }
@@ -1020,9 +1020,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (curtainBright != 0 || sheetPhase != 0) {
             if (work->state0 == 0 || (work->state0 == 1 && frame < 0x10)) {
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xD), work->frame4);
+                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP), work->frame4);
             } else {
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xE), work->frame4);
+                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BACKDROP_2), work->frame4);
             }
         }
         if (domeBright != 0) {
@@ -1043,8 +1043,8 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (spriteAlpha != 0) {
             step = (work->frame4 * 16) % 240;
-            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, 3), 0xA0 - step, 0xA0, 0, 3, spriteAlpha);
-            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, 3), 0x280 - step, 0xA0, 0, 3, spriteAlpha);
+            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SCROLL_SPRITE), 0xA0 - step, 0xA0, 0, 3, spriteAlpha);
+            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SCROLL_SPRITE), 0x280 - step, 0xA0, 0, 3, spriteAlpha);
         }
         if (gridBright != 0) {
             CVECTOR col;

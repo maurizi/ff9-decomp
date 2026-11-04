@@ -7,6 +7,30 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0fb_0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MADEEN_SPECKS          0x1 /* emitter: tiny sprite specks (texture not in the file) (look pending) */
+#define FX_MADEEN_ROCK_DUST       0x2 /* emitter: tan dust puff + teal-green rock debris */
+#define FX_MADEEN_SCROLL_SPRITE   0x3 /* sprite: wide speckled strip drawn scrolling across the screen (byte-identical to fx_0fb_1 entry 0x1) (look pending) */
+#define FX_MADEEN_BLUE_SPECKS     0x4 /* emitter: small blue sparkle specks */
+#define FX_MADEEN_FAN_EMITTER     0x5 /* emitter: one fan element (not rendered) (look pending) */
+#define FX_MADEEN_ROCKS           0x6 /* emitter: teal-green rock debris, four elements */
+#define FX_MADEEN_BLUE_RING       0x8 /* emitter: white-blue gouraud ring */
+#define FX_MADEEN_VIOLET_TRAIL    0x9 /* trail: violet speckled strip */
+#define FX_MADEEN_BLUE_RINGS      0xA /* rings: white-blue gouraud rings, 16 frames */
+#define FX_MADEEN_DUST_CLOUD      0xB /* emitter: tan dust puffs, 27 animated frames */
+#define FX_MADEEN_ROCK_SPIRAL     0xC /* emitter: teal-green rock debris rising in a spiral */
+#define FX_MADEEN_BACKDROP        0xD /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_MADEEN_BACKDROP_2      0xE /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_MADEEN_BLUE_RING_2     0xF /* emitter: white-blue gouraud ring */
+#define FX_MADEEN_BLUE_GLOW       0x10 /* particles: blue glowing dot (byte-identical to fx_0fb_1 entry 0xa) */
+#define FX_MADEEN_WHITE_RINGS     0x14 /* rings: white-blue gouraud rings, five rings */
+#define FX_MADEEN_FAN_EMITTER_2   0x15 /* emitter: fan elements (not rendered) (look pending) */
+#define FX_MADEEN_SUMMON_MODEL_2  0x82 /* summon data entry 2: textured model (Hi_RegisterTexEffModel 0x96, 0x3D40) (look pending) */
+#define FX_MADEEN_SUMMON_MODEL_4  0x84 /* summon data entry 4: textured model (Hi_RegisterTexEffModel 0x7C, 0x3D02) (look pending) */
+#define FX_MADEEN_SUMMON_MODEL_7  0x87 /* summon data entry 7: textured model (Hi_RegisterTexEffModel 0x9A, 0x3E00) (look pending) */
+#define FX_MADEEN_SUMMON_MODEL_20 0x94 /* summon data entry 20: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) (look pending) */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR homePos4[8]; /* unit home positions */

@@ -6,6 +6,10 @@
  * 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0f9 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FLEE_SPARKLE_BURST 0x1 /* emitter: pale gouraud rings, pale sparkle puffs and orange sparks */
+
 extern Unk800F78A4 *fx_0f9_env;
 
 #endif

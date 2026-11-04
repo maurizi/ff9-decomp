@@ -6,6 +6,12 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0fa effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DETECT_SPHERE      0x1 /* model: 12-sided sphere, bronze riveted-metal texture in the render */
+#define FX_DETECT_FAN_EMITTER 0x2 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_DETECT_GLYPH_TEXT  0x3 /* emitter: blocks of scrolling script glyphs (blue, green, purple, orange) */
+
 static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
 
 typedef struct {

@@ -6,6 +6,10 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0fe effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_EAT_WHITE_RINGS 0x4 /* emitter: white-lilac and white-cyan gouraud rings in a cone + a fan element (byte-identical to fx_0ff entry 0x4) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR rot4[6]; /* model rotations */

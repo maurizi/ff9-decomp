@@ -32,8 +32,8 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_106_pathStart.vx = work->pos20.vx;
         fx_106_pathStart.vy = work->pos20.vy;
         fx_106_pathStart.vz = work->pos20.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_106_emitPos);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_SLIME_BLOBS), (s32)&fx_106_emitPos);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_BUBBLE_TRAIL), (s32)&work->pos20);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_106_op80Trails;
             work->emit0->trailSlots = 0x23;
@@ -67,8 +67,8 @@ s32 fx_106_op81(s32 mode, Fx106Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos14.vy = work->posC.vy;
         work->pos14.vz = work->posC.vz;
         work->pos14.vy -= 0x190;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_BUBBLE_TRAIL_2), (s32)&work->pos14);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_YELLOW_RINGS), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_106_op81Trails0;
             work->emit0->trailSlots = 0x33;
@@ -77,7 +77,7 @@ s32 fx_106_op81(s32 mode, Fx106Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_SPLASH_STREAK), (s32)&work->posC);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_106_op81Trails1;
                 work->emit8->trailSlots = 0x1E;

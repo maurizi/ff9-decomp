@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_104 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_EVERYONES_GRUDGE_PINK_RINGS   0x1 /* emitter: pink gouraud rings + pink glow-ring particles + white-yellow rings */
+#define FX_EVERYONES_GRUDGE_SWIRL_TRAIL  0x3 /* emitter: flat trail spiralling, white swirl strip */
+#define FX_EVERYONES_GRUDGE_SMOKE        0x4 /* emitter: grey smoke wisps */
+#define FX_EVERYONES_GRUDGE_MAGIC_CIRCLE 0x5 /* emitter: mandala magic circle cycling green to blue */
+
 typedef struct {
     Pool6CEntry *emit0;
     s32 unk4; /* unused */

@@ -6,6 +6,13 @@
  * that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_112 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_EAT_SPHERE       0x1 /* model: sphere, white texture */
+#define FX_EAT_ORBIT_TRAIL  0x2 /* emitter: orbiting screen trail, strip mostly dark in the render (look pending) */
+#define FX_EAT_SMOKE        0x3 /* emitter: grey smoke clouds, 24 animated frames */
+#define FX_EAT_GOLD_CUTLERY 0x4 /* emitter: golden fork, spoon, cup and spinning gold coins */
+
 typedef struct {
     s32 vx, vy, vz;
 } Fx112Vec3;

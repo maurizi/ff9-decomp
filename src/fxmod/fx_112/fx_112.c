@@ -29,7 +29,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_112_env = env;
         ex->btlfx_initEffModels(fx_112_effModels, 1);
-        work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
+        work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_EAT_SPHERE), 0x137, 0xFFFF, 0, 0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rotC);
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->scale14);
@@ -54,7 +54,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             ex->btlfx_fadeUnitById(0, 0);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos40);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos40);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EAT_SMOKE), (s32)&work->pos40);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
@@ -100,7 +100,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
         slot = frame / 5;
         if (frame == slot * 5) {
-            trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos48);
+            trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EAT_ORBIT_TRAIL), (s32)&work->pos48);
             if (trailEmitter != NULL) {
                 trailEmitter->trails = (s32)fx_112_op80Trails[slot];
                 trailEmitter->trailSlots = 0x14;
@@ -117,7 +117,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0x10) {
             work->state0 = 4;
             entry->frame = -1;
-            work->emit50 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos48);
+            work->emit50 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EAT_GOLD_CUTLERY), (s32)&work->pos48);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }

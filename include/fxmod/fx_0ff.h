@@ -6,6 +6,11 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ff effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_COOK_WHITE_RINGS 0x4 /* emitter: white-lilac and white-cyan gouraud rings in a cone + a fan element (byte-identical to fx_0fe entry 0x4) */
+#define FX_COOK_FLAMES      0x8 /* emitter: flame tongue particles + white-orange gouraud ring */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

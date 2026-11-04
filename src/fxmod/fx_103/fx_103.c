@@ -23,11 +23,11 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos8, (s16 *)&work->rot28);
         work->rot28.vx = -0x200;
         work->rot20.vx = -0x200;
-        work->emit38 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+        work->emit38 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIST_CLOUD), (s32)&work->pos10);
         if (work->emit38 != NULL) {
             work->emit38->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }
-        work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
+        work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIST_CLOUD), (s32)&work->pos18);
         if (work->emit3C != NULL) {
             work->emit3C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }
@@ -50,7 +50,7 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit3C->rot.vz = work->rot28.vz;
         }
         if (frame == 0x10) {
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos30);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIST_SWIRL), (s32)&work->pos30);
         }
         return frame >= 0x50;
     }

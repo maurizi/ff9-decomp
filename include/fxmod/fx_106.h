@@ -5,6 +5,14 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_106 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MUCUS_SLIME_BLOBS    0x1 /* emitter: yellow slime blobs */
+#define FX_MUCUS_BUBBLE_TRAIL   0x2 /* emitter: violet bubble screen trail + speck sprites (texture not in the file) */
+#define FX_MUCUS_BUBBLE_TRAIL_2 0x3 /* emitter: violet bubble screen trail + speck sprites (texture not in the file) */
+#define FX_MUCUS_YELLOW_RINGS   0x4 /* emitter: yellow-green gouraud rings */
+#define FX_MUCUS_SPLASH_STREAK  0x5 /* emitter: white streaky splash screen trail */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

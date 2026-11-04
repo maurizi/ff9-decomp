@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_126 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BOOMERANG_CRESCENTS 0x1 /* emitter: orange, white and blue crescent arcs + debris chips and specks */
+#define FX_BOOMERANG_SWIRL     0x2 /* emitter: orange and teal spiral swirls + yellow and pink gouraud rings */
+#define FX_BOOMERANG_MODEL     0x7 /* 'so' model registered twice (btlfx_registerEffectModel), probably the boomerang (look pending) */
+
 typedef struct {
     s32 model0; /* models */
     s32 model4;
