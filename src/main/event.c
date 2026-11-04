@@ -2818,7 +2818,7 @@ void evt_updateBattleObjects(void) {
         i = 3;
         g_evtBattleVars[i] = btl_getUnitMask(1);
         unitMask = (u16)g_evtBattleVars[i];
-        for (i = 4; i < 8; i++) {
+        for (i = EVT_UNIT_FIRST_ENEMY; i < EVT_UNIT_COUNT; i++) {
             obj = g_evtUnitObjects[i];
             if (obj != NULL) {
                 switch (obj->state) {
@@ -3280,7 +3280,7 @@ u8 *evt_loadScripts(u8 *data) {
     s32 bit;
     u8 *src;
 
-    for (; i < 4; i++) {
+    for (; i < PARTY_SIZE; i++) {
         chr = msg_getPartyMemberId(i);
         if (chr >= 0) {
             charMask |= 1 << chr;
@@ -3400,12 +3400,12 @@ void evt_init(u8 *data) {
     func_8004B3A8_inline(0, 0);
     g_evtState->objects->obj->state = EVT_STATE_INIT;
     evt_execInstr_party();
-    for (i = 7; i >= 0; i--) {
+    for (i = EVT_UNIT_COUNT - 1; i >= 0; i--) {
         g_evtUnitObjects[i] = NULL;
     }
     g_evtUnitObjectCount = 0;
     if (g_evtMode == EVT_MODE_BATTLE) {
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             chr = msg_getPartyMemberId(i);
             if (chr >= 0) {
                 evt_execInstr_newactor(chr + g_evtScriptCount - 9, 0);
@@ -3415,7 +3415,7 @@ void evt_init(u8 *data) {
     } else {
         g_gameState->gameData->rainCount = 0;
     }
-    g_evtUnitObjectCount = 4;
+    g_evtUnitObjectCount = EVT_UNIT_FIRST_ENEMY;
     if ((g_evtMode == EVT_MODE_FIELD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
         (g_evtMode == EVT_MODE_WORLD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
         (g_gameState->prevMode == GS_MODE_TETRA_MASTER && g_evtModelsPending != 0)) {
@@ -3533,12 +3533,12 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 value, s32 w) {
     if (!(bits & 1)) {
         bits >>= 1;
         i = 1;
-        while (i < 8 && !(bits & 1)) {
+        while (i < EVT_UNIT_COUNT && !(bits & 1)) {
             bits >>= 1;
             i++;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         obj = g_evtUnitObjects[i];
         if (op == BTL_CMD_ENEMY_TURN) {
             if (obj->level >= 4) {
@@ -3808,7 +3808,7 @@ s32 evt_getObjectProp(EvtObject *obj, s32 prop) {
         return obj->animFrame;
     }
     result = 0;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         if (g_evtUnitObjects[i] == obj) {
             break;
         }
@@ -3833,7 +3833,7 @@ void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value) {
             obj->pos.rotY = value * 16;
             return;
         }
-        for (; i < 8; i++) {
+        for (; i < EVT_UNIT_COUNT; i++) {
             if (g_evtUnitObjects[i] == obj) {
                 break;
             }
@@ -3889,7 +3889,7 @@ void evt_projectToScreen(SVECTOR *pos, s32 *x, s32 *y) {
 void evt_setCurUnit(void *obj) {
     s32 i;
     s32 bit;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         if (g_evtUnitObjects[i] == obj) {
             break;
         }

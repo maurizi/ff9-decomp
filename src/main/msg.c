@@ -121,9 +121,9 @@ static inline void msg_measureLine_name(s32 ch) {
 
     for (k = 0; k < 8; k++) {
         code = name[k];
-        if (code - TEXT_CODE_LOWER_A < 26) {
+        if (code - TEXT_CODE_LOWER_A < TEXT_CODE_LETTERS) {
             code -= TEXT_CODE_LOWER_A - TEXT_CODE_UPPER_A;
-        } else if (code - TEXT_CODE_ACCENT_LOWER < 20) {
+        } else if (code - TEXT_CODE_ACCENT_LOWER < TEXT_CODE_ACCENTS) {
             code -= TEXT_CODE_ACCENT_LOWER - TEXT_CODE_ACCENT_UPPER;
         } else if (code - (TEXT_CODE_C_CEDILLA + 2) < 2) {
             code -= 2;
@@ -1368,9 +1368,9 @@ s32 msg_emitCharNameCaps(s32 ch, s32 maxChars) {
 
     for (k = 0; k < 8; k++) {
         code = name[k];
-        if (code - TEXT_CODE_LOWER_A < 26) {
+        if (code - TEXT_CODE_LOWER_A < TEXT_CODE_LETTERS) {
             code -= TEXT_CODE_LOWER_A - TEXT_CODE_UPPER_A;
-        } else if (code - TEXT_CODE_ACCENT_LOWER < 20) {
+        } else if (code - TEXT_CODE_ACCENT_LOWER < TEXT_CODE_ACCENTS) {
             code -= TEXT_CODE_ACCENT_LOWER - TEXT_CODE_ACCENT_UPPER;
         } else if (code - (TEXT_CODE_C_CEDILLA + 2) < 2) {
             code -= 2;

@@ -66,6 +66,7 @@
 
 /* ---- items: GameData.items ids, Character.equip, BtlCmd.subNo of Item commands. [text items] */
 #define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
+#define ITEM_STACK_MAX 99 /* item_add caps a slot's count here */
 #define ITEM_NONE       0xFF  /* empty item id / equipment slot */
 #define ITEM_FIRST_ARMOR 0x58 /* weapons below (g_weaponTable), armour and accessories up to ITEM_FIRST_USABLE (g_armorDefs; WEAPON_COUNT) */
 #define ITEM_FIRST_USABLE 0xE0 /* items from here have a use entry in g_usableItemTable (index id - this) */

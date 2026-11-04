@@ -931,21 +931,21 @@ void keyItem_clearAll(void) {
 s32 item_add(s32 id, s32 amount) {
     ItemSlot *slot;
     s32 i;
-    if (id == 0xFF) {
+    if (id == ITEM_NONE) {
         return 0;
     }
     slot = g_gameState->gameData->items.slots;
-    for (i = 0; i < 0x100; slot++, i++) {
+    for (i = 0; i < ITEM_SLOT_COUNT; slot++, i++) {
         if (slot->count != 0 && slot->id == id) {
-            if (slot->count + amount >= 100) {
-                amount = 99 - slot->count;
+            if (slot->count + amount > ITEM_STACK_MAX) {
+                amount = ITEM_STACK_MAX - slot->count;
             }
             slot->count += amount;
             return amount;
         }
     }
     slot = g_gameState->gameData->items.slots;
-    for (i = 0; i < 0x100; i++, slot++) {
+    for (i = 0; i < ITEM_SLOT_COUNT; i++, slot++) {
         if (slot->count == 0) {
             slot->id = id;
             slot->count = amount;
@@ -959,7 +959,7 @@ s32 item_remove(s32 id, s32 count) {
     s32 i;
     ItemSlot *slot = g_gameState->gameData->items.slots;
 
-    for (i = 0; i < 0x100; slot++, i++) {
+    for (i = 0; i < ITEM_SLOT_COUNT; slot++, i++) {
         if (slot->count != 0 && slot->id == id) {
             if (slot->count < count) {
                 count = slot->count;
@@ -977,7 +977,7 @@ ItemSlot *item_findSlot(s32 id) {
     s32 i;
     ItemSlot *slot = g_gameState->gameData->items.slots;
 
-    for (i = 0; i < 0x100; i++, slot++) {
+    for (i = 0; i < ITEM_SLOT_COUNT; i++, slot++) {
         if (slot->count != 0 && slot->id == id) {
             return slot;
         }

@@ -349,7 +349,7 @@ typedef ItemSlot UnkPair; /* old name, still used by ovl_0b */
 
 /* GameData.items: item inventory, copied as a block by the save code (ovl_39) */
 typedef struct {
-    ItemSlot slots[0x100];
+    ItemSlot slots[ITEM_SLOT_COUNT];
 } __attribute__((aligned(4))) ItemInventory; /* block copies are word-aligned */
 
 /* GameData.keyItems: 2 bits per item id */
@@ -838,6 +838,8 @@ void win_updateAll(void);
 #define TEXT_CODE_LOWER_A 0x30 /* 'a'-'z': 0x30-0x49 */
 #define TEXT_CODE_ACCENT_UPPER 0x50 /* 20 accented capitals, A-grave .. U-diaeresis */
 #define TEXT_CODE_ACCENT_LOWER 0x64 /* the same 20 in lower case */
+#define TEXT_CODE_LETTERS 26 /* A-Z / a-z */
+#define TEXT_CODE_ACCENTS 20 /* accented letters per case */
 #define TEXT_CODE_C_CEDILLA 0x78 /* C-cedilla, N-tilde, then their lower case at 0x7A, 0x7B */
 #define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 (message windows: += 14, the next line) */
 #define TEXT_SPACE_1PX 0xF8 /* message windows: x += 1 */
@@ -2350,6 +2352,7 @@ extern s32 g_padPortMask[];
 #define GIL_MAX 9999999
 #define HP_MAX 9999 /* max HP (chr_calcMaxHp, chr_calcEquipStats) */
 #define MP_MAX 999 /* max MP (chr_calcMaxMp, chr_calcEquipStats) */
+#define DEF_STAT_MAX 999 /* attack, defence, evade, magic defence, magic evade (chr_calcEquipStats) */
 #define DAMAGE_MAX 9999 /* cap on one HP or MP change, damage or healing (btl_calcCmd, the fieldCalc_* item formulas) */
 #define RECORD_MAX 9999 /* tallies: card wins/losses/draws, GameData.stealCount, GameData.dragonKills */
 
@@ -3049,7 +3052,9 @@ extern MenuScreenDef g_menuScreensField[];
 extern MenuScreenDef g_menuScreensWorld[];
 u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
 void menuScreen_onOverlayRead(u8 *);
-extern void *g_evtUnitObjects[8];
+#define EVT_UNIT_COUNT 8 /* g_evtUnitObjects: the battle units' script objects, the party (PARTY_SIZE) first */
+#define EVT_UNIT_FIRST_ENEMY 4 /* the enemies from here (evt_init, evt_updateBattleObjects) */
+extern void *g_evtUnitObjects[EVT_UNIT_COUNT];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
 struct BtlUnit *btl_findUnitByBit(u16);
 struct BtlUnit *btl_getUnitById(u16);
@@ -3757,7 +3762,7 @@ typedef struct {
     u16 maxHp; /* max hp */
     u16 maxMp; /* max mp */
     u8 stats[4]; /* stats: speed, strength, magic, spirit (capped by g_chrStatCaps) */
-    u16 defs[5]; /* attack (weapon), defense, evade, magicDef, magicEva (capped at 999) */
+    u16 defs[5]; /* attack (weapon), defense, evade, magicDef, magicEva (capped at DEF_STAT_MAX) */
 } EquipStatsOut;
 EquipStatsOut *chr_calcEquipStats(EquipStatsIn *, EquipStatsOut *);
 
