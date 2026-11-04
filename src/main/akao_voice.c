@@ -416,8 +416,8 @@ void akao_stepChannelSlides(AkaoChannel *chan, u32 chBit, s32 kind) {
         chan->vibratoDepthSlideLen = (u16)chan->vibratoDepthSlideLen - 1;
         depthParam = chan->vibratoDepthParam + (u16)chan->vibratoDepthStep;
         chan->vibratoDepthParam = depthParam;
-        depth = (depthParam & 0x7F00) >> 8;
-        if (depthParam & 0x8000) {
+        depth = (depthParam & AKAO_VIB_DEPTH) >> 8;
+        if (depthParam & AKAO_VIB_FULL_SCALE) {
             chan->vibratoDepth = (depth * chan->pitch) >> 7;
         } else {
             chan->vibratoDepth = (depth * ((chan->pitch * 15) >> 8)) >> 7;

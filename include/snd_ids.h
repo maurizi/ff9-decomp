@@ -88,6 +88,13 @@
 #define SND_SE_GROUP_SLOTS (SND_SE_GROUP_SLOT(0) | SND_SE_GROUP_SLOT(1))
 /* bit of SE channel i (g_akaoSeChannels[i]) in g_akaoSeState.activeMask / pausedMask / playingMask / keyOnMask */
 #define AKAO_SE_CH_BIT(i) (0x100 << (i))
+/* resident SE number (AKAO_CMD_PLAY_SE_DEFAULT's arg0, akao_getSeData): two track offsets each in g_akaoSeTrackOfs.
+ * Evidence: [code] akao_playSeDefault and akao_getSeData both mask with it */
+#define AKAO_SE_ID_MASK 0x3FF
+/* akao_stopSeChannels' seFilter. Evidence: [code] akao_stopSeChannels and its callers */
+#define AKAO_SE_STOP_GROUPS 0x0FFFFFFF /* any of these bits: stop every SE channel whose seMask shares one */
+#define AKAO_SE_STOP_OLDEST 0x40000000 /* stop the oldest channel without a seMask (frees a channel for a new SE) */
+/* (negative: stop SE channel id and the next one by their seHandle; 0: stop by seHandle id, -1 all unowned) */
 
 /* AkaoStreamState.flags (copied from the stream header's flags; akao_cmdStreamSetupRing sets RING_PENDING alone) */
 #define AKAO_STREAM_STEREO       0x1 /* voice plays left only, voice + 1 right only (akao_cmdSetStreamVolume/Pan); one-shot upload via akao_streamStartStereo */
@@ -247,7 +254,7 @@
 #define SPU_VOICE_ADSR_VOL 0xC
 #define SPU_VOICE_LOOP_ADDR 0xE /* repeat address / 8 */
 /* ADSR register fields (psx-spx "SPU Volume and ADSR Generator"; PsyQ SpuVoiceAttr ar/dr/sl, sr/rr and the
- * *_MODE fields). ADSR2 bit 13 is unused by the SPU; akao keeps it in some masks (0x201F, 0x3FDF), left raw. */
+ * *_MODE fields). */
 #define SPU_ADSR1_SUSTAIN_LEVEL 0x000F
 #define SPU_ADSR1_DECAY_RATE    0x00F0
 #define SPU_ADSR1_ATTACK_RATE   0x7F00 /* shift and step */
@@ -257,6 +264,8 @@
 #define SPU_ADSR2_SUSTAIN_RATE  0x1FC0 /* shift and step */
 #define SPU_ADSR2_SUSTAIN_DEC   0x4000 /* sustain decreases */
 #define SPU_ADSR2_SUSTAIN_EXP   0x8000 /* exponential sustain */
+#define SPU_ADSR2_SUSTAIN_MODE  (SPU_ADSR2_SUSTAIN_DEC | SPU_ADSR2_SUSTAIN_EXP)
+#define SPU_ADSR2_BIT13         0x2000 /* not used by the SPU; akao's masks keep it */
 /* AKAO envelope mode numbers (instrument region sustainMode, ops B7/BB/BF, akao_setVoiceAttack/Sustain/Release's
  * mode argument): bit 1 = decreasing, bit 2 = exponential (akao_setVoiceSustain: (mode >> 1) << 14,
  * akao_setVoiceAttack/Release: (mode >> 2) into the exp bit). */
@@ -264,6 +273,9 @@
 #define AKAO_ENV_LINEAR_DEC 3
 #define AKAO_ENV_EXP_INC    5
 #define AKAO_ENV_EXP_DEC    7
+/* op AC (noise clock) operand. Evidence: [code] akao_opAC */
+#define AKAO_NOISE_CLOCK 0x3F /* the SPU noise clock (SPUCNT bits 8-13) */
+#define AKAO_NOISE_CLOCK_ADD 0xC0 /* either bit: add the clock to the current one (mod 0x40) instead of setting it */
 #define SPU_MAIN_VOL_L 0x1F801D80
 #define SPU_MAIN_VOL_R 0x1F801D82
 #define SPU_KEY_ON_LO 0x1F801D88

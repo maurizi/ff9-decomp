@@ -164,7 +164,7 @@ s32 evt_exprUnitIncDec(s32 op) {
     s32 unitMask;
     s32 i;
 
-    if (((w >> 26) & 7) == 5) {
+    if (EVT_VAR_SPACE(w) == EVT_SPACE_BATTLE) {
         unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
@@ -211,7 +211,7 @@ s32 evt_exprUnitAssign(s32 op) {
     s32 operand;
     s32 i;
 
-    if (((w >> 26) & 7) == 5) {
+    if (EVT_VAR_SPACE(w) == EVT_SPACE_BATTLE) {
         unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp -= 2;
@@ -292,7 +292,7 @@ s32 evt_exprUnitSelect(s32 op) {
     s32 i;
     s32 x;
 
-    if (((w >> 26) & 7) == 5) {
+    if (EVT_VAR_SPACE(w) == EVT_SPACE_BATTLE) {
         unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
@@ -358,7 +358,7 @@ s32 evt_exprUnitCompare(s32 op) {
     s32 operand;
     s32 i;
 
-    if (((w >> 26) & 7) == 5) {
+    if (EVT_VAR_SPACE(w) == EVT_SPACE_BATTLE) {
         unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp -= 2;
@@ -417,7 +417,7 @@ s32 evt_exprUnitLogic(s32 op) {
     s32 unitMask;
     s32 i;
 
-    if (((w >> 26) & 7) == 5) {
+    if (EVT_VAR_SPACE(w) == EVT_SPACE_BATTLE) {
         unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
@@ -460,7 +460,7 @@ s32 evt_exprUnitFirst(void) {
     s32 unitMask;
     s32 i;
 
-    if (((w >> 26) & 7) == 5) {
+    if (EVT_VAR_SPACE(w) == EVT_SPACE_BATTLE) {
         unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;

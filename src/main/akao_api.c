@@ -99,7 +99,7 @@ void akao_stopSe(s32 handle, s32 chMask) {
 }
 
 void akao_playSeDefault(s32 seId) {
-    g_akaoArgs.arg0 = seId & 0x3FF;
+    g_akaoArgs.arg0 = seId & AKAO_SE_ID_MASK;
     akao_command(AKAO_CMD_PLAY_SE_DEFAULT);
 }
 
@@ -120,7 +120,7 @@ u32 akao_getActiveSe(void) {
         }
         chan++;
     }
-    activeSe &= 0xFFFFFF;
+    activeSe &= SND_SE_GROUP_ALL;
     return activeSe;
 }
 

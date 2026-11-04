@@ -68,7 +68,7 @@ void akao_startSeq(s32 addr, s32 channelMask) {
     } else {
         bit = 0;
     }
-    x = 0xFFFFFF;
+    x = SPU_VOICE_ALL;
     g_akaoSeState.keyOffMask |= ~bit & (~(g_akaoSeState.activeMask | g_akaoStreamVoices) & x);
     g_akaoSeq->keyOffMask = 0;
     if (g_akaoPauseFlags & AKAO_PAUSED_MUSIC) {
@@ -199,7 +199,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
     bit = AKAO_SE_CH_BIT(0);
     chan = g_akaoSeChannels;
     active = g_akaoSeState.activeMask | g_akaoSeState.pausedMask;
-    if (seFilter & 0x0FFFFFFF) {
+    if (seFilter & AKAO_SE_STOP_GROUPS) {
         for (i = 0; i < 16; i++, chan++, bit <<= 1) {
             if ((active & bit) && (chan->seMask & seFilter)) {
                 if (chan->flags & AKAO_CH_STOP_AT_LOOP) {
@@ -223,7 +223,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
             akao_stopSeChannels(chan->seHandle, 0);
         }
         return;
-    } else if (seFilter & 0x40000000) {
+    } else if (seFilter & AKAO_SE_STOP_OLDEST) {
         for (i = 0; i < 16; i++, chan++, bit <<= 1) {
             if (chan->seMask != 0) {
                 active &= ~bit;
@@ -384,7 +384,7 @@ void akao_startSe(VoiceParams *params, u8 *track0, u8 *track1, s32 flag) {
         }
         if (left == 0) {
         fail:
-            akao_stopSeChannels(0, 0x40000000);
+            akao_stopSeChannels(0, AKAO_SE_STOP_OLDEST);
             if (busy == (g_akaoSeState.activeMask | g_akaoSeState.pausedMask | g_akaoStream.voiceMask)) {
                 return;
             }
@@ -413,7 +413,7 @@ static inline u8 *akao_getSeData_get(s32 i) {
 }
 
 void akao_getSeData(u8 **outTrack0, u8 **outTrack1, s32 idx) {
-    idx &= 0x3FF;
+    idx &= AKAO_SE_ID_MASK;
     idx *= 2;
     *outTrack0 = akao_getSeData_get(idx);
     idx++;
@@ -521,7 +521,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
         active = 0;
     }
     g_akaoSeq->keyOffMask = 0;
-    x = 0xFFFFFF;
+    x = SPU_VOICE_ALL;
     g_akaoSavedSeq.musicId = 0;
     g_akaoSeState.keyOffMask |= ~active & (~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & x);
     g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
@@ -1453,7 +1453,7 @@ void akao_setReverbMode(s32 mode) {
     SpuGetReverbModeType(&curMode);
     if (curMode != mode) {
         SpuSetReverb(0);
-        SpuSetReverbModeType(mode | 0x100);
+        SpuSetReverbModeType(mode | SPU_REV_MODE_CLEAR_WA);
         SpuSetReverb(1);
     }
 }

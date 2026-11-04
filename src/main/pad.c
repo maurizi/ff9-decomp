@@ -9,7 +9,7 @@ void pad_resetState(void) {
     s32 i;
     s32 j;
 
-    g_padFlags = 0x8000;
+    g_padFlags = PAD_FLAG_STICK_DPAD;
     g_padAnalogThresholds.b[0] = 0x5A;
     g_padAnalogThresholds.b[1] = 0xA6;
     g_padAnalogThresholds.b[2] = 0x5A;
@@ -35,7 +35,7 @@ void pad_resetState(void) {
         pad_setMapping(i, PAD_R2, PAD_R2);
         pad_setMapping(i, PAD_SELECT, PAD_SELECT);
         pad_setMapping(i, PAD_START, PAD_START);
-        g_padFlags |= 1 << (i * 4);
+        g_padFlags |= PAD_FLAG_PORT(i, PAD_FLAG_SETUP);
     }
 }
 
@@ -60,34 +60,34 @@ void pad_update(void) {
     for (i = 0; i < 2; i++) {
         state = PadGetState(i << 4);
         g_padPortState[i] = state;
-        if (state == 0) {
-            g_padFlags |= 1 << (i * 4);
-        } else if (state == 1) {
-            g_padFlags |= 4 << (i * 4);
+        if (state == PadStateDiscon) {
+            g_padFlags |= PAD_FLAG_PORT(i, PAD_FLAG_SETUP);
+        } else if (state == PadStateFindPad) {
+            g_padFlags |= PAD_FLAG_PORT(i, PAD_FLAG_ACT_PENDING);
         }
-        if (PADBUF(i)->status == 0 && (((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_DIGITAL)) {
-            if ((g_padFlags >> (i * 4)) & 1) {
-                if (g_padPortState[i] == 2) {
-                    g_padFlags &= ~(1 << (i * 4));
-                } else if (g_padPortState[i] == 6) {
-                    if (PadInfoMode(i << 4, 2, 0)) {
-                        flagBit = 2 << (i * 4);
+        if (PADBUF(i)->status == 0 && (PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_ANALOG || PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_DIGITAL)) {
+            if ((g_padFlags >> (i * 4)) & PAD_FLAG_SETUP) {
+                if (g_padPortState[i] == PadStateFindCTP1) {
+                    g_padFlags &= ~PAD_FLAG_PORT(i, PAD_FLAG_SETUP);
+                } else if (g_padPortState[i] == PadStateStable) {
+                    if (PadInfoMode(i << 4, InfoModeCurExID, 0)) {
+                        flagBit = PAD_FLAG_PORT(i, PAD_FLAG_MODE_SET);
                         if (!(g_padFlags & flagBit)) {
                             PadSetMainMode(i << 4, 1, 0);
                             g_padFlags |= flagBit;
                         } else {
                             PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                             PadSetActAlign(i << 4, g_padActAlign);
-                            g_padFlags = g_padFlags & ~((1 << (i * 4)) | flagBit) & ~(4 << (i * 4));
+                            g_padFlags = g_padFlags & ~(PAD_FLAG_PORT(i, PAD_FLAG_SETUP) | flagBit) & ~PAD_FLAG_PORT(i, PAD_FLAG_ACT_PENDING);
                         }
                     }
                 }
             }
-            flagBit = 4 << (i * 4);
-            if ((g_padFlags & flagBit) && g_padPortState[i] == 6) {
+            flagBit = PAD_FLAG_PORT(i, PAD_FLAG_ACT_PENDING);
+            if ((g_padFlags & flagBit) && g_padPortState[i] == PadStateStable) {
                 PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                 PadSetActAlign(i << 4, g_padActAlign);
-                g_padPortState[i] = 4;
+                g_padPortState[i] = PadStateReqInfo;
                 g_padFlags &= ~flagBit;
             }
             j = 0;
@@ -107,7 +107,7 @@ void pad_update(void) {
                     g_padHoldFrames[i][j] = 0;
                 }
             }
-            if ((g_padFlags & 0x8000) && ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
+            if ((g_padFlags & PAD_FLAG_STICK_DPAD) && PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_ANALOG) {
                 if (g_padAnalog[i].b[2] < g_padAnalogThresholds.b[2]) {
                     g_padPortHeld[i] |= PAD_LEFT;
                 }

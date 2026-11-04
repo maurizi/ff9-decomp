@@ -129,11 +129,11 @@ void pen_putGlyph(s32 c) {
     p = (u32 *)r_pkt;
     emit_tag(p, 4);
     p[1] = r_code;
-    p[2] = r_pen + ((g >> 20) & 3);
-    p[3] = (g & 0x40FFFF) + D_8007BCB4;
-    p[4] = ((g >> 16) & 0xF) | 0xD0000;
+    p[2] = r_pen + GLYPH_DX(g);
+    p[3] = GLYPH_UVCLUT(g) + D_8007BCB4;
+    p[4] = GLYPH_W(g) | (TEXT_GLYPH_H << 16);
     r_pkt += 0x14;
-    r_pen += ((g >> 28) & 0xF) + 1;
+    r_pen += GLYPH_ADVANCE(g) + 1;
 }
 
 /* Tab: next multiple of 48 pixels from the line start. Shared by both debug fonts. */
@@ -264,7 +264,7 @@ void pen_move(s32 dx, s32 dy) {
 void pen_setColor(s32 rgb) {
     r_code = rgb & 0xFFFFFF;
     g_penColor = r_code;
-    r_code |= 0x64000000;
+    r_code |= GPU_CODE(GPU_SPRT);
 }
 
 /* Push / pop the pen position. */
@@ -340,7 +340,7 @@ void pen_line(s32 dx, s32 dy) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 3);
-    p[1] = (r_code & 0xFFFFFF) | 0x40000000;
+    p[1] = (r_code & 0xFFFFFF) | GPU_CODE(GPU_LINE_F2);
     p[2] = r_pen;
     pen_move(dx, dy);
     p[3] = r_pen;
@@ -360,7 +360,7 @@ void pen_tile(s32 w, s32 h, s32 flags, s32 mode) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 3);
-    p[1] = (r_code & 0xFFFFFF) | ((u32)(flags | 0x60) << 24);
+    p[1] = (r_code & 0xFFFFFF) | GPU_CODE((u32)(flags | GPU_TILE));
     p[2] = r_pen;
     p[3] = (u32)w | ((u32)h << 16);
     r_pkt += 0x10;
@@ -372,7 +372,7 @@ POLY_FT4 *pen_addPolyFT4(void) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 9);
-    p[1] = (r_code & 0xFFFFFF) | 0x2C000000;
+    p[1] = (r_code & 0xFFFFFF) | GPU_CODE(GPU_POLY_FT4);
     p[2] = r_pen;
     r_pkt += 0x28;
     return (POLY_FT4 *)p;
@@ -394,7 +394,7 @@ void pen_begin(void) {
     r_code = g_penColor;
     r_pkt = *g_penPktPtr;
     r_link = *g_penOt;
-    r_code |= 0x64000000;
+    r_code |= GPU_CODE(GPU_SPRT);
 }
 
 /* End a session: store the packet pointer and the chain head back, remember the pen. */
@@ -421,7 +421,7 @@ void pen_beginBuffered(void) {
     r_code = g_penColor;
     r_pkt = D_8007BCAC;
     r_link = *g_penOt;
-    r_code |= 0x64000000;
+    r_code |= GPU_CODE(GPU_SPRT);
 }
 
 /* End it (nothing if there is no packet buffer). */

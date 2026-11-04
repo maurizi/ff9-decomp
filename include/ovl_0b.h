@@ -1784,6 +1784,8 @@ typedef struct {
 #define BTLCAM_OP_KEEP_CAMERA  0x80000  /* btlcam_endEffect keeps this camera instead of reloading the idle one */
 /* BTLCAM_OP_CUE argument */
 #define BTLCAM_CUE_END_INTRO   1 /* set g_btlCamera.endIntro: the intro camera may end; any other value is a subPhase cue */
+/* On the discs (tools/btlcam_scan.py) every intro camera (scene data 0) cues 1 and every victory camera (scene data 2,
+ * all but battle 938's) cues 2; no idle, command, enemy, AI-played or effect camera has a cue. */
 
 typedef struct Unk800FE3B8 {
     SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for BTLCAM_OP_SAVE_VIEW */

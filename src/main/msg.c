@@ -40,14 +40,14 @@ static inline void msg_readPad_set(s32 type, u32 bits) {
 
 void msg_readPad(void) {
     s32 isRepeat = 0;
-    u32 cur = g_padPortHeld[0] & 0x3FFFFFF;
+    u32 cur = g_padPortHeld[0] & PAD_GAME_BITS;
     u32 x;
 
     x = ~cur & g_msgPadPrev;
     g_msgPadPressed = cur & ~g_msgPadPrev;
     g_msgPadReleased = x;
     if (x != 0) {
-        msg_readPad_set(4, x);
+        msg_readPad_set(MSG_PAD_RELEASE, x);
     }
     if (g_msgPadPrev != cur) {
         g_msgPadRepeatTimer = 16;
@@ -59,9 +59,9 @@ void msg_readPad(void) {
     }
     x = cur & ~g_msgPadPrev;
     if (x != 0) {
-        s32 evType = 1;
+        s32 evType = MSG_PAD_PRESS;
         if (isRepeat) {
-            evType = 2;
+            evType = MSG_PAD_REPEAT;
         }
         msg_readPad_set(evType, x);
     }
@@ -104,7 +104,7 @@ static inline s32 msg_measureLine_width(u8 *str) {
         do {
             glyph = pen_getGlyph(code);
             if (glyph != 0) {
-                w += 1 + (glyph >> 28);
+                w += 1 + GLYPH_ADVANCE(glyph);
             }
             multi = multi ? 0 : (code >= TEXT_WIDE_FIRST ? code <= TEXT_WIDE_LAST : 0);
             code = *str++;
@@ -898,10 +898,10 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
         msgText = (u8 *)g_msgTable->offsets;
         packed = ((u32 *)msgText)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
-            out->w = ((packed >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)packed >> 28 : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
+            out->w = MSG_ENTRY_W(packed) + 9;
+            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? MSG_ENTRY_LINES(packed) : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
         }
-        msgText += packed & 0xFFFF;
+        msgText += MSG_ENTRY_OFS(packed);
     }
     return msgText;
 }
@@ -1040,12 +1040,12 @@ void msg_update(void) {
     MsgWindow *win = msg_getFocus();
     s32 pad;
     msg_readPad();
-    if (g_msgPadEvent.type < 3) {
+    if (g_msgPadEvent.type <= MSG_PAD_REPEAT) {
         if (g_msgPadEvent.type > 0) {
             while (win != NULL) {
                 pad = g_msgPadEvent.buttons;
-                if (g_msgPadEvent.type == 2) {
-                    pad |= 0x80000000;
+                if (g_msgPadEvent.type == MSG_PAD_REPEAT) {
+                    pad |= MSG_INPUT_REPEAT;
                 }
                 if (win->onInput(win, pad) != 0) {
                     break;
@@ -1060,15 +1060,15 @@ void msg_update(void) {
 }
 
 u32 msg_getPadHeld(void) {
-    return g_padPortHeld[0] & 0x3FFFFFF;
+    return g_padPortHeld[0] & PAD_GAME_BITS;
 }
 
 u32 msg_getPadPressed(void) {
-    return g_msgPadPressed & 0x3FFFFFF;
+    return g_msgPadPressed & PAD_GAME_BITS;
 }
 
 u32 msg_getPadReleased(void) {
-    return g_msgPadReleased & 0x3FFFFFF;
+    return g_msgPadReleased & PAD_GAME_BITS;
 }
 
 void msg_onTextEnd(void) {
