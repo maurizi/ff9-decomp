@@ -73,7 +73,7 @@ typedef struct {
 
 extern SVECTOR fx_17d_4_centerPos;
 extern s32 fx_17d_4_op80Trails[];
-extern s8 fx_17d_4_buf400; /* no reader in any fx_17d group, other module or ovl_0b */
+extern s8 fx_17d_4_strandTrailTail; /* spill area of the strand trail buffers (fx_17d_4_strandTrails) */
 extern BtlModelBuf fx_17d_4_effModels[];
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);

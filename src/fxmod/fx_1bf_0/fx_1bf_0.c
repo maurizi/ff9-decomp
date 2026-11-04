@@ -191,7 +191,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
         env->camera->points[3].vx = work->pos8.vx;
         env->camera->points[3].vy = work->pos8.vy;
         env->camera->points[3].vz = work->pos8.vz;
-        fx_1bf_0_buf400[0] = 0;
+        fx_1bf_0_strandTrailTail[0] = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {

@@ -16,4 +16,4 @@ fx_0b8_bolts = 0x801EC1C0; // [code] 8 9-point trails (Fx0b8Bolt) with per-point
 fx_0b8_units = 0x801EC8C0; // [code] per battle unit (Fx0b8Unit) the saved scale and rotation, spin angles and speeds, fx_0b8_op80 lifts and spins the units and restores them
 fx_0b8_trails = 0x801ECA60; // [code] particle trail buffer of the file block 0xE emitter (0x28 slots of 0x5C bytes), fx_0b8_op80
 fx_0b8_gridShift = 0x801ED8C0; // [code] shift applied to the fading btlfx_drawScreenGrid colour (n << shift) in fx_0b8_op80, set to 4
-fx_0b8_scrollInitWord = 0x801EC1B0; // [code] set to 2 by fx_0b8_op80 mode 1 with the scroll setup (scroll1E4, scrollSpeed1E8 = 8), never read
+fx_0b8_scrollInitWord = 0x801EC1B0; // [code] set to 2 by fx_0b8_op80 mode 1 with the scroll setup (scroll1E4, scrollSpeed1E8 = 8), never read, runtime R41 confirms
