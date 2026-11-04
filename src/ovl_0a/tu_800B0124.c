@@ -111,7 +111,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
         case SND_CMD_SET:
-            if (SND_PARAM(cmd) == 8) {
+            if (SND_PARAM(cmd) == SND_PARAM_NOP) {
                 return 0;
             }
             switch (SND_PARAM(cmd)) {
@@ -297,7 +297,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             case SND_PARAM_PITCH:
                 akao_sendCmdA4(h, param1, param2);
                 return 0;
-            case 8:
+            case SND_PARAM_NOP:
                 return 0;
             }
             return -1;
@@ -395,7 +395,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             case 12:
                 SCENE->unk5F = param1;
                 return 0;
-            case 8:
+            case SND_PARAM_NOP:
                 return 0;
             }
             return -1;
@@ -449,7 +449,7 @@ state:
             }
         }
         gd = g_gameState->gameData;
-        if (!(gd->ctx.field->area->scene->flags & FLD_SCN_BANK_SLOT) && gd->soundLoadBank != 0x84) {
+        if (!(gd->ctx.field->area->scene->flags & FLD_SCN_BANK_SLOT) && gd->soundLoadBank != FLD_SOUND_BANK_NO_UPLOAD) {
             akao_beginBankUpload();
         }
         g_gameState->gameData->soundLoadDest = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
@@ -477,7 +477,7 @@ state:
                 room = room / 2048 * 2048;
                 cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
                               g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, room, fld_soundBankReadCallback);
-            } else if (g_fieldSoundLoadKind == 7) {
+            } else if (g_fieldSoundLoadKind == (DB_MUSIC >> 16)) {
                 if (g_fieldMusicRequest != SND_CMD_RESUME) {
                     g_gameState->gameData->musicVolume[0] = 0x7F;
                 }
@@ -971,7 +971,7 @@ s32 fld_soundBankReadCallback(CdReadCtx *ctx) {
         len = ctx->chunk;
     }
     len = (s32)ctx->dest + len - addr;
-    if ((id & 0xFFFF) != 0x84) {
+    if ((id & 0xFFFF) != FLD_SOUND_BANK_NO_UPLOAD) {
         sc = gd->ctx.field->area->scene;
         if (sc->flags & FLD_SCN_BANK_SLOT) {
             ret = akao_loadBankInSlot(addr, sc->soundBankSlot, 0);
@@ -1279,13 +1279,13 @@ s32 fld_preloadRequest(s32 typeArg, s32 fileId) {
     type = typeArg;
     flag = 0;
     if ((s8)type < 0) {
-        type -= 0x80;
+        type -= FLD_PRELOAD_EXCLUDE;
         flag = 1;
     }
     switch (type & 0xFF) {
     default:
         return -1;
-    case 0x11:
+    case FLD_PRELOAD_BATTLE:
         k = OVL_KEY(OVL_BATTLE);
         if (flag && fld_findPreloadExclude(OVL_KEY(OVL_BATTLE))) {
             return -1;
@@ -1312,9 +1312,9 @@ s32 fld_preloadRequest(s32 typeArg, s32 fileId) {
             goto set;
         }
         goto clear;
-    case 5:
+    case FLD_PRELOAD_FIELD:
         id = (u16)fileId | DB_FIELD;
-        if ((u16)fileId >= 9000) {
+        if ((u16)fileId >= FIELD_ID_WORLD_FIRST) {
             return -1;
         }
         file = dep_find(g_gameState->gameData->depTable, id);
@@ -1587,7 +1587,7 @@ void fld_queueFieldPreloads(void) {
         for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
             x = tbl[i].id;
             if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
-                if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
+                if ((x & 0xFFFF) < FIELD_ID_WORLD_FIRST && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
                     fld_queueFieldPreloads_grp(x & 0xFFFF) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) && best < tbl[i].sectors) {
                     best = tbl[i].sectors;
                     sel = i;
@@ -1598,7 +1598,7 @@ void fld_queueFieldPreloads(void) {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
                 if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
-                    if ((x & 0xFFFF) < 9000 && fld_findPreloadExclude(x) == NULL && (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
+                    if ((x & 0xFFFF) < FIELD_ID_WORLD_FIRST && fld_findPreloadExclude(x) == NULL && (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
                         best = tbl[i].sectors;
                         sel = i;
                         break;
@@ -1610,7 +1610,7 @@ void fld_queueFieldPreloads(void) {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
                 if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
-                    if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
+                    if ((x & 0xFFFF) < FIELD_ID_WORLD_FIRST && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
                         best < tbl[i].sectors) {
                         sel = i;
                         break;
@@ -1638,7 +1638,7 @@ void fld_queueFieldPreloads(void) {
                 x = tbl[i].id;
                 if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                     key = x & 0xFFFF;
-                    if (key < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                    if (key < FIELD_ID_WORLD_FIRST && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                         fld_findPreloadExclude(x) == NULL && fld_queueFieldPreloads_grp(key) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) &&
                         best < tbl[i].sectors) {
                         best = tbl[i].sectors;
@@ -1651,7 +1651,7 @@ void fld_queueFieldPreloads(void) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     x = tbl[i].id;
                     if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
-                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != (cur & 0xFFFF) && fld_findPreloadExclude(x) == NULL &&
+                        if ((x & 0xFFFF) < FIELD_ID_WORLD_FIRST && (x & 0xFFFF) != (cur & 0xFFFF) && fld_findPreloadExclude(x) == NULL &&
                             (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
                             best = tbl[i].sectors;
                             sel = i;
@@ -1664,7 +1664,7 @@ void fld_queueFieldPreloads(void) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     x = tbl[i].id;
                     if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
-                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                        if ((x & 0xFFFF) < FIELD_ID_WORLD_FIRST && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                             fld_findPreloadExclude(x) == NULL && best < tbl[i].sectors) {
                             sel = i;
                             break;

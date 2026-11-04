@@ -193,6 +193,10 @@ typedef struct {
 #define FLD_SCN_PRELOADS_QUEUED 0x100000 /* fld_preloadHook queued fld_queueFieldPreloads */
 #define FLD_SCN_PRELOAD_REQUESTED 0x200000 /* fld_preloadRequest accepted a request */
 #define FLD_SCN_PRELOAD_RESTART 0x800000 /* fld_preloadHook re-queues once the queue drains */
+/* fld_preloadRequest(type, id): event op 0xFD's arguments. Evidence: [code] */
+#define FLD_PRELOAD_FIELD 5 /* preload field `id` (DB_FIELD | id; not a world map) */
+#define FLD_PRELOAD_BATTLE 0x11 /* preload the battle overlay (OVL_KEY(OVL_BATTLE)) */
+#define FLD_PRELOAD_EXCLUDE 0x80 /* added to the type: put the file on the exclude list instead */
 /* FieldScene.movieState (fld_movieUpdate) */
 #define FLD_MOVIE_IDLE 0
 #define FLD_MOVIE_LOAD_OVL 1 /* fld_movieStart; once the CD is idle, start reading the movie overlay (OVL_MOVIE) */
@@ -1378,6 +1382,11 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
 #define ResetSpadStack12() __asm__ volatile("addiu $29, $29, 12\n\tlw $29, 0($29)" : : : "memory")
 
 /* main exe: candidates for ff9.h */
+#define FIELD_ID_WORLD_FIRST 9000 /* DB_FIELD ids from here on are world maps (DIR_WORLDS 9000-9012, EVT_OP_GOTO_WORLD); */
+                                  /* fld_preloadRequest and fld_queueFieldPreloads only preload fields below it */
+#define FLD_SOUND_BANK_NO_UPLOAD 0x84 /* DB_SOUND_BANK id whose load fld_soundCommand / fld_soundBankReadCallback read */
+                                     /* but never upload to the SPU (runtime: pending R41) */
+#define SND_PARAM_NOP 8 /* (snd_ids.h) music and SE SND_CMD_SET with it return 0 and do nothing (fld_soundCommand) */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
