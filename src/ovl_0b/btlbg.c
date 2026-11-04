@@ -152,7 +152,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
         grp = (BtlBgGroup *)((u8 *)grp + grp->size);
         flag = 0;
         switch (g_btlbgHeader->id) {
-        case 0x44:
+        case BTLBG_SCENE_SWING:
             angle = math_sin((VSync(-1) * 26) & 0xFFE);
             pivot.vx = 0x429;
             pivot.vy = -0x541;
@@ -160,7 +160,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
             angle /= 5;
             groupRot.vz = angle;
             break;
-        case 0x70:
+        case BTLBG_SCENE_TUMBLE:
             switch (groupIdx) {
             case 1:
                 angle = (VSync(-1) * 5) & 0xFFF;
@@ -192,7 +192,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
                 break;
             }
             break;
-        case 0x6E:
+        case BTLBG_SCENE_SWAY:
             angle = math_sin((VSync(-1) * 12) & 0xFFC);
             angle /= 64;
             groupRot.vy = 0x200;
@@ -201,7 +201,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
             groupRot.vz = angle;
             pivot.vz = 0xEA6;
             break;
-        case 0xA8:
+        case BTLBG_SCENE_SLOW_SPIN:
             groupRot.vx = 0;
             groupRot.vz = 0;
             if (groupIdx == 1) {
@@ -210,7 +210,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
                 groupRot.vy = (VSync(-1) / 8) & 0xFFF;
             }
             break;
-        case 0xAB:
+        case BTLBG_SCENE_ROLL:
             if (groupIdx == 1) {
                 angle = -(VSync(-1) * 12) & 0xFFF;
                 pivot.vy = -0x947;
@@ -227,7 +227,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
                 pivot.vz = 0x1DC9;
             }
             break;
-        case 7:
+        case BTLBG_SCENE_JITTER:
             if (groupIdx == 1) {
                 if (!((g_btlbgFrame + 0x1F) & 0x3F)) {
                     g_btlbgJitterBase1 = rand() & 0x1FF;

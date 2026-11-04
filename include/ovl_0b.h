@@ -254,6 +254,7 @@ s32 btlfx_isCmdPendingOnAutoPotion(s32);
 extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Magic entry */
 
 /* main exe: candidates for ff9.h */
+#define CARD_COUNT 100 /* Tetra Master card ids 0-99 (as ovl_36.h); btl_addEnemyRewards drops only these. Evidence: [code] */
 #define STAT_MAX 99 /* strength / magic cap (chr_calcBaseStrength, btl_calcCmd BTL_FORMULA_STRENGTH_UP / MAGIC_UP). Evidence: [code] */
 #define ITEM_THIEF_SWORD_FIRST 0x07 /* [text items] "Butterfly Sword": first of the thief swords (ITEM_ICON_THIEF_SWORD), BTL_FORMULA_SOUL_BLADE needs one */
 #define ITEM_THIEF_SWORD_LAST  0x0F /* [text items] "Ultima Weapon" */
@@ -1985,13 +1986,14 @@ typedef struct Unk800FE3B8 {
 #define BTLCAM_F_EFFECT_RUNNING 0x02 /* the effect script runs its ops (btlfx_runScript phase 4); btlcam_play clears the flags then */
 extern Unk800FE3B8 g_btlCamera;
 
+#define BTL_REWARD_ITEM_SLOTS 16 /* g_btlRewards.items */
 typedef struct {
     s32 gil; /* gil (BtlEnemyType.gil of the defeated enemies; ovl_65 BattleResult.gil) */
     s32 exp; /* exp (BtlEnemyType.exp; ovl_65 splits it among expMask) */
     s16 ap; /* ap of the enemy group (Battle1330.ap, btl_initSceneFlags). runtime: Malboro group 3 = "AP 3" */
     u8 expMask; /* bit per party slot in the battle (btl_initPartyUnit), cleared when a unit leaves (btl_calcCmd 0x6A); ovl_65: receives exp */
     u8 hasPostEvent; /* encounter flag 0x800, story battles (BattleResult in ovl_65, runtime) */
-    u8 items[16]; /* dropped item ids, 0xFF = none (btl_addEnemyRewards) */
+    u8 items[BTL_REWARD_ITEM_SLOTS]; /* dropped item ids, 0xFF = none (btl_addEnemyRewards) */
     u8 card; /* card won, 0xFF = none */
     u8 fleeGil; /* set when Flee-Gil (support 0x4000) turned the escape into gil (btl_victory) */
 } Unk800FDF30;
@@ -2797,6 +2799,15 @@ typedef struct BtlBgHeader {
     u8 shadowShade; /* shadow grey level (BtlShadow.shade) */
     BtlBgScroll scrolls[1]; /* [scrollCount] (g_btlbgScrolls; their step bytes change at run time) */
 } BtlBgHeader;
+/* BtlBgHeader.id scene ids whose extra groups btlbg_draw moves by code, named by that motion. Evidence: [code]
+ * btlbg_draw; [data] tools/battle_budget.py / encounter_catalog.py give the file and the encounters
+ * (runtime: pending R41, which location each is). */
+#define BTLBG_SCENE_JITTER     7    /* groups 1-2 jump to random y angles (file 160: Nova Dragon, field 2756) */
+#define BTLBG_SCENE_SWING      0x44 /* group 1 swings about z (file 32: Armodullahan, Abomination, Griffin; field 1423) */
+#define BTLBG_SCENE_SWAY       0x6E /* group 1 sways about z, tilted (file 157: Ash, Veteran; field 2902) */
+#define BTLBG_SCENE_TUMBLE     0x70 /* groups 1-3 turn and bob (file 156: Ash, Veteran; field 2906) */
+#define BTLBG_SCENE_SLOW_SPIN  0xA8 /* groups turn slowly about y (file 172: Hades, Stilva, Behemoth; fields 2914, 2921) */
+#define BTLBG_SCENE_ROLL       0xAB /* group 1 rolls about z, group 2 spins tilted (file 162: Trance Kuja, field 2927) */
 
 
 typedef struct {

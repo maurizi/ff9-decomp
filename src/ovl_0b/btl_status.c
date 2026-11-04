@@ -876,12 +876,12 @@ void btl_addEnemyRewards(BtlEnemyType *enemyType) {
     rewards = &g_btlRewards;
     rewards->gil += enemyType->gil;
     rewards->exp += enemyType->exp;
-    for (; slot < 16; slot++) {
+    for (; slot < BTL_REWARD_ITEM_SLOTS; slot++) {
         if (rewards->items[slot] == ITEM_NONE) {
             break;
         }
     }
-    if (slot < 16) {
+    if (slot < BTL_REWARD_ITEM_SLOTS) {
         if (rand8_inline() < 1 && (itemId = enemyType->drops.b[3]) != ITEM_NONE) {
             rewards->items[slot++] = itemId;
             enemyType->drops.b[3] = ITEM_NONE;
@@ -896,7 +896,7 @@ void btl_addEnemyRewards(BtlEnemyType *enemyType) {
             rewards->items[slot] = itemId;
         }
     }
-    if (rewards->card == CARD_NONE && (u32)enemyType->card < 100) {
+    if (rewards->card == CARD_NONE && (u32)enemyType->card < CARD_COUNT) {
         if (rand8_inline() < 0x20) {
             rewards->card = enemyType->card;
         }
