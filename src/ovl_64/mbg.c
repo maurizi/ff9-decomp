@@ -135,8 +135,8 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.frameRect[1].w = 0x140;
                 g_mbgDecode.slice.w = 0x10;
                 if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
-                    g_fieldFlagQueue.mapFlags[1][0] = 9;
-                    g_fieldFlagQueue.gameFlags[1][0] |= 0x14;
+                    g_fieldFlagQueue.mapFlags[1][0] = FLD_MAP_NO_BGI_ANIM | FLD_MAP_NO_WINDOWS;
+                    g_fieldFlagQueue.gameFlags[1][0] |= GD_HIDE_SPRITES | GD_HIDE_MODELS;
                 }
                 g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
             }

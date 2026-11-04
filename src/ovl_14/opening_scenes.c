@@ -71,7 +71,7 @@ void opening_loadDone(void) {
         opening_resetGameData();
         disc = scene_checkDisc();
         if (disc != DISC_NONE) {
-            menu_open(MENU_DISC, ((disc & 3) << 14) | 0x3A98);
+            menu_open(MENU_DISC, MENU_DISC_ARG(disc, DISC_NO_LOCATION));
             mode = SCENE_DISC;
         } else {
             menu_setFadeInOnClose(0);

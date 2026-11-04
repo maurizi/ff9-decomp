@@ -157,7 +157,7 @@ void menuName_drawPortrait(void) {
     addPrim(&g_ot[4], sprt);
     g_primPtr = (u8 *)(sprt + 1);
     setlen(g_primPtr, 2);
-    SetDrawTPage(g_primPtr, 0, 1, 0x9F);
+    SetDrawTPage(g_primPtr, 0, 1, getTPage(1, 0, 0x3C0, 0x100));
     addPrim(&g_ot[4], g_primPtr);
     g_primPtr += 8;
     win_drawBox(s_menuNamePortraitWin, 6, WIN_STYLE_LINE);

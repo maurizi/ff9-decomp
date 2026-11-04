@@ -29,7 +29,7 @@ void menuSave_init(void) {
     menuSave_onInit();
     for (i = 0; i < 2; i++) {
         s_menuSave.savedPortMask[i] = g_padPortMask[i];
-        g_padPortMask[i] |= 0x300;
+        g_padPortMask[i] |= PAD_L2 | PAD_R2;
     }
 }
 
@@ -506,7 +506,7 @@ void menuSave_drawBookIcon(s32 x, s32 y, s32 z, s32 idx) {
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += sizeof(SprtWords);
     setlen(g_primPtr, 2);
-    SetDrawTPage(g_primPtr, 0, 1, 0x91);
+    SetDrawTPage(g_primPtr, 0, 1, getTPage(1, 0, 0x40, 0x100));
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += sizeof(DR_TPAGE);
 }
@@ -1717,8 +1717,8 @@ MenuView *menuSave_getListView(MenuList *list, MenuView *view) {
     u8 scrollFlags;
 
     scrollFlags = list->scroll;
-    if (scrollFlags & 4) {
-        if (scrollFlags & 2) {
+    if (scrollFlags & MENULIST_SCROLL_PAGE) {
+        if (scrollFlags & MENULIST_SCROLL_UP) {
             remaining = list->height - list->scrollPos;
             view->rows = (remaining + SAVE_ROW_H - 1) / SAVE_ROW_H;
             view->first = list->top + (list->visibleRows - view->rows);
@@ -1729,11 +1729,11 @@ MenuView *menuSave_getListView(MenuList *list, MenuView *view) {
             view->first = list->top;
             view->y = 0;
         }
-    } else if (scrollFlags & 2) {
+    } else if (scrollFlags & MENULIST_SCROLL_UP) {
         view->rows = list->visibleRows + 1;
         view->first = list->top - 1;
         view->y = list->scrollPos - SAVE_ROW_H;
-    } else if (scrollFlags & 1) {
+    } else if (scrollFlags & MENULIST_SCROLL_DOWN) {
         view->first = list->top;
         view->rows = list->visibleRows + 1;
         view->y = -list->scrollPos;

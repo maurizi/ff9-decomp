@@ -4583,7 +4583,7 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *tm, TmCard *card, u8 bright,
         ((POLY_FT4 *)prim)->g0 = bright;
         ((POLY_FT4 *)prim)->b0 = bright;
         ((POLY_FT4 *)prim)->clut = getClut(0x180, id + 0x19C);
-        ((POLY_FT4 *)prim)->tpage = ((page * 2) & 0xE) | 0x90;
+        ((POLY_FT4 *)prim)->tpage = ((page * 2) & 0xE) | TPAGE_8BIT | TPAGE_Y_BIT; /* x = page * 128 */
         AddPrim(ot, prim);
         prim = (POLY_FT4 *)prim + 1;
     }

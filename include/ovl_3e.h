@@ -91,4 +91,8 @@ void discChange_doCheck(void);
 void discChange_closeError(void);
 void discChange_resetState(void);
 
+/* main exe: candidates for ff9.h (texture page word fields, getTPage's layout). Evidence: [code] */
+#define TPAGE_Y_BIT 0x10 /* bit 4: y / 256 */
+#define TPAGE_15BIT 0x100 /* bits 7-8: colour mode 2 (15-bit direct) */
+
 #endif

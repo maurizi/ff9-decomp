@@ -16,7 +16,7 @@ void discChange_init(void) {
     st->nextLocation = DISC_REQ_LOCATION(g_menu.arg);
     for (i = 0; i < 2; i++) {
         st->savedFlags[i] = src[i];
-        src[i] |= 0x300;
+        src[i] |= PAD_L2 | PAD_R2;
     }
     help_setCallback(0);
     discChange_loadPicture();
@@ -43,7 +43,7 @@ void discChange_drawBackground(void) {
         sprt->wh = 0xE000A0;
         g_primPtr = (u8 *)(sprt + 1);
         addPrim(&g_ot[6], sprt);
-        SetDrawTPage(g_primPtr, 1, 1, (((i * DISC_PICTURE_W) >> 6) + 0x10) | 0x100);
+        SetDrawTPage(g_primPtr, 1, 1, (((i * DISC_PICTURE_W) >> 6) + TPAGE_Y_BIT) | TPAGE_15BIT);
         addPrim(&g_ot[6], g_primPtr);
         g_primPtr += 8;
     }
@@ -61,7 +61,7 @@ void discChange_drawPanel(void) {
     sprt->wh = 0xA800C2;
     g_primPtr = (u8 *)(sprt + 1);
     addPrim(&g_ot[6], sprt);
-    SetDrawTPage(g_primPtr, 1, 1, 0x95);
+    SetDrawTPage(g_primPtr, 1, 1, getTPage(1, 0, 0x140, 0x100));
     addPrim(&g_ot[6], g_primPtr);
     g_primPtr += 8;
 }

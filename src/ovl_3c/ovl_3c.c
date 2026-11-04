@@ -491,7 +491,7 @@ void shopBuy_openQuantity(void) {
 }
 
 void shopBuy_update(void) {
-    if (g_padRepeat & 8) {
+    if (g_padRepeat & PAD_START) {
         pad_onStartPressed();
     }
     shopBuy_input();

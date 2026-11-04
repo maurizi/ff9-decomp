@@ -258,4 +258,7 @@ static inline void menuCard_updateImageLoad_read(CardCache *c) {
 void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag);
 s32 text_getButtonSprite(s32 button); /* main */
 
+/* main exe: candidates for ff9.h. Evidence: [code] */
+#define TPAGE_ABR_ADD 0x20 /* texture page abr 1 (bits 5-6): back + front */
+
 #endif

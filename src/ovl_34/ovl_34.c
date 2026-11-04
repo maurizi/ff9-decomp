@@ -426,8 +426,8 @@ ScrollPos *menuConfig_getListView(MenuList *list, ScrollPos *view) {
     s32 remain;
 
     scrollFlags = list->scroll;
-    if (scrollFlags & 4) {
-        if (scrollFlags & 2) {
+    if (scrollFlags & MENULIST_SCROLL_PAGE) {
+        if (scrollFlags & MENULIST_SCROLL_UP) {
             remain = list->height - list->scrollPos;
             rows = (remain + 19) / 20;
             view->rows = rows;
@@ -439,11 +439,11 @@ ScrollPos *menuConfig_getListView(MenuList *list, ScrollPos *view) {
             view->first = list->top;
             view->y = 0;
         }
-    } else if (scrollFlags & 2) {
+    } else if (scrollFlags & MENULIST_SCROLL_UP) {
         view->rows = list->visibleRows + 1;
         view->first = list->top - 1;
         view->y = list->scrollPos - 20;
-    } else if (scrollFlags & 1) {
+    } else if (scrollFlags & MENULIST_SCROLL_DOWN) {
         view->first = list->top;
         view->rows = list->visibleRows + 1;
         view->y = -list->scrollPos;

@@ -387,7 +387,7 @@ void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
     sprt->uvclut = clut;
     g_primPtr = (u8 *)(sprt + 1);
     addPrim(&g_ot[z], sprt);
-    SetDrawTPage(g_primPtr, 1, 1, 0xBF);
+    SetDrawTPage(g_primPtr, 1, 1, getTPage(1, 1, 0x3C0, 0x100));
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
     menuCard_drawSprite(x, y, 0x14, CARD_SPR_FRAME, rgbc);
@@ -430,7 +430,7 @@ void menuCard_drawSprite(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
     sprt->wh = sprDef->w | (sprDef->h << 16);
     g_primPtr = (u8 *)(sprt + 1);
     addPrim(&g_ot[z], sprt);
-    SetDrawTPage(g_primPtr, 1, 1, sprDef->tpage | 0x20);
+    SetDrawTPage(g_primPtr, 1, 1, sprDef->tpage | TPAGE_ABR_ADD);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
 }

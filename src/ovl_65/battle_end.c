@@ -979,7 +979,7 @@ void rewards_drawLearnWin(Window *w) {
     tile->wh = (win->w - 4) | ((win->h - 4) << 16);
     addPrim(&g_ot[w->otz], tile);
     g_primPtr += sizeof(TileWords);
-    SetDrawTPage(g_primPtr, 1, 1, 0x20);
+    SetDrawTPage(g_primPtr, 1, 1, getTPage(0, 1, 0, 0));
     addPrim(&g_ot[w->otz], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
 }
@@ -1061,7 +1061,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *popup) {
         g_primPtr = (u8 *)(sprt + 1);
         addPrim(&g_ot[otz], sprt);
         tpage = (DR_TPAGE *)g_primPtr;
-        SetDrawTPage(tpage, 1, 1, 0x9F);
+        SetDrawTPage(tpage, 1, 1, getTPage(1, 0, 0x3C0, 0x100));
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(DR_TPAGE);
         setlen(g_primPtr, PRIM_LEN(SPRT));

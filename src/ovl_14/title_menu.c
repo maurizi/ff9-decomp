@@ -116,7 +116,7 @@ void opening_titleLoadTims(s32 *pack) {
         yb = (s16)((s16)(img->y & 0x100) >> 4);
         xb = (img->x & 0x3FF) >> 6;
         y2 = (s16)(img->y & 0x200) << 2;
-        g_titleMenu.images[i].tpage = ((i == TITLE_IMG_10) ? (tp | (yb | 0x20)) : (tp | yb)) | xb | y2;
+        g_titleMenu.images[i].tpage = ((i == TITLE_IMG_10) ? (tp | (yb | TPAGE_ABR_ADD)) : (tp | yb)) | xb | y2;
         if (mode < 2) {
             g_titleMenu.images[i].uvClut.s.clut = (clut->y << 6) | ((clut->x >> 4) & 0x3F);
         } else {
@@ -289,7 +289,7 @@ void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *image, s32 unused)
     sprt->wh = image->w | (image->h << 16);
     g_primPtr = (u8 *)(sprt + 1);
     addPrim(&g_ot[z], sprt);
-    SetDrawTPage(g_primPtr, 1, 1, image->tpage | 0x20);
+    SetDrawTPage(g_primPtr, 1, 1, image->tpage | TPAGE_ABR_ADD);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += sizeof(SprtWords); /* sic: the DR_TPAGE is only 8 bytes */
 }
@@ -302,7 +302,7 @@ void opening_titleConfirm(void) {
         g_gameState->disc = DISC_1;
         discNeeded = scene_checkDisc();
         if (discNeeded != DISC_NONE) {
-            menu_open(MENU_DISC, ((discNeeded & 3) << 14) | 0x3A98);
+            menu_open(MENU_DISC, MENU_DISC_ARG(discNeeded, DISC_NO_LOCATION));
             scene_set(SCENE_DISC);
         } else {
             scene_set(SCENE_START);

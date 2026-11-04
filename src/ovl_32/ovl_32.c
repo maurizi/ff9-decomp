@@ -318,7 +318,7 @@ void menuChocograph_drawPicture(s32 x, s32 y, s32 z, s32 id, u8 dim) {
     sprt->wh = 0x1C002A;
     g_primPtr = (u8 *)(sprt + 1);
     addPrim(&g_ot[z], sprt);
-    SetDrawTPage(g_primPtr, 0, 1, 0x90);
+    SetDrawTPage(g_primPtr, 0, 1, getTPage(1, 0, 0, 0x100));
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
 }
