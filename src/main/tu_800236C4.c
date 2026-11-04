@@ -17,7 +17,7 @@ void config_reset(void) {
     cfg->messageSpeed = 3;
     cfg->unk0_17 = 0;
     cfg->buttonMap = 0;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < PAD_SLOT_COUNT; i++) {
         cfg->buttonMap |= i << (i * 4);
     }
     config_apply();
@@ -32,7 +32,7 @@ void config_applyPadMapping(void) {
     port = 0;
     tbl = g_configButtons;
     for (; port < 2; port++) {
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < PAD_SLOT_COUNT; i++) {
             act = g_configPadButtons;
             pad_setMapping(port, tbl[i], act[config_applyPadMapping_remap(i)]);
         }

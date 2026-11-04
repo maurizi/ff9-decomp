@@ -130,8 +130,8 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
         }
     }
     for (i = 0; i < 5; i++) {
-        if (out->defs[i] >= 1000) {
-            out->defs[i] = 999;
+        if (out->defs[i] > DEF_STAT_MAX) {
+            out->defs[i] = DEF_STAT_MAX;
         }
     }
     if (out->maxHp > HP_MAX) {
@@ -212,7 +212,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
 
     if (eq != 0xFF) {
         equip = chr->equip;
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             equip[i] = g_chrDefaultEquip[eq][i];
         }
     }
@@ -279,7 +279,7 @@ s32 party_getFirstMember(void) {
     do {
     loop:
         if (gd->party[i] == NULL) {
-            i = i < 3 ? i + 1 : 0;
+            i = i < PARTY_SIZE - 1 ? i + 1 : 0;
             goto loop;
         }
     } while (0);
@@ -288,14 +288,14 @@ s32 party_getFirstMember(void) {
 
 s32 party_getPrevMember(s32 i) {
     do {
-        i = i == 0 ? 3 : i - 1;
+        i = i == 0 ? PARTY_SIZE - 1 : i - 1;
     } while (g_gameState->gameData->party[i] == NULL);
     return i;
 }
 
 s32 party_getNextMember(s32 i) {
     do {
-        i = i < 3 ? i + 1 : 0;
+        i = i < PARTY_SIZE - 1 ? i + 1 : 0;
     } while (g_gameState->gameData->party[i] == NULL);
     return i;
 }
@@ -470,7 +470,7 @@ void chr_setDefaultName(u8 *dst, s32 id) {
 
 void chr_setDefaultEquip(u8 *dst, s32 set) {
     s32 i;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         dst[i] = g_chrDefaultEquip[set][i];
     }
 }
@@ -494,7 +494,7 @@ void chr_fitSupportAbilities(Character *chr) {
         }
         i++;
         ability++;
-    } while (i < 64);
+    } while (i < SUPPORT_COUNT);
 }
 
 s32 chr_addAp(s32 ch, s32 id, s32 add) {
@@ -540,14 +540,14 @@ void chr_initNew(void) {
 
 void chr_clearAllAp(void) {
     s32 i;
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < CHR_COUNT; i++) {
         chr_clearAp(i);
     }
 }
 
 void chr_clearAllSupport(void) {
     s32 i;
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < CHR_COUNT; i++) {
         chr_clearSupport(i);
     }
 }
@@ -563,7 +563,7 @@ void chr_clearAp(s32 ch) {
 
     if (ch < 8) {
         chr = &g_gameState->gameData->characters[ch];
-        for (i = 0; i < 0x30; i++) {
+        for (i = 0; i < ABILITY_MAX; i++) {
             chr->ap[i] = 0;
         }
     }
@@ -641,7 +641,7 @@ s32 chr_countSupportStones(s32 ch) {
     s32 sum = 0;
     s32 i;
     u32 *bits = g_gameState->gameData->characters[ch].supportAbilities;
-    for (i = 0; i < 0x40; i++) {
+    for (i = 0; i < SUPPORT_COUNT; i++) {
         if (bits[i >> 5] & (1 << (i & 0x1F))) {
             sum += g_supportAbilities[i].stones;
         }
@@ -791,8 +791,8 @@ s32 chr_sumEquipBonus(u8 *eq, s32 k) {
     s32 i;
     u8 *bonus;
 
-    for (i = 0; i < 5; i++) {
-        if (eq[i] != 0xFF) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
+        if (eq[i] != ITEM_NONE) {
             bonus = g_equipStatBonus[g_itemTable[eq[i]].statBonus].stats;
             switch (k) {
             case 0:

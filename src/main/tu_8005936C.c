@@ -47,12 +47,12 @@ void akao_freeSubSeqVoices(void) {
         freeBits &= lim;
         for (val = 0; freeBits != 0; val++) {
             if (freeBits & (1 << val)) {
-                remaining = 0x20;
+                remaining = AKAO_NUM_CHANNELS;
                 bit = 1 << val;
                 ch = g_akaoSubChannels;
                 for (; remaining != 0; remaining--) {
                     if (ch->voice == val) {
-                        ch->voice = 0x18;
+                        ch->voice = AKAO_NO_VOICE;
                         found |= bit;
                     }
                     ch++;

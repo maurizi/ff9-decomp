@@ -872,8 +872,8 @@ s32 evt_execInstr(void) {
     case EVT_OP_NEW_ACTOR:
         operand0 = g_evtArgFlags;
         operand1 = *g_evtCurObj->ip++;
-        if ((u32)(operand0 - 0xFB) < 4) {
-            operand0 = g_evtState->partyUids[operand0 - 0xFB];
+        if ((u32)(operand0 - EVT_OBJ_PARTY) < PARTY_SIZE) {
+            operand0 = g_evtState->partyUids[operand0 - EVT_OBJ_PARTY];
         }
         evt_execInstr_newactor(operand0, operand1);
         g_evtArgRead = 1;
@@ -2016,10 +2016,10 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_RECRUITED:
         operand0 = evt_getArg16_inline();
         operand0 |= EVT_CHR_ALIAS_BITS(operand0);
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < CHR_COUNT; i++) {
             chr_clearRecruited(i);
         }
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < CHR_COUNT; i++) {
             if (operand0 & 1) {
                 chr_setRecruited(i);
             }
@@ -2054,7 +2054,7 @@ s32 evt_execInstr(void) {
                 break;
             }
         }
-        if (i < 4) {
+        if (i < PARTY_SIZE) {
             party_setMember(i, -1);
             evt_execInstr_party();
         }
@@ -2062,7 +2062,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_PARTY_MENU:
         g_evtPartyRequest.size = evt_getArg8_inline();
         operand0 = 0;
-        for (i = 8; i >= 0; i--) {
+        for (i = CHR_COUNT - 1; i >= 0; i--) {
             operand0 <<= 1;
             operand0 |= (g_gameState->gameData->characters[i].info.w >> CHR_INFO_RECRUITED_BIT) & 1;
         }
@@ -2081,7 +2081,7 @@ s32 evt_execInstr(void) {
                 g_evtPartyRequest.party[i] = 0xFF;
             }
         }
-        for (operand1 = 0, i = 0; i < 9 && operand1 < 8 && operand0 != 0; i++, operand0 >>= 1) {
+        for (operand1 = 0, i = 0; i < CHR_COUNT && operand1 < 8 && operand0 != 0; i++, operand0 >>= 1) {
             if (operand0 & 1) {
                 g_evtPartyRequest.reserve[operand1++] = i;
             }
@@ -2353,8 +2353,8 @@ void evt_movePlayer(EvtObject *obj) {
     s32 magSq;
 
     hit = NULL;
-    speed = 30;
-    dir = 0x8000;
+    speed = EVT_PLAYER_WALK_SPEED;
+    dir = EVT_DIR_NONE;
     analog = 0;
     memset(&step, 0, 8);
     pad = msg_getPadHeld();
@@ -2388,7 +2388,7 @@ void evt_movePlayer(EvtObject *obj) {
     if (!analog) {
         run = ((GameConfig *)&g_gameState->config)->movementRun;
         if ((pad & BTN_CIRCLE) ? (run ^ 1) != 0 : run != 0) {
-            speed = 60;
+            speed = EVT_PLAYER_RUN_SPEED;
         }
         if (pad & PAD_LEFT) {
             dir = 0x400;
@@ -2397,22 +2397,22 @@ void evt_movePlayer(EvtObject *obj) {
             dir = -0x400;
         }
         if (pad & PAD_DOWN) {
-            if (dir == 0x8000) {
+            if (dir == EVT_DIR_NONE) {
                 dir = 0;
             } else {
                 dir -= dir >> 1;
             }
         }
         if (pad & PAD_UP) {
-            if (dir == 0x8000) {
+            if (dir == EVT_DIR_NONE) {
                 dir = 0x800;
             } else {
                 dir += dir >> 1;
             }
         }
     }
-    g_evtPlayerMoved = dir != 0x8000;
-    if (dir != 0x8000) {
+    g_evtPlayerMoved = dir != EVT_DIR_NONE;
+    if (dir != EVT_DIR_NONE) {
         if (analog) {
             dir += g_evtState->analogDirOfs;
         } else {
@@ -2427,10 +2427,10 @@ void evt_movePlayer(EvtObject *obj) {
             cur += 0x1000;
         }
         obj->pos.rotY = ((cur + dir) >> 1) & 0xFFF;
-        if (g_evtState->walkOnly != 0 && speed > 30) {
-            speed = 30;
+        if (g_evtState->walkOnly != 0 && speed > EVT_PLAYER_WALK_SPEED) {
+            speed = EVT_PLAYER_WALK_SPEED;
         }
-        if (speed > 30) {
+        if (speed > EVT_PLAYER_WALK_SPEED) {
             g_evtStepCount += 2;
         } else {
             g_evtStepCount += 1;
@@ -2818,7 +2818,7 @@ void evt_updateBattleObjects(void) {
         i = 3;
         g_evtBattleVars[i] = btl_getUnitMask(1);
         unitMask = (u16)g_evtBattleVars[i];
-        for (i = 4; i < 8; i++) {
+        for (i = EVT_UNIT_FIRST_ENEMY; i < EVT_UNIT_COUNT; i++) {
             obj = g_evtUnitObjects[i];
             if (obj != NULL) {
                 switch (obj->state) {
@@ -2958,7 +2958,7 @@ s32 evt_updateObjects(void) {
     if (world) {
         for (node = g_evtState->objects; node != NULL; node = node->next) {
             obj = node->obj;
-            if (obj->battleTurnState == 2 && evt_callObjectFunc(obj, 3, 5, 0)) {
+            if (obj->battleTurnState == 2 && evt_callObjectFunc(obj, 3, EVT_FUNC_BTL_TURN, 0)) {
                 obj->battleTurnState = 1;
             }
         }
@@ -3280,7 +3280,7 @@ u8 *evt_loadScripts(u8 *data) {
     s32 bit;
     u8 *src;
 
-    for (; i < 4; i++) {
+    for (; i < PARTY_SIZE; i++) {
         chr = msg_getPartyMemberId(i);
         if (chr >= 0) {
             charMask |= 1 << chr;
@@ -3400,12 +3400,12 @@ void evt_init(u8 *data) {
     func_8004B3A8_inline(0, 0);
     g_evtState->objects->obj->state = EVT_STATE_INIT;
     evt_execInstr_party();
-    for (i = 7; i >= 0; i--) {
+    for (i = EVT_UNIT_COUNT - 1; i >= 0; i--) {
         g_evtUnitObjects[i] = NULL;
     }
     g_evtUnitObjectCount = 0;
     if (g_evtMode == EVT_MODE_BATTLE) {
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             chr = msg_getPartyMemberId(i);
             if (chr >= 0) {
                 evt_execInstr_newactor(chr + g_evtScriptCount - 9, 0);
@@ -3415,7 +3415,7 @@ void evt_init(u8 *data) {
     } else {
         g_gameState->gameData->rainCount = 0;
     }
-    g_evtUnitObjectCount = 4;
+    g_evtUnitObjectCount = EVT_UNIT_FIRST_ENEMY;
     if ((g_evtMode == EVT_MODE_FIELD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
         (g_evtMode == EVT_MODE_WORLD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
         (g_gameState->prevMode == GS_MODE_TETRA_MASTER && g_evtModelsPending != 0)) {
@@ -3430,7 +3430,7 @@ void evt_init(u8 *data) {
                 fld_queueModelBundle(obj->scriptIdx);
             }
         }
-        evt_callObjectFunc(evt_getObject_inline(0), 0, 10, 0);
+        evt_callObjectFunc(evt_getObject_inline(0), 0, EVT_FUNC_RESUME, 0);
         for (iter = g_evtState->objects; iter != NULL; iter = iter->next) {
             obj = iter->obj;
             if (obj->uid != 0) {
@@ -3490,7 +3490,7 @@ void evt_onMenuOpen(void) {
         while (*name++ != 0) {
         }
         g_gameState->gameData->debugLocationName = name;
-        evt_callObjectFunc(evt_getObject_inline(0), 1, 4, 0);
+        evt_callObjectFunc(evt_getObject_inline(0), 1, EVT_FUNC_MENU, 0);
     }
 }
 
@@ -3533,12 +3533,12 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 value, s32 w) {
     if (!(bits & 1)) {
         bits >>= 1;
         i = 1;
-        while (i < 8 && !(bits & 1)) {
+        while (i < EVT_UNIT_COUNT && !(bits & 1)) {
             bits >>= 1;
             i++;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         obj = g_evtUnitObjects[i];
         if (op == BTL_CMD_ENEMY_TURN) {
             if (obj->level >= 4) {
@@ -3547,15 +3547,15 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 value, s32 w) {
             }
         } else {
             lv = 2;
-            key = 7;
+            key = EVT_FUNC_BTL_REACT;
             switch (op) {
             case BTL_CMD_ENEMY_COUNTER:
-                key = 6;
+                key = EVT_FUNC_BTL_COUNTER;
                 g_evtBattleVars[0] = value;
                 lv = 1;
                 break;
             case BTL_CMD_ENEMY_DEATH:
-                key = 9;
+                key = EVT_FUNC_BTL_DEATH;
                 g_evtBattleVars[0] = value;
                 lv = 0;
                 break;
@@ -3678,7 +3678,7 @@ s32 evt_getPartyChrIndex(s32 i) {
     s32 biased = g_evtState->partyUids[i] + 9;
     u32 chrIdx = biased - g_evtScriptCount;
     s32 idx = 0;
-    if (chrIdx < 9) {
+    if (chrIdx < CHR_COUNT) {
         idx = chrIdx;
     }
     return idx;
@@ -3808,12 +3808,12 @@ s32 evt_getObjectProp(EvtObject *obj, s32 prop) {
         return obj->animFrame;
     }
     result = 0;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         if (g_evtUnitObjects[i] == obj) {
             break;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         unit = btl_getUnitById(1 << i);
         if (unit != NULL) {
             result = btl_getUnitAttr(unit, prop);
@@ -3833,12 +3833,12 @@ void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value) {
             obj->pos.rotY = value * 16;
             return;
         }
-        for (; i < 8; i++) {
+        for (; i < EVT_UNIT_COUNT; i++) {
             if (g_evtUnitObjects[i] == obj) {
                 break;
             }
         }
-        if (i < 8) {
+        if (i < EVT_UNIT_COUNT) {
             if (prop == EVT_SETPROP_INSERT) {
                 fn = btl_findUnitByBit;
             } else {
@@ -3889,12 +3889,12 @@ void evt_projectToScreen(SVECTOR *pos, s32 *x, s32 *y) {
 void evt_setCurUnit(void *obj) {
     s32 i;
     s32 bit;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         if (g_evtUnitObjects[i] == obj) {
             break;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         bit = 1 << i;
         g_evtCurUnitMask = bit;
     }

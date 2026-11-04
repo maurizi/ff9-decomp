@@ -171,7 +171,7 @@ s32 evt_exprUnitIncDec(s32 op) {
         unitMask = evt_popResult();
         g_evtExprSp += 2;
     }
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
@@ -219,7 +219,7 @@ s32 evt_exprUnitAssign(s32 op) {
         g_evtExprSp += 3;
     }
     operand = evt_popResult();
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
@@ -301,7 +301,7 @@ s32 evt_exprUnitSelect(s32 op) {
     }
     switch (op) {
     case EVT_EXPR_UNIT_NOT:
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < EVT_UNIT_COUNT; i++) {
             result >>= 1;
             if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
@@ -315,7 +315,7 @@ s32 evt_exprUnitSelect(s32 op) {
         break;
     case EVT_EXPR_UNIT_MAX:
         result = -0x8000;
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < EVT_UNIT_COUNT; i++) {
             if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
@@ -331,7 +331,7 @@ s32 evt_exprUnitSelect(s32 op) {
         break;
     case EVT_EXPR_UNIT_MIN:
         result = 0x7FFF;
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < EVT_UNIT_COUNT; i++) {
             if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
@@ -366,7 +366,7 @@ s32 evt_exprUnitCompare(s32 op) {
         g_evtExprSp += 3;
     }
     operand = evt_popResult();
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         result >>= 1;
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
@@ -424,7 +424,7 @@ s32 evt_exprUnitLogic(s32 op) {
         unitMask = evt_popResult();
         g_evtExprSp += 2;
     }
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < EVT_UNIT_COUNT; i++) {
         result >>= 1;
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
@@ -471,12 +471,12 @@ s32 evt_exprUnitFirst(void) {
     if (!(unitMask & 1)) {
         i = 1;
         unitMask >>= 1;
-        while (i < 8 && !(unitMask & 1)) {
+        while (i < EVT_UNIT_COUNT && !(unitMask & 1)) {
             unitMask >>= 1;
             i++;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         g_evtExprObj = g_evtUnitObjects[i];
         result = evt_popResult();
     } else {
@@ -494,13 +494,13 @@ s32 evt_joinParty(s32 slot) {
         result = 1;
     } else {
         slot = evt_isInParty_key(slot);
-        if (slot >= 0 && slot < 9) {
+        if (slot >= 0 && slot < CHR_COUNT) {
             for (i = 0; i < PARTY_SIZE; i++) {
                 if (g_gameState->gameData->party[i] == NULL) {
                     break;
                 }
             }
-            result = i >= 4;
+            result = i >= PARTY_SIZE;
             if (result == 0) {
                 party_setMember(i, slot);
                 evt_execInstr_party();

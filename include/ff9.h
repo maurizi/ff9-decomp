@@ -349,7 +349,7 @@ typedef ItemSlot UnkPair; /* old name, still used by ovl_0b */
 
 /* GameData.items: item inventory, copied as a block by the save code (ovl_39) */
 typedef struct {
-    ItemSlot slots[0x100];
+    ItemSlot slots[ITEM_SLOT_COUNT];
 } __attribute__((aligned(4))) ItemInventory; /* block copies are word-aligned */
 
 /* GameData.keyItems: 2 bits per item id */
@@ -744,7 +744,12 @@ s32 text_measureNumber(s32, s32);
 s32 text_measureStyle(u8 *, s32);
 #endif
 extern s32 g_numberDigitWidths[];
-extern s32 g_buttonSprites[];
+extern s32 g_buttonSprites[]; /* [PAD_SLOT_*]: UI sprite of each button */
+/* Button slots: g_buttonSprites index, GameState.padMap nibble (config_remapButton) and text_getButtonSprite's
+ * argument. Order: g_buttonSprites' data (UI_SPRITE_CROSS, CIRCLE, TRIANGLE, SQUARE, L1, R1, L2, R2), the same as
+ * ovl_34 s_menuConfigPadBits. TEXT_PAD_BTN + n counts circle first, so text_buildCode and msg_renderText swap 0/1 */
+enum { PAD_SLOT_CROSS, PAD_SLOT_CIRCLE, PAD_SLOT_TRIANGLE, PAD_SLOT_SQUARE, PAD_SLOT_L1, PAD_SLOT_R1, PAD_SLOT_L2, PAD_SLOT_R2,
+       PAD_SLOT_COUNT /* config_reset, config_applyPadMapping */ };
 extern u8 g_textNumberBuf[];
 extern u8 *g_textArgPtr;
 extern s32 g_textColor;
@@ -834,6 +839,10 @@ void win_updateAll(void);
 #define TEXT_CODE_LOWER_A 0x30 /* 'a'-'z': 0x30-0x49 */
 #define TEXT_CODE_ACCENT_UPPER 0x50 /* 20 accented capitals, A-grave .. U-diaeresis */
 #define TEXT_CODE_ACCENT_LOWER 0x64 /* the same 20 in lower case */
+#define TEXT_CODE_MINUS 0x0B /* '-' (text_formatInt) */
+#define TEXT_CODE_SPACE 0x0F /* blank digit-width glyph: text_formatNumber's fill, msg_emitNumber's padding */
+#define TEXT_CODE_LETTERS 26 /* A-Z / a-z */
+#define TEXT_CODE_ACCENTS 20 /* accented letters per case */
 #define TEXT_CODE_C_CEDILLA 0x78 /* C-cedilla, N-tilde, then their lower case at 0x7A, 0x7B */
 #define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 (message windows: += 14, the next line) */
 #define TEXT_SPACE_1PX 0xF8 /* message windows: x += 1 */
@@ -1739,8 +1748,14 @@ extern MenuScreen g_menuScreen;
 extern u8 g_menuScreenMember;
 extern s32 g_evtLastEncounter;
 extern u8 g_evtModelsPending;
-extern s32 g_msgNumbers[8];
+#define MSG_NUMBERS 8 /* g_msgNumbers slots (msg_setNumber) */
+extern s32 g_msgNumbers[MSG_NUMBERS];
 extern u8 *g_bubbleScript; /* help-arrow animation script */
+/* g_bubbleScript entries, 4 bytes each (msg_updatePlayerBubble) [code]: {colour, half width, height, lift} for one
+ * frame, or one of these in the first byte */
+#define MSG_BUBBLE_END 0xFD /* stop */
+#define MSG_BUBBLE_WAIT 0xFE /* , frames: hold the current frame */
+#define MSG_BUBBLE_LOOP 0xFF /* , n: back n entries */
 extern s32 g_bubbleWait;
 extern s32 g_bubbleRequestPrev;
 extern volatile s32 g_akaoSpuBusy;
@@ -1910,11 +1925,20 @@ extern AkaoArgs g_akaoArgs;
 extern AkaoArgs g_akaoCommandBlock; /* command block passed to the handlers */
 extern void (*g_akaoCommandHandlers[])(AkaoArgs *); /* sound command handlers */
 
+/* Card types (CardEntry.type, ovl_0d TmCard.type): what the power is tested against (ovl_0d tm_getBattleValues)
+ * and the letter tm_drawCardStats shows. card_rollStats makes 1 card in 128 TM_TYPE_X whatever its id. */
+enum {
+    TM_TYPE_P, /* "P": power against pdef */
+    TM_TYPE_M, /* "M": power against mdef */
+    TM_TYPE_X, /* "X": power against the lower defence */
+    TM_TYPE_A  /* "A": the highest own stat against the lowest of the target */
+};
+
 typedef struct {
     u8 id; /* card id, 0xFF = none */
     u8 arrows; /* arrow bits (card_rollStats; tm_game copies it to the board card) */
     u8 power; /* (tm_game power, card_rollStats) */
-    u8 type; /* (tm_game type) */
+    u8 type; /* TM_TYPE_* */
     u8 physDef; /* (tm_game pdef) */
     u8 magicDef; /* (tm_game mdef) */
 } CardEntry; /* card inventory entry */
@@ -1924,7 +1948,7 @@ typedef struct {
     s16 wins;
     s16 losses;
     s16 draws;
-    CardEntry cards[105]; /* id 0xFF = empty */
+    CardEntry cards[CARD_SLOTS]; /* id 0xFF = empty */
 } CardInventory;
 extern CardInventory g_cards;
 
@@ -2337,6 +2361,7 @@ extern s32 g_padPortMask[];
 #define GIL_MAX 9999999
 #define HP_MAX 9999 /* max HP (chr_calcMaxHp, chr_calcEquipStats) */
 #define MP_MAX 999 /* max MP (chr_calcMaxMp, chr_calcEquipStats) */
+#define DEF_STAT_MAX 999 /* attack, defence, evade, magic defence, magic evade (chr_calcEquipStats) */
 #define DAMAGE_MAX 9999 /* cap on one HP or MP change, damage or healing (btl_calcCmd, the fieldCalc_* item formulas) */
 #define RECORD_MAX 9999 /* tallies: card wins/losses/draws, GameData.stealCount, GameData.dragonKills */
 
@@ -2669,6 +2694,12 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
+/* msg_drawAtePrompt (ATE_PROMPT_*; the whole strings are runtime-confirmed, which sprite holds which part follows
+ * the drawing order; runtime: pending R41) */
+#define UI_SPRITE_ATE_TITLE 0x80 /* "ACTIVE TIME EVENT" in three sprites, 0x80-0x82 left to right */
+#define UI_SPRITE_ATE_PRESS 0x53 /* "PRESS", left of UI_SPRITE_SELECT */
+#define UI_SPRITE_ATE_TO_SEE 0x54 /* "TO SEE ATE", right of it */
+#define UI_SPRITE_ATE_TITLE_GREY 0x1F /* the grey ATE_PROMPT_BLINK "ACTIVE TIME EVENT", 0x1F-0x21 */
 #define UI_SPRITE_ABIL_SUPPORT_OFF 0xF4 /* support ability, not equipped */
 #define UI_SPRITE_EQUIP_SLOTS 0xF9 /* + Character.equip slot: the slot icons (ovl_33 equip, ovl_38 status) */
 /* ui_drawLabel / ui_buildLabel mode */
@@ -2941,6 +2972,7 @@ typedef struct Unk8007B954 {
     u16 offsets[1]; /* per message, from &offsets (msg_getText) */
 } Unk8007B954;
 extern Unk8007B954 *g_msgTable;
+#define MSG_TEXT_BANKS 4 /* g_msgTextBanks (TEXT_BANK messages, msg_resetChoices) */
 extern u8 *g_msgTextBanks[];
 
 typedef struct {
@@ -2956,15 +2988,19 @@ extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
 extern EvtObject *g_evtActor;
 
+/* Script object references (evt_resolveObjectId, EVT_OP_NEW_ACTOR): a uid, or one of these [code] */
+#define EVT_OBJ_PLAYER 0xFA /* g_evtState->playerUid */
+#define EVT_OBJ_PARTY 0xFB /* + party slot 0-3: g_evtState->partyUids[slot] */
+#define EVT_OBJ_ACTOR 0xFF /* g_evtActor */
 /* Inlined copy of evt_resolveObjectId (resolve a script object reference). */
 static inline EvtObject *evt_resolveObjectId_inline(s32 id) {
-    if (id == 0xFF) {
+    if (id == EVT_OBJ_ACTOR) {
         return g_evtActor;
     }
-    if (id == 0xFA) {
+    if (id == EVT_OBJ_PLAYER) {
         id = g_evtState->playerUid;
-    } else if ((u32)(id - 0xFB) < 4) {
-        id = g_evtState->partyUids[id - 0xFB];
+    } else if ((u32)(id - EVT_OBJ_PARTY) < PARTY_SIZE) {
+        id = g_evtState->partyUids[id - EVT_OBJ_PARTY];
     }
     return evt_getObject_inline(id);
 }
@@ -3026,7 +3062,9 @@ extern MenuScreenDef g_menuScreensField[];
 extern MenuScreenDef g_menuScreensWorld[];
 u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
 void menuScreen_onOverlayRead(u8 *);
-extern void *g_evtUnitObjects[8];
+#define EVT_UNIT_COUNT 8 /* g_evtUnitObjects: the battle units' script objects, the party (PARTY_SIZE) first */
+#define EVT_UNIT_FIRST_ENEMY 4 /* the enemies from here (evt_init, evt_updateBattleObjects) */
+extern void *g_evtUnitObjects[EVT_UNIT_COUNT];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
 struct BtlUnit *btl_findUnitByBit(u16);
 struct BtlUnit *btl_getUnitById(u16);
@@ -3734,7 +3772,7 @@ typedef struct {
     u16 maxHp; /* max hp */
     u16 maxMp; /* max mp */
     u8 stats[4]; /* stats: speed, strength, magic, spirit (capped by g_chrStatCaps) */
-    u16 defs[5]; /* attack (weapon), defense, evade, magicDef, magicEva (capped at 999) */
+    u16 defs[5]; /* attack (weapon), defense, evade, magicDef, magicEva (capped at DEF_STAT_MAX) */
 } EquipStatsOut;
 EquipStatsOut *chr_calcEquipStats(EquipStatsIn *, EquipStatsOut *);
 
@@ -4271,6 +4309,11 @@ typedef struct {
 #define EVT_OP_SET_DIR_OFFSETS 0x67 /* analog, pad: state.analogDirOfs/padDirOfs = arg << 4 */
 #define EVT_OP_PLAYER_BUBBLE 0x68 /* variant: msg_showPlayerBubble: 0 "?", 1 "!" */
 #define EVT_OP_WALK_ONLY 0x6A /* state.walkOnly = 1 */
+/* evt_movePlayer [code]: the player's speed from the d-pad (run with Circle or the run setting; capped at the walk
+ * speed under walkOnly, and above it each step counts twice in g_evtStepCount), and its "no input" direction */
+#define EVT_PLAYER_WALK_SPEED 30
+#define EVT_PLAYER_RUN_SPEED 60
+#define EVT_DIR_NONE 0x8000
 #define EVT_OP_CLEAR_COLOR 0x6B /* r, g, b: game_setClearColor */
 #define EVT_OP_BG_SCROLL_TO 0x6F /* x, y, frames, mode: fldbg_scrollTo */
 #define EVT_OP_BG_SCROLL_TO_PLAYER 0x70 /* fldbg_scrollToPlayer */
@@ -4463,6 +4506,13 @@ typedef struct {
 #define EVT_FUNC_RANGE 2  /* evt_checkPlayerAction: player inside the region / touching the actor (while control is enabled) */
 #define EVT_FUNC_TALK 3   /* evt_checkPlayerAction: Cross (or Square without an EVT_FUNC_SQUARE) on the actor / region */
 #define EVT_FUNC_SQUARE 8 /* evt_checkPlayerAction: Square, tried before EVT_FUNC_TALK */
+#define EVT_FUNC_MENU 4 /* evt_onMenuOpen, on object 0 (level 1) */
+#define EVT_FUNC_BTL_TURN 5 /* evt_updateObjects: an enemy's turn (battleTurnState 2, BTL_CMD_ENEMY_TURN), level 3 */
+#define EVT_FUNC_BTL_COUNTER 6 /* evt_battleTrigger BTL_CMD_ENEMY_COUNTER (level 1) */
+#define EVT_FUNC_BTL_REACT 7 /* evt_battleTrigger, any other command (BTL_CMD_ENEMY_REACT; level 2) */
+#define EVT_FUNC_BTL_DEATH 9 /* evt_battleTrigger BTL_CMD_ENEMY_DEATH (level 0) */
+#define EVT_FUNC_RESUME 10 /* evt_init, on object 0 after the saved script state is restored (the same field or world
+                            * again, or back from Tetra Master) */
 /* world map cell trigger (evt_callWorldCellTrigger, on object 0): cell z in bits 8-13, cell x in bits 2-7, trigger
  * kind (ovl_0c WM_ATTR_TRIGGER) in bits 0-1. Evidence: [code] */
 #define EVT_FUNC_WORLD_CELL 0x8000

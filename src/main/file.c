@@ -326,10 +326,10 @@ void game_setNextScene(u16 sceneId) {
 }
 
 s32 game_getModel(s32 slot) {
-    if (slot < 9) {
+    if (slot < CHR_COUNT) {
         return (s32)&g_gameState->gameData->chrModels[slot];
     }
-    return (s32)&g_gameState->gameData->npcModels[slot - 9];
+    return (s32)&g_gameState->gameData->npcModels[slot - CHR_COUNT];
 }
 
 void game_clearModelSlot(ModelSlot *slot) {

@@ -79,7 +79,7 @@ void game_resetData(void) {
         gd->musicId[i] = MUSIC_NONE;
         gd->musicBank[i] = 0xFFFF;
         gd->musicHandle[i] = 0;
-        gd->musicVolume[i] = 0x7F;
+        gd->musicVolume[i] = SND_VOL_MAX;
     }
     gd->musicFadeFrames = 0x1E;
     gd->savedMusicId = MUSIC_NONE;
@@ -93,13 +93,13 @@ void game_resetData(void) {
     for (i = 1; i >= 0; i--) {
         gd->sfxSlotId[i] = SE_NONE;
         (&gd->worldBankReq)[i] = 0xFFFF;
-        gd->sfxSlotVolume[i] = 0x7F;
-        gd->sfxSlotPan[i] = 0x80;
+        gd->sfxSlotVolume[i] = SND_VOL_MAX;
+        gd->sfxSlotPan[i] = SND_PAN_CENTER;
         gd->sfxSlotSuspendField[i] = 0xFFFF;
     }
     gd->modelHook = NULL;
     gd->soundHook = NULL;
-    for (i = 8; i >= 0; i--) {
+    for (i = CHR_COUNT - 1; i >= 0; i--) {
         game_clearModelSlot(&gd->chrModels[i]);
         gd->chrModels[i].model = (struct BtlModel *)&gd->chrModelObjs[i];
     }

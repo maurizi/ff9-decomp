@@ -88,7 +88,7 @@ void akao_tickSe(void) {
         g_akaoPitchScaleLen--;
         next = g_akaoPitchScale + g_akaoPitchScaleStep;
         if ((next & 0xFF0000) != (g_akaoPitchScale & 0xFF0000)) {
-            k = 32;
+            k = AKAO_NUM_CHANNELS;
             chan = g_akaoChannels;
             do {
                 k--;
@@ -731,7 +731,7 @@ void akao_execChannel(AkaoChannel *chan, u32 chBit) {
     if (op >= AKAO_NOTE_REST) {
         if (chan->isSe == 0) {
             g_akaoSeq->playingMask &= ~chBit;
-            if (chan->voice < 0x18) {
+            if (chan->voice < AKAO_NO_VOICE) {
                 g_akaoSeq->keyOffMask |= chBit;
             }
         }
@@ -754,7 +754,7 @@ void akao_execChannel(AkaoChannel *chan, u32 chBit) {
                         akao_applyKeySplit(chan, op);
                     }
                     g_akaoSeq->keyOnMask |= chBit;
-                    if ((g_akaoSeq->playingMask & chBit) && chan->voice < 0x18) {
+                    if ((g_akaoSeq->playingMask & chBit) && chan->voice < AKAO_NO_VOICE) {
                         g_akaoSeq->keyOffMask |= chBit;
                     }
                     if (chan->noteVolumeSlideLen != 0) {

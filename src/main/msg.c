@@ -121,9 +121,9 @@ static inline void msg_measureLine_name(s32 ch) {
 
     for (k = 0; k < 8; k++) {
         code = name[k];
-        if (code - TEXT_CODE_LOWER_A < 26) {
+        if (code - TEXT_CODE_LOWER_A < TEXT_CODE_LETTERS) {
             code -= TEXT_CODE_LOWER_A - TEXT_CODE_UPPER_A;
-        } else if (code - TEXT_CODE_ACCENT_LOWER < 20) {
+        } else if (code - TEXT_CODE_ACCENT_LOWER < TEXT_CODE_ACCENTS) {
             code -= TEXT_CODE_ACCENT_LOWER - TEXT_CODE_ACCENT_UPPER;
         } else if (code - (TEXT_CODE_C_CEDILLA + 2) < 2) {
             code -= 2;
@@ -203,7 +203,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 bank = (code >> 4) & 3;
                 i = code & 7;
                 bankText = NULL;
-                if (bank < 4 && i < 8 && (tbl = g_msgTextBanks[bank]) != NULL) {
+                if (bank < MSG_TEXT_BANKS && i < MSG_NUMBERS && (tbl = g_msgTextBanks[bank]) != NULL) {
                     k = g_msgNumbers[i];
                     if (k < *tbl) {
                         tbl++;
@@ -271,7 +271,7 @@ static inline u8 *msg_renderText_text(u32 bank, u32 slot) {
     u8 *ofsEntry;
     s32 k;
 
-    if (bank < 4 && slot < 8 && (tbl = g_msgTextBanks[bank]) != NULL) {
+    if (bank < MSG_TEXT_BANKS && slot < MSG_NUMBERS && (tbl = g_msgTextBanks[bank]) != NULL) {
         k = g_msgNumbers[slot];
         if (k < *tbl) {
             tbl++;
@@ -878,7 +878,7 @@ void msg_resetChoices(void) {
     g_msgChoice = 0;
     g_msgChoiceMaskReq = -1;
     g_msgChoiceLine = -1;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < MSG_TEXT_BANKS; i++) {
         msgText = msg_drawText_msg(i);
         if (msgText == NULL || msgText[0] != TEXT_ESC || msgText[1] != TEXT_BANK) {
             break;
@@ -1135,7 +1135,7 @@ s32 msg_overlapsRect(WinLayout *layout) {
 }
 
 void msg_setNumber(u32 i, s32 value) {
-    if (i < 8) {
+    if (i < MSG_NUMBERS) {
         g_msgNumbers[i] = value;
     }
 }
@@ -1272,7 +1272,7 @@ s32 msg_emitNumber(s32 value, s32 maxChars) {
         if (place < 2 || quot != 0) {
             ch = quot % 10;
         } else {
-            ch = 0xF;
+            ch = TEXT_CODE_SPACE;
         }
         pen_putGlyph(ch);
     }
@@ -1368,9 +1368,9 @@ s32 msg_emitCharNameCaps(s32 ch, s32 maxChars) {
 
     for (k = 0; k < 8; k++) {
         code = name[k];
-        if (code - TEXT_CODE_LOWER_A < 26) {
+        if (code - TEXT_CODE_LOWER_A < TEXT_CODE_LETTERS) {
             code -= TEXT_CODE_LOWER_A - TEXT_CODE_UPPER_A;
-        } else if (code - TEXT_CODE_ACCENT_LOWER < 20) {
+        } else if (code - TEXT_CODE_ACCENT_LOWER < TEXT_CODE_ACCENTS) {
             code -= TEXT_CODE_ACCENT_LOWER - TEXT_CODE_ACCENT_UPPER;
         } else if (code - (TEXT_CODE_C_CEDILLA + 2) < 2) {
             code -= 2;
@@ -1545,14 +1545,14 @@ void msg_updatePlayerBubble(void) {
         g_bubbleWait--;
     } else {
         switch (*g_bubbleScript) {
-        case 0xFD:
+        case MSG_BUBBLE_END:
             g_bubbleScript = NULL;
             return;
-        case 0xFE:
+        case MSG_BUBBLE_WAIT:
             g_bubbleWait = g_bubbleScript[1];
             g_bubbleScript += 4;
             goto draw;
-        case 0xFF:
+        case MSG_BUBBLE_LOOP:
             g_bubbleScript -= g_bubbleScript[1] * 4;
             break;
         }
@@ -1592,24 +1592,24 @@ void msg_drawAtePrompt(void) {
     pen_setPos(0x10, 200);
     if ((g_atePromptMode & ATE_PROMPT_STYLE_MASK) != ATE_PROMPT_BLINK) {
         if ((g_atePromptTimer / 44) & 1) {
-            pen_drawSprite(0x80);
+            pen_drawSprite(UI_SPRITE_ATE_TITLE);
             pen_move(2, 0);
-            pen_drawSprite(0x81);
+            pen_drawSprite(UI_SPRITE_ATE_TITLE + 1);
             pen_move(2, 0);
-            pen_drawSprite(0x82);
+            pen_drawSprite(UI_SPRITE_ATE_TITLE + 2);
         } else {
             pen_move(-2, 0);
-            pen_drawSprite(0x53);
+            pen_drawSprite(UI_SPRITE_ATE_PRESS);
             pen_move(2, 0);
             pen_drawSprite(UI_SPRITE_SELECT);
-            pen_drawSprite(0x54);
+            pen_drawSprite(UI_SPRITE_ATE_TO_SEE);
         }
     } else if ((g_atePromptTimer / 15) & 1) {
-        pen_drawSprite(0x1F);
+        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY);
         pen_move(2, 0);
-        pen_drawSprite(0x20);
+        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY + 1);
         pen_move(2, 0);
-        pen_drawSprite(0x21);
+        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY + 2);
     }
     pen_end();
 }

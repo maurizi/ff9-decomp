@@ -617,7 +617,7 @@ s32 akao_stealVoice(s32 allVoices) {
         i = g_akaoSeq->firstVoice;
     }
     min = 0x7FFF;
-    best = 24;
+    best = AKAO_NO_VOICE;
     env = &g_akaoVoiceEnv[i];
     do {
         envLevel = (u16)env->envelope;
@@ -627,9 +627,9 @@ s32 akao_stealVoice(s32 allVoices) {
         }
         i++;
         env++;
-    } while (i < 24);
+    } while (i < SPU_NUM_VOICES);
     if ((s16)min == 0x7FFF) {
-        return 24;
+        return AKAO_NO_VOICE;
     }
     akao_detachVoice(g_akaoChannels, best, min);
     return best;
@@ -644,7 +644,7 @@ s32 akao_findFreeVoice(s32 allVoices) {
     }
     while ((env = &g_akaoVoiceEnv[allVoices])->envelope != 0) {
         allVoices++;
-        if (allVoices >= 0x18) {
+        if (allVoices >= SPU_NUM_VOICES) {
             break;
         }
     }
@@ -679,11 +679,11 @@ void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {
                     } else {
                         priority = (g_akaoSeq->priorityMask & bit) != 0;
                         voiceIdx = akao_findFreeVoice(priority);
-                        if (voiceIdx == 24) {
+                        if (voiceIdx == AKAO_NO_VOICE) {
                             g_akaoSeq->flags |= AKAO_SEQ_VOICE_STOLEN;
                             voiceIdx = akao_stealVoice(priority);
                         }
-                        if (voiceIdx == 24) {
+                        if (voiceIdx == AKAO_NO_VOICE) {
                             ch->voice = voiceIdx;
                             g_akaoSeq->flags |= AKAO_SEQ_NO_VOICE;
                         } else {
@@ -692,12 +692,12 @@ void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {
                             g_akaoVoiceEnv[voiceIdx].envelope = 0x7FFF;
                         }
                     }
-                    if (ch->voice < 24) {
+                    if (ch->voice < AKAO_NO_VOICE) {
                         akao_writeVoice(ch->voice, (AkaoVoiceRegs *)&ch->voice, (u16)ch->voiceVolScale);
                         g_akaoVoiceOwner[ch->voice] = g_akaoSeq;
                         g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
                     }
-                } else if (ch->voice < 24) {
+                } else if (ch->voice < AKAO_NO_VOICE) {
                     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
                     if (chMask) {
                         ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->flags);
@@ -720,17 +720,17 @@ void akao_detachVoice(ch, voice)
     s32 voice;
 {
     u32 i;
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < AKAO_NUM_CHANNELS; i++) {
         if (voice == ch->voice) {
-            ch->voice = 0x18;
+            ch->voice = AKAO_NO_VOICE;
         }
         ch++;
     }
     if (g_akaoSubSeq != NULL) {
         ch = g_akaoSubChannels;
-        for (i = 0; i < 32; i++) {
+        for (i = 0; i < AKAO_NUM_CHANNELS; i++) {
             if (voice == ch->voice) {
-                ch->voice = 0x18;
+                ch->voice = AKAO_NO_VOICE;
             }
             ch++;
         }
@@ -744,7 +744,7 @@ void akao_readEnvelopes(u32 extra) {
     if (g_akaoSubSeq != NULL) {
         heldMask |= g_akaoSubSeq->activeMask & g_akaoSubSeq->keepVoiceMask;
     }
-    for (i = 0, env = g_akaoVoiceEnv; i < 24; i++, env++) {
+    for (i = 0, env = g_akaoVoiceEnv; i < SPU_NUM_VOICES; i++, env++) {
         if (heldMask & (1 << i)) {
             env->envelope = 0x7FFF;
         } else {
@@ -890,7 +890,7 @@ void akao_channelsToVoiceMask(AkaoChannel *chan, u32 *out, u32 chMask, u32 keep)
     u32 bit = 1;
     do {
         if (chMask & bit) {
-            if (chan->voice < 0x18) {
+            if (chan->voice < AKAO_NO_VOICE) {
                 *out |= 1 << chan->voice;
             }
         }

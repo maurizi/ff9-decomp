@@ -481,28 +481,28 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
         pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_R2, 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 0:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(1), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_CIRCLE), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 1:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(0), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_CROSS), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 2:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(2), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_TRIANGLE), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 3:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(3), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_SQUARE), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 4:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(4), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_L1), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 5:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(5), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_R1), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 6:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(6), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_L2), 0, w, pkt);
         break;
     case TEXT_PAD_BTN + 7:
-        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(7), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_R2), 0, w, pkt);
         break;
     case TEXT_BTN_START:
         pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_START, 0, w, pkt);
@@ -605,28 +605,28 @@ s32 text_getCodeWidth(s32 code) {
         width = g_uiSprites[UI_SPRITE_R2].w;
         break;
     case TEXT_PAD_BTN + 0:
-        width = g_uiSprites[text_getButtonSprite(0)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_CROSS)].w;
         break;
     case TEXT_PAD_BTN + 1:
-        width = g_uiSprites[text_getButtonSprite(1)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_CIRCLE)].w;
         break;
     case TEXT_PAD_BTN + 2:
-        width = g_uiSprites[text_getButtonSprite(2)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_TRIANGLE)].w;
         break;
     case TEXT_PAD_BTN + 3:
-        width = g_uiSprites[text_getButtonSprite(3)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_SQUARE)].w;
         break;
     case TEXT_PAD_BTN + 4:
-        width = g_uiSprites[text_getButtonSprite(4)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_L1)].w;
         break;
     case TEXT_PAD_BTN + 5:
-        width = g_uiSprites[text_getButtonSprite(5)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_R1)].w;
         break;
     case TEXT_PAD_BTN + 6:
-        width = g_uiSprites[text_getButtonSprite(6)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_L2)].w;
         break;
     case TEXT_PAD_BTN + 7:
-        width = g_uiSprites[text_getButtonSprite(7)].w;
+        width = g_uiSprites[text_getButtonSprite(PAD_SLOT_R2)].w;
         break;
     case TEXT_BTN_START:
         width = g_uiSprites[UI_SPRITE_START].w;
@@ -1094,7 +1094,7 @@ void text_formatNumber(s32 value, u8 *out, s32 width, u8 ascii) {
     }
     fill = ' ';
     if (!ascii) {
-        fill = 0xF;
+        fill = TEXT_CODE_SPACE;
     }
     if (width < 0) {
         text_formatInt(value, out, ascii);
@@ -1112,7 +1112,7 @@ void text_formatNumber(s32 value, u8 *out, s32 width, u8 ascii) {
     }
     end = out + width;
     if (!ascii) {
-        *end = 0xFF;
+        *end = TEXT_END;
     } else {
         *end = 0;
     }
@@ -1127,8 +1127,8 @@ void text_formatInt(s32 value, u8 *out, s32 ascii) {
     s32 term;
     if (ascii == 0) {
         base = 0;
-        minus = 0xB;
-        term = 0xFF;
+        minus = TEXT_CODE_MINUS;
+        term = TEXT_END;
     } else {
         base = '0';
         minus = '-';
