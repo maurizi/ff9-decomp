@@ -254,10 +254,6 @@ s32 btlfx_isCmdPendingOnAutoPotion(s32);
 extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Magic entry */
 
 /* main exe: candidates for ff9.h */
-#define CARD_COUNT 100 /* Tetra Master card ids 0-99 (as ovl_36.h); btl_addEnemyRewards drops only these. Evidence: [code] */
-#define STAT_MAX 99 /* strength / magic cap (chr_calcBaseStrength, btl_calcCmd BTL_FORMULA_STRENGTH_UP / MAGIC_UP). Evidence: [code] */
-#define ITEM_THIEF_SWORD_FIRST 0x07 /* [text items] "Butterfly Sword": first of the thief swords (ITEM_ICON_THIEF_SWORD), BTL_FORMULA_SOUL_BLADE needs one */
-#define ITEM_THIEF_SWORD_LAST  0x0F /* [text items] "Ultima Weapon" */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {

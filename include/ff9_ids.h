@@ -85,6 +85,9 @@
 #define ITEM_ICON_STAFF        10 /* Mage Staff .. Mace of Zeus */
 #define ITEM_ICON_FORK         11 /* Fork .. Gastro Fork */
 #define ITEM_ICON_THROWING     12 /* Pinwheel, Rising Sun, Wing Edge */
+/* the thief swords (ITEM_ICON_THIEF_SWORD) as an id range: btl_calcCmd's BTL_FORMULA_SOUL_BLADE needs one equipped */
+#define ITEM_THIEF_SWORD_FIRST 0x07 /* [text items] "Butterfly Sword" */
+#define ITEM_THIEF_SWORD_LAST  0x0F /* [text items] "Ultima Weapon" */
 #define ITEM_HEALING_ROD    0x3C /* [text items] "Healing Rod" */
 #define ITEM_MAIDEN_PRAYER  0xDE /* [text items] "Maiden Prayer" */
 #define ITEM_GARNET         0xE0 /* [text items] "Garnet" */

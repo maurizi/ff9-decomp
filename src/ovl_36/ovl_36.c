@@ -26,7 +26,7 @@ void menuCard_init(void) {
     setRECT(&s_menuCard.gridRect, 8, 0x26, 0x9E, 0xB6);
     setRECT(&s_menuCard.infoRect, 0xAA, 0x26, 0x8A, 0x4E);
     setRECT(&s_menuCard.cardInfoRect, 0xAA, 0x76, 0x8A, 0x66);
-    for (i = 0; i < CARD_COUNT; i++) {
+    for (i = 0; i < CARD_KINDS; i++) {
         s_menuCard.shown[i] = 0;
     }
     menuCard_initFlip();
@@ -399,7 +399,7 @@ void menuCard_refresh(void) {
     CardMenu *menu;
 
     help_setCallback(card_countAll() ? menuCard_updateHelp : NULL);
-    for (i = 0; i < CARD_COUNT; i++) {
+    for (i = 0; i < CARD_KINDS; i++) {
         owned = card_countOf(i);
         s_menuCard.count[i] = owned;
         if (s_menuCard.shown[i] >= owned) {
@@ -497,13 +497,13 @@ void menuCard_calcCollectorPoints(s32 *out) {
     kinds = 0;
     typePts = 0;
     arrowPts = 0;
-    for (i = 0; i < CARD_COUNT; i++) {
+    for (i = 0; i < CARD_KINDS; i++) {
         if (s_menuCard.count[i] != 0) {
             kinds += infoTbl[i].points;
         }
     }
     memset(s_menuCardArrowsSeen, 0, 0x100);
-    for (i = 0; i < CARD_COUNT; i++) {
+    for (i = 0; i < CARD_KINDS; i++) {
         for (j = 0; j < s_menuCard.count[i]; j++) {
             card = card_find(i, j);
             s_menuCardArrowsSeen[card->arrows] = 1;

@@ -48,6 +48,7 @@
 #define DB_BTL_BG_HEADER 0x1A0000 /* battle background header (BtlBgHeader, Battle11C0.bgHeader) */
 #define DB_PACK 0x1B0000 /* nested container inside field/world files */
 #define DB_VRAM_ALLOC 0x1C0000 /* field VRAM allocation cursors (FieldVramPos; fld_getShadowTexPos) */
+#define DB_PAL_ANIM 0x1D0000 /* palette animation table in a world file's second pack (wm_loadFile: u8 count, then WmPalAnim[]) */
 #define DB_VIBRATION 0x1E0000 /* field vibration data, id = field id (fld_loadVibration -> vib_init) */
 #define DB_LIGHTS 0x1F0000
 
@@ -60,6 +61,8 @@
 #define DIR_COMMON 1 /* the modes' common files (FILE_*), menu and title images, world data */
 #define DIR_AREAS 2 /* area bundles (DB_AREA) */
 #define DIR_WORLDS 3 /* world map "fields" 9000-9012 */
+#define FIELD_ID_WORLD_FIRST 9000 /* DB_FIELD ids from here on are world maps (DIR_WORLDS, EVT_OP_GOTO_WORLD); */
+                                  /* fld_preloadRequest and fld_queueFieldPreloads only preload fields below it */
 #define DIR_FIELDS 4 /* fields, id = area << 16 | field */
 #define DIR_ENCOUNTERS 5 /* encounter bundles, id = battle id */
 #define DIR_BTL_BGS 6 /* battle backgrounds, id = background id */

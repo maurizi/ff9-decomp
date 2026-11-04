@@ -1381,12 +1381,11 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
     __asm__ volatile("move $8, %0\n\tsw $29, 0($8)\n\taddiu $8, $8, -12\n\tmove $29, $8" : : "r"(addr) : "$8", "memory")
 #define ResetSpadStack12() __asm__ volatile("addiu $29, $29, 12\n\tlw $29, 0($29)" : : : "memory")
 
-/* main exe: candidates for ff9.h */
-#define FIELD_ID_WORLD_FIRST 9000 /* DB_FIELD ids from here on are world maps (DIR_WORLDS 9000-9012, EVT_OP_GOTO_WORLD); */
-                                  /* fld_preloadRequest and fld_queueFieldPreloads only preload fields below it */
+/* field-only sound bank id (snd_ids.h keeps the ids several binaries share) */
 #define FLD_SOUND_BANK_NO_UPLOAD 0x84 /* DB_SOUND_BANK id whose load fld_soundCommand / fld_soundBankReadCallback read */
                                      /* but never upload to the SPU (runtime: pending R41) */
-#define SND_PARAM_NOP 8 /* (snd_ids.h) music and SE SND_CMD_SET with it return 0 and do nothing (fld_soundCommand) */
+
+/* main exe: candidates for ff9.h */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */

@@ -1846,6 +1846,11 @@ typedef union {
     u8 b[0x800];
 } EventVars;
 extern EventVars g_evtGlobalVars;
+/* story counter (g_evtGlobalVars.h[0]) where each disc's part of the story starts: menuSave_getDiscBit (ovl_39) stores
+ * bit disc - 1 in SaveHeader.discs; the world map stops WM_BLOCKFX_SPINNER from STORY_DISC3 on. Evidence: [code] */
+#define STORY_DISC2 0xF3C
+#define STORY_DISC3 0x1B4E
+#define STORY_DISC4 0x2AF3
 /* story flags in g_evtGlobalVars.b[] read by game code (docs/runtime-findings.md R30) */
 #define EVT_GB_TRANCE_ENABLED 0x10      /* Trance gauge shown and filled (menuStatus_drawExp, btl_cmd) */
 #define EVT_GB_DAGGER_FALTERS 0x11      /* Dagger may fail to act after Alexandria (btl_cmd) */
@@ -2361,6 +2366,7 @@ extern s32 g_padPortMask[];
 #define GIL_MAX 9999999
 #define HP_MAX 9999 /* max HP (chr_calcMaxHp, chr_calcEquipStats) */
 #define MP_MAX 999 /* max MP (chr_calcMaxMp, chr_calcEquipStats) */
+#define STAT_MAX 99 /* strength and magic cap (chr_calcBaseStrength / Magic, btl_calcCmd BTL_FORMULA_STRENGTH_UP / MAGIC_UP) */
 #define DEF_STAT_MAX 999 /* attack, defence, evade, magic defence, magic evade (chr_calcEquipStats) */
 #define DAMAGE_MAX 9999 /* cap on one HP or MP change, damage or healing (btl_calcCmd, the fieldCalc_* item formulas) */
 #define RECORD_MAX 9999 /* tallies: card wins/losses/draws, GameData.stealCount, GameData.dragonKills */

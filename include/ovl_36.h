@@ -6,7 +6,6 @@
  * in different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
-#define CARD_COUNT     100
 #define CARD_GRID_ROWS 10 /* the CARD window is 10 x 10 cells */
 #define CARD_GRID_COLS 10
 #define CARD_RANK_COUNT 32
@@ -106,8 +105,8 @@ typedef struct {
     u8 discardCursor; /* CARD_DISCARD_* */
     u8 unk6;       /* set to 0xFF on init, never read */
     u8 rank;       /* collector rank (= text id) */
-    u8 count[CARD_COUNT]; /* copies owned per card id */
-    u8 shown[CARD_COUNT]; /* copy shown in CARD INFO per card id */
+    u8 count[CARD_KINDS]; /* copies owned per card id */
+    u8 shown[CARD_KINDS]; /* copy shown in CARD INFO per card id */
     u8 clutBuf[0x200];    /* decoded card image: clut */
     u8 pixelBuf[0xE00];   /* decoded card image: pixels */
     u8 sectorBuf[0x800];  /* CD sector read for the card image */

@@ -896,7 +896,7 @@ void btl_addEnemyRewards(BtlEnemyType *enemyType) {
             rewards->items[slot] = itemId;
         }
     }
-    if (rewards->card == CARD_NONE && (u32)enemyType->card < CARD_COUNT) {
+    if (rewards->card == CARD_NONE && (u32)enemyType->card < CARD_KINDS) {
         if (rand8_inline() < 0x20) {
             rewards->card = enemyType->card;
         }

@@ -485,11 +485,6 @@ extern u16 s_menuSaveCrcTable[256];
 typedef union { s32 w; u16 h; } Crc16;
 
 /* main exe: candidates for ff9.h */
-/* story counter (g_evtGlobalVars.h[0]) where each disc's part of the story starts: menuSave_getDiscBit stores bit
- * disc - 1 in SaveHeader.discs. Evidence: [code] */
-#define STORY_DISC2 0xF3C
-#define STORY_DISC3 0x1B4E
-#define STORY_DISC4 0x2AF3
 EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */
 u8 fld_getDiscChangeDisc(void); /* other overlay */

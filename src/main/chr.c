@@ -703,8 +703,8 @@ s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
         bonus[1] += extra + chr_sumEquipBonus(chr->equip, 1);
     }
     stat = cls->strength + lv * 3 / 10 + (bonus[1] >> 5);
-    if (stat >= 100) {
-        stat = 99;
+    if (stat > STAT_MAX) {
+        stat = STAT_MAX;
     }
     return stat;
 }
@@ -724,8 +724,8 @@ s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
         bonus[2] += extra + chr_sumEquipBonus(chr->equip, 2);
     }
     stat = cls->magic + lv * 3 / 10 + (bonus[2] >> 5);
-    if (stat >= 100) {
-        stat = 99;
+    if (stat > STAT_MAX) {
+        stat = STAT_MAX;
     }
     return stat;
 }

@@ -192,6 +192,7 @@
 #define SND_PARAM_PAN         5 /* SE: akao_sendCmdA2/A3/AA/AB (AKAO_CMD_*_SE_PAN); stream: akao_sendCmdE6 */
 #define SND_PARAM_CONDITION   6 /* SND_CMD_SET_CONDITION */
 #define SND_PARAM_PLAY_COUNT  7 /* music SND_CMD_SET: akao_playMusicCount(seq, param1) (field only) */
+#define SND_PARAM_NOP         8 /* music and SE SND_CMD_SET with it return 0 and do nothing (fld_soundCommand) */
 #define SND_PARAM_ALL_SLOTS   9 /* SE SND_CMD_STOP with SND_RESIDENT: stop both resident SE slots (field only) */
 #define SND_PARAM_MOVIE_VOLUME 10 /* stream SND_CMD_SET: the stream volume used while a field movie plays */
 #define SND_SLOT1 0x40 /* with SND_RESIDENT on PLAY / SUSPEND / RESUME: resident SE slot 1 instead of 0 (field) */
