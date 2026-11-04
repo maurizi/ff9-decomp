@@ -77,8 +77,8 @@ s32 scene_discIndex(s32 discMask) {
 }
 
 u8 scene_isDiscGone(s32 needMask, s32 discMask) {
-    s32 need = needMask & 0xF;
-    s32 have = discMask & 0xF;
+    s32 need = needMask & DISC_ALL;
+    s32 have = discMask & DISC_ALL;
     return (have & need) != need;
 }
 

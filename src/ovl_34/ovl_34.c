@@ -158,7 +158,7 @@ void menuConfig_drawPadMap(void) {
     r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), TEXT_PAL_WHITE);
     for (; i < CONFIG_PAD_SLOTS; i++) {
-        ui_drawSprite(rect->x + 0x10, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> (i * 4)) & 7].icon, 0);
+        ui_drawSprite(rect->x + 0x10, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> CFG_PADMAP_SHIFT(i)) & CFG_PADMAP_ACTION_MASK].icon, 0);
         menuConfig_drawSmallText(rect->x + 0x27, rect->y + 0xE + i * 0x11, 0x11, s_menuConfigPadArrow, TEXT_PAL_WHITE);
         ui_drawSprite(rect->x + 0x3A, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[i].icon, 0);
         menuConfig_drawText(rect->x + 0x54, rect->y + 0xC + i * 0x11, 0x11, s_menuConfigPadActions[i].text, TEXT_PAL_WHITE);
@@ -337,10 +337,10 @@ void menuConfig_stepSlider(void) {
         s_menuConfig.sliderDir = 0;
         switch (i) {
         case CONFIG_ROW_BTL_SPEED:
-            g_gameState->config = (g_gameState->config & ~(7 << CFG_SHIFT_BTL_SPEED)) | (((step + ((g_gameState->config >> CFG_SHIFT_BTL_SPEED) & 7)) & 7) << CFG_SHIFT_BTL_SPEED);
+            g_gameState->config = (g_gameState->config & ~(CFG_SPEED_MASK << CFG_SHIFT_BTL_SPEED)) | (((step + ((g_gameState->config >> CFG_SHIFT_BTL_SPEED) & CFG_SPEED_MASK)) & CFG_SPEED_MASK) << CFG_SHIFT_BTL_SPEED);
             break;
         case CONFIG_ROW_MSG_SPEED:
-            g_gameState->config = (g_gameState->config & ~(7 << CFG_SHIFT_MSG_SPEED)) | (((step + ((g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7)) & 7) << CFG_SHIFT_MSG_SPEED);
+            g_gameState->config = (g_gameState->config & ~(CFG_SPEED_MASK << CFG_SHIFT_MSG_SPEED)) | (((step + ((g_gameState->config >> CFG_SHIFT_MSG_SPEED) & CFG_SPEED_MASK)) & CFG_SPEED_MASK) << CFG_SHIFT_MSG_SPEED);
             break;
         }
     }
@@ -620,12 +620,12 @@ void menuConfig_drawMovementRow(RECT *rect, s32 otz) {
 
 void menuConfig_drawBattleSpeedRow(RECT *rect, s32 otz) {
     menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].title, TEXT_PAL_WHITE);
-    menuConfig_drawSliderRow(rect, otz, (g_gameState->config >> CFG_SHIFT_BTL_SPEED) & 7, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
+    menuConfig_drawSliderRow(rect, otz, (g_gameState->config >> CFG_SHIFT_BTL_SPEED) & CFG_SPEED_MASK, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
 }
 
 void menuConfig_drawMessageSpeedRow(RECT *rect, s32 otz) {
     menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].title, TEXT_PAL_WHITE);
-    menuConfig_drawSliderRow(rect, otz, (g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
+    menuConfig_drawSliderRow(rect, otz, (g_gameState->config >> CFG_SHIFT_MSG_SPEED) & CFG_SPEED_MASK, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
 }
 
 void menuConfig_drawHereIconRow(RECT *rect, s32 otz) {
@@ -789,7 +789,7 @@ void menuConfig_setPadButton(s32 slot, s32 action) {
     u32 old;
 
     for (i = 0; i < CONFIG_PAD_SLOTS; i++) {
-        if (action == ((g_gameState->padMap >> (i * 4)) & 7)) {
+        if (action == ((g_gameState->padMap >> CFG_PADMAP_SHIFT(i)) & CFG_PADMAP_ACTION_MASK)) {
             j = i;
             goto found;
         }
@@ -797,8 +797,9 @@ void menuConfig_setPadButton(s32 slot, s32 action) {
     j = 0;
 found:
     w = g_gameState->padMap;
-    old = (w >> (slot * 4)) & 7;
-    g_gameState->padMap = (((w & ~(7 << (slot * 4))) | (action << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
+    old = (w >> CFG_PADMAP_SHIFT(slot)) & CFG_PADMAP_ACTION_MASK;
+    g_gameState->padMap = (((w & ~(CFG_PADMAP_ACTION_MASK << CFG_PADMAP_SHIFT(slot))) | (action << CFG_PADMAP_SHIFT(slot)))
+                           & ~(CFG_PADMAP_ACTION_MASK << CFG_PADMAP_SHIFT(j))) | (old << CFG_PADMAP_SHIFT(j));
 }
 
 void menuConfig_closeSubWindow(void) {

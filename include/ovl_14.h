@@ -319,4 +319,6 @@ void game_updateWindows(void); /* main */
 #define MENU_DISC_ARG(disc, loc) ((((disc) & 3) << 14) | (loc))
 #define DISC_NO_LOCATION 15000 /* MENU_DISC location: ovl_3e doesn't call evt_setNextLocation on exit (as in ovl_3e.h) */
 
+#define DISC_ALL 0xF /* GameState.disc: the four disc bits (DISC_1..DISC_4); main exe candidate for ff9.h */
+
 #endif

@@ -388,4 +388,6 @@ s32 bj_drawShoe(s32, s32);
 s32 bj_actionGetCursor(void);
 s32 scene_get(void);
 
+#define DISC_ALL 0xF /* GameState.disc: the four disc bits (DISC_1..DISC_4); main exe candidate for ff9.h */
+
 #endif

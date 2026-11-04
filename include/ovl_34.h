@@ -83,6 +83,11 @@ extern const u8 g_configMenuText[]; /* menu text block */
 #define CFG_SHIFT_CHAR_PORT   20 /* one bit per character: 1 = controller port 2 */
 #define CFG_BTL_SPEED_MAX     2
 #define CFG_MSG_SPEED_MAX     6
+#define CFG_SPEED_MASK        7 /* the 3-bit CFG_SHIFT_*_SPEED fields (menuConfig_stepSlider wraps within it) */
+/* GameState.padMap: 4 bits per button slot (CFG_PADMAP_SHIFT(slot)), of which the config screen keeps the
+ * low 3: the action (s_menuConfigPadActions index) mapped to that slot. Evidence: [code] */
+#define CFG_PADMAP_SHIFT(slot) ((slot) * 4)
+#define CFG_PADMAP_ACTION_MASK 7
 
 /* the same word, written through bitfields by menuConfig_setOption */
 typedef struct {
