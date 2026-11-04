@@ -926,6 +926,16 @@ void win_updateAll(void);
 #define TEXT_DPAD_LEFT_RIGHT 0x3F /* menu text only */
 #define TEXT_PAD_BTN 0x60 /* + 0-7 in TEXT_BTN_* order (circle .. R2): that button as remapped by the controller
                            * config (text_getButtonSprite / GameState.padMap) */
+/* the TEXT_PAD_BTN codes. [runtime] (R41: g_msgIconSprites / g_buttonSprites and padMap read in game): with the default
+ * config they draw these buttons; the order is TEXT_BTN_*'s, not PAD_SLOT_*'s (circle and cross swap) */
+#define TEXT_PAD_CIRCLE   (TEXT_PAD_BTN + 0)
+#define TEXT_PAD_CROSS    (TEXT_PAD_BTN + 1)
+#define TEXT_PAD_TRIANGLE (TEXT_PAD_BTN + 2)
+#define TEXT_PAD_SQUARE   (TEXT_PAD_BTN + 3)
+#define TEXT_PAD_L1       (TEXT_PAD_BTN + 4)
+#define TEXT_PAD_R1       (TEXT_PAD_BTN + 5)
+#define TEXT_PAD_L2       (TEXT_PAD_BTN + 6)
+#define TEXT_PAD_R2       (TEXT_PAD_BTN + 7)
 #define TEXT_FLAG_ICON 0x70 /* + bit: message windows: a blinking two-sprite icon (0xB5, 0xB6) when g_msgNumbers[0] has the bit */
 #define TEXT_ITEM_ICON 0x4C /* + item id */
 #define TEXT_ARG_SPRITE 0x4D /* + arg index (g_textIconArgs) */
@@ -2689,9 +2699,10 @@ typedef struct {
 #define UI_SPRITE_TIME 0xB1 /* left of the play time (main menu) */
 #define UI_SPRITE_GIL 0xB2 /* left of the gil */
 #define UI_SPRITE_LV 0xB4 /* left of the level digits (ui_drawCharStatus, ui_drawCharStatuses) */
-#define UI_SPRITE_NEW 0xB5 /* marks an unseen key item (ovl_37) and a message's TEXT_FLAG_ICON */
-#define UI_SPRITE_NEW_BLINK 0xB6 /* drawn over UI_SPRITE_NEW, blinking */
-#define UI_SPRITE_HELP_TAG 0xB7 /* on the top edge of the help window (help_draw, btlui_drawHelpWindow) */
+#define UI_SPRITE_NEW_MARK 0xB5 /* yellow "!" badge: an unseen key item (ovl_37) and a message's TEXT_FLAG_ICON [runtime] */
+#define UI_SPRITE_NEW_TEXT 0xB6 /* the word "NEW" right of UI_SPRITE_NEW_MARK, blinking white / grey [runtime] */
+#define UI_SPRITE_HELP_TAG 0xB7 /* the "HELP" label on the top edge of the help window (help_draw, btlui_drawHelpWindow)
+                                 * [runtime] */
 #define UI_SPRITE_SCROLL_UP 0xB8 /* list scroll arrows: shown while rows are hidden above / below */
 #define UI_SPRITE_SCROLL_DOWN 0xB9
 #define UI_SPRITE_ABIL_ACTION 0xBC /* ability list icons (ovl_33 equip, ovl_38 status, ovl_65 rewards) */
@@ -2702,12 +2713,15 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
-/* msg_drawAtePrompt (ATE_PROMPT_*; the whole strings are runtime-confirmed, which sprite holds which part follows
- * the drawing order; runtime: pending R41) */
-#define UI_SPRITE_ATE_TITLE 0x80 /* "ACTIVE TIME EVENT" in three sprites, 0x80-0x82 left to right */
+/* msg_drawAtePrompt (ATE_PROMPT_*). Evidence [runtime] (R41: each sprite id swapped for a button glyph) */
+#define UI_SPRITE_ATE_ACTIVE 0x80 /* "ACTIVE TIME EVENT" in blue / white, left to right */
+#define UI_SPRITE_ATE_TIME   0x81
+#define UI_SPRITE_ATE_EVENT  0x82
 #define UI_SPRITE_ATE_PRESS 0x53 /* "PRESS", left of UI_SPRITE_SELECT */
 #define UI_SPRITE_ATE_TO_SEE 0x54 /* "TO SEE ATE", right of it */
-#define UI_SPRITE_ATE_TITLE_GREY 0x1F /* the grey ATE_PROMPT_BLINK "ACTIVE TIME EVENT", 0x1F-0x21 */
+#define UI_SPRITE_ATE_ACTIVE_GREY 0x1F /* the grey, blinking ATE_PROMPT_BLINK "ACTIVE TIME EVENT" */
+#define UI_SPRITE_ATE_TIME_GREY   0x20
+#define UI_SPRITE_ATE_EVENT_GREY  0x21
 #define UI_SPRITE_ABIL_SUPPORT_OFF 0xF4 /* support ability, not equipped */
 #define UI_SPRITE_EQUIP_SLOTS 0xF9 /* + Character.equip slot: the slot icons (ovl_33 equip, ovl_38 status) */
 /* ui_drawLabel / ui_buildLabel mode */

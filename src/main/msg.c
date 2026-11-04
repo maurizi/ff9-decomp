@@ -418,16 +418,16 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
                 pen_drawSprite(g_msgIconSprites[code - TEXT_BTN_CIRCLE]);
                 pen_move(1, -1);
                 break;
-            case TEXT_PAD_BTN + 0:
-            case TEXT_PAD_BTN + 1:
-            case TEXT_PAD_BTN + 2:
-            case TEXT_PAD_BTN + 3:
-            case TEXT_PAD_BTN + 4:
-            case TEXT_PAD_BTN + 5:
-            case TEXT_PAD_BTN + 6:
-            case TEXT_PAD_BTN + 7:
+            case TEXT_PAD_CIRCLE:
+            case TEXT_PAD_CROSS:
+            case TEXT_PAD_TRIANGLE:
+            case TEXT_PAD_SQUARE:
+            case TEXT_PAD_L1:
+            case TEXT_PAD_R1:
+            case TEXT_PAD_L2:
+            case TEXT_PAD_R2:
                 pen_move(0, 1);
-                if (code < TEXT_PAD_BTN + 2) {
+                if (code < TEXT_PAD_TRIANGLE) { /* circle, cross */
                     code ^= 1;
                 }
                 code = (g_gameState->config >> CFG_BIT_CONTROLLER) & 1 ? (g_gameState->padMap >> (code * 4)) & 0xF : code & 0xF;
@@ -476,12 +476,12 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
             case TEXT_FLAG_ICON:
                 if ((u32)g_msgNumbers[0] & (1 << *cur++)) {
                     pen_move(6, 3);
-                    pen_drawSprite(UI_SPRITE_NEW_BLINK);
+                    pen_drawSprite(UI_SPRITE_NEW_TEXT);
                     if (VSync(-1) % 48 >= 16) {
                         pen_setLastSemiTrans();
                     }
                     pen_move(-24, -3);
-                    pen_drawSprite(UI_SPRITE_NEW);
+                    pen_drawSprite(UI_SPRITE_NEW_MARK);
                 }
                 break;
             case TEXT_SPEED:
@@ -1592,11 +1592,11 @@ void msg_drawAtePrompt(void) {
     pen_setPos(0x10, 200);
     if ((g_atePromptMode & ATE_PROMPT_STYLE_MASK) != ATE_PROMPT_BLINK) {
         if ((g_atePromptTimer / 44) & 1) {
-            pen_drawSprite(UI_SPRITE_ATE_TITLE);
+            pen_drawSprite(UI_SPRITE_ATE_ACTIVE);
             pen_move(2, 0);
-            pen_drawSprite(UI_SPRITE_ATE_TITLE + 1);
+            pen_drawSprite(UI_SPRITE_ATE_TIME);
             pen_move(2, 0);
-            pen_drawSprite(UI_SPRITE_ATE_TITLE + 2);
+            pen_drawSprite(UI_SPRITE_ATE_EVENT);
         } else {
             pen_move(-2, 0);
             pen_drawSprite(UI_SPRITE_ATE_PRESS);
@@ -1605,11 +1605,11 @@ void msg_drawAtePrompt(void) {
             pen_drawSprite(UI_SPRITE_ATE_TO_SEE);
         }
     } else if ((g_atePromptTimer / 15) & 1) {
-        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY);
+        pen_drawSprite(UI_SPRITE_ATE_ACTIVE_GREY);
         pen_move(2, 0);
-        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY + 1);
+        pen_drawSprite(UI_SPRITE_ATE_TIME_GREY);
         pen_move(2, 0);
-        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY + 2);
+        pen_drawSprite(UI_SPRITE_ATE_EVENT_GREY);
     }
     pen_end();
 }

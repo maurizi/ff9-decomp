@@ -480,28 +480,28 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     case TEXT_BTN_R2:
         pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_R2, 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 0:
+    case TEXT_PAD_CIRCLE:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_CIRCLE), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 1:
+    case TEXT_PAD_CROSS:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_CROSS), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 2:
+    case TEXT_PAD_TRIANGLE:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_TRIANGLE), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 3:
+    case TEXT_PAD_SQUARE:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_SQUARE), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 4:
+    case TEXT_PAD_L1:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_L1), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 5:
+    case TEXT_PAD_R1:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_R1), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 6:
+    case TEXT_PAD_L2:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_L2), 0, w, pkt);
         break;
-    case TEXT_PAD_BTN + 7:
+    case TEXT_PAD_R2:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(PAD_SLOT_R2), 0, w, pkt);
         break;
     case TEXT_BTN_START:
@@ -604,28 +604,28 @@ s32 text_getCodeWidth(s32 code) {
     case TEXT_BTN_R2:
         width = g_uiSprites[UI_SPRITE_R2].w;
         break;
-    case TEXT_PAD_BTN + 0:
+    case TEXT_PAD_CIRCLE:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_CROSS)].w;
         break;
-    case TEXT_PAD_BTN + 1:
+    case TEXT_PAD_CROSS:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_CIRCLE)].w;
         break;
-    case TEXT_PAD_BTN + 2:
+    case TEXT_PAD_TRIANGLE:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_TRIANGLE)].w;
         break;
-    case TEXT_PAD_BTN + 3:
+    case TEXT_PAD_SQUARE:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_SQUARE)].w;
         break;
-    case TEXT_PAD_BTN + 4:
+    case TEXT_PAD_L1:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_L1)].w;
         break;
-    case TEXT_PAD_BTN + 5:
+    case TEXT_PAD_R1:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_R1)].w;
         break;
-    case TEXT_PAD_BTN + 6:
+    case TEXT_PAD_L2:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_L2)].w;
         break;
-    case TEXT_PAD_BTN + 7:
+    case TEXT_PAD_R2:
         width = g_uiSprites[text_getButtonSprite(PAD_SLOT_R2)].w;
         break;
     case TEXT_BTN_START:

@@ -686,8 +686,8 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *view) {
         name = g_keyItemNames + info->name;
         if (!got) {
             w = x + text_measureWidth((s32)name);
-            ui_drawSprite(w + 5, y + 2, 0x1C, UI_SPRITE_NEW_BLINK, blink);
-            ui_drawSprite(w - 1, y - 1, 0x1C, UI_SPRITE_NEW, 0);
+            ui_drawSprite(w + 5, y + 2, 0x1C, UI_SPRITE_NEW_TEXT, blink);
+            ui_drawSprite(w - 1, y - 1, 0x1C, UI_SPRITE_NEW_MARK, 0);
         }
         text_drawBlock(x, y, 0x1C, name, TEXT_PAL_WHITE);
     }
