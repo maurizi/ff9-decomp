@@ -6,6 +6,59 @@
  * (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_114 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_IFRIT_EMBERS              0x3 /* emitter: tiny ember specks orbiting */
+#define FX_IFRIT_FIRE_RING           0x5 /* emitter: orange-red to white gouraud ring */
+#define FX_IFRIT_BACKDROP            0x6 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_IFRIT_EMBER_TRAIL         0x7 /* emitter: orbiting screen trail (red strip) + ember sprites */
+#define FX_IFRIT_ROCK_RINGS          0x8 /* emitter: rings textured with a golden rock pattern, 16 frames */
+#define FX_IFRIT_FAN_EMITTER         0x9 /* emitter: two orbiting fan elements (not rendered) (look pending) */
+#define FX_IFRIT_ORANGE_RINGS        0xB /* emitter: orange gouraud rings, 16 frames */
+#define FX_IFRIT_SPOKED_RING         0x12 /* model: flat ring with spokes (registered through the texture list, texture not drawn) (look pending) */
+#define FX_IFRIT_FIRE_TRAIL          0x15 /* trail: orange strip, drawn along the paths of entry 0x17 */
+#define FX_IFRIT_ORANGE_RING_2       0x16 /* emitter: orange to white gouraud ring */
+#define FX_IFRIT_TRAIL_PATHS         0x17 /* table: offset table of position paths (fxm_offsetTableEntry + fxm_posPathInit) for the fire trails */
+#define FX_IFRIT_FLAME_SWIRL         0x19 /* emitter: flat trail, flame swirl strip (byte-identical to entries 0x1A-0x1C) */
+#define FX_IFRIT_FLAME_SWIRL_2       0x1A /* emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) */
+#define FX_IFRIT_FLAME_SWIRL_3       0x1B /* emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) */
+#define FX_IFRIT_FLAME_SWIRL_4       0x1C /* emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) */
+#define FX_IFRIT_VEC_TRACK           0x1D /* table: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_BOWL                0x1E /* model: hemisphere bowl (registered through the texture list, texture not drawn) (look pending) */
+#define FX_IFRIT_BLOCK_CLUSTER       0x20 /* model: cluster of block chunks, orange streak texture */
+#define FX_IFRIT_FIRE_BURST          0x21 /* emitter: ember specks + orange fire-burst clouds */
+#define FX_IFRIT_FLAME_RING          0x22 /* model: flat ring, flame texture */
+#define FX_IFRIT_POS_TRACK           0x23 /* table: position track (fxm_posTrackInit) */
+#define FX_IFRIT_VEC_TRACK_2         0x24 /* table: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_VEC_TRACK_3         0x25 /* table: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_FAN_EMITTER_2       0x26 /* emitter: one orbiting fan element (not rendered) (look pending) */
+#define FX_IFRIT_FLAME_DOME          0x27 /* model: dome, flame texture */
+#define FX_IFRIT_PIECE_MODELS        0x28 /* table: offset table of model data, one per piece (fxm_offsetTableEntry) */
+#define FX_IFRIT_PIECE_TRACKS        0x29 /* table: offset table of tracks, one per piece (fxm_offsetTableEntry) */
+#define FX_IFRIT_GRID_PLANE          0x2A /* model: flat grid plane (tpage 0x117 reads a placeholder page in the render) (look pending) */
+#define FX_IFRIT_POS_PATH            0x2B /* table: position path (fxm_posPathInit) */
+#define FX_IFRIT_POS_PATH_2          0x2C /* table: position path (fxm_posPathInit) */
+#define FX_IFRIT_SUMMON_MODEL_0      0x80 /* summon data entry 0: model (btlfx_registerEffectModel) (look pending) */
+#define FX_IFRIT_SUMMON_MODEL_1      0x81 /* summon data entry 1: textured model (registered through the texture list) (look pending) */
+#define FX_IFRIT_SUMMON_MODEL_2      0x82 /* summon data entry 2: textured model (Hi_RegisterTexEffModel 0x9A, 0x3DC0) (look pending) */
+#define FX_IFRIT_SUMMON_MODEL_3      0x83 /* summon data entry 3: textured model (Hi_RegisterTexEffModel 0x117) (look pending) */
+#define FX_IFRIT_SUMMON_VEC_TRACK_4  0x84 /* summon data entry 4: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_SUMMON_MODEL_5      0x85 /* summon data entry 5: gouraud model (Hi_RegisterGouEffModel) (look pending) */
+#define FX_IFRIT_SUMMON_VEC_TRACK_6  0x86 /* summon data entry 6: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_SUMMON_VEC_TRACK_7  0x87 /* summon data entry 7: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_SUMMON_VEC_TRACK_8  0x88 /* summon data entry 8: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_SUMMON_VEC_TRACK_9  0x89 /* summon data entry 9: vector track (fxm_vecTrackInit) */
+#define FX_IFRIT_SUMMON_POS_PATH_10  0x8A /* summon data entry 10: position path (fxm_posPathInit) */
+#define FX_IFRIT_SUMMON_POS_TRACK_13 0x8D /* summon data entry 13: position track (fxm_posTrackInit) */
+#define FX_IFRIT_SUMMON_POS_TRACK_14 0x8E /* summon data entry 14: position track (fxm_posTrackInit) */
+#define FX_IFRIT_SUMMON_POS_TRACK_15 0x8F /* summon data entry 15: position track (fxm_posTrackInit) */
+#define FX_IFRIT_SUMMON_POS_TRACK_16 0x90 /* summon data entry 16: position track (fxm_posTrackInit) */
+#define FX_IFRIT_SUMMON_POS_TRACK_17 0x91 /* summon data entry 17: position track (fxm_posTrackInit) */
+#define FX_IFRIT_SUMMON_POS_TRACK_18 0x92 /* summon data entry 18: position track (fxm_posTrackInit) */
+#define FX_IFRIT_SUMMON_POS_PATH_20  0x94 /* summon data entry 20: position path (fxm_posPathInit) */
+#define FX_IFRIT_SUMMON_VEC_PATH_21  0x95 /* summon data entry 21: vector path (fxm_vecPathInit) */
+#define FX_IFRIT_SUMMON_POS_PATH_22  0x96 /* summon data entry 22: position path (fxm_posPathInit) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

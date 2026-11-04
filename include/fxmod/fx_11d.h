@@ -5,6 +5,16 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_11d effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ABSORB_VIOLET_BLOBS 0x1 /* emitter: violet blob clouds, 19 animated frames */
+#define FX_ABSORB_TEAL_RING    0x3 /* emitter: teal-white gouraud ring */
+#define FX_ABSORB_TRAIL        0x9 /* emitter: 3D trail, renders black (byte-identical to entry 0xA) (look pending) */
+#define FX_ABSORB_TRAIL_2      0xA /* emitter: 3D trail, renders black (byte-identical to entry 0x9) (look pending) */
+#define FX_ABSORB_RED_GLOW     0xB /* emitter: red glow orb with a white / cyan core, 11 frames (byte-identical to entry 0xC) */
+#define FX_ABSORB_RED_GLOW_2   0xC /* emitter: red glow orb with a white / cyan core, 11 frames (byte-identical to entry 0xB) */
+#define FX_ABSORB_LENS_FLARE   0xD /* emitter: rainbow-rimmed lens flare sprites spiralling + a 3D trail (renders black) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

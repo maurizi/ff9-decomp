@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_127 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_WAVE_WHITE_RINGS     0x1 /* emitter: white gouraud rings in a tube, 28 frames */
+#define FX_WAVE_WHITE_RINGS_2   0x2 /* emitter: white gouraud rings in a cylinder, 28 frames */
+#define FX_WAVE_FAN_EMITTER     0x3 /* emitter: one fan element along an axis (not rendered) (look pending) */
+#define FX_WAVE_FAN_EMITTER_2   0x4 /* emitter: one fan element along an axis (not rendered) (look pending) */
+#define FX_WAVE_STRIPED_RINGS   0x5 /* emitter: white and dark striped gouraud rings */
+#define FX_WAVE_STRIPED_RINGS_2 0x6 /* emitter: white and dark striped gouraud rings, homing */
+#define FX_WAVE_WATER_TRAIL     0x7 /* emitter: screen trail, grey streak strip (part of the texture not in the file) */
+#define FX_WAVE_WHITE_RINGS_3   0xA /* emitter: white gouraud rings, 38 frames + a fan element */
+#define FX_WAVE_WHITE_RING      0xD /* emitter: white gouraud ring */
+#define FX_WAVE_WHITE_RINGS_4   0x12 /* emitter: white gouraud rings, 38 frames */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

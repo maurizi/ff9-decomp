@@ -53,14 +53,14 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->rot74);
         switch (frame) {
         case 0xA:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_127_emitPos0);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_127_emitPos0);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_127_emitPos0);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS), (s32)&fx_127_emitPos0);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_FAN_EMITTER), (s32)&fx_127_emitPos0);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_FAN_EMITTER_2), (s32)&fx_127_emitPos0);
             work->pos4C.vx = work->pos44.vx;
             work->pos4C.vy = work->pos44.vy;
             work->pos4C.vz = work->pos44.vz;
             work->pos4C.vy = 0;
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS_2), (s32)&work->pos4C);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
@@ -84,9 +84,9 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_127_lerpTo.vx = work->pos34.vx;
             fx_127_lerpTo.vy = work->pos34.vy;
             fx_127_lerpTo.vz = work->pos34.vz;
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_127_emitPos1);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&fx_127_emitPos2);
-            fx_127_emitter = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&fx_127_emitPos3);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_STRIPED_RINGS), (s32)&fx_127_emitPos1);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WATER_TRAIL), (s32)&fx_127_emitPos2);
+            fx_127_emitter = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_STRIPED_RINGS_2), (s32)&fx_127_emitPos3);
             if (work->emit10 != NULL) {
                 work->emit10->trails = (s32)fx_127_op80Trails0;
                 work->emit10->trailSlots = 0x112;
@@ -203,14 +203,14 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos30);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos38);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS_3), (s32)&work->pos30);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS_4), (s32)&work->pos38);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 4:
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos38);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RING), (s32)&work->pos38);
             break;
         }
         if (frame >= 0) {

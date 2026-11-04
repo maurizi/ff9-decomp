@@ -45,15 +45,15 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_11d_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos1C);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos1C);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_TEAL_RING), (s32)&work->pos1C);
         if (work->emit0 != NULL) {
             work->emit0->otZ = -0x80;
         }
     } else {
         frame = entry->frame;
         if (frame >= 0 && frame < 0x18 && frame % 12 == 0) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&fx_11d_emitPos0);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_11d_emitPos1);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_RED_GLOW), (s32)&fx_11d_emitPos0);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_RED_GLOW_2), (s32)&fx_11d_emitPos1);
             if (work->emit4 != NULL) {
                 ((Fx11dEffHdr *)work->emit4->file)->motion8 = fx_11d_op80ParticleMotion0;
             }
@@ -68,8 +68,8 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0 && frame < 0x18 && frame % 12 == 0) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_11d_emitPos0);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_11d_emitPos1);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_TRAIL), (s32)&fx_11d_emitPos0);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_TRAIL_2), (s32)&fx_11d_emitPos1);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_11d_op80Trails0;
                 work->emitC->trailSlots = 4;
@@ -97,12 +97,12 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (frame) {
         case 0:
             ex->btlfx_getUnitBonePos(0x10, 0x37, (u16 *)&work->pos24);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_VIOLET_BLOBS), (s32)&work->pos24);
             break;
         case 0x1E:
             ex->btlfx_getUnitBonePos(0x10, 0, (u16 *)&work->pos2C);
             work->pos2C.vy -= 0xC8;
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos2C);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_LENS_FLARE), (s32)&work->pos2C);
             if (work->emit18 != NULL) {
                 work->emit18->trails = (s32)fx_11d_op80Trails2;
                 work->emit18->trailSlots = 8;

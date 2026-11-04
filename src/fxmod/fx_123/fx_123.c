@@ -86,7 +86,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     switch (frame) {
     case 0:
         for (i = 0; i < 6; i++) {
-            work->emit0[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_123_emitPos0[i]);
+            work->emit0[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES_2), (s32)&fx_123_emitPos0[i]);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
@@ -94,7 +94,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 20:
         for (i = 0; i < 6; i++) {
-            work->emit18[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_123_emitPos0[i]);
+            work->emit18[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES_2), (s32)&fx_123_emitPos0[i]);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
@@ -102,11 +102,11 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 30:
         for (i = 0; i < 6; i++) {
-            work->emit30[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&fx_123_emitPos1[i]);
+            work->emit30[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES_3), (s32)&fx_123_emitPos1[i]);
         }
         break;
     case 43:
-        work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos54);
+        work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SPECKS), (s32)&work->pos54);
         break;
     case 38:
         for (i = 0; i < 6; i++) {
@@ -176,10 +176,10 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_rotPosPathInit((Fx123Path *)&fx_123_rotPosPath[path], (u16 *)ex->btlfx_getFileData(entry->file, fx_123_pathFileIds[path]));
             setVector(&work->rot6C[path], 0, 0, 0);
             setVector(&work->pos9C[path], 0, 0, 0);
-            work->model17A[path] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
+            work->model17A[path] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SWORD), 0x97, 0x3D40, 0x80, 0);
         }
         setVector(&work->scaleFC, 0x1000, 0x1000, 0x1000);
-        work->model186 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0x97, 0x3D40, 0x80, 0);
+        work->model186 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SWORD_RING), 0x97, 0x3D40, 0x80, 0);
         work->unk178 = -1;
     } else {
         frame = entry->frame;
@@ -188,14 +188,14 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos140.vx = work->pos64.vx;
             work->pos140.vy = work->pos64.vy - 0x1013;
             work->pos140.vz = work->pos64.vz - 0x5F5;
-            work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos140);
+            work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_RINGS_2), (s32)&work->pos140);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
             break;
         case 11:
             for (j = 0; j < 6; j++) {
-                work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&fx_123_emitPos2[j]);
+                work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES), (s32)&fx_123_emitPos2[j]);
             }
             break;
         case 19:
@@ -276,7 +276,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (shotFrame == shot->frame1A + 17) {
                         copyVector(&work->pos110[i], &work->pos148[i]);
                         work->pos110[i].vy += 0x154;
-                        work->emit48[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos110[i]);
+                        work->emit48[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_FLAME_SPIRAL), (s32)&work->pos110[i]);
                         if (emitter != NULL) {
                             emitter->otZ = 0x80;
                         }
@@ -335,13 +335,13 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos14);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&work->pos14);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_TEAL_RINGS), (s32)&work->pos14);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SPECKS), (s32)&work->pos14);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_BLUE_RINGS), (s32)&work->pos14);
             break;
         case 0xC:
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos14);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos14);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_RINGS), (s32)&work->pos14);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_DARK_BURST), (s32)&work->pos14);
             break;
         }
         return frame >= 0x1E;

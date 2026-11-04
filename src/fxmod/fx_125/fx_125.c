@@ -29,7 +29,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->posC.vy -= 0x100;
         work->pos1C.vy -= 0x400;
         ex->btlfx_initEffModels(fx_125_effModels, 3);
-        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
+        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_POLY_POLYHEDRON), 0xB3,
                                                       0x3D40, 0, 0);
         dispX = env->dispEnv->disp.x;
         if (dispX < 0x100) {
@@ -39,11 +39,11 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         tp1 = getTPage(2, 3, dispX, env->dispEnv->disp.y);
         tp2 = getTPage(2, 3, otherX, env->dispEnv->disp.y);
-        work->model28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp1,
+        work->model28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_POLY_POLYHEDRON_2), tp1,
                                                          0xFFFF, 0, 0);
-        work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
+        work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_POLY_POLYHEDRON_2), tp2,
                                                          0xFFFF, 0, 0);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_GREEN_SPECKS_2), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
@@ -76,11 +76,11 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x10) {
             Pool6CEntry *burst;
 
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos4);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_CYAN_RINGS), (s32)&work->pos4);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
             }
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_DOTS), (s32)&work->posC);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
@@ -88,11 +88,11 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x13) {
             Pool6CEntry *burst;
 
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_DOTS_2), (s32)&work->pos4);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_SPARKLE_FAN), (s32)&work->pos4);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
@@ -100,7 +100,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x1A) {
             Pool6CEntry *burst;
 
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_STAR_GLOWS), (s32)&work->pos14);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
@@ -108,11 +108,11 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x28) {
             Pool6CEntry *burst;
 
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_STAR_BURST), (s32)&work->pos14);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
             }
-            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_GREEN_SPECKS), (s32)&work->pos14);
             if (burst != NULL) {
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
             }

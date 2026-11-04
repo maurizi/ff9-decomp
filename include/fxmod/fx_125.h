@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_125 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_POLY_DOTS           0x1 /* emitter: tiny yellow / violet dots */
+#define FX_POLY_DOTS_2         0x2 /* emitter: tiny yellow / green / blue dots */
+#define FX_POLY_GREEN_SPECKS   0x3 /* emitter: small green and cyan bow-tie specks */
+#define FX_POLY_SPARKLE_FAN    0x4 /* emitter: two fan elements (not rendered) + pink sparkle sprites and specks (texture not in the file) (look pending) */
+#define FX_POLY_STAR_BURST     0x5 /* emitter: orange-to-green glow, white-green gouraud rings, violet star sprites */
+#define FX_POLY_STAR_GLOWS     0x6 /* emitter: orange-to-green glows and violet star sprites */
+#define FX_POLY_GREEN_SPECKS_2 0x7 /* emitter: small green and cyan bow-tie specks */
+#define FX_POLY_CYAN_RINGS     0x8 /* emitter: white-cyan gouraud rings, 24 frames */
+#define FX_POLY_POLYHEDRON     0xD /* model: faceted polyhedron, texture not in the file (byte-identical to entry 0xE) (look pending) */
+#define FX_POLY_POLYHEDRON_2   0xE /* model: faceted polyhedron, registered with a computed tpage (byte-identical to entry 0xD) (look pending) */
+
 typedef struct {
     s32 hold0; /* dead early-out flag, cleared at init and never set (see Fx046Work.hold0) */
     SVECTOR pos4; /* target position */

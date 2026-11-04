@@ -13,8 +13,8 @@ s32 fx_11c_op80(s32 mode, Fx11cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos10.vz = work->pos8.vz;
         work->pos10.vy += 0x12C;
         work->pos10.vz -= 0x12C;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos10);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_WIND_TRAIL_2), (s32)&work->pos10);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_WIND_TRAIL), (s32)&work->pos10);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_11c_op80Trails0;
             work->emit0->trailSlots = 0xD;
@@ -46,9 +46,9 @@ s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos20.vy = env->targets->centerY;
         work->pos20.vz = env->targets->centerZ;
         fx_11c_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos20);
-        work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos20);
-        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_TEAL_SWIRL), (s32)&work->pos20);
+        work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_CLOUD), (s32)&work->pos20);
+        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_TEAL_RINGS), (s32)&work->pos20);
         initBurst = fx_11c_op81Bursts;
         for (i = 0; i < 5; i++, initBurst++) {
             initBurst->active10 = 0;
@@ -107,8 +107,8 @@ s32 fx_11c_op82(s32 mode, Fx11cWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos20.vx -= 0x190;
         work->pos28.vx += 0x190;
         fx_11c_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos18);
-        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos18);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_WIND_TRAIL_3), (s32)&work->pos18);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_GREY_SWIRL), (s32)&work->pos18);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_11c_op82Trails;
             work->emit0->trailSlots = 8;
@@ -117,12 +117,12 @@ s32 fx_11c_op82(s32 mode, Fx11cWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 5) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos18);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_WIND_STREAKS), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_CLOUD_2), (s32)&work->pos18);
         }
         if (frame == 0xD) {
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos20);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_CLOUD_2), (s32)&work->pos20);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HIGH_WIND_CLOUD_2), (s32)&work->pos28);
         }
         return frame >= 0x32;
     }

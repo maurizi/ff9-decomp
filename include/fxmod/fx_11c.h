@@ -5,6 +5,18 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_11c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_HIGH_WIND_WIND_TRAIL   0x2 /* emitter: 3D trail spiralling up, grey wind-swirl strip */
+#define FX_HIGH_WIND_TEAL_SWIRL   0x3 /* emitter: teal swirl and crescent particles */
+#define FX_HIGH_WIND_WIND_TRAIL_2 0x6 /* emitter: 3D trail spiralling up, grey wind-swirl strip */
+#define FX_HIGH_WIND_CLOUD        0x9 /* emitter: teal-white cloud puffs spiralling, 22 animated frames */
+#define FX_HIGH_WIND_TEAL_RINGS   0xA /* emitter: teal gouraud rings, 32 frames */
+#define FX_HIGH_WIND_WIND_TRAIL_3 0xB /* emitter: 3D trail spiralling up, grey wind-swirl strip */
+#define FX_HIGH_WIND_WIND_STREAKS 0xC /* emitter: teal jagged wind-streak particles spiralling */
+#define FX_HIGH_WIND_CLOUD_2      0xD /* emitter: teal-white cloud puffs spiralling, 22 animated frames */
+#define FX_HIGH_WIND_GREY_SWIRL   0xE /* emitter: grey swirl particle */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
