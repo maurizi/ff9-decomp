@@ -11538,3 +11538,21 @@ BTL_STEPF_UNTESTED1 BTL_STEPF_PARTY  # [code] passed with every party-side load;
 GD_FLD_TAKEOVER_UNREAD GD_FLD_TAKEOVER  # [code] field hands the screen over (encounter, 24-bit movie); no reader
 FLDBG_INIT_CLEARED FLDBG_OVERLAY_STATE  # [code]
 WM_STORY_LATE_DATA STORY_WORLD_LATE  # [code] moved to ff9.h
+btlfx_stepBack btlfx_stepForward  # [runtime] R41: plays motion 0x1D and moves the caster 400 from home towards the enemies (black magic trace, screenshots)
+BTL_MOTION_8 BTL_MOTION_KO_FALL  # [runtime] R41: Zidane's model poked to slot 8 kneels, slumps and ends lying down
+BTL_MOTION_0x12 BTL_MOTION_VICTORY  # [runtime] R41: crouch, leap, dagger raised (30 frames)
+BTL_MOTION_0x13 BTL_MOTION_VICTORY_LOOP  # [runtime] R41: short loop holding the dagger overhead (10 frames)
+BTL_MOTION_0x1D BTL_MOTION_STEP_FORWARD  # [runtime] R41: btlfx_stepForward; BTL_MOTION_CHANGE_ROW is defined as it
+BTL_MOTION_0x1E BTL_MOTION_STEP_HOME  # [runtime] R41: btlfx_moveUnitHome, Zidane walks back home
+BTL_MOTION_0x20 BTL_MOTION_READY_TO_IDLE  # [runtime] R41: btlfx_opReturnHome after black magic / item, lowers the guard (6 frames)
+UI_SPRITE_ATE_TITLE UI_SPRITE_ATE_ACTIVE  # [runtime] R41: sprite swaps in r36_lindblum_552_ate; + UI_SPRITE_ATE_TIME 0x81, UI_SPRITE_ATE_EVENT 0x82
+UI_SPRITE_ATE_TITLE_GREY UI_SPRITE_ATE_ACTIVE_GREY  # [runtime] R41: ATE prompt mode 2; + UI_SPRITE_ATE_TIME_GREY 0x20, UI_SPRITE_ATE_EVENT_GREY 0x21
+UI_SPRITE_NEW UI_SPRITE_NEW_MARK  # [runtime] R41: 0xB5 is the yellow "!" badge of an unseen key item
+UI_SPRITE_NEW_BLINK UI_SPRITE_NEW_TEXT  # [runtime] R41: 0xB6 is the word "NEW", blinking white / grey
+WM_TOPO_0x36 WM_TOPO_WATER  # [runtime] R41: Hadris crater lake, boat cell beyond the shallows; + WM_TOPO_WATER_2 0x37, WM_TOPO_SEA_2 0x38, WM_TOPO_SEA 0x39 (open sea, coast)
+WM_SE_0x8000 WM_SE_GROUP_VEHICLE  # [runtime] R41: boat loop sounds traced on 0x8000 / 0x4000
+WM_SE_0x800 WM_SE_GROUP_AMBIENT  # [code] ambient sources 25-26 (0x800 / 0x400)
+TEXT_PAD_BTN+n TEXT_PAD_CIRCLE..TEXT_PAD_R2  # [runtime] R41: g_msgIconSprites / g_buttonSprites / padMap: TEXT_BTN_* order (Circle, Cross, Triangle, Square, L1, R1, L2, R2)
+g_worldLowBuffer g_worldDataArea  # [runtime] R41: 0x80100800 is the end of the world heap; write/read watches show actor meshes, the world event script and image data there
+fx_17d_4_buf400 fx_17d_4_strandTrailTail  # [runtime] R41: written by fx_17d_4_drawStrands and btlfx_pushTrailPoint (spill area of the strand trails)
+fx_1bf_0_buf400 fx_1bf_0_strandTrailTail  # [runtime] R41: written by fx_1bf_0_drawStrands (spill area of the strand trails)

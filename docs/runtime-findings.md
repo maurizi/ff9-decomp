@@ -3923,7 +3923,7 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
   PICK_VARIANT, RETURN, KEEP_CAMERA, CUE (all measured from patched or natural scripts); the cast-end release of PAUSE
   is code-only.
 
-## R41 runtime pass: pending constant lists  (status: proposed)
+## R41 runtime pass: pending constant lists  (status: applied: motion slots, ATE / NEW sprites, WM_TOPO_WATER*/SEA*, WM_SE_GROUP_*, TEXT_PAD_*, g_worldDataArea, *_strandTrailTail, btlfx_stepForward; 0x30 / 0x33 and the w_musicGetID SE numbers stay numbers)
 Lists: docs/wip/literals_runtime.md, docs/wip/weak_names_runtime.md, docs/wip/constants_runtime_main.md,
 docs/wip/constants_runtime_overlays.md (2026-11-04). Redux, LuaJIT off. Battle runs: `build/rt3/run3.py` from
 `disc3_malboro_lv99_calm` (`--patch CMD,AB,TGT` rewrites Zidane's first Attack; outputs `build/rt3/r41_*.json` / `.png`).

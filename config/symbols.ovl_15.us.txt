@@ -151,5 +151,5 @@ bj_wagerDrawBackground = 0x800AD380; // type:func [code] empty, first of bj_wage
 bj_wagerDrawChoices = 0x800AD388; // type:func [code] empty, second empty step before bj_wagerDrawCursor (the template's choices slot)
 bj_actionDrawBackground = 0x800AB3C4; // type:func [code] empty, first of bj_actionDraw's two empty steps before bj_actionDrawCursor (the template's background slot)
 bj_actionDrawChoices = 0x800AB3CC; // type:func [code] empty, second empty step before bj_actionDrawCursor (the template's choices slot)
-g_messagesFrameWord = 0x800AE4A8; // [code] s16 ending_messagesInit and every ending_messagesSwap set to 0 (per-frame reset next to g_messagesFrame++), nothing reads it
-g_theEndInitWord = 0x800AE430; // [code] s16 ending_theEndInit clears with g_theEndState, nothing reads it (the g_messagesFrameWord slot of the same template)
+g_messagesFrameWord = 0x800AE4A8; // [code] s16 ending_messagesInit and every ending_messagesSwap set to 0 (per-frame reset next to g_messagesFrame++), nothing reads it, runtime R41 confirms
+g_theEndInitWord = 0x800AE430; // [code] s16 ending_theEndInit clears with g_theEndState, nothing reads it (the g_messagesFrameWord slot of the same template), runtime R41 confirms
