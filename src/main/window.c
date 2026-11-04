@@ -608,7 +608,7 @@ void win_drawScrollArrows(RECT *rect, s32 otz, MenuList *list) {
      * stores and jump2 deletes the then-empty branches, so they emit no code. They exist for the register
      * allocator: the first splits the block between the x and y arguments (as the original's schedule
      * needs) and keeps top live into a second block, the second adds references to more and blink. */
-    ui_drawSprite(rect->x + rect->w - 6, (top != (u32)list && (x = 0), rect->y + 5), z, 0xB8,
+    ui_drawSprite(rect->x + rect->w - 6, (top != (u32)list && (x = 0), rect->y + 5), z, UI_SPRITE_SCROLL_UP,
                   top != 0 ? (more != blink && (x = 0), blink) : 1);
     y = rect->y + rect->h - 14;
     x = rect->x + rect->w - 6;

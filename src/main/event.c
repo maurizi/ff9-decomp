@@ -872,8 +872,8 @@ s32 evt_execInstr(void) {
     case EVT_OP_NEW_ACTOR:
         operand0 = g_evtArgFlags;
         operand1 = *g_evtCurObj->ip++;
-        if ((u32)(operand0 - 0xFB) < 4) {
-            operand0 = g_evtState->partyUids[operand0 - 0xFB];
+        if ((u32)(operand0 - EVT_OBJ_PARTY) < PARTY_SIZE) {
+            operand0 = g_evtState->partyUids[operand0 - EVT_OBJ_PARTY];
         }
         evt_execInstr_newactor(operand0, operand1);
         g_evtArgRead = 1;
@@ -2016,10 +2016,10 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_RECRUITED:
         operand0 = evt_getArg16_inline();
         operand0 |= EVT_CHR_ALIAS_BITS(operand0);
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < CHR_COUNT; i++) {
             chr_clearRecruited(i);
         }
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < CHR_COUNT; i++) {
             if (operand0 & 1) {
                 chr_setRecruited(i);
             }
@@ -2054,7 +2054,7 @@ s32 evt_execInstr(void) {
                 break;
             }
         }
-        if (i < 4) {
+        if (i < PARTY_SIZE) {
             party_setMember(i, -1);
             evt_execInstr_party();
         }
@@ -2062,7 +2062,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_PARTY_MENU:
         g_evtPartyRequest.size = evt_getArg8_inline();
         operand0 = 0;
-        for (i = 8; i >= 0; i--) {
+        for (i = CHR_COUNT - 1; i >= 0; i--) {
             operand0 <<= 1;
             operand0 |= (g_gameState->gameData->characters[i].info.w >> CHR_INFO_RECRUITED_BIT) & 1;
         }
@@ -2081,7 +2081,7 @@ s32 evt_execInstr(void) {
                 g_evtPartyRequest.party[i] = 0xFF;
             }
         }
-        for (operand1 = 0, i = 0; i < 9 && operand1 < 8 && operand0 != 0; i++, operand0 >>= 1) {
+        for (operand1 = 0, i = 0; i < CHR_COUNT && operand1 < 8 && operand0 != 0; i++, operand0 >>= 1) {
             if (operand0 & 1) {
                 g_evtPartyRequest.reserve[operand1++] = i;
             }
@@ -2958,7 +2958,7 @@ s32 evt_updateObjects(void) {
     if (world) {
         for (node = g_evtState->objects; node != NULL; node = node->next) {
             obj = node->obj;
-            if (obj->battleTurnState == 2 && evt_callObjectFunc(obj, 3, 5, 0)) {
+            if (obj->battleTurnState == 2 && evt_callObjectFunc(obj, 3, EVT_FUNC_BTL_TURN, 0)) {
                 obj->battleTurnState = 1;
             }
         }
@@ -3430,7 +3430,7 @@ void evt_init(u8 *data) {
                 fld_queueModelBundle(obj->scriptIdx);
             }
         }
-        evt_callObjectFunc(evt_getObject_inline(0), 0, 10, 0);
+        evt_callObjectFunc(evt_getObject_inline(0), 0, EVT_FUNC_RESUME, 0);
         for (iter = g_evtState->objects; iter != NULL; iter = iter->next) {
             obj = iter->obj;
             if (obj->uid != 0) {
@@ -3490,7 +3490,7 @@ void evt_onMenuOpen(void) {
         while (*name++ != 0) {
         }
         g_gameState->gameData->debugLocationName = name;
-        evt_callObjectFunc(evt_getObject_inline(0), 1, 4, 0);
+        evt_callObjectFunc(evt_getObject_inline(0), 1, EVT_FUNC_MENU, 0);
     }
 }
 
@@ -3547,15 +3547,15 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 value, s32 w) {
             }
         } else {
             lv = 2;
-            key = 7;
+            key = EVT_FUNC_BTL_REACT;
             switch (op) {
             case BTL_CMD_ENEMY_COUNTER:
-                key = 6;
+                key = EVT_FUNC_BTL_COUNTER;
                 g_evtBattleVars[0] = value;
                 lv = 1;
                 break;
             case BTL_CMD_ENEMY_DEATH:
-                key = 9;
+                key = EVT_FUNC_BTL_DEATH;
                 g_evtBattleVars[0] = value;
                 lv = 0;
                 break;

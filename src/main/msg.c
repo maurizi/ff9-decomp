@@ -1592,24 +1592,24 @@ void msg_drawAtePrompt(void) {
     pen_setPos(0x10, 200);
     if ((g_atePromptMode & ATE_PROMPT_STYLE_MASK) != ATE_PROMPT_BLINK) {
         if ((g_atePromptTimer / 44) & 1) {
-            pen_drawSprite(0x80);
+            pen_drawSprite(UI_SPRITE_ATE_TITLE);
             pen_move(2, 0);
-            pen_drawSprite(0x81);
+            pen_drawSprite(UI_SPRITE_ATE_TITLE + 1);
             pen_move(2, 0);
-            pen_drawSprite(0x82);
+            pen_drawSprite(UI_SPRITE_ATE_TITLE + 2);
         } else {
             pen_move(-2, 0);
-            pen_drawSprite(0x53);
+            pen_drawSprite(UI_SPRITE_ATE_PRESS);
             pen_move(2, 0);
             pen_drawSprite(UI_SPRITE_SELECT);
-            pen_drawSprite(0x54);
+            pen_drawSprite(UI_SPRITE_ATE_TO_SEE);
         }
     } else if ((g_atePromptTimer / 15) & 1) {
-        pen_drawSprite(0x1F);
+        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY);
         pen_move(2, 0);
-        pen_drawSprite(0x20);
+        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY + 1);
         pen_move(2, 0);
-        pen_drawSprite(0x21);
+        pen_drawSprite(UI_SPRITE_ATE_TITLE_GREY + 2);
     }
     pen_end();
 }

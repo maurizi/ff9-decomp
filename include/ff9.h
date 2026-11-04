@@ -744,7 +744,11 @@ s32 text_measureNumber(s32, s32);
 s32 text_measureStyle(u8 *, s32);
 #endif
 extern s32 g_numberDigitWidths[];
-extern s32 g_buttonSprites[];
+extern s32 g_buttonSprites[]; /* [PAD_SLOT_*]: UI sprite of each button */
+/* Button slots: g_buttonSprites index, GameState.padMap nibble (config_remapButton) and text_getButtonSprite's
+ * argument. Order: g_buttonSprites' data (UI_SPRITE_CROSS, CIRCLE, TRIANGLE, SQUARE, L1, R1, L2, R2), the same as
+ * ovl_34 s_menuConfigPadBits. TEXT_PAD_BTN + n counts circle first, so text_buildCode and msg_renderText swap 0/1 */
+enum { PAD_SLOT_CROSS, PAD_SLOT_CIRCLE, PAD_SLOT_TRIANGLE, PAD_SLOT_SQUARE, PAD_SLOT_L1, PAD_SLOT_R1, PAD_SLOT_L2, PAD_SLOT_R2 };
 extern u8 g_textNumberBuf[];
 extern u8 *g_textArgPtr;
 extern s32 g_textColor;
@@ -2678,6 +2682,12 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
+/* msg_drawAtePrompt (ATE_PROMPT_*; the whole strings are runtime-confirmed, which sprite holds which part follows
+ * the drawing order; runtime: pending R41) */
+#define UI_SPRITE_ATE_TITLE 0x80 /* "ACTIVE TIME EVENT" in three sprites, 0x80-0x82 left to right */
+#define UI_SPRITE_ATE_PRESS 0x53 /* "PRESS", left of UI_SPRITE_SELECT */
+#define UI_SPRITE_ATE_TO_SEE 0x54 /* "TO SEE ATE", right of it */
+#define UI_SPRITE_ATE_TITLE_GREY 0x1F /* the grey ATE_PROMPT_BLINK "ACTIVE TIME EVENT", 0x1F-0x21 */
 #define UI_SPRITE_ABIL_SUPPORT_OFF 0xF4 /* support ability, not equipped */
 #define UI_SPRITE_EQUIP_SLOTS 0xF9 /* + Character.equip slot: the slot icons (ovl_33 equip, ovl_38 status) */
 /* ui_drawLabel / ui_buildLabel mode */
@@ -2965,15 +2975,19 @@ extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
 extern EvtObject *g_evtActor;
 
+/* Script object references (evt_resolveObjectId, EVT_OP_NEW_ACTOR): a uid, or one of these [code] */
+#define EVT_OBJ_PLAYER 0xFA /* g_evtState->playerUid */
+#define EVT_OBJ_PARTY 0xFB /* + party slot 0-3: g_evtState->partyUids[slot] */
+#define EVT_OBJ_ACTOR 0xFF /* g_evtActor */
 /* Inlined copy of evt_resolveObjectId (resolve a script object reference). */
 static inline EvtObject *evt_resolveObjectId_inline(s32 id) {
-    if (id == 0xFF) {
+    if (id == EVT_OBJ_ACTOR) {
         return g_evtActor;
     }
-    if (id == 0xFA) {
+    if (id == EVT_OBJ_PLAYER) {
         id = g_evtState->playerUid;
-    } else if ((u32)(id - 0xFB) < 4) {
-        id = g_evtState->partyUids[id - 0xFB];
+    } else if ((u32)(id - EVT_OBJ_PARTY) < PARTY_SIZE) {
+        id = g_evtState->partyUids[id - EVT_OBJ_PARTY];
     }
     return evt_getObject_inline(id);
 }
@@ -4472,6 +4486,13 @@ typedef struct {
 #define EVT_FUNC_RANGE 2  /* evt_checkPlayerAction: player inside the region / touching the actor (while control is enabled) */
 #define EVT_FUNC_TALK 3   /* evt_checkPlayerAction: Cross (or Square without an EVT_FUNC_SQUARE) on the actor / region */
 #define EVT_FUNC_SQUARE 8 /* evt_checkPlayerAction: Square, tried before EVT_FUNC_TALK */
+#define EVT_FUNC_MENU 4 /* evt_onMenuOpen, on object 0 (level 1) */
+#define EVT_FUNC_BTL_TURN 5 /* evt_updateObjects: an enemy's turn (battleTurnState 2, BTL_CMD_ENEMY_TURN), level 3 */
+#define EVT_FUNC_BTL_COUNTER 6 /* evt_battleTrigger BTL_CMD_ENEMY_COUNTER (level 1) */
+#define EVT_FUNC_BTL_REACT 7 /* evt_battleTrigger, any other command (BTL_CMD_ENEMY_REACT; level 2) */
+#define EVT_FUNC_BTL_DEATH 9 /* evt_battleTrigger BTL_CMD_ENEMY_DEATH (level 0) */
+#define EVT_FUNC_RESUME 10 /* evt_init, on object 0 after the saved script state is restored (the same field or world
+                            * again, or back from Tetra Master) */
 /* world map cell trigger (evt_callWorldCellTrigger, on object 0): cell z in bits 8-13, cell x in bits 2-7, trigger
  * kind (ovl_0c WM_ATTR_TRIGGER) in bits 0-1. Evidence: [code] */
 #define EVT_FUNC_WORLD_CELL 0x8000
