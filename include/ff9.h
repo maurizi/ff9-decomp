@@ -73,7 +73,9 @@
 
 /* The R3000 scratchpad (1 KB of fast RAM at 0x1F800000), used directly as memory. A port maps it to its own
  * buffer. */
+#ifndef PSX_SPAD_BASE
 #define PSX_SPAD_BASE 0x1F800000
+#endif
 #ifndef PSX_SPAD
 #define PSX_SPAD(type, ofs) ((type)(PSX_SPAD_BASE + (ofs)))
 #endif
