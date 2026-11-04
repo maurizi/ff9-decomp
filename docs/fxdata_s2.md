@@ -372,26 +372,27 @@ Notes:
 
 ## Open questions (emulator)
 
-106 of the 350 named sites are by kind (look pending). Each wants a screenshot at the frame the C starts the
-entry (battle save state, cast / summon / use the skill), or a VRAM dump while it plays:
+20 names are still by kind (look pending) after the re-render with `tools/fxdata.py` at d6121033 (summon data, fans, 'so' models and dot sprites drawn). What is left is texture the file does not hold or the tool does not resolve (blank or placeholder pages filled at run time, tpages the C computes, texture lists the tool does not follow, garbled texels). Each wants one screenshot at the frame the C starts the entry, or a VRAM dump while it plays:
 
-- Summon data (indices 0x80+, `g_btlfxLoader.summon`): `tools/fxdata.py` does not analyse it, so these are
-  named `FX_<SUMMON>_SUMMON_<KIND>_<index - 0x80>` by their use in the C: Leviathan `SUMMON_MODEL_6..15`,
-  Atomos `SUMMON_MODEL_0..14`, Ramuh `SUMMON_MODEL_0..3`, `SUMMON_EMITTER_4/6` (+ `SUMMON_KEYS_5`), Fenrir
-  `SUMMON_MODEL_5/6/13/14/30`, `SUMMON_EMITTER_3/36/37/38` (+ its key / path / camera tables, named by use).
-  Rendering the summon data (fxdata.py support for the summon chunk) would settle most of them without the
-  emulator.
-- `'so'` models (not drawn by the tool): `FX_LEVIATHAN_WATER_SURFACE`, `FX_RAMUH_STAFF(_2.._5)`,
-  `FX_LIGHT_FLARE_FIREBALL(_2)`, `FX_METEORITE_ROCK` (the C draws it falling, so "rock" is from the use),
-  `FX_AERA_GREEN_TORNADO(_2/_3)`, `FX_SCREECH_BLADE_RING`, `FX_PHOENIX_FLAME_SWIRL(_2.._5)`, `FX_SWDMAG_FIRAGA_FLAME_RIBBON_0..3`.
-- Fan emitters (not drawn): `FX_SCORCH_`, `FX_HEAVY_`, `FX_AURA_`, `FX_JEWEL_`, `FX_CARBUNCLE_`, `FX_LEVIATHAN_`,
-  `FX_ATOMOS_`, `FX_FENRIR_ORANGE_LIGHT_LINE`, `FX_PHOENIX_PEACH_GLOW(_2.._5)`.
-- Textures the file does not hold or the tool misreads (garbled / whole-page / black renders):
-  `FX_CARBUNCLE_ORBIT_GLOW(_2/_3)`, `FX_LEVIATHAN_BUBBLES`, `FX_LEVIATHAN_WATER_GLINT`,
-  `FX_AERO_SPRITE_SWIRL`, `FX_ATOMOS_SPRITES(_2/_3)`, `FX_ATOMOS_FAINT_GLOW`, the Ramuh trails
-  (`FX_RAMUH_LIGHTNING_RIBBON(_2)`, `FX_RAMUH_LIGHTNING_BOLT`, `FX_RAMUH_ORANGE_LIGHTNING`, `FX_RAMUH_POOL_LIGHTNING`) and
-  `FX_RAMUH_SPARK_BURST` / `FX_RAMUH_SPARK_PARTICLE` (all read the same lightning page, which renders as noise),
-  `FX_LIGHT_FLARE_TEXTURED_RING`, `FX_METEORITE_TRAIL_EMITTER`, `FX_AERA_WIND_STREAKS`, `FX_AERA_SPRITE_BURST`,
-  `FX_SCREECH_TRAIL`, `FX_SCREECH_DARK_RINGS`, `FX_PHOENIX_SPRITE_LINE`.
-- Carried over from the pilot (same data in the Swd Mag files): `FX_SWDMAG_FIRAGA_EMBER_TRAIL`, `_CONE_GLOW`,
-  `_CONE_SPARKS`, `FX_SWDMAG_THUNDARA_SPARKS`, `_ORB_SPARKS(_2)`; settling the spell's look settles these.
+| module | index | name | why the look is pending |
+|---|---|---|---|
+| fx_0b1 | 0xa | `FX_CARBUNCLE_ORBIT_GLOW` | emitter: orbiting particle + sprite, two copies; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b1 | 0x16 | `FX_CARBUNCLE_ORBIT_GLOW_2` | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b1 | 0x24 | `FX_CARBUNCLE_ORBIT_GLOW_3` | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b4 | 0x11 | `FX_AERO_SPRITE_SWIRL` | emitter: spiralling sprites; the render is still all black (texels blank in the file's upload, filled at run time?) |
+| fx_0b8 | 0x2 | `FX_ATOMOS_SPRITES` | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
+| fx_0b8 | 0x8 | `FX_ATOMOS_SPRITES_2` | emitter: two spiralling sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
+| fx_0b8 | 0xb | `FX_ATOMOS_FAINT_GLOW` | emitter: spiralling glow particles; the render is almost black (a faint white glow) |
+| fx_0b8 | 0x22 | `FX_ATOMOS_SPRITES_3` | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
+| fx_0ba | 0x2c | `FX_RAMUH_SPARK_PARTICLE` | emitter: one particle; the render still reads garbled blue strips (texture not resolved) |
+| fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | rings: textured ring drawn twice, tilted; the render reads unrelated texels (noise), texture not in the file |
+| fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | emitter: sprites following the falling rock; the render is still black (texels blank in the file's upload) |
+| fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | emitter: spiralling sprites + 3D trail; the render still reads garbled yellow texels (texture not resolved) |
+| fx_0cd | 0xc | `FX_AERA_SPRITE_BURST` | emitter: sprites; the render still reads garbled yellow texels (texture not resolved) |
+| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved) |
+| fx_0ce | 0xb | `FX_SCREECH_DARK_RINGS` | emitter: textured rings; the render is almost black (faint dark red) |
+| fx_0d3 | 0x5 | `FX_PHOENIX_FAN_EMITTER_2` | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
+| fx_0d3 | 0x7 | `FX_PHOENIX_SPRITE_LINE` | sprite line; the render is almost empty (a few garbled texels) |
+| fx_0d3 | 0x14 | `FX_PHOENIX_FAN_EMITTER_5` | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
+| fx_0d6 | 0x16 | `FX_SWDMAG_FIRAGA_CONE_GLOW` | emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) |
+| fx_0d8 | 0x1b | `FX_SWDMAG_THUNDARA_ORB_SPARKS` | sprites: sparks around the orb; the render is still black (page (0x1C0, 0x100) blank in the file's upload, filled at run time) (byte-identical to fx_005 entry 0x1e) |

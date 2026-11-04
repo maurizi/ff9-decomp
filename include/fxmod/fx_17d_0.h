@@ -10,7 +10,7 @@
 #define FX_ARK_CAMERA_KEYS_2    0x19 /* table: per-frame position keys for camera point 1 (op 0x82) */
 #define FX_ARK_CAMERA_KEYS      0x1A /* table: per-frame position keys for camera point 0 (op 0x82) */
 #define FX_ARK_MORPH_KEYS       0x1B /* table: per-frame morph weights, first morph pair */
-#define FX_ARK_SO_MODEL         0x1C /* 'so' model (not drawn by the tool), registered at the start of op 0x80 (look pending) */
+#define FX_ARK_SO_MODEL         0x1C /* 'so' model registered at the start of op 0x80: a sphere, its texture reads as white noise in the render (look pending) */
 #define FX_ARK_RED_ROCK_LAYER   0x1D /* sprite: red-brown rock / cloud texture drawn on screen */
 #define FX_ARK_MORPH_PATH       0x1E /* table: per-frame position + rotation keys for the first morph models */
 #define FX_ARK_MORPH_PATH_2     0x1F /* table: per-frame position + rotation keys for the second morph models */

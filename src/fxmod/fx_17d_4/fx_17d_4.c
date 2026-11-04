@@ -36,7 +36,7 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
 
     ex = BTLFX_EXPORTS(fx_17d_4_env);
     layer = 0;
-    data = (u8 *)ex->btlfx_getFileData(entry->file, 0x8A);
+    data = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STRAND_TABLE);
     w = (w * 3) >> 1;
     do {
         for (j = 0; j < 18; j++) {
@@ -217,9 +217,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->btlfx_initEffModels(fx_17d_4_effModels, 5);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1F), 1);
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), 1);
-        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x84), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_STREAK_BOWL), 1);
         work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 0);
-        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SWIRL_DOME), 1);
         ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion19C, SUMMON(env)->model60);
         work->pos48.vx = 0;
         work->pos48.vy = -0x400;

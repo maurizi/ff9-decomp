@@ -10,12 +10,12 @@
 #define FX_ARK_CREAM_RING       0x2 /* emitter: cream-white and white-grey-violet gouraud rings */
 #define FX_ARK_LILAC_RING       0x3 /* emitter: dark noise particle + lilac-white gouraud ring */
 #define FX_ARK_ORANGE_RING      0x4 /* rings: white-orange-brown gouraud rings (pool task) */
-#define FX_ARK_TRAIL            0x5 /* trail: strip texture not resolved (noise and green) (look pending) */
+#define FX_ARK_TRAIL            0x5 /* trail: strip texture not resolved (noise and green in the render) (look pending) */
 #define FX_ARK_PLANET           0x8 /* particles: green-tinted planet with cloud swirls, fading */
-#define FX_ARK_TRAIL_2          0x9 /* trail: strip texture not resolved (noise and green) (look pending) */
+#define FX_ARK_TRAIL_2          0x9 /* trail: strip texture not resolved (noise and green in the render) (look pending) */
 #define FX_ARK_PLANET_FRAGMENTS 0xA /* emitter: sprites of planet-surface fragments */
 #define FX_ARK_RED_FLASH_RING   0xB /* rings: red-white flat flash ring */
-#define FX_ARK_SPRITE_LINE      0xD /* sprite line: textures partly not resolved (look pending) */
+#define FX_ARK_SPRITE_LINE      0xD /* sprite line: textures partly not resolved (almost empty in the render) (look pending) */
 
 typedef struct {
     s32 vx, vy, vz;
@@ -64,6 +64,11 @@ typedef struct {
 #define FX_17D_5_HIT_BURST 0 /* emitter burst */
 #define FX_17D_5_HIT_RING 1 /* rings and a random screen tint */
 #define FX_17D_5_HIT_FINAL 2 /* the last one: wide trail, grey tint, state 3 */
+#define FX_ARK_RIBBED_SPHERE 0x85 /* summon data: 'so' model, sphere with a dark ribbed texture */
+#define FX_ARK_SCALE_BOWL 0x87 /* summon data: 'so' model, bowl with a red-orange scale texture */
+#define FX_ARK_SCALE_DOME 0x88 /* summon data: 'so' model, hemisphere with a red-orange scale texture */
+#define FX_ARK_YELLOW_RING 0x91 /* summon data: 'so' model, yellow-white gouraud ring */
+#define FX_ARK_TAN_GLOW_DISC 0x9B /* summon data: 'so' model, shallow tan-white gouraud glow disc */
 
 /* the summon slot behind env->unk4 */
 typedef struct {

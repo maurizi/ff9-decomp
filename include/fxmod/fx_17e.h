@@ -8,7 +8,7 @@
 /* fx_17e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_CHESTNUT_IMPACT_RINGS   0x2 /* emitter: white-pink-red-yellow and white-grey gouraud rings + spark sprites (texture not in the file) */
-#define FX_CHESTNUT_CHESTNUT_MODEL 0x9 /* 'so' model (not drawn by the tool), probably the thrown chestnut (look pending) */
+#define FX_CHESTNUT_SPIKY_BURR     0x9 /* 'so' model: the thrown chestnut, a spiky ball with a brown-orange burr texture */
 
 typedef struct {
     s32 model0; /* model */

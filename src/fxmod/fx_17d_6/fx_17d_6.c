@@ -25,8 +25,8 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fx_17d_6_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_6_effModels, 3);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
-        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8D), 2);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_DISC), 1);
+        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_SWIRL_DISC), 2);
         ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion1A8, SUMMON(env)->model60);
         work->rot70.vx = 0x100;
         work->rot70.vy = 0x780;
@@ -160,7 +160,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vy = work->pos18.vy;
             env->camera->points[2].vz = work->pos18.vz;
             if (frame == 0x18) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FAN_EMITTER), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_PLANET_LIMB), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

@@ -227,11 +227,11 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fx_17d_5_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_5_effModels, 5);
-        work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x85), 1);
-        work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 1);
-        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 1);
-        work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9B), 1);
-        work->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x91), 1);
+        work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_RIBBED_SPHERE), 1);
+        work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SCALE_BOWL), 1);
+        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SCALE_DOME), 1);
+        work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_TAN_GLOW_DISC), 1);
+        work->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_YELLOW_RING), 1);
         ex->Hi_SetSummonMotion(((Fx17d5Summon *)env->loader)->summon54->motion1A4, ((Fx17d5Summon *)env->loader)->model60);
         ex->Hi_SetSummonMotFrame(((Fx17d5Summon *)env->loader)->model60, 3);
         work->pos64.vx = 0;

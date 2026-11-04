@@ -31,89 +31,26 @@ Notes:
 
 ## Open questions (emulator)
 
-Each wants one screenshot at the frame the C starts the entry, or a VRAM dump while it plays.
+16 names are still by kind (look pending) after the re-render with `tools/fxdata.py` at d6121033 (summon data, fans, 'so' models and dot sprites drawn). What is left is texture the file does not hold or the tool does not resolve (blank or placeholder pages filled at run time, tpages the C computes, texture lists the tool does not follow, garbled texels). Each wants one screenshot at the frame the C starts the entry, or a VRAM dump while it plays:
 
-| module | index | name | what is known |
+| module | index | name | why the look is pending |
 |---|---|---|---|
-| fx_0f3 | 0x8 | `FX_SCOOP_ART_SCREEN_TRAIL` | emitter: screen trail + sprite, texture on a placeholder page |
-| fx_0f4 | 0xC | `FX_SHIFT_BREAK_CONE_RINGS` | emitter: textured rings in a cone (texture not resolved) |
-| fx_0f5 | 0x9 | `FX_STELLAR_CIRCLE_5_MODEL` | 'so' model (btlfx_registerEffectModel) |
-| fx_0f8 | 0xD | `FX_GRAND_LETHAL_SPRITE_RINGS` | emitter: sprite (texture not in the file) + white-blue gouraud rings |
-| fx_0f8 | 0xE | `FX_GRAND_LETHAL_SWIRL_RINGS` | emitter: textured rings (texture not resolved) + white swirl sprite |
-| fx_0fa | 0x2 | `FX_DETECT_FAN_EMITTER` | emitter: two fan elements (not rendered) |
-| fx_0fb_0 | 0x1 | `FX_MADEEN_SPECKS` | emitter: tiny sprite specks (texture not in the file) |
-| fx_0fb_0 | 0x3 | `FX_MADEEN_SCROLL_SPRITE` | sprite: wide speckled strip drawn scrolling across the screen (byte-identical to fx_0fb_1 entry 0x1) |
-| fx_0fb_0 | 0x5 | `FX_MADEEN_FAN_EMITTER` | emitter: one fan element (not rendered) |
-| fx_0fb_0 | 0x15 | `FX_MADEEN_FAN_EMITTER_2` | emitter: fan elements (not rendered) |
-| fx_0fb_0 | 0x82 | `FX_MADEEN_SUMMON_MODEL_2` | summon data entry 2: textured model (Hi_RegisterTexEffModel 0x96, 0x3D40) |
-| fx_0fb_0 | 0x84 | `FX_MADEEN_SUMMON_MODEL_4` | summon data entry 4: textured model (Hi_RegisterTexEffModel 0x7C, 0x3D02) |
-| fx_0fb_0 | 0x87 | `FX_MADEEN_SUMMON_MODEL_7` | summon data entry 7: textured model (Hi_RegisterTexEffModel 0x9A, 0x3E00) |
-| fx_0fb_0 | 0x94 | `FX_MADEEN_SUMMON_MODEL_20` | summon data entry 20: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) |
-| fx_0fb_1 | 0x1 | `FX_MADEEN_SCROLL_SPRITE` | sprite: wide speckled strip drawn scrolling across the screen (byte-identical to fx_0fb_0 entry 0x3) |
-| fx_0fb_1 | 0x3 | `FX_MADEEN_LOOP_RIBBON` | model: figure-eight ribbon loop (texture: placeholder page 0x138) |
-| fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file |
-| fx_0fb_1 | 0x15 | `FX_MADEEN_FAN_EMITTER_3` | emitter: three fan elements (not rendered) |
-| fx_0fb_1 | 0x82 | `FX_MADEEN_SUMMON_MODEL_2` | summon data entry 2: textured model (Hi_RegisterTexEffModel 0x96, 0x3D40) |
-| fx_0fb_1 | 0x87 | `FX_MADEEN_SUMMON_MODEL_7` | summon data entry 7: textured model (Hi_RegisterTexEffModel 0x9A, 0x3E00) |
-| fx_0fb_1 | 0x89 | `FX_MADEEN_SUMMON_MODEL_9` | summon data entry 9: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) |
-| fx_0fb_1 | 0x8C | `FX_MADEEN_SUMMON_MODEL_12` | summon data entry 12: textured model (Hi_RegisterTexEffModel 0x3A, 0x3D0A) |
-| fx_0fb_1 | 0x8F | `FX_MADEEN_SUMMON_MODEL_15` | summon data entry 15: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) |
-| fx_0fb_1 | 0x90 | `FX_MADEEN_SUMMON_MODEL_16` | summon data entry 16: textured model (Hi_RegisterTexEffModel 0xBD, 0x3E40) |
-| fx_100 | 0x5 | `FX_SOLUTION_SPECK_ORBIT` | emitter: fan element + orbiting speck sprites (texture not in the file) |
-| fx_100 | 0x6 | `FX_SOLUTION_SPECK_TRAIL` | emitter: 3D trail (white blob strip) + speck sprites (texture not in the file) |
-| fx_101 | 0x5 | `FX_TRANCE_FAN_EMITTER` | emitter: two fan elements (not rendered) |
-| fx_101 | 0xF | `FX_TRANCE_FAN_EMITTER_2` | emitter: two orbiting fan elements (not rendered) |
-| fx_101 | 0x10 | `FX_TRANCE_FAN_EMITTER_3` | emitter: two orbiting fan elements (not rendered) |
-| fx_105 | 0x3 | `FX_ODIN_SPECK_SPIRAL` | emitter: speck sprites rising in a spiral (texture not in the file) |
-| fx_105 | 0xD | `FX_ODIN_MODEL` | 'so' model (btlfx_registerEffectModel, model138[0]) |
-| fx_105 | 0x10 | `FX_ODIN_STAR` | sprite: small dark-grey speck, drawn as the star field (fx_105_stars) |
-| fx_105 | 0x15 | `FX_ODIN_MODEL_2` | 'so' model (btlfx_registerEffectModel, model138[1]) |
-| fx_105 | 0x29 | `FX_ODIN_MODEL_3` | 'so' model (btlfx_registerEffectModel, model138[2]) |
-| fx_105 | 0x2A | `FX_ODIN_MODEL_4` | 'so' model (btlfx_registerEffectModel, model138[3]) |
-| fx_105 | 0x2B | `FX_ODIN_MODEL_5` | 'so' model (btlfx_registerEffectModel, model138[4]) |
-| fx_105 | 0x2C | `FX_ODIN_MODEL_6` | 'so' model (btlfx_registerEffectModel, model138[5]) |
-| fx_105 | 0x2D | `FX_ODIN_MODEL_7` | 'so' model (btlfx_registerEffectModel, model138[6]) |
-| fx_105 | 0x2E | `FX_ODIN_MODEL_8` | 'so' model (btlfx_registerEffectModel, model138[7]) |
-| fx_105 | 0x80 | `FX_ODIN_SUMMON_MODEL_0` | summon data entry 0: model (btlfx_registerEffectModel) |
-| fx_105 | 0x81 | `FX_ODIN_SUMMON_MODEL_1` | summon data entry 1: model (btlfx_registerEffectModel) |
-| fx_105 | 0x82 | `FX_ODIN_SUMMON_MODEL_2` | summon data entry 2: model (btlfx_registerEffectModel) |
-| fx_105 | 0x83 | `FX_ODIN_SUMMON_MODEL_3` | summon data entry 3: model (btlfx_registerEffectModel) |
-| fx_109 | 0x1 | `FX_THROW_RACKET` | 'so' model: the thrown racket, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10a | 0x1 | `FX_THROW_THIEF_SWORD` | 'so' model: the thrown thief sword, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10b | 0x5 | `FX_THROW_SWORD` | 'so' model: the thrown sword, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10c | 0x5 | `FX_THROW_SPEAR` | 'so' model: the thrown spear, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10d | 0x1 | `FX_THROW_CLAWS` | 'so' model: the thrown claws, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10e | 0x4 | `FX_THROW_ROD` | 'so' model: the thrown rod / flute / staff, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_10f | 0x2 | `FX_THROW_FORK` | 'so' model: the thrown fork, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_110 | 0x6 | `FX_THROW_DAGGER` | 'so' model: the thrown dagger, drawn on its path (the same model as entry 0xC, 'so' form) |
-| fx_112 | 0x2 | `FX_EAT_ORBIT_TRAIL` | emitter: orbiting screen trail, strip mostly dark in the render |
-| fx_114 | 0x9 | `FX_IFRIT_FAN_EMITTER` | emitter: two orbiting fan elements (not rendered) |
-| fx_114 | 0x12 | `FX_IFRIT_SPOKED_RING` | model: flat ring with spokes (registered through the texture list, texture not drawn) |
-| fx_114 | 0x1E | `FX_IFRIT_BOWL` | model: hemisphere bowl (registered through the texture list, texture not drawn) |
-| fx_114 | 0x26 | `FX_IFRIT_FAN_EMITTER_2` | emitter: one orbiting fan element (not rendered) |
-| fx_114 | 0x2A | `FX_IFRIT_GRID_PLANE` | model: flat grid plane (tpage 0x117 reads a placeholder page in the render) |
-| fx_114 | 0x80 | `FX_IFRIT_SUMMON_MODEL_0` | summon data entry 0: model (btlfx_registerEffectModel) |
-| fx_114 | 0x81 | `FX_IFRIT_SUMMON_MODEL_1` | summon data entry 1: textured model (registered through the texture list) |
-| fx_114 | 0x82 | `FX_IFRIT_SUMMON_MODEL_2` | summon data entry 2: textured model (Hi_RegisterTexEffModel 0x9A, 0x3DC0) |
-| fx_114 | 0x83 | `FX_IFRIT_SUMMON_MODEL_3` | summon data entry 3: textured model (Hi_RegisterTexEffModel 0x117) |
-| fx_114 | 0x85 | `FX_IFRIT_SUMMON_MODEL_5` | summon data entry 5: gouraud model (Hi_RegisterGouEffModel) |
-| fx_115 | 0x5 | `FX_THROW_PINWHEEL` | 'so' model: the thrown pinwheel / rising sun, registered twice |
-| fx_11d | 0x9 | `FX_ABSORB_TRAIL` | emitter: 3D trail, renders black (byte-identical to entry 0xA) |
-| fx_11d | 0xA | `FX_ABSORB_TRAIL_2` | emitter: 3D trail, renders black (byte-identical to entry 0x9) |
-| fx_11e | 0x1 | `FX_VIRUS_FLY_MODEL` | 'so' model (btlfx_registerEffectModel), probably the fly |
-| fx_11e | 0x2 | `FX_VIRUS_FLY_MODEL_2` | 'so' model (btlfx_registerEffectModel), same size as entry 0x1 |
-| fx_122 | 0x1 | `FX_TENT_MODEL` | 'so' model (btlfx_registerEffectModel), probably the tent |
-| fx_123 | 0x4 | `FX_RAINING_SWORDS_SPECKS` | emitter: speck sprites (texture not in the file / render black) |
-| fx_123 | 0xC | `FX_RAINING_SWORDS_DARK_BURST` | emitter: rings and sprites that render black + speck sprites |
-| fx_125 | 0x4 | `FX_POLY_SPARKLE_FAN` | emitter: two fan elements (not rendered) + pink sparkle sprites and specks (texture not in the file) |
-| fx_125 | 0xD | `FX_POLY_POLYHEDRON` | model: faceted polyhedron, texture not in the file (byte-identical to entry 0xE) |
-| fx_125 | 0xE | `FX_POLY_POLYHEDRON_2` | model: faceted polyhedron, registered with a computed tpage (byte-identical to entry 0xD) |
-| fx_126 | 0x7 | `FX_BOOMERANG_MODEL` | 'so' model registered twice (btlfx_registerEffectModel), probably the boomerang |
-| fx_127 | 0x3 | `FX_WAVE_FAN_EMITTER` | emitter: one fan element along an axis (not rendered) |
-| fx_127 | 0x4 | `FX_WAVE_FAN_EMITTER_2` | emitter: one fan element along an axis (not rendered) |
-| fx_128 | 0xB | `FX_DRAGON_BREATH_MODEL` | 'so' model (btlfx_registerEffectModel), probably a dragon |
-| fx_128 | 0x15 | `FX_DRAGON_BREATH_FAN_EMITTER` | emitter: one fan element spiralling (not rendered) |
-| fx_128 | 0x1F | `FX_DRAGON_BREATH_MODEL_2` | 'so' model (btlfx_registerEffectModel), probably the second dragon |
+| fx_0f3 | 0x8 | `FX_SCOOP_ART_SCREEN_TRAIL` | emitter: screen trail + sprite, texture on a placeholder page (the render reads garbled tan texels) |
+| fx_0f4 | 0xc | `FX_SHIFT_BREAK_CONE_RINGS` | emitter: textured rings in a cone; the render reads garbled multicolour texels (texture not resolved) |
+| fx_0f8 | 0xd | `FX_GRAND_LETHAL_SPRITE_RINGS` | emitter: white / cyan / blue / grey gouraud rings with a sprite that renders as a flat violet square (texture not in the file) |
+| fx_0f8 | 0xe | `FX_GRAND_LETHAL_SWIRL_RINGS` | emitter: white swirl sprite with textured rings; the rings still read garbled multicolour texels (texture not resolved) |
+| fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file (magenta in the render) |
+| fx_112 | 0x2 | `FX_EAT_ORBIT_TRAIL` | emitter: orbiting screen trail; the strip is still mostly dark in the render |
+| fx_114 | 0x12 | `FX_IFRIT_SPOKED_RING` | model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
+| fx_114 | 0x1e | `FX_IFRIT_BOWL` | model: hemisphere bowl (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
+| fx_114 | 0x2a | `FX_IFRIT_GRID_PLANE` | model: flat grid plane (tpage 0x117 reads a yellow placeholder page in the render) |
+| fx_114 | 0x81 | `FX_IFRIT_CANOPY` | summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
+| fx_114 | 0x83 | `FX_IFRIT_CYLINDER` | summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render) |
+| fx_11d | 0x9 | `FX_ABSORB_TRAIL` | emitter: 3D trail; the render is still black (byte-identical to entry 0xA) |
+| fx_11d | 0xa | `FX_ABSORB_TRAIL_2` | emitter: 3D trail; the render is still black (byte-identical to entry 0x9) |
+| fx_123 | 0xc | `FX_RAINING_SWORDS_DARK_BURST` | emitter: rings and sprites that still render black, + cyan dot specks |
+| fx_125 | 0xd | `FX_POLY_POLYHEDRON` | model: faceted polyhedron, texture not in the file (magenta in the render) (byte-identical to entry 0xE) |
+| fx_125 | 0xe | `FX_POLY_POLYHEDRON_2` | model: faceted polyhedron, registered with a tpage the C computes (not resolved by the tool) (byte-identical to entry 0xD) |
 
 ## Table
 

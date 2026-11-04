@@ -6,14 +6,14 @@
 
 /* fx_17d_8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ARK_MODEL_0     0x1 /* 'so' model (not drawn by the tool), work model slot 0 (look pending) */
-#define FX_ARK_MODEL_1     0x2 /* 'so' model (not drawn by the tool), work model slot 1 (look pending) */
-#define FX_ARK_MODEL_3     0x3 /* 'so' model (not drawn by the tool), work model slot 3 (look pending) */
-#define FX_ARK_MODEL_5     0x4 /* 'so' model (not drawn by the tool), work model slot 5 (look pending) */
+#define FX_ARK_PLANET      0x1 /* 'so' model: globe with an Earth-like planet texture, work model slot 0 */
+#define FX_ARK_RED_GLOW_DOME 0x2 /* 'so' model: shallow red-orange gouraud glow dome, work model slot 1 */
+#define FX_ARK_ORANGE_BEAM 0x3 /* 'so' model: long orange gouraud beam (same size as fx_17d_7's), work model slot 3 */
+#define FX_ARK_DARK_BLUE_RING 0x4 /* 'so' model: flat ring with a dark blue texture, work model slot 5 */
 #define FX_ARK_FIRE_RING   0x5 /* rings: white-yellow-red gouraud rings */
-#define FX_ARK_MODEL_4     0x6 /* 'so' model (not drawn by the tool), work model slot 4 (look pending) */
+#define FX_ARK_FLAT_PANEL  0x6 /* 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4 (look pending) */
 #define FX_ARK_BACKDROP    0x7 /* table: background layers for btlfx_drawBackdrop */
-#define FX_ARK_MODEL_2     0x9 /* 'so' model (not drawn by the tool), work model slot 2 (look pending) */
+#define FX_ARK_GREY_STAR_DISC 0x9 /* 'so' model: shallow disc with a grey radial texture, work model slot 2 */
 #define FX_ARK_GOLD_SPARKS 0xB /* emitter: tube of small gold spark sprites */
 #define FX_ARK_STARFIELD   0x10 /* sprite: faint starfield drawn on screen */
 

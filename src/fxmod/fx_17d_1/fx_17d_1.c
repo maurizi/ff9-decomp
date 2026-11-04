@@ -132,7 +132,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->frame4 = 0;
         fx_17d_1_env = env;
         ex->btlfx_initEffModels(fx_17d_1_effModels, 2);
-        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9E), 1);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_STREAK_SHELL), 1);
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->loader)->summon54->motion180, ((Fx17d1Summon *)env->loader)->model60);
         work->pos28.vx = 0;
         work->pos28.vy = 0;
@@ -196,7 +196,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((frame - 12) << 7) / 12, 0, 0);
             }
             if (frame == 8) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SPARKLE_TRAIL), (s32)&work->pos10);
                 work->emit74 = emitter;
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_1_op80Trails;
@@ -253,7 +253,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vx = work->pos18.vx;
                 env->camera->points[3].vy = work->pos18.vy;
                 env->camera->points[3].vz = work->pos18.vz;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_SPARKLES_2), (s32)&work->pos10);
                 work->emit70 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
