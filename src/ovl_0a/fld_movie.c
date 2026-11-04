@@ -462,7 +462,7 @@ void fld_drawModels(void) {
             mdl = slot->model;
             bits = slot->flags & FLD_OBJ_CLIP_Y;
             lim = mdl->model->groupCount;
-            SetSpadStack12(0x1F8003FC);
+            SetSpadStack12(PSX_SPAD_BASE + 0x3FC);
             if (bits) {
                 for (j = 0; j < lim; j++) {
                     bits = 1 << j;

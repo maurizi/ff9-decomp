@@ -193,7 +193,7 @@ void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
     for (i = 0; i < set->count; i++) {
         set->anims[i].lastFrame = 1;
         ptr = (u16 *)set->anims[i].rects;
-        if ((u32)ptr > 0x80000000) {
+        if (PSX_IS_RELOCATED_ABOVE(ptr, 0x80000000)) {
             return;
         }
         if (ptr == NULL) {

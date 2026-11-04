@@ -2148,7 +2148,7 @@ s32 btl_soundPan(s32 unit) {
     if (unit == -1) {
         return 0x80;
     }
-    if (unit & 0x90000000) {
+    if (PSX_IS_PTR_BITS(unit, 0x90000000)) { /* KSEG0 or scratchpad (bit 28) address: a position */
         posPtr = (SVECTOR *)unit;
     } else {
         posPtr = &pos;

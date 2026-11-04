@@ -58,6 +58,26 @@
 #define IS_OFFSET(x) ((s32)(x) >= 0)
 #endif
 
+/* The same two questions where the original code asks them with an address mask or an unsigned compare instead
+ * of a sign test (the code differs, so they can't be PSX_IS_PTR / IS_OFFSET here); a port redefines them in terms
+ * of its own pointer test. docs/wip/psx_ptr_sign_sites.md lists every site. */
+#ifndef PSX_IS_PTR_BITS
+#define PSX_IS_PTR_BITS(v, bits) ((v) & (bits)) /* number or pointer: btl_soundPan (unit id or SVECTOR *) */
+#endif
+#ifndef PSX_IS_RELOCATED_BITS
+#define PSX_IS_RELOCATED_BITS(v, bits) ((v) & (bits)) /* offset or relocated pointer: btlfx_spawnEmitter textures */
+#endif
+#ifndef PSX_IS_RELOCATED_ABOVE
+#define PSX_IS_RELOCATED_ABOVE(v, addr) ((u32)(v) > (u32)(addr)) /* offset or relocated pointer: tex anim rects */
+#endif
+
+/* The R3000 scratchpad (1 KB of fast RAM at 0x1F800000), used directly as memory. A port maps it to its own
+ * buffer. */
+#define PSX_SPAD_BASE 0x1F800000
+#ifndef PSX_SPAD
+#define PSX_SPAD(type, ofs) ((type)(PSX_SPAD_BASE + (ofs)))
+#endif
+
 /* Layouts are partial: only offsets seen in decompiled code are named.
  * Names are placeholders (unkXX = offset) until their purpose is known.
  * Split into per-subsystem headers once subsystems are identified. */

@@ -99,3 +99,17 @@ searches, overflow guards in `script_text.c:1342-1383` and the `world_faces.c` d
   in a port. Sites: `btl_model.c:196`, `tu_800B61A4.c:1786`.
 - **Scratchpad**: a `PSX_SPAD(type, ofs)` (or `PSX_RAM` documented to cover 0x1F800000-0x1F8003FF and checked by
   raw_addr.py) for section 4.
+
+## Hooks added after the survey (commit after 7a064d87)
+
+The proposals above are now in include/ff9.h (identity here, the build is byte-identical):
+
+| hook | default | sites |
+|---|---|---|
+| `PSX_IS_PTR_BITS(v, bits)` | `(v) & (bits)` | ovl_0b btlfx_op.c btl_soundPan `PSX_IS_PTR_BITS(unit, 0x90000000)` (unit id or SVECTOR *) |
+| `PSX_IS_RELOCATED_BITS(v, bits)` | `(v) & (bits)` | ovl_0b btlfx_heap.c btlfx_spawnEmitter `el->tex` / `el->tex2` with BTLFX_TEX_ADDR |
+| `PSX_IS_RELOCATED_ABOVE(v, addr)` | `(u32)(v) > (u32)(addr)` | ovl_0b btl_model.c btl_relocTexAnims, ovl_0a tu_800B61A4.c fldmdl_initTexAnims (`> 0x80000000`) |
+| `PSX_SPAD(type, ofs)`, `PSX_SPAD_BASE` | `(type)(0x1F800000 + ofs)` | ovl_0c wm_model.c, ovl_0a tu_800B61A4.c scratchpad MATRIX/VECTOR/SVECTOR pointers; SetSpadStack(PSX_SPAD_BASE + 0x3FC) in w_frame.c / fld_movie.c |
+
+A port defines PSX_IS_PTR_BITS like PSX_IS_PTR, the two RELOCATED hooks as `!IS_OFFSET(v)` (its relocation test),
+and PSX_SPAD to its own scratch buffer. OT tag (24-bit link) handling and SCRIPT_PTR_RESTORE stay as listed above.

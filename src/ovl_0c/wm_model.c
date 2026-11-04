@@ -793,17 +793,17 @@ void wm_calcBoneMatrices(ModelObj *mdl, u16 frame) {
         return;
     }
     nb = mdl->model->boneCount;
-    bones = (MATRIX *)0x1F800018;
+    bones = PSX_SPAD(MATRIX *, 0x18);
     if (nb >= 31) {
         bones = (MATRIX *)mdl->boneMatrices;
     }
     mat = bones;
-    vec = (VECTOR *)0x1F800008;
+    vec = PSX_SPAD(VECTOR *, 0x08);
     vec->vx = 0;
     vec->vy = 0;
     key = (WmAnimKey *)anim->rotKeys;
     key2 = (WmAnimKey *)anim->rotKeysLo;
-    rot = (SVECTOR *)0x1F800000;
+    rot = PSX_SPAD(SVECTOR *, 0);
     if (anim->constMask & WMANIM_ROOT_CONST(0)) {
         bones->t[0] = anim->rootPos[0];
     } else {

@@ -789,17 +789,17 @@ void fldmdl_calcBoneMatrices(ModelObj *mdl, u16 frame) {
         return;
     }
     nb = mdl->model->boneCount;
-    bones = (MATRIX *)0x1F800018;
+    bones = PSX_SPAD(MATRIX *, 0x18);
     if (nb >= 31) {
         bones = (MATRIX *)mdl->boneMatrices;
     }
     boneMtx = bones;
-    vec = (VECTOR *)0x1F800008;
+    vec = PSX_SPAD(VECTOR *, 0x08);
     vec->vx = 0;
     vec->vy = 0;
     key = anim->rotKeys;
     key2 = anim->rotKeysLo;
-    rot = (SVECTOR *)0x1F800000;
+    rot = PSX_SPAD(SVECTOR *, 0);
     if (anim->constMask & WMANIM_ROOT_CONST(0)) {
         bones->t[0] = anim->rootPos[0];
     } else {
@@ -1503,17 +1503,17 @@ void fldmdl_calcBoneMatricesLookAt(ModelObj *mdl, s32 frame) {
         return;
     }
     nb = mdl->model->boneCount;
-    bones = (MATRIX *)0x1F800018;
+    bones = PSX_SPAD(MATRIX *, 0x18);
     if (nb >= 31) {
         bones = (MATRIX *)mdl->boneMatrices;
     }
     boneMtx = bones;
-    vec = (VECTOR *)0x1F800008;
+    vec = PSX_SPAD(VECTOR *, 0x08);
     vec->vx = 0;
     vec->vy = 0;
     key = anim->rotKeys;
     key2 = anim->rotKeysLo;
-    rot = (SVECTOR *)0x1F800000;
+    rot = PSX_SPAD(SVECTOR *, 0);
     if (anim->constMask & WMANIM_ROOT_CONST(0)) {
         bones->t[0] = anim->rootPos[0];
     } else {
@@ -1783,7 +1783,7 @@ void fldmdl_initTexAnims(TexAnimRelocSet *hdr, ModelTexOfs *ofs) {
     for (i = 0; i < hdr->count; i++) {
         hdr->anims[i].lastFrame = 1;
         addr = hdr->anims[i].rects;
-        if (addr > 0x80000000) {
+        if (PSX_IS_RELOCATED_ABOVE(addr, 0x80000000)) {
             return;
         }
         if (addr == 0) {
@@ -2180,7 +2180,7 @@ void fldmdl_reflectModel(ModelObj *mdl) {
         ny = mdl->mirrorNormal.v.vy;
         nz = mdl->mirrorNormal.v.vz;
         planeDist = (mdl->mirrorPoint.v.vx * nx + mdl->mirrorPoint.v.vy * ny + mdl->mirrorPoint.v.vz * nz) >> 11;
-        reflMtx = (MATRIX *)0x1F800000;
+        reflMtx = PSX_SPAD(MATRIX *, 0);
         reflMtx->m[0][0] = ONE - ((nx * nx) >> 11);
         reflMtx->m[1][1] = ONE - ((ny * ny) >> 11);
         reflMtx->m[2][2] = ONE - ((nz * nz) >> 11);

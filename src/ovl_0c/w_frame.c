@@ -188,11 +188,11 @@ void wm_updateLogic(void) {
         if (g_worldNaviMode != WM_NAVI_FULL) {
             g_gameState->vsyncMode = 3;
             g_gameState->gameData->ctx.world->flags &= ~WM_MAP_NAVI_SCREEN;
-            SetSpadStack(0x1F8003FC);
+            SetSpadStack(PSX_SPAD_BASE + 0x3FC);
             wm_updateActors();
             ResetSpadStack();
             wm_runEvents();
-            SetSpadStack(0x1F8003FC);
+            SetSpadStack(PSX_SPAD_BASE + 0x3FC);
             wm_updateEffects();
             wm_updateCamera();
             wm_updateMap();
