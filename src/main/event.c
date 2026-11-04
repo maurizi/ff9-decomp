@@ -447,7 +447,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
         actor->animLoops--;
     }
     moving = actor->animLoops != 0;
-    if (flags < 0) {
+    if (PSX_IS_PTR(flags)) { /* EVT_OP_MOVE_TO_OBJ: flags is the target object; stop once touching it */
         moving = 0;
         if (hit != flags || dist > 0) {
             moving = 1;

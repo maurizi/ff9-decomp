@@ -39,6 +39,13 @@
 /* A local the original code reads before ever writing it, so on the PS1 it starts with whatever an earlier function
  * left on the stack. Empty here (the build stays byte-identical); a port defines it to give the variable a
  * deterministic start value, e.g. `#define PSX_STACK_RESIDUE(lv) ((lv) = 0)` (ff9-ds F42). */
+/* A value that holds either a small number or a PS1 pointer, told apart by its sign: KSEG0 addresses
+ * (0x80000000+) are negative as s32. True here exactly when the original code's `< 0` test is; a port whose native
+ * pointers are positive redefines it (e.g. as "above the largest number the value can hold") (3DS F38). */
+#ifndef PSX_IS_PTR
+#define PSX_IS_PTR(v) ((s32)(v) < 0)
+#endif
+
 #ifndef PSX_STACK_RESIDUE
 #define PSX_STACK_RESIDUE(lv)
 #endif
@@ -4519,7 +4526,7 @@ typedef struct {
 #define EVT_OP_BGI_ANIM_FRAME_VALUE 0xFF0F /* u8, u8, u8: bgi_setAnimFrameValue */
 #define EVT_OP_BGI_ANIM_RANGE 0xFF10 /* u8, u8, u8: bgi_playAnimRange */
 #define EVT_OP_BGI_ANIM_RESET 0xFF11 /* u8, u8: bgi_resetAnim */
-/* evt_moveObjectTo flags (a negative value is instead an object to stop at) */
+/* evt_moveObjectTo flags; a pointer instead (PSX_IS_PTR) is the object to stop at: EVT_OP_MOVE_TO_OBJ passes it */
 #define EVT_MOVETO_NO_TURN 0x1 /* keep the facing */
 #define EVT_MOVETO_3D 0x2 /* move in y too (pitch) */
 /* function tags in a script entry's {u16 tag, u16 ofs} table (evt_callObjectFunc key) */
