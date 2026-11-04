@@ -7,6 +7,42 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ba effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_RAMUH_MODEL              0x4 /* 'so' model (look pending) */
+#define FX_RAMUH_LIGHTNING_RIBBON   0x5 /* trail: ribbon drawn between key points (texture garbled in the render) (look pending) */
+#define FX_RAMUH_LENS_FLASH_KEYS    0x7 /* table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH) */
+#define FX_RAMUH_BLUE_GLOW_RINGS    0xA /* emitter: blue glow quad and fading light-blue gouraud rings */
+#define FX_RAMUH_LIGHTNING_RIBBON_2 0xD /* trail: second ribbon drawn between key points (texture garbled in the render) (look pending) */
+#define FX_RAMUH_SPARK_BURST        0x14 /* emitter: white gouraud rings + sprites (texture garbled in the render) (look pending) */
+#define FX_RAMUH_LENS_FLASH         0x15 /* particles: white-violet lens flash */
+#define FX_RAMUH_LIGHTNING_BOLT     0x16 /* trail: 8-frame trail (texture garbled in the render) (look pending) */
+#define FX_RAMUH_MODEL_2            0x18 /* 'so' model (look pending) */
+#define FX_RAMUH_MOTION_KEYS_2      0x19 /* table: per-frame position / rotation keys (op81, second phase) */
+#define FX_RAMUH_MOTION_KEYS        0x1A /* table: per-frame position / rotation keys (op81, first phase) */
+#define FX_RAMUH_BLUE_RING          0x1B /* rings: blue gouraud rings */
+#define FX_RAMUH_CYAN_RING          0x1D /* rings: white / cyan / blue gouraud rings */
+#define FX_RAMUH_ORANGE_TRAIL       0x1E /* trail: 8-frame offset trail (texture garbled in the render, orange) (look pending) */
+#define FX_RAMUH_MODEL_3            0x1F /* 'so' model (look pending) */
+#define FX_RAMUH_MODEL_4            0x20 /* 'so' model (look pending) */
+#define FX_RAMUH_GREY_RING          0x21 /* rings: grey gouraud rings */
+#define FX_RAMUH_BOLT_POINTS        0x23 /* table: ten points around the summon, picked at random (op83) */
+#define FX_RAMUH_BOLT_POINTS_2      0x24 /* table: second set of ten points around the summon (op83) */
+#define FX_RAMUH_MODEL_5            0x26 /* 'so' model (look pending) */
+#define FX_RAMUH_WHITE_RING         0x27 /* rings: white gouraud ring */
+#define FX_RAMUH_SPARK_RING         0x29 /* rings: pale cyan gouraud rings (pool items) */
+#define FX_RAMUH_SPARK_PARTICLE     0x2C /* emitter: one particle (texture garbled in the render) (look pending) */
+#define FX_RAMUH_CAMERA_KEYS        0x2E /* table: per-frame camera point 0 (op82) */
+#define FX_RAMUH_CAMERA_KEYS_2      0x2F /* table: per-frame camera point 1 (op82) */
+#define FX_RAMUH_POOL_TRAIL         0x32 /* trail: 8-frame trail of the op85 pool items (texture garbled in the render) (look pending) */
+#define FX_RAMUH_SUMMON_MODEL_0     0x80 /* summon data entry 0: 'so' model (look pending) */
+#define FX_RAMUH_SUMMON_MODEL_1     0x81 /* summon data entry 1: 'so' model (look pending) */
+#define FX_RAMUH_SUMMON_MODEL_2     0x82 /* summon data entry 2: 'so' model (look pending) */
+#define FX_RAMUH_SUMMON_MODEL_3     0x83 /* summon data entry 3: 'so' model (look pending) */
+#define FX_RAMUH_SUMMON_EMITTER_4   0x84 /* summon data entry 4: emitter (look pending) */
+#define FX_RAMUH_SUMMON_KEYS_5      0x85 /* summon data entry 5: per-frame key table (op80) */
+#define FX_RAMUH_SUMMON_EMITTER_6   0x86 /* summon data entry 6: emitter (look pending) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

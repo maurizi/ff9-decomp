@@ -6,6 +6,43 @@
  * btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_0b8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ATOMOS_SPRITES         0x2 /* emitter: two sprite elements, render all black (look pending) */
+#define FX_ATOMOS_VORTEX_STREAK   0x3 /* trail: violet vortex streak */
+#define FX_ATOMOS_FAN_EMITTER     0x7 /* emitter: fan elements (not rendered) (look pending) */
+#define FX_ATOMOS_SPRITES_2       0x8 /* emitter: two spiralling sprite elements, render all black (look pending) */
+#define FX_ATOMOS_VIOLET_RINGS    0x9 /* emitter: violet streak and violet / dark blue gouraud rings */
+#define FX_ATOMOS_PINK_CLOUD      0xA /* emitter: violet-blue and white-red rings, pink cloud particles */
+#define FX_ATOMOS_FAINT_GLOW      0xB /* emitter: spiralling glow particles, render almost black (look pending) */
+#define FX_ATOMOS_ROCK_DEBRIS     0xC /* emitter: grey-blue rock debris particles */
+#define FX_ATOMOS_BLAST_RINGS     0xD /* emitter: white / yellow / orange / brown and purple gouraud rings */
+#define FX_ATOMOS_VORTEX_SPARKLES 0xE /* emitter: orbiting violet vortex trails and gold sparkles */
+#define FX_ATOMOS_UNIT_RING       0xF /* emitter: white-grey gouraud rings at each unit */
+#define FX_ATOMOS_SPHERE          0x10 /* model: sphere, texture 0x17C (not in the file) */
+#define FX_ATOMOS_RING_FUNNEL     0x11 /* model: gouraud ring funnel (flat torus) */
+#define FX_ATOMOS_CLOUD_FUNNEL    0x12 /* model: ring funnel with a grey cloud texture */
+#define FX_ATOMOS_ORANGE_RING     0x13 /* model: ring with an orange cloud texture */
+#define FX_ATOMOS_BACKDROP        0x1F /* table: background layers for btlfx_drawBackdrop */
+#define FX_ATOMOS_VIOLET_RING     0x20 /* emitter: white-violet and white-blue gouraud rings */
+#define FX_ATOMOS_PURPLE_RINGS    0x21 /* emitter: white / magenta / purple and pale yellow / grey gouraud rings */
+#define FX_ATOMOS_SPRITES_3       0x22 /* emitter: two sprite elements, render all black (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_0  0x80 /* summon data entry 0: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_1  0x81 /* summon data entry 1: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_2  0x82 /* summon data entry 2: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_3  0x83 /* summon data entry 3: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_4  0x84 /* summon data entry 4: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_5  0x85 /* summon data entry 5: textured model (Hi_RegisterTexEffModel) (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_6  0x86 /* summon data entry 6: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_7  0x87 /* summon data entry 7: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_8  0x88 /* summon data entry 8: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_9  0x89 /* summon data entry 9: textured model (Hi_RegisterTexEffModel) (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_10 0x8A /* summon data entry 10: 'so' model (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_11 0x8B /* summon data entry 11: textured model (Hi_RegisterTexEffModel) (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_12 0x8C /* summon data entry 12: textured model (Hi_RegisterTexEffModel) (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_13 0x8D /* summon data entry 13: textured model (Hi_RegisterTexEffModel) (look pending) */
+#define FX_ATOMOS_SUMMON_MODEL_14 0x8E /* summon data entry 14: textured model (Hi_RegisterTexEffModel) (look pending) */
+
 typedef struct {
     u8 u;
     u8 v;

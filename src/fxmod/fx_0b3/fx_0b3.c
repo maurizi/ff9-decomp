@@ -109,7 +109,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0b3_env = env;
         ex->btlfx_initEffModels(fx_0b3_effModels, 0x10);
-        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
+        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SO_MODEL), 1);
         work->morphScale34.vx = 0x1800;
         work->morphScale34.vy = 0x1800;
         work->morphScale34.vz = 0x1800;
@@ -148,13 +148,13 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 work->morphWeight74 = 0x1000;
                 work->morphFrame70 = 0;
-                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FAN_EMITTER), (s32)&work->pos10);
                 if (work->emit68 != NULL) {
                     work->emit68->otZ = 0x80;
                 }
             }
             if (frame >= 20) {
-                fxm_keyGetVec((Fx0b3Track *)ex->btlfx_getFileData(entry->file, 0xB), frame, &pos);
+                fxm_keyGetVec((Fx0b3Track *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_MORPH_POS_KEYS), frame, &pos);
                 work->morphPos28.vx = pos.vx;
                 work->morphPos28.vy = pos.vy;
                 work->morphPos28.vz = pos.vz;
@@ -228,10 +228,10 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0b3_env = env;
-        fx_0b3_seaModel = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x89), 1);
-        work->model88[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
-        work->model88[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 0);
-        work->model88[2] = work->model88[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 1);
+        fx_0b3_seaModel = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_9), 1);
+        work->model88[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_6), 1);
+        work->model88[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_7), 0);
+        work->model88[2] = work->model88[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_8), 1);
         work->rot58.vy = 0x800;
         work->rot58.vx = 0;
         work->rot58.vz = 0;
@@ -252,7 +252,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->modelPos60.vx = 0;
         work->modelPos60.vy = 0;
         work->modelPos60.vz = 0;
-        work->emit80 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+        work->emit80 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FAN_EMITTER), (s32)&work->pos10);
         if (work->emit80 != NULL) {
             work->emit80->otZ = 0x80;
         }
@@ -261,7 +261,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->state0 == 0) {
             ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->modelPos60, (s32)&work->modelScale6C, fx_0b3_seaModel);
             if (frame >= 0x2B) {
-                fxm_keyGetVec3((u8 *)ex->btlfx_getFileData(entry->file, 3), frame, &summonPos, &work->rot58, &summonScale);
+                fxm_keyGetVec3((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_KEYS), frame, &summonPos, &work->rot58, &summonScale);
                 work->pos40.vx = summonPos.vx;
                 work->pos40.vy = summonPos.vy;
                 work->pos40.vz = summonPos.vz;
@@ -279,7 +279,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->morphWeight9C = 0x1000;
                 work->morphFrame98 = 0;
             }
-            fxm_keyGetVec2((u8 *)ex->btlfx_getFileData(entry->file, 0x20), frame, &keyPos, &keyScale);
+            fxm_keyGetVec2((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_MORPH_KEYS), frame, &keyPos, &keyScale);
             work->pos40.vx = keyPos.vx;
             work->pos40.vy = keyPos.vy;
             work->pos40.vz = keyPos.vz;
@@ -335,7 +335,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos28.vx = 0xD5C;
                 work->pos28.vy = 0;
                 work->pos28.vz = 0x3797;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_DROPS), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -344,15 +344,15 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos30.vy = -0x3000;
                 work->pos30.vx = 0;
                 work->pos30.vz = 0x483;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_DROPS), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x200;
                 }
             }
-            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x2E), frame, &work->pos38);
+            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_ORBIT_POS_KEYS), frame, &work->pos38);
             work->pos38.vy = -0x100;
             if (frame == 0) {
-                work->emit84 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->pos38);
+                work->emit84 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_ORBIT_PARTICLE), (s32)&work->pos38);
                 if (work->emit84 != NULL) {
                     work->emit84->otZ = 0x100;
                 }
@@ -397,10 +397,10 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0b3_env = env;
-        work->model78[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
-        work->model78[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8A), 1);
-        work->model78[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8C), 1);
-        work->model78[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8D), 1);
+        work->model78[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_11), 1);
+        work->model78[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_10), 1);
+        work->model78[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_12), 1);
+        work->model78[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_13), 1);
         work->summonScale44.vx = 0x200;
         work->summonScale44.vy = 0x200;
         work->summonScale44.vz = 0x200;
@@ -430,7 +430,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion188, ((Fx0b3Summon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 0);
             }
-            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x13), frame, &keyPos);
+            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_POS_KEYS), frame, &keyPos);
             work->summonPos38.vx = keyPos.vx;
             work->summonPos38.vy = keyPos.vy;
             work->summonPos38.vz = keyPos.vz;
@@ -480,7 +480,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot2.vx = 0;
                 rot2.vy = 0;
                 rot2.vz = 0;
-                fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x2D), frame, &keyScale);
+                fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_MODEL_SCALE_KEYS), frame, &keyScale);
                 scale2.vx = keyScale.vx;
                 scale2.vy = keyScale.vy;
                 scale2.vz = keyScale.vz;
@@ -493,17 +493,17 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos18.vx = 0;
                 work->pos18.vy = -0x1DB;
                 work->pos18.vz = 0;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_BLUE_RING), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_SPLASH), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
             }
             if (frame == 0x19) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_GLINT), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -512,14 +512,14 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos20.vx = 0;
                 work->pos20.vy = -0x258;
                 work->pos20.vz = 0;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2F), (s32)&work->pos20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_STREAK), (s32)&work->pos20);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b3_trails;
                     emitter->trailSlots = 0xF0;
                     emitter->trailStride = 0x1C;
                     emitter->otZ = 0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&work->pos18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_RAINBOW_RING), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -740,8 +740,8 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->summonPos48.vy = 0;
         work->summonPos48.vz = 0;
         fx_0b3_env = env;
-        work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8E), 1);
-        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8F), 1);
+        work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_14), 1);
+        work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_MODEL_15), 1);
         work->rot80.vx = 0;
         work->rot80.vy = 0;
         work->rot80.vz = 0;
@@ -757,7 +757,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         if (work->state0 == 0) {
             ex->Hi_DrawEffModel(&work->rot80, (VECTOR *)&work->modelPos68, (s32)&work->modelScale74, fx_0b3_seaModel);
-            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x15), frame, &pt);
+            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_POS_KEYS_2), frame, &pt);
             work->summonPos48.vx = pt.vx;
             work->summonPos48.vy = pt.vy;
             work->summonPos48.vz = pt.vz;
@@ -767,7 +767,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->summonPos48, (s32)&work->summonScale54,
                                    ((Fx0b3Summon *)env->loader)->model60, 1);
             if ((u32)(frame - 0x4B) < 5) {
-                fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x3F), frame, &pt);
+                fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_MODEL_SCALE_KEYS_2), frame, &pt);
                 rot.vx = 0;
                 rot.vy = 0;
                 rot.vz = 0;
@@ -780,7 +780,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->model8C);
             }
             if ((u32)(frame - 0x4F) < 0x10) {
-                fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0xC), frame, &pt);
+                fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_MODEL_SCALE_KEYS_3), frame, &pt);
                 pos2.vz = 0x61A8;
                 rot2.vx = 0;
                 rot2.vy = 0;
@@ -821,22 +821,22 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->otZ = 0x80;
                 for (i = 0; i < 20; i++) {
                     BTLFX_COPY_SVEC(&pt, &fx_0b3_crestPts[i]);
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 0x26), &pt, NULL, ((i & 1) << 12) + 0x5000,
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM_2), &pt, NULL, ((i & 1) << 12) + 0x5000,
                                       frame + i * 5, 1, 0x1000);
                     pt.vy = -0x100;
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 0x24), &pt, NULL, 0x7000, frame + i * 3, 1,
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &pt, NULL, 0x7000, frame + i * 3, 1,
                                       0xC00);
                 }
                 env->otZ = 0;
             }
-            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x27), frame, &work->pos28);
+            fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_ORBIT_POS_KEYS_2), frame, &work->pos28);
             work->pos28.vy = -0x100;
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_ORBIT_PARTICLE), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x31), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_STREAK_2), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b3_trails2;
                     emitter->trailSlots = 0x30;
@@ -1136,7 +1136,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             t = (frame << 12) / 81;
             if (frame == 0x12) {
-                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&work->pos10);
+                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_DROPS_2), (s32)&work->pos10);
                 if (work->emit68 != NULL) {
                     work->emit68->tail->shape = -1;
                     work->emit68->tail->s.module.spawnFn = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))fxm_nextRingPoint;
@@ -1196,7 +1196,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 18; i++) {
                     if (fx_0b3_edgePts[i].pad != 0) {
                         bright0 = (i & 1) << 12; /* bright0 reused: a global pseudo, so bright0 + 0x3800 is not tied to it */
-                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 0x24), &fx_0b3_edgePts[i], NULL,
+                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_0b3_edgePts[i], NULL,
                                                 scaleAdd + (s16)(bright0 + 0x3800), frame + i * 2, 1, 0x1000);
                     }
                 }
@@ -1204,7 +1204,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame >= 0x1D) {
                     for (i = 0, j = frame; i < 7; j += 2, i++) {
                         if (fx_0b3_edgePts[i].pad != 0) {
-                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 0x24), &fx_0b3_edgePts[i], NULL,
+                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_0b3_edgePts[i], NULL,
                                                     0x2400, j + 4, 1, 0x1000);
                         }
                     }
@@ -1212,7 +1212,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->otZ = 0;
             }
             if (frame < 0x10) {
-                fxm_keyGetVec((Fx0b3Track *)ex->btlfx_getFileData(entry->file, 0x16), frame, &keyPos);
+                fxm_keyGetVec((Fx0b3Track *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_POS_KEYS_3), frame, &keyPos);
                 work->summonPos28.vx = keyPos.vx;
                 work->summonPos28.vy = keyPos.vy;
                 work->summonPos28.vz = keyPos.vz;
@@ -1229,7 +1229,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos10.vx = (p1.vx + p2.vx) / 2;
                 work->pos10.vy = (p1.vy + p2.vy) / 2;
                 work->pos10.vz = (p1.vz + p2.vz) / 2;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1F), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_SPLASH_2), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -1320,7 +1320,7 @@ s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->emitPos0[i]);
                 work->emitPos0[i].vz -= ex->btlfx_getUnitRadius(i);
                 work->emitPos0[i].vy -= 0x200;
-                emitter = ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->emitPos0[i]);
+                emitter = ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SPRAY), (s32)&work->emitPos0[i]);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                 }

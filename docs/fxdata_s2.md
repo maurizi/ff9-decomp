@@ -19,10 +19,67 @@ Notes:
 
 | module | index | name | evidence | what it is |
 |---|---|---|---|---|
+| fx_0b1 | 0x1 | `FX_CARBUNCLE_RING_BURST_2` | render | emitter: cone of white-red, lilac, cyan and blue-grey gouraud rings, fan |
+| fx_0b1 | 0x9 | `FX_CARBUNCLE_LENS_FLARE` | render | emitter: orbiting white glow trail with a blue lens streak |
+| fx_0b1 | 0xA | `FX_CARBUNCLE_ORBIT_GLOW` | kind/usage (look pending) | emitter: orbiting particle + sprite (texture not resolved), two copies |
+| fx_0b1 | 0xC | `FX_CARBUNCLE_RED_RING` | render | emitter: white-red gouraud rings, fans |
+| fx_0b1 | 0xD | `FX_CARBUNCLE_FAN_EMITTER` | kind/usage (look pending) | emitter: one fan element (not rendered) |
+| fx_0b1 | 0xE | `FX_CARBUNCLE_LENS_STREAK` | render | emitter: blue-white lens streak, white-red ring |
+| fx_0b1 | 0xF | `FX_CARBUNCLE_CAMERA_KEYS` | usage | table: camera key path for fxm_camKeyAdd (target 1) |
+| fx_0b1 | 0x10 | `FX_CARBUNCLE_LIGHT_BEAM` | render | trail: blue-white light beam, drawn twice (fx_0b1_beams) |
+| fx_0b1 | 0x11 | `FX_CARBUNCLE_RING_BURST` | render | emitter: cone of white-yellow, lilac, cyan and blue-grey gouraud rings, fan |
+| fx_0b1 | 0x12 | `FX_CARBUNCLE_CRYSTAL_SPARKLES` | render | emitter: white crystal-flake sprites and blue sparkles, fans |
+| fx_0b1 | 0x13 | `FX_CARBUNCLE_FLAME_GLINT` | render | emitter: orange-blue flame-shaped glints, red gouraud rings, fans |
+| fx_0b1 | 0x14 | `FX_CARBUNCLE_RING_BURST_3` | render | emitter: cone of white-red, lilac, cyan and blue-grey gouraud rings, fan |
+| fx_0b1 | 0x15 | `FX_CARBUNCLE_LENS_STREAK_2` | render | emitter: blue-white lens streak, white-red ring, orange sprites |
+| fx_0b1 | 0x16 | `FX_CARBUNCLE_ORBIT_GLOW_2` | kind/usage (look pending) | emitter: orbiting particle + sprite (texture not resolved) |
+| fx_0b1 | 0x17 | `FX_CARBUNCLE_CAMERA_KEYS_3` | usage | table: camera key path for fxm_camKeyAdd (target 3) |
+| fx_0b1 | 0x18 | `FX_CARBUNCLE_COLOR_RINGS` | render | emitter: pink / green / pink gouraud rings at each target body |
+| fx_0b1 | 0x19 | `FX_CARBUNCLE_CAMERA_KEYS_2` | usage | table: camera key path for fxm_camKeyAdd (target 2) |
+| fx_0b1 | 0x21 | `FX_CARBUNCLE_PINK_RING` | render | emitter: pink gouraud ring and swirl-ring particles at each target body |
+| fx_0b1 | 0x22 | `FX_CARBUNCLE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0b1 | 0x23 | `FX_CARBUNCLE_STAR_CRYSTAL` | render | model: four-point star crystal (texture 0x177), one per target |
+| fx_0b1 | 0x24 | `FX_CARBUNCLE_ORBIT_GLOW_3` | kind/usage (look pending) | emitter: orbiting particle + sprite (texture not resolved) |
 | fx_0b2 | 0x1 | `FX_TWISTER_VORTEX` | render | particles: tan swirling vortex, drawn directly |
 | fx_0b2 | 0x2 | `FX_TWISTER_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | fx_0b2 | 0x4 | `FX_TWISTER_WIND_STREAK` | render | trail: violet-white wind streak (fxm_drawOffsetTrail) |
 | fx_0b2 | 0x5 | `FX_TWISTER_DUST_CLOUDS` | render | emitter: spiralling grey-blue dust clouds |
+| fx_0b3 | 0x2 | `FX_LEVIATHAN_WATER_SPLASH` | render | emitter: blue water-splash sprites and droplets |
+| fx_0b3 | 0x3 | `FX_LEVIATHAN_SUMMON_KEYS` | usage | table: key track (position, rotation, scale) of the summoned body (fxm_keyGetVec3) |
+| fx_0b3 | 0x4 | `FX_LEVIATHAN_FAN_EMITTER` | kind/usage (look pending) | emitter: orbiting fan element (not rendered) |
+| fx_0b3 | 0x5 | `FX_LEVIATHAN_WATER_DROPS` | render | emitter: water droplet sprites |
+| fx_0b3 | 0x6 | `FX_LEVIATHAN_WATER_GLINT` | kind/usage (look pending) | emitter: particles, the render shows the whole water texture page |
+| fx_0b3 | 0x7 | `FX_LEVIATHAN_BLUE_RING` | render | emitter: blue gouraud ring + water-page particle |
+| fx_0b3 | 0x8 | `FX_LEVIATHAN_SO_MODEL` | kind/usage (look pending) | 'so' model registered by op80 |
+| fx_0b3 | 0xB | `FX_LEVIATHAN_MORPH_POS_KEYS` | usage | table: key track, position of the morph models (op80) |
+| fx_0b3 | 0xC | `FX_LEVIATHAN_MODEL_SCALE_KEYS_3` | usage | table: key track, scale of an effect model (op84) |
+| fx_0b3 | 0x13 | `FX_LEVIATHAN_SUMMON_POS_KEYS` | usage | table: key track, position of the summon model (op83) |
+| fx_0b3 | 0x15 | `FX_LEVIATHAN_SUMMON_POS_KEYS_2` | usage | table: key track, position of the summon model (op84) |
+| fx_0b3 | 0x16 | `FX_LEVIATHAN_SUMMON_POS_KEYS_3` | usage | table: key track, position of the summon model (op85) |
+| fx_0b3 | 0x1E | `FX_LEVIATHAN_ORBIT_PARTICLE` | kind/usage (look pending) | emitter: orbiting particle, the render shows the whole water texture page |
+| fx_0b3 | 0x1F | `FX_LEVIATHAN_WATER_SPLASH_2` | render | emitter: blue water-splash sprites and droplets |
+| fx_0b3 | 0x20 | `FX_LEVIATHAN_MORPH_KEYS` | usage | table: key track, position and scale of the morph models (op81) |
+| fx_0b3 | 0x23 | `FX_LEVIATHAN_SPRAY` | render | emitter: blue water spray clouds |
+| fx_0b3 | 0x24 | `FX_LEVIATHAN_FOAM` | render | animquads: blue-white foam, drawn along the wave edge |
+| fx_0b3 | 0x25 | `FX_LEVIATHAN_WATER_DROPS_2` | render | emitter: water droplet sprites |
+| fx_0b3 | 0x26 | `FX_LEVIATHAN_FOAM_2` | render | animquads: blue-white foam cloud |
+| fx_0b3 | 0x27 | `FX_LEVIATHAN_ORBIT_POS_KEYS_2` | usage | table: key track, position of the orbit particle emitter (op84) |
+| fx_0b3 | 0x2D | `FX_LEVIATHAN_MODEL_SCALE_KEYS` | usage | table: key track, scale of an effect model (op83) |
+| fx_0b3 | 0x2E | `FX_LEVIATHAN_ORBIT_POS_KEYS` | usage | table: key track, position of the orbit particle emitter (op81) |
+| fx_0b3 | 0x2F | `FX_LEVIATHAN_WATER_STREAK` | render | emitter: blue water streak (screen trail) |
+| fx_0b3 | 0x30 | `FX_LEVIATHAN_RAINBOW_RING` | render | emitter: blue / green / yellow / red gouraud ring |
+| fx_0b3 | 0x31 | `FX_LEVIATHAN_WATER_STREAK_2` | render | emitter: blue water streak (3D trail) and spray |
+| fx_0b3 | 0x3F | `FX_LEVIATHAN_MODEL_SCALE_KEYS_2` | usage | table: key track, scale of an effect model (op84) |
+| fx_0b3 | 0x86 | `FX_LEVIATHAN_SUMMON_MODEL_6` | kind/usage (look pending) | summon data entry 6: 'so' model |
+| fx_0b3 | 0x87 | `FX_LEVIATHAN_SUMMON_MODEL_7` | kind/usage (look pending) | summon data entry 7: 'so' model |
+| fx_0b3 | 0x88 | `FX_LEVIATHAN_SUMMON_MODEL_8` | kind/usage (look pending) | summon data entry 8: 'so' model |
+| fx_0b3 | 0x89 | `FX_LEVIATHAN_SUMMON_MODEL_9` | kind/usage (look pending) | summon data entry 9: 'so' model drawn as the sea (fx_0b3_seaModel) |
+| fx_0b3 | 0x8A | `FX_LEVIATHAN_SUMMON_MODEL_10` | kind/usage (look pending) | summon data entry 10: 'so' model |
+| fx_0b3 | 0x8B | `FX_LEVIATHAN_SUMMON_MODEL_11` | kind/usage (look pending) | summon data entry 11: 'so' model |
+| fx_0b3 | 0x8C | `FX_LEVIATHAN_SUMMON_MODEL_12` | kind/usage (look pending) | summon data entry 12: 'so' model |
+| fx_0b3 | 0x8D | `FX_LEVIATHAN_SUMMON_MODEL_13` | kind/usage (look pending) | summon data entry 13: 'so' model |
+| fx_0b3 | 0x8E | `FX_LEVIATHAN_SUMMON_MODEL_14` | kind/usage (look pending) | summon data entry 14: 'so' model |
+| fx_0b3 | 0x8F | `FX_LEVIATHAN_SUMMON_MODEL_15` | kind/usage (look pending) | summon data entry 15: 'so' model |
 | fx_0b4 | 0xE | `FX_AERO_GREEN_RING` | render | emitter: orbiting green gouraud rings |
 | fx_0b4 | 0xF | `FX_AERO_WIND_RING` | render | emitter: orbiting pale green wind-ring particles |
 | fx_0b4 | 0x10 | `FX_AERO_GREEN_BURST` | render | emitter: green gust puffs fading to blue |
@@ -36,6 +93,76 @@ Notes:
 | fx_0b6 | 0x7 | `FX_SCORCH_HEAT_RING` | render | emitter: white-pink gouraud rings |
 | fx_0b7 | 0x2 | `FX_HEAVY_FAN_EMITTER` | kind/usage (look pending) | emitter: orbiting fan elements (not rendered) |
 | fx_0b7 | 0x6 | `FX_HEAVY_GREEN_SWIRL` | render | emitter: green swirl ring particle + pink-white gouraud rings |
+| fx_0b8 | 0x2 | `FX_ATOMOS_SPRITES` | kind/usage (look pending) | emitter: two sprite elements, render all black |
+| fx_0b8 | 0x3 | `FX_ATOMOS_VORTEX_STREAK` | render | trail: violet vortex streak |
+| fx_0b8 | 0x7 | `FX_ATOMOS_FAN_EMITTER` | kind/usage (look pending) | emitter: fan elements (not rendered) |
+| fx_0b8 | 0x8 | `FX_ATOMOS_SPRITES_2` | kind/usage (look pending) | emitter: two spiralling sprite elements, render all black |
+| fx_0b8 | 0x9 | `FX_ATOMOS_VIOLET_RINGS` | render | emitter: violet streak and violet / dark blue gouraud rings |
+| fx_0b8 | 0xA | `FX_ATOMOS_PINK_CLOUD` | render | emitter: violet-blue and white-red rings, pink cloud particles |
+| fx_0b8 | 0xB | `FX_ATOMOS_FAINT_GLOW` | kind/usage (look pending) | emitter: spiralling glow particles, render almost black |
+| fx_0b8 | 0xC | `FX_ATOMOS_ROCK_DEBRIS` | render | emitter: grey-blue rock debris particles |
+| fx_0b8 | 0xD | `FX_ATOMOS_BLAST_RINGS` | render | emitter: white / yellow / orange / brown and purple gouraud rings |
+| fx_0b8 | 0xE | `FX_ATOMOS_VORTEX_SPARKLES` | render | emitter: orbiting violet vortex trails and gold sparkles |
+| fx_0b8 | 0xF | `FX_ATOMOS_UNIT_RING` | render | emitter: white-grey gouraud rings at each unit |
+| fx_0b8 | 0x10 | `FX_ATOMOS_SPHERE` | render | model: sphere, texture 0x17C (not in the file) |
+| fx_0b8 | 0x11 | `FX_ATOMOS_RING_FUNNEL` | render | model: gouraud ring funnel (flat torus) |
+| fx_0b8 | 0x12 | `FX_ATOMOS_CLOUD_FUNNEL` | render | model: ring funnel with a grey cloud texture |
+| fx_0b8 | 0x13 | `FX_ATOMOS_ORANGE_RING` | render | model: ring with an orange cloud texture |
+| fx_0b8 | 0x1F | `FX_ATOMOS_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0b8 | 0x20 | `FX_ATOMOS_VIOLET_RING` | render | emitter: white-violet and white-blue gouraud rings |
+| fx_0b8 | 0x21 | `FX_ATOMOS_PURPLE_RINGS` | render | emitter: white / magenta / purple and pale yellow / grey gouraud rings |
+| fx_0b8 | 0x22 | `FX_ATOMOS_SPRITES_3` | kind/usage (look pending) | emitter: two sprite elements, render all black |
+| fx_0b8 | 0x80 | `FX_ATOMOS_SUMMON_MODEL_0` | kind/usage (look pending) | summon data entry 0: 'so' model |
+| fx_0b8 | 0x81 | `FX_ATOMOS_SUMMON_MODEL_1` | kind/usage (look pending) | summon data entry 1: 'so' model |
+| fx_0b8 | 0x82 | `FX_ATOMOS_SUMMON_MODEL_2` | kind/usage (look pending) | summon data entry 2: 'so' model |
+| fx_0b8 | 0x83 | `FX_ATOMOS_SUMMON_MODEL_3` | kind/usage (look pending) | summon data entry 3: 'so' model |
+| fx_0b8 | 0x84 | `FX_ATOMOS_SUMMON_MODEL_4` | kind/usage (look pending) | summon data entry 4: 'so' model |
+| fx_0b8 | 0x85 | `FX_ATOMOS_SUMMON_MODEL_5` | kind/usage (look pending) | summon data entry 5: textured model (Hi_RegisterTexEffModel) |
+| fx_0b8 | 0x86 | `FX_ATOMOS_SUMMON_MODEL_6` | kind/usage (look pending) | summon data entry 6: 'so' model |
+| fx_0b8 | 0x87 | `FX_ATOMOS_SUMMON_MODEL_7` | kind/usage (look pending) | summon data entry 7: 'so' model |
+| fx_0b8 | 0x88 | `FX_ATOMOS_SUMMON_MODEL_8` | kind/usage (look pending) | summon data entry 8: 'so' model |
+| fx_0b8 | 0x89 | `FX_ATOMOS_SUMMON_MODEL_9` | kind/usage (look pending) | summon data entry 9: textured model (Hi_RegisterTexEffModel) |
+| fx_0b8 | 0x8A | `FX_ATOMOS_SUMMON_MODEL_10` | kind/usage (look pending) | summon data entry 10: 'so' model |
+| fx_0b8 | 0x8B | `FX_ATOMOS_SUMMON_MODEL_11` | kind/usage (look pending) | summon data entry 11: textured model (Hi_RegisterTexEffModel) |
+| fx_0b8 | 0x8C | `FX_ATOMOS_SUMMON_MODEL_12` | kind/usage (look pending) | summon data entry 12: textured model (Hi_RegisterTexEffModel) |
+| fx_0b8 | 0x8D | `FX_ATOMOS_SUMMON_MODEL_13` | kind/usage (look pending) | summon data entry 13: textured model (Hi_RegisterTexEffModel) |
+| fx_0b8 | 0x8E | `FX_ATOMOS_SUMMON_MODEL_14` | kind/usage (look pending) | summon data entry 14: textured model (Hi_RegisterTexEffModel) |
+| fx_0b9 | 0x1 | `FX_SANDSTORM_SAND_STREAK` | render | emitter: grey sand streak (screen trail) |
+| fx_0b9 | 0x2 | `FX_SANDSTORM_SAND_STREAK_2` | render | emitter: grey sand streak (homing 3D trail) |
+| fx_0b9 | 0x3 | `FX_SANDSTORM_SAND_CLOUD` | render | emitter: grainy grey sand clouds |
+| fx_0ba | 0x4 | `FX_RAMUH_MODEL` | kind/usage (look pending) | 'so' model |
+| fx_0ba | 0x5 | `FX_RAMUH_LIGHTNING_RIBBON` | kind/usage (look pending) | trail: ribbon drawn between key points (texture garbled in the render) |
+| fx_0ba | 0x7 | `FX_RAMUH_LENS_FLASH_KEYS` | usage | table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH) |
+| fx_0ba | 0xA | `FX_RAMUH_BLUE_GLOW_RINGS` | render | emitter: blue glow quad and fading light-blue gouraud rings |
+| fx_0ba | 0xD | `FX_RAMUH_LIGHTNING_RIBBON_2` | kind/usage (look pending) | trail: second ribbon drawn between key points (texture garbled in the render) |
+| fx_0ba | 0x14 | `FX_RAMUH_SPARK_BURST` | kind/usage (look pending) | emitter: white gouraud rings + sprites (texture garbled in the render) |
+| fx_0ba | 0x15 | `FX_RAMUH_LENS_FLASH` | render | particles: white-violet lens flash |
+| fx_0ba | 0x16 | `FX_RAMUH_LIGHTNING_BOLT` | kind/usage (look pending) | trail: 8-frame trail (texture garbled in the render) |
+| fx_0ba | 0x18 | `FX_RAMUH_MODEL_2` | kind/usage (look pending) | 'so' model |
+| fx_0ba | 0x19 | `FX_RAMUH_MOTION_KEYS_2` | usage | table: per-frame position / rotation keys (op81, second phase) |
+| fx_0ba | 0x1A | `FX_RAMUH_MOTION_KEYS` | usage | table: per-frame position / rotation keys (op81, first phase) |
+| fx_0ba | 0x1B | `FX_RAMUH_BLUE_RING` | render | rings: blue gouraud rings |
+| fx_0ba | 0x1D | `FX_RAMUH_CYAN_RING` | render | rings: white / cyan / blue gouraud rings |
+| fx_0ba | 0x1E | `FX_RAMUH_ORANGE_TRAIL` | kind/usage (look pending) | trail: 8-frame offset trail (texture garbled in the render, orange) |
+| fx_0ba | 0x1F | `FX_RAMUH_MODEL_3` | kind/usage (look pending) | 'so' model |
+| fx_0ba | 0x20 | `FX_RAMUH_MODEL_4` | kind/usage (look pending) | 'so' model |
+| fx_0ba | 0x21 | `FX_RAMUH_GREY_RING` | render | rings: grey gouraud rings |
+| fx_0ba | 0x23 | `FX_RAMUH_BOLT_POINTS` | usage | table: ten points around the summon, picked at random (op83) |
+| fx_0ba | 0x24 | `FX_RAMUH_BOLT_POINTS_2` | usage | table: second set of ten points around the summon (op83) |
+| fx_0ba | 0x26 | `FX_RAMUH_MODEL_5` | kind/usage (look pending) | 'so' model |
+| fx_0ba | 0x27 | `FX_RAMUH_WHITE_RING` | render | rings: white gouraud ring |
+| fx_0ba | 0x29 | `FX_RAMUH_SPARK_RING` | render | rings: pale cyan gouraud rings (pool items) |
+| fx_0ba | 0x2C | `FX_RAMUH_SPARK_PARTICLE` | kind/usage (look pending) | emitter: one particle (texture garbled in the render) |
+| fx_0ba | 0x2E | `FX_RAMUH_CAMERA_KEYS` | usage | table: per-frame camera point 0 (op82) |
+| fx_0ba | 0x2F | `FX_RAMUH_CAMERA_KEYS_2` | usage | table: per-frame camera point 1 (op82) |
+| fx_0ba | 0x32 | `FX_RAMUH_POOL_TRAIL` | kind/usage (look pending) | trail: 8-frame trail of the op85 pool items (texture garbled in the render) |
+| fx_0ba | 0x80 | `FX_RAMUH_SUMMON_MODEL_0` | kind/usage (look pending) | summon data entry 0: 'so' model |
+| fx_0ba | 0x81 | `FX_RAMUH_SUMMON_MODEL_1` | kind/usage (look pending) | summon data entry 1: 'so' model |
+| fx_0ba | 0x82 | `FX_RAMUH_SUMMON_MODEL_2` | kind/usage (look pending) | summon data entry 2: 'so' model |
+| fx_0ba | 0x83 | `FX_RAMUH_SUMMON_MODEL_3` | kind/usage (look pending) | summon data entry 3: 'so' model |
+| fx_0ba | 0x84 | `FX_RAMUH_SUMMON_EMITTER_4` | kind/usage (look pending) | summon data entry 4: emitter |
+| fx_0ba | 0x85 | `FX_RAMUH_SUMMON_KEYS_5` | usage | summon data entry 5: per-frame key table (op80) |
+| fx_0ba | 0x86 | `FX_RAMUH_SUMMON_EMITTER_6` | kind/usage (look pending) | summon data entry 6: emitter |
 | fx_0bb | 0x1 | `FX_MUSTARD_BOMB_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
 | fx_0bb | 0x7 | `FX_MUSTARD_BOMB_FIREBALLS` | render | emitter: orange fireball sprites with light streaks |
 | fx_0bb | 0x9 | `FX_MUSTARD_BOMB_EXPLOSION_RINGS` | render | emitter: yellow-orange-red and blue gouraud rings (+ a textured ring, texture not in the file) |
@@ -67,6 +194,42 @@ Notes:
 | fx_0c6 | 0x5 | `FX_AURA_FAN_EMITTER` | kind/usage (look pending) | emitter: three orbiting fan elements (not rendered) (byte-identical to fx_0c5 entry 0x8) |
 | fx_0c6 | 0x8 | `FX_AURA_SWIRL` | render | emitter: yellow / white / lilac swirl particles, blue star flash, sparkles, fans (byte-identical to fx_0c5 entry 0x7) |
 | fx_0c7 | 0x1 | `FX_FOCUS_GLOW_RING` | render | emitter: orange gouraud ring, fans |
+| fx_0c9 | 0x1 | `FX_JEWEL_GEM` | render | model: faceted gem (polyhedron, white texture) |
+| fx_0c9 | 0x2 | `FX_JEWEL_GEM_SPARKLES` | render | emitter: stone / crystal glint particles and star sparkles (+ sprites, texture not in the file) |
+| fx_0c9 | 0x3 | `FX_JEWEL_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0c9 | 0x4 | `FX_JEWEL_LIGHT_BURST` | render | emitter: white / lilac / cyan rings and violet light streaks |
+| fx_0c9 | 0x5 | `FX_JEWEL_ORE_GLINT` | render | emitter: green ore glint, lilac / cyan ring, star sparkles |
+| fx_0c9 | 0x6 | `FX_JEWEL_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0c9 | 0x10 | `FX_JEWEL_GLOW_RING` | render | emitter: white-cyan gouraud ring, fans |
+| fx_0ca | 0x1 | `FX_POISON_BUBBLES` | render | emitter: purple poison blobs and bubbles |
+| fx_0ca | 0x2 | `FX_POISON_SWIRL` | render | emitter: orbiting purple poison trail |
+| fx_0cb | 0x5 | `FX_LIGHT_FLARE_GLOW_RINGS` | render | rings: white / cyan / orange / red gouraud rings |
+| fx_0cb | 0x8 | `FX_LIGHT_FLARE_MODEL_2` | kind/usage (look pending) | 'so' model, drawn fading with the first |
+| fx_0cb | 0xC | `FX_LIGHT_FLARE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (with the screen tint) |
+| fx_0cb | 0xF | `FX_LIGHT_FLARE_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop (with the rings) |
+| fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | kind/usage (look pending) | rings: textured ring drawn twice, tilted (texture not in the file) |
+| fx_0cb | 0x12 | `FX_LIGHT_FLARE_MODEL` | kind/usage (look pending) | 'so' model, drawn fading |
+| fx_0cc | 0x2 | `FX_METEORITE_IMPACT_RING` | render | rings: white-pink gouraud ring at the impact |
+| fx_0cc | 0x3 | `FX_METEORITE_IMPACT_SMOKE` | render | particles: pink-white smoke puff at the impact |
+| fx_0cc | 0x7 | `FX_METEORITE_RED_GLOW` | render | particles: red glow around the falling rock |
+| fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | kind/usage (look pending) | emitter: sprites following the falling rock, render all black |
+| fx_0cc | 0xC | `FX_METEORITE_IMPACT_FLASH` | render | particles: white radial flash at the impact |
+| fx_0cc | 0xF | `FX_METEORITE_ROCK` | kind/usage (look pending) | 'so' model: the falling rock (drawn spinning down) |
+| fx_0cd | 0x1 | `FX_AERA_MODEL_3` | kind/usage (look pending) | 'so' model |
+| fx_0cd | 0x3 | `FX_AERA_MODEL_2` | kind/usage (look pending) | 'so' model |
+| fx_0cd | 0x4 | `FX_AERA_GREEN_RING` | render | emitter: green gouraud rings |
+| fx_0cd | 0x5 | `FX_AERA_WIND_RING` | render | emitter: orbiting white wind-ring particle |
+| fx_0cd | 0x7 | `FX_AERA_GREEN_BURST` | render | emitter: green gust puffs |
+| fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | kind/usage (look pending) | emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) |
+| fx_0cd | 0xA | `FX_AERA_GUST_RINGS` | render | emitter: cyan-green gouraud rings |
+| fx_0cd | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites (texture garbled in the render) |
+| fx_0cd | 0xD | `FX_AERA_MODEL` | kind/usage (look pending) | 'so' model |
+| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | kind/usage (look pending) | emitter: 3D trail (texture garbled in the render) |
+| fx_0ce | 0x2 | `FX_SCREECH_PURPLE_MIST` | render | emitter: dark purple mist rings and brown-pink gouraud rings |
+| fx_0ce | 0x7 | `FX_SCREECH_MODEL` | kind/usage (look pending) | 'so' model |
+| fx_0ce | 0xB | `FX_SCREECH_DARK_RINGS` | kind/usage (look pending) | emitter: textured rings, render almost black |
+| fx_0ce | 0xC | `FX_SCREECH_LILAC_RING` | render | emitter: lilac glow ring particle |
+| fx_0cf | 0x1 | `FX_STOCK_BREAK_SLASH_ARC` | render | emitter: blue slash arc, fans |
 | fx_0d0 | 0x7 | `FX_POWER_BREAK_RED_SWIRL` | render | emitter: red-white swirl ring particles |
 | fx_0d0 | 0x8 | `FX_POWER_BREAK_LIGHT_STREAK` | render | emitter: yellow light streak with a flare, red ember sprites |
 | fx_0d0 | 0xC | `FX_POWER_BREAK_ENERGY_ORB` | render | emitter: yellow energy orb particle |
@@ -76,6 +239,86 @@ Notes:
 | fx_0d1 | 0x9 | `FX_MENTAL_BREAK_GLOW_CROSS` | render | emitter: four pink glows in a cross, orange / blue ring |
 | fx_0d1 | 0xD | `FX_MENTAL_BREAK_ENERGY_ORB` | render | emitter: pink energy orb particle |
 | fx_0d1 | 0xE | `FX_MENTAL_BREAK_SPARKLES` | render | emitter: pink star sparkle sprites, fan |
+| fx_0d2 | 0x1 | `FX_FENRIR_FAN_EMITTER` | kind/usage (look pending) | emitter: orbiting fan element (not rendered) |
+| fx_0d2 | 0x2 | `FX_FENRIR_DUST_CLOUD` | render | emitter: tan dust clouds and an orange gouraud ring |
+| fx_0d2 | 0x3 | `FX_FENRIR_BLUE_RINGS` | render | emitter: white-blue gouraud rings |
+| fx_0d2 | 0x4 | `FX_FENRIR_ORANGE_RING` | render | emitter: orange gouraud ring |
+| fx_0d2 | 0x5 | `FX_FENRIR_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0d2 | 0x8 | `FX_FENRIR_UNIT_PATHS` | usage | table: offset table of per-unit position paths (op83) |
+| fx_0d2 | 0x9 | `FX_FENRIR_MORPH_PATH` | usage | table: rotation / position path of the morph models (fx_0d2_morphPath) |
+| fx_0d2 | 0x14 | `FX_FENRIR_UNIT_OFFSET_PATH` | usage | table: position path (fx_0d2_unitOffsetPath) |
+| fx_0d2 | 0x15 | `FX_FENRIR_UNIT_SCALE_PATH` | usage | table: vector path (fx_0d2_unitScalePath) |
+| fx_0d2 | 0x19 | `FX_FENRIR_MORPH_CURVE` | usage | table: value path (fx_0d2_morphCurve2) |
+| fx_0d2 | 0x1A | `FX_FENRIR_MORPH_CURVE_2` | usage | table: alternative value path (fx_0d2_morphCurve2) |
+| fx_0d2 | 0x1B | `FX_FENRIR_ROCK_STREAK` | render | trail: brown rock-textured streak, drawn along 9 paths |
+| fx_0d2 | 0x1D | `FX_FENRIR_CAMERA_KEYS_2` | usage | table: camera channel 2 keys from frame 0xDE (fxm_camChanAdd) |
+| fx_0d2 | 0x1E | `FX_FENRIR_CAMERA_KEYS_3` | usage | table: camera channel 3 keys from frame 0xDD |
+| fx_0d2 | 0x1F | `FX_FENRIR_CAMERA_KEYS_1` | usage | table: camera channel 1 keys from frame 0xDE |
+| fx_0d2 | 0x20 | `FX_FENRIR_CAMERA_KEYS_4` | usage | table: camera channel 4 keys from frame 0xDD |
+| fx_0d2 | 0x21 | `FX_FENRIR_DUST_DEBRIS` | render | emitter: tan dust clouds and rock debris quads |
+| fx_0d2 | 0x25 | `FX_FENRIR_ROCK_STREAK_2` | render | trail: brown rock-textured streak, drawn along 11 paths |
+| fx_0d2 | 0x28 | `FX_FENRIR_SLICE_PATH_2` | usage | table: rotation / position path (fx_0d2_slicePath2) |
+| fx_0d2 | 0x80 | `FX_FENRIR_SUMMON_STREAK_PATHS_0` | usage | summon data entry 0: offset table of the rock-streak position paths |
+| fx_0d2 | 0x81 | `FX_FENRIR_SUMMON_STREAK_PATHS_1` | usage | summon data entry 1: offset table of the rock-streak position paths |
+| fx_0d2 | 0x82 | `FX_FENRIR_SUMMON_EMIT_PATH_2` | usage | summon data entry 2: position path of the emitters (fx_0d2_emitPath) |
+| fx_0d2 | 0x83 | `FX_FENRIR_SUMMON_EMITTER_3` | kind/usage (look pending) | summon data entry 3: emitter |
+| fx_0d2 | 0x84 | `FX_FENRIR_SUMMON_RING_PATH_4` | usage | summon data entry 4: rotation / position path (fx_0d2_ringPath) |
+| fx_0d2 | 0x85 | `FX_FENRIR_SUMMON_MODEL_5` | kind/usage (look pending) | summon data entry 5: 'so' model |
+| fx_0d2 | 0x86 | `FX_FENRIR_SUMMON_MODEL_6` | kind/usage (look pending) | summon data entry 6: 'so' model |
+| fx_0d2 | 0x8D | `FX_FENRIR_SUMMON_MODEL_13` | kind/usage (look pending) | summon data entry 13: 'so' model |
+| fx_0d2 | 0x8E | `FX_FENRIR_SUMMON_MODEL_14` | kind/usage (look pending) | summon data entry 14: 'so' model |
+| fx_0d2 | 0x8F | `FX_FENRIR_SUMMON_MORPH_CURVE_15` | usage | summon data entry 15: value path (fx_0d2_morphCurve) |
+| fx_0d2 | 0x90 | `FX_FENRIR_SUMMON_SLICE_PATHS_16` | usage | summon data entry 16: offset table of six rotation / position paths (fx_0d2_slicePaths) |
+| fx_0d2 | 0x91 | `FX_FENRIR_SUMMON_SLICE_PATHS_17` | usage | summon data entry 17: offset table of six rotation / position paths (fx_0d2_slicePaths) |
+| fx_0d2 | 0x92 | `FX_FENRIR_SUMMON_PATH_18` | usage | summon data entry 18: position path of the summon (fx_0d2_summonPath) |
+| fx_0d2 | 0x93 | `FX_FENRIR_SUMMON_CAMERA_KEYS_19` | usage | summon data entry 19: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x94 | `FX_FENRIR_SUMMON_CAMERA_KEYS_20` | usage | summon data entry 20: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x95 | `FX_FENRIR_SUMMON_CAMERA_KEYS_21` | usage | summon data entry 21: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x96 | `FX_FENRIR_SUMMON_CAMERA_KEYS_22` | usage | summon data entry 22: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x97 | `FX_FENRIR_SUMMON_CAMERA_KEYS_23` | usage | summon data entry 23: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x98 | `FX_FENRIR_SUMMON_CAMERA_KEYS_24` | usage | summon data entry 24: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x99 | `FX_FENRIR_SUMMON_CAMERA_KEYS_25` | usage | summon data entry 25: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x9A | `FX_FENRIR_SUMMON_CAMERA_KEYS_26` | usage | summon data entry 26: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x9B | `FX_FENRIR_SUMMON_CAMERA_KEYS_27` | usage | summon data entry 27: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x9C | `FX_FENRIR_SUMMON_CAMERA_KEYS_28` | usage | summon data entry 28: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x9D | `FX_FENRIR_SUMMON_CAMERA_KEYS_29` | usage | summon data entry 29: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0x9E | `FX_FENRIR_SUMMON_MODEL_30` | kind/usage (look pending) | summon data entry 30: 'so' model |
+| fx_0d2 | 0x9F | `FX_FENRIR_SUMMON_PATH_31` | usage | summon data entry 31: position path of the summon (fx_0d2_summonPath) |
+| fx_0d2 | 0xA0 | `FX_FENRIR_SUMMON_CAMERA_KEYS_32` | usage | summon data entry 32: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0xA1 | `FX_FENRIR_SUMMON_CAMERA_KEYS_33` | usage | summon data entry 33: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0xA2 | `FX_FENRIR_SUMMON_CAMERA_KEYS_34` | usage | summon data entry 34: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0xA3 | `FX_FENRIR_SUMMON_CAMERA_KEYS_35` | usage | summon data entry 35: camera channel keys (fxm_camChanAdd, op80) |
+| fx_0d2 | 0xA4 | `FX_FENRIR_SUMMON_EMITTER_36` | kind/usage (look pending) | summon data entry 36: emitter |
+| fx_0d2 | 0xA5 | `FX_FENRIR_SUMMON_EMITTER_37` | kind/usage (look pending) | summon data entry 37: emitter |
+| fx_0d2 | 0xA6 | `FX_FENRIR_SUMMON_EMITTER_38` | kind/usage (look pending) | summon data entry 38: emitter |
+| fx_0d2 | 0xA7 | `FX_FENRIR_SUMMON_SLICE_PATH_39` | usage | summon data entry 39: rotation / position path (fx_0d2_slicePath) |
+| fx_0d3 | 0x1 | `FX_PHOENIX_RED_RINGS` | render | emitter: grey and white-red gouraud rings |
+| fx_0d3 | 0x2 | `FX_PHOENIX_FIRE_TRAILS` | render | emitter: fire-textured trails and a swirling ember ring |
+| fx_0d3 | 0x3 | `FX_PHOENIX_GLOW_RINGS` | render | emitter: pale yellow / grey gouraud rings (+ textured rings, texture not in the file) |
+| fx_0d3 | 0x4 | `FX_PHOENIX_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0d3 | 0x5 | `FX_PHOENIX_FAN_EMITTER_2` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0d3 | 0x6 | `FX_PHOENIX_FAN_EMITTER_3` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0d3 | 0x7 | `FX_PHOENIX_SPRITE_LINE` | kind/usage (look pending) | sprite line (render almost empty) |
+| fx_0d3 | 0xB | `FX_PHOENIX_FIRE_TRAILS_2` | render | emitter: orbiting fire-textured trails |
+| fx_0d3 | 0xC | `FX_PHOENIX_MODEL_3` | kind/usage (look pending) | 'so' model |
+| fx_0d3 | 0xD | `FX_PHOENIX_MODEL_2` | kind/usage (look pending) | 'so' model |
+| fx_0d3 | 0xE | `FX_PHOENIX_MODEL_4` | kind/usage (look pending) | 'so' model |
+| fx_0d3 | 0xF | `FX_PHOENIX_EMBERS` | render | emitter: glowing ember sprites |
+| fx_0d3 | 0x10 | `FX_PHOENIX_FIRE_FEATHERS` | render | emitter: orbiting fire trails and flame-feather quads |
+| fx_0d3 | 0x11 | `FX_PHOENIX_PINK_RINGS` | render | emitter: white / pink / copper gouraud rings |
+| fx_0d3 | 0x12 | `FX_PHOENIX_GOLD_FEATHERS` | render | emitter: golden feather quads |
+| fx_0d3 | 0x13 | `FX_PHOENIX_FAN_EMITTER_4` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0d3 | 0x14 | `FX_PHOENIX_FAN_EMITTER_5` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
+| fx_0d3 | 0x15 | `FX_PHOENIX_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_0d3 | 0x16 | `FX_PHOENIX_MODEL` | kind/usage (look pending) | 'so' model (fx_0d3_sharedModel) |
+| fx_0d3 | 0x17 | `FX_PHOENIX_FLAME_FEATHERS` | render | emitter: flame-feather quads |
+| fx_0d3 | 0x18 | `FX_PHOENIX_FLAME_FEATHERS_2` | render | emitter: flame-feather quads (cylinder) |
+| fx_0d3 | 0x19 | `FX_PHOENIX_GOLD_FEATHERS_2` | render | emitter: golden feather sprites |
+| fx_0d3 | 0x1A | `FX_PHOENIX_EMBERS_2` | render | emitter: glowing ember sprites |
+| fx_0d3 | 0x1B | `FX_PHOENIX_COPPER_RINGS` | render | emitter: orbiting copper / brown gouraud rings |
+| fx_0d3 | 0x1C | `FX_PHOENIX_EMBERS_3` | render | emitter: glowing ember sprites and red sparks |
+| fx_0d3 | 0x1D | `FX_PHOENIX_FLAME_FEATHERS_3` | render | emitter: flame-feather quads |
+| fx_0d3 | 0x26 | `FX_PHOENIX_MODEL_5` | kind/usage (look pending) | 'so' model |
 | fx_0d4 | 0x1 | `FX_SWDMAG_FIRE_FIREBALL` | render | emitter: fireball sprite with ember sparks, at the target body (byte-identical to fx_000 entry 0x5) |
 | fx_0d4 | 0x2 | `FX_SWDMAG_FIRE_FLAME_BURST` | render | emitter: flame explosion (burst, smoke, embers) rising around the target (byte-identical to fx_000 entry 0x6) |
 | fx_0d4 | 0x9 | `FX_SWDMAG_FIRE_HEAT_RING` | render | emitter: white-red gouraud rings at the target's feet (byte-identical to fx_000 entry 0x7) |
@@ -126,42 +369,29 @@ Notes:
 | fx_0d8 | 0x1D | `FX_SWDMAG_THUNDARA_LENS_FLARES` | render | particles: orange lens-flare dots around the orb (byte-identical to fx_005 entry 0x16) |
 | fx_0d8 | 0x1E | `FX_SWDMAG_THUNDARA_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
 | fx_0d8 | 0x1F | `FX_SWDMAG_THUNDARA_SWORD_GLINT_2` | render | rings: white gouraud ring flash at the sword, rotated |
-| fx_0b9 | 0x1 | `FX_SANDSTORM_SAND_STREAK` | render | emitter: grey sand streak (screen trail) |
-| fx_0b9 | 0x2 | `FX_SANDSTORM_SAND_STREAK_2` | render | emitter: grey sand streak (homing 3D trail) |
-| fx_0b9 | 0x3 | `FX_SANDSTORM_SAND_CLOUD` | render | emitter: grainy grey sand clouds |
-| fx_0c9 | 0x1 | `FX_JEWEL_GEM` | render | model: faceted gem (polyhedron, white texture) |
-| fx_0c9 | 0x2 | `FX_JEWEL_GEM_SPARKLES` | render | emitter: stone / crystal glint particles and star sparkles (+ sprites, texture not in the file) |
-| fx_0c9 | 0x3 | `FX_JEWEL_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements (not rendered) |
-| fx_0c9 | 0x4 | `FX_JEWEL_LIGHT_BURST` | render | emitter: white / lilac / cyan rings and violet light streaks |
-| fx_0c9 | 0x5 | `FX_JEWEL_ORE_GLINT` | render | emitter: green ore glint, lilac / cyan ring, star sparkles |
-| fx_0c9 | 0x6 | `FX_JEWEL_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
-| fx_0c9 | 0x10 | `FX_JEWEL_GLOW_RING` | render | emitter: white-cyan gouraud ring, fans |
-| fx_0ca | 0x1 | `FX_POISON_BUBBLES` | render | emitter: purple poison blobs and bubbles |
-| fx_0ca | 0x2 | `FX_POISON_SWIRL` | render | emitter: orbiting purple poison trail |
-| fx_0cb | 0x5 | `FX_LIGHT_FLARE_GLOW_RINGS` | render | rings: white / cyan / orange / red gouraud rings |
-| fx_0cb | 0x8 | `FX_LIGHT_FLARE_MODEL_2` | kind/usage (look pending) | 'so' model, drawn fading with the first |
-| fx_0cb | 0xC | `FX_LIGHT_FLARE_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (with the screen tint) |
-| fx_0cb | 0xF | `FX_LIGHT_FLARE_BACKDROP_2` | usage | table: background layers for btlfx_drawBackdrop (with the rings) |
-| fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | kind/usage (look pending) | rings: textured ring drawn twice, tilted (texture not in the file) |
-| fx_0cb | 0x12 | `FX_LIGHT_FLARE_MODEL` | kind/usage (look pending) | 'so' model, drawn fading |
-| fx_0cc | 0x2 | `FX_METEORITE_IMPACT_RING` | render | rings: white-pink gouraud ring at the impact |
-| fx_0cc | 0x3 | `FX_METEORITE_IMPACT_SMOKE` | render | particles: pink-white smoke puff at the impact |
-| fx_0cc | 0x7 | `FX_METEORITE_RED_GLOW` | render | particles: red glow around the falling rock |
-| fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | kind/usage (look pending) | emitter: sprites following the falling rock, render all black |
-| fx_0cc | 0xC | `FX_METEORITE_IMPACT_FLASH` | render | particles: white radial flash at the impact |
-| fx_0cc | 0xF | `FX_METEORITE_ROCK` | kind/usage (look pending) | 'so' model: the falling rock (drawn spinning down) |
-| fx_0cd | 0x1 | `FX_AERA_MODEL_3` | kind/usage (look pending) | 'so' model |
-| fx_0cd | 0x3 | `FX_AERA_MODEL_2` | kind/usage (look pending) | 'so' model |
-| fx_0cd | 0x4 | `FX_AERA_GREEN_RING` | render | emitter: green gouraud rings |
-| fx_0cd | 0x5 | `FX_AERA_WIND_RING` | render | emitter: orbiting white wind-ring particle |
-| fx_0cd | 0x7 | `FX_AERA_GREEN_BURST` | render | emitter: green gust puffs |
-| fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | kind/usage (look pending) | emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) |
-| fx_0cd | 0xA | `FX_AERA_GUST_RINGS` | render | emitter: cyan-green gouraud rings |
-| fx_0cd | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites (texture garbled in the render) |
-| fx_0cd | 0xD | `FX_AERA_MODEL` | kind/usage (look pending) | 'so' model |
-| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | kind/usage (look pending) | emitter: 3D trail (texture garbled in the render) |
-| fx_0ce | 0x2 | `FX_SCREECH_PURPLE_MIST` | render | emitter: dark purple mist rings and brown-pink gouraud rings |
-| fx_0ce | 0x7 | `FX_SCREECH_MODEL` | kind/usage (look pending) | 'so' model |
-| fx_0ce | 0xB | `FX_SCREECH_DARK_RINGS` | kind/usage (look pending) | emitter: textured rings, render almost black |
-| fx_0ce | 0xC | `FX_SCREECH_LILAC_RING` | render | emitter: lilac glow ring particle |
-| fx_0cf | 0x1 | `FX_STOCK_BREAK_SLASH_ARC` | render | emitter: blue slash arc, fans |
+
+## Open questions (emulator)
+
+106 of the 350 named sites are by kind (look pending). Each wants a screenshot at the frame the C starts the
+entry (battle save state, cast / summon / use the skill), or a VRAM dump while it plays:
+
+- Summon data (indices 0x80+, `g_btlfxLoader.summon`): `tools/fxdata.py` does not analyse it, so these are
+  named `FX_<SUMMON>_SUMMON_<KIND>_<index - 0x80>` by their use in the C: Leviathan `SUMMON_MODEL_6..15`,
+  Atomos `SUMMON_MODEL_0..14`, Ramuh `SUMMON_MODEL_0..3`, `SUMMON_EMITTER_4/6` (+ `SUMMON_KEYS_5`), Fenrir
+  `SUMMON_MODEL_5/6/13/14/30`, `SUMMON_EMITTER_3/36/37/38` (+ its key / path / camera tables, named by use).
+  Rendering the summon data (fxdata.py support for the summon chunk) would settle most of them without the
+  emulator.
+- `'so'` models (not drawn by the tool): `FX_LEVIATHAN_SO_MODEL`, `FX_RAMUH_MODEL(_2.._5)`,
+  `FX_LIGHT_FLARE_MODEL(_2)`, `FX_METEORITE_ROCK` (the C draws it falling, so "rock" is from the use),
+  `FX_AERA_MODEL(_2/_3)`, `FX_SCREECH_MODEL`, `FX_PHOENIX_MODEL(_2.._5)`, `FX_SWDMAG_FIRAGA_COLUMN_SEG_0..3`.
+- Fan emitters (not drawn): `FX_SCORCH_`, `FX_HEAVY_`, `FX_AURA_`, `FX_JEWEL_`, `FX_CARBUNCLE_`, `FX_LEVIATHAN_`,
+  `FX_ATOMOS_`, `FX_FENRIR_FAN_EMITTER`, `FX_PHOENIX_FAN_EMITTER(_2.._5)`.
+- Textures the file does not hold or the tool misreads (garbled / whole-page / black renders):
+  `FX_CARBUNCLE_ORBIT_GLOW(_2/_3)`, `FX_LEVIATHAN_WATER_GLINT`, `FX_LEVIATHAN_ORBIT_PARTICLE`,
+  `FX_AERO_SPRITE_SWIRL`, `FX_ATOMOS_SPRITES(_2/_3)`, `FX_ATOMOS_FAINT_GLOW`, the Ramuh trails
+  (`FX_RAMUH_LIGHTNING_RIBBON(_2)`, `FX_RAMUH_LIGHTNING_BOLT`, `FX_RAMUH_ORANGE_TRAIL`, `FX_RAMUH_POOL_TRAIL`) and
+  `FX_RAMUH_SPARK_BURST` / `FX_RAMUH_SPARK_PARTICLE` (all read the same lightning page, which renders as noise),
+  `FX_LIGHT_FLARE_TEXTURED_RING`, `FX_METEORITE_TRAIL_EMITTER`, `FX_AERA_WIND_STREAKS`, `FX_AERA_SPRITE_BURST`,
+  `FX_SCREECH_TRAIL`, `FX_SCREECH_DARK_RINGS`, `FX_PHOENIX_SPRITE_LINE`.
+- Carried over from the pilot (same data in the Swd Mag files): `FX_SWDMAG_FIRAGA_ORBIT_TRAIL`, `_CONE_GLOW`,
+  `_CONE_SPARKS`, `FX_SWDMAG_THUNDARA_SPARKS`, `_ORB_SPARKS(_2)`; settling the spell's look settles these.
