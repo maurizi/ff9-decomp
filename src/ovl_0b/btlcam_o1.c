@@ -164,7 +164,7 @@ void btlcam_loadScript(s32 arg) {
                     val = hdr->height;
                     radius = hdr->radius;
                 }
-                if (radius == BTLCAM_RADIUS_FORCE_LARGE || radius >= BTLCAM_RADIUS_LARGE) {
+                if (radius == BTLCAM_RADIUS_WORM_HYDRA || radius >= BTLCAM_RADIUS_LARGE) {
                     g_btlCamera.variant = BTLCAM_SIZE_LARGE;
                 } else if (radius < BTLCAM_RADIUS_SMALL) {
                     g_btlCamera.variant = BTLCAM_SIZE_SMALL;

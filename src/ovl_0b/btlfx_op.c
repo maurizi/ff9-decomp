@@ -258,17 +258,17 @@ Pool6CEntry *btlfx_startCastEmitter_def(s32 unitId, s32 kind, Unk800E4A3CArgs po
     posRef = &pos;
     pos.c = posRef->b;
     switch (kind) {
-    case BTLFX_CASTK_SPELL:
-    case BTLFX_CASTK_SPELL_B:
+    case BTLFX_CASTK_WHITE:
+    case BTLFX_CASTK_BLACK:
         emitter = btlfx_startEmitter(btlfx_getCommonData(BTLFX_COMMON_EMIT_CAST), (s32)pos.a);
-        if (kind == BTLFX_CASTK_SPELL) {
+        if (kind == BTLFX_CASTK_WHITE) {
             if (emitter != NULL) {
                 emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_A);
                 goto common;
             }
         } else {
             if (emitter != NULL) {
-                emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_SPELL_B_A);
+                emitter->elems[0].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_BLACK_CAST);
             common:
                 if (emitter != NULL) {
                     emitter->elems[1].tex = btlfx_getCommonData(BTLFX_COMMON_TEX_CAST_B);
@@ -282,7 +282,7 @@ Pool6CEntry *btlfx_startCastEmitter_def(s32 unitId, s32 kind, Unk800E4A3CArgs po
         btlfx_playSoundSet(BTLFX_SNDSET_CAST_EIKO, unitId);
         break;
     case BTLFX_CASTK_SUMMON:
-    case BTLFX_CASTK_SUMMON_B:
+    case BTLFX_CASTK_SUMMON_SHORT:
         pos.b[1] -= 0x40;
         emitter = btlfx_startEmitter(btlfx_getCommonData(BTLFX_COMMON_EMIT_SUMMON_CAST), (s32)pos.a);
         if (emitter != NULL) {
@@ -2024,7 +2024,7 @@ void btlfx_playCmdCamera(s32 flags) {
         msg = btlfx_getCommonData(g_btlfxCmdCameras[4]);
     } else if (caster->flags & BTL_UNIT_PARTY) {
         if ((u8)btl_hasStatus(caster, BTL_STATUS_TRANCE) == 0) {
-            if ((hi >> BTLFX_HDR_CASTER_SHIFT) == BTLFX_CASTK_SUMMON || (hi >> BTLFX_HDR_CASTER_SHIFT) == BTLFX_CASTK_SUMMON_B) {
+            if ((hi >> BTLFX_HDR_CASTER_SHIFT) == BTLFX_CASTK_SUMMON || (hi >> BTLFX_HDR_CASTER_SHIFT) == BTLFX_CASTK_SUMMON_SHORT) {
                 if (BTL_UNIT_INDEX(caster->flags) == CHR_DAGGER) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[2]);
                 } else {

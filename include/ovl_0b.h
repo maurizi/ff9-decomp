@@ -1285,30 +1285,33 @@ extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start *
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle
  * textures, 9-0x12 battle cameras (g_btlfxCmdCameras, g_btlfxBounceCamera*), 0x13 and 0x15-0x1F AKAO sounds
  * (g_btlfxSoundSets). */
-#define BTLFX_COMMON_EMIT_SUMMON_CAST 0x01 /* btlfx_startCastEmitter, BTLFX_CASTK_SUMMON / _SUMMON_B */
+#define BTLFX_COMMON_EMIT_SUMMON_CAST 0x01 /* btlfx_startCastEmitter, BTLFX_CASTK_SUMMON / _SUMMON_SHORT */
 #define BTLFX_COMMON_EMIT_BOUNCE      0x03 /* one per reflected target (btlfx_opBounce) */
 #define BTLFX_COMMON_EMIT_ENEMY_CAST  0x04 /* btlfx_startCastEmitter, BTLFX_CASTK_ENEMY */
-#define BTLFX_COMMON_EMIT_CAST        0x05 /* btlfx_startCastEmitter, BTLFX_CASTK_SPELL / _SPELL_B */
+#define BTLFX_COMMON_EMIT_CAST        0x05 /* btlfx_startCastEmitter, BTLFX_CASTK_WHITE / _BLACK */
 #define BTLFX_COMMON_TEX_SUMMON_C     0x02 /* summon cast emitter's particle 2 */
 #define BTLFX_COMMON_TEX_CAST_B       0x06 /* particle 1 of every cast emitter and of the bounce emitter */
-#define BTLFX_COMMON_TEX_CAST_A       0x07 /* particle 0 of the SPELL, ENEMY and bounce emitters */
-#define BTLFX_COMMON_TEX_SPELL_B_A    0x08 /* particle 0 of the SPELL_B cast emitter */
+#define BTLFX_COMMON_TEX_CAST_A       0x07 /* particle 0 of the WHITE, ENEMY and bounce emitters */
+#define BTLFX_COMMON_TEX_BLACK_CAST   0x08 /* particle 0 of the BLACK cast emitter */
 #define BTLFX_COMMON_TEX_SUMMON_A     0x14 /* summon cast emitter's particle 0 */
 /* g_btlfxSoundSets rows (btlfx_playSoundSet): 3 common sounds each. Evidence: [code] */
-#define BTLFX_SNDSET_CAST        0 /* enemy cast emitter, and SPELL / SPELL_B cast emitters of casters other than Eiko */
-#define BTLFX_SNDSET_CAST_EIKO   1 /* SPELL / SPELL_B cast emitter when the caster's kind is g_btlfxUnitKinds[0] (CHR_KIND_EIKO) */
+#define BTLFX_SNDSET_CAST        0 /* enemy cast emitter, and WHITE / BLACK cast emitters of casters other than Eiko */
+#define BTLFX_SNDSET_CAST_EIKO   1 /* WHITE / BLACK cast emitter when the caster's kind is g_btlfxUnitKinds[0] (CHR_KIND_EIKO) */
 #define BTLFX_SNDSET_SUMMON_CAST 2 /* summon cast emitter */
 #define BTLFX_SNDSET_BOUNCE      3 /* each reflected target (btlfx_opBounce) */
 /* Cast kind: the effect header's BTLFX_HDR_CASTER field, passed by btlfx_startCasterTask as the cast op's argument
  * high nibble (Unk800E4C88.kind) and used as btlfx_startCastEmitter's kind. Evidence: [code] btlfx_runScript,
- * btlfx_opCast, btlfx_startCastEmitter, btlfx_playCmdCamera. */
-#define BTLFX_CASTK_SPELL    0   /* cast emitter with BTLFX_COMMON_TEX_CAST_A (runtime: pending R41, which spells) */
-#define BTLFX_CASTK_SUMMON   1   /* BTL_FXK_PARTY_UNLOAD (party models unloaded), summon camera (Dagger's or the other),
-                                  * summon cast emitter; the cast op tints the screen per castMode */
-#define BTLFX_CASTK_SPELL_B  2   /* as SPELL with BTLFX_COMMON_TEX_SPELL_B_A (runtime: pending R41, which spells) */
-#define BTLFX_CASTK_ENEMY    4   /* the cast op's emitter for an enemy caster */
-#define BTLFX_CASTK_SUMMON_B 7   /* summon camera and cast emitter without the party unload (runtime: pending R41) */
-#define BTLFX_CASTK_NONE     0xF /* no cast (BTLFX_HDR_CASTER all set; the resident 0x83FF scripts) */
+ * btlfx_opCast, btlfx_startCastEmitter, btlfx_playCmdCamera; [data] the effect header table (FILE_BTLFX_COMMON
+ * + 0x2000, the VRAM copy at (0x300, 0x140) that btlfx_runScript reads; matches the R31 runtime dump), per kind with
+ * the effects of docs/effect-modules.md. */
+#define BTLFX_CASTK_WHITE    0   /* 104 effects: Cure, Esuna, Life, Mini, Float, Regen, Potion, ... */
+#define BTLFX_CASTK_SUMMON   1   /* 24: the full summons (Shiva, Ifrit, Ramuh, Bahamut, Ark, ...): BTL_FXK_PARTY_UNLOAD,
+                                  * summon camera (Dagger's or the other), summon cast emitter, castMode screen tint */
+#define BTLFX_CASTK_BLACK    2   /* 54: Fire, Thunder, Blizzard, Sleep, Comet, Osmose, ... */
+#define BTLFX_CASTK_ENEMY    4   /* 103: enemy abilities and Blue Magic (White Wind, Aerial Slash, Snort, ...) */
+#define BTLFX_CASTK_SUMMON_SHORT 7 /* 15: the short summons (Shiva (short), Carbuncle (short), ...): summon camera and
+                                    * emitter without the party unload */
+#define BTLFX_CASTK_NONE     0xF /* 212: no cast (Elixir, Luna, Armor Break, the resident 0x83FF scripts, ...) */
 /* g_btlfxCastBgBrightness index (BTLFX_HDR_BG_FADE field) */
 #define BTLFX_BG_FADE_NONE 3 /* btlfx_opCast doesn't fade the background */
 typedef struct {
@@ -1978,10 +1981,10 @@ typedef struct Unk800FE3B8 {
 /* BTLCAM_SELCTX_TARGET_SIZE: the target model header's radius and height (btlcam_loadScript). Evidence: [code] */
 #define BTLCAM_SIZE_SMALL  0 /* radius below BTLCAM_RADIUS_SMALL, or medium radius and height below BTLCAM_HEIGHT_SMALL */
 #define BTLCAM_SIZE_MEDIUM 1
-#define BTLCAM_SIZE_LARGE  2 /* radius BTLCAM_RADIUS_LARGE and up or BTLCAM_RADIUS_FORCE_LARGE, or height BTLCAM_HEIGHT_LARGE and up */
+#define BTLCAM_SIZE_LARGE  2 /* radius BTLCAM_RADIUS_LARGE and up or BTLCAM_RADIUS_WORM_HYDRA, or height BTLCAM_HEIGHT_LARGE and up */
 #define BTLCAM_RADIUS_SMALL       101
 #define BTLCAM_RADIUS_LARGE       3000
-#define BTLCAM_RADIUS_FORCE_LARGE 1239 /* one exact radius counted as large (runtime: pending R41, which model) */
+#define BTLCAM_RADIUS_WORM_HYDRA  1239 /* counted as large: [data] the only enemy model with this radius is 340, Worm Hydra (tools/battle_models.py; height 559 would make it medium) */
 #define BTLCAM_HEIGHT_SMALL       345
 #define BTLCAM_HEIGHT_LARGE       1001
 
