@@ -7,6 +7,10 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_042 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_THUNDER_IMPACT_FLASH 0x8 /* emitter: four-point star flash, white rings, sparks */
+
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

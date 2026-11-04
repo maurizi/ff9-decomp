@@ -4,6 +4,22 @@
 /* Effect module fx_004 (dir 13 file 0x04). */
 #include "btlfx_mod.h"
 
+/* fx_004 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLIZZARA_ICE_REFLECTION  0xB /* model: crystal shell drawn with the reflection map */
+#define FX_BLIZZARA_FROST_MIST      0xD /* emitter: grey frost mist puffs */
+#define FX_BLIZZARA_SHARD_MIST      0xE /* emitter: grey mist trailing each flying shard (pool item) */
+#define FX_BLIZZARA_ICE_FLARES_2    0xF /* emitter: cyan ice glints */
+#define FX_BLIZZARA_ICE_FLARES      0x10 /* emitter: cyan ice glints, four elements */
+#define FX_BLIZZARA_FREEZE_BURST    0x11 /* emitter: white-pink rings + spark sprites */
+#define FX_BLIZZARA_FROST_RING      0x12 /* emitter: lilac-blue gouraud rings */
+#define FX_BLIZZARA_ICE_CRYSTAL     0x13 /* model: long ice crystal spike (ice texture), splits in three */
+#define FX_BLIZZARA_WHITE_RING      0x14 /* emitter: white gouraud ring at the start */
+#define FX_BLIZZARA_CRYSTAL_PIECE_0 0x15 /* model: first piece of the split crystal */
+#define FX_BLIZZARA_CRYSTAL_PIECE_1 0x16 /* model: second piece of the split crystal */
+#define FX_BLIZZARA_CRYSTAL_PIECE_2 0x17 /* model: third piece of the split crystal */
+#define FX_BLIZZARA_SHATTER_WAVE    0x19 /* emitter: blue ripple wave */
+
 typedef struct {
     s32 vx;
     s32 vy;

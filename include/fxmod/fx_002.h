@@ -4,6 +4,16 @@
 /* Effect module fx_002 (dir 13 file 0x02). */
 #include "btlfx_mod.h"
 
+/* fx_002 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FIRA_FLAME_BURST   0x4 /* emitter: flame explosion with ember sparks, at the target body */
+#define FX_FIRA_SMOKE         0x5 /* emitter: grey smoke puffs */
+#define FX_FIRA_FLAME_BURST_2 0x7 /* emitter: second flame explosion (embers, red-tinted burst) */
+#define FX_FIRA_SMOKE_2       0x8 /* emitter: grey smoke puffs after the second burst */
+#define FX_FIRA_FLAME_SWIRL   0x9 /* emitter: flame-strip trails orbiting the target */
+#define FX_FIRA_GROUND_RING   0xD /* rings: red gouraud ring drawn flat on the ground */
+#define FX_FIRA_HEAT_RING     0xE /* emitter: white-red gouraud rings at the target's feet */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target position */

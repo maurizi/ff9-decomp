@@ -4,6 +4,11 @@
 /* Effect module fx_046 (dir 13 file 0x46). */
 #include "btlfx_mod.h"
 
+/* fx_046 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FIRE_FLAME_BURST 0x2 /* emitter: flame explosion (burst, smoke, embers) over the targets */
+#define FX_FIRE_HEAT_RING   0x3 /* emitter: white-red gouraud rings on the ground */
+
 typedef struct {
     s32 hold0; /* nonzero: the op skips its frame logic and never ends itself, so the task stays alive until the
                 * effect script ends (runtime: Fire with it poked to 1 ran the op 165 times instead of 63). Zeroed

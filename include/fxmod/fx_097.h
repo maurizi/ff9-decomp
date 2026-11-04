@@ -6,6 +6,30 @@
  * this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_097 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLIZZAGA_CRYSTAL_SHEEN_2 0xF /* model: crystal 2 shape, reflection-map texture */
+#define FX_BLIZZAGA_CRYSTAL_SHEEN_3 0x10 /* model: crystal 3 shape, reflection-map texture */
+#define FX_BLIZZAGA_CRYSTAL_SHEEN   0x11 /* model: main crystal shape, reflection-map texture */
+#define FX_BLIZZAGA_ICE_CRYSTAL_2   0x12 /* model: ice crystal spike (hexagonal, ice texture) */
+#define FX_BLIZZAGA_ICE_CRYSTAL_3   0x13 /* model: wide ice crystal spike */
+#define FX_BLIZZAGA_ICE_CRYSTAL     0x14 /* model: main ice crystal spike */
+#define FX_BLIZZAGA_FROST_RING      0x1B /* rings: blue gouraud ring on the ground */
+#define FX_BLIZZAGA_FAN_EMITTER     0x1C /* emitter: four fan elements (not rendered) (look pending) */
+#define FX_BLIZZAGA_SNOW_BURST      0x1D /* emitter: rings textured with snow flakes */
+#define FX_BLIZZAGA_SHATTER_WAVE    0x1E /* emitter: blue ripple wave */
+#define FX_BLIZZAGA_ICE_FLARES_2    0x1F /* emitter: cyan ice glints */
+#define FX_BLIZZAGA_ICE_FLARES      0x20 /* emitter: cyan ice glints, four elements */
+#define FX_BLIZZAGA_FREEZE_BURST    0x21 /* emitter: white-pink rings + spark sprites */
+#define FX_BLIZZAGA_FROST_RING_2    0x22 /* emitter: pale blue gouraud rings */
+#define FX_BLIZZAGA_SNOW_RING       0x23 /* rings: textured ring of blue snow flakes */
+#define FX_BLIZZAGA_SNOW_RING_2     0x24 /* rings: textured ring of pale snow flakes */
+#define FX_BLIZZAGA_SHARD_MIST      0x25 /* emitter: grey mist trailing each shard (pool item) */
+#define FX_BLIZZAGA_MIST            0x26 /* emitter: grey frost mist at the crystal base */
+#define FX_BLIZZAGA_MIST_HIGH       0x27 /* emitter: grey frost mist higher up */
+#define FX_BLIZZAGA_ICE_SPARKLES    0x28 /* emitter: small blue ice sparkles at the shatter */
+#define FX_BLIZZAGA_ICE_SPARKLES_2  0x29 /* emitter: small blue ice sparkles while the crystal grows */
+
 extern s16 fx_097_pieceDist[];
 extern Unk800F78A4 *fx_097_env;
 

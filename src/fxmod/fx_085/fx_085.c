@@ -32,9 +32,9 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->pos8, &work->pos0);
         work->pos8.vy = 0;
         ex->btlfx_initEffModels(fx_085_effModels, 2);
-        work->model14 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 6), 0xB8, 0x3E40, 0,
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_GLOW_DOME), 0xB8, 0x3E40, 0,
                                                  0x80);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x119, 0xFFFF,
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_DISC), 0x119, 0xFFFF,
                                                  0, 0x80);
         work->state10 = 0;
     } else {
@@ -42,13 +42,13 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state10) {
         case 0:
             if (frame == 0) {
-                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos8);
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CYL_EMITTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x46;
                 }
             }
             if (frame == 5) {
-                work->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos8);
+                work->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CYL_EMITTER_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x46;
                 }
@@ -64,7 +64,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit1C);
                 ex->btlfx_stopEmitter(work->emit20);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_FAN_EMITTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -76,12 +76,12 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame == 1) {
                 env->otZ = 0x200;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->pos8, NULL, 0x3000, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_THIN_BOLT), &work->pos8, NULL, 0x3000, 0, 1,
                                         0x1000, 0, 0);
                 env->otZ = 0;
             }
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->pos8, NULL, 0x800, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_VIOLET_RING), &work->pos8, NULL, 0x800, 0, 1, -1);
             env->otZ = 0;
             if (frame == 2) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0xFF);
@@ -89,11 +89,11 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 2) {
                 work->state10 = 2;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_FAN_EMITTER_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CONE_EMITTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -111,10 +111,10 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 20) {
                 glow = ex->math_cos((frame << 10) / 20);
                 env->otZ = 0x200;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->pos8, NULL, 0x3000, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_LIGHTNING_BOLT), &work->pos8, NULL, 0x3000, 0, 1,
                                         glow, 0, 0);
                 if (frame < 10) {
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->pos8, NULL, 0x3000,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_THIN_BOLT), &work->pos8, NULL, 0x3000,
                                             0, 1, 0x1000 - (frame << 12) / 10, 0, 0);
                 }
                 env->otZ = 0;
@@ -122,7 +122,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 24) {
                 env->otZ = 0x200;
                 ringT = (frame << 12) / 24;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->pos8, NULL,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_VIOLET_RING), &work->pos8, NULL,
                                   ex->math_cos(ringT >> 2) * 2 + 0x1000, 0, 1, ex->math_cos(ringT >> 2));
                 env->otZ = 0;
             }
@@ -145,17 +145,17 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vy = 0;
                 rot.pad = 1;
                 waveT = frame << 8;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x26), &work->pos8, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_WHITE_RING), &work->pos8, &rot,
                                   ex->math_sin(waveT >> 2) * 7, 0, 1, 0x1000 - waveT);
             }
             rot2.vx = 0x400;
             rot2.vz = 0;
             rot2.vy = 0;
             rot2.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x25), &work->pos8, &rot2,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDAGA_BLUE_RING), &work->pos8, &rot2,
                               ex->math_sin(t >> 2) * 7, 0, 1, ex->math_cos(t >> 2));
             if (frame == 1) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_SPARKS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -184,7 +184,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     sparkPos.vz += (ex->math_sin(sparkAng) * fx_085_ringRadius) >> 12;
                     sparkAng += 0x100;
                     {
-                        void *fd_ = ex->btlfx_getFileData(entry->file, 0x18);
+                        void *fd_ = ex->btlfx_getFileData(entry->file, FX_THUNDAGA_SPARK_BALL);
                         s32 r0_ = ex->btlfx_randCentered(5); /* the PS1 draws them in this order */
                         s32 r1_ = ex->btlfx_randCentered(5);
                         ex->btlfx_drawParticles((u8 *)fd_, &sparkPos, NULL,
@@ -529,7 +529,7 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             fx_085_fastBolts = 1;
             if (frame == 0) {
-                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos0);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_IMPACT_FLASH), (s32)&work->pos0);
                 if (emitter != NULL) {
                     emitter->tail->shape = -1;
                     emitter->tail->s.module.spawnFn = fxm_randStripPoint;

@@ -540,3 +540,9 @@ differ in struct offsets off non-sp bases or in local branch targets; the tool w
 ("images differ outside relocations"). Check the build's warnings afterwards: where the copied body and the
 destination's own C type the same data differently, reconcile the types by hand (one struct, a cast at a
 `btlfx_getFileData` call).
+
+## Effect data names
+
+The `btlfx_getFileData` indices each module uses are named in its header (`FX_<SPELL>_<WHAT>`, e.g.
+`FX_BLIZZARA_ICE_CRYSTAL`) from renders of the data entries: scheme, tool (`tools/fxdata.py`) and the named
+modules in `docs/fxdata.md`.

@@ -7,6 +7,24 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_018 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_THUNDAGA_CYL_EMITTER    0x7 /* emitter: cylinder particles, render all transparent (look pending) */
+#define FX_THUNDAGA_CYL_EMITTER_2  0xA /* emitter: cylinder particles, render all transparent (look pending) */
+#define FX_THUNDAGA_DISC           0x10 /* model: flat octagon, 15-bit texture page 0x119 (look pending) */
+#define FX_THUNDAGA_GLOW_DOME      0x11 /* model: hemisphere with an orange-to-white streak texture */
+#define FX_THUNDAGA_BLUE_RING      0x13 /* rings: white-blue gouraud rings */
+#define FX_THUNDAGA_WHITE_RING     0x15 /* rings: white gouraud rings drawn flat */
+#define FX_THUNDAGA_LIGHTNING_BOLT 0x17 /* particles: wide blue-white lightning bolt */
+#define FX_THUNDAGA_SPARK_BALL     0x1B /* particles: golden plasma ball, 8 frames */
+#define FX_THUNDAGA_VIOLET_RING    0x1E /* rings: white-violet gouraud rings */
+#define FX_THUNDAGA_THIN_BOLT      0x20 /* particles: thin cyan lightning bolt */
+#define FX_THUNDAGA_FAN_EMITTER    0x21 /* emitter: four fan elements (not rendered) (look pending) */
+#define FX_THUNDAGA_FAN_EMITTER_2  0x22 /* emitter: four fan elements (not rendered) (look pending) */
+#define FX_THUNDAGA_IMPACT_FLASH   0x25 /* emitter: four-point star flash */
+#define FX_THUNDAGA_CONE_EMITTER   0x26 /* emitter: cone of sprites, render all transparent (look pending) */
+#define FX_THUNDAGA_SPARKS         0x27 /* emitter: spark sprites (texture not in the file) (look pending) */
+
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

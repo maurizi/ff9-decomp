@@ -108,7 +108,7 @@ static s32 fx_042_op83PoolTask(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk801
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, bright, (0x1000 - t) >> 6, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18 + 3, it->branchAt13, bright, (0x1000 - t) >> 6, it->kind14);
             if (frame == 0) {
-                it->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&it->pos0);
+                it->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDER_IMPACT_FLASH), (s32)&it->pos0);
                 if (it->emit1C != NULL) {
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }

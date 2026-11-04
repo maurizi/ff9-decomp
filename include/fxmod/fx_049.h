@@ -7,6 +7,18 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_049 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_THUNDARA_IMPACT_FLASH 0x2 /* emitter: four-point star flash, white rings, sparks */
+#define FX_THUNDARA_IMPACT_RING  0x6 /* emitter: white-cyan gouraud rings */
+#define FX_THUNDARA_ORB_EMITTER  0x15 /* emitter: helix whose callback element draws the orb (0x16, 0x1C-0x1F) */
+#define FX_THUNDARA_SPARKS       0x18 /* emitter: spark sprites (texture not in the file) (look pending) */
+#define FX_THUNDARA_ORB_FADE     0x19 /* particles: blue energy sphere fading to orange */
+#define FX_THUNDARA_ORB          0x1A /* particles: bright blue energy sphere */
+#define FX_THUNDARA_ORB_SPARKS   0x1B /* sprites: sparks around the orb (texture not in the file) (look pending) */
+#define FX_THUNDARA_ORB_SPARKS_2 0x1C /* sprites: sparks around the orb (texture not in the file) (look pending) */
+#define FX_THUNDARA_LENS_FLARES  0x1F /* particles: orange lens-flare dots around the orb */
+
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

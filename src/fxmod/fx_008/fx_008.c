@@ -11,7 +11,7 @@ s32 fx_008_op80(s32 mode, Fx008Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_008_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURE_SPARKLE_SWIRL), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_008_trails;
             work->emit0->trailSlots = 0xB;
@@ -24,7 +24,7 @@ s32 fx_008_op80(s32 mode, Fx008Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         elapsed = frame - 0x18;
         if (elapsed >= 0 && elapsed < 0x10) {
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->posC, work->frame14, work->alpha16);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_CURE_STAR_FLARES), &work->posC, work->frame14, work->alpha16);
             if (elapsed >= 4) {
                 work->alpha16 -= 0x155;
             }
