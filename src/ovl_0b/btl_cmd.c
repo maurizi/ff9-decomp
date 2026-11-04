@@ -1351,7 +1351,7 @@ s32 btl_payMpCost(BtlCmd *cmd) {
 void btl_linkCmd(LinkNode *node, LinkNode **link) {
     node->next = *link;
     *link = node;
-    node->flags = (node->flags & ~0xC) | 4;
+    node->flags = (node->flags & ~BTL_CMDINFO_LINK_STATE) | BTL_CMDINFO_LINKED;
 }
 
 void btl_releaseItem(BtlCmd *cmd) {
@@ -2728,7 +2728,7 @@ void btl_applyCalcResult(BtlCalc *calc) {
         }
         if ((calc->flags & BTL_CALC_WEAPON_STATUS) && target->hp != 0) {
             statusSet = g_gameState->gameData->ctx.battle->statusSets[caster->weapon[1]];
-            if (!(statusSet & 0x100) || !(target->status & BTL_STATUS_DEATH_IMMUNE)) {
+            if (!(statusSet & BTL_STATUS_KO) || !(target->status & BTL_STATUS_DEATH_IMMUNE)) {
                 btl_addStatuses(target, statusSet);
             }
         }
@@ -3048,7 +3048,7 @@ void btl_rollFlee(BtlCalc *calc) {
 }
 
 u8 btl_checkFrozenShatter(BtlCalc *calc) {
-    if ((calc->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_FREEZE)) != 0x02000000) {
+    if ((calc->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_FREEZE)) != BTL_STATUS_FREEZE) {
         return 1;
     }
     btl_removeQueuedCmd(calc->target, BTL_CMD_PETRIFY);
@@ -3115,7 +3115,7 @@ void btl_rollShortSummon(BtlCmd *cmd) {
 }
 
 s32 btl_canAddHitStatus(BtlCalc *calc) {
-    if (((calc->flags & BTL_CALC_WEAPON_STATUS) && (g_gameState->gameData->ctx.battle->statusSets[calc->caster->weapon[1]] & 0x42001103)) || (calc->cmd->ability->flags & BTL_ABIL_NO_HIT_MOTION) || ((calc->cmd->flags >> BTL_CMDINFO_COVERED_BIT) & 1) || (calc->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || calc->caster == calc->target) {
+    if (((calc->flags & BTL_CALC_WEAPON_STATUS) && (g_gameState->gameData->ctx.battle->statusSets[calc->caster->weapon[1]] & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) || (calc->cmd->ability->flags & BTL_ABIL_NO_HIT_MOTION) || ((calc->cmd->flags >> BTL_CMDINFO_COVERED_BIT) & 1) || (calc->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || calc->caster == calc->target) {
         return 0;
     }
     return 1;
@@ -3480,7 +3480,7 @@ void btl_applyAbilityStatus(BtlCalc *calc) {
     u32 statuses = g_gameState->gameData->ctx.battle->statusSets[cmd->ability->statusSet];
     u32 result;
     if (!((cmd->flags >> BTL_CMDINFO_SHORT_SUMMON_BIT) & 1) && cmd->cmdNo == BTL_CMD_SUMMON2) {
-        statuses |= 0x800000;
+        statuses |= BTL_STATUS_PROTECT;
     }
     result = btl_addStatuses(calc->target, statuses);
     if (result == 0) {

@@ -639,7 +639,7 @@ s32 btl_hasStatus(BtlUnit *unit, u32 statuses) {
 }
 
 void btl_saveCharStatus(Unk800C09D8 *chr, Unk800C09D8 *unit) {
-    chr->chrStatus = unit->status & 0x7F;
+    chr->chrStatus = unit->status & BTL_STATUS_KEPT;
 }
 
 void btl_clearUnitStatus(BtlUnit *unit) {
@@ -838,26 +838,26 @@ void btl_checkSideDefeated(BtlUnit *unit) {
 }
 
 s32 btl_rollAmbush(u32 *sceneFlags) {
-    s32 result = 2;
+    s32 result = BTL_AMBUSH_NORMAL;
     s32 threshold;
-    if ((*sceneFlags >> 2) & 1) {
-        result = (((*sceneFlags >> 3) & 1) == 0) * 2;
+    if ((*sceneFlags >> BTL_SCENE_SCRIPT_START_BIT) & 1) {
+        result = (((*sceneFlags >> BTL_SCENE_BACK_ATTACK_BIT) & 1) == 0) * BTL_AMBUSH_NORMAL;
     } else {
         threshold = 0x18;
         if ((u8)btl_partyHasSupport(1, SA_BIT(SA_ALERT))) {
             threshold = 0;
-        } else if ((*sceneFlags >> 3) & 1) {
+        } else if ((*sceneFlags >> BTL_SCENE_BACK_ATTACK_BIT) & 1) {
             threshold = 0xFF;
         }
         if (rand8_inline() < threshold) {
-            result = 0;
+            result = BTL_AMBUSH_BACK;
         } else {
             threshold = 0x10;
             if ((u8)btl_partyHasSupport(1, SA_BIT(SA_INITIATIVE))) {
                 threshold = 0x55;
             }
             if (rand8_inline() < threshold) {
-                result = 1;
+                result = BTL_AMBUSH_PREEMPTIVE;
             }
         }
     }

@@ -437,6 +437,7 @@ typedef struct {
 #define BTL_ATTR_LEVEL         0x29 /* runtime */
 #define BTL_ATTR_IMMUNE_HI     0x2A /* statusImmune bits 24-31 */
 #define BTL_ATTR_IMMUNE_LO     0x2B /* statusImmune bits 0-23 */
+#define BTL_ATTR_LO_MASK       0xFFFFFF /* the *_LO attributes: bits 0-23 of the word (the *_HI ones read byte 3) */
 #define BTL_ATTR_AUTO_STATUS_HI 0x2C
 #define BTL_ATTR_AUTO_STATUS_LO 0x2D
 #define BTL_ATTR_STATUS_HI     0x2E
@@ -1367,7 +1368,7 @@ typedef struct Battle11C020 {
     u8 groupCount; /* count of groups */
     u8 typeCount; /* count of enemy type records following the groups */
     u8 abilityCount; /* count of enemy abilities (BtlCmd8) following the enemy records */
-    u16 flags; /* Battle.scene.flags bits 2 and up (btl_initSceneFlags) */
+    u16 flags; /* Battle.scene.flags bits 2 and up (btl_initSceneFlags): BTL_ENC_* */
     u8 pad6[8 - 6];
     Battle1330 groups[1]; /* enemy groups (btl_pickEnemyGroup) */
 } Battle11C020;
@@ -1418,7 +1419,7 @@ typedef struct BtlCmd {
     union {
         struct {
             u32 targeting : 2; /* btl_setCmd's last argument; 1 = several targets (btl_halveForSpread, btl_setEnemyCmd) */
-            u32 unk0_2 : 2; /* write-only (cleared by btl_clearCmd, btl_unlinkCmd) */
+            u32 unk0_2 : 2; /* write-only: 1 while linked into a queue (btl_linkCmd, BTL_CMDINFO_LINKED); cleared by btl_clearCmd, btl_unlinkCmd */
             u32 automatic : 1; /* set for the ids above BTL_CMD_TABLE_COUNT (btl_setCmd, btl_setEnemyCmd) */
             u32 covered : 1; /* retargeted to a Cover unit (btl_findCover) */
             u32 dodged : 1; /* the target dodged; its step aside is undone at the end (btl_applyCalcResult) */
@@ -1437,6 +1438,8 @@ typedef struct BtlCmd {
 
 /* BtlCmd.info.b as a word (info.w; BtlCalc8.flags) */
 #define BTL_CMDINFO_TARGETING         0x003 /* info.b.targeting */
+#define BTL_CMDINFO_LINK_STATE        0x00C /* info.b.unk0_2 */
+#define BTL_CMDINFO_LINKED            0x004 /* unk0_2 = 1: btl_linkCmd put it in a queue */
 #define BTL_CMDINFO_AUTOMATIC         0x010 /* info.b.automatic */
 #define BTL_CMDINFO_COVERED_BIT       5
 #define BTL_CMDINFO_COVERED           (1 << BTL_CMDINFO_COVERED_BIT) /* info.b.covered */
@@ -1595,9 +1598,14 @@ typedef struct {
 #define BTL_AMBUSH_BACK         0 /* back attack: the party starts with empty ATB, "Back attack!" */
 #define BTL_AMBUSH_PREEMPTIVE   1 /* preemptive strike: the enemies start with empty ATB, the party's are full */
 #define BTL_AMBUSH_NORMAL       2
+/* Battle11C020.flags -> Battle.scene.flags (btl_initSceneFlags). Evidence: [code] */
+#define BTL_ENC_TO_SCENE        4    /* scene.flags = (flags ^ BTL_ENC_INVERTED) * 4: bit n becomes scene bit n + 2 */
+#define BTL_ENC_INVERTED        0x30 /* stored inverted: they become BTL_SCENE_VICTORY and BTL_SCENE_CAN_ESCAPE */
 #define BTL_SCENE_SCRIPT_START_BIT 2 /* the intro hands over to the event script (BTL_PHASE_SCRIPT, btlcam_step) */
 #define BTL_SCENE_SCRIPT_START  (1 << BTL_SCENE_SCRIPT_START_BIT)
-/* bit 3: BTL_SETVAR_RESUME resets the ambush to normal unless bits 2 and 3 are both set */
+#define BTL_SCENE_BACK_ATTACK_BIT 3 /* btl_rollAmbush: a back attack for sure (unless Alert); with BTL_SCENE_SCRIPT_START a
+                                    * back attack instead of a normal start, kept by BTL_SETVAR_RESUME */
+#define BTL_SCENE_BACK_ATTACK   (1 << BTL_SCENE_BACK_ATTACK_BIT)
 #define BTL_SCENE_NO_GAMEOVER_BIT 4 /* a defeat plays no defeat music and keeps battleResult 3 (else 6; btl_saveParty) */
 #define BTL_SCENE_NO_GAMEOVER   (1 << BTL_SCENE_NO_GAMEOVER_BIT)
 #define BTL_SCENE_VICTORY_BIT   6 /* victory music, poses and rewards (btl_victory); BTL_SETVAR_END 1 goes through it */
@@ -3429,6 +3437,9 @@ void btl_unreserveItem(s32);
 #define BTL_STEPF_SOUNDS      0x200  /* btl_reloadPartyStep: load the sound banks first */
 #define BTL_STEPF_BEGIN       0x8000 /* start over: clear the loaded flag, state 1 (or 2) */
 s32 btl_reloadPartyStep(s32);
+/* the statuses a character keeps after the battle (btl_saveCharStatus: Character.status). Evidence: [code] */
+#define BTL_STATUS_KEPT (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_VIRUS | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | \
+                         BTL_STATUS_TROUBLE | BTL_STATUS_ZOMBIE)
 s32 btl_swapPartyModelStep(s32, s32);
 u32 btlfx_getUnitStatus(s32, u32);
 void btlfx_resetUnitMotion(s32, u8);

@@ -149,7 +149,7 @@ void btl_initPartyUnit(Character *chr, BtlUnit *unit, u16 slot, u16 unitNo) {
     if (unit->hp * 6 < unit->max->maxHp) {
         unit->status |= BTL_STATUS_LOW_HP;
     }
-    btl_addStatuses(unit, chr->status & 0xFE);
+    btl_addStatuses(unit, chr->status & ~CHR_STATUS_PETRIFY); /* Petrify is added below */
     if (chr->status & CHR_STATUS_PETRIFY) {
         btl_addStatus(unit, BTL_STATUS_PETRIFY);
     }
