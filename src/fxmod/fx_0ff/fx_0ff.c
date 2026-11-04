@@ -26,7 +26,7 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale98.vx = 0x8000;
         work->scale98.vy = 0x8000;
         work->scale98.vz = 0x8000;
-        radius = ex->btlfx_getUnitRadius(0x100);
+        radius = ex->btlfx_getUnitRadius(BTLFX_UNIT_MODEL_RADIUS | 0);
         radius = (radius >= 0x899) ? 0x898 : radius;
         initOrbit = fx_0ff_orbits;
         for (i = 0; i < 6; i++, initOrbit++) {

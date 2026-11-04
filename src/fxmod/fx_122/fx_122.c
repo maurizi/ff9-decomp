@@ -24,7 +24,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot4.vy = work->rot38.vy + 0x800;
         if (ex->btlfx_isEnemyUnit(0)) {
             height = ex->btlfx_getUnitHeight(0);
-            radius = ex->btlfx_getUnitRadius(0x100);
+            radius = ex->btlfx_getUnitRadius(BTLFX_UNIT_MODEL_RADIUS | 0);
             ofs = fx_122_offsets;
             for (i = 0; i < 0x11; i++, ofs++) {
                 if (ofs->height0 == height && ofs->radius2 == radius) {
