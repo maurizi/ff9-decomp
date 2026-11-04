@@ -135,6 +135,9 @@ all still pending. The helper scripts were throw-away (hash every entry with `Fx
 
 ## Open questions (emulator)
 
+All still-pending names of all slices, grouped by battle setup with what to capture, are in
+`docs/wip/fxdata_runtime.md` (the emulator checklist); the list below is this slice's original notes.
+
 Each wants one screenshot of the effect at the frame the C starts the entry (save state: battle, cast the
 spell; `docs/emulator.md`), or a VRAM dump while it plays to render the missing texture pages:
 

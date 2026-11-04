@@ -31,6 +31,9 @@ Notes:
 
 ## Open questions (emulator)
 
+All still-pending names of all slices, grouped by battle setup with what to capture, are in
+`docs/wip/fxdata_runtime.md` (the emulator checklist); the list below is this slice's original notes.
+
 16 names are still by kind (look pending) after the re-render with `tools/fxdata.py` at d6121033 (summon data, fans, 'so' models and dot sprites drawn). What is left is texture the file does not hold or the tool does not resolve (blank or placeholder pages filled at run time, tpages the C computes, texture lists the tool does not follow, garbled texels). Each wants one screenshot at the frame the C starts the entry, or a VRAM dump while it plays:
 
 | module | index | name | why the look is pending |

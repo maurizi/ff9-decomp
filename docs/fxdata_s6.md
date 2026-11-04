@@ -37,6 +37,9 @@ Notes:
 
 ## Open questions (emulator)
 
+All still-pending names of all slices, grouped by battle setup with what to capture, are in
+`docs/wip/fxdata_runtime.md` (the emulator checklist); the list below is this slice's original notes.
+
 Each wants one screenshot at the frame the C starts the entry, or a VRAM dump while it plays.
 
 | module | index | name | what is known |

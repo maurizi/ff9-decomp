@@ -36,6 +36,9 @@ Notes:
 
 ## Open questions (emulator)
 
+All still-pending names of all slices, grouped by battle setup with what to capture, are in
+`docs/wip/fxdata_runtime.md` (the emulator checklist); the list below is this slice's original notes.
+
 | module | index | name | question |
 |---|---|---|---|
 | fx_1e6 | 0x4 | `FX_CORRECT_SPARKLES` | the tube particle element renders black (texture not in the file) |

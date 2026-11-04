@@ -33,6 +33,9 @@ entries or by the same call site.
 
 ## Open questions (emulator)
 
+All still-pending names of all slices, grouped by battle setup with what to capture, are in
+`docs/wip/fxdata_runtime.md` (the emulator checklist); the list below is this slice's original notes.
+
 Entries still named by kind and use after the fxdata d6121033 revisit: backdrop layer tables (not drawn by
 the tool), particles / rings / models whose texture is neither in the file nor in the common or summon pages
 (magenta), strips that read unrelated or placeholder VRAM (probably filled at run time), and emitters that
