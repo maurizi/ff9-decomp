@@ -776,6 +776,22 @@ typedef struct {
 #define BTLFX_UNIT_CASTER  0x10 /* BtlUnitList.caster */
 #define BTLFX_UNIT_PARTNER 0x11 /* BtlUnitList.partner */
 #define BTLFX_UNIT_NONE    0xFF /* no unit: the effect ops skip it or use the targets' centre */
+#define BTLFX_UNIT_MODEL_RADIUS 0x100 /* btlfx_getUnitRadius: | id: the model's radius even for an enemy (else the enemy type's) */
+/* btlfx_fadeUnitGroup groups (op 0x24 btlfx_opFadeUnits: arg 1 & BTLFX_FADE_GROUP; cast task). Evidence: [code] */
+#define BTLFX_FADE_PARTY       0 /* the party units */
+#define BTLFX_FADE_ENEMIES     1
+#define BTLFX_FADE_ALL         2
+#define BTLFX_FADE_OUT         4 /* btlfx_opFadeUnits: from 0x80 down to 0 (else 0 up to 0x80) */
+#define BTLFX_FADE_CASTER_SIDE 8 /* the enemies if the caster is one, else the other party units */
+#define BTLFX_FADE_CASTER      9
+#define BTLFX_FADE_GROUP       0xB /* btlfx_opFadeUnits: the group bits of its argument */
+/* effect script table entry (resident module, btlfx_findScript): u8 id, u8 BTLFX_SCRENT_*, then 3-byte ops. Evidence: [code] */
+#define BTLFX_SCRENT_ID_HI 0x80 /* id + 0x100 */
+#define BTLFX_SCRENT_OPS   0x7F /* op count */
+/* btlfx_opSetSpriteClut argument 1. Evidence: [code] */
+#define BTLFX_SPRCLUT_INDEX 0x1F /* g_btlfxCommonCluts index */
+#define BTLFX_SPRCLUT_SLOT  0xE0 /* 0-1: the sprite's first clut word, 2-3: the second */
+#define BTLFX_SPRCLUT_SLOT_SHIFT 5
 #define BTLFX_ABR_OPAQUE 0xFF /* abr / tpage argument of the btlfx draw helpers: no semi-transparency (code byte without GPU_ABE, no DR_TPAGE) */
 /* effect ids (BtlfxState.effectId) tested by ovl_0b, identities from docs/effect-modules.md */
 #define BTLFX_EFFECT_ROULETTE  0x0ED /* fx_0ed Roulette: btlfx_op does not turn the caster towards its target */

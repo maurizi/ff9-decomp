@@ -440,20 +440,20 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 case 0:
                     btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, fade, fade, fade);
                     if (fadeStep == 16) {
-                        btlfx_fadeUnitGroup(2, 0);
+                        btlfx_fadeUnitGroup(BTLFX_FADE_ALL, 0);
                     }
                     break;
                 case 1:
                     btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, fade, fade, fade);
                     if (fadeStep == 16) {
-                        btlfx_fadeUnitGroup(2, 0);
+                        btlfx_fadeUnitGroup(BTLFX_FADE_ALL, 0);
                     }
                     break;
                 case 2:
-                    btlfx_fadeUnitGroup(2, 0x80 - (fade >> 1));
+                    btlfx_fadeUnitGroup(BTLFX_FADE_ALL, 0x80 - (fade >> 1));
                     break;
                 case 3:
-                    btlfx_fadeUnitGroup(0, 0x80 - (fade >> 1));
+                    btlfx_fadeUnitGroup(BTLFX_FADE_PARTY, 0x80 - (fade >> 1));
                     break;
                 }
             }
@@ -607,8 +607,8 @@ s32 btlfx_opSetSpriteClut(s32 mode, s32 work, s32 env, s32 entry, s32 *args) {
     s32 which;
     u16 *sprite;
     if (mode == 1) {
-        idx = args[1] & 0x1F;
-        which = (args[1] & 0xE0) >> 5;
+        idx = args[1] & BTLFX_SPRCLUT_INDEX;
+        which = (args[1] & BTLFX_SPRCLUT_SLOT) >> BTLFX_SPRCLUT_SLOT_SHIFT;
         sprite = btlfx_getCommonSprite(args[0]);
         if (which >= 0) {
             if (which < 2) {
@@ -895,7 +895,7 @@ s32 btlfx_opFadeUnits(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32 *arg
         return 0;
     }
     if (mode == 1) {
-        if (args[1] & 4) {
+        if (args[1] & BTLFX_FADE_OUT) {
             work->from = 0x80;
             delta = -0x80;
         } else {
@@ -903,7 +903,7 @@ s32 btlfx_opFadeUnits(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32 *arg
             delta = 0x80;
         }
         work->delta = delta;
-        work->group = args[1] & 0xB;
+        work->group = args[1] & BTLFX_FADE_GROUP;
         if ((work->frames = args[0]) != 0) {
             return 0;
         }
@@ -1270,7 +1270,7 @@ s32 btlfx_getUnitRadius(s32 unitId) {
     s32 useModel;
     BtlUnit *unit;
     u32 flags;
-    if (unitId & 0x100) {
+    if (unitId & BTLFX_UNIT_MODEL_RADIUS) {
         unitId &= 0xFF;
         useModel = 1;
     } else {
@@ -1599,7 +1599,7 @@ void btlfx_setUnitLight(s32 unitId, s32 level) {
     if (btl_isModelPart(unit) == 0) {
         BtlModel *model = unit->model;
         s16 shade = level - 0x80;
-        if ((*(u32 *)model & 0x30) == 0x20) {
+        if ((*(u32 *)model & (BTL_MODEL_OFFSCREEN | BTL_MODEL_DRAWN)) == BTL_MODEL_DRAWN) {
             btl_setModelRgb(model, shade, shade, shade);
         }
     }
@@ -1610,29 +1610,29 @@ s32 btlfx_fadeUnitGroup(u32 type, s32 level) {
     s32 faded = 0;
     for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
         switch (type) {
-        case 0:
+        case BTLFX_FADE_PARTY:
             if (unit->flags & BTL_UNIT_PARTY) {
                 btlfx_fadeUnit(unit, level);
                 faded++;
             }
             break;
-        case 1:
+        case BTLFX_FADE_ENEMIES:
             if (!(unit->flags & BTL_UNIT_PARTY)) {
                 btlfx_fadeUnit(unit, level);
                 faded++;
             }
             break;
-        case 9:
+        case BTLFX_FADE_CASTER:
             if (unit == btl_getUnit(BTLFX_UNIT_CASTER)) {
                 btlfx_fadeUnit(unit, level);
                 faded++;
             }
             break;
-        case 2:
+        case BTLFX_FADE_ALL:
             btlfx_fadeUnit(unit, level);
             faded++;
             break;
-        case 8:
+        case BTLFX_FADE_CASTER_SIDE:
             if (btlfx_isEnemyUnit(BTLFX_UNIT_CASTER)) {
                 if (!(unit->flags & BTL_UNIT_PARTY)) {
                     btlfx_fadeUnit(unit, level);
@@ -2011,8 +2011,8 @@ void btlfx_playCmdCamera(s32 flags) {
     if (flags == 0xFFFF) {
         return;
     }
-    hi = flags & 0xF0;
-    if (g_btlfxCameraOn == 0 || hi == 0xF0 || (g_btlfxEnv->targets->kind & BTL_FXK_ITEM)) {
+    hi = flags & BTLFX_HDR_CASTER;
+    if (g_btlfxCameraOn == 0 || hi == BTLFX_HDR_CASTER || (g_btlfxEnv->targets->kind & BTL_FXK_ITEM)) {
         return;
     }
     caster = btl_getUnit(BTLFX_UNIT_CASTER);
@@ -2024,7 +2024,7 @@ void btlfx_playCmdCamera(s32 flags) {
         msg = btlfx_getCommonData(g_btlfxCmdCameras[4]);
     } else if (caster->flags & BTL_UNIT_PARTY) {
         if ((u8)btl_hasStatus(caster, BTL_STATUS_TRANCE) == 0) {
-            if ((hi >> 4) == 1 || (hi >> 4) == 7) {
+            if ((hi >> BTLFX_HDR_CASTER_SHIFT) == 1 || (hi >> BTLFX_HDR_CASTER_SHIFT) == 7) {
                 if (BTL_UNIT_INDEX(caster->flags) == CHR_DAGGER) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[2]);
                 } else {

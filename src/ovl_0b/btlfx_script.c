@@ -73,13 +73,13 @@ u8 *btlfx_findScript(s32 scriptId) {
     s32 id;
     for (i = 0, entry = RAM_BTLFX_MODULE(u8 *); i < 0x200; i++) {
         id = entry[0];
-        if (entry[1] & 0x80) {
+        if (entry[1] & BTLFX_SCRENT_ID_HI) {
             id += 0x100;
         }
         if (id == scriptId) {
             break;
         }
-        entry += (entry[1] & 0x7F) * 3 + 2;
+        entry += (entry[1] & BTLFX_SCRENT_OPS) * 3 + 2;
     }
     return entry + 2;
 }
@@ -154,7 +154,7 @@ void btlfx_runScript(void) {
         break;
     case BTLFX_PHASE_START:
         hdr = RAM_BTLFX_MODULE(u16 *)[state->effectId];
-        state->flags = hdr & 0xFFFE;
+        state->flags = hdr & ~BTLFX_HDR_COMMON_VRAM;
         g_btlfxEnv->targets->kind &= ~BTL_FXK_PARTY_UNLOAD;
         if (hdr & BTLFX_HDR_VRAM_SWAP) {
             btlfx_swapVramPages(0, NULL, (hdr & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
