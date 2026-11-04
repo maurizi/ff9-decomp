@@ -30,25 +30,25 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < 6; i++) {
             work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0dd_morphBlocks[i]), 0x97, 0x3D40, 0, 0);
         }
-        fxm_rotPosTrackInit(&fx_0dd_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, 1));
-        fxm_rotPosTrackInit(&fx_0dd_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0x10));
-        fxm_vecTrackInit(&fx_0dd_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, 2));
-        fxm_vecTrackInit(&fx_0dd_scaleKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0xF));
+        fxm_rotPosTrackInit(&fx_0dd_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_BUBBLE_PATH));
+        fxm_rotPosTrackInit(&fx_0dd_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_BUBBLE_PATH_2));
+        fxm_vecTrackInit(&fx_0dd_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_BUBBLE_SCALE));
+        fxm_vecTrackInit(&fx_0dd_scaleKeys2, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_BUBBLE_SCALE_2));
         work->unk58 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_0dd_emitPos);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_RED_CELLS), (s32)&fx_0dd_emitPos);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_GREEN_WISPS), (s32)&work->pos10);
             break;
         case 0x23:
             fxm_rotPosTrackGet(&fx_0dd_rotPosKeys, 0x23, NULL, &work->pos4C);
             work->pos4C.vx += work->pos10.vx;
             work->pos4C.vy += work->pos10.vy;
             work->pos4C.vz += work->pos10.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos4C);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_SCREEN_TRAIL), (s32)&work->pos4C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_GREEN_CLOUD), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_0dd_trails;
                 work->emit8->trailSlots = 0x35;
@@ -215,8 +215,8 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = ry;
             rot.pad = 0;
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x15), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x16), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_BLADE_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BIO_SWORD_BLADE_FLASH), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
             env->otZ = 0;
             work->frame4++;
         }

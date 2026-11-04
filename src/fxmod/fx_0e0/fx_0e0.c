@@ -326,7 +326,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTO
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_PURPLE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 INCLUDE_RODATA("asm/us/fx_0e0/nonmatchings/fx_0e0", fx_0e0_headerPtr);
@@ -387,7 +387,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                 if (toParent.vx * toParent.vx + toParent.vy * toParent.vy + toParent.vz * toParent.vz < fx_0e0_captureRadius * fx_0e0_captureRadius * fx_0e0_captureRadius) {
                     it->phase2 = 1;
                     ((s16 *)it)[-1] = -1;
-                    it->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->posC);
+                    it->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_EMBERS), (s32)&it->posC);
                     if (emitter != NULL) {
                         emitter->otZ = 0x20;
                     }
@@ -414,12 +414,12 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                 it->vel4.vz = it->vel4.vz * 2 / 3;
                 env->otZ = 0x1F4;
                 if (frame < 8) {
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &it->posC, NULL, 0x3000, frame, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_FIRE_RING), &it->posC, NULL, 0x3000, frame, 1,
                                       ex->math_cos(frame << 7));
                 }
                 env->otZ = 0x20;
                 if (frame < 8) {
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &it->posC, &ang, 0x2000, frame, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_DUST_RING), &it->posC, &ang, 0x2000, frame, 1,
                                       ex->math_cos(frame << 7));
                 }
                 env->otZ = 0;
@@ -552,13 +552,13 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_0e0_env = env;
         ex->btlfx_initEffModels(fx_0e0_effModels, 8);
-        work->model5C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 8), 0x98, 0x3D80, 0, 0);
-        work->model60 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x118, 0xFFFF, 0x40, 0);
-        work->model64 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x14), 0x118, 0xFFFF, 0x40, 0);
-        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x11), 0x37, 0x3D07, 0, 0);
-        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13));
-        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x12), 0x37, 0x3D07, 0, 0);
-        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x19), 0xBC, 0x3E00, 0x80, 0);
+        work->model5C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_ROCK), 0x98, 0x3D80, 0, 0);
+        work->model60 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BOULDER), 0x118, 0xFFFF, 0x40, 0);
+        work->model64 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BOULDER_2), 0x118, 0xFFFF, 0x40, 0);
+        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_STAR_FUNNEL), 0x37, 0x3D07, 0, 0);
+        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_GOURAUD_DOME));
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_STAR_DOME), 0x37, 0x3D07, 0, 0);
+        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_CYLINDER), 0xBC, 0x3E00, 0x80, 0);
         fx_0e0_centerPos.vz += 0x400;
         BTLFX_COPY_SVEC(&work->pos8, &fx_0e0_centerPos);
         fx_0e0_centerPos.vz -= 0x400;
@@ -604,7 +604,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos24.vy += 0x90;
             work->pos24.vz += 0x46;
             ex->Hi_DrawEffModel(&work->rot3C, (VECTOR *)&work->pos24, (s32)&work->scale30, work->model64);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x1C), work->frame4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BACKDROP), work->frame4);
             work->scale44.vx = work->scale44.vy = 0x3800;
             work->scale44.vz = 0x2000;
             work->pos24.vy -= 0x5DC;
@@ -710,7 +710,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->model64, ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
                                      ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
                                      ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x1C), work->frame4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BACKDROP), work->frame4);
             work->scale44.vx = work->scale44.vy = 0x3800;
             work->scale44.vz = 0x2000;
             work->pos24.vy -= 0x5DC;
@@ -736,9 +736,9 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos24.vy += 0x1388;
             work->pos24.vz += 0x9C4;
             env->otZ = 0x898;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &fx_0e0_centerPos, NULL, t * 3 + 0x1000,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_LILAC_RINGS), &fx_0e0_centerPos, NULL, t * 3 + 0x1000,
                               frame, 1, ex->math_sin(t >> 2));
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &fx_0e0_centerPos, NULL, t * 2 + 0x4000, frame, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BLUE_RINGS), &fx_0e0_centerPos, NULL, t * 2 + 0x4000, frame, 1,
                               ex->math_sin(t >> 2));
             env->otZ = 0;
             if (frame >= 0x10) {
@@ -749,7 +749,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos10.vz = work->camAt18.vz;
                 work->pos10.vx -= 0x2800;
                 work->pos10.vy += 0xB86;
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_PEBBLES), (s32)&work->pos10);
             }
             break;
         case 8:
@@ -782,10 +782,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 1) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_PARTICLE_EMITTER), (s32)&work->pos10);
             }
             if (frame == 4) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_PARTICLE_EMITTER), (s32)&work->pos10);
             }
             if (frame >= 0x20) {
                 work->state0 = 0xA;
@@ -899,8 +899,8 @@ s32 fx_0e0_op84(s32 mode, Fx0e0Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = ry;
             rot.pad = 0;
             env->otZ = 0x18;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos8, NULL, scale0 * 3 / 4, 0, 1, alpha / 2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x22), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BLADE_GLINT), &work->pos8, NULL, scale0 * 3 / 4, 0, 1, alpha / 2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SWORD_BLADE_FLASH), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
             env->otZ = 0;
             work->frame4++;
         }
