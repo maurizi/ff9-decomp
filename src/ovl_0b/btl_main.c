@@ -59,7 +59,7 @@ void btl_updatePause(void) {
                 g_padActuator[i].smallMotor = 0;
             }
             if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
-                g_padPortMask[0] |= 8;
+                g_padPortMask[0] |= PAD_START;
             }
             ClearOTag(g_btlPauseOt, 1);
             setlen(&g_btlPauseStpOff, PRIM_LEN(DR_STP));
@@ -97,7 +97,7 @@ void btl_updatePause(void) {
     }
     game_resumeClock(0);
     akao_resume(0);
-    g_padPortMask[0] &= ~8;
+    g_padPortMask[0] &= ~PAD_START;
     btlui_resumeFromPause();
     g_gameState->gameData->flags &= ~GD_NO_FLIP;
     btlui_setPauseRequest(0);
