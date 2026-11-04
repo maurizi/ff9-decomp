@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_196 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LEVIATHAN_WATER_DROPS_2 0x5 /* emitter: water droplet sprites (byte-identical to fx_0b3 entry 0x25) */
+#define FX_LEVIATHAN_FOAM          0x6 /* animquads: blue-white foam, drawn along the wave edge (byte-identical to fx_0b3 entry 0x24) */
+#define FX_LEVIATHAN_WATER_BUBBLES 0x7 /* emitter: orbiting blue water bubbles + water droplet sprites */
+#define FX_LEVIATHAN_FOAM_2        0x8 /* emitter: blue-white foam anim quads, 16 frames */
+
 typedef struct {
     s16 unk0; /* not read by the module */
     s16 count2; /* count */

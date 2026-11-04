@@ -201,17 +201,17 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_1a8_env = env;
         ex->btlfx_initEffModels(fx_1a8_effModels, 0xC);
-        work->model28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x19), 0);
-        work->model4C[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x10), 0);
-        work->model4C[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0);
-        work->model4C[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 0);
-        work->model4C[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0);
-        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x15), 2);
-        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x11), 1);
-        fx_1a8_elemModels[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 0);
-        fx_1a8_elemModels[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 0);
-        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 3);
-        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x14), 1);
+        work->model28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_ZANTETSUKEN), 0);
+        work->model4C[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_RIBBON_4), 0);
+        work->model4C[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_RIBBON), 0);
+        work->model4C[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_RIBBON_2), 0);
+        work->model4C[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_RIBBON_3), 0);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_GOLD_RING), 2);
+        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_STONE_RING), 1);
+        fx_1a8_elemModels[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_SKY_CRYSTAL_2), 0);
+        fx_1a8_elemModels[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_SKY_CRYSTAL), 0);
+        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_VORTEX_CONE), 3);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_CLOUD_TORUS), 1);
         work->pos8.vx = fx_1a8_targetPos.vx;
         work->pos8.vy = fx_1a8_targetPos.vy - 0x2000;
         work->pos8.vz = fx_1a8_targetPos.vz - 0x2000;
@@ -226,10 +226,10 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             t = (frame << 12) / 10;
             if (frame == 0) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_BLUE_RINGS), (s32)&work->pos8);
             }
             if (frame < 0x10) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8, NULL, 0, 0x555,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_TRAIL), (s32)&work->pos8, NULL, 0, 0x555,
                                     ex->math_cos((frame << 8) >> 2), 1, fx_1a8_trailPoints, 0);
             }
             if (frame == 0) {
@@ -298,20 +298,20 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 2, 0x46, 0x46, 0x46);
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1a8_targetPos);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_FAN_STREAK), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_CRIMSON_RINGS_2), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x200;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_SPECK_SPIRAL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_SPECKS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_CALLBACK_EMITTER), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->elems[0].draw = (void (*)())fx_1a8_op80ElemDraw0;
                     emitter->elems[1].draw = (void (*)())fx_1a8_op80ElemDraw1;
@@ -457,14 +457,14 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ringRot.vz = 0;
                 ringRot.pad = 0;
                 env->otZ = 0x200;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos10, &ringRot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_CRIMSON_RINGS), &work->pos10, &ringRot,
                                   ex->math_sin((frame << 8) >> 2), 0, 1, ex->math_cos((frame << 8) >> 2));
                 env->otZ = 0;
             }
             if (frame == 0xC) {
                 Pool6CEntry *emitter;
 
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_PINK_SMOKE), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x190;
                 }

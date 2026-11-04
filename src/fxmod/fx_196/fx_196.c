@@ -342,7 +342,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             t = (frame << 12) / 81;
             if (frame == 0x12) {
-                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
+                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_DROPS_2), (s32)&work->pos10);
                 if (work->emit48 != NULL) {
                     work->emit48->tail->shape = -1;
                     work->emit48->tail->s.module.spawnFn = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))fxm_nextRingPoint;
@@ -400,7 +400,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 18; i++) {
                     if (fx_196_wavePoints[i].pad != 0) {
                         texBright = (i & 1) << 12;
-                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &fx_196_wavePoints[i], NULL,
+                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_196_wavePoints[i], NULL,
                                                 ((t * 3) >> 3) + 0x3800 + texBright, frame + i * 2, 1, 0x1000);
                     }
                 }
@@ -408,7 +408,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame >= 0x1D) {
                     for (i = 0; i < 7; i++) {
                         if (fx_196_wavePoints[i].pad != 0) {
-                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &fx_196_wavePoints[i], NULL,
+                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_196_wavePoints[i], NULL,
                                                     0x2400, frame + i * 2 + 4, 1, 0x1000);
                         }
                     }
@@ -427,7 +427,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos10.vx = (camPt0.vx + camPt1.vx) / 2;
                 work->pos10.vy = (camPt0.vy + camPt1.vy) / 2;
                 work->pos10.vz = (camPt0.vz + camPt1.vz) / 2;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_BUBBLES), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -531,7 +531,7 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->pos0[i]);
                 work->pos0[i].vz -= ex->btlfx_getUnitRadius(i);
                 work->pos0[i].vy -= 0x200;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0[i]);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM_2), (s32)&work->pos0[i]);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                 }
