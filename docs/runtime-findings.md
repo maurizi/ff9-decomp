@@ -4382,3 +4382,136 @@ Findings that change the picture:
 | P3 | fx_138 | `FX_LUCKY_SEVEN_SPRITE_LINE` | new name | `FX_LUCKY_SEVEN_LENS_FLARE` | drawn from f249 (13 calls); run-time sprites: lens-flare set (blue ring, dark red disc, orange rings, violet ring, rainbow halo). build/fxrt/s_p3s.png |
 | P3 | fx_188 | `FX_LV3_DEF_LESS_PARTICLE` | still unknown | - | drawn from f253 (720 calls); still black with the run-time page build/fxrt/rr_p3_fx188_280/188/03_particles.png |
 | P3 | fx_188 | `FX_LV3_DEF_LESS_RING` | still unknown | - | drawn from f501; noise with the run-time page (f520) build/fxrt/rr_p3_fx188_520/188/14_rings.png |
+
+## Effect-data runtime pass 2 (fxdata_runtime.md: P7, P5, E)  (status: proposed)
+
+Checklist `docs/wip/fxdata_runtime.md`, groups P7, P5 and the E groups (continuation of the pass above, same tools in
+`build/fxrt/`; new scratch scripts and sheets in `build/fxrt2/`). All runs from disc 3 `disc3_malboro_lv99_calm` (enemies
+calmed), frames relative to the state load (effects start at f48).
+
+Method:
+- **Short summons (P7)**: Summon (cmd 0x10) on the Malboro with an exec bp on btl_rollShortSummon (0x800B989C) that sets
+  BtlCmd.info.b.shortSummon (byte +0x11 bit 2) and returns (`build/fxrt2/p7.sh`, `p7b.sh`). Madeen, Fenrir (2nd) and Ark
+  still loaded the *full* modules (fx_0fb_0, fx_0e2, fx_17d_x) because btlfx_resolveFirstUse plays the full id on the
+  first cast: `GameData.firstUseFxSeen` (GameData+0x55E at run time, 0x8008B7AE in this save; g_btlfxFirstUsePairs
+  0x800F72A0 holds {short, full} pairs 0x17A/0xFB, 0x1FD/0xE2, 0x1BF/0x17D, ...) had their bits clear. Writing 0xFFFF
+  there after the load (`p7b.sh --pre`) plays the short modules. (Note: include/ff9.h's GameData layout puts
+  firstUseFxSeen at +0x562, 4 bytes later than the run-time address the code uses; worth a check on the decomp side.)
+- **Enemy skills (E)**: cheaper than entering each encounter: Zidane's Attack on the Malboro with the effect id rewritten
+  at btl_playCmdEffect (0x800C2598, `r.a1 = ID`; `build/fxrt2/e.sh`). Every forced id loaded its own module (checked by
+  comparing 0x801E7700 with `disks/us/fxmod/*.bin`). The effects play with Zidane as the caster and the Malboro as target,
+  so caster-relative parts (Transform, Death1) may look different from the real enemy cast.
+- Ablation: `build/fxrt/ablate.lua` gained a `so` kind ('so' effect model: zero the mesh counts of the model at +[4]) and
+  an `ABL_RA` filter (only the fetch from that return address, needed where two groups use the same index). Emitter
+  ablation (`skip`) skips the emitter start, which shifts the random particle state, so for random effects (Odin, Phoenix,
+  Medeo) the whole frame differs and only the look of the missing element tells.
+- Hazards: one Redux hang (event-listener exception, redux.log "(Table)" stack dump) at the start of a run after ~25
+  runs; restarted (disc 3, `frames 1800`, LuaJIT off). A trail `skip` ablation of Demi Shock (fx_079 0x9) timed out.
+
+**Ark kana page (page 0x11B, "up / left / right / down"): never on screen in Ark (short).** In the short Ark (0x1BF,
+groups fx_1bf_0/1/2) the kana page is in VRAM at (0x2E0,0x1C0..) from group 2's upload (~f907) to f1300
+(`build/fxrt/p7_ark3/vram_0920..1300.bin`, `build/fxrt2/a3_pages.png`), but nothing samples it: group 2 registers
+FX_ARK_FLAT_PANEL at f1309, and by f1320 the page holds a red-violet nebula texture (animated / re-uploaded, f1320-1400
+differ). The panel is drawn from ~f1584 with that nebula texture: ablating it (`so`, only the group-2 fetch) removes the
+wide red glow band along Ark's beam hitting the planet (f1584-1700, up to 5300 px; `build/fxrt/ab7_ark_02so/cmp.png`;
+render with the run-time page `build/fxrt2/arkpanel.png`). The full Ark's fx_17d_8 0x6 is byte-identical; its group 8
+was still not reached (not re-run).
+
+| group | module | define | verdict | proposed name | evidence |
+|---|---|---|---|---|---|
+| P7 | fx_1bd | `FX_IFRIT_GRID_PLANE` | new name | `FX_IFRIT_WHITE_HAZE` | (Ifrit short, Flames of Hell) fetched f249; ablating it (model) removes the grey streaky haze over the floor under the Malboro f256-368 (~3800 px/frame), turning orange as the lava cracks appear; same name as fx_114's entry. build/fxrt/ab7_ifr_0d/cmp.png |
+| P7 | fx_1bd | `FX_IFRIT_BOWL` | new name | `FX_IFRIT_HEAT_DOME` | fetched f360; ablating it removes the bright yellow-white translucent glare dome over the fire dome f392-504 (up to 27800 px); confirms the fx_114 name. build/fxrt/ab7_ifr_13/cmp.png |
+| P7 | fx_1bd | `FX_IFRIT_SPOKED_RING` | still unknown | - | fetched f356; ablating it changes only a few hundred scattered px (f392-440) build/fxrt/ab7_ifr_2c/cmp.png |
+| P7 | fx_19f | `FX_RAMUH_LIGHTNING_RIBBON` | name confirmed | `FX_RAMUH_LIGHTNING_RIBBON` | drawn from f360 (54 calls); run-time strip: crackling blue-white plasma; ablating it removes the blue-white electric ribbons arcing across f392-432. build/fxrt/ab7_ram_06/cmp.png, build/fxrt2/ramuh_r.png |
+| P7 | fx_19f | `FX_RAMUH_LIGHTNING_RIBBON_2` | name confirmed | `FX_RAMUH_LIGHTNING_RIBBON_2` | drawn from f360 (54 calls), same plasma strip texture as 0x6 (not ablated). build/fxrt2/ramuh_r.png (medium) |
+| P7 | fx_19f | `FX_RAMUH_SPARK_BURST` | new name | `FX_RAMUH_BOLT_SPARK_BURST` | started f456; run-time sprites: small blue lightning-bolt glyphs in a glow, plus flash ring elements; ablating it removes the cyan screen flash and the bolt sparks round the strike f472-640. build/fxrt/ab7_ram_16/cmp.png (medium) |
+| P7 | fx_19f | `FX_RAMUH_LIGHTNING_BOLT` | name confirmed | `FX_RAMUH_LIGHTNING_BOLT` | drawn from f400 (66 calls); run-time strip: blue forked lightning. build/fxrt/rr_p7_ramuh_440/19f/18_trail.png (medium) |
+| P7 | fx_19f | `FX_RAMUH_DOME_COLUMN` | new name | `FX_RAMUH_BLUE_AURA_COLUMN` | registered f296; the run-time page is a blue-white marbled texture (no "dummy" placeholder); ablating it (`so`) removes the huge glassy blue energy shroud round Ramuh's staff f304-360 (48000 px). build/fxrt/ab7_ram_22/cmp.png, build/fxrt2/ramuh_r.png |
+| P7 | fx_19f | `FX_RAMUH_SPARK_PARTICLE` | new name | `FX_RAMUH_BOLT_SPARKS` | started f576; run-time sprite: a blue lightning-bolt glyph; ablating it removes the small bolt sparks around the pillar f600-632. build/fxrt/ab7_ram_2a/cmp.png (medium; fx_0ba's same-named entry was not fetched in pass 1) |
+| P7 | fx_1a8 | `FX_ODIN_FAN_STREAK` | new name | `FX_ODIN_GOLD_RAYS` | started f310 with the slash explosion; run-time fan texture: thin pale-gold streak, matching the gold rays of the blast f336-352; ablation inconclusive (random puffs shift). build/fxrt2/odin_r.png (low) |
+| P7 | fx_1a8 | `FX_ODIN_SPECK_SPIRAL` | new name | `FX_ODIN_BLACK_DEBRIS` | started f310; run-time sprites: dark grey specks; with it ablated the black debris specks flying out of the explosion at f344-352 are gone (other ablations keep them). build/fxrt2/odin_cmp.png (column 3), build/fxrt2/odin_r.png |
+| P7 | fx_1a8 | `FX_ODIN_SPECKS` | new name | `FX_ODIN_RED_SPARKS` | started f310; run-time sprites: tiny red sparks; not separable on screen (random state shift). build/fxrt2/odin_r.png (low) |
+| P7 | fx_1a8 | `FX_ODIN_CALLBACK_EMITTER` | still unknown | - | started f310; ablation only shifts the random pink smoke puffs. build/fxrt/ab7_odin_17/cmp.png |
+| P7 | fx_1be | `FX_ATOMOS_SPHERE` | new name | `FX_ATOMOS_RED_CLOUD_SPHERE` | registered f249; page 0x117 holds a dark red cloudy texture at run time; ablating it (`so`) removes the dark red cloud sphere inside the violet gate f264-400 (up to 12400 px). build/fxrt/ab7_atom_0c/cmp.png, build/fxrt2/atom_r.png |
+| P7 | fx_1bf_2 | `FX_ARK_FLAT_PANEL` | new name | `FX_ARK_BEAM_HAZE` | see the kana-page note above: red nebula texture at run time, the red glow band along Ark's beam f1584-1700. build/fxrt/ab7_ark_02so/cmp.png |
+| P7 | fx_17a | `FX_MADEEN_TRAIL` | new name | `FX_MADEEN_SPIRAL_STREAK` | (short Madeen, first-use bits set) drawn from f468 (52 calls); ablating it removes the thin white curved light streaks spiralling round the blast f488-640. build/fxrt/ab7_mad_11/cmp.png (medium; the run-time render of its page still shows the placeholder, so the strip's tpage is resolved wrongly by the tool) |
+| P7 | fx_1fd | `FX_FENRIR_SPARKS` | new name | `FX_FENRIR_CYAN_GLINTS` | (short Fenrir 2nd, Millennial Decay) started f319; run-time sprites: tiny cyan-white glints; ablated, the cyan glints round the green whirlwind (f352-520) are missing. build/fxrt/ab7_fen_16/cmp.png, build/fxrt2/mf_r.png (medium) |
+| P7 | fx_1fe | `FX_PHOENIX_EMBERS` | name confirmed | `FX_PHOENIX_EMBERS` | started f560 after the white-out; run-time sprites: soft orange glowing motes, the small embers drifting f592-800 (ablation shifts the random cross sparkles too). build/fxrt2/phx_r.png, build/fxrt/ab7_phx_16/cmp.png (medium) |
+| P5 | fx_0f2 | `FX_TIDAL_FLAME_DOME` | new name | `FX_TIDAL_FLAME_FIRE_DOME` | (Dyne 0x6E) fetched f248; page 0x11A holds flames at run time; ablating it removes the fire dome behind the target f328-392 (18000 px). build/fxrt2/t360.png, build/fxrt/ab5_tidal_02/cmp.png |
+| P5 | fx_0f3 | `FX_SCOOP_ART_SCREEN_TRAIL` | new name | `FX_SCOOP_ART_GOLD_SPARK` | (Dyne 0x6F) started f248 (3 starts); run-time textures: a pale-gold gradient strip and a soft white-gold glow; ablated, the yellow spark at the tip of the pink pillar (f336) is missing. build/fxrt/ab5_scoop_08/cmp.png (low) |
+| P5 | fx_0f4 | `FX_SHIFT_BREAK_CONE_RINGS` | new name | `FX_SHIFT_BREAK_WHITE_GLOW` | (Dyne 0x70) started f465; ablating it removes the big soft white-blue haze over the target f488-632 (up to 39000 px); its ring UVs still read noise in the run-time page. build/fxrt/ab5_shift_0c/cmp.png (medium) |
+| P5 | fx_0f8 | `FX_GRAND_LETHAL_SPRITE_RINGS` | new name | `FX_GRAND_LETHAL_FLAME_FLASH` | (Dyne 0x74) started f408 (5 starts); run-time sprite: a large flame tile; ablated, the bright yellow-orange fire glow filling the screen f432-520 is gone (dark hole instead). build/fxrt/ab5_grand_0d/cmp.png (medium) |
+| P5 | fx_0f8 | `FX_GRAND_LETHAL_SWIRL_RINGS` | new name | `FX_GRAND_LETHAL_FLAME_VORTEX` | started f468; ablating it removes the orange flame vortex swirling round the target f488-544 (up to 54000 px). build/fxrt/ab5_grand_0e/cmp.png |
+| P5 | fx_079 | `FX_DEMI_SHOCK_TRAIL` | new name | `FX_DEMI_SHOCK_SPARK_TRAIL` | (Flair 0x83) drawn from f269 (145 calls); the strip is 3 px wide; on screen the thin pink/orange spark lines from Zidane to the sphere f316-404 are the only trail-like element; ablation timed out. build/fxrt2/s5_demi.png (low) |
+| P5 | fx_079 | `FX_DEMI_SHOCK_SPHERE` | new name | `FX_DEMI_SHOCK_ENERGY_SHELL` | fetched f269; ablating it removes the swirling blue (f352) then red-violet (f384-400) energy shell round the black sphere. build/fxrt/ab5_demi_0b/cmp.png |
+| P5 | fx_07a | `FX_DEMI_SHOCK_SPHERE` | new name | `FX_DEMI_SHOCK_ENERGY_SHELL` | (Elan 0x8B) same entry and the same ablation result (f344-408). build/fxrt/ab5_demie_0b/cmp.png |
+| P5 | fx_07a | `FX_DEMI_SHOCK_TRAIL` | new name | `FX_DEMI_SHOCK_SPARK_TRAIL` | drawn from f269 (142 calls), as fx_079 0x9 (low) |
+| P5 | fx_179 | `FX_MEDEO_SPRITE_BURST` | new name | `FX_MEDEO_GREEN_SPECKS` | (ability 0xAE) started f313; run-time sprites: tiny green specks; ablation shifts the random shards, so only the render tells. build/fxrt/rr_p5_medeo_320/179/0b_e0_sprites.png (low) |
+| E21 | fx_180 | `FX_ULTIMA_NOISE_RING` | new name | `FX_ULTIMA_VIOLET_HAZE` | (Ultima, Trance Kuja; forced id) started f329; ablating it removes the violet haze vortex round the party f344-460 (up to 54000 px) and leaves only the pink lightning. build/fxrt/ea_180_02/cmp.png, build/fxrt2/ce1.png |
+| E21 | fx_180 | `FX_ULTIMA_NOISE_RING_2` | new name | `FX_ULTIMA_VIOLET_GLOW` | started f735; ablating it removes the big soft violet glow sphere behind the white star burst f760-800 (up to 46000 px). build/fxrt/ea_180_0f/cmp.png |
+| E21 | fx_180 | `FX_ULTIMA_NOISE_RING_3` | still unknown | - | not fetched within 1000 frames (the run ended in the final explosion) build/fxrt/e_180/log.json |
+| E21 | fx_1ec | `FX_ULTIMA_NOISE_RING` | new name | `FX_ULTIMA_VIOLET_HAZE` | (Ultima, Kuja) started f277; the same violet haze vortex (ablation f280-460). build/fxrt/ea_1ec_02/cmp.png |
+| E21 | fx_1ec | `FX_ULTIMA_NOISE_RING_2` | new name | `FX_ULTIMA_VIOLET_GLOW` | started f683; the same violet glow sphere (ablation f700-800). build/fxrt/ea_1ec_12/cmp.png |
+| E21 | fx_1ec | `FX_ULTIMA_NOISE_RING_3` | new name | `FX_ULTIMA_VIOLET_GLOW_2` | started f944 in the final blast; not ablated, carried by analogy with 0x12 (low) |
+| E21 | fx_18a | `FX_TRANSFORM_FAN_STREAK` | new name | `FX_TRANSFORM_RED_STREAKS` | (Transform, played with Zidane as caster) started f229; ablating it removes the red light streaks sweeping in from the left f312-400 (up to 5700 px). build/fxrt/ea_18a_0a/cmp.png (medium) |
+| E21 | fx_18a | `FX_TRANSFORM_SPRITE_SPIRAL` | new name | `FX_TRANSFORM_RED_SPECKS` | started f309; run-time sprites: small dark-red glowing specks; ablation changes up to 5300 px of the white-out (f408). build/fxrt/ea_18a_0c/cmp.png (low) |
+| E21 | fx_1b4 | `FX_FLARE_STAR_FAN_EMITTER` | new name | `FX_FLARE_STAR_RED_RAYS` | started f396; ablating it removes the red light rays radiating from the target over the violet field f416-500. build/fxrt/ea_1b4_0b/cmp.png, build/fxrt2/ce2.png |
+| E9 | fx_0a1 | `FX_BLASTER_TRAIL` | new name | `FX_BLASTER_WHITE_HAZE` | (Blaster, Torama) started f364; ablating it removes the white-violet haze band over the target's mouth f368-430 (up to 32000 px). build/fxrt/ea_0a1_07/cmp.png (medium) |
+| E9 | fx_0a1 | `FX_BLASTER_TRAIL_2` | still unknown | - | drawn from f252 (12 calls); ablation changes < 250 px; run-time strip pink-violet stripes. build/fxrt/ea_0a1_10/ |
+| E9 | fx_0a3 | `FX_ELECTROCUTE_BOLT_TRAIL` | new name | `FX_ELECTROCUTE_BLUE_BOLTS` | (Electrocute, Torama) started f248; run-time strip a blue bolt with blue glow sprites; ablating it removes the blue lightning crackling round the target f296-340. build/fxrt/ea_0a3_01/cmp.png, build/fxrt2/ce2.png |
+| E9 | fx_0a3 | `FX_ELECTROCUTE_BOLT_TRAIL_2` | new name | `FX_ELECTROCUTE_BLUE_BOLTS_2` | started f288; same blue bolt strip; ablation removes part of the bolts (up to 4700 px, f328). build/fxrt/ea_0a3_02/cmp.png (medium) |
+| E12 | fx_0b0 | `FX_LEAF_SWIRL_LEAF_TRAIL` | new name | `FX_LEAF_SWIRL_YELLOW_LEAVES` | (Leaf Swirl, Soulcage) started f185; run-time strip texture: a yellow maple leaf (4 frames). build/fxrt/rr_e_0b0_240/0b0/01_e0_trailscreen.png, build/fxrt2/e2_r.png (medium: not ablated) |
+| E12 | fx_0b0 | `FX_LEAF_SWIRL_LEAF_TRAIL_2` | new name | `FX_LEAF_SWIRL_YELLOW_LEAVES_2` | same leaf texture (f185) (medium) |
+| E12 | fx_0b0 | `FX_LEAF_SWIRL_LEAF_TRAIL_3` | new name | `FX_LEAF_SWIRL_YELLOW_LEAVES_3` | same (f185) (medium) |
+| E12 | fx_0b0 | `FX_LEAF_SWIRL_LEAF_TRAIL_4` | new name | `FX_LEAF_SWIRL_YELLOW_LEAVES_4` | same (f185) (medium) |
+| E15 | fx_0cd | `FX_AERA_WIND_STREAKS` | new name | `FX_AERA_GREEN_WIND_BLADES` | (Aera, Gimme Cat) started f248; ablating it removes the translucent green wind blades sweeping round the target f440-470 (up to 20000 px). build/fxrt/ea_0cd_08/cmp.png, build/fxrt2/ce3.png |
+| E15 | fx_0cd | `FX_AERA_SPRITE_BURST` | still unknown | - | started f601; run-time sprite a tiny green glint; ablation changes < 210 px. build/fxrt/ea_0cd_0c/ |
+| E15 | fx_0ce | `FX_SCREECH_TRAIL` | still unknown | - | started f252; ablation changes only scattered pink squiggle pixels (max 1234 px) build/fxrt/ea_0ce_01/cmp.png |
+| E15 | fx_0ce | `FX_SCREECH_DARK_RINGS` | new name | `FX_SCREECH_SOUND_RINGS` | started f252; ablating it removes the pale expanding sound-wave rings over the target f288-312. build/fxrt/ea_0ce_0b/cmp.png (medium) |
+| E13 | fx_1f6 | `FX_AERA_WIND_STREAKS` | new name | `FX_AERA_GREEN_WIND_BLADES` | (Aera, Griffin) started f248; same entry as fx_0cd 0x8 (same run-time render). build/fxrt2/rr_b3.png (medium) |
+| E13 | fx_1f6 | `FX_AERA_SPRITE_BURST` | still unknown | - | as fx_0cd 0xc |
+| E13 | fx_0b4 | `FX_AERO_SPRITE_SWIRL` | new name | `FX_AERO_GREEN_GLINTS` | (Aero) started f248; run-time sprites: green four-point star glints. build/fxrt2/rr_b3.png (low: not ablated) |
+| E26 | fx_1b3 | `FX_DEATH1_FAN_EMITTER` | new name | `FX_DEATH1_GOLD_RAYS` | (Death1, Necron) started f425; ablating it removes the pale-gold light rays fanning out f440-640 (up to 36000 px). build/fxrt/ea_1b3_06/cmp.png, build/fxrt2/ce2.png |
+| E26 | fx_1b3 | `FX_DEATH1_SCREEN_TRAIL` | still unknown | - | not fetched within 1000 frames build/fxrt/e_1b3/log.json |
+| E26 | fx_1b3 | `FX_DEATH1_SCREEN_TRAIL_2` | still unknown | - | not fetched within 1000 frames |
+| E26 | fx_1f0 | `FX_APPEARANCE_SPRITES` | new name | `FX_APPEARANCE_WHITE_SPECKS` | (Appearance, Necron) started f392; run-time sprites: tiny white specks; ablation changes < 470 px. build/fxrt/ea_1f0_04/ (low) |
+| E1 | fx_01f | `FX_01F_WHITE_RINGS` | new name | `FX_01F_WHITE_FLASH` | (!!!, Yan) started f345; ablating it removes the huge white flash that swallows the target f360-400 (up to 54000 px). build/fxrt/ea_01f_03/cmp.png, build/fxrt2/cf0.png |
+| E1 | fx_01f | `FX_01F_BACKDROP` | new name | `FX_01F_BURST_TEXTURE` | render-to-VRAM layer table (drawn from f248, 61 calls); skipping it changes the red/white burst rays round the target f384-420 (up to 16000 px). build/fxrt/ea_01f_0d/cmp.png (medium) |
+| E2 | fx_023 | `FX_PSYCHOKINESIS_SCREEN_TRAILS` | new name | `FX_PSYCHOKINESIS_LIGHT_RAYS` | (Psychokinesis) started f340; ablating it removes the white light rays bursting from the target f360-400 (up to 50000 px). build/fxrt/ea_023_08/cmp.png |
+| E3 | fx_033 | `FX_SNORT_BREATH_TRAILS` | new name | `FX_SNORT_SMOKE_STREAKS` | (Snort) started f248; ablating it removes the grey smoke streaks blowing past the target f300-420. build/fxrt/ea_033_05/cmp.png (medium) |
+| E4 | fx_034 | `FX_COLD_BREATH_ICE_CRYSTAL_2` | name confirmed | `FX_COLD_BREATH_ICE_CRYSTAL_2` | fetched f248; ablating it removes one of the ice crystal shards on the target f344-360. build/fxrt/ea_034_0a/cmp.png |
+| E4 | fx_0a9 | `FX_LIGHTNING_TRAIL_2` | still unknown | - | drawn from f248 (99 calls); not rendered by the tool, not ablated |
+| E5 | fx_037 | `FX_DARKNESS_SCREEN_TRAIL` | new name | `FX_DARKNESS_GREEN_HAZE` | (Darkness) started f248; run-time strip: green glow dots on long streaks; ablation changes the dark-green haze at the frame edges f300-340 (up to 5900 px). build/fxrt/ea_037_02/cmp.png (low) |
+| E6 | fx_03b | `FX_TROUBLE_JUICE_SCREEN_TRAIL` | still unknown | - | started f281; ablation changes < 190 px build/fxrt/ea_03b_03/ |
+| E6 | fx_03b | `FX_TROUBLE_JUICE_SCREEN_TRAIL_2` | still unknown | - | started f269; not ablated |
+| E7 | fx_043 | `FX_INK_INK_TRAIL` | new name | `FX_INK_BLOTS` | (Ink) started f264; ablating it removes the black ink blots splattered on the target f288-300. build/fxrt/ea_043_01/cmp.png, build/fxrt2/cf3.png |
+| E7 | fx_043 | `FX_INK_INK_SPRAY` | new name | `FX_INK_BLOTS_2` | started f248; ablation removes another set of the black ink blots (f288-296). build/fxrt/ea_043_02/cmp.png |
+| E7 | fx_1ad | `FX_6_LEGS_POD` | new name | `FX_6_LEGS_SLIME_SHELL` | (6 Legs) registered f193; page 0x117 holds a green slimy texture at run time; on screen a green slime shell wraps the target f248-344 (ablation used the wrong kind and changed nothing). build/fxrt2/rr_b2.png, build/fxrt2/sh_b2a.png (medium) |
+| E8 | fx_0a0 | `FX_WEB_STRAND_TRAIL` | new name | `FX_WEB_STRANDS` | (Web) drawn from f253 (772 calls); on screen white web strands wrap the target f280-440. build/fxrt2/sh_b3.png (low: not ablated) |
+| E8 | fx_0a0 | `FX_WEB_CALLBACK_EMITTER` | still unknown | - | started f248; not ablated |
+| E10 | fx_0a4 | `FX_BUZZ_SPRITE` | new name | `FX_BUZZ_INSECT` | (Buzz) started f248; run-time sprite: a small grey winged insect silhouette (2 frames). build/fxrt2/rr_b3.png (medium: not ablated) |
+| E11 | fx_0a5 | `FX_SPORE_TRAIL` | new name | `FX_SPORE_GREEN_GLOW` | (Spore) started f349; run-time textures: a pale gold strip and a soft green glow. build/fxrt2/rr_b3.png (low) |
+| E14 | fx_0cb | `FX_LIGHT_FLARE_TEXTURED_RING` | new name | `FX_LIGHT_FLARE_GLOW_RING` | (Light Flare) drawn from f248 (102 calls); ablating it removes the yellow-green glow ring round the target f360-420 (up to 11000 px). build/fxrt/ea_0cb_11/cmp.png, build/fxrt2/cf2.png |
+| E14 | fx_0cc | `FX_METEORITE_TRAIL_EMITTER` | new name | `FX_METEORITE_EMBERS` | (Meteorite) started f253; run-time sprites: small orange specks. build/fxrt2/rr_b3.png (low) |
+| E16 | fx_0f0 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | new name | `FX_ZOMBIE_POWDER_BLUE_SPECKS` | (Zombie Powder) started f248; run-time quads: blue specks; blue glowing dust drifts round the caster f328-376. build/fxrt2/rr_b3.png, build/fxrt2/sh_b3.png (medium) |
+| E17 | fx_112 | `FX_EAT_ORBIT_TRAIL` | still unknown | - | started f504; run-time texture: a brown sphere with highlights; nothing identifiable on screen. build/fxrt2/rr_b3.png |
+| E18 | fx_11d | `FX_ABSORB_TRAIL` | new name | `FX_ABSORB_PINK_ORBS` | (Absorb) started f248; ablating it removes the pink glowing orbs flying between the units f400-450. build/fxrt/ea_11d_09/cmp.png (medium) |
+| E18 | fx_11d | `FX_ABSORB_TRAIL_2` | new name | `FX_ABSORB_PINK_ORBS_2` | started f248, the second emitter of the pair; not ablated (low) |
+| E19 | fx_123 | `FX_RAINING_SWORDS_DARK_BURST` | new name | `FX_RAINING_SWORDS_CYAN_SPECKS` | started f641; run-time sprites: tiny cyan specks. build/fxrt2/rr_b4.png (low) |
+| E20 | fx_125 | `FX_POLY_POLYHEDRON` | new name | `FX_POLY_GREEN_CRYSTAL` | (Poly) fetched f248; run-time page: green crystalline texture; ablating it removes part of the green crystal over the target f336. build/fxrt/ea_125_0d/cmp.png, build/fxrt2/cf3.png |
+| E20 | fx_125 | `FX_POLY_POLYHEDRON_2` | new name | `FX_POLY_GREEN_CRYSTAL_2` | fetched f248 (2 fetches); ablation also changes the crystal (f336, 2600 px). build/fxrt/ea_125_0e/ (medium) |
+| E22 | fx_18c | `FX_LIGHT_PARTICLES` | new name | `FX_LIGHT_VIOLET_STREAKS` | (Light) started f248; run-time sprite: a thin violet streak; ablation removes the violet light streaks under the target f288-300. build/fxrt/ea_18c_01/cmp.png (medium) |
+| E23 | fx_1a2 | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | still unknown | - | fetched f210; untextured spiky model; nothing visible in the forced cast (Zidane caster). |
+| E23 | fx_1a2 | `FX_MOONLIGHT_SLASH_SPRITES` | new name | `FX_MOONLIGHT_SLASH_BLUE_GLOWS` | started f602; run-time sprites: soft blue glows. build/fxrt2/rr_b4.png (low) |
+| E23 | fx_1a2 | `FX_MOONLIGHT_SLASH_SPRITES_2` | new name | `FX_MOONLIGHT_SLASH_COLOR_GLOWS` | started f685; blue, violet and green glows. build/fxrt2/rr_b4.png (low) |
+| E24 | fx_1a6 | `FX_WATER_GUN_PARTICLE` | new name | `FX_WATER_GUN_SPLASH` | (Water-gun) started f248; ablating it removes the white water splash spray over the target f380-460. build/fxrt/ea_1a6_03/cmp.png |
+| E24 | fx_1ab | `FX_WATERGA_RINGS` | new name | `FX_WATERGA_WHITE_FOAM` | started f313; ablating it removes the white foam inside the blue water sphere f400-440. build/fxrt/ea_1ab_04/cmp.png (medium) |
+| E25 | fx_1b2 | `FX_TIDAL_WAVE_CURL` | new name | `FX_TIDAL_WAVE_WATER_CURL` | (Tidal Wave) fetched f360; page 0x117 holds blue-white water at run time; ablation removes the white curling wave crest f456-536. build/fxrt/ea_1b2_02/cmp.png |
+| E25 | fx_1b2 | `FX_TIDAL_WAVE_DISC` | new name | `FX_TIDAL_WAVE_SURGE` | fetched f372; ablating it removes the big grey water surge sweeping over the party f496-560 (up to 59000 px). build/fxrt/ea_1b2_0c/cmp.png, build/fxrt2/cf1.png (medium) |
+| E27 | fx_1b6 | `FX_DEATH_SPIRAL_TRAIL` | still unknown | - | started f539 as the screen goes white; run-time strip a white streak. |
+| E28 | fx_1b8 | `FX_DEATH_DARK_QUADS` | new name | `FX_DEATH_TEAL_GLOWS` | (Death, Gizamaluke) started f401; run-time sprites: soft teal-white glows; teal glows drift on screen f456-528. build/fxrt2/rr_b5.png, build/fxrt2/sh_b5.png (medium) |
+| E28 | fx_1b9 | `FX_APPEARANCE_DARK_QUADS` | new name | `FX_APPEARANCE_TEAL_GLOWS` | started f189; same teal glow sprites. build/fxrt2/rr_b5.png (medium) |
+| E29 | fx_1e6 | `FX_CORRECT_SPARKLES` | new name | `FX_CORRECT_YELLOW_STARS` | (Correct!!!) started f281; run-time particle: a yellow five-point star (plus blue glows); yellow stars pop round the target f336-360. build/fxrt2/rr_b5.png, build/fxrt2/sh_b5.png (medium) |
+
+New save states: none (all runs from `disc3_malboro_lv99_calm`). Not done: E groups' entries marked still unknown above,
+full-Ark group 8 (fx_17d_8).
