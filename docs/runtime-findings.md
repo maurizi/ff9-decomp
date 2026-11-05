@@ -4686,3 +4686,140 @@ Results per cluster:
   watches on 0x80077DB3 (2 bytes) and the four GameData fields over a main menu + Items open/close cycle from
   `field_dali_inn`: 0 writes (menu_reset doesn't run there). The values stay 0 / 0xFFFF / 0 / 0. Confirmed
   write-only, so they stay `unkXX`.
+
+## R43 runtime pass: world map  (status: proposed)
+Questions: docs/wip/r43_runtime.md (rows 1-7). Redux, LuaJIT off, 2026-11-05. Scratch in `build/r43/` (`form.py`
+world-map init from `disc3_pandemonium_lv99_field` via world 9007 with a break at the end of wm_applyStoryForms to set or
+clear WM_CELL_FORM / g_worldFormFlags, plus `--timhash` / `--timdump` for the form TIM packs; `formdiff.py`,
+`texdiff.py`, `chunkinfo.py`, `geodiff.py`, `render.py` read the base and form chunks straight from the disc;
+`se.py STATE TAG ACTIONS` logs wm_sePlay / w_musicGetID with screenshots per action; `iifa*.py`; `fade.py`;
+`opscan.py` / `storyscan.py` / `b2scan.py` scan event scripts). New states: disc 4 `r43_wm_d4_iifa_crown_below`
+(Invincible under the Iifa Tree crown), disc 1 `r43_wm_d1_vube_desert` (walker in area 12 Vube Desert, story 0x1000).
+
+### Rows 1-2: story-form cells. The cell lists are texture areas, not places
+- Method. World chunk table (`g_worldChunkTable`, 24 x 20 chunks, two entries per chunk: base and form, {sector,
+  packSectors, texSectors}) dumped at runtime (`build/r43/chunktab.json`). The H image (DIR_WORLD_IMAGES 0x3FD) is
+  byte-identical on discs 1-3, so disc 3 data stands for data set 1. Base and form packs (geometry) and texture packs
+  read from `FF9 CD3.img` (image base sector 169065 = g_worldImageSectors[3]) and compared, polygons parsed (WmChunkPack
+  -> 4 WmBlocks, offsets relative to the pack). The low 6 bits of `g_worldChunkFlags` (WM_CELL_TEX_MASK) are the
+  cell's **texture area**; at runtime (`cpass_wm_hadris`) texture area k is used by exactly these cells:
+  1 = (17,12) Dali, (18,14) South Gate; 3 = (19,11); 4 = (7,1) Fire Shrine, (14,15) Dragon's Gate; 5 = (13,17);
+  6 = (13,12); 8 = (0,0), (16,14) Chocobo's Forest, (9,17) Chocobo's Lagoon; 9 = (14,6) Black Mage Village,
+  (21,10) Alexandria Harbor, (22,14); 11 = (3,9) Water Shrine, (9,1); 13 = (16,1) Mognet Central, (13,4), (14,5).
+  **Texture area = form index + 1** for every form (SGATE 0 -> 1, ALEX 2 -> 3, HOKORA_HI 3 -> 4, LIND 4 -> 5, CLAY 5 -> 6,
+  CHOCOBO_HEAVEN 7 -> 8, KUROMA 8 -> 9, HOKORA_MIZU 10 -> 11, MOG_NET 12 -> 13), and the 16 form TIM packs that
+  wm_setupWorldData uploads (pack i + 16 * g_worldFormFlags[i]) are these areas' textures. So each form lists **every
+  cell that reads its texture area** (the texture pack is shared, `wm_readtxFind`, so all its users must switch
+  together) plus the cells with texture area 0 whose geometry changes. The "surprising" cells are in their form only
+  because they share its texture area. CONFIRMED (high).
+- What each form changes (base = variant 0, form = variant 1 = flag set):
+  | form | cell | geometry (form vs base) | texture area / form TIM |
+  |---|---|---|---|
+  | SGATE | (18,14) South Gate, (17,12) Dali | identical | area 1 texture 6 (128x64): the round gate disc is a green crest in the base and a dark round opening in the form (`build/r43/tex_sgate_cmp.png`, top base); form TIM 0 entry 6 differs too |
+  | KUROMA | (14,6), (21,10), (22,14) | identical | identical; form TIM 8 identical (render `ftim8_cmp.png`, pixel diff empty). **KUROMA is a no-op in the data** |
+  | HOKORA_HI | (7,1), (8,1) | same 742 / 676 triangles; ~170 per cell retextured (UV/CLUT bytes) and 27 / 8 polygons change attr 0x38EE -> 0x38C6 (area 56 Seatence Ice Field, topography 0x3B -> 0x31 WM_TOPO_MOUNTAIN) | area 4: the lava textures 4-5 turn from bright molten orange to a dark crust (`tex_hi_cmp.png`, top base) |
+  | HOKORA_HI | (14,15) Dragon's Gate | identical | shares area 4 (its door and stone-wall textures 1-3 are unchanged) |
+  | HOKORA_MIZU | (3,9) Water Shrine | rebuilt: 562 -> 654 triangles, 163 polygons with cell trigger kind 1 / topography 0x3B, vertices down to y +1298 (below sea level) | area 11 identical |
+  | HOKORA_MIZU | (9,1) | identical | area 11 identical: **nothing changes** |
+  | MOG_NET | (16,1) Mognet Central | block 3 gains 40 triangles (y -668..-1806) | area 13 identical |
+  | MOG_NET | (13,4), (14,5) | identical | area 13 identical: nothing changes |
+  | CHOCOBO_HEAVEN | (0,0) | block 1/3 reshaped, +12 triangles; the island (area 63 Uaho Island) keeps its cell trigger | area 8 texture 3: a cracked rock wall becomes a dark cave mouth (`tex_choco_cmp.png`, top base) |
+  | CHOCOBO_HEAVEN | (16,14), (9,17) | identical | share area 8 |
+  | CLAY / LIND / ALEX | all their cells | rebuilt (CLAY both cells, LIND 4, ALEX 3 of 4 with (19,10) only one polygon) | areas 6 / 5 / 3 change |
+  Areas per cell (most polygons, from the chunk data; area 0 is sea): (22,14) 10 Bentini Heights / 21 Deadly Cape,
+  (8,1) 56 Seatence Ice Field, (9,1) 56 Seatence Ice Field / 55 Canaramist Cape, (14,5) 27 Donna Plains, (0,0) 63 Uaho
+  Island, (21,10) 24 Edgecry Coast, (17,12) 2 Nolrich Heights, (14,15) 7 Eunorus Plains, (13,4) 34 Pualei Plains.
+  Status table (runtime read, g_worldFormStatusTable / thresholds 0xBAE 0x137E 0x15DE 0x1838 0x1B4E 0x2260 0x2968 0x29CC
+  0x2B52 0xFA00 0xFDE8): SGATE statuses 0-3 (story < 0x1B4E), CLAY 1-9 (>= 0x137E), LIND 2-9, KUROMA 3-9, ALEX 5-9,
+  HOKORA_MIZU and HOKORA_HI status 6 only ([0x2968, 0x29CC)).
+  Screenshots with the form on/off at the cells (airship, `form.py ... --on/--off --ahead`) showed no visible
+  difference for KUROMA ((14,6), pixel-identical) and only the mini map for CHOCOBO_HEAVEN at (0,0) (`choco_cmp.png`,
+  the cave side faces away); the data comparison is the evidence.
+- Proposed (row 1): keep the geographic names, they are accurate (none of these cells holds a navi place):
+  `WM_CELL_QUANS_DWELLING_E` (22,14) (Quan's Dwelling (358057, -236117) is 2391 units west of it), comment "in KUROMA
+  only through texture area 9; the form changes nothing"; `WM_CELL_FIRE_SHRINE_E` (8,1), comment "east half of the
+  Fire Shrine volcano: HOKORA_HI cools its lava (topography 0x3B -> WM_TOPO_MOUNTAIN, dark-crust texture) as in (7,1)";
+  `WM_CELL_FIRE_SHRINE_E2` (9,1), comment "in HOKORA_MIZU only through texture area 11; nothing changes";
+  `WM_CELL_CONDE_PETIE_E` (14,5), comment "in MOG_NET only through texture area 13; nothing changes";
+  `WM_CELL_CHOCOBOS_PARADISE` (0,0): CONFIRMED as the place: Uaho Island with a cell trigger; the Chocobo Heaven form
+  opens a cave mouth in its cliff. Add `WM_CELL_TEX_AREA(form) = form + 1` (or a comment at WM_CELL_TEX_MASK).
+  high (data), medium (what the cooled lava / drained Water Shrine mean in the story).
+- Row 2: the extra cells are explained by the shared texture area: Dali (SGATE, area 1), Alexandria Harbor and (22,14)
+  (KUROMA, area 9), Dragon's Gate (HOKORA_HI, area 4), (9,1) (HOKORA_MIZU, area 11), Conde Petie path / (14,5) (MOG_NET,
+  area 13). The South Gate form changes nothing at Dali except that texture (if Dali draws it). Proposed comment on
+  wm_applyStoryForms: "each form flags its geometry cells and every cell of texture area form + 1". high.
+
+### Row 3: world sound numbers (trace wm_sePlay 0x800C4718 a0 / ra and w_musicGetID 0x800C3FE4)
+All script requests come from w_frameSetParameter (ra 0x800B7548). Script side: world script op C4 (EVT_OP_WM_SET_PARAM)
+`C4 00 10 n` (SE number), `C4 00 11 v` (volume), `C4 00 14 00` (WM_REQ_SE_PLAY); `opscan.py` lists who requests each.
+| n | SE | seen | evidence | proposed |
+|---|---|---|---|---|
+| 32 | 0x596 | Square while walking, 12 frames later, before the moogle comes | `se.py cpass_wm_hadris mog tp:52000:-118000 run:60 square:4:400 ...` | `WM_SE_MOOGLE_CALL` (Zidane calls the moogle) |
+| 6 | 0x552 | the moogle arrives, its "Can I help you, kupo?" window opens (f249); again when it comes back after the tent | same; `se_mog2_*.png`, `se_tent_*.png` | `WM_SE_MOOGLE_APPEAR` |
+| 7 | 0x553 | "Rest" chosen in the moogle's tent question (screen starts to darken); not on Cancel | `se.py cpass_wm_hadris tent ...`, `mog3` (Cancel: none) | `WM_SE_TENT_START` |
+| 31 | 0x4CF | 42 frames after 7, screen black, before the night scene with the tent | `se_tent_*.png` | `WM_SE_TENT_REST` |
+| 33 | 0x37A + 0x37B | Square on the chocobo at a chocograph spot, with 36 (SE_CHOCOBO_CALL, "K-KWEHHH!!!") | `se.py r37b_wm_chocograph1_spot dig square:4:12 ...` | `WM_SE_CHOCOBO_DIG` |
+| 41 | 0xA47 | the treasure chest shoots up out of the ground (Cross on "Found a treasure chest!") | `se_dig2_*.png` | `WM_SE_CHEST_RISE` |
+| 42 | 0xC26 | the chest lands next to the chocobo (54 frames later) | same | `WM_SE_CHEST_LAND` |
+| 3 / 4 | 0x27D / 0x27E | together, the chest opens (Cross) | same | `WM_SE_CHEST_OPEN` / `_2` |
+| 2 | 0x6C | each "Found N <item>!" line | same | keep `WM_SE_ITEMS` (world event: dig treasure items) |
+| 30 | 0x44B | "Feed him a Dead Pepper": the chocobo's reaction (f82) | `se.py r37b_wm_chocobo_choice pep down:4:30 cross:4:20 ...` | `WM_SE_DEAD_PEPPER` |
+| 37 | 0x37A | then every 9 frames for ~140 frames while the chocobo pecks at the glowing ground | same (`se_pep2_*.png`) | `WM_SE_CHOCOBO_PECK` |
+| 40 / 35 | 0x37B / 0x37C | chocobo entry 4 tag 14 (world 9007): one step sound + effect 9 per call, 40 for topographies 0x30 / 0x32 / 0x35, 35 for 0x31 / 0x33 / 0x34 / 0x36-0x39 (op 0B table on the player's topography); 40 heard once after the dig | `wdis.py 9007 4 14` | `WM_SE_CHOCOBO_STEP` / `_2` (low) |
+| 34 | 0x44C | only in chocobo entry 4 tag 19 (after 30, then a loop of effect 5); not reached | `wdis.py 9007 4 19` | unknown |
+| 20 | 0x374+0x375 | world file 9001 init/loop (disc 1 airship cutscene: models 313-318 over South Gate, Gizamaluke's Grotto, Lindblum) | `wm_force.py 9001 --disc 1` + log: one request; `w9001.png` | `WM_SE_FLEET_LOOP` (low) |
+| 21 | 0x376+0x377 | world files 9004-9006 entry 0 (one airship, model 312, over the misty mountains) | `wm_force.py 9004 --disc 1`; `w9004.png` | `WM_SE_AIRSHIP_CUTSCENE_LOOP` (low) |
+| 0 | 0x68 | no world script requests it as a literal on any disc | `opscan.py c400100000` | unknown (probably unused) |
+Not played: entering a location (Cross at Ipsen's Castle), landing / boarding the Hilda Garde 3 (`cpass_wm_airship9`
+Circle over Triquai Plains) and the Invincible (`r37b_wm_invincible_entry`), riding / dismounting the chocobo, sailing
+and leaving the boat; those use only the vehicle loops (22-24, 38) and the ambient 25. high for 32/6/7/31/33/41/42/3/4/30/37,
+medium for the exact sound (no audio capture), low for 40/35/20/21.
+
+### Row 4: WM_FX_MEMORIA_STREAM 25 / 26: never spawned. CONFIRMED (medium-high)
+wm_spawnEffect has three sources: the fixed types in w_movement.c, block-effect emitters, and WM_REQ_SPAWN_EFFECT
+(w_frame.c). (a) wm_updateBlockFx never sets `on` for WM_BLOCKFX_MEMORIA_ORB, and the disc-4 data pack's emitter
+tables (entries 0x28+1..0x28+11, read at runtime in `r41b_wm_disc4_memoria_orb`) hold types 1, 3, 4, 20, 24, 29 only;
+(b) the world scripts of all discs request types 0, 1, 2, 5, 8, 9, 13 and 28 only (`opscan.py c4000a c4020a c4010a`:
+`C4 00 0A type`); (c) log bp on wm_spawnEffect at the orb: 0 calls in 300 frames, 0 after Circle (which enters Memoria
+directly, field mode, `orb_*.png`). So 25 / 26 are dead types; keep the names with a comment "never spawned (no
+emitter, no script request)". The ablation screenshot was not needed.
+
+### Row 5: WM_STORY_VUBE_VIEW_FREE 0x137E. CONFIRMED
+- (a) `r43_wm_d1_vube_desert` (disc 1, walker at (229007, -207000), area 12 Vube Desert): story 0x1000 ->
+  g_worldCamera.viewForceNormal = 1 and R2 does nothing (viewBlend stays 0); story poked to 0x137E -> viewForceNormal 0,
+  R2 blends the view to 0x1000 (`vube_cmp.png`). (b) The only story-counter store of 0x137E in any field or world
+  script on any disc (`storyscan.py 0x137E`) is field 1153 "Red Rose/Bridge" (disc 2) entry 2 tag 1, after message
+  0x3E: the Red Rose scene after Cleyra's fall. 0x137E is also g_worldFormStoryThresholds[1], where WM_FORM_CLAY starts
+  (Cleyra's sandstorm block effect and wind sound stop). Proposed `WM_STORY_CLEYRA_FALLEN` (or
+  `WM_STORY_CLEYRA_SANDSTORM_GONE`), comment: "set on the Red Rose (field 1153) after Cleyra is destroyed; before it the
+  Vube Desert view is locked and form CLAY is off". high.
+
+### Row 6: EVT_GB_GENERAL_ADDITIVE_FADE (bit 0 of b[0x65], Gbit 0x328). CONFIRMED
+- Who sets it: `varscan.py bit:0x328` -> 504 references in field scripts of all discs, always the same field-exit
+  snippet `switch (b[2]) { case 65, 83: Gbit 0x328 = 1; default: Gbit 0x328 = 0 }` (e.g. field 262 entry 9 tag 2 +0x134),
+  b[2] being the world-map entry point. Fields that set b[2] = 65: 2209 "Palace/Sanctum", 2211 "Palace/Dock" (the Desert
+  Palace), 2360 "Gulug/Path", 2952 "Chocobo's Air Garden"; b[2] = 83: 2217 "Palace/Stairwell", 2953 "Chocobo's Dream
+  World" (`b2scan.py`).
+- What it does: `fade.py 87` vs `fade.py 86` (world 9007 forced from `disc3_pandemonium_lv99_field`): with the bit the
+  screen goes pure white (mean 255) and the map fades in from white (f540 234,243,247 -> f580 map); without it black
+  (0,0,0) -> map. Afterwards the bit is clear again (b[0x65] 0x87 -> 0x86). Proposed `EVT_GB_GENERAL_WM_WHITE_FADE`
+  (comment: "the next world-map entry fades in from white; field exits set it for world entry points 65 and 83 (Desert
+  Palace, Mount Gulug path, Chocobo's Air Garden / Dream World) and clear it otherwise; wm_cameraFollow clears it").
+  high.
+
+### Row 7: the Iifa Tree balls. CONFIRMED: the fly ball is the Iifa Tree's crown, not the orb
+- `iifa2.py` / runs from `cpass_wm_airship9` (data set 1) and `r41b_wm_disc4_memoria_orb` (data set 4), airship held at
+  (196471 +- 1000, y, -82001) with Cross (forward) for 10-frame steps: above the centre it is pushed onto the ball top
+  (data set 1: y -8000 -> -8449 = -6500 - 1953; data set 4: -8800 -> -9601 = -7200 - 2400) and stays there; below the
+  centre the snap is undone by wm_updateActorHeight (write watch: wm_movePlayer+0x610 writes -4551, then
+  wm_updateActorHeight 0x800B02FC writes the floorY back), so the ship passes under it. Screenshots: on disc 4 the
+  ship sits on a green mound under the purple orb (`iifa_d4_top.png`), and from below a mushroom-shaped green canopy
+  hangs over it (`iifa_d4_mid.png`, state `r43_wm_d4_iifa_crown_below`); on disc 3 the ship sits on the tree's green top
+  (`iifa_d3_top.png`). The orb (centre y -10882) is 3700 above the disc-4 ball centre, so the ball is the crown
+  (canopy) in both data sets; disc 4 raises it by 700.
+- Camera ball: ship at (190471, -1500, -84000) -> eye y -11764, dome value -11794 (eye pushed up onto the 14000 ball);
+  30000 units away at the same height the eye is at -5074 (`iifa_d3_lowin.png` looks almost straight down). Disc 4 the
+  same (-11190 vs -11200). So the eye can't enter a 14000-radius dome over the whole tree.
+- Proposed: `WM_IIFA_CROWN_R` / `_Y_DISC1` / `_Y_DISC4` / `_NOCACHE_*` for the WM_IIFA_FLY_* set (comment "the airship
+  slides over the Iifa Tree's crown"), keep `WM_IIFA_CAM_R` / `_Y` with "the camera eye stays outside a dome over the Iifa
+  Tree". high.
