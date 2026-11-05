@@ -305,44 +305,44 @@ void wm_applyStoryForms(void) {
         for (form = 0; form < 7; form++) {
             switch (g_worldFormStatusTable[form][i]) {
             case WM_FORM_STATUS(WM_FORM_SGATE):
-                WM_CELL(18, 14) |= WM_CELL_FORM;
-                WM_CELL(17, 12) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_SOUTH_GATE) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_DALI) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_SGATE] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_CLAY):
-                WM_CELL(13, 12) |= WM_CELL_FORM;
-                WM_CELL(14, 12) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_CLEYRA_W) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_CLEYRA_E) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_CLAY] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_LIND):
-                WM_CELL(13, 16) |= WM_CELL_FORM;
-                WM_CELL(13, 17) |= WM_CELL_FORM;
-                WM_CELL(14, 16) |= WM_CELL_FORM;
-                WM_CELL(14, 17) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_LINDBLUM_NW) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_LINDBLUM_SW) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_LINDBLUM_NE) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_LINDBLUM_SE) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_LIND] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_KUROMA):
-                WM_CELL(14, 6) |= WM_CELL_FORM;
-                WM_CELL(21, 10) |= WM_CELL_FORM;
-                WM_CELL(22, 14) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_BLACK_MAGE_VILLAGE) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_ALEXANDRIA_HARBOR) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_QUANS_DWELLING_E) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_KUROMA] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_ALEX):
-                WM_CELL(19, 10) |= WM_CELL_FORM;
-                WM_CELL(19, 11) |= WM_CELL_FORM;
-                WM_CELL(20, 10) |= WM_CELL_FORM;
-                WM_CELL(20, 11) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_ALEXANDRIA_NW) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_ALEXANDRIA_SW) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_ALEXANDRIA_NE) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_ALEXANDRIA_SE) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_ALEX] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_HOKORA_MIZU):
-                WM_CELL(3, 9) |= WM_CELL_FORM;
-                WM_CELL(9, 1) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_WATER_SHRINE) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_FIRE_SHRINE_E2) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_HOKORA_MIZU] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_HOKORA_HI):
-                WM_CELL(7, 1) |= WM_CELL_FORM;
-                WM_CELL(8, 1) |= WM_CELL_FORM;
-                WM_CELL(14, 15) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_FIRE_SHRINE) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_FIRE_SHRINE_E) |= WM_CELL_FORM;
+                WM_CELL_AT(WM_CELL_DRAGONS_GATE) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_HOKORA_HI] = 1;
                 break;
             }
@@ -379,16 +379,16 @@ void wm_applyStoryForms(void) {
     printf("General Global Flag = %x\n", g_evtGeneralFlags);
     if (g_evtGeneralFlags & EVT_GB_GENERAL_MOGNET_FORM) {
         printf("- Replace Mog Net -\n");
-        WM_CELL(16, 1) |= WM_CELL_FORM;
-        WM_CELL(13, 4) |= WM_CELL_FORM;
-        WM_CELL(14, 5) |= WM_CELL_FORM;
+        WM_CELL_AT(WM_CELL_MOGNET_CENTRAL) |= WM_CELL_FORM;
+        WM_CELL_AT(WM_CELL_CONDE_PETIE_PATH) |= WM_CELL_FORM;
+        WM_CELL_AT(WM_CELL_CONDE_PETIE_E) |= WM_CELL_FORM;
         g_worldFormFlags[WM_FORM_MOG_NET] = 1;
     }
     if (g_evtGeneralFlags & EVT_GB_GENERAL_CHOCOBO_FORM) {
         printf("- Replace Chocobo Heaven -\n");
-        WM_CELL(0, 0) |= WM_CELL_FORM;
-        WM_CELL(16, 14) |= WM_CELL_FORM;
-        WM_CELL(9, 17) |= WM_CELL_FORM;
+        WM_CELL_AT(WM_CELL_CHOCOBOS_PARADISE) |= WM_CELL_FORM;
+        WM_CELL_AT(WM_CELL_CHOCOBOS_FOREST) |= WM_CELL_FORM;
+        WM_CELL_AT(WM_CELL_CHOCOBOS_LAGOON) |= WM_CELL_FORM;
         g_worldFormFlags[WM_FORM_CHOCOBO_HEAVEN] = 1;
     }
 }

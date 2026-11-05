@@ -180,9 +180,9 @@ void wm_weatherAuto(void) {
     }
     if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == WM_FILE_DISC1 && g_worldReadyFrameCount == 10) {
         switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr)) {
-        case 9:
-        case 12:
-        case 13:
+        case WM_AREA_DAINES_HORSE_BASIN:
+        case WM_AREA_VUBE_DESERT:
+        case WM_AREA_EESISTERN_COAST:
             g_worldWeatherData.presets[3].fog[0].fogOffset = 0x7F58;
             g_worldWeatherData.presets[3].fog[0].fogOffset2 = 0x7F58;
             wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);

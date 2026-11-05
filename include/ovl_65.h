@@ -16,7 +16,6 @@ void timer_enable(u8);
 /* sounds of the rewards screen */
 #define SE_EXP_COUNT  0x69  /* loop while exp counts up (snd_startSe / snd_stopSe) */
 #define SE_GIL_COUNT  0x6D  /* loop while gil counts */
-#define SE_ITEMS      0x6C  /* items or a card received */
 #define SE_LEARN      0x413 /* an ability learned window opens */
 #define SE_LEVEL_UP   0x2AB /* level-up label */
 

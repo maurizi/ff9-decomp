@@ -59,6 +59,7 @@ Runtime evidence (snd_playSe traced in Redux while pressing buttons): `docs/runt
 | 0x67 | SE_CURSOR | runtime: cursor move, Cross pick |
 | 0x6A | SE_USE_ITEM | code: item use (ovl_37), ability use (ovl_33) |
 | 0x6B | SE_SET | runtime: equipment changed; code: chocograph set (ovl_32) |
+| 0x6C | SE_ITEMS | code: items or a card received (ovl_65 rewards), world-map sound 2 (ovl_0c WM_SE_ITEMS) |
 | 0x2AA | SE_HELP_OPEN | runtime: Select opens help (field menu and battle) |
 | 0x414 | SE_WINDOW_OPEN | runtime: battle command menu opens; code: save file list (ovl_39) |
 | 0x416 | SE_MESSAGE | code: message windows (ovl_39, ovl_65) |
@@ -71,7 +72,7 @@ Runtime evidence (snd_playSe traced in Redux while pressing buttons): `docs/runt
 | 0xB5A..0xB5C | SE_FLEE_1..3 | code: btl_victory, BTL_END_ESCAPE |
 
 Ids used by a single screen keep their names in that overlay's header: ovl_65 rewards (`SE_EXP_COUNT`,
-`SE_LEVEL_UP`, ...), ovl_3c `SE_SHOP`, ovl_15 `BJ_SE_WIN`/`BJ_SE_LOSE` (0x6C/0x6B, the same samples as the rewards'
+`SE_LEVEL_UP`, ...), ovl_3c `SE_SHOP`, ovl_15 `BJ_SE_WIN`/`BJ_SE_LOSE` (0x6C/0x6B, the same samples as
 `SE_ITEMS` and `SE_SET`). ovl_0d's `TM_SE_*` values are indices into `g_tmSeIds`, not ids (except `TM_SOUND_BANK_SE`,
 the card game's SE bank, next to `TM_SOUND_BANK_MUSIC`).
 

@@ -91,7 +91,7 @@ void wm_updateCamera(void) {
     g_worldCameraDir[0] = math_cos(angle);
     g_worldCameraDir[2] = math_sin(angle);
     VectorNormal((VECTOR *)g_worldCameraDir, (VECTOR *)g_worldCameraDir);
-    if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) == 0xC) {
+    if (*g_worldStoryCounterPtr < WM_STORY_VUBE_VIEW_FREE && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) == WM_AREA_VUBE_DESERT) {
         g_worldCamera->viewForceNormal = 1;
     }
 }
@@ -431,7 +431,7 @@ void wm_toggleCameraView(void) {
     u8 atEnd;
 
     if (g_worldCamera->viewForceNormal == 0
-        && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) != 0xC)) {
+        && (*g_worldStoryCounterPtr >= WM_STORY_VUBE_VIEW_FREE || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) != WM_AREA_VUBE_DESERT)) {
         atEnd = 0;
         if (g_worldCamera->viewBlend == 0) {
             atEnd = 1;
@@ -1497,10 +1497,10 @@ u8 wm_findGetoffPos(ActorPos *out) {
             case WM_TOPO_SEA:
                 k = 5;
                 break;
-            case 0x33:
+            case WM_TOPO_RIVER:
                 k = 6;
                 break;
-            case 0x30:
+            case WM_TOPO_WATERFALL:
                 k = 7;
                 break;
             default:
@@ -1626,7 +1626,7 @@ void wm_controlWalk(void) {
     }
     if (g_worldPlayerPosChanged != 0 && mv != 0) {
         if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2)) {
-            wm_spawnEffect(g_worldPlayer->pos.vx, -100, g_worldPlayer->pos.vz, WM_FX_WATER_RIPPLE, 24000);
+            wm_spawnEffect(g_worldPlayer->pos.vx, WM_FX_WATER_Y, g_worldPlayer->pos.vz, WM_FX_WATER_RIPPLE, 24000);
         }
         if (!(g_worldFrameCount & 3)) {
             k = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
@@ -1701,14 +1701,14 @@ void wm_controlSteer(void) {
         ang = (g_worldPlayerSpeed <= 0) << 11;
         dx = math_sin(ang + g_worldPlayer->pos.rotY) >> 2;
         dz = math_cos(ang + g_worldPlayer->pos.rotY) >> 2;
-        wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_WAKE, 15000);
+        wm_spawnEffect(g_worldPlayer->pos.vx + dx, WM_FX_WATER_Y, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_WAKE, 15000);
         if (g_worldFrameCount & 1) {
             dx = math_sin(ang + g_worldPlayer->pos.rotY + 0x80) >> 3;
             dz = math_cos(ang + g_worldPlayer->pos.rotY + 0x80) >> 3;
-            wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_SIDE_WAKE, 15000);
+            wm_spawnEffect(g_worldPlayer->pos.vx + dx, WM_FX_WATER_Y, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_SIDE_WAKE, 15000);
             dx = math_sin(ang + g_worldPlayer->pos.rotY - 0x80) >> 3;
             dz = math_cos(ang + g_worldPlayer->pos.rotY - 0x80) >> 3;
-            wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_SIDE_WAKE, 15000);
+            wm_spawnEffect(g_worldPlayer->pos.vx + dx, WM_FX_WATER_Y, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_SIDE_WAKE, 15000);
         }
     }
 }
@@ -1884,7 +1884,7 @@ void wm_controlFly(void) {
                 h = g_worldPlayer->pos.vy;
                 if (h >= -0x800) {
                     g_worldSprayTarget = 0x1000 - abs(h + 400) * 2;
-                    wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SPRAY, 32000);
+                    wm_spawnEffect(g_worldPlayer->pos.vx, WM_FX_SPRAY_Y, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SPRAY, 32000);
                     h = abs(g_worldPlayerSpeed);
                     if (h >= 0x200) {
                         h = 0x1FF;
@@ -1910,7 +1910,7 @@ void wm_controlFly(void) {
         case WM_ACTOR_CHOCOBO4:
             if (onWater && abs(g_worldPlayerSpeed) > 30 && g_worldPlayer->pos.vy >= -100) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 100) * 2;
-                wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SPRAY, 19200);
+                wm_spawnEffect(g_worldPlayer->pos.vx, WM_FX_SPRAY_Y, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SPRAY, 19200);
             }
             if (topo == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 0x708) * 2;
@@ -2230,10 +2230,10 @@ s32 wm_getTerrainHeightOffset(s32 terrainClass, u32 cellAttr, u8 *outFlat) {
     case WM_TOPO_SEA:
         i = 5;
         break;
-    case 0x33:
+    case WM_TOPO_RIVER:
         i = 6;
         break;
-    case 0x30:
+    case WM_TOPO_WATERFALL:
         i = 7;
         break;
     default:

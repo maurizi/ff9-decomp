@@ -1888,7 +1888,7 @@ typedef union {
 } EventVars;
 extern EventVars g_evtGlobalVars;
 /* story counter (g_evtGlobalVars.h[0]) where each disc's part of the story starts: menuSave_getDiscBit (ovl_39) stores
- * bit disc - 1 in SaveHeader.discs; the world map stops WM_BLOCKFX_WINDMILL from STORY_DISC3 on. Evidence: [code] */
+ * bit disc - 1 in SaveHeader.discs; the world map stops WM_BLOCKFX_DALI_WINDMILL from STORY_DISC3 on. Evidence: [code] */
 #define STORY_DISC2 0xF3C
 #define STORY_DISC3 0x1B4E
 #define STORY_DISC4 0x2AF3

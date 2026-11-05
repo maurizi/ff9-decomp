@@ -207,6 +207,7 @@
 #define SE_CURSOR 0x67 /* runtime: cursor move (menuList_up/down) and a pick with Cross */
 #define SE_USE_ITEM 0x6A /* code: an item (ovl_37) or ability (ovl_33) was used */
 #define SE_SET 0x6B /* runtime: equipment changed (ovl_33); code: chocograph set or cleared (ovl_32) */
+#define SE_ITEMS 0x6C /* code: items or a card received (ovl_65 rewards), world sound WM_SE_ITEMS (ovl_0c) */
 #define SE_HELP_OPEN 0x2AA /* runtime: Select opens the help window (help_toggle, btlui_toggleHelp) */
 #define SE_WINDOW_OPEN 0x414 /* runtime: battle command menu opens; code: save file list fades in (ovl_39) */
 #define SE_SHOP 0x415 /* code: Cross in a shop quantity window: buy / sell / synthesize (ovl_3c) */

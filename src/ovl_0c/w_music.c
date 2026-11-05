@@ -45,8 +45,8 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
     case WM_SE_BUZZER:
         se.seIds[0] = SE_BUZZER;
         break;
-    case 2:
-        se.seIds[0] = 0x6C;
+    case WM_SE_ITEMS:
+        se.seIds[0] = SE_ITEMS;
         break;
     case 3:
         se.seIds[0] = 0x27D;

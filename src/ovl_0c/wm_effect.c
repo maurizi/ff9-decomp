@@ -22,9 +22,9 @@ void wm_initEffects(void) {
         g_worldEffectRot[i].vy = 0;
         g_worldEffectRot[i].vz = 0;
     }
-    setVector(&g_worldEffectPos[0], 0x4464C, -0x1E68, -0x32681);
-    setVector(&g_worldEffectPos[1], 0x3805B, 0x1F4, -0x30847);
-    setVector(&g_worldEffectPos[6], 0x2FFFA, -0x2A82, -0x14052);
+    setVector(&g_worldEffectPos[0], WM_FXPOS_DALI_WINDMILL_X, WM_FXPOS_DALI_WINDMILL_Y, WM_FXPOS_DALI_WINDMILL_Z);
+    setVector(&g_worldEffectPos[1], WM_FXPOS_CLEYRA_X, WM_FXPOS_CLEYRA_Y, WM_FXPOS_CLEYRA_Z);
+    setVector(&g_worldEffectPos[6], WM_FXPOS_MEMORIA_ORB_X, WM_FXPOS_MEMORIA_ORB_Y, WM_FXPOS_MEMORIA_ORB_Z);
     g_worldEffectPos[2] = g_worldEffectPos[1];
     g_worldEffectPos[3] = g_worldEffectPos[1];
     g_worldEffectPos[4] = g_worldEffectPos[1];
@@ -109,9 +109,9 @@ void wm_drawEffects(void) {
                     fx->scale = (8 - fx->frame) * 4000;
                     rot.vy = fx->frame * 128;
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, 0, 1, -1, tex, 0, 0);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, 0, WM_FX_ABR_ADD, -1, tex, 0, 0);
                     rot.vy = fx->frame * 200;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, 0, 2, -1, tex, 0, 0);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, 0, WM_FX_ABR_SUB, -1, tex, 0, 0);
                     break;
                 }
                 case WM_FX_CHOCOBO_SAND:
@@ -131,12 +131,12 @@ void wm_drawEffects(void) {
                                                    (u8)fx->abr, k, tex, 0, 0);
                     }
                     break;
-                case 25:
-                case 26: {
+                case WM_FX_MEMORIA_STREAM:
+                case WM_FX_MEMORIA_STREAM_2: {
                     SVECTOR rot;
                     memset(&rot, 0, 8);
                     rot.pad = 1;
-                    rot.vy = ratan2(0x30031 - fx->x, -0x13F6E - fx->z);
+                    rot.vy = ratan2(WM_FX_MEMORIA_AIM_X - fx->x, WM_FX_MEMORIA_AIM_Z - fx->z);
                     g_worldOtBias = 0;
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, fx->frame, (u8)fx->abr,
                                                -1, tex, 0, 0);
@@ -266,7 +266,7 @@ void wm_drawBlockFx(u8 fxId) {
             }
         }
         break;
-    case WM_BLOCKFX_WINDMILL:
+    case WM_BLOCKFX_DALI_WINDMILL:
         math_rotMatrixXYZ(&g_worldBlockFx7Rot, &mtx);
         wm_worldToView(&g_worldBlockFx7Pos, (VECTOR *)mtx.t, &view, 0);
         CompMatrix(g_worldViewMatrix, &mtx, &mtx);
@@ -438,7 +438,7 @@ void wm_updateBlockFx(s32 fxId) {
             on = 1;
         }
         break;
-    case WM_BLOCKFX_WINDMILL:
+    case WM_BLOCKFX_DALI_WINDMILL:
         if (g_worldBlockFx7Spin != 0) {
             g_worldBlockFx7Rot.vy += 0x40;
         }
@@ -501,10 +501,10 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     switch (type) {
     case WM_FX_RISING_PUFF:
     case WM_FX_RISING_PUFF_2:
-        k = 2;
+        k = WM_FX_ABR_SUB;
         break;
     case WM_FX_FOREST_LEAVES:
-        k = 0xFF;
+        k = WM_FX_ABR_OPAQUE;
         break;
     case 4:
     case 5:
@@ -526,15 +526,15 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     case WM_FX_WATER_RIPPLE:
     case WM_FX_CLAY_SWIRL:
     case 24:
-    case 25:
-    case 26:
+    case WM_FX_MEMORIA_STREAM:
+    case WM_FX_MEMORIA_STREAM_2:
     case WM_FX_SAND_DUST:
     case 28:
     case 29:
-        k = 1;
+        k = WM_FX_ABR_ADD;
         break;
     default:
-        k = 1;
+        k = WM_FX_ABR_ADD;
         break;
     }
     if (fx->next != 0) {

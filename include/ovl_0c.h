@@ -73,6 +73,72 @@
 
 /* cell attribute (WmActorType.unk8, wm_getBlockHeight): area in bits 8-13, topography in bits 2-7 (docs/encounters.md) */
 #define WM_ATTR_AREA(a) (((a) & 0x3F00) >> 8)
+/* areas (WM_ATTR_AREA), named after g_worldAreaNames (WM_PACK_AREA_NAMES: entry 2 * area is the name the game shows, read
+ * from the world data pack on disc 3; R41b's runtime area numbers match it). Evidence: [string] */
+#define WM_AREA_GUNITAS_BASIN          0 /* "Gunitas Basin" */
+#define WM_AREA_MELDA_PLAINS           1 /* "Melda Plains" */
+#define WM_AREA_NOLRICH_HEIGHTS        2 /* "Nolrich Heights" */
+#define WM_AREA_BYAN_HEIGHTS           3 /* "Byan Heights" */
+#define WM_AREA_TUHANDA_SHORES         4 /* "Tuhanda Shores" */
+#define WM_AREA_NOMARANIA_BEACH        5 /* "Nomarania Beach" */
+#define WM_AREA_LACHENTA_WETLANDS      6 /* "Lachenta Wetlands" */
+#define WM_AREA_EUNORUS_PLAINS         7 /* "Eunorus Plains" */
+#define WM_AREA_ELEANOR_COAST          8 /* "Eleanor Coast" */
+#define WM_AREA_DAINES_HORSE_BASIN     9 /* "Daines-horse Basin" */
+#define WM_AREA_BENTINI_HEIGHTS        10 /* "Bentini Heights" */
+#define WM_AREA_BOHDEN_HEIGHTS         11 /* "Bohden Heights" */
+#define WM_AREA_VUBE_DESERT            12 /* "Vube Desert" */
+#define WM_AREA_EESISTERN_COAST        13 /* "Eesistern Coast" */
+#define WM_AREA_LINDBLUM_PLATEAU       14 /* "Lindblum Plateau" */
+#define WM_AREA_KING_ED_PLAINS         15 /* "King Ed Plains" */
+#define WM_AREA_METALARK_SHORES        16 /* "Metalark Shores" */
+#define WM_AREA_DEREK_BEACH            17 /* "Derek Beach" */
+#define WM_AREA_MAKIKI_BEACH           18 /* "Makiki Beach" */
+#define WM_AREA_LANSHAKE_ISLAND        19 /* "Lanshake Island" */
+#define WM_AREA_SUMA_ARCHIPELAGO       20 /* "Suma Archipelago" */
+#define WM_AREA_DEADLY_CAPE            21 /* "Deadly Cape" */
+#define WM_AREA_ALEXANDRIA_PLATEAU     22 /* "Alexandria Plateau" */
+#define WM_AREA_ZAMO_BASIN             23 /* "Zamo Basin" */
+#define WM_AREA_EDGECRY_COAST          24 /* "Edgecry Coast" */
+#define WM_AREA_TOGULL_BEACH           25 /* "Togull Beach" */
+#define WM_AREA_POPOS_HEIGHTS          26 /* "Popos Heights" */
+#define WM_AREA_DONNA_PLAINS           27 /* "Donna Plains" */
+#define WM_AREA_MAGDALENE_FOREST       28 /* "Magdalene Forest" */
+#define WM_AREA_DYSHNOSE_SHORES        29 /* "Dyshnose Shores" */
+#define WM_AREA_GEGALRICH_SHORES       30 /* "Gegalrich Shores" */
+#define WM_AREA_KOGNISH_SHORES         31 /* "Kognish Shores" */
+#define WM_AREA_LUCID_PLAINS           32 /* "Lucid Plains" */
+#define WM_AREA_BANYANO_SHORES         33 /* "Banyano Shores" */
+#define WM_AREA_PUALEI_PLAINS          34 /* "Pualei Plains" */
+#define WM_AREA_MOTEORE_PENINSULA      35 /* "Moteore Peninsula" */
+#define WM_AREA_KORUA_ISLAND           36 /* "Korua Island" */
+#define WM_AREA_FALSTEAD_COAST         37 /* "Falstead Coast" */
+#define WM_AREA_SHENGALASTA_SHORES     38 /* "Shengalasta Shores" */
+#define WM_AREA_KIERA_DESERT           39 /* "Kiera Desert" */
+#define WM_AREA_PILKIRAS_ISLAND        40 /* "Pilkiras Island" */
+#define WM_AREA_SEAWAYS_CANYON         41 /* "Seaways Canyon" */
+#define WM_AREA_BLAIRSURPASS_PLAINS    42 /* "Blairsurpass Plains" */
+#define WM_AREA_YUANSHAO_PENINSULA     43 /* "Yuanshao Peninsula" */
+#define WM_AREA_HADRIS_BASIN           44 /* "Hadris Basin" */
+#define WM_AREA_GUSTY_VALLEY           45 /* "Gusty Valley" */
+#define WM_AREA_EVERLANG_ISLAND        46 /* "Everlang Island" */
+#define WM_AREA_LANAR_ISLAND           47 /* "Lanar Island" */
+#define WM_AREA_SACROBLESS_ISLAND      48 /* "Sacrobless Island" */
+#define WM_AREA_PALMNELL_ISLAND        49 /* "Palmnell Island" */
+#define WM_AREA_SALVAGE_ARCHIPELAGO    50 /* "Salvage Archipelago" */
+#define WM_AREA_RYUKI_SHORES           51 /* "Ryuki Shores" */
+#define WM_AREA_QUELMIERA_SHORES       52 /* "Quelmiera Shores" */
+#define WM_AREA_MITMAKIS_ICE_FIELD     53 /* "Mitmakis Ice Field" */
+#define WM_AREA_GULUG_MOUNTAINS        54 /* "Gulug Mountains" */
+#define WM_AREA_CANARAMIST_CAPE        55 /* "Canaramist Cape" */
+#define WM_AREA_SEATENCE_ICE_FIELD     56 /* "Seatence Ice Field" */
+#define WM_AREA_CAZEDIL_PLAINS         57 /* "Cazedil Plains" */
+#define WM_AREA_COMMURE_SHORES         58 /* "Commure Shores" */
+#define WM_AREA_LIKANMACK_ISLAND       59 /* "Likanmack Island" */
+#define WM_AREA_TRIQUAI_PLAINS         60 /* "Triquai Plains" */
+#define WM_AREA_KUENTIS_PENINSULA      61 /* "Kuentis Peninsula" */
+#define WM_AREA_VILE_ISLAND            62 /* "Vile Island" */
+#define WM_AREA_UAHO_ISLAND            63 /* "Uaho Island" */
 #define WM_ATTR_TRIGGER_MASK 0xC000 /* cell event trigger kind (evt_callWorldCellTrigger's third argument), 0 none */
 #define WM_ATTR_TRIGGER(a) (((a) & WM_ATTR_TRIGGER_MASK) >> 14)
 #define WM_ATTR_TOPO_MASK 0xFC /* bits 2-7 (callers that shift it as s32 use the mask directly) */
@@ -174,6 +240,9 @@
 #define WM_STORY_FIELD_SONG1 0x2580 /* wm_getSongMusicId: WM_SONG_NORMAL plays WM_SONG_FIELD1 in [0x2580, 0x26A2), */
 #define WM_STORY_FIELD_SONG2 0x26A2 /* WM_SONG_FIELD2 in [0x26A2, 0x26B6); wm_keepEntryMusic keeps the music there */
 #define WM_STORY_FIELD_SONG2_END 0x26B6
+#define WM_STORY_VUBE_VIEW_FREE 0x137E /* below it the camera view is forced to normal and can't be toggled while the */
+                                     /* player is in WM_AREA_VUBE_DESERT (wm_updateCamera, wm_toggleCameraView);    */
+                                     /* which event (disc 2, Cleyra) sets it: runtime pending R43 */
 #define WM_STORY_BLOCKFX3_ON 0x24EA /* WM_BLOCKFX_KIERA_DESERT emits in [0x24EA, 0x26A3) */
 #define WM_STORY_BLOCKFX3_OFF 0x26A3
 
@@ -286,7 +355,7 @@ typedef struct WmEffect {
     s32 sprite;
     struct WmEffect *prev;
     struct WmEffect *next;
-    s8 abr;
+    s8 abr; /* WM_FX_ABR_* */
     s8 type;
     s16 scale;
     s32 x;
@@ -314,6 +383,30 @@ typedef struct WmEffect {
 #define WM_FX_RISING_PUFF 2 /* rises 60-83 a frame with sideways drift, grows (scale frame * 400 + 6000), */
 #define WM_FX_RISING_PUFF_2 3 /* subtractive blend; 2 lives 77 frames, 3 46 (3 is emitted by WM_BLOCKFX_GULUG_SUMMIT) */
 #define WM_FX_CLAY_SWIRL 23 /* circles WM_BLOCKFX_CLAY's centre (g_worldBlockFx4Pos) while rising, then drifts like 24 */
+#define WM_FX_MEMORIA_STREAM 25 /* code: 25 and 26 are drawn turned to face (WM_FX_MEMORIA_AIM_X, _Z), the */
+#define WM_FX_MEMORIA_STREAM_2 26 /* WM_BLOCKFX_MEMORIA_ORB sphere; who emits them: runtime pending R43 */
+#define WM_FX_MEMORIA_AIM_X 0x30031 /* 196657, -81774: 240 units from the orb's centre g_worldBlockFx6Pos */
+#define WM_FX_MEMORIA_AIM_Z -0x13F6E
+/* WmEffect.abr: wm_spawnEffect's blend per type, passed to wm_drawSprite3D (abr & 3 into the tpage, 0xFF = no
+ * semi-transparency code). Evidence: [code] */
+#define WM_FX_ABR_ADD 1 /* TPAGE_ABR(1): back + front (most types) */
+#define WM_FX_ABR_SUB 2 /* back - front (WM_FX_RISING_PUFF, _2) */
+#define WM_FX_ABR_OPAQUE 0xFF /* WM_FX_FOREST_LEAVES (drawn twice, with 1 and 2, by wm_drawEffects itself) */
+/* spawn heights (wm_spawnEffect's y; y grows downward, the sea surface is y 0) */
+#define WM_FX_WATER_Y -100 /* WM_FX_WATER_RIPPLE, WM_FX_BOAT_WAKE and _SIDE_WAKE: just above the water surface */
+#define WM_FX_SPRAY_Y -200 /* WM_FX_AIRSHIP_SPRAY and WM_FX_CHOCOBO_SPRAY over water cells */
+/* g_worldEffectPos (wm_initEffects; nothing reads it): the anchors of three block effects. [0] = g_worldBlockFx7Pos
+ * (WM_BLOCKFX_DALI_WINDMILL), [1] (copied to [2]-[5]) within 700 units of g_worldBlockFx4Pos (WM_BLOCKFX_CLAY, Cleyra),
+ * [6] (copied to [7], [8]) = g_worldBlockFx6Pos (WM_BLOCKFX_MEMORIA_ORB). Evidence: [code] the matching positions */
+#define WM_FXPOS_DALI_WINDMILL_X 0x4464C
+#define WM_FXPOS_DALI_WINDMILL_Y -0x1E68
+#define WM_FXPOS_DALI_WINDMILL_Z -0x32681
+#define WM_FXPOS_CLEYRA_X 0x3805B
+#define WM_FXPOS_CLEYRA_Y 0x1F4
+#define WM_FXPOS_CLEYRA_Z -0x30847
+#define WM_FXPOS_MEMORIA_ORB_X 0x2FFFA
+#define WM_FXPOS_MEMORIA_ORB_Y -0x2A82
+#define WM_FXPOS_MEMORIA_ORB_Z -0x14052
 /* wm_updateBlockFx / wm_drawBlockFx block ids (the emitter table is data pack entry id + 0x28) */
 #define WM_BLOCKFX_WATERFALLS 5 /* runtime: always on, emits WM_FX_WATERFALL_MIST at three waterfalls */
 #define WM_BLOCKFX_WATER_SHRINE 10 /* code: on while WM_FORM_HOKORA_MIZU ("HOKORA(MIZU)") is set */
@@ -328,8 +421,9 @@ typedef struct WmEffect {
 #define WM_BLOCKFX_MEMORIA_ORB 6 /* data set 4 only: a sprite, a core model, two counter-rotating shells, 10 random */
                                  /* flashes and 10 expanding rings at (196602, -10882, -82002); runtime (R41b): the */
                                  /* huge purple glowing sphere over the Iifa Tree mound ("???", Pualei Plains) */
-#define WM_BLOCKFX_WINDMILL 7 /* one model at (280140, -7784, -206465), turning except in [STORY_DISC3, */
-                              /* STORY_WORLD_LATE); runtime (R41b): windmill sails on a stone hut in Nolrich Heights */
+#define WM_BLOCKFX_DALI_WINDMILL 7 /* one model at (280140, -7784, -206465), turning except in [STORY_DISC3, */
+                                   /* STORY_WORLD_LATE); runtime (R41b): windmill sails on a stone hut in Nolrich */
+                                   /* Heights; navi place 13 "Dali" is at (280253, -206433), 120 units away */
 /* wm_cameraFollow: which way the camera target / eye height has to move (y grows downward) */
 #define WM_CAM_HOLD 0
 #define WM_CAM_LOWER 1 /* the wanted height is more than the dead zone below the current one */
@@ -345,6 +439,12 @@ typedef struct WmEffect {
 #define WM_SE_BUZZER 1 /* SE_BUZZER */
 #define WM_SE_HELP_OPEN 5 /* SE_HELP_OPEN */
 #define WM_SE_CURSOR 39 /* SE_CURSOR */
+#define WM_SE_ITEMS 2 /* SE 0x6C, the sound ovl_65 plays for items received (SE_ITEMS) and ovl_15 for a Blackjack */
+                      /* win; which world event plays it: runtime pending R43 */
+/* Not named: 0 (SE 0x68), 3 / 4 (0x27D / 0x27E, next to SE_ENCOUNTER_3..1), 6 / 7 (0x552 / 0x553, vehicle group, next
+ * to the Hilda Garde loop), 20 / 21 (two-voice vehicle loops 0x374+0x375 / 0x376+0x377, in no WmMoveMode), 30-35, 37,
+ * 40-42: only the world script requests them (WM_REQ_SE_PLAY), so which event they belong to is a runtime question
+ * (docs/wip/r43_runtime.md). */
 #define WM_SE_CHOCOBO_CALL 36 /* SE_CHOCOBO_CALL */
 #define WM_SE_INVINCIBLE_LOOP 22 /* data: WmMoveMode.loopSe of WM_MOVE_INVINCIBLE (0x378 + 0x379) */
 #define WM_SE_HILDA_GARDE_LOOP 23 /* data: loopSe of WM_MOVE_HILDA_GARDE (0x554 + 0x555) */
@@ -1193,6 +1293,39 @@ extern u8 g_worldChunkFlags[]; /* map cells, g_worldChunksW per row */
 #define WM_CELL(x, y) g_worldChunkFlags[(y) * g_worldChunksW + (x)]
 #define WM_CELL_FORM 0x80 /* load the cell's story-form chunk (wm_applyStoryForms sets it; wm_chunkRequest clears it when the chunk has none) */
 #define WM_CELL_TEX_MASK 0x3F /* texture pack read with the chunk (w_readtxRequest) */
+/* Map cells (16384 x 16384 world units: column = x >> 14, row = -z >> 14) that wm_applyStoryForms gives their
+ * story-form chunk, as "column, row" pairs for WM_CELL_AT. Each is named for the navi map place whose world position
+ * (g_worldNaviPlaces, name = world text bank 0 entry place + 1, docs/r32/3ds-requests-2.md) lies in it. Cleyra,
+ * Lindblum and Alexandria sit on a cell corner, so their forms change the cells around it. Cells without a navi place
+ * of their own are named for the nearest one (runtime: pending R43, docs/wip/r43_runtime.md). */
+#define WM_CELL_AT(cell) WM_CELL(cell)
+#define WM_CELL_SOUTH_GATE 18, 14 /* places 6-10 "South Gate" (300090, -230918) */
+#define WM_CELL_DALI 17, 12 /* places 13 "Dali" (280253, -206433; WM_BLOCKFX_DALI_WINDMILL) and 12 "Observatory Mountain" */
+#define WM_CELL_CLEYRA_W 13, 12 /* place 18 "Cleyra" (229548, -198479) is 170 units into the cell east of it; */
+#define WM_CELL_CLEYRA_E 14, 12 /* WM_BLOCKFX_CLAY's centre (229007, -198927) is in the west one */
+#define WM_CELL_LINDBLUM_NW 13, 16 /* place 24 "Lindblum" (229342, -278220) is 310 units from the corner of these four */
+#define WM_CELL_LINDBLUM_NE 14, 16
+#define WM_CELL_LINDBLUM_SW 13, 17 /* also place 25 "Lindblum Harbor" */
+#define WM_CELL_LINDBLUM_SE 14, 17 /* also place 22 "Pinnacle Rocks" */
+#define WM_CELL_BLACK_MAGE_VILLAGE 14, 6 /* places 30 "Black Mage Village" and 31 "Fossil Roo" */
+#define WM_CELL_ALEXANDRIA_HARBOR 21, 10 /* place 0 "Alexandria Harbor" */
+#define WM_CELL_QUANS_DWELLING_E 22, 14 /* no place; east of place 4 "Quan's Dwelling" (21, 14) (runtime: pending R43) */
+#define WM_CELL_ALEXANDRIA_NW 19, 10 /* place 1 "Alexandria" (328680, -178910) is 1600 units from the corner of these four */
+#define WM_CELL_ALEXANDRIA_SW 19, 11 /* also place 2 "Evil Forest" */
+#define WM_CELL_ALEXANDRIA_NE 20, 10
+#define WM_CELL_ALEXANDRIA_SE 20, 11
+#define WM_CELL_WATER_SHRINE 3, 9 /* place 43 "Water Shrine" (57147, -155460; WM_BLOCKFX_WATER_SHRINE) */
+#define WM_CELL_FIRE_SHRINE_E2 9, 1 /* no place; two east of WM_CELL_FIRE_SHRINE (runtime: pending R43) */
+#define WM_CELL_FIRE_SHRINE 7, 1 /* place 48 "Fire Shrine" (129014, -29732), Mount Gulug (WM_BLOCKFX_GULUG_SUMMIT) */
+#define WM_CELL_FIRE_SHRINE_E 8, 1 /* no place; east of it (runtime: pending R43) */
+#define WM_CELL_DRAGONS_GATE 14, 15 /* place 23 "Lindblum Dragon's Gate" (234496, -260825) */
+#define WM_CELL_MOGNET_CENTRAL 16, 1 /* place 28 "Mognet Central" */
+#define WM_CELL_CONDE_PETIE_PATH 13, 4 /* place 35 "Conde Petie Mountain Path" */
+#define WM_CELL_CONDE_PETIE_E 14, 5 /* no place; place 32 "Conde Petie" (229037, -90135) is 340 units west of it */
+#define WM_CELL_CHOCOBOS_PARADISE 0, 0 /* no navi position (place 49 "Chocobo's Paradise" has none); the map corner */
+                                    /* (runtime: pending R43) */
+#define WM_CELL_CHOCOBOS_FOREST 16, 14 /* place 19 "Chocobo's Forest" (278526, -243814) */
+#define WM_CELL_CHOCOBOS_LAGOON 9, 17 /* place 37 "Chocobo's Lagoon" */
 extern u16 g_worldFormStoryThresholds[11]; /* story progress thresholds (wm_applyStoryForms) */
 extern u8 g_worldFormStatusTable[][11];
 extern u32 g_worldLandCellTypes[2]; /* cell type masks */

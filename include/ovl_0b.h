@@ -3580,6 +3580,53 @@ void btl_unreserveItem(s32);
 #define BTL_STEPF_DEP_SOUNDS  0x100  /* btl_loadSoundsStep: also the dependency table's sound banks (type DB_SOUND_BANK, kind 2) */
 #define BTL_STEPF_SOUNDS      0x200  /* btl_reloadPartyStep: load the sound banks first */
 #define BTL_STEPF_BEGIN       0x8000 /* start over: clear the loaded flag, state 1 (or 2) */
+/* Step states of the battle loaders (the task's state, which the step also returns; 0 = done). A loader collects
+ * the file ids it needs, then reads them nearest sector first: READ_NEXT starts one CD read and parks in CD_WAIT,
+ * which goes on at task->nextState once the read is over. Each loader numbers its steps itself. Evidence: [code] */
+#define BTL_LOAD_DONE 0
+/* btl_loadBackgroundStep */
+#define BTL_BGLOAD_CD_WAIT 1
+#define BTL_BGLOAD_READ 2 /* read the scene's background file (sceneSector[1]) */
+#define BTL_BGLOAD_REGISTER 4 /* register it, BTL_FLAG_BG_LOADED */
+/* btl_loadSoundsStep */
+#define BTL_SNDLOAD_CD_WAIT 1
+#define BTL_SNDLOAD_COLLECT 2 /* BTL_SOUND_SE_BANK, and with BTL_STEPF_DEP_SOUNDS the dependency table's banks */
+#define BTL_SNDLOAD_READ_NEXT 5
+#define BTL_SNDLOAD_UPLOAD 6 /* once the SPU is free: akao_loadBankRetry / akao_loadBankInSlot, then READ_NEXT */
+#define BTL_SNDLOAD_FINISH 7 /* wait for the last SPU transfer */
+/* btl_loadEnemyModelsStep */
+#define BTL_ENMLOAD_CD_WAIT 1
+#define BTL_ENMLOAD_COLLECT 2 /* the dependency table's model files */
+#define BTL_ENMLOAD_READ_NEXT 4
+#define BTL_ENMLOAD_REGISTER 6 /* textures to VRAM, register the pack, then READ_NEXT */
+#define BTL_ENMLOAD_FINISH 7 /* BTL_FLAG_ENEMIES_LOADED */
+/* btl_loadWeaponModelsStep and btl_loadPartyModelsStep (which swaps CD_WAIT and COLLECT) */
+#define BTL_MDLLOAD_WPN_CD_WAIT 1
+#define BTL_MDLLOAD_WPN_COLLECT 2 /* the party's weapon model ids (g_weaponTable[equip[0]].modelId) */
+#define BTL_MDLLOAD_PTY_COLLECT 1 /* the party's model ids (btl_getPartyModelId) */
+#define BTL_MDLLOAD_PTY_CD_WAIT 2
+#define BTL_MDLLOAD_READ_NEXT 5
+#define BTL_MDLLOAD_REGISTER 7 /* btl_uploadModelTextures, register the pack, then READ_NEXT */
+#define BTL_MDLLOAD_FINISH 8
+/* btl_loadModelsStep (battle start): one step per loader, each polled until it returns BTL_LOAD_DONE */
+#define BTL_MODELS_SOUNDS 1
+#define BTL_MODELS_ENEMIES 2
+#define BTL_MODELS_WEAPONS 3
+#define BTL_MODELS_PARTY 4 /* then BTL_FLAG_PARTY_LOADED */
+/* btl_reloadPartyStep (mid battle): BEGIN steps start a loader, the next one polls it */
+#define BTL_RELOAD_START 1 /* BTL_STEPF_SOUNDS: SOUNDS, else straight to WEAPONS_BEGIN */
+#define BTL_RELOAD_SOUNDS 2
+#define BTL_RELOAD_WEAPONS_BEGIN 3
+#define BTL_RELOAD_WEAPONS 4
+#define BTL_RELOAD_PARTY_BEGIN 5
+#define BTL_RELOAD_PARTY 6 /* then UNITS with BTL_STEPF_RELOAD_UNITS, else done */
+#define BTL_RELOAD_UNITS 7 /* reapply models, textures, motions and weapons to the party units */
+/* btl_swapPartyModelStep (one slot) */
+#define BTL_SWAP_START 1 /* unregister the slot's old model */
+#define BTL_SWAP_CD_WAIT 2
+#define BTL_SWAP_READ 3
+#define BTL_SWAP_REGISTER 5 /* textures to the slot's VRAM, register the model */
+#define BTL_SWAP_APPLY 6 /* as BTL_RELOAD_UNITS for this slot */
 s32 btl_reloadPartyStep(s32);
 /* the statuses a character keeps after the battle (btl_saveCharStatus: Character.status). Evidence: [code] */
 #define BTL_STATUS_KEPT (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_VIRUS | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | \

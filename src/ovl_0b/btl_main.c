@@ -319,22 +319,22 @@ void btl_cleanup(void) {
         }
     }
     switch (work->returnMode) {
-    case 1:
-    case 3:
-    case 5:
+    case GS_MODE_FIELD:
+    case GS_MODE_WORLD:
+    case 5: /* GS_MODE 5: no overlay, treated like the field elsewhere (ff9.h) */
         for (i = 1; i >= 0; i--) {
             w = g_gameState->gameData->returnSector[i];
             g_gameState->gameData->sceneSector[i] = w;
             sectorCount = g_gameState->gameData->returnSectors[i];
             g_gameState->gameData->sceneSectors[i] = sectorCount;
         }
-        if (work->returnMode == 3) {
+        if (work->returnMode == GS_MODE_WORLD) {
             g_gameState->gameData->worldId = work->returnId;
         } else {
             g_gameState->gameData->fieldId = work->returnId;
         }
         break;
-    case 8:
+    case GS_MODE_BATTLE_END:
         break;
     default:
         SystemError(0x39, 0x12E);
@@ -456,45 +456,45 @@ s32 btl_reloadPartyStep(s32 flags) {
 
     if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_PARTY_LOADED;
-        *state = 1;
+        *state = BTL_RELOAD_START;
     }
     switch (*state) {
-    case 1:
+    case BTL_RELOAD_START:
         if (flags & BTL_STEPF_SOUNDS) {
             btl_loadSoundsStep(g_gameState->gameData->battleId, BTL_STEPF_BEGIN, (Unk800AA24C *)ld);
-            *state = 2;
+            *state = BTL_RELOAD_SOUNDS;
             break;
         }
-        *state = 3;
+        *state = BTL_RELOAD_WEAPONS_BEGIN;
         break;
-    case 2:
+    case BTL_RELOAD_SOUNDS:
         if (btl_loadSoundsStep(g_gameState->gameData->battleId, flags, (Unk800AA24C *)ld) == 0) {
-            *state = 3;
+            *state = BTL_RELOAD_WEAPONS_BEGIN;
         }
         break;
-    case 3:
+    case BTL_RELOAD_WEAPONS_BEGIN:
         btl_loadWeaponModelsStep(BTL_STEPF_BEGIN, ld);
-        *state = 4;
+        *state = BTL_RELOAD_WEAPONS;
         break;
-    case 4:
+    case BTL_RELOAD_WEAPONS:
         if (btl_loadWeaponModelsStep(flags, ld) == 0) {
-            *state = 5;
+            *state = BTL_RELOAD_PARTY_BEGIN;
         }
         break;
-    case 5:
+    case BTL_RELOAD_PARTY_BEGIN:
         btl_loadPartyModelsStep(BTL_STEPF_BEGIN, ld);
-        *state = 6;
+        *state = BTL_RELOAD_PARTY;
         break;
-    case 6:
+    case BTL_RELOAD_PARTY:
         if (btl_loadPartyModelsStep(flags, ld) == 0) {
             if (flags & BTL_STEPF_RELOAD_UNITS) {
-                *state = 7;
+                *state = BTL_RELOAD_UNITS;
             } else {
                 goto done;
             }
         }
         break;
-    case 7:
+    case BTL_RELOAD_UNITS:
         for (i = 0; i < PARTY_SIZE; i++) {
             ch = g_gameState->gameData->party[i];
             if (ch == NULL) {
@@ -506,7 +506,7 @@ s32 btl_reloadPartyStep(s32 flags) {
             if (unit == NULL) {
                 continue;
             }
-            /* model/texture/motion reload: same steps as btl_swapPartyModelStep case 6, which does it for one slot */
+            /* model/texture/motion reload: same steps as btl_swapPartyModelStep BTL_SWAP_APPLY, which does it for one slot */
             id = btl_getPartyModelId(i, flags & ~BTL_STEPF_FLIP_TRANCE);
             slot->model->header = db_lookupRegistered(DB_GET_ADDR, id, 0);
             texKey = (id & 0xFFFFFF) | (cid << 24);
@@ -550,7 +550,7 @@ s32 btl_reloadPartyStep(s32 flags) {
         }
     done:
         g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
-        *state = 0;
+        *state = BTL_LOAD_DONE;
         break;
     }
     return *state;
@@ -580,24 +580,24 @@ s32 btl_loadBackgroundStep(Battle11C0 *work, s32 battleId, Unk800AA08C *task) {
     st = task;
     if (battleId == -1) {
         battle->flags &= ~BTL_FLAG_BG_LOADED;
-        st->state = 2;
+        st->state = BTL_BGLOAD_READ;
     }
-    if (st->state == 1) {
+    if (st->state == BTL_BGLOAD_CD_WAIT) {
         if (cdRead_update(cd) == 0) {
             st->state = st->nextState;
         }
-    } else if (st->state == 2) {
+    } else if (st->state == BTL_BGLOAD_READ) {
         gd2 = g_gameState->gameData;
         st->sceneBuf = work->bgData;
         cdRead_init(cd, gd2->sceneSector[1], gd2->sceneSectors[1] << 11, (void *)st->sceneBuf, 0, -1, 0);
-        st->nextState = 4;
-        st->state = 1;
-    } else if (st->state == 4) {
+        st->nextState = BTL_BGLOAD_REGISTER;
+        st->state = BTL_BGLOAD_CD_WAIT;
+    } else if (st->state == BTL_BGLOAD_REGISTER) {
         bgData = work->bgData;
         battle->files->data[3] = (void *)bgData;
         db_register(bgData, 0);
         battle->flags |= BTL_FLAG_BG_LOADED;
-        st->state = 0;
+        st->state = BTL_LOAD_DONE;
     }
     return st->state;
 }
@@ -619,18 +619,18 @@ s32 btl_loadSoundsStep(s16 battleId, s32 flags, Unk800AA24C *task) {
     cd = gd->cdRead;
     if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
-        st->state = 2;
+        st->state = BTL_SNDLOAD_COLLECT;
     }
 loop:
     switch (st->state) {
-    case 1:
+    case BTL_SNDLOAD_CD_WAIT:
         if (cdRead_update(cd) != 0) {
             break;
         }
         file_advanceLoadPtr(&task->buf, cd->chunk);
         st->state = task->nextState;
         goto loop;
-    case 2:
+    case BTL_SNDLOAD_COLLECT:
         task->buf = battle->partyBufs[0];
         task->fileIds.w[0] = -1;
         task->fileIds.w[1] = -1;
@@ -640,9 +640,9 @@ loop:
         if (flags & BTL_STEPF_DEP_SOUNDS) {
             btl_loadSoundsStep_collect(&task->fileIds.h[4], 9, 2);
         }
-        st->state = 5;
+        st->state = BTL_SNDLOAD_READ_NEXT;
         goto loop;
-    case 5:
+    case BTL_SNDLOAD_READ_NEXT:
         ids = task->fileIds.h;
         sector = btl_findNearestFile(DIR_SOUND_BANKS, (u16 *)ids, (u16 *)&task->fileIds.h[6], (u16 **)&found, &sz);
         if (sector != -1) {
@@ -653,13 +653,13 @@ loop:
                 task->bank = found - ids;
             }
             *found = -1;
-            task->nextState = 6;
-            st->state = 1;
+            task->nextState = BTL_SNDLOAD_UPLOAD;
+            st->state = BTL_SNDLOAD_CD_WAIT;
             break;
         }
-        st->state = 7;
+        st->state = BTL_SNDLOAD_FINISH;
         goto loop;
-    case 6:
+    case BTL_SNDLOAD_UPLOAD:
         if (akao_getSpuTransferState() != 0) {
             break;
         }
@@ -669,13 +669,13 @@ loop:
         } else {
             akao_loadBankInSlot(bank, task->bank & 3, 0);
         }
-        st->state = 5;
+        st->state = BTL_SNDLOAD_READ_NEXT;
         goto loop;
-    case 7:
+    case BTL_SNDLOAD_FINISH:
         if (akao_getSpuTransferState() != 0) {
             break;
         }
-        st->state = 0;
+        st->state = BTL_LOAD_DONE;
         break;
     }
     return st->state;
@@ -716,17 +716,17 @@ s32 btl_loadEnemyModelsStep(s32 battleId, s32 flags, Unk800AA504 *task) {
     req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
     if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
-        st->state = 2;
+        st->state = BTL_ENMLOAD_COLLECT;
     }
 loop:
     switch (st->state) {
-    case 1:
+    case BTL_ENMLOAD_CD_WAIT:
         if (cd_getState() != 0) {
             break;
         }
         st->state = task->nextState;
         goto loop;
-    case 2:
+    case BTL_ENMLOAD_COLLECT:
         table = g_gameState->gameData->depTable;
         ids = task->fileIds.h;
         cnt = 0;
@@ -753,9 +753,9 @@ loop:
         next:
             entry--;
         } while (entry >= first);
-        st->state = 4;
+        st->state = BTL_ENMLOAD_READ_NEXT;
         goto loop;
-    case 4:
+    case BTL_ENMLOAD_READ_NEXT:
         best = -1;
         bp = NULL;
         bf = NULL;
@@ -781,13 +781,13 @@ loop:
             req->size1 = (bf->sectors - bf->link) << 11;
             req->dst1 = task->dst;
             cd_readChunks(g_gameState->imgSector + best, req, 2, 0);
-            task->nextState = 6;
-            st->state = 1;
+            task->nextState = BTL_ENMLOAD_REGISTER;
+            st->state = BTL_ENMLOAD_CD_WAIT;
         } else {
-            st->state = 7;
+            st->state = BTL_ENMLOAD_FINISH;
         }
         break;
-    case 6:
+    case BTL_ENMLOAD_REGISTER:
         pack = db_lookup((s32)battle->work->heap, DB_GET_AT, DB_PACK, 0);
         dst = task->dst;
         tbl = (Unk800AA504Tbl *)db_lookup((s32)battle->files->data[2], DB_GET_AT, DB_MODEL_INFO, 0);
@@ -816,11 +816,11 @@ loop:
         *(battle->files->enemyModels + task->loaded) = (void *)pack;
         db_register(pack, 0);
         task->loaded++;
-        st->state = 4;
+        st->state = BTL_ENMLOAD_READ_NEXT;
         goto loop;
-    case 7:
+    case BTL_ENMLOAD_FINISH:
         battle->flags |= BTL_FLAG_ENEMIES_LOADED;
-        st->state = 0;
+        st->state = BTL_LOAD_DONE;
         break;
     }
     return st->state;
@@ -847,17 +847,17 @@ s32 btl_loadWeaponModelsStep(s32 flags, Unk800AA958 *task) {
     req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
     if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_PARTY_LOADED;
-        st->state = 2;
+        st->state = BTL_MDLLOAD_WPN_COLLECT;
     }
 loop:
     switch (st->state) {
-        case 1:
+        case BTL_MDLLOAD_WPN_CD_WAIT:
             if (cd_getState() != 0) {
                 goto end;
             }
             st->state = task->nextState;
             goto loop;
-        case 2:
+        case BTL_MDLLOAD_WPN_COLLECT:
             task->fileIds.w[0] = -1;
             task->fileIds.w[1] = -1;
             gd = g_gameState->gameData;
@@ -871,9 +871,9 @@ loop:
                 chr--;
                 dstId--;
             } while (chr >= first);
-            st->state = 5;
+            st->state = BTL_MDLLOAD_READ_NEXT;
             goto loop;
-        case 5:
+        case BTL_MDLLOAD_READ_NEXT:
             sector = btl_findNearestFile(DIR_WEAPON_MODELS, task->fileIds.h, &task->fileIds.h[3], &found, &sz);
             if (sector != -1) {
                 *(s16 *)found = -1;
@@ -885,22 +885,22 @@ loop:
                 req->size1 = (sz << 11) - 0x1000;
                 req->dst1 = battle->partyBufs[i];
                 cd_readChunks(g_gameState->imgSector + sector, req, 2, 0);
-                task->nextState = 7;
-                st->state = 1;
+                task->nextState = BTL_MDLLOAD_REGISTER;
+                st->state = BTL_MDLLOAD_WPN_CD_WAIT;
             } else {
-                st->state = 8;
+                st->state = BTL_MDLLOAD_FINISH;
             }
             goto end;
-        case 7:
+        case BTL_MDLLOAD_REGISTER:
             j = task->slot;
             pack = btl_uploadModelTextures(task, req, j, 0);
             pp = &battle->files->weaponFiles[j];
             *pp = (void *)pack;
             db_register(pack, 0);
-            st->state = 5;
+            st->state = BTL_MDLLOAD_READ_NEXT;
             goto loop;
-        case 8:
-            st->state = 0;
+        case BTL_MDLLOAD_FINISH:
+            st->state = BTL_LOAD_DONE;
         default:
             goto end;
     }
@@ -931,17 +931,17 @@ s32 btl_loadPartyModelsStep(s32 flags, Unk800AA958 *task) {
     req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
     if (flags & BTL_STEPF_BEGIN) {
         battle->flags &= ~BTL_FLAG_PARTY_LOADED;
-        st->state = 1;
+        st->state = BTL_MDLLOAD_PTY_COLLECT;
     }
 loop:
     switch (st->state) {
-    case 2:
+    case BTL_MDLLOAD_PTY_CD_WAIT:
         if (cd_getState() != 0) {
             goto end;
         }
         st->state = task->nextState;
         goto loop;
-    case 1:
+    case BTL_MDLLOAD_PTY_COLLECT:
         h = (s16 *)task->fileIds.h;
         cur = (s16 *)&task->fileIds.h[3];
         task->fileIds.w[0] = -1;
@@ -952,12 +952,12 @@ loop:
             *cur = btl_getPartyModelId(cur - h, flags & ~BTL_STEPF_FLIP_TRANCE);
             cur--;
         } while (cur >= h);
-        st->state = 5;
+        st->state = BTL_MDLLOAD_READ_NEXT;
         goto loop;
     found:
         req->dst1 = battle->partyBufs[k];
         goto done;
-    case 5:
+    case BTL_MDLLOAD_READ_NEXT:
         h = (s16 *)task->fileIds.h;
         cur = (s16 *)&task->fileIds.h[3];
         sector = btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)cur, (u16 **)&match, &sz);
@@ -991,22 +991,22 @@ loop:
             req->dst0 = task->buf;
             req->size1 = (sz - file->idHi) << 11;
             cd_readChunks(g_gameState->imgSector + sector, req, 2, 0);
-            task->nextState = 7;
-            st->state = 2;
+            task->nextState = BTL_MDLLOAD_REGISTER;
+            st->state = BTL_MDLLOAD_PTY_CD_WAIT;
         } else {
-            st->state = 8;
+            st->state = BTL_MDLLOAD_FINISH;
         }
         goto end;
-    case 7:
+    case BTL_MDLLOAD_REGISTER:
         j = task->slot;
         pack = btl_uploadModelTextures(task, req, j, 1);
         pp = &g_gameState->gameData->ctx.battle->files->partyModels[j];
         *pp = (void *)pack;
         db_register(pack, 0);
-        st->state = 5;
+        st->state = BTL_MDLLOAD_READ_NEXT;
         goto loop;
-    case 8:
-        st->state = 0;
+    case BTL_MDLLOAD_FINISH:
+        st->state = BTL_LOAD_DONE;
     default:
         goto end;
     }
@@ -1217,28 +1217,28 @@ s16 btl_loadModelsStep(s32 begin) {
     st = state;
     if (begin != 0) {
         btl_loadSoundsStep(battleId, BTL_STEPF_BEGIN | BTL_STEPF_DEP_SOUNDS, (Unk800AA24C *)ld);
-        *state = 1;
+        *state = BTL_MODELS_SOUNDS;
     }
     step = *state;
-    if (step == 1) {
+    if (step == BTL_MODELS_SOUNDS) {
         if (btl_loadSoundsStep(battleId, BTL_STEPF_DEP_SOUNDS, (Unk800AA24C *)ld) == 0) {
             btl_loadEnemyModelsStep(battleId, BTL_STEPF_BEGIN, (Unk800AA504 *)ld);
             (*st)++;
         }
-    } else if (step == 2) {
+    } else if (step == BTL_MODELS_ENEMIES) {
         if (btl_loadEnemyModelsStep(battleId, 0, (Unk800AA504 *)ld) == 0) {
             btl_loadWeaponModelsStep(BTL_STEPF_BEGIN, ld);
             (*st)++;
         }
-    } else if (step == 3) {
+    } else if (step == BTL_MODELS_WEAPONS) {
         if (btl_loadWeaponModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_PARTY, ld) == 0) {
             btl_loadPartyModelsStep(BTL_STEPF_BEGIN | BTL_STEPF_BASE_MODEL, ld);
             (*st)++;
         }
-    } else if (step == 4) {
+    } else if (step == BTL_MODELS_PARTY) {
         if (btl_loadPartyModelsStep(BTL_STEPF_BASE_MODEL | BTL_STEPF_PARTY, ld) == 0) {
             g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
-            *state = 0;
+            *state = BTL_LOAD_DONE;
         }
     }
     return *st;
@@ -1383,13 +1383,13 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
     state = &st->state;
     req = (Unk800AA958Req *)&g_gameState->gameData->ctx.battle->work->loadBuf[0x9FA0 / 4];
     if (flags & BTL_STEPF_BEGIN) {
-        st->state = 1;
+        st->state = BTL_SWAP_START;
     }
     switch (*state) {
-    case 1:
+    case BTL_SWAP_START:
         k = slot;
         partyBuf = (void *)g_gameState->gameData->ctx.battle->partyBufs[k];
-        st->nextState = 0;
+        st->nextState = BTL_LOAD_DONE;
         st->unk4 = 0;
         st->unk6 = 0;
         st->unk8 = -1;
@@ -1400,14 +1400,14 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
             db_unregister(*(g_gameState->gameData->ctx.battle->files->partyModels + k));
             *(g_gameState->gameData->ctx.battle->files->partyModels + k) = NULL;
         }
-        *state = 3;
+        *state = BTL_SWAP_READ;
         break;
-    case 2:
+    case BTL_SWAP_CD_WAIT:
         if (cd_getState() == 0) {
             *state = st->nextState;
         }
         break;
-    case 3:
+    case BTL_SWAP_READ:
         file = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(slot, flags & ~BTL_STEPF_FLIP_TRANCE));
         src = g_gameState->imgSector + file->sector;
         sz = file->endSector - file->sector;
@@ -1416,10 +1416,10 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         req->size1 = (sz - file->idHi) << 11;
         req->dst1 = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
         cd_readChunks((s32)src, req, 2, 0);
-        st->nextState = 5;
-        *state = 2;
+        st->nextState = BTL_SWAP_REGISTER;
+        *state = BTL_SWAP_CD_WAIT;
         break;
-    case 5:
+    case BTL_SWAP_REGISTER:
         id = btl_getPartyModelId(slot, flags & ~BTL_STEPF_FLIP_TRANCE);
         model = db_lookup(st->buf, DB_GET_AT, DB_PACK, 0);
         img = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
@@ -1454,14 +1454,14 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         }
         *(g_gameState->gameData->ctx.battle->files->partyModels + slot) = (void *)model;
         db_register(model, 0);
-        *state = 6;
+        *state = BTL_SWAP_APPLY;
         break;
-    case 6:
+    case BTL_SWAP_APPLY:
         cid = g_gameState->gameData->party[slot]->info.b.id;
         ent = &g_gameState->gameData->chrModels[cid];
         unit = btl_getUnitBySlot(slot);
         if (unit != NULL) {
-            /* same steps as btl_reloadPartyStep case 7 (there per party slot, with pa/pb/pc reused for the weapon) */
+            /* same steps as btl_reloadPartyStep BTL_RELOAD_UNITS (there per party slot, with pa/pb/pc reused for the weapon) */
             id2 = btl_getPartyModelId(slot, flags & ~BTL_STEPF_FLIP_TRANCE);
             ent->model->header = db_lookupRegistered(DB_GET_ADDR, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
@@ -1489,7 +1489,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
             ent->actor->frame = 0;
             unit->weaponModel->parent = ent->model;
         }
-        *state = 0;
+        *state = BTL_LOAD_DONE;
         break;
     }
     return *state;
