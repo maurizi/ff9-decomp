@@ -4576,3 +4576,113 @@ normal play.**
 Save states (disc 1): `atecheck_d1_563_ee1` (563 entered with EE = 1, F1 = 1), `atecheck_d1_563_rewards` (rewards
 screen of battle 67 forced from 563). Disc 2: `atecheck_d2_900_ee1`, `atecheck_d2_1060_ee1` (1060, story 4720, EE =
 1, no control), `atecheck_d2_1060_menu_forced` (ATE window open after forcing controlEnabled).
+
+## R42 runtime pass: write-only fields  (status: proposed)
+
+Read-watchpoint sweep over the write-only clusters of `docs/wip/r42_runtime.md` rows 1-5 and
+`docs/wip/r30_runtime_main.md` rows 3 and 5 (2026-11-05, PCSX-Redux, interpreter + debugger). Scripts in
+`build/r42rt/` (gitignored): `rw.lua` puts Read breakpoints on every range with ONE shared ffi callback (JIT off) and
+records each distinct (pc, accessed address, access width, overlay id at 0x800A7000); `rwlib.py` loads it and prints
+the hits by symbol with the overlay that was resident at hit time. Redux reports the accessed address and width and
+matches by overlap, so a word load that covers a watched byte counts as a hit; such hits were checked in the asm.
+Every run also watched a few "control" bytes of the same structs that the code does read (e.g. `g_btlTarget.targetAll`,
+`FieldScene.modelQueueCount`, `g_fieldBgState.cameraId`, `TmState.result`, `AkaoStreamState.ringBlocks`). They all
+fired, so the breakpoints were live. CPU reads only: DMA from RAM shows up as a 0x30000-byte "read" at libgpu
+`func_8001486C+0x214` (the CHCR write), and those hits are ignored below.
+
+Runs (frames are emulated vsyncs):
+- field: `field.py` (`field_dali_inn`: walk, Left through the door to field 350, re-armed on the new blocks, walk,
+  Triangle) about 1000 frames with 2 field loads; `menu.py` (`field_dali_inn`: main menu, Items list
+  (`build/r42rt/m3.png`), back, close, walk) about 1200 frames.
+- battle: `battle.py battle_iifa_command 6` (disc 2: Vivi Blk Mag, R1, commands until the battle was won, rewards,
+  back to the field) about 2800 frames; `battle2.py` (disc 1: `enter_battle.py 21 --disc 1 --field 351 --base-state
+  field_dali_inn --frames 0`, armed BEFORE the battle loader ran, so btl_clearBattle / btlui init are covered, then
+  25 rounds of Down/Cross/Cross/R1/Cross against Ice Giant + Sealion) about 12000 frames.
+- FMV: `fmv.py r36_disc1_end_fmv` (disc 1 ending movie, ovl_64 ring stream refilling: 80 writes of +0x20 per 300 frames
+  from `akao_streamRefillRing+0x9C`) from the middle to the end of the movie, about 4000 frames. The ring setup
+  itself wasn't covered (no state just before a movie start).
+- Tetra Master: `tm.py` (`f42_dali354_card_prompt`, Yes, armed once `tm_mainLoop` ran (task 18), then a script that
+  places cards on empty cells): 9 games (4 won, 4 lost, 1 draw) with rematches, card trades, GET SELECT and
+  card-select confirms, about 14600 frames. TmState is a stack local, so it was only armed while ovl_0d ran. The
+  game's exit (task EXIT) wasn't reached.
+
+Results per cluster:
+
+### FieldMapObj.unk0 → hidden reader found  (status: proposed)
+- binary: ovl_0a (`FieldMapObj`, GameData.ctx.field->area, +0x0); type: u32 (byte 1 is read)
+- evidence: `field.py`: `addr 800D1051 w1 x14 pc db_lookup+0x74 (8001C924) ra db_lookupRegistered+0x64` during the
+  field 351→350 load, and again (x3) after closing the Items menu (`menu.py`). `tools/emu.py until 0x800D1051 --read
+  --size 1` there: a0 = 0x800D1050 (the area object), key a1 = 4 / s4 = 0x1E015E (the vibration file lookup).
+  `read g_dbList 0x48 --as u32` in field 351: dbs = {0x800A5AE4, **0x800D1050**, 0x800D1088 (areaFile),
+  0x800DB63C, 0x8012D864}; `FieldMap.commonFile` (+0x10) = 0x800D1050 as well. Cause (fld_main.c): `fld_init`
+  loads the field common file at g_modeHeap with `fld_loadCommon` and registers it (`db_register`), reads the sound
+  bank out of it (`fld_readSoundBank`), then sets `fieldMap->loadEnd = g_modeHeap` WITHOUT advancing past the file.
+  `fld_loadArea` then allocates the FieldMapObj at loadEnd, on top of the common file, while the file stays registered
+  until `fld_quit`. Every `db_lookupRegistered` in the field scans that stale container: `db_lookup` reads
+  `base[1]` (typeCount) = byte 1 of FieldMapObj.unk0, which `fld_initArea` cleared, so the stale db has 0 types and
+  every lookup skips it.
+- proposed name: `commonDbHeader` (comment: "overlays the header of the still-registered field common file
+  (FieldMap.commonFile == area); fld_initArea's 0 makes db_lookup see 0 types in it"). Port note: a port that
+  doesn't put the area object on top of the common file has to unregister commonFile after `fld_readSoundBank` (or
+  clear its header), or lookups will find stale entries in it.
+- confidence: high for the reader (it's a db header read through the stale registration, seen at runtime); medium
+  that Square meant it.
+
+### Field: FieldScene / FieldMap / FieldMapObj / g_fieldBgState → no reads
+- watched: FieldScene +0x8, +0x5F, +0x61..+0x6B; FieldMap +0x9, +0x14..+0x1B (unk14/unk18), +0x24..+0x4F (unk24);
+  FieldMapObj +0x12, +0x18..+0x37; g_fieldBgState (0x800CA068) +0x72..+0x74, +0x78 (radiusSq), +0x9C, +0xA1..+0xA3.
+- result: no reads in about 2200 frames (2 field loads, walking, main menu + Items, a field resumed after a battle on
+  disc 2). Confirmed write-only, so these stay `unkXX`.
+
+### FieldScene.unk5F (stream SET parameter 12) → never non-zero, no reader, no audible effect
+- Scripts: `build/r42rt/sndscan.py N` disassembles every field script on discs 1-4 (evtdis.py) and tallies the
+  sound ops (0xC5-0xC8) whose command word has SND_TYPE 2 (stream). All four discs only use 0x2100 (stop), 0x6201
+  (volume), 0x620A (movie volume) and 0xA000 (play); no SET with parameter 12. About 10% of script functions stop
+  decoding at an unknown op, so `rawscan.py N` also searched every field script blob byte by byte for op C5-C8 + an
+  immediate cmd with type 2, kind 2, param 12. Only two hits turned up (fields 556/576, `c5 aa 0c e2 aa fe f2 aa`),
+  inside `aa`-filled data, and since C5 passes no param1 they would store 0 anyway. No C caller passes such a word
+  either (`grep` over src/). So only the clears ever run: fld_init and every stream PLAY.
+- Runtime: `alex.py field_alex_100 12`: the field starts stream 5 (`fld_soundCommand(0xFFFFA000, 5, 0x80)` after
+  `0x6201` volume 0x3C). A write watch on scene+0x5F (0x800D88D7) shows the PLAY's clear (`pc 800B1178`, value 0).
+  A read watch on it showed no reads in 1200 frames.
+- Poke: `load field_alex_100`, `frames 90`, then `audio record --frames 300 --seconds 5` without and with `write
+  0x800D88D7 0x7F --size 1` (the byte stayed 0x7F, nothing cleared or used it). The 0.25 s RMS envelopes match within
+  capture jitter (base 2177 2209 2114 2326 2258 ... 3373, poked 2099 2298 2187 2384 2342 ... 3532), so it has no
+  audible effect. `build/r42rt/a_base.wav`, `a_poke.wav`.
+- proposal: leave it `unk5F`, or `streamParam12` with the comment "SND_CMD_SET parameter 12 of a stream; no script
+  uses it, nothing reads it". confidence: high that it's dead.
+
+### Battle: Battle / g_btluiState / g_btluiHelp / g_btlTarget / panel → no reads (one false positive)
+- watched: Battle (0x80108800 both discs) +0x2..+0x3, +0x1530; g_btluiState +0x5, +0x14 (firstValue), +0x20;
+  g_btluiHelp +0x2 (0x80104F92); g_btlTarget +0x5, +0x7; `*g_btluiPanel` (0x8009993C) +0x1.
+- only hit: `Battle.unk2: addr 80108800 w4 pc btl_endFrame+0x2A0 (800AF108)` (x456 and x2643): `lw $v0, 0($a0)` of
+  `ctx.ovl65->flags` followed by `andi 0x200` (BTL_FLAG_NO_DRAW), so it's the flags word and the masked value doesn't
+  depend on unk2.
+- result: no other reads in about 15000 battle frames (2 battles, one from before setup through many commands with
+  target select and toggle-all; one to victory, the rewards screen and back to the field). Confirmed write-only, so
+  they stay `unkXX`.
+
+### AkaoStreamState.unk20 / unk30 (0x80083188 / 0x80083198) → no reads
+- result: no reads in about 4000 frames of the ring-streamed ending FMV, while +0x20 was rewritten about 80 times per
+  300 frames and the controls (`blocksWritten` from `akao_streamPushBlock`, `ringBlocks` from
+  `akao_streamNextReadBlock`) were read hundreds of times. Not refilled at all in the field_alex_100 field movie
+  (`watch 0x80083188 --frames 400`: 0 writes). Confirmed write-only, so they stay `unkXX`. The ring setup wasn't covered.
+
+### TmState.unk454 / unk4BC / unk4C0 / unk554 / unk5C4 / unk5C8 (RECT) → no reads
+- TmState at 0x801FF9E0, the RECT already {50, 30, 200, 100} (`32001e00c8006400`) when task 18 starts.
+- result: no reads in 9 games (about 14600 frames). The controls `result` and `lostSlot` were read by tm_drawResult,
+  tm_taskChange2, tm_dealEnemyHand, tm_taskGetSelect and others.
+- RECT vs the windows: none of the windows on screen is a 200x100 box at (50, 30). The rematch box is about
+  x 107-217, y 85-135 (`tm_task11.png`), the "Confirm selection?" box about x 100-215, y 85-135 (`tm_task19.png`),
+  and the result is the big LOSE/WIN text with no window (`tm_task3.png`). It doesn't look like a message-window
+  rect. Confirmed write-only, so they stay `unkXX`.
+
+### GameData unk9 / unk836 / unk849 / unk8CC, g_menu.unk3 / unk4, GameState.unk34 → no reads (r30 rows 3 and 5)
+- watched in every run above: GameData (0x8008B250) +0x9, +0x836, +0x849, +0x8CC..+0x8D3; g_menu +3, +4
+  (0x80077DB3/4); GameState +0x34..+0x42.
+- only hit: `menu.unk4: addr 80077DB4 w4 pc menu_updateWait+0x8 (800328BC)`: `lw` of the whole word, then `and` with
+  0xFFFF0000 (reading/fadingOut), which drops unk4.
+- result: no reads in about 50000 frames across field, menu, two battles, rewards, FMV and Tetra Master. Write
+  watches on 0x80077DB3 (2 bytes) and the four GameData fields over a main menu + Items open/close cycle from
+  `field_dali_inn`: 0 writes (menu_reset doesn't run there). The values stay 0 / 0xFFFF / 0 / 0. Confirmed
+  write-only, so they stay `unkXX`.
