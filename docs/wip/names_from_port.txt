@@ -11592,3 +11592,24 @@ EVT_GB_WM_FILE==0/==8 WM_FILE_DISC1/WM_FILE_DISC4  # [runtime] R41b: b[0x66] = w
 # with their uses in src/fxmod and include/fxmod)
 btlfx_drawBackdrop btlfx_drawLayerTexture  # [code] draws a layer table into the VRAM rect of its header (DR_AREA / DR_OFFSET), x >= 0x180 in every table, off screen; [runtime] the effect samples the rect, skipping it whites out the textured parts
 btlfx_drawBackdropSprite btlfx_drawLayerSprite  # [code] the fade layers' sprite-set frame, drawn into the layer texture
+
+## main: r42 last unnamed globals (PsyQ library data and strings, code/string evidence)
+D_80010060 s_libgpuSysId  # [string] rcs id "$Id: sys.c,v 1.140 1998/01/12 ..." of libgpu sys.c, pointed to from .data
+D_80010198 s_storeImageName  # [string] "StoreImage", the function name StoreImage and StoreImage2 pass to their debug print
+D_800101A4 s_moveImageName  # [string] "MoveImage", the function name MoveImage and MoveImage2 pass to their debug print
+D_800101E0 s_drawOTagFmt  # [string] "DrawOTag(%08x)...\n" debug format of DrawOTag and DrawOTag2
+D_80010330 s_spuTimeoutFmt  # [string] "SPU:T/O [%s]\n" timeout message of _spu_init and func_80017160
+D_800105B4 s_cdDirDot  # [code] "." copied (lhu, 2 bytes) into a directory entry name by CD_cachefile
+D_800105B8 s_cdDirDotDot  # [code] ".." copied (lh + lb) into a directory entry name by CD_cachefile
+D_800105BC s_cdCacheFileFmt  # [string] "\t(%02x:%02x:%02x) %8d %s\n" per-file listing format of CD_cachefile
+D_800105D8 s_cdCacheFileCountFmt  # [string] "CD_cachefile: %d files found\n"
+D_80010738 s_cdTimeoutMsg  # [string] "CD timeout: " printed by CD_sync, CD_ready, CD_cw and CD_datasync
+D_80010748 s_cdSyncStateFmt  # [string] "%s:(%s) Sync=%s, Ready=%s\n" timeout state dump of CD_sync, CD_ready, CD_cw and CD_datasync
+D_80012578 s_hexDigitsUpper  # [code] "0123456789ABCDEF" digit table of sprintf (%X)
+D_8001258C s_hexDigitsLower  # [code] "0123456789abcdef" digit table of sprintf (%x)
+D_80066764 s_gpuStatusReg  # [code] .word 0x1F801814 = GP1 (GPUSTAT, psx-spx), read through by func_80014544 and the libgpu queue functions
+D_8006798C s_spuReverbMode  # [code] returned by SpuGetReverbModeType, stored by SpuSetReverbModeType and SpuSetReverbModeParam
+D_8006825C s_cdStatus  # [code] returned by CdStatus, also used by CdControl, CdControlB, CdControlF, CD_init, CD_initintr and func_8001ED50
+D_8006826C s_cdMode  # [code] returned by CdMode, set by CD_cw (CdlSetmode) and CD_init
+D_80068268 s_cdLastPos  # [code] CdlLOC returned by CdLastPos, written by CD_cw (initial 00:02:00 = LBA 0)
+D_800739B8 s_padPortWork  # [code] libpad port work area, 0x1E0 bytes cleared by _padInitDirPort, walked by func_80019F90 and func_8001A3CC

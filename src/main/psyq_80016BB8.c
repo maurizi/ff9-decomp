@@ -18,7 +18,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80016BB8", OpenEvent);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80016BB8", EnableEvent);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80016BB8", D_80010330);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80016BB8", s_spuTimeoutFmt);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80016BB8", _spu_init);
 
@@ -67,7 +67,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80016BB8", SpuClearReverbWorkArea);
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80016BB8", WaitEvent);
 
 void SpuGetReverbModeType(s32 *a) {
-    *a = D_8006798C;
+    *a = s_spuReverbMode;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80016BB8", InitCARD);

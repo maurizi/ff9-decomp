@@ -14,7 +14,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", EnterCriticalSection);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", ExitCriticalSection);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", D_80010060);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", s_libgpuSysId);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", ResetGraph);
 
@@ -42,9 +42,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", StoreImage);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", MoveImage);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", D_80010198);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", s_storeImageName);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", D_800101A4);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", s_moveImageName);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", ClearOTag);
 
@@ -54,7 +54,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", DrawPrim);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", DrawOTag);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", D_800101E0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80012B68", s_drawOTagFmt);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", PutDrawEnv);
 
@@ -87,7 +87,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", func_800144A8);
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", func_800144C4);
 
 s32 func_80014544(void) {
-    return *D_80066764;
+    return *s_gpuStatusReg;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", func_8001455C);

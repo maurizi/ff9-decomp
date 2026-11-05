@@ -18,17 +18,17 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_8001E3C0", strcmp);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_8001E3C0", strncmp);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", D_800105B4);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", s_cdDirDot);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", D_800105B8);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", s_cdDirDotDot);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", D_800105BC);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", s_cdCacheFileFmt);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", D_800105D8);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", s_cdCacheFileCountFmt);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", D_80010738);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", s_cdTimeoutMsg);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", D_80010748);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_8001E3C0", s_cdSyncStateFmt);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_8001E3C0", func_8001ED50);
 
@@ -89,11 +89,11 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_8001E3C0", func_8002125C);
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_8001E3C0", CdPosToInt);
 
 u8 CdStatus(void) {
-    return D_8006825C;
+    return s_cdStatus;
 }
 
 s32 CdMode(void) {
-    return D_8006826C;
+    return s_cdMode;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_8001E3C0", CdLastPos);

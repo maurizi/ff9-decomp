@@ -20,9 +20,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80063864", ApplyMatrix);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80063864", TransMatrix);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80063864", D_80012578);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80063864", s_hexDigitsUpper);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80063864", D_8001258C);
+INCLUDE_RODATA("asm/us/main/nonmatchings/psyq_80063864", s_hexDigitsLower);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80063864", sprintf);
 

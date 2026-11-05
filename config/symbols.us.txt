@@ -1683,3 +1683,22 @@ msg_onTextEnd = 0x8004E91C; // type:func [code] empty, called by the evt_expr_as
 game_onReset = 0x80053924; // type:func [code] empty, called by game_reset between evt_initSystem and menu_init, first function of the gamedata_resetEventFlags file
 akao_loadBankRetryAlias = 0x80056028; // type:func [code] calls akao_loadBankRetry(a, b), no callers
 g_evtGeneralFlags = 0x8007AF55; // [string] g_evtGlobalVars.b[0x65] under its own symbol, printed as "General Global Flag = %x" by ovl_0c wm_applyStoryForms (bits 0x80 Mog Net, 0x40 Chocobo Heaven replacement forms)
+s_libgpuSysId = 0x80010060; // [string] rcs id "$Id sys.c,v 1.140 1998/01/12 ..." of libgpu sys.c, pointed to from .data
+s_storeImageName = 0x80010198; // [string] "StoreImage", the function name StoreImage and StoreImage2 pass to their debug print
+s_moveImageName = 0x800101A4; // [string] "MoveImage", the function name MoveImage and MoveImage2 pass to their debug print
+s_drawOTagFmt = 0x800101E0; // [string] "DrawOTag(%08x)...\n" debug format of DrawOTag and DrawOTag2
+s_spuTimeoutFmt = 0x80010330; // [string] "SPUT/O [%s]\n" timeout message of _spu_init and func_80017160
+s_cdDirDot = 0x800105B4; // [code] "." copied (lhu, 2 bytes) into a directory entry name by CD_cachefile
+s_cdDirDotDot = 0x800105B8; // [code] ".." copied (lh + lb) into a directory entry name by CD_cachefile
+s_cdCacheFileFmt = 0x800105BC; // [string] "\t(%02x%02x%02x) %8d %s\n" per-file listing format of CD_cachefile
+s_cdCacheFileCountFmt = 0x800105D8; // [string] "CD_cachefile %d files found\n"
+s_cdTimeoutMsg = 0x80010738; // [string] "CD timeout " printed by CD_sync, CD_ready, CD_cw and CD_datasync
+s_cdSyncStateFmt = 0x80010748; // [string] "%s(%s) Sync=%s, Ready=%s\n" timeout state dump of CD_sync, CD_ready, CD_cw and CD_datasync
+s_hexDigitsUpper = 0x80012578; // [code] "0123456789ABCDEF" digit table of sprintf (%X)
+s_hexDigitsLower = 0x8001258C; // [code] "0123456789abcdef" digit table of sprintf (%x)
+s_gpuStatusReg = 0x80066764; // [code] .word 0x1F801814 = GP1 (GPUSTAT, psx-spx), read through by func_80014544 and the libgpu queue functions
+s_spuReverbMode = 0x8006798C; // [code] returned by SpuGetReverbModeType, stored by SpuSetReverbModeType and SpuSetReverbModeParam
+s_cdStatus = 0x8006825C; // [code] returned by CdStatus, also used by CdControl, CdControlB, CdControlF, CD_init, CD_initintr and func_8001ED50
+s_cdMode = 0x8006826C; // [code] returned by CdMode, set by CD_cw (CdlSetmode) and CD_init
+s_cdLastPos = 0x80068268; // [code] CdlLOC returned by CdLastPos, written by CD_cw (initial 000200 = LBA 0)
+s_padPortWork = 0x800739B8; // [code] libpad port work area, 0x1E0 bytes cleared by _padInitDirPort, walked by func_80019F90 and func_8001A3CC

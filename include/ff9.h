@@ -1070,7 +1070,7 @@ void win_setTail(Window *, s32, s32);
 
 /* ---- misc globals (batch 1) ---- */
 
-extern u8 D_80068268[];
+extern u8 s_cdLastPos[];
 extern s8 g_mbgState;
 extern s32 g_mbgFrame; /* movie frame counter (mbg_getStatus reports 3 once it is > 0) */
 extern s8 g_mbgPaused;
@@ -1091,7 +1091,7 @@ extern s32 g_labelCard;
 extern u8 g_partyChanged;
 extern struct MsgWindow *g_msgFocus;
 extern s32 g_cardGameResult;
-extern s32 D_8006798C;
+extern s32 s_spuReverbMode;
 extern u16 g_padFlags; /* PAD_FLAG_*: a nibble per port (PAD_FLAG_PORT) and PAD_FLAG_STICK_DPAD */
 /* g_padFlags. Evidence: [code] pad_resetState, pad_update, pad_setFlags callers */
 #define PAD_FLAG_PORT(port, f) ((f) << ((port) * 4)) /* flag f of port 0/1 */
@@ -1102,8 +1102,8 @@ extern u16 g_padFlags; /* PAD_FLAG_*: a nibble per port (PAD_FLAG_PORT) and PAD_
 #define PAD_FLAG_ACT_PENDING 0x4 /* a pad was found (PadStateFindPad): send the actuator setup again once stable */
 #define PAD_FLAG_STICK_DPAD 0x8000 /* an analog pad's left stick also sets PAD_UP/DOWN/LEFT/RIGHT (set at reset;
                                     * ovl_0c w_frame and tu_8002BEEC switch it with pad_setFlags) */
-extern u8 D_8006825C;
-extern u8 D_8006826C;
+extern u8 s_cdStatus;
+extern u8 s_cdMode;
 
 typedef struct {
     u8 pad0[0x24];
@@ -1448,7 +1448,7 @@ extern u8 g_menuScreenCur;
 extern struct EvtObject *g_evtWorldCamEyeObj; /* object with EVT_MOVE_WM_CAMERA_EYE */
 extern struct EvtObject *g_evtWorldCamTargetObj; /* object with EVT_MOVE_WM_CAMERA_TARGET */
 extern s32 g_msgKeepWindows;
-extern s32 *D_80066764;
+extern s32 *s_gpuStatusReg;
 
 
 /* actor position (VECTOR layout, the pad word holds two rotation angles) */
@@ -1739,7 +1739,7 @@ extern s32 g_akaoPitchScale;
 
 extern Unk4 g_padAnalogThresholds;
 
-extern u8 D_800739B8[];
+extern u8 s_padPortWork[];
 extern AkaoSeq *g_akaoSubSeq;
 extern AkaoSeq g_akaoSavedSeq;
 /* AKAO sequence file header (akao_resumeSeq) */
