@@ -695,7 +695,7 @@ s32 bj_main(void) {
                 i = 0;
                 x = BJ_SHOE_X << 16;
                 y = BJ_SHOE_Y << 16;
-                timer = 0x78;
+                timer = 4 * BJ_DEAL_FRAMES; /* the four opening cards fly one after the other */
                 dx = (((player.x - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
                 dy = (((player.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
             } else if (timer > 0) {
@@ -721,11 +721,11 @@ s32 bj_main(void) {
                         dy = (((dealer.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         break;
                     case 2:
-                        dx = (((player.x - 0xE3) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dx = (((player.x + BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
                         dy = (((player.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         break;
                     case 3:
-                        dx = (((dealer.x - 0xE3) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dx = (((dealer.x + BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
                         dy = (((dealer.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         break;
                     }

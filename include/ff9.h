@@ -4664,6 +4664,13 @@ typedef struct {
 #define EVT_EXPR_CONST32 0x7E      /* 4 bytes: 26-bit signed constant */
 #define EVT_EXPR_END 0x7F
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
+/* fld_movieCommand's cmd (low 4 bits; script op EVT_OP_MOVIE, EVT_SYSVAR_MOVIE_*). Evidence: [code] its switch */
+#define FLD_MOVIE_CMD_START 0 /* fld_movieStart(list = param1 >> 8, entry = param1 & 0xFF, rgb24 = param2) */
+#define FLD_MOVIE_CMD_STOP 1 /* fld_movieStop */
+#define FLD_MOVIE_CMD_GO 2 /* FLD_MVF_PLAY: start playing once loaded (FLD_MOVIE_READY) */
+#define FLD_MOVIE_CMD_STATE 3 /* returns fld_movieCommand_state() */
+#define FLD_MOVIE_CMD_FRAME 4 /* returns mbg_getFrame() */
+#define FLD_MOVIE_CMD_RGB24 5 /* scene movieRgb24 = param1, mbg_setRgb24 */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
 /* mode entry points in overlays, linked through config/xrefs.us.txt */
 void btl_entry(void);

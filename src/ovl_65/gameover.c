@@ -4,7 +4,7 @@ INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", s_gameoverClearRect);
 
 void gameover_main(s32 image) {
     s16 shade = 0xFF;
-    u8 state = 0;
+    u8 state = GAMEOVER_ST_START;
     DispBuf bufs[2];
     RECT rect = s_gameoverClearRect;
     DispBuf *cur;
@@ -17,10 +17,10 @@ void gameover_main(s32 image) {
         cur = (cur == &bufs[0]) ? &bufs[1] : &bufs[0];
         ClearOTag(cur->ot, 2);
         switch (state) {
-        case 0:
+        case GAMEOVER_ST_START:
             state++;
             break;
-        case 1:
+        case GAMEOVER_ST_FADE_IN:
             setRGB0(&cur->fade, shade, shade, shade);
             shade -= 4;
             addPrim(&cur->ot[0], &cur->picTpage0);
@@ -31,7 +31,7 @@ void gameover_main(s32 image) {
                 state++;
             }
             break;
-        case 2:
+        case GAMEOVER_ST_WAIT:
             setRGB0(&cur->fade, 0, 0, 0);
             addPrim(&cur->ot[0], &cur->picTpage0);
             addPrim(&cur->ot[0], &cur->picTpage1);
@@ -40,7 +40,7 @@ void gameover_main(s32 image) {
                 state++;
             }
             break;
-        case 3:
+        case GAMEOVER_ST_FADE_OUT:
             shade += 4;
             if (shade >= 0x100) {
                 ClearImage(&rect, 0, 0, 0);
@@ -55,7 +55,7 @@ void gameover_main(s32 image) {
                 addPrim(&cur->ot[1], &cur->fadeTpage);
             }
             break;
-        case 4:
+        case GAMEOVER_ST_DONE:
             ClearImage(&rect, 0, 0, 0);
             DrawSync(0);
             return;
@@ -125,19 +125,19 @@ s32 battleEnd_update(void) {
             }
             btl_termBanner();
             rewards_exit();
-            return 1;
+            return BATTLE_END_UPD_RETURN;
         }
         evt_update();
-        return 0;
+        return BATTLE_END_UPD_RUNNING;
     case BATTLE_END_GAME_OVER:
         if (timer_isEnabled()) {
             timer_enable(0);
         }
         btl_termBanner();
         gameover_main((s32)g_gameState->gameData->ctx.ovl65->work->bgData);
-        return 2;
+        return BATTLE_END_UPD_TITLE;
     }
-    return 0;
+    return BATTLE_END_UPD_RUNNING;
 }
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", s_gameoverVramRect);

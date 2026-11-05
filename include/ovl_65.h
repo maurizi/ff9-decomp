@@ -13,6 +13,16 @@ void btl_termBanner(void);
 
 /* main exe: candidates for ff9.h */
 void timer_enable(u8);
+/* gameover_main steps (it counts them up with state++). Evidence: [code] */
+#define GAMEOVER_ST_START 0 /* one frame */
+#define GAMEOVER_ST_FADE_IN 1 /* the subtractive fade tile steps from 255 to 0 by 4: the picture fades in from black */
+#define GAMEOVER_ST_WAIT 2 /* picture shown until Cross */
+#define GAMEOVER_ST_FADE_OUT 3 /* back to black, then the screen is cleared */
+#define GAMEOVER_ST_DONE 4
+/* battleEnd_update's result (battleEnd_main). Evidence: [code] */
+#define BATTLE_END_UPD_RUNNING 0
+#define BATTLE_END_UPD_RETURN 1 /* rewards done: back to the mode the battle came from (work->returnMode) */
+#define BATTLE_END_UPD_TITLE 2 /* after the game-over screen: GS_MODE_OPENING */
 /* sounds of the rewards screen */
 #define SE_EXP_COUNT  0x69  /* loop while exp counts up (snd_startSe / snd_stopSe) */
 #define SE_GIL_COUNT  0x6D  /* loop while gil counts */

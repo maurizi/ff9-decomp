@@ -56,10 +56,10 @@ s32 evt_getSysVar(s32 op) {
         result = g_evtScreenY;
         break;
     case EVT_SYSVAR_MOVIE_FRAME:
-        result = fld_movieCommand(4, 0, 0);
+        result = fld_movieCommand(FLD_MOVIE_CMD_FRAME, 0, 0);
         break;
     case EVT_SYSVAR_MOVIE_STATE:
-        result = fld_movieCommand(3, 0, 0);
+        result = fld_movieCommand(FLD_MOVIE_CMD_STATE, 0, 0);
         break;
     case EVT_SYSVAR_FROG_COUNT:
         result = g_gameState->gameData->frogCount;

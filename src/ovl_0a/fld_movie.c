@@ -1125,20 +1125,20 @@ void fld_calcShadowMatrix(FieldObjEnt *ent, FieldObjSlot *obj, MATRIX *out) {
 /* field request dispatcher */
 s32 fld_movieCommand(s32 cmd, s32 param1, s32 param2) {
     switch (cmd & 0xF) {
-    case 0:
+    case FLD_MOVIE_CMD_START:
         fld_movieStart((param1 >> 8) & 0xFF, param1 & 0xFF, param2);
         return 0;
-    case 1:
+    case FLD_MOVIE_CMD_STOP:
         fld_movieStop();
         return 0;
-    case 2:
+    case FLD_MOVIE_CMD_GO:
         g_fieldMovieFlags |= FLD_MVF_PLAY;
         break;
-    case 3:
+    case FLD_MOVIE_CMD_STATE:
         return fld_movieCommand_state();
-    case 4:
+    case FLD_MOVIE_CMD_FRAME:
         return mbg_getFrame();
-    case 5:
+    case FLD_MOVIE_CMD_RGB24:
         g_gameState->gameData->ctx.field->area->scene->movieRgb24 = param1;
         mbg_setRgb24(param1);
         break;
@@ -1314,15 +1314,15 @@ s32 fld_isMoviePlaying(void) {
 }
 
 void fld_moviePlay(u16 movie, s32 rgb24) {
-    fld_movieCommand(0, movie, rgb24);
+    fld_movieCommand(FLD_MOVIE_CMD_START, movie, rgb24);
 }
 
 void fld_movieGo(void) {
-    fld_movieCommand(2, 0, 0);
+    fld_movieCommand(FLD_MOVIE_CMD_GO, 0, 0);
 }
 
 void fld_movieRequestStop(void) {
-    fld_movieCommand(1, 0, 0);
+    fld_movieCommand(FLD_MOVIE_CMD_STOP, 0, 0);
 }
 
 void fld_beginFrame(void) {

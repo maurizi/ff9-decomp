@@ -11,10 +11,10 @@ void battleEnd_main(void) {
         ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         pad_update();
         switch (battleEnd_update()) {
-        case 1:
+        case BATTLE_END_UPD_RETURN:
             g_gameState->mode = work->returnMode;
             break;
-        case 2:
+        case BATTLE_END_UPD_TITLE:
             g_gameState->mode = GS_MODE_OPENING;
             break;
         }
