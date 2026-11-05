@@ -214,12 +214,26 @@ def scan_field(d, field):
     # a menu is reachable only if its object is created (NEW_CODE/NEW_REGION/NEW_ACTOR 0x07-0x09 with its entry)
     # and the field shows the Select prompt (D7 1 or 5): Gs8[0xEE] outlives the field, so a running handler without
     # a prompt only answers Select when the previous field left it at 1; a prompt without a handler does nothing.
-    started = set()
+    # A D7 1/5 guarded by the field-local prompt bit Fbit[0x9B] (the shared EVT_FUNC_RESUME helper, entry 0 tag 10)
+    # only runs if the field also sets that bit (the standard ATE init does, next to its own D7 1): runtime check,
+    # docs/runtime-findings.md "ATE menu reachability check" (563, 900: the guarded D7 1 never runs).
+    started, live, sets_bit = set(), False, False
     for e, tag, code in script_functions(data, s):
-        for o, op, fl, args, raw in dis(code):
+        ins = list(dis(code))
+        for o, op, fl, args, raw in ins:
             if op in (0x07, 0x08, 0x09) and isinstance(args[0], int):
                 started.add(args[0])
-    select = bool(res['prompt'] & {1, 5})
+            if op == OP_EXPR and re.search(r'Fbit\[0x9b\] = 1\)', args[0]):
+                sets_bit = True
+        for o, op, fl, args, raw in ins:
+            if op == OP_ATE_PROMPT and args[0] in (1, 5):
+                guarded = any('Fbit[0x9b] == 1' in c and h for c, h in conditions(ins, o))
+                live = live or not guarded or None
+                if guarded:
+                    res.setdefault('_guarded', True)
+    select = bool(live) or (res.get('_guarded', False) and sets_bit)
+    res.pop('_guarded', None)
+    res['select_prompt'] = select
     for m in res['menus']:
         m['started'] = m['entry'] in started
         m['reachable'] = m['started'] and select
