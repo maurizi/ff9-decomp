@@ -83,7 +83,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_SPRITE_SWIRL), (s32)&work->pos34);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_GREEN_GLINTS), (s32)&work->pos34);
             break;
         case 8:
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_WIND_RING), (s32)&work->pos34);

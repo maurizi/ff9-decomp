@@ -8,7 +8,7 @@
 /* fx_1ad effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_6_LEGS_BACKDROP     0x1 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
-#define FX_6_LEGS_POD 0x2 /* 'so' model: rounded pod with an opening (texture page 0x117 renders plain white) (look pending) */
+#define FX_6_LEGS_SLIME_SHELL 0x2 /* 'so' model: rounded pod with an opening; page 0x117 holds a green slimy texture at run time: the green slime shell wrapping the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_6_LEGS_BUBBLE_TRAIL 0x4 /* emitter: orbiting 3D trail of glass bubbles (sprites render black) */
 #define FX_6_LEGS_GREEN_TRAIL  0x5 /* emitter: screen trail, green striped strip */
 

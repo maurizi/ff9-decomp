@@ -298,16 +298,16 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 2, 0x46, 0x46, 0x46);
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1a8_targetPos);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_FAN_STREAK), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_GOLD_RAYS), (s32)&work->pos10);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_CRIMSON_RINGS_2), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x200;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_SPECK_SPIRAL), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_BLACK_DEBRIS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_SPECKS), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_RED_SPARKS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

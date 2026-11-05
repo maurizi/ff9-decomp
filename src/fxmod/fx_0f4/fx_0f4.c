@@ -52,7 +52,7 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 0x36:
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_LIGHTNING), (s32)&work->pos58);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_CONE_RINGS), (s32)&work->pos58);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_WHITE_GLOW), (s32)&work->pos58);
             if (work->emitC != NULL) {
                 work->emitC->otZ = 0x80;
             }

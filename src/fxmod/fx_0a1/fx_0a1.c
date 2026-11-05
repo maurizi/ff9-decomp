@@ -74,7 +74,7 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 0x11) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_TRAIL), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_WHITE_HAZE), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     emitter->trails = (s32)fx_0a1_trails2;

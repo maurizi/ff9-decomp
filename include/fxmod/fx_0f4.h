@@ -14,7 +14,7 @@
 #define FX_SHIFT_BREAK_BACKDROP     0x8 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SHIFT_BREAK_DOME         0xA /* model: stepped dome, white texture */
 #define FX_SHIFT_BREAK_DOME_2       0xB /* model: stepped dome, white texture (byte-identical to entry 0xA) */
-#define FX_SHIFT_BREAK_CONE_RINGS   0xC /* emitter: textured rings in a cone; the render reads garbled multicolour texels (texture not resolved) (look pending) */
+#define FX_SHIFT_BREAK_WHITE_GLOW   0xC /* emitter: textured rings in a cone, the big soft white-blue haze over the target (the ring UVs still read noise in the run-time page); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_SHIFT_BREAK_LIGHTNING    0xD /* emitter: white-cyan gouraud rings + blue lightning streak particles */
 #define FX_SHIFT_BREAK_BACKDROP_2   0xE /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 

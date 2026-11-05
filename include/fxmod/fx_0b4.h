@@ -11,7 +11,7 @@
 #define FX_AERO_GREEN_RING   0xE /* emitter: orbiting green gouraud rings */
 #define FX_AERO_WIND_RING    0xF /* emitter: orbiting pale green wind-ring particles */
 #define FX_AERO_GREEN_BURST  0x10 /* emitter: green gust puffs fading to blue */
-#define FX_AERO_SPRITE_SWIRL 0x11 /* emitter: spiralling sprites; the render is still all black (texels blank in the file's upload, filled at run time?) (look pending) */
+#define FX_AERO_GREEN_GLINTS 0x11 /* emitter: spiralling sprites, green four-point star glints at run time (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_AERO_WIND_TRAIL   0x19 /* emitter: white 3D wind trail spiralling */
 
 typedef struct {

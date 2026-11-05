@@ -97,7 +97,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkCC.vx = 0;
         w->unkCC.vy = -0x2000;
         w->unkCC.vz = 0x418;
-        w->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPHERE), 0xFF);
+        w->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_RED_CLOUD_SPHERE), 0xFF);
         w->scale74.vx = 0x1800;
         w->scale74.vy = 0x1800;
         w->scale74.vz = 0x1800;

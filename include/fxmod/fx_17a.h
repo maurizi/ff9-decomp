@@ -22,7 +22,7 @@
 #define FX_MADEEN_VIOLET_GLOW   0xD /* emitter: three fans, a horizontal violet-white glow */
 #define FX_MADEEN_WHITE_GLOW    0xE /* particles: white-blue glow */
 #define FX_MADEEN_BLUE_SPARKLES 0xF /* emitter: blue square sparkles and gold sprites */
-#define FX_MADEEN_TRAIL         0x11 /* trail: strip texture not in the file (magenta in the render) (look pending) */
+#define FX_MADEEN_SPIRAL_STREAK 0x11 /* trail: the thin white curved light streaks spiralling round the blast (the tool still resolves the strip's tpage to the placeholder page); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_MADEEN_BACKDROP      0x12 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_MADEEN_BLUE_STREAKS  0x13 /* emitter: orbiting blue light streaks */
 

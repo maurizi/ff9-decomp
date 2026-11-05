@@ -9,7 +9,7 @@ s32 fx_037_op80(s32 mode, Fx037Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_037_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARKNESS_SCREEN_TRAIL), (s32)&work->pos14);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARKNESS_GREEN_HAZE), (s32)&work->pos14);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_037_trails;
             work->emit0->trailSlots = 0x15;

@@ -10,7 +10,7 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SCOOP_ART_BLUE_RINGS   0x2 /* emitter: white-blue gouraud rings + rings textured with blue swirl marks */
 #define FX_SCOOP_ART_PINK_TRAIL   0x3 /* trail: red-pink glowing strip drawn along the moving point */
-#define FX_SCOOP_ART_SCREEN_TRAIL 0x8 /* emitter: screen trail + sprite, texture on a placeholder page (the render reads garbled tan texels) (look pending) */
+#define FX_SCOOP_ART_GOLD_SPARK   0x8 /* emitter: screen trail + sprite, a pale-gold gradient strip and a soft white-gold glow at run time: the yellow spark at the tip of the pink pillar; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
 typedef struct {
     s32 state0; /* state */

@@ -355,7 +355,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 if (emitter != NULL) {
                     emitter->otZ = -0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_SPRITES), (s32)&w->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLUE_GLOWS), (s32)&w->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
@@ -445,7 +445,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_SPRITES_2), (s32)&w->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_COLOR_GLOWS), (s32)&w->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }

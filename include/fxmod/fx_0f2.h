@@ -8,7 +8,7 @@
 
 /* fx_0f2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_TIDAL_FLAME_DOME        0x2 /* model: hemisphere, texture page 0x11A not in the file (magenta in the render) (look pending) */
+#define FX_TIDAL_FLAME_FIRE_DOME   0x2 /* model: hemisphere; page 0x11A holds flames at run time: the fire dome behind the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_TIDAL_FLAME_BACKDROP    0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_TIDAL_FLAME_RUNE_BURST  0x8 /* emitter: white rune glyphs with cyan-blue rings, embers, blue light streak */
 #define FX_TIDAL_FLAME_FLAME_CLOUD 0x9 /* emitter: embers + orange flame cloud */

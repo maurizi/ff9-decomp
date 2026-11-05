@@ -68,8 +68,8 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0 && frame < 0x18 && frame % 12 == 0) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_TRAIL), (s32)&fx_11d_emitPos0);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_TRAIL_2), (s32)&fx_11d_emitPos1);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_PINK_ORBS), (s32)&fx_11d_emitPos0);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_PINK_ORBS_2), (s32)&fx_11d_emitPos1);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_11d_op80Trails0;
                 work->emitC->trailSlots = 4;

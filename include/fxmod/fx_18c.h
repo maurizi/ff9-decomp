@@ -7,7 +7,7 @@
 
 /* fx_18c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_LIGHT_PARTICLES  0x1 /* emitter: one particle element, renders as a thin black strip (look pending) */
+#define FX_LIGHT_VIOLET_STREAKS 0x1 /* emitter: one particle element, a thin violet streak sprite at run time: the violet light streaks under the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_LIGHT_GREEN_HALO 0x2 /* emitter: yellow-green crescent halo particles + violet-white gouraud rings */
 
 typedef struct {

@@ -23,7 +23,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos54.vz = work->pos18.vz;
         fx_1b2_env = env;
         fxm_vecPathInit(&fx_1b2_vecPath, (u8 *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_PATH));
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_CURL), 0x117, 0, 0, 0);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_CURL), 0x117, 0, 0, 0);
         work->rot3C.vx = -0x200;
         work->rot3C.vy = 0;
         work->rot3C.vz = 0;
@@ -173,7 +173,7 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale18.vy = 0x1000;
         work->scale18.vz = 0x1000;
         fx_1b2_env = env;
-        work->model34 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_DISC), 0x119, 0, 0, 0);
+        work->model34 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_SURGE), 0x119, 0, 0, 0);
         work->timer2C = -1;
         work->timer30 = -1;
     } else {

@@ -25,8 +25,10 @@ Notes:
   gold glow (fx_1f4 Vanish draws the same three emitters, in other bytes). The short forms carry the payload names.
 - Sealion appears (fx_1cc) is Blizzaga's crystal data byte for byte (fx_097 / fx_098), named `FX_SEALION_APPEARS_`
   + Blizzaga's `<WHAT>`.
-- Ark short, group 2 (fx_1bf_2): entry 2 (`FX_ARK_FLAT_PANEL`, byte-identical to fx_17d_8 entry 6) is textured with a
-  placeholder page carrying the kana labels "up / left / right / down" (an orientation test texture).
+- Ark short, group 2 (fx_1bf_2): entry 2 (`FX_ARK_BEAM_HAZE`, byte-identical to fx_17d_8 entry 6) is textured with a
+  placeholder page carrying the kana labels "up / left / right / down" (an orientation test texture). At run time
+  that page is never sampled: by the time the band draws it holds a red-violet nebula, the red glow along Ark's
+  beam (effect-data runtime pass 2).
 - fx_1f2 (Grand Cross) and fx_1bf_1 use summon data (0x80+): Grand Cross's planets, moon, earth globe, vortices;
   Ark short's beam, tori, rocks and flame pieces, all named by the new 'so' model renders.
 - Some names carried from other slices were "(look pending)" there and the new tool now draws them; the
@@ -41,12 +43,12 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 
 | module | index | name | question |
 |---|---|---|---|
-| fx_1e6 | 0x4 | `FX_CORRECT_SPARKLES` | the tube particle element renders black (texture not in the file) |
-| fx_1ec | 0x2, 0x12, 0x27 | `FX_ULTIMA_NOISE_RING(_2/_3)` | ring texture not resolved (noise) |
-| fx_1f0 | 0x4 | `FX_APPEARANCE_SPRITES` | sprites render empty |
-| fx_1f6 | 0x8, 0xC | `FX_AERA_WIND_STREAKS`, `FX_AERA_SPRITE_BURST` | carried from fx_0cd with their pending state |
-| fx_1fd | 0x16 | `FX_FENRIR_SPARKS` | carried from fx_0e2 with its pending state |
-| fx_1fe | 0x16 | `FX_PHOENIX_EMBERS` | sprites render empty here; named after fx_0d3 entry 0xF (same call site and kind) |
+| fx_1e6 | 0x4 | `FX_CORRECT_YELLOW_STARS` | emitter: tube of particles + small dot sparkles, a yellow five-point star (plus blue glows) at run time: the yellow stars popping round the target (runtime (medium)) |
+| fx_1ec | 0x2, 0x12, 0x27 | `FX_ULTIMA_VIOLET_HAZE`, `FX_ULTIMA_VIOLET_GLOW(_2)` | ring texture not resolved (noise); runtime pass 2: the violet haze vortex and the violet glow spheres (0x27 low, look pending) |
+| fx_1f0 | 0x4 | `FX_APPEARANCE_WHITE_SPECKS` | emitter: sprites, tiny white specks at run time (ablation changes < 470 px) (runtime (low, look pending)) |
+| fx_1f6 | 0x8, 0xC | `FX_AERA_GREEN_WIND_BLADES`, `FX_AERA_SPRITE_BURST` | carried from fx_0cd with their pending state; runtime pass 2 named 0x8 (green wind blades), 0xC still unknown (a tiny green glint, < 210 px when ablated) |
+| fx_1fd | 0x16 | `FX_FENRIR_CYAN_GLINTS` | emitter: spiral of tiny cyan-white glint sprites, the glints round the green whirlwind (byte-identical to fx_0e2 entry 0x12) (runtime (medium)) |
+| fx_1fe | 0x16 | `FX_PHOENIX_EMBERS` | emitter: soft orange glowing mote sprites, the small embers drifting after the white-out (same call site as fx_0d3 entry 0xF, same kind) (runtime (medium)) |
 
 ## Table
 
@@ -75,7 +77,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1e6 | 0x1 | `FX_CORRECT_STREAMER` | render | emitter: 3D trail with a thin white streamer texture |
 | fx_1e6 | 0x2 | `FX_CORRECT_STREAMER_2` | render | emitter: 3D trail with a thin white streamer texture |
 | fx_1e6 | 0x3 | `FX_CORRECT_STREAMER_3` | render | emitter: 3D trail with a thin white streamer texture |
-| fx_1e6 | 0x4 | `FX_CORRECT_SPARKLES` | kind/usage (look pending) | emitter: tube of particles (renders black) + small dot sparkles |
+| fx_1e6 | 0x4 | `FX_CORRECT_YELLOW_STARS` | runtime (medium) | emitter: tube of particles + small dot sparkles, a yellow five-point star (plus blue glows) at run time: the yellow stars popping round the target |
 | fx_1e6 | 0x5 | `FX_CORRECT_SPIRAL_STREAMER` | render | emitter: spiralling 3D trail, white crescent texture |
 | fx_1e6 | 0x6 | `FX_CORRECT_SPIRAL_STREAMER_2` | render | emitter: spiralling 3D trail, white crescent texture |
 | fx_1e6 | 0x7 | `FX_CORRECT_SPIRAL_STREAMER_3` | render | emitter: spiralling 3D trail, white crescent texture |
@@ -126,7 +128,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1eb | 0x1D | `FX_SIX_DRAGONS_WHITE_RINGS_2` | render | emitter: white gouraud rings, 45 frames |
 | fx_1eb | 0x1E | `FX_SIX_DRAGONS_SMOKE` | render | emitter: green-to-pink smoke puffs |
 | fx_1ec | 0x1 | `FX_ULTIMA_RED_FLARE_2` | render | emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x18) |
-| fx_1ec | 0x2 | `FX_ULTIMA_NOISE_RING` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + pink gouraud ring (byte-identical to fx_180 entry 0x2) |
+| fx_1ec | 0x2 | `FX_ULTIMA_VIOLET_HAZE` | runtime | emitter: textured ring + pink gouraud ring, the violet haze vortex round the party (byte-identical to fx_180 entry 0x2) |
 | fx_1ec | 0x3 | `FX_ULTIMA_ROCK_DEBRIS` | render | emitter: grey rock chunks (byte-identical to fx_180 entry 0x3) |
 | fx_1ec | 0x4 | `FX_ULTIMA_GREY_TRAIL` | render | emitter: wobbling 3D trail with a grey streak texture (byte-identical to fx_180 entry 0x4) |
 | fx_1ec | 0x6 | `FX_ULTIMA_PINK_SPIKES` | render | emitter: pink spike particles + spark sprites (byte-identical to fx_180 entry 0x14) |
@@ -139,7 +141,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1ec | 0xF | `FX_ULTIMA_GREY_TRAIL_2` | render | emitter: wobbling screen trail with a grey streak texture (byte-identical to fx_180 entry 0xB) |
 | fx_1ec | 0x10 | `FX_ULTIMA_BLAST_RINGS` | render | emitter: white-pink, lilac and yellow-red gouraud rings, pink glows (byte-identical to fx_180 entry 0xC) |
 | fx_1ec | 0x11 | `FX_ULTIMA_PINK_SPARKS` | render | emitter: sparse pink spark sprites (byte-identical to fx_180 entry 0xE) |
-| fx_1ec | 0x12 | `FX_ULTIMA_NOISE_RING_2` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings (byte-identical to fx_180 entry 0xF) |
+| fx_1ec | 0x12 | `FX_ULTIMA_VIOLET_GLOW` | runtime | emitter: textured ring + pink-lilac gouraud rings, the big soft violet glow sphere behind the white star burst (byte-identical to fx_180 entry 0xF) |
 | fx_1ec | 0x13 | `FX_ULTIMA_RED_FLARE` | render | emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x10) |
 | fx_1ec | 0x14 | `FX_ULTIMA_CRIMSON_STREAK` | render | emitter: orbiting fan, a white-to-crimson light streak (byte-identical to fx_180 entry 0x11, same render) |
 | fx_1ec | 0x15 | `FX_ULTIMA_PINK_TRAIL` | render | emitter: pink screen trail (byte-identical to fx_180 entry 0x12) |
@@ -154,7 +156,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1ec | 0x24 | `FX_ULTIMA_PINK_SPIKES_2` | render | emitter: pink spike particles + spark sprites (byte-identical to fx_180 entry 0x15) |
 | fx_1ec | 0x25 | `FX_ULTIMA_WHITE_BEAM` | render | emitter: spiralling white beam screen trail, pink sparks (byte-identical to fx_180 entry 0xD) |
 | fx_1ec | 0x26 | `FX_ULTIMA_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_180 entry 0x19) |
-| fx_1ec | 0x27 | `FX_ULTIMA_NOISE_RING_3` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + lilac gouraud ring |
+| fx_1ec | 0x27 | `FX_ULTIMA_VIOLET_GLOW_2` | runtime (low, look pending) | emitter: textured ring + lilac gouraud ring, started in the final blast; named by analogy with entry 0x12 (not ablated) |
 | fx_1ed | 0x1 | `FX_CARBUNCLE_BLUE_RINGS` | render | emitter: pale blue gouraud rings at each target (op 0x81) |
 | fx_1ed | 0x3 | `FX_CARBUNCLE_CAMERA_KEYS_3` | usage | table: camera key path for fxm_camKeyAdd (target 3) (same call site as fx_0b1 entry 0x17, same kind) |
 | fx_1ed | 0x4 | `FX_CARBUNCLE_CAMERA_KEYS` | usage | table: camera key path for fxm_camKeyAdd (target 1) (same call site as fx_0b1 entry 0xF, same kind) |
@@ -232,7 +234,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1fb | 0x6 | `FX_CARBUNCLE_GOLD_GLOW` | render | emitter: golden glow sprite + pale yellow gouraud rings (byte-identical to fx_1ef entry 0xD) |
 | fx_1f0 | 0x1 | `FX_APPEARANCE_GREY_RINGS` | render | emitter: grey / white / blue gouraud rings |
 | fx_1f0 | 0x3 | `FX_APPEARANCE_BLUE_SMOKE_COLUMN` | render | 'so' model: open cylinder, blue smoke texture |
-| fx_1f0 | 0x4 | `FX_APPEARANCE_SPRITES` | kind/usage (look pending) | emitter: sprites, render empty |
+| fx_1f0 | 0x4 | `FX_APPEARANCE_WHITE_SPECKS` | runtime (low, look pending) | emitter: sprites, tiny white specks at run time (ablation changes < 470 px) |
 | fx_1f0 | 0x5 | `FX_APPEARANCE_BLUE_SMOKE_TWIST` | render | 'so' model: twisted cylinder, blue smoke texture |
 | fx_1f0 | 0x6 | `FX_APPEARANCE_BROWN_SMOKE_COLUMN` | render | 'so' model: open cylinder, brown smoke texture |
 | fx_1f0 | 0x7 | `FX_APPEARANCE_BROWN_SMOKE_TWIST` | render | 'so' model: twisted cylinder, brown smoke texture |
@@ -297,9 +299,9 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1f6 | 0x5 | `FX_AERA_WIND_RING` | render | emitter: orbiting white wind-ring particle (byte-identical to fx_0cd entry 0x5) |
 | fx_1f6 | 0x6 | `FX_AERA_GREEN_TORNADO` | render (byte-identical twin, consistency pass) | 'so' model: twisted green column with a smoke texture (tornado) (byte-identical to fx_0cd entry 0xD) |
 | fx_1f6 | 0x7 | `FX_AERA_GREEN_BURST` | render | emitter: green gust puffs (byte-identical to fx_0cd entry 0x7) |
-| fx_1f6 | 0x8 | `FX_AERA_WIND_STREAKS` | kind/usage (look pending) | emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) (byte-identical to fx_0cd entry 0x8) |
+| fx_1f6 | 0x8 | `FX_AERA_GREEN_WIND_BLADES` | runtime (medium) | emitter: spiralling sprites + 3D trail, the translucent green wind blades sweeping round the target (byte-identical to fx_0cd entry 0x8) |
 | fx_1f6 | 0xA | `FX_AERA_GUST_RINGS` | render | emitter: cyan-green gouraud rings (byte-identical to fx_0cd entry 0xA) |
-| fx_1f6 | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites (texture garbled in the render) (byte-identical to fx_0cd entry 0xC) |
+| fx_1f6 | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites (texture garbled in the render) (byte-identical to fx_0cd entry 0xC); runtime: as fx_0cd's entry 0xC: a tiny green glint sprite at run time, ablating it changes < 210 px |
 | fx_1f7 | 0x1 | `FX_BLUE_SHOCKWAVE_FLASH` | render | emitter: violet glow flash, white-red-blue and pink gouraud rings |
 | fx_1f7 | 0x2 | `FX_BLUE_SHOCKWAVE_LIGHTNING` | render | emitter: violet lightning fans + spark sprites |
 | fx_1f7 | 0x3 | `FX_BLUE_SHOCKWAVE_GLOW_TRAIL` | render | trail: violet glow strip |
@@ -330,7 +332,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1fd | 0x13 | `FX_FENRIR_GREEN_WIND_TRAIL` | render | emitter: spiralling green wind-streak trail + grey smoke (byte-identical to fx_0e2 entry 0xE) |
 | fx_1fd | 0x14 | `FX_FENRIR_SAND_RINGS` | render | emitter: brown-salmon gouraud rings + spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0xD) |
 | fx_1fd | 0x15 | `FX_FENRIR_RIBBON_PATHS_D` | usage | table: position paths of ribbons 2/3 (other branch) (byte-identical to fx_0e2 entry 0xF) |
-| fx_1fd | 0x16 | `FX_FENRIR_SPARKS` | kind/usage (look pending) | emitter: spiral of spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0x12) |
+| fx_1fd | 0x16 | `FX_FENRIR_CYAN_GLINTS` | runtime (medium) | emitter: spiral of tiny cyan-white glint sprites, the glints round the green whirlwind (byte-identical to fx_0e2 entry 0x12) |
 | fx_1fe | 0x2 | `FX_PHOENIX_FIRE_DISC` | render | 'so' model: flat disc with a fire texture (byte-identical to fx_0d3 entry 0xD) |
 | fx_1fe | 0xD | `FX_PHOENIX_FIRE_DOME` | render | 'so' model: dome with a hole, fire texture (byte-identical to fx_0d3 entry 0xC) |
 | fx_1fe | 0xF | `FX_PHOENIX_SMOKE_ARC` | render | 'so' model: thin arc band with a grey smoke texture (byte-identical to fx_0d3 entry 0xE) |
@@ -338,7 +340,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1fe | 0x11 | `FX_PHOENIX_PINK_RINGS` | render | emitter: white / pink / copper gouraud rings (byte-identical to fx_0d3 entry 0x11) |
 | fx_1fe | 0x12 | `FX_PHOENIX_GOLD_FEATHERS` | render | emitter: golden feather quads (same call site as fx_0d3 entry 0x12, same kind) |
 | fx_1fe | 0x15 | `FX_PHOENIX_FLAME_FEATHERS_2` | render | emitter: copper flame-feather quads (cylinder) (same call site as fx_0d3 entry 0x18, same kind) |
-| fx_1fe | 0x16 | `FX_PHOENIX_EMBERS` | kind/usage (look pending) | emitter: sprites, render empty (texture not in the file) (same call site as fx_0d3 entry 0xF, same kind) |
+| fx_1fe | 0x16 | `FX_PHOENIX_EMBERS` | runtime (medium) | emitter: soft orange glowing mote sprites, the small embers drifting after the white-out (same call site as fx_0d3 entry 0xF, same kind) |
 | fx_1fe | 0x17 | `FX_PHOENIX_FLAME_FEATHERS` | render | emitter: copper flame-feather quads (same call site as fx_0d3 entry 0x17, same kind) |
 | fx_1bf_0 | 0x5 | `FX_ARK_BEAM_LINE` | usage | table: trail data for fxm_drawTrailLine, vertical light line at the strand tips and ring centre |
 | fx_1bf_0 | 0xA | `FX_ARK_RED_FLASH_RING` | render | rings: red-white flat flash ring |
@@ -366,7 +368,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1bf_1 | 0x93 | `FX_ARK_ROCK_3` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x94 | `FX_ARK_FIRE_ARC` | render | summon data: 'so' model, curved band with an orange flame texture |
 | fx_1bf_2 | 0x1 | `FX_ARK_ORANGE_BEAM` | render | 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) |
-| fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6); runtime: fx_17d_8's same entry was not reached within 4600 frames of a full Ark |
+| fx_1bf_2 | 0x2 | `FX_ARK_BEAM_HAZE` | runtime | 'so' model: flat band on page 0x11B; the file's kana test page (up / left / right / down) is never sampled: by the time the band draws the page holds a red-violet nebula texture, the wide red glow band along Ark's beam hitting the planet (byte-identical to fx_17d_8 entry 0x6) |
 | fx_1bf_2 | 0x3 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_17d_8 entry 0x7) |
 | fx_1bf_2 | 0x5 | `FX_ARK_GREY_STAR_DISC` | render | 'so' model: shallow dish with a grey radial cloud texture (byte-identical to fx_17d_8 entry 0x9) |
 | fx_1bf_2 | 0x7 | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) |

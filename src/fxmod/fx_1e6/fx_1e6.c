@@ -129,7 +129,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPIRAL_STREAMER), (s32)&work->pos50);
             work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPIRAL_STREAMER_2), (s32)&work->pos50);
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPIRAL_STREAMER_3), (s32)&work->pos50);
-            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_SPARKLES), (s32)&work->pos50);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_YELLOW_STARS), (s32)&work->pos50);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->trails = (s32)fx_1e6_op81Trails0;
                 work->emit0[0]->trailSlots = 5;

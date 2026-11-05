@@ -14,7 +14,7 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos1C);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_ANIM_EMITTER), (s32)&work->pos1C);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_BLUE_SPECKS), (s32)&work->pos1C);
             break;
         case 0x26:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos24);

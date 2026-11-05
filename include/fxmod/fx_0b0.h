@@ -8,12 +8,12 @@
 
 /* fx_0b0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_LEAF_SWIRL_LEAF_TRAIL   0x1 /* emitter: helix trail, mostly dark strip with a leaf tip (look pending) */
-#define FX_LEAF_SWIRL_LEAF_TRAIL_2 0x2 /* emitter: helix trail, mostly dark strip with a leaf tip (look pending) */
+#define FX_LEAF_SWIRL_YELLOW_LEAVES 0x1 /* emitter: helix trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
+#define FX_LEAF_SWIRL_YELLOW_LEAVES_2 0x2 /* emitter: helix trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_LEAF_SWIRL_DUST_SPECKS  0x3 /* emitter: brown dust puffs + small specks (btlfx_emitDots) */
 #define FX_LEAF_SWIRL_OLIVE_RING   0x4 /* emitter: olive gouraud rings */
-#define FX_LEAF_SWIRL_LEAF_TRAIL_3 0xA /* emitter: spiral trail, mostly dark strip with a leaf tip (look pending) */
-#define FX_LEAF_SWIRL_LEAF_TRAIL_4 0xB /* emitter: spiral trail, mostly dark strip with a leaf tip (look pending) */
+#define FX_LEAF_SWIRL_YELLOW_LEAVES_3 0xA /* emitter: spiral trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
+#define FX_LEAF_SWIRL_YELLOW_LEAVES_4 0xB /* emitter: spiral trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_LEAF_SWIRL_WIND_TRAIL   0xC /* emitter: grey wind trail */
 
 typedef struct {

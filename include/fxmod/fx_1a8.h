@@ -9,23 +9,23 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ODIN_BLUE_RINGS       0x1 /* emitter: white-cyan-violet and white-cyan-blue gouraud rings */
 #define FX_ODIN_FLAME_TRAIL      0x2 /* trail: orange flame strip */
-#define FX_ODIN_FAN_STREAK       0x5 /* emitter: two fan elements, a thin tan streak in the render (look pending) */
+#define FX_ODIN_GOLD_RAYS        0x5 /* emitter: two fan elements, a thin pale-gold streak at run time, matching the gold rays of the slash explosion; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_ODIN_SKY_CRYSTAL      0x6 /* 'so' model: polyhedron crystal, blue sky-and-cloud texture */
 #define FX_ODIN_FLAME_RIBBON     0x7 /* 'so' model: twisted ribbon, fire texture */
 #define FX_ODIN_FLAME_RIBBON_2   0x8 /* 'so' model: twisted ribbon, fire texture */
 #define FX_ODIN_FLAME_RIBBON_3   0x9 /* 'so' model: twisted ribbon, fire texture */
 #define FX_ODIN_SKY_CRYSTAL_2    0xA /* 'so' model: flattened crystal, blue sky-and-cloud texture */
 #define FX_ODIN_CRIMSON_RINGS    0xB /* rings: white-crimson gouraud rings, 16 frames */
-#define FX_ODIN_SPECK_SPIRAL     0xC /* emitter: spiral of two speck-sprite elements, render nearly black (look pending) */
+#define FX_ODIN_BLACK_DEBRIS     0xC /* emitter: spiral of two speck-sprite elements, dark grey specks at run time: the black debris flying out of the explosion; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ODIN_CRIMSON_RINGS_2  0xD /* emitter: white-crimson and white-violet gouraud rings */
 #define FX_ODIN_FLAME_RIBBON_4   0x10 /* 'so' model: twisted ribbon, fire texture */
 #define FX_ODIN_STONE_RING       0x11 /* 'so' model: ring band, grey-green stone texture */
-#define FX_ODIN_SPECKS           0x12 /* emitter: speck sprites, render nearly black (look pending) */
+#define FX_ODIN_RED_SPARKS       0x12 /* emitter: speck sprites, tiny red sparks at run time (not separable on screen); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_ODIN_PINK_SMOKE       0x13 /* emitter: white-pink smoke burst quads, 22 frames */
 #define FX_ODIN_CLOUD_TORUS      0x14 /* 'so' model: torus, dark marbled cloud texture */
 #define FX_ODIN_GOLD_RING        0x15 /* 'so' model: ring band, yellow-brown texture */
 #define FX_ODIN_VORTEX_CONE      0x16 /* 'so' model: spiralling cone, brown-grey texture */
-#define FX_ODIN_CALLBACK_EMITTER 0x17 /* emitter: two callback elements (drawn by the module) (look pending) */
+#define FX_ODIN_CALLBACK_EMITTER 0x17 /* emitter: two callback elements (drawn by the module); runtime (docs/runtime-findings.md effect-data pass 2): started with the slash explosion; ablating it only shifts the random pink smoke puffs (look pending) */
 #define FX_ODIN_ZANTETSUKEN      0x19 /* 'so' model: thin sword with a hilt, red-violet texture (the Zantetsuken blade) */
 
 extern Unk800F78A4 *fx_1a8_env;

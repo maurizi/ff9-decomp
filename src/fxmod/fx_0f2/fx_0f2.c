@@ -38,7 +38,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale20.vx = 0xAAA;
         work->scale20.vy = 0xAAA;
         work->scale20.vz = 0xAAA;
-        work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_DOME), 0x11A, 0, 0, 0x80);
+        work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_FLAME_FIRE_DOME), 0x11A, 0, 0, 0x80);
         work->startPos40.vx = work->pos10.vx;
         work->startPos40.vy = work->pos10.vy;
         work->startPos40.vz = work->pos10.vz;

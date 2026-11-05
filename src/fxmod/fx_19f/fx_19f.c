@@ -152,7 +152,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_GREEN_DOME), 0);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_THIN_ROD), 0);
         work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_STAFF), 0);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_DOME_COLUMN), 1);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_AURA_COLUMN), 1);
         work->pos8.vx = 0;
         work->pos8.vy = 0;
         work->pos8.vz = 0;
@@ -345,7 +345,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 14) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_BURST), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_SPARK_BURST), (s32)&work->pos8);
                 work->emit68 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = -0x20;
@@ -430,7 +430,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_PARTICLE), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_SPARKS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }

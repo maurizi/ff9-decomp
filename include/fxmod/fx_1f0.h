@@ -9,7 +9,7 @@
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_APPEARANCE_GREY_RINGS         0x1 /* emitter: grey / white / blue gouraud rings */
 #define FX_APPEARANCE_BLUE_SMOKE_COLUMN  0x3 /* 'so' model: open cylinder, blue smoke texture */
-#define FX_APPEARANCE_SPRITES            0x4 /* emitter: sprites, render empty (look pending) */
+#define FX_APPEARANCE_WHITE_SPECKS       0x4 /* emitter: sprites, tiny white specks at run time (ablation changes < 470 px); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_APPEARANCE_BLUE_SMOKE_TWIST   0x5 /* 'so' model: twisted cylinder, blue smoke texture */
 #define FX_APPEARANCE_BROWN_SMOKE_COLUMN 0x6 /* 'so' model: open cylinder, brown smoke texture */
 #define FX_APPEARANCE_BROWN_SMOKE_TWIST  0x7 /* 'so' model: twisted cylinder, brown smoke texture */

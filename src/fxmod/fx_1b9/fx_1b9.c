@@ -19,7 +19,7 @@ s32 fx_1b9_op80(s32 mode, Fx1b9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_DARK_QUADS), (s32)&work->pos20);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_TEAL_GLOWS), (s32)&work->pos20);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_WATER_SPOUT), (s32)&work->pos20);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_WATER_WAVE), (s32)&work->pos18);
             if (work->emit0 != NULL) {

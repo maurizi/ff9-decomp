@@ -8,7 +8,7 @@
 /* fx_1ec effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ULTIMA_RED_FLARE_2    0x1 /* emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x18) */
-#define FX_ULTIMA_NOISE_RING     0x2 /* emitter: ring with a texture not resolved (noise) + pink gouraud ring (byte-identical to fx_180 entry 0x2) (look pending) */
+#define FX_ULTIMA_VIOLET_HAZE    0x2 /* emitter: textured ring + pink gouraud ring, the violet haze vortex round the party (byte-identical to fx_180 entry 0x2); runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ULTIMA_ROCK_DEBRIS    0x3 /* emitter: grey rock chunks (byte-identical to fx_180 entry 0x3) */
 #define FX_ULTIMA_GREY_TRAIL     0x4 /* emitter: wobbling 3D trail with a grey streak texture (byte-identical to fx_180 entry 0x4) */
 #define FX_ULTIMA_PINK_SPIKES    0x6 /* emitter: pink spike particles + spark sprites (byte-identical to fx_180 entry 0x14) */
@@ -21,7 +21,7 @@
 #define FX_ULTIMA_GREY_TRAIL_2   0xF /* emitter: wobbling screen trail with a grey streak texture (byte-identical to fx_180 entry 0xB) */
 #define FX_ULTIMA_BLAST_RINGS    0x10 /* emitter: white-pink, lilac and yellow-red gouraud rings, pink glows (byte-identical to fx_180 entry 0xC) */
 #define FX_ULTIMA_PINK_SPARKS    0x11 /* emitter: sparse pink spark sprites (byte-identical to fx_180 entry 0xE) */
-#define FX_ULTIMA_NOISE_RING_2   0x12 /* emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings (byte-identical to fx_180 entry 0xF) (look pending) */
+#define FX_ULTIMA_VIOLET_GLOW    0x12 /* emitter: textured ring + pink-lilac gouraud rings, the big soft violet glow sphere behind the white star burst (byte-identical to fx_180 entry 0xF); runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ULTIMA_RED_FLARE      0x13 /* emitter: red lens streak and white-red gouraud rings (byte-identical to fx_180 entry 0x10) */
 #define FX_ULTIMA_CRIMSON_STREAK 0x14 /* emitter: orbiting fan, a white-to-crimson light streak (byte-identical to fx_180 entry 0x11, same render) */
 #define FX_ULTIMA_PINK_TRAIL     0x15 /* emitter: pink screen trail (byte-identical to fx_180 entry 0x12) */
@@ -36,7 +36,7 @@
 #define FX_ULTIMA_PINK_SPIKES_2  0x24 /* emitter: pink spike particles + spark sprites (byte-identical to fx_180 entry 0x15) */
 #define FX_ULTIMA_WHITE_BEAM     0x25 /* emitter: spiralling white beam screen trail, pink sparks (byte-identical to fx_180 entry 0xD) */
 #define FX_ULTIMA_BACKDROP       0x26 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_180 entry 0x19) */
-#define FX_ULTIMA_NOISE_RING_3   0x27 /* emitter: ring with a texture not resolved (noise) + lilac gouraud ring (look pending) */
+#define FX_ULTIMA_VIOLET_GLOW_2  0x27 /* emitter: textured ring + lilac gouraud ring, started in the final blast; named by analogy with entry 0x12 (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
 typedef struct {
     s16 x, y, z;

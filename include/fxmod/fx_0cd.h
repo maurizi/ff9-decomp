@@ -13,9 +13,9 @@
 #define FX_AERA_GREEN_RING   0x4 /* emitter: green gouraud rings */
 #define FX_AERA_WIND_RING    0x5 /* emitter: orbiting white wind-ring particle */
 #define FX_AERA_GREEN_BURST  0x7 /* emitter: green gust puffs */
-#define FX_AERA_WIND_STREAKS 0x8 /* emitter: spiralling sprites + 3D trail; the render still reads garbled yellow texels (texture not resolved) (look pending) */
+#define FX_AERA_GREEN_WIND_BLADES 0x8 /* emitter: spiralling sprites + 3D trail, the translucent green wind blades sweeping round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_AERA_GUST_RINGS   0xA /* emitter: cyan-green gouraud rings */
-#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites; the render still reads garbled yellow texels (texture not resolved) (look pending) */
+#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites; the render still reads garbled yellow texels (texture not resolved); runtime (docs/runtime-findings.md effect-data pass 2): its run-time sprite is a tiny green glint; ablating it changes < 210 px (look pending) */
 #define FX_AERA_GREEN_TORNADO 0xD /* 'so' model: twisted green column with a smoke texture (tornado) */
 
 typedef struct {

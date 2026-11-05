@@ -45,7 +45,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATERGA_RINGS), (s32)&work->pos70);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATERGA_WHITE_FOAM), (s32)&work->pos70);
             break;
         case 8:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATERGA_WATER_SPLASH), (s32)&work->pos70);

@@ -1154,7 +1154,7 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_RINGS_2), (s32)&work->pos40);
             break;
         case 1:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SPARKS), (s32)&work->pos40);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_CYAN_GLINTS), (s32)&work->pos40);
             break;
         case 6:
             work->pos48.vx = work->pos40.vx;

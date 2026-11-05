@@ -52,10 +52,10 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 5; i++) {
             fx_079_strips[i].timer11C = -i;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&fx_079_strips[i], 0);
         }
-        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPHERE), 0x137,
+        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_ENERGY_SHELL), 0x137,
                                                          0xFFFF, 0, 0);
         work->models40[0].rot4.vx = 0x800;
         work->models40[0].rot4.vy = 0;
@@ -228,10 +228,10 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         tr->offsetY6C[j] += tr->speedYC4[j];
                     }
                     if (tr->timer11C < 4) {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_TRAIL), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, frame, 0x1000,
                                             tr->timer11C << 10, 1, strip, 0);
                     } else {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_TRAIL), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, frame, 0x1000,
                                             0x1000, 1, strip, 0);
                     }
                 } else if (tr->timer11C < 0) {

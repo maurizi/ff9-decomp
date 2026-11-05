@@ -290,12 +290,12 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0x590;
             rot.vz = 0x80;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_TEXTURED_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
             rot.vx = 0x600;
             rot.vy = 0x990;
             rot.vz = 0x80;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_TEXTURED_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
             env->otZ = 0;
             if (frame >= 0x32) {
                 ex->btlfx_clearEffModels();

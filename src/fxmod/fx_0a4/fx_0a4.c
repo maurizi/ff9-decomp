@@ -9,7 +9,7 @@ s32 fx_0a4_op80(s32 mode, Fx0a4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0a4_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUZZ_SPRITE), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUZZ_INSECT), (s32)&work->pos8);
     } else {
         frame = entry->frame;
         if (frame == 0x12) {

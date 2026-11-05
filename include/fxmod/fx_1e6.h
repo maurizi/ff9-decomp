@@ -10,7 +10,7 @@
 #define FX_CORRECT_STREAMER          0x1 /* emitter: 3D trail with a thin white streamer texture */
 #define FX_CORRECT_STREAMER_2        0x2 /* emitter: 3D trail with a thin white streamer texture */
 #define FX_CORRECT_STREAMER_3        0x3 /* emitter: 3D trail with a thin white streamer texture */
-#define FX_CORRECT_SPARKLES          0x4 /* emitter: tube of particles (renders black) + small dot sparkles (look pending) */
+#define FX_CORRECT_YELLOW_STARS      0x4 /* emitter: tube of particles + small dot sparkles, a yellow five-point star (plus blue glows) at run time: the yellow stars popping round the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_CORRECT_SPIRAL_STREAMER   0x5 /* emitter: spiralling 3D trail, white crescent texture */
 #define FX_CORRECT_SPIRAL_STREAMER_2 0x6 /* emitter: spiralling 3D trail, white crescent texture */
 #define FX_CORRECT_SPIRAL_STREAMER_3 0x7 /* emitter: spiralling 3D trail, white crescent texture */

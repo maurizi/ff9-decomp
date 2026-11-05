@@ -61,7 +61,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x10) {
                 work->state0 = 1;
                 entry->frame = -1;
-                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANSFORM_FAN_STREAK), (s32)&work->pos14);
+                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANSFORM_RED_SWEEP), (s32)&work->pos14);
                 if (work->emit8 != NULL) {
                     work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
                 }
@@ -103,7 +103,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANSFORM_SPRITE_SPIRAL), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANSFORM_RED_SPECKS), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
                 }

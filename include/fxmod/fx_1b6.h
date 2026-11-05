@@ -7,7 +7,7 @@
 
 /* fx_1b6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_DEATH_SPIRAL_TRAIL  0x2 /* emitter: spiralling 3D trail, strip mostly black with a faint white streak (look pending) */
+#define FX_DEATH_SPIRAL_TRAIL  0x2 /* emitter: spiralling 3D trail, strip mostly black with a faint white streak; runtime (docs/runtime-findings.md effect-data pass 2): started as the screen goes white; its run-time strip is a white streak (look pending) */
 #define FX_DEATH_YELLOW_RINGS  0x3 /* emitter: cream and yellow gouraud rings */
 #define FX_DEATH_RED_LIGHTNING 0x4 /* emitter: orbiting red lightning fan + yellow-to-brown gouraud rings */
 #define FX_DEATH_BUBBLE_RINGS  0x5 /* emitter: rings textured with white bubble spots + pale-yellow gouraud rings */

@@ -30,17 +30,19 @@ frame the C starts the entry would settle each:
 
 - Callback-only emitters (nothing drawable in the data): `FX_FLARE_CALLBACK_EMITTER`, `FX_WEB_CALLBACK_EMITTER`.
 - Still black: `FX_BIO_BUBBLE_TRAIL`, `FX_SLOW_BLUE_GLOWS`, `FX_DRAIN_PINK_SPECKS`, `FX_METEOR_GLOWING_EMBERS`,
-  `FX_METEOR_EMBERS`, `FX_METEOR_EMBERS_2`, `FX_ELECTROCUTE_BOLT_TRAIL(_2)` (sprites),
-  `FX_BUZZ_SPRITE`, `FX_SPORE_TRAIL`, `FX_WEB_STRAND_TRAIL`, `FX_LEAF_SWIRL_LEAF_TRAIL(_2,_3,_4)` (dark strip
-  with a leaf tip), `FX_LIGHTNING_TRAIL_2` (not rendered).
+  `FX_METEOR_EMBERS`, `FX_METEOR_EMBERS_2`, `FX_ELECTROCUTE_BLUE_BOLTS(_2)` (sprites),
+  `FX_BUZZ_INSECT`, `FX_SPORE_GREEN_GLOW`, `FX_WEB_STRANDS`, `FX_LEAF_SWIRL_YELLOW_LEAVES(_2,_3,_4)` (dark strip
+  with a leaf tip), `FX_LIGHTNING_TRAIL_2` (not rendered). (Names after effect-data runtime pass 2, which settled
+  the Electrocute, Buzz, Spore, Web strand and Leaf Swirl entries; `FX_WEB_CALLBACK_EMITTER` and
+  `FX_LIGHTNING_TRAIL_2` are still pending.)
 - Sparkles still drawn as flat squares (sprite texture not resolved): fx_090's `FX_CURAGA_SPARKLES`,
   `FX_CURAGA_SPARKLE_BURST`, `FX_CURAGA_SPARKLE_SHOWER`, `FX_CURA_SPARKLE_BURST` (fx_08e's are byte-identical to
   fx_001's sparkle emitters and render the same, so the consistency pass gave them fx_001's names and settled them).
-- Texture outside the file and the common / summon pages (magenta): `FX_DEMI_CAP`, `FX_DEMI_SHOCK_SPHERE`,
-  `FX_DEMI_SHOCK_TRAIL`, `FX_SLOW_CLOCK_FACE` (partly).
+- Texture outside the file and the common / summon pages (magenta): `FX_DEMI_CAP`, `FX_DEMI_SHOCK_ENERGY_SHELL`,
+  `FX_DEMI_SHOCK_SPARK_TRAIL`, `FX_SLOW_CLOCK_FACE` (partly). (The Demi Shock names are from effect-data runtime pass 2.)
 - Reads unrelated VRAM, probably filled at run time: `FX_FLARE_TEX_RING(_2)`, `FX_LV4_HOLY_TEXTURED_RING`,
   `FX_LV4_HOLY_TRAIL`, `FX_LV4_HOLY_LENS_FLARE_LINE`, `FX_LV4_HOLY_WHITE_GLOW` (byte-identical to fx_057's `FX_HOLY_WHITE_GLOW`),
-  `FX_FROST_ICE_GLINTS`, `FX_BLASTER_TRAIL(_2)`, `FX_CURA_CYAN_GLOW` (cyan stripes: light rays or junk).
+  `FX_FROST_ICE_GLINTS`, `FX_BLASTER_WHITE_HAZE` / `FX_BLASTER_TRAIL_2` (runtime pass 2 settled the first), `FX_CURA_CYAN_GLOW` (cyan stripes: light rays or junk).
 - Placeholder-page UVs (shape known, look not): `FX_SILENCE_VIOLET_RING`, `FX_METEOR_RED_ROCK`,
   `FX_CONFUSE_STAFF_WAVES`, `FX_CONFUSE_STAFF_SWIRL` (the strip page shows music staves, notes and smoke
   swirls: the real Confuse texture or a placeholder).
@@ -82,14 +84,14 @@ Names above are updated to the effect-data runtime pass (docs/runtime-findings.m
 | fx_079 | 0x1 | `FX_DEMI_SHOCK_WISP_BURST` | render | emitter: white gouraud rings + pink-violet smoke wisps |
 | fx_079 | 0x2 | `FX_DEMI_SHOCK_FLASH_RING` | render | emitter: white gouraud ring |
 | fx_079 | 0x6 | `FX_DEMI_SHOCK_BOWL_2` | render | model: second gouraud hemisphere bowl |
-| fx_079 | 0x9 | `FX_DEMI_SHOCK_TRAIL` | kind/usage (look pending) | trail: strip texture still outside the file and the common pages (magenta) |
+| fx_079 | 0x9 | `FX_DEMI_SHOCK_SPARK_TRAIL` | runtime (low, look pending) | trail: 3 px wide strip, the thin pink / orange spark lines from the caster to the sphere (the only trail-like element on screen) |
 | fx_079 | 0xA | `FX_DEMI_SHOCK_BOWL` | render | model: gouraud hemisphere bowl |
-| fx_079 | 0xB | `FX_DEMI_SHOCK_SPHERE` | kind/usage (look pending) | model: sphere, texture still outside the file and the common pages (magenta) |
+| fx_079 | 0xB | `FX_DEMI_SHOCK_ENERGY_SHELL` | runtime | model: sphere, the swirling blue then red-violet energy shell round the black sphere |
 | fx_079 | 0xC | `FX_DEMI_SHOCK_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_07a | 0x8 | `FX_DEMI_SHOCK_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_07a | 0x9 | `FX_DEMI_SHOCK_WISP_BURST` | render | emitter: white gouraud rings + blue and violet smoke wisps |
-| fx_07a | 0xB | `FX_DEMI_SHOCK_SPHERE` | kind/usage (look pending) | model: sphere, texture still outside the file and the common pages (magenta) (byte-identical to fx_079 entry 0xB) |
-| fx_07a | 0xC | `FX_DEMI_SHOCK_TRAIL` | kind/usage (look pending) | trail: strip texture still outside the file and the common pages (magenta) (byte-identical to fx_079 entry 0x9) |
+| fx_07a | 0xB | `FX_DEMI_SHOCK_ENERGY_SHELL` | runtime | model: sphere, the swirling blue then red-violet energy shell round the black sphere (byte-identical to fx_079 entry 0xB) |
+| fx_07a | 0xC | `FX_DEMI_SHOCK_SPARK_TRAIL` | runtime (low, look pending) | trail: 3 px wide strip, the thin pink / orange spark lines from the caster to the sphere (byte-identical to fx_079 entry 0x9) |
 | fx_07a | 0xD | `FX_DEMI_SHOCK_BOWL` | render | model: gouraud hemisphere bowl (byte-identical to fx_079 entry 0xa) |
 | fx_07a | 0xE | `FX_DEMI_SHOCK_BOWL_2` | render | model: second gouraud hemisphere bowl (byte-identical to fx_079 entry 0x6) |
 | fx_07b | 0x1 | `FX_PROTECT_BLUE_HELIX` | render | emitter: blue flat trail spiralling up + sprite |
@@ -297,27 +299,27 @@ Names above are updated to the effect-data runtime pass (docs/runtime-findings.m
 | fx_09f | 0x5 | `FX_PYRO_ORANGE_RING` | render | emitter: white-orange gouraud rings |
 | fx_09f | 0x7 | `FX_PYRO_FLAMES` | render | emitter: flames + smoke |
 | fx_09f | 0xC | `FX_PYRO_FLAMES_2` | render | emitter: spiralling flames + smoke |
-| fx_0a0 | 0x1 | `FX_WEB_CALLBACK_EMITTER` | kind/usage (look pending) | emitter: orbit, one callback element, nothing drawable in the data |
+| fx_0a0 | 0x1 | `FX_WEB_CALLBACK_EMITTER` | kind/usage (look pending) | emitter: orbit, one callback element, nothing drawable in the data; runtime: started, not ablated |
 | fx_0a0 | 0x2 | `FX_WEB_WHITE_PUFFS` | render | emitter: white puffs |
 | fx_0a0 | 0x6 | `FX_WEB_STRAND_LINE` | kind/usage | table: strand line data (fxm_drawTrailLine) |
-| fx_0a0 | 0x7 | `FX_WEB_STRAND_TRAIL` | kind/usage (look pending) | trail: dark strip, still nearly black |
+| fx_0a0 | 0x7 | `FX_WEB_STRANDS` | runtime (low, look pending) | trail: dark strip, the white web strands wrapping the target (not ablated) |
 | fx_0a1 | 0x1 | `FX_BLASTER_TEX_RING` | render | emitter: textured green-grey ring band |
 | fx_0a1 | 0x2 | `FX_BLASTER_PINK_HALO` | render | emitter: green ring band + pink halo rings |
 | fx_0a1 | 0x3 | `FX_BLASTER_PINK_HALO_2` | render | emitter: pink halo rings |
 | fx_0a1 | 0x4 | `FX_BLASTER_LIGHT_CONE` | render (fxdata d6121033) | emitter: fan drawn as a narrowing light cone fading pink to yellow |
 | fx_0a1 | 0x5 | `FX_BLASTER_PINK_STARBURST` | render | emitter: pink starburst + violet petals |
 | fx_0a1 | 0x6 | `FX_BLASTER_VIOLET_PETALS` | render | emitter: violet petal sprites |
-| fx_0a1 | 0x7 | `FX_BLASTER_TRAIL` | kind/usage (look pending) | emitter: flat orbiting trail; the grey strip reads a page of unrelated smoke shapes |
+| fx_0a1 | 0x7 | `FX_BLASTER_WHITE_HAZE` | runtime (medium) | emitter: flat orbiting trail, the white-violet haze band over the target's mouth |
 | fx_0a1 | 0x8 | `FX_BLASTER_GREY_RING` | render | emitter: lilac-grey gouraud rings |
 | fx_0a1 | 0xF | `FX_BLASTER_VIOLET_RING` | render | emitter: white-violet gouraud rings |
-| fx_0a1 | 0x10 | `FX_BLASTER_TRAIL_2` | kind/usage (look pending) | trail: small strip, mostly black with magenta texels |
+| fx_0a1 | 0x10 | `FX_BLASTER_TRAIL_2` | kind/usage (look pending) | trail: small strip, mostly black with magenta texels; runtime: drawn from the start (12 calls), its strip reads pink-violet stripes at run time; ablating it changes < 250 px |
 | fx_0a2 | 0x1 | `FX_CURA_SPARKLE_BURST` | runtime (confirmed) | emitter: green star twinkles |
 | fx_0a2 | 0x2 | `FX_CURA_STAR_TRAIL` | render | emitter: blue star-sparkle trail spiralling + sprites |
-| fx_0a3 | 0x1 | `FX_ELECTROCUTE_BOLT_TRAIL` | kind/usage (look pending) | emitter: small blue bolt trail + sprites that render black or as faint dots |
-| fx_0a3 | 0x2 | `FX_ELECTROCUTE_BOLT_TRAIL_2` | kind/usage (look pending) | emitter: small blue bolt trail + sprites that render black, spiralling |
-| fx_0a4 | 0x1 | `FX_BUZZ_SPRITE` | kind/usage (look pending) | emitter: one sprite, still renders black |
+| fx_0a3 | 0x1 | `FX_ELECTROCUTE_BLUE_BOLTS` | runtime | emitter: blue bolt trail with blue glow sprites, the blue lightning crackling round the target |
+| fx_0a3 | 0x2 | `FX_ELECTROCUTE_BLUE_BOLTS_2` | runtime (medium) | emitter: the same blue bolt trail + sprites, spiralling: part of the blue lightning round the target |
+| fx_0a4 | 0x1 | `FX_BUZZ_INSECT` | runtime (medium) | emitter: one sprite, a small grey winged insect silhouette (2 frames) at run time (not ablated) |
 | fx_0a4 | 0x6 | `FX_BUZZ_SOUND_WAVE` | render | emitter: ring textured with a yellow sine wave |
-| fx_0a5 | 0x7 | `FX_SPORE_TRAIL` | kind/usage (look pending) | emitter: orbiting trail + sprite, still render black |
+| fx_0a5 | 0x7 | `FX_SPORE_GREEN_GLOW` | runtime (low, look pending) | emitter: orbiting trail + sprite, a pale gold strip and a soft green glow at run time |
 | fx_0a5 | 0x8 | `FX_SPORE_SPORES` | render | emitter: brown spore sprites |
 | fx_0a6 | 0x1 | `FX_SWEEP_DUST_RINGS` | render | emitter: gold-brown gouraud rings + dust |
 | fx_0a6 | 0x2 | `FX_SWEEP_WIND_TRAIL` | render | emitter: grey wind streak trail |
@@ -339,7 +341,7 @@ Names above are updated to the effect-data runtime pass (docs/runtime-findings.m
 | fx_0a8 | 0x10 | `FX_REIS_WIND_GREEN_CRESCENT` | render | emitter: green crescents |
 | fx_0a9 | 0x1 | `FX_LIGHTNING_BOLT_PILLAR` | render | trail: violet lightning pillar strip |
 | fx_0a9 | 0x3 | `FX_LIGHTNING_ELECTRIC_ARCS` | render | emitter: blue / green electric arcs + embers |
-| fx_0a9 | 0x4 | `FX_LIGHTNING_TRAIL_2` | kind/usage (look pending) | trail: one frame, still not rendered by the tool |
+| fx_0a9 | 0x4 | `FX_LIGHTNING_TRAIL_2` | kind/usage (look pending) | trail: one frame, still not rendered by the tool; runtime: drawn from the start (99 calls); not rendered by the tool, not ablated |
 | fx_0a9 | 0x6 | `FX_LIGHTNING_BLUE_RING` | render | rings: white-blue-violet gouraud rings |
 | fx_0aa | 0x1 | `FX_SNOWSTORM_SNOW_BURST` | render | emitter: snow-textured ring + snowflake sprites |
 | fx_0aa | 0x2 | `FX_SNOWSTORM_SNOW_BURST_2` | render | emitter: snow-textured ring + snowflake sprites |
@@ -365,10 +367,10 @@ Names above are updated to the effect-data runtime pass (docs/runtime-findings.m
 | fx_0af | 0x5 | `FX_ZOMBIE_BREATH_BREATH_TRAILS` | render | emitter: white ghostly puff trails |
 | fx_0af | 0x7 | `FX_ZOMBIE_BREATH_GREEN_GLOW` | render | emitter: white puffs + pale green glow |
 | fx_0af | 0x8 | `FX_ZOMBIE_BREATH_BREATH_TRAILS_2` | render | emitter: white ghostly puff trails + one more trail |
-| fx_0b0 | 0x1 | `FX_LEAF_SWIRL_LEAF_TRAIL` | kind/usage (look pending) | emitter: helix trail, mostly dark strip with a leaf tip |
-| fx_0b0 | 0x2 | `FX_LEAF_SWIRL_LEAF_TRAIL_2` | kind/usage (look pending) | emitter: helix trail, mostly dark strip with a leaf tip |
+| fx_0b0 | 0x1 | `FX_LEAF_SWIRL_YELLOW_LEAVES` | runtime (medium) | emitter: helix trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated) |
+| fx_0b0 | 0x2 | `FX_LEAF_SWIRL_YELLOW_LEAVES_2` | runtime (medium) | emitter: helix trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated) |
 | fx_0b0 | 0x3 | `FX_LEAF_SWIRL_DUST_SPECKS` | render (fxdata d6121033) | emitter: brown dust puffs + small specks (btlfx_emitDots) |
 | fx_0b0 | 0x4 | `FX_LEAF_SWIRL_OLIVE_RING` | render | emitter: olive gouraud rings |
-| fx_0b0 | 0xA | `FX_LEAF_SWIRL_LEAF_TRAIL_3` | kind/usage (look pending) | emitter: spiral trail, mostly dark strip with a leaf tip |
-| fx_0b0 | 0xB | `FX_LEAF_SWIRL_LEAF_TRAIL_4` | kind/usage (look pending) | emitter: spiral trail, mostly dark strip with a leaf tip |
+| fx_0b0 | 0xA | `FX_LEAF_SWIRL_YELLOW_LEAVES_3` | runtime (medium) | emitter: spiral trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated) |
+| fx_0b0 | 0xB | `FX_LEAF_SWIRL_YELLOW_LEAVES_4` | runtime (medium) | emitter: spiral trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated) |
 | fx_0b0 | 0xC | `FX_LEAF_SWIRL_WIND_TRAIL` | render | emitter: grey wind trail |

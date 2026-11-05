@@ -15,7 +15,7 @@
 #define FX_ATOMOS_NAVY_RINGS   0x8 /* emitter: lilac / navy gouraud rings + small violet sprite */
 #define FX_ATOMOS_VORTEX_TORUS 0x9 /* 'so' model: torus, dark violet cloud texture */
 #define FX_ATOMOS_ORANGE_RING  0xA /* 'so' model: flat ring, orange cloud texture */
-#define FX_ATOMOS_SPHERE       0xC /* 'so' model: segmented sphere (texture page 0x117 renders plain white) (look pending) */
+#define FX_ATOMOS_RED_CLOUD_SPHERE 0xC /* 'so' model: segmented sphere; page 0x117 holds a dark red cloudy texture at run time: the dark red cloud sphere inside the violet gate; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ATOMOS_VORTEX_DOME  0xD /* 'so' model: dome, violet and cyan cloud texture */
 #define FX_ATOMOS_RING_FUNNEL  0xE /* 'so' model: gouraud ring funnel, white glow at the hole */
 #define FX_ATOMOS_BACKDROP     0xF /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */

@@ -39,7 +39,7 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->pos24, (s16 *)&work->pos34, t, (s16 *)&pos1);
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->pos3C, &pos0);
-                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAF_TRAIL), (s32)&work->pos3C);
+                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES), (s32)&work->pos3C);
                 if (work->emit4 != NULL) {
                     work->emit4->trails = (s32)fx_0b0_trails;
                     work->emit4->trailSlots = 0x96;
@@ -49,7 +49,7 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit4->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->pos44, &pos1);
-                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAF_TRAIL_2), (s32)&work->pos44);
+                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_2), (s32)&work->pos44);
                 if (work->emit8 != NULL) {
                     work->emit8->trails = (s32)fx_0b0_trails2;
                     work->emit8->trailSlots = 0x96;
@@ -58,14 +58,14 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit8 != NULL) {
                     work->emit8->otZ = 0x18;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAF_TRAIL_3), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_3), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails4;
                     emitter->trailSlots = 0x12;
                     emitter->trailStride = 0x14;
                     emitter->otZ = 0x18;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAF_TRAIL_4), (s32)&work->pos24);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_4), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails5;
                     emitter->trailSlots = 0x12;
@@ -95,14 +95,14 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->trailStride = 0x6C;
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAF_TRAIL_3), (s32)&work->pos2C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_3), (s32)&work->pos2C);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails6;
                     emitter->trailSlots = 0x12;
                     emitter->trailStride = 0x14;
                     emitter->otZ = 0x18;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_LEAF_TRAIL_4), (s32)&work->pos34);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_4), (s32)&work->pos34);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails7;
                     emitter->trailSlots = 0x12;

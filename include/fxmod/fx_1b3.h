@@ -10,7 +10,7 @@
 #define FX_DEATH1_DARK_NEBULA        0x2 /* emitter: dark violet nebula particles + pale-yellow light-streak fans */
 #define FX_DEATH1_LIGHTNING_TRAILS   0x4 /* emitter: orbiting 3D trails with violet lightning strips + dark violet nebula particles */
 #define FX_DEATH1_TEAL_RINGS         0x5 /* emitter: white / grey / violet and teal / orange gouraud rings */
-#define FX_DEATH1_FAN_EMITTER        0x6 /* emitter: two fan elements, thin pale and green streaks in the render (look pending) */
+#define FX_DEATH1_GOLD_RAYS          0x6 /* emitter: two fan elements, the pale-gold light rays fanning out (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently); runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_DEATH1_YELLOW_STREAKS     0x7 /* emitter: pale-yellow light-streak fans + white-violet and cream-crimson gouraud rings */
 #define FX_DEATH1_EXPLOSIONS         0x8 /* emitter: fire explosion quads, three elements, + speck sprites */
 #define FX_DEATH1_ROCKS              0x9 /* emitter: grey rock particles + magenta patterned particles */
@@ -25,8 +25,8 @@
 #define FX_DEATH1_ORANGE_RINGS       0x13 /* emitter: white-orange-plum gouraud rings, 40 frames */
 #define FX_DEATH1_TAN_STREAKS_2      0x14 /* emitter: two tan light-streak fans */
 #define FX_DEATH1_LIGHTNING          0x15 /* trail: violet lightning strip */
-#define FX_DEATH1_SCREEN_TRAIL       0x39 /* emitter: orbiting screen trails (strip texture not resolved) + speck sprites (look pending) */
-#define FX_DEATH1_SCREEN_TRAIL_2     0x3A /* emitter: orbiting screen trails (strip texture not resolved) + speck sprites (look pending) */
+#define FX_DEATH1_SCREEN_TRAIL       0x39 /* emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime (docs/runtime-findings.md effect-data pass 2): not fetched within 1000 frames of a forced cast (Zidane as the caster) (look pending) */
+#define FX_DEATH1_SCREEN_TRAIL_2     0x3A /* emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime (docs/runtime-findings.md effect-data pass 2): not fetched within 1000 frames of a forced cast (Zidane as the caster) (look pending) */
 #define FX_DEATH1_SCRATCH_BUF        0x93 /* summon data entry 0x13 (0x93 - 0x80): its address is the base of the module's trail and split-piece work buffers */
 
 typedef struct {

@@ -65,7 +65,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1a6_motionTo[work->index48].vx = work->pos18.vx;
         fx_1a6_motionTo[work->index48].vy = work->pos18.vy;
         fx_1a6_motionTo[work->index48].vz = work->pos18.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_PARTICLE), (s32)&work->pos28);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_SPRAY), (s32)&work->pos28);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a6_emitFileIds[work->index48]),
                                        (s32)&fx_1a6_emitPos0[work->index48]);
         if (work->emit0 != NULL) {

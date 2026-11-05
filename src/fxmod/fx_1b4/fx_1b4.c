@@ -137,7 +137,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_PINK_SPARKS), (s32)&work->pos10);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_FAN_EMITTER), (s32)&work->pos10);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_RED_RAYS), (s32)&work->pos10);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->otZ = 0x100;
             }

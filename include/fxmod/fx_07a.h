@@ -11,8 +11,8 @@
 #define FX_DEMI_SHOCK_FLASH_RING 0x6 /* emitter: white gouraud ring (same call site as fx_079 entry 0x2) */
 #define FX_DEMI_SHOCK_BACKDROP   0x8 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DEMI_SHOCK_WISP_BURST 0x9 /* emitter: white gouraud rings + blue and violet smoke wisps */
-#define FX_DEMI_SHOCK_SPHERE     0xB /* model: sphere, texture still outside the file and the common pages (magenta) (byte-identical to fx_079 entry 0xB) (look pending) */
-#define FX_DEMI_SHOCK_TRAIL      0xC /* trail: strip texture still outside the file and the common pages (magenta) (byte-identical to fx_079 entry 0x9) (look pending) */
+#define FX_DEMI_SHOCK_ENERGY_SHELL 0xB /* model: sphere, the swirling blue then red-violet energy shell round the black sphere (byte-identical to fx_079 entry 0xB); runtime (docs/runtime-findings.md effect-data pass 2) */
+#define FX_DEMI_SHOCK_SPARK_TRAIL 0xC /* trail: 3 px wide strip, the thin pink / orange spark lines from the caster to the sphere (byte-identical to fx_079 entry 0x9); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_DEMI_SHOCK_BOWL       0xD /* model: gouraud hemisphere bowl (byte-identical to fx_079 entry 0xa) */
 #define FX_DEMI_SHOCK_BOWL_2     0xE /* model: second gouraud hemisphere bowl (byte-identical to fx_079 entry 0x6) */
 

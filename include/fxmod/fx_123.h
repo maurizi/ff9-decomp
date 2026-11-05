@@ -14,7 +14,7 @@
 #define FX_RAINING_SWORDS_CYAN_FLAMES_2 0x9 /* emitter: cyan spirit flame burst + speck sprites */
 #define FX_RAINING_SWORDS_FLAME_SPIRAL  0xA /* emitter: cyan spirit flames spiralling + rings */
 #define FX_RAINING_SWORDS_CYAN_FLAMES_3 0xB /* emitter: cyan spirit flames + speck sprites */
-#define FX_RAINING_SWORDS_DARK_BURST    0xC /* emitter: rings and sprites that still render black, + cyan dot specks (look pending) */
+#define FX_RAINING_SWORDS_CYAN_SPECKS   0xC /* emitter: rings and sprites, tiny cyan specks at run time, + cyan dot specks; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_RAINING_SWORDS_CYAN_RINGS    0xD /* emitter: cyan to white gouraud rings, 16 frames */
 #define FX_RAINING_SWORDS_TEAL_RINGS    0xE /* emitter: teal gouraud rings + a fan element */
 #define FX_RAINING_SWORDS_CYAN_RINGS_2  0xF /* emitter: cyan and teal gouraud rings, 8 frames */

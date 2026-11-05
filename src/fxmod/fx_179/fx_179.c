@@ -312,7 +312,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_SPRITE_BURST), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEDEO_GREEN_SPECKS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }

@@ -46,46 +46,46 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 |---|---|---|---|
 | fx_188 | 0x3 | `FX_LV3_DEF_LESS_PARTICLE` | particles: one frame, renders black (drawn per pool item); runtime: still black with the run-time page |
 | fx_188 | 0x14 | `FX_LV3_DEF_LESS_RING` | rings: one textured ring (texture not resolved); runtime: noise with the run-time page |
-| fx_18a | 0xA | `FX_TRANSFORM_FAN_STREAK` | emitter: fan elements, a faint thin white-red streak in the render |
-| fx_18a | 0xC | `FX_TRANSFORM_SPRITE_SPIRAL` | emitter: spiral of sprites + sub-sprites, renders black |
-| fx_18c | 0x1 | `FX_LIGHT_PARTICLES` | emitter: one particle element, renders as a thin black strip |
+| fx_18a | 0xA | `FX_TRANSFORM_RED_SWEEP` | emitter: fan elements, the red light streaks sweeping in from the left (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) (runtime (medium)) |
+| fx_18a | 0xC | `FX_TRANSFORM_RED_SPECKS` | emitter: spiral of sprites + sub-sprites, small dark-red glowing specks at run time (ablation changes part of the white-out) (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) (runtime (low, look pending)) |
+| fx_18c | 0x1 | `FX_LIGHT_VIOLET_STREAKS` | emitter: one particle element, a thin violet streak sprite at run time: the violet light streaks under the target (runtime (medium)) |
 | fx_195 | 0xD | `FX_BAHAMUT_ORANGE_STREAKS` | emitter: two fan elements, a thin tan streak in the render |
 | fx_19f | 0x5 | `FX_RAMUH_STAFF` | 'so' model (byte-identical to fx_0ba entry 0x4) |
-| fx_19f | 0x6 | `FX_RAMUH_LIGHTNING_RIBBON` | trail: ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0x5) |
-| fx_19f | 0xF | `FX_RAMUH_LIGHTNING_RIBBON_2` | trail: second ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0xD) |
-| fx_19f | 0x16 | `FX_RAMUH_SPARK_BURST` | emitter: white gouraud rings + sprites (texture garbled in the render; byte-identical to fx_0ba entry 0x14) |
-| fx_19f | 0x18 | `FX_RAMUH_LIGHTNING_BOLT` | trail: 8-frame trail (texture garbled in the render; byte-identical to fx_0ba entry 0x16) |
+| fx_19f | 0x6 | `FX_RAMUH_LIGHTNING_RIBBON` | trail: ribbon drawn between key points, crackling blue-white plasma strip at run time: the blue-white electric ribbons arcing across (byte-identical to fx_0ba entry 0x5) (runtime) |
+| fx_19f | 0xF | `FX_RAMUH_LIGHTNING_RIBBON_2` | trail: second ribbon drawn between key points, the same blue-white plasma strip at run time (byte-identical to fx_0ba entry 0xD) (runtime (medium)) |
+| fx_19f | 0x16 | `FX_RAMUH_BOLT_SPARK_BURST` | emitter: white gouraud rings + small blue lightning-bolt glyph sprites in a glow, the cyan screen flash and bolt sparks round the strike (byte-identical to fx_0ba entry 0x14) (runtime (medium)) |
+| fx_19f | 0x18 | `FX_RAMUH_LIGHTNING_BOLT` | trail: 8-frame trail, a blue forked lightning strip at run time (byte-identical to fx_0ba entry 0x16) (runtime (medium)) |
 | fx_19f | 0x1A | `FX_RAMUH_THIN_ROD` | 'so' model (byte-identical to fx_0ba entry 0x18) |
 | fx_19f | 0x20 | `FX_RAMUH_ORANGE_LIGHTNING` | trail: 8-frame offset trail (texture garbled in the render, orange; byte-identical to fx_0ba entry 0x1E) |
 | fx_19f | 0x21 | `FX_RAMUH_ELECTRIC_BOWL` | 'so' model (byte-identical to fx_0ba entry 0x1F) |
-| fx_19f | 0x22 | `FX_RAMUH_DOME_COLUMN` | 'so' model: dome-capped column (its texture pages hold a 'dummy' placeholder) |
+| fx_19f | 0x22 | `FX_RAMUH_BLUE_AURA_COLUMN` | 'so' model: dome-capped column; its page holds a blue-white marbled texture at run time (no 'dummy' placeholder): the huge glassy blue energy shroud round Ramuh's staff (runtime) |
 | fx_19f | 0x27 | `FX_RAMUH_GREEN_DOME` | 'so' model (byte-identical to fx_0ba entry 0x26) |
-| fx_19f | 0x2A | `FX_RAMUH_SPARK_PARTICLE` | emitter: one particle (texture garbled in the render; byte-identical to fx_0ba entry 0x2C); runtime: fx_0ba's same entry was not fetched in a full Ramuh (a branch that cast did not take) |
-| fx_1a2 | 0x6 | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | model: 20-poly spiked shape (Hi_RegisterTexListModel, texture not drawn) |
-| fx_1a2 | 0x8 | `FX_MOONLIGHT_SLASH_SPRITES` | emitter: three sprite elements, 24 frames, render black |
-| fx_1a2 | 0x17 | `FX_MOONLIGHT_SLASH_SPRITES_2` | emitter: three sprite elements, 24 frames, render black |
-| fx_1a6 | 0x3 | `FX_WATER_GUN_PARTICLE` | emitter: one particle element, renders black |
-| fx_1a8 | 0x5 | `FX_ODIN_FAN_STREAK` | emitter: two fan elements, a thin tan streak in the render |
-| fx_1a8 | 0xC | `FX_ODIN_SPECK_SPIRAL` | emitter: spiral of two speck-sprite elements, render nearly black |
-| fx_1a8 | 0x12 | `FX_ODIN_SPECKS` | emitter: speck sprites, render nearly black |
-| fx_1a8 | 0x17 | `FX_ODIN_CALLBACK_EMITTER` | emitter: two callback elements (drawn by the module) |
-| fx_1ab | 0x4 | `FX_WATERGA_RINGS` | emitter: cone of textured rings (texture not resolved) |
-| fx_1ad | 0x2 | `FX_6_LEGS_POD` | 'so' model: rounded pod with an opening (texture page 0x117 renders plain white) |
-| fx_1b2 | 0x2 | `FX_TIDAL_WAVE_CURL` | model: curved sheet like a breaking wave (texture page 0x117 renders plain white) |
-| fx_1b2 | 0xC | `FX_TIDAL_WAVE_DISC` | model: flat soft-edged disc (texture page 0x119 renders plain white) |
-| fx_1b3 | 0x6 | `FX_DEATH1_FAN_EMITTER` | emitter: two fan elements, thin pale and green streaks in the render |
-| fx_1b3 | 0x39 | `FX_DEATH1_SCREEN_TRAIL` | emitter: orbiting screen trails (strip texture not resolved) + speck sprites |
-| fx_1b3 | 0x3A | `FX_DEATH1_SCREEN_TRAIL_2` | emitter: orbiting screen trails (strip texture not resolved) + speck sprites |
-| fx_1b4 | 0xB | `FX_FLARE_STAR_FAN_EMITTER` | emitter: two fan elements, nearly invisible in the render |
-| fx_1b6 | 0x2 | `FX_DEATH_SPIRAL_TRAIL` | emitter: spiralling 3D trail, strip mostly black with a faint white streak |
-| fx_1b8 | 0x1 | `FX_DEATH_DARK_QUADS` | emitter: anim quads + sprites, render black (byte-identical to fx_1b9 entry 0x2) |
-| fx_1b9 | 0x2 | `FX_APPEARANCE_DARK_QUADS` | emitter: anim quads + sprites, render black (byte-identical to fx_1b8 entry 0x1) |
-| fx_1bd | 0xD | `FX_IFRIT_WHITE_HAZE` | model: grid with grey-white wavy streaks, the white haze under Ifrit's fist (fx_114's entry, played there) (byte-identical to fx_114 entry 0x2A) (runtime (medium)) |
+| fx_19f | 0x2A | `FX_RAMUH_BOLT_SPARKS` | emitter: one particle, a blue lightning-bolt glyph sprite at run time: the small bolt sparks around the pillar (byte-identical to fx_0ba entry 0x2C) (runtime (medium)) |
+| fx_1a2 | 0x6 | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | model: 20-poly spiked shape (Hi_RegisterTexListModel, texture not drawn); runtime: untextured spiky model, fetched early; nothing visible in a forced cast with Zidane as the caster (a real enemy cast may differ) |
+| fx_1a2 | 0x8 | `FX_MOONLIGHT_SLASH_BLUE_GLOWS` | emitter: three sprite elements, 24 frames, soft blue glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) (runtime (low, look pending)) |
+| fx_1a2 | 0x17 | `FX_MOONLIGHT_SLASH_COLOR_GLOWS` | emitter: three sprite elements, 24 frames, blue, violet and green glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) (runtime (low, look pending)) |
+| fx_1a6 | 0x3 | `FX_WATER_GUN_SPRAY` | emitter: one particle element, the white water splash spray over the target (runtime) |
+| fx_1a8 | 0x5 | `FX_ODIN_GOLD_RAYS` | emitter: two fan elements, a thin pale-gold streak at run time, matching the gold rays of the slash explosion (runtime (low, look pending)) |
+| fx_1a8 | 0xC | `FX_ODIN_BLACK_DEBRIS` | emitter: spiral of two speck-sprite elements, dark grey specks at run time: the black debris flying out of the explosion (runtime) |
+| fx_1a8 | 0x12 | `FX_ODIN_RED_SPARKS` | emitter: speck sprites, tiny red sparks at run time (not separable on screen) (runtime (low, look pending)) |
+| fx_1a8 | 0x17 | `FX_ODIN_CALLBACK_EMITTER` | emitter: two callback elements (drawn by the module); runtime: started with the slash explosion; ablating it only shifts the random pink smoke puffs |
+| fx_1ab | 0x4 | `FX_WATERGA_WHITE_FOAM` | emitter: cone of textured rings, the white foam inside the blue water sphere (runtime (medium)) |
+| fx_1ad | 0x2 | `FX_6_LEGS_SLIME_SHELL` | 'so' model: rounded pod with an opening; page 0x117 holds a green slimy texture at run time: the green slime shell wrapping the target (runtime (medium)) |
+| fx_1b2 | 0x2 | `FX_TIDAL_WAVE_WATER_CURL` | model: curved sheet like a breaking wave; page 0x117 holds blue-white water at run time: the white curling wave crest (runtime) |
+| fx_1b2 | 0xC | `FX_TIDAL_WAVE_SURGE` | model: flat soft-edged disc, the big grey water surge sweeping over the party (runtime (medium)) |
+| fx_1b3 | 0x6 | `FX_DEATH1_GOLD_RAYS` | emitter: two fan elements, the pale-gold light rays fanning out (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) (runtime) |
+| fx_1b3 | 0x39 | `FX_DEATH1_SCREEN_TRAIL` | emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime: not fetched within 1000 frames of a forced cast (Zidane as the caster) |
+| fx_1b3 | 0x3A | `FX_DEATH1_SCREEN_TRAIL_2` | emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime: not fetched within 1000 frames of a forced cast (Zidane as the caster) |
+| fx_1b4 | 0xB | `FX_FLARE_STAR_RED_RAYS` | emitter: two fan elements, the red light rays radiating from the target over the violet field (runtime) |
+| fx_1b6 | 0x2 | `FX_DEATH_SPIRAL_TRAIL` | emitter: spiralling 3D trail, strip mostly black with a faint white streak; runtime: started as the screen goes white; its run-time strip is a white streak |
+| fx_1b8 | 0x1 | `FX_DEATH_TEAL_GLOWS` | emitter: anim quads + sprites, soft teal-white glows drifting on screen (byte-identical to fx_1b9 entry 0x2) (runtime (medium)) |
+| fx_1b9 | 0x2 | `FX_APPEARANCE_TEAL_GLOWS` | emitter: anim quads + sprites, soft teal-white glows (byte-identical to fx_1b8 entry 0x1) (runtime (medium)) |
+| fx_1bd | 0xD | `FX_IFRIT_WHITE_HAZE` | model: grid with grey-white wavy streaks, the grey streaky haze over the floor under the target, turning orange as the lava cracks appear (byte-identical to fx_114 entry 0x2A) (runtime) |
 | fx_1bd | 0x12 | `FX_IFRIT_RED_GLOW` | emitter: one orbiting fan element (not rendered; byte-identical to fx_114 entry 0x26) |
-| fx_1bd | 0x13 | `FX_IFRIT_HEAT_DOME` | model: hemisphere bowl, the translucent wavy dome (fx_114's entry, ablated together with its spoked ring there) (byte-identical to fx_114 entry 0x1E) (runtime (low, look pending)) |
-| fx_1bd | 0x2C | `FX_IFRIT_SPOKED_RING` | model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime: fx_114's same entry is untextured and was only ablated together with the bowl |
+| fx_1bd | 0x13 | `FX_IFRIT_HEAT_DOME` | model: hemisphere bowl, the bright yellow-white translucent glare dome over the fire dome (byte-identical to fx_114 entry 0x1E) (runtime) |
+| fx_1bd | 0x2C | `FX_IFRIT_SPOKED_RING` | model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime: ablating it alone changes only a few hundred scattered px |
 | fx_1be | 0x2 | `FX_ATOMOS_ORANGE_STREAKS` | emitter: fan elements (not rendered; byte-identical to fx_0b8 entry 0x7) |
-| fx_1be | 0xC | `FX_ATOMOS_SPHERE` | 'so' model: segmented sphere (texture page 0x117 renders plain white) |
+| fx_1be | 0xC | `FX_ATOMOS_RED_CLOUD_SPHERE` | 'so' model: segmented sphere; page 0x117 holds a dark red cloudy texture at run time: the dark red cloud sphere inside the violet gate (runtime) |
 
 ## Table
 
@@ -106,13 +106,13 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_18a | 0x4 | `FX_TRANSFORM_VIOLET_RINGS_2` | render | rings: white-violet gouraud rings |
 | fx_18a | 0x6 | `FX_TRANSFORM_VIOLET_TRAIL` | render | trail: violet speckled strip, 12 frames (per pool item) |
 | fx_18a | 0x9 | `FX_TRANSFORM_BLUE_RING` | render | rings: navy-blue gouraud ring |
-| fx_18a | 0xA | `FX_TRANSFORM_FAN_STREAK` | kind/usage (look pending) | emitter: fan elements, a faint thin white-red streak in the render |
-| fx_18a | 0xC | `FX_TRANSFORM_SPRITE_SPIRAL` | kind/usage (look pending) | emitter: spiral of sprites + sub-sprites, renders black |
+| fx_18a | 0xA | `FX_TRANSFORM_RED_SWEEP` | runtime (medium) | emitter: fan elements, the red light streaks sweeping in from the left (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) |
+| fx_18a | 0xC | `FX_TRANSFORM_RED_SPECKS` | runtime (low, look pending) | emitter: spiral of sprites + sub-sprites, small dark-red glowing specks at run time (ablation changes part of the white-out) (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) |
 | fx_18a | 0xE | `FX_TRANSFORM_PINK_STREAKS` | render | emitter: orbiting fans, pink-white light streaks |
 | fx_18a | 0xF | `FX_TRANSFORM_RED_STREAKS` | render | emitter: orbiting fans, red light streaks with pink orbs |
 | fx_18a | 0x12 | `FX_TRANSFORM_VIOLET_RING` | render | rings: violet gouraud ring |
 | fx_18b | 0x1 | `FX_SILENT_VOICE_SWIRLS` | render | emitter: violet and blue spiral swirl particles + white-blue-violet gouraud rings |
-| fx_18c | 0x1 | `FX_LIGHT_PARTICLES` | kind/usage (look pending) | emitter: one particle element, renders as a thin black strip |
+| fx_18c | 0x1 | `FX_LIGHT_VIOLET_STREAKS` | runtime (medium) | emitter: one particle element, a thin violet streak sprite at run time: the violet light streaks under the target |
 | fx_18c | 0x2 | `FX_LIGHT_GREEN_HALO` | render | emitter: yellow-green crescent halo particles + violet-white gouraud rings |
 | fx_18d | 0x1 | `FX_CLIMHAZZARD_FLAME_RINGS` | render | emitter: rings textured with a yellow-red flame wall + white / pale-yellow gouraud rings, 16 frames |
 | fx_18e | 0x1 | `FX_CHARGE_BLUE_GLOW` | render | emitter: orbiting blue / cyan glow fans + white star glints + white rings |
@@ -186,13 +186,13 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_19c | 0x2 | `FX_THUNDER_SLASH_LIGHTNING` | render | sprite: blue / red lightning streak, 12 frames (drawn directly; byte-identical to fx_0bf entry 0x2) |
 | fx_19e | 0x1 | `FX_STOCK_BREAK_SLASH_ARC` | render | emitter: blue slash arc, fans (byte-identical to fx_0cf entry 0x1) |
 | fx_19f | 0x5 | `FX_RAMUH_STAFF` | render (byte-identical twin, consistency pass) | 'so' model: gold gouraud staff with a hooked head (Ramuh's staff) (byte-identical to fx_0ba entry 0x4) |
-| fx_19f | 0x6 | `FX_RAMUH_LIGHTNING_RIBBON` | kind/usage (look pending) | trail: ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0x5) |
+| fx_19f | 0x6 | `FX_RAMUH_LIGHTNING_RIBBON` | runtime | trail: ribbon drawn between key points, crackling blue-white plasma strip at run time: the blue-white electric ribbons arcing across (byte-identical to fx_0ba entry 0x5) |
 | fx_19f | 0x8 | `FX_RAMUH_LENS_FLASH_KEYS` | usage | table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH; byte-identical to fx_0ba entry 0x7) |
 | fx_19f | 0xC | `FX_RAMUH_BLUE_GLOW_RINGS` | render | emitter: blue glow quad and fading light-blue gouraud rings (byte-identical to fx_0ba entry 0xA) |
-| fx_19f | 0xF | `FX_RAMUH_LIGHTNING_RIBBON_2` | kind/usage (look pending) | trail: second ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0xD) |
-| fx_19f | 0x16 | `FX_RAMUH_SPARK_BURST` | kind/usage (look pending) | emitter: white gouraud rings + sprites (texture garbled in the render; byte-identical to fx_0ba entry 0x14) |
+| fx_19f | 0xF | `FX_RAMUH_LIGHTNING_RIBBON_2` | runtime (medium) | trail: second ribbon drawn between key points, the same blue-white plasma strip at run time (byte-identical to fx_0ba entry 0xD) |
+| fx_19f | 0x16 | `FX_RAMUH_BOLT_SPARK_BURST` | runtime (medium) | emitter: white gouraud rings + small blue lightning-bolt glyph sprites in a glow, the cyan screen flash and bolt sparks round the strike (byte-identical to fx_0ba entry 0x14) |
 | fx_19f | 0x17 | `FX_RAMUH_LENS_FLASH` | render | particles: white-violet lens flash (byte-identical to fx_0ba entry 0x15) |
-| fx_19f | 0x18 | `FX_RAMUH_LIGHTNING_BOLT` | kind/usage (look pending) | trail: 8-frame trail (texture garbled in the render; byte-identical to fx_0ba entry 0x16) |
+| fx_19f | 0x18 | `FX_RAMUH_LIGHTNING_BOLT` | runtime (medium) | trail: 8-frame trail, a blue forked lightning strip at run time (byte-identical to fx_0ba entry 0x16) |
 | fx_19f | 0x1A | `FX_RAMUH_THIN_ROD` | render (byte-identical twin, consistency pass) | 'so' model: thin dark rod with a red tip (byte-identical to fx_0ba entry 0x18) |
 | fx_19f | 0x1B | `FX_RAMUH_MOTION_KEYS_2` | usage | table: per-frame position / rotation keys (op81, second phase; byte-identical to fx_0ba entry 0x19) |
 | fx_19f | 0x1C | `FX_RAMUH_MOTION_KEYS` | usage | table: per-frame position / rotation keys (op81, first phase; byte-identical to fx_0ba entry 0x1A) |
@@ -200,10 +200,10 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_19f | 0x1F | `FX_RAMUH_CYAN_RING` | render | rings: white / cyan / blue gouraud rings (byte-identical to fx_0ba entry 0x1D) |
 | fx_19f | 0x20 | `FX_RAMUH_ORANGE_LIGHTNING` | render (byte-identical twin, consistency pass) | trail: 8-frame orange lightning bolt (offset trail) (byte-identical to fx_0ba entry 0x1E, same render) |
 | fx_19f | 0x21 | `FX_RAMUH_ELECTRIC_BOWL` | render (byte-identical twin, consistency pass) | 'so' model: shallow bowl with blue electric flames around a white glow (byte-identical to fx_0ba entry 0x1F) |
-| fx_19f | 0x22 | `FX_RAMUH_DOME_COLUMN` | kind/usage (look pending) | 'so' model: dome-capped column (its texture pages hold a 'dummy' placeholder) |
+| fx_19f | 0x22 | `FX_RAMUH_BLUE_AURA_COLUMN` | runtime | 'so' model: dome-capped column; its page holds a blue-white marbled texture at run time (no 'dummy' placeholder): the huge glassy blue energy shroud round Ramuh's staff |
 | fx_19f | 0x23 | `FX_RAMUH_GREY_RING` | render | rings: grey gouraud ring |
 | fx_19f | 0x27 | `FX_RAMUH_GREEN_DOME` | render (byte-identical twin, consistency pass) | 'so' model: teal-green gouraud hemisphere (byte-identical to fx_0ba entry 0x26) |
-| fx_19f | 0x2A | `FX_RAMUH_SPARK_PARTICLE` | kind/usage (look pending) | emitter: one particle (texture garbled in the render; byte-identical to fx_0ba entry 0x2C); runtime: fx_0ba's same entry was not fetched in a full Ramuh (a branch that cast did not take) |
+| fx_19f | 0x2A | `FX_RAMUH_BOLT_SPARKS` | runtime (medium) | emitter: one particle, a blue lightning-bolt glyph sprite at run time: the small bolt sparks around the pillar (byte-identical to fx_0ba entry 0x2C) |
 | fx_19f | 0x2B | `FX_RAMUH_CAMERA_KEYS` | usage | table: per-frame camera point 0 (op82; byte-identical to fx_0ba entry 0x2E) |
 | fx_19f | 0x2C | `FX_RAMUH_CAMERA_KEYS_2` | usage | table: per-frame camera point 1 (op82; byte-identical to fx_0ba entry 0x2F) |
 | fx_1a0 | 0x1 | `FX_FLAME_SLASH_RED_RINGS` | render | emitter: red gouraud rings, 16 frames + dark red speck sprites |
@@ -215,9 +215,9 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1a2 | 0x2 | `FX_MOONLIGHT_SLASH_LIGHT_BAND_2` | render | model: cylinder band, blue light-streak texture |
 | fx_1a2 | 0x3 | `FX_MOONLIGHT_SLASH_LIGHT_RING` | render | model: flat ring of blue light streaks |
 | fx_1a2 | 0x5 | `FX_MOONLIGHT_SLASH_MOON` | render | emitter: blue full-moon particles, 30 frames + blue gouraud rings |
-| fx_1a2 | 0x6 | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | kind/usage (look pending) | model: 20-poly spiked shape (Hi_RegisterTexListModel, texture not drawn) |
+| fx_1a2 | 0x6 | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | kind/usage (look pending) | model: 20-poly spiked shape (Hi_RegisterTexListModel, texture not drawn); runtime: untextured spiky model, fetched early; nothing visible in a forced cast with Zidane as the caster (a real enemy cast may differ) |
 | fx_1a2 | 0x7 | `FX_MOONLIGHT_SLASH_CYAN_RINGS` | render | emitter: thin cyan streak fan + white-cyan gouraud rings |
-| fx_1a2 | 0x8 | `FX_MOONLIGHT_SLASH_SPRITES` | kind/usage (look pending) | emitter: three sprite elements, 24 frames, render black |
+| fx_1a2 | 0x8 | `FX_MOONLIGHT_SLASH_BLUE_GLOWS` | runtime (low, look pending) | emitter: three sprite elements, 24 frames, soft blue glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) |
 | fx_1a2 | 0x9 | `FX_MOONLIGHT_SLASH_CRESCENT_TRAIL` | render | emitter: spiralling 3D trail, blue crescent strip |
 | fx_1a2 | 0xA | `FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2` | render | emitter: 3D trail, blue crescent strip |
 | fx_1a2 | 0xB | `FX_MOONLIGHT_SLASH_BLADE` | render | model: curved blade, blue-white feathered streak texture |
@@ -231,7 +231,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1a2 | 0x13 | `FX_MOONLIGHT_SLASH_WHITE_RINGS_2` | render | rings: white gouraud rings, 10 frames |
 | fx_1a2 | 0x14 | `FX_MOONLIGHT_SLASH_CYAN_SPARKLES` | render | emitter: cyan sparkle dots, 12 frames |
 | fx_1a2 | 0x15 | `FX_MOONLIGHT_SLASH_CYAN_SPARKLES_2` | render | emitter: cyan sparkle dots + faint green-grey particles |
-| fx_1a2 | 0x17 | `FX_MOONLIGHT_SLASH_SPRITES_2` | kind/usage (look pending) | emitter: three sprite elements, 24 frames, render black |
+| fx_1a2 | 0x17 | `FX_MOONLIGHT_SLASH_COLOR_GLOWS` | runtime (low, look pending) | emitter: three sprite elements, 24 frames, blue, violet and green glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) |
 | fx_1a3 | 0x1 | `FX_TROUBLE_MUCUS_SLIME_BLOBS` | render | emitter: yellow slime blobs (byte-identical to fx_106 entry 0x1) |
 | fx_1a3 | 0x2 | `FX_TROUBLE_MUCUS_BUBBLE_TRAIL` | render | emitter: violet bubble screen trail + yellow speck dots (byte-identical to fx_106 entry 0x2) |
 | fx_1a3 | 0x3 | `FX_TROUBLE_MUCUS_BUBBLE_TRAIL_2` | render | emitter: violet bubble screen trail + yellow speck dots (byte-identical to fx_106 entry 0x3) |
@@ -250,7 +250,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1a5 | 0x1 | `FX_REVIVE_LIGHT_SWIRL` | render | emitter: blue-white light swirl + flare (byte-identical to fx_089 entry 0x4) |
 | fx_1a5 | 0x2 | `FX_REVIVE_FEATHERS` | render | emitter: white wing / feather sprites + flare (byte-identical to fx_089 entry 0x5) |
 | fx_1a6 | 0x1 | `FX_WATER_GUN_BUBBLES` | render | emitter: white bubble-ring anim quads, 22 frames |
-| fx_1a6 | 0x3 | `FX_WATER_GUN_PARTICLE` | kind/usage (look pending) | emitter: one particle element, renders black |
+| fx_1a6 | 0x3 | `FX_WATER_GUN_SPRAY` | runtime | emitter: one particle element, the white water splash spray over the target |
 | fx_1a6 | 0x5 | `FX_WATER_GUN_SPLASH` | render | emitter: blue water-splash crescents + white splash |
 | fx_1a6 | 0x6 | `FX_WATER_GUN_WATER_JET` | render | emitter: screen trail with a water strip + white splash particles (sprites render black) |
 | fx_1a7 | 0x1 | `FX_MIND_BLAST_WAVE_TRAIL` | render | emitter: orbiting screen trail, blue wavy line / gold pattern strip (sprites render black) |
@@ -261,29 +261,29 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1a7 | 0x18 | `FX_MIND_BLAST_VIOLET_ORB` | render | emitter: violet glowing orb with a bright rim (second particle renders black) |
 | fx_1a8 | 0x1 | `FX_ODIN_BLUE_RINGS` | render | emitter: white-cyan-violet and white-cyan-blue gouraud rings |
 | fx_1a8 | 0x2 | `FX_ODIN_FLAME_TRAIL` | render | trail: orange flame strip |
-| fx_1a8 | 0x5 | `FX_ODIN_FAN_STREAK` | kind/usage (look pending) | emitter: two fan elements, a thin tan streak in the render |
+| fx_1a8 | 0x5 | `FX_ODIN_GOLD_RAYS` | runtime (low, look pending) | emitter: two fan elements, a thin pale-gold streak at run time, matching the gold rays of the slash explosion |
 | fx_1a8 | 0x6 | `FX_ODIN_SKY_CRYSTAL` | render | 'so' model: polyhedron crystal, blue sky-and-cloud texture |
 | fx_1a8 | 0x7 | `FX_ODIN_FLAME_RIBBON` | render | 'so' model: twisted ribbon, fire texture |
 | fx_1a8 | 0x8 | `FX_ODIN_FLAME_RIBBON_2` | render | 'so' model: twisted ribbon, fire texture |
 | fx_1a8 | 0x9 | `FX_ODIN_FLAME_RIBBON_3` | render | 'so' model: twisted ribbon, fire texture |
 | fx_1a8 | 0xA | `FX_ODIN_SKY_CRYSTAL_2` | render | 'so' model: flattened crystal, blue sky-and-cloud texture |
 | fx_1a8 | 0xB | `FX_ODIN_CRIMSON_RINGS` | render | rings: white-crimson gouraud rings, 16 frames |
-| fx_1a8 | 0xC | `FX_ODIN_SPECK_SPIRAL` | kind/usage (look pending) | emitter: spiral of two speck-sprite elements, render nearly black |
+| fx_1a8 | 0xC | `FX_ODIN_BLACK_DEBRIS` | runtime | emitter: spiral of two speck-sprite elements, dark grey specks at run time: the black debris flying out of the explosion |
 | fx_1a8 | 0xD | `FX_ODIN_CRIMSON_RINGS_2` | render | emitter: white-crimson and white-violet gouraud rings |
 | fx_1a8 | 0x10 | `FX_ODIN_FLAME_RIBBON_4` | render | 'so' model: twisted ribbon, fire texture |
 | fx_1a8 | 0x11 | `FX_ODIN_STONE_RING` | render | 'so' model: ring band, grey-green stone texture |
-| fx_1a8 | 0x12 | `FX_ODIN_SPECKS` | kind/usage (look pending) | emitter: speck sprites, render nearly black |
+| fx_1a8 | 0x12 | `FX_ODIN_RED_SPARKS` | runtime (low, look pending) | emitter: speck sprites, tiny red sparks at run time (not separable on screen) |
 | fx_1a8 | 0x13 | `FX_ODIN_PINK_SMOKE` | render | emitter: white-pink smoke burst quads, 22 frames |
 | fx_1a8 | 0x14 | `FX_ODIN_CLOUD_TORUS` | render | 'so' model: torus, dark marbled cloud texture |
 | fx_1a8 | 0x15 | `FX_ODIN_GOLD_RING` | render | 'so' model: ring band, yellow-brown texture |
 | fx_1a8 | 0x16 | `FX_ODIN_VORTEX_CONE` | render | 'so' model: spiralling cone, brown-grey texture |
-| fx_1a8 | 0x17 | `FX_ODIN_CALLBACK_EMITTER` | kind/usage (look pending) | emitter: two callback elements (drawn by the module) |
+| fx_1a8 | 0x17 | `FX_ODIN_CALLBACK_EMITTER` | kind/usage (look pending) | emitter: two callback elements (drawn by the module); runtime: started with the slash explosion; ablating it only shifts the random pink smoke puffs |
 | fx_1a8 | 0x19 | `FX_ODIN_ZANTETSUKEN` | render | 'so' model: thin sword with a hilt, red-violet texture (the Zantetsuken blade) |
 | fx_1a9 | 0x3 | `FX_VIRUS_POWDER_PUFFS` | render | emitter: violet, blue and orange powder puffs bursting into specks + pink dots |
 | fx_1ab | 0x1 | `FX_WATERGA_WATER_RING` | render | 'so' model: flared ring, blue water texture |
 | fx_1ab | 0x2 | `FX_WATERGA_WATER_SPHERE` | render | 'so' model: sphere, blue water-caustic texture |
 | fx_1ab | 0x3 | `FX_WATERGA_WATER_SPLASH` | render | emitter: cone of dark-blue water splash sprites, 24 frames |
-| fx_1ab | 0x4 | `FX_WATERGA_RINGS` | kind/usage (look pending) | emitter: cone of textured rings (texture not resolved) |
+| fx_1ab | 0x4 | `FX_WATERGA_WHITE_FOAM` | runtime (medium) | emitter: cone of textured rings, the white foam inside the blue water sphere |
 | fx_1ab | 0x5 | `FX_WATERGA_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1ab | 0x6 | `FX_WATERGA_BACKDROP_2` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1ab | 0x7 | `FX_WATERGA_BACKDROP_3` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
@@ -293,7 +293,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1ac | 0x3 | `FX_VIRUS_CRUNCH_CYAN_CLOUD` | render | emitter: white-grey gouraud rings + teal-cyan cloud quads |
 | fx_1ac | 0x5 | `FX_VIRUS_CRUNCH_GREY_TRAIL` | render | emitter: flat trail, grey faceted strip |
 | fx_1ad | 0x1 | `FX_6_LEGS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| fx_1ad | 0x2 | `FX_6_LEGS_POD` | kind/usage (look pending) | 'so' model: rounded pod with an opening (texture page 0x117 renders plain white) |
+| fx_1ad | 0x2 | `FX_6_LEGS_SLIME_SHELL` | runtime (medium) | 'so' model: rounded pod with an opening; page 0x117 holds a green slimy texture at run time: the green slime shell wrapping the target |
 | fx_1ad | 0x4 | `FX_6_LEGS_BUBBLE_TRAIL` | render | emitter: orbiting 3D trail of glass bubbles (sprites render black) |
 | fx_1ad | 0x5 | `FX_6_LEGS_GREEN_TRAIL` | render | emitter: screen trail, green striped strip |
 | fx_1af | 0x2 | `FX_DEATH_SPECKS` | render | emitter: faint grey speck sprites, 32 frames |
@@ -319,18 +319,18 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b1 | 0x1 | `FX_GOLEM_DEATH_DUST_CLOUD` | render | emitter: tan dust cloud quads, 17 frames (sprites render black) |
 | fx_1b1 | 0x5 | `FX_GOLEM_DEATH_DUST_CLOUD_2` | render | emitter: orbiting tan dust cloud quads, 17 frames (sprites render black) |
 | fx_1b2 | 0x1 | `FX_TIDAL_WAVE_PATH` | usage | table: vector path (fxm_vecPathInit) |
-| fx_1b2 | 0x2 | `FX_TIDAL_WAVE_CURL` | kind/usage (look pending) | model: curved sheet like a breaking wave (texture page 0x117 renders plain white) |
+| fx_1b2 | 0x2 | `FX_TIDAL_WAVE_WATER_CURL` | runtime | model: curved sheet like a breaking wave; page 0x117 holds blue-white water at run time: the white curling wave crest |
 | fx_1b2 | 0x3 | `FX_TIDAL_WAVE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_1b2 | 0x7 | `FX_TIDAL_WAVE_WATER_ORBS` | render | emitter: orbiting blue water-caustic orbs + grey-blue shard sprites |
 | fx_1b2 | 0x8 | `FX_TIDAL_WAVE_RED_TRAIL` | render | emitter: helix flat trail, red caustic strip |
 | fx_1b2 | 0x9 | `FX_TIDAL_WAVE_WATER_TRAIL` | render | emitter: spiralling screen trail, grey-blue water streak strip |
 | fx_1b2 | 0xB | `FX_TIDAL_WAVE_PALE_RINGS` | render | emitter: white / cream / olive gouraud rings |
-| fx_1b2 | 0xC | `FX_TIDAL_WAVE_DISC` | kind/usage (look pending) | model: flat soft-edged disc (texture page 0x119 renders plain white) |
+| fx_1b2 | 0xC | `FX_TIDAL_WAVE_SURGE` | runtime (medium) | model: flat soft-edged disc, the big grey water surge sweeping over the party |
 | fx_1b2 | 0xD | `FX_TIDAL_WAVE_FOAM` | render | emitter: orbiting grey-white foam cloud quads, 17 frames |
 | fx_1b3 | 0x2 | `FX_DEATH1_DARK_NEBULA` | render | emitter: dark violet nebula particles + pale-yellow light-streak fans |
 | fx_1b3 | 0x4 | `FX_DEATH1_LIGHTNING_TRAILS` | render | emitter: orbiting 3D trails with violet lightning strips + dark violet nebula particles |
 | fx_1b3 | 0x5 | `FX_DEATH1_TEAL_RINGS` | render | emitter: white / grey / violet and teal / orange gouraud rings |
-| fx_1b3 | 0x6 | `FX_DEATH1_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements, thin pale and green streaks in the render |
+| fx_1b3 | 0x6 | `FX_DEATH1_GOLD_RAYS` | runtime | emitter: two fan elements, the pale-gold light rays fanning out (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently) |
 | fx_1b3 | 0x7 | `FX_DEATH1_YELLOW_STREAKS` | render | emitter: pale-yellow light-streak fans + white-violet and cream-crimson gouraud rings |
 | fx_1b3 | 0x8 | `FX_DEATH1_EXPLOSIONS` | render | emitter: fire explosion quads, three elements, + speck sprites |
 | fx_1b3 | 0x9 | `FX_DEATH1_ROCKS` | render | emitter: grey rock particles + magenta patterned particles |
@@ -345,11 +345,11 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b3 | 0x13 | `FX_DEATH1_ORANGE_RINGS` | render | emitter: white-orange-plum gouraud rings, 40 frames |
 | fx_1b3 | 0x14 | `FX_DEATH1_TAN_STREAKS_2` | render | emitter: two tan light-streak fans |
 | fx_1b3 | 0x15 | `FX_DEATH1_LIGHTNING` | render | trail: violet lightning strip |
-| fx_1b3 | 0x39 | `FX_DEATH1_SCREEN_TRAIL` | kind/usage (look pending) | emitter: orbiting screen trails (strip texture not resolved) + speck sprites |
-| fx_1b3 | 0x3A | `FX_DEATH1_SCREEN_TRAIL_2` | kind/usage (look pending) | emitter: orbiting screen trails (strip texture not resolved) + speck sprites |
+| fx_1b3 | 0x39 | `FX_DEATH1_SCREEN_TRAIL` | kind/usage (look pending) | emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime: not fetched within 1000 frames of a forced cast (Zidane as the caster) |
+| fx_1b3 | 0x3A | `FX_DEATH1_SCREEN_TRAIL_2` | kind/usage (look pending) | emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime: not fetched within 1000 frames of a forced cast (Zidane as the caster) |
 | fx_1b3 | 0x93 | `FX_DEATH1_SCRATCH_BUF` | usage | summon data entry 0x13 (0x93 - 0x80): its address is the base of the module's trail and split-piece work buffers |
 | fx_1b4 | 0xA | `FX_FLARE_STAR_PINK_SPARKS` | render | emitter: pink / orange glyph-like spark sprites + pink and lilac gouraud rings |
-| fx_1b4 | 0xB | `FX_FLARE_STAR_FAN_EMITTER` | kind/usage (look pending) | emitter: two fan elements, nearly invisible in the render |
+| fx_1b4 | 0xB | `FX_FLARE_STAR_RED_RAYS` | runtime | emitter: two fan elements, the red light rays radiating from the target over the violet field |
 | fx_1b4 | 0xC | `FX_FLARE_STAR_FLAME_TRAIL` | render | emitter: white fan bars + screen trail with a red flame strip |
 | fx_1b4 | 0xD | `FX_FLARE_STAR_YELLOW_RINGS` | render | emitter: pale-yellow / tan gouraud rings |
 | fx_1b4 | 0xE | `FX_FLARE_STAR_YELLOW_RINGS_2` | render | emitter: pale-yellow / pink gouraud rings |
@@ -362,7 +362,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b4 | 0x29 | `FX_FLARE_STAR_PINK_RINGS_2` | render | emitter: white-pink-magenta and yellow-olive gouraud rings |
 | fx_1b4 | 0x2A | `FX_FLARE_STAR_ORANGE_GLOW` | render | emitter: fading orange glow + red flare streaks |
 | fx_1b4 | 0x2B | `FX_FLARE_STAR_RED_SHARDS` | render | emitter: red shard sprites, 31 frames |
-| fx_1b6 | 0x2 | `FX_DEATH_SPIRAL_TRAIL` | kind/usage (look pending) | emitter: spiralling 3D trail, strip mostly black with a faint white streak |
+| fx_1b6 | 0x2 | `FX_DEATH_SPIRAL_TRAIL` | kind/usage (look pending) | emitter: spiralling 3D trail, strip mostly black with a faint white streak; runtime: started as the screen goes white; its run-time strip is a white streak |
 | fx_1b6 | 0x3 | `FX_DEATH_YELLOW_RINGS` | render | emitter: cream and yellow gouraud rings |
 | fx_1b6 | 0x4 | `FX_DEATH_RED_LIGHTNING` | render | emitter: orbiting red lightning fan + yellow-to-brown gouraud rings |
 | fx_1b6 | 0x5 | `FX_DEATH_BUBBLE_RINGS` | render | emitter: rings textured with white bubble spots + pale-yellow gouraud rings |
@@ -379,13 +379,13 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1b7 | 0xA | `FX_DEATH_BUBBLE_RINGS` | render | emitter: rings textured with olive bubble spots + pink / pale-cyan gouraud rings |
 | fx_1b7 | 0xB | `FX_DEATH_BLUE_BEAM` | render | emitter: blue cone-beam fan + grey gouraud rings |
 | fx_1b7 | 0xC | `FX_DEATH_BLUE_STREAK` | render | emitter: one fan, thin blue streak |
-| fx_1b8 | 0x1 | `FX_DEATH_DARK_QUADS` | kind/usage (look pending) | emitter: anim quads + sprites, render black (byte-identical to fx_1b9 entry 0x2) |
+| fx_1b8 | 0x1 | `FX_DEATH_TEAL_GLOWS` | runtime (medium) | emitter: anim quads + sprites, soft teal-white glows drifting on screen (byte-identical to fx_1b9 entry 0x2) |
 | fx_1b8 | 0x2 | `FX_DEATH_WATER_WAVE` | render | emitter: green-teal water wave particles, 16 frames |
 | fx_1b8 | 0x6 | `FX_DEATH_SWIRL` | render | emitter: orbiting white swirl vortex particles (sprites render black) |
 | fx_1b8 | 0x7 | `FX_DEATH_RIPPLES` | render | emitter: green ripple-circle particles + grey widening ring (byte-identical to fx_1b9 entry 0x1) |
 | fx_1b8 | 0xE | `FX_DEATH_WATER_SPOUT` | render | emitter: green / blue water spout, 10 frames (byte-identical to fx_1b9 entry 0x7) |
 | fx_1b9 | 0x1 | `FX_APPEARANCE_RIPPLES` | render | emitter: green ripple-circle particles + grey widening ring (byte-identical to fx_1b8 entry 0x7) |
-| fx_1b9 | 0x2 | `FX_APPEARANCE_DARK_QUADS` | kind/usage (look pending) | emitter: anim quads + sprites, render black (byte-identical to fx_1b8 entry 0x1) |
+| fx_1b9 | 0x2 | `FX_APPEARANCE_TEAL_GLOWS` | runtime (medium) | emitter: anim quads + sprites, soft teal-white glows (byte-identical to fx_1b8 entry 0x1) |
 | fx_1b9 | 0x6 | `FX_APPEARANCE_WATER_WAVE` | render | emitter: green-teal water wave particles, 16 frames |
 | fx_1b9 | 0x7 | `FX_APPEARANCE_WATER_SPOUT` | render | emitter: green / blue water spout, 10 frames (byte-identical to fx_1b8 entry 0xE) |
 | fx_1bb | 0x1 | `FX_CLIMHAZZARD_FLAME_RINGS` | render | emitter: rings textured with a yellow-red flame wall + white / pale-yellow gouraud rings, 16 frames (byte-identical to fx_18d entry 0x1) |
@@ -395,10 +395,10 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1bd | 0x9 | `FX_IFRIT_VEC_TRACK_2` | usage | table: vector track (fxm_vecTrackInit; byte-identical to fx_114 entry 0x24) |
 | fx_1bd | 0xA | `FX_IFRIT_ORANGE_RINGS` | render | emitter: orange gouraud rings, 16 frames (byte-identical to fx_114 entry 0xB) |
 | fx_1bd | 0xB | `FX_IFRIT_FLAME_RING` | render | model: flat ring, flame texture (byte-identical to fx_114 entry 0x22) |
-| fx_1bd | 0xD | `FX_IFRIT_WHITE_HAZE` | runtime (medium) | model: grid with grey-white wavy streaks, the white haze under Ifrit's fist (fx_114's entry, played there) (byte-identical to fx_114 entry 0x2A) |
+| fx_1bd | 0xD | `FX_IFRIT_WHITE_HAZE` | runtime | model: grid with grey-white wavy streaks, the grey streaky haze over the floor under the target, turning orange as the lava cracks appear (byte-identical to fx_114 entry 0x2A) |
 | fx_1bd | 0xE | `FX_IFRIT_FLAME_DOME` | render | model: dome, flame texture (byte-identical to fx_114 entry 0x27) |
 | fx_1bd | 0x12 | `FX_IFRIT_RED_GLOW` | render (byte-identical twin, consistency pass) | emitter: orbiting fan, a horizontal orange-red glow (byte-identical to fx_114 entry 0x26, same render) |
-| fx_1bd | 0x13 | `FX_IFRIT_HEAT_DOME` | runtime (low, look pending) | model: hemisphere bowl, the translucent wavy dome (fx_114's entry, ablated together with its spoked ring there) (byte-identical to fx_114 entry 0x1E) |
+| fx_1bd | 0x13 | `FX_IFRIT_HEAT_DOME` | runtime | model: hemisphere bowl, the bright yellow-white translucent glare dome over the fire dome (byte-identical to fx_114 entry 0x1E) |
 | fx_1bd | 0x14 | `FX_IFRIT_SHOT0_CAMERA_KEYS_2` | usage | table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[1]) |
 | fx_1bd | 0x15 | `FX_IFRIT_SHOT0_CAMERA_KEYS_1` | usage | table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[0]) |
 | fx_1bd | 0x16 | `FX_IFRIT_TRAIL_PATHS` | usage | table: offset table of position paths (fxm_offsetTableEntry + fxm_posPathInit) for the fire trails (byte-identical to fx_114 entry 0x17) |
@@ -408,7 +408,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1bd | 0x28 | `FX_IFRIT_PIECE_TRACKS` | usage | table: offset table of tracks, one per piece (fxm_offsetTableEntry; byte-identical to fx_114 entry 0x29) |
 | fx_1bd | 0x29 | `FX_IFRIT_PIECE_MODELS` | usage | table: offset table of model data, one per piece (fxm_offsetTableEntry; byte-identical to fx_114 entry 0x28) |
 | fx_1bd | 0x2B | `FX_IFRIT_BLOCK_CLUSTER` | render | model: cluster of block chunks, orange streak texture (byte-identical to fx_114 entry 0x20) |
-| fx_1bd | 0x2C | `FX_IFRIT_SPOKED_RING` | kind/usage (look pending) | model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime: fx_114's same entry is untextured and was only ablated together with the bowl |
+| fx_1bd | 0x2C | `FX_IFRIT_SPOKED_RING` | kind/usage (look pending) | model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime: ablating it alone changes only a few hundred scattered px |
 | fx_1be | 0x1 | `FX_ATOMOS_PURPLE_RINGS` | render | emitter: white / magenta / purple and pale yellow / grey gouraud rings (byte-identical to fx_0b8 entry 0x21) |
 | fx_1be | 0x2 | `FX_ATOMOS_ORANGE_STREAKS` | render (byte-identical twin, consistency pass) | emitter: two fans, thin orange light streaks (byte-identical to fx_0b8 entry 0x7, same render) |
 | fx_1be | 0x4 | `FX_ATOMOS_VIOLET_RING` | render | emitter: white-violet and white-blue gouraud rings |
@@ -418,7 +418,7 @@ Each wants one screenshot at the frame the C starts the entry, or a VRAM dump wh
 | fx_1be | 0x8 | `FX_ATOMOS_NAVY_RINGS` | render | emitter: lilac / navy gouraud rings + small violet sprite |
 | fx_1be | 0x9 | `FX_ATOMOS_VORTEX_TORUS` | render | 'so' model: torus, dark violet cloud texture |
 | fx_1be | 0xA | `FX_ATOMOS_ORANGE_RING` | render | 'so' model: flat ring, orange cloud texture |
-| fx_1be | 0xC | `FX_ATOMOS_SPHERE` | kind/usage (look pending) | 'so' model: segmented sphere (texture page 0x117 renders plain white) |
+| fx_1be | 0xC | `FX_ATOMOS_RED_CLOUD_SPHERE` | runtime | 'so' model: segmented sphere; page 0x117 holds a dark red cloudy texture at run time: the dark red cloud sphere inside the violet gate |
 | fx_1be | 0xD | `FX_ATOMOS_VORTEX_DOME` | render | 'so' model: dome, violet and cyan cloud texture |
 | fx_1be | 0xE | `FX_ATOMOS_RING_FUNNEL` | render | 'so' model: gouraud ring funnel, white glow at the hole |
 | fx_1be | 0xF | `FX_ATOMOS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |

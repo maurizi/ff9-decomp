@@ -8,7 +8,7 @@
 /* fx_180 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ULTIMA_GLOW_DOME      0x1 /* model: gouraud octagonal dome (20 polys) */
-#define FX_ULTIMA_NOISE_RING     0x2 /* emitter: ring whose texture still reads as noise, + pink gouraud ring (look pending) */
+#define FX_ULTIMA_VIOLET_HAZE    0x2 /* emitter: textured ring + pink gouraud ring, the violet haze vortex round the party; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ULTIMA_ROCK_DEBRIS    0x3 /* emitter: grey rock chunks */
 #define FX_ULTIMA_GREY_TRAIL     0x4 /* emitter: wobbling 3D trail with a grey streak texture */
 #define FX_ULTIMA_RED_LENS_FLARE 0x6 /* emitter: red lens streak, white-pink rings, red sparks */
@@ -20,7 +20,7 @@
 #define FX_ULTIMA_BLAST_RINGS    0xC /* emitter: white-pink, lilac and yellow-red gouraud rings, pink glows */
 #define FX_ULTIMA_WHITE_BEAM     0xD /* emitter: spiralling white beam screen trail, pink sparks */
 #define FX_ULTIMA_PINK_SPARKS    0xE /* emitter: sparse pink spark sprites */
-#define FX_ULTIMA_NOISE_RING_2   0xF /* emitter: ring whose texture still reads as noise, + pink-lilac gouraud rings (look pending) */
+#define FX_ULTIMA_VIOLET_GLOW    0xF /* emitter: textured ring + pink-lilac gouraud rings, the big soft violet glow sphere behind the white star burst; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ULTIMA_RED_FLARE      0x10 /* emitter: red lens streak and white-red gouraud rings */
 #define FX_ULTIMA_CRIMSON_STREAK 0x11 /* emitter: orbiting fan, a white-to-crimson light streak */
 #define FX_ULTIMA_PINK_TRAIL     0x12 /* emitter: pink screen trail */
@@ -34,7 +34,7 @@
 #define FX_ULTIMA_PATH_SET_2     0x1A /* table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 */
 #define FX_ULTIMA_ROCK_SWIRL     0x1D /* emitter: spiralling 3D trail of rock pieces, pink glows */
 #define FX_ULTIMA_ROCK_SWIRL_2   0x1E /* emitter: spiralling 3D trail of rock pieces, pink glows */
-#define FX_ULTIMA_NOISE_RING_3   0x1F /* emitter: ring whose texture still reads as noise, + lilac gouraud ring (look pending) */
+#define FX_ULTIMA_NOISE_RING_3   0x1F /* emitter: ring whose texture still reads as noise, + lilac gouraud ring; runtime (docs/runtime-findings.md effect-data pass 2): not fetched within 1000 frames (the run ended in the final explosion); not byte-identical to fx_1ec's 0x27 (look pending) */
 #define FX_ULTIMA_ROCK_TRAIL_2   0x20 /* emitter: spiralling screen trail of rock pieces */
 #define FX_ULTIMA_PURPLE_HAZE    0x21 /* emitter: pink-purple smoke puffs */
 #define FX_ULTIMA_PATH_SET       0x22 /* table: 18 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x80 */

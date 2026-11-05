@@ -122,12 +122,12 @@ settled 19 "(look pending)" names. 161 renames in 61 modules, among them:
   the Throw impact is `FX_THROW_IMPACT` in all eight weapon modules.
 - Generic names with a drawn shape (still pending where the texture is not settled): `FX_ARK_STAR_SPHERE`,
   `FX_LIMIT_GLOVE_PINK_ORB`, `FX_BAHAMUT_TERRAIN` / `CLOUD_RING` / `SMOKE_STRIP` / `SMOKE_SHELL`,
-  `FX_LUCKY_SEVEN_RAINBOW_STRIPS`, `FX_MOONLIGHT_SLASH_SPIKED_SHAPE`, `FX_6_LEGS_POD`. (Names updated after the effect-data runtime pass, which settled all of these but `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` and `FX_6_LEGS_POD`.)
+  `FX_LUCKY_SEVEN_RAINBOW_STRIPS`, `FX_MOONLIGHT_SLASH_SPIKED_SHAPE`, `FX_6_LEGS_SLIME_SHELL`. (Names updated after the effect-data runtime passes, which settled all of these but `FX_MOONLIGHT_SLASH_SPIKED_SHAPE`; the 6 Legs pod was renamed in pass 2.)
 
 Left different on purpose (byte-identical, but drawn differently in context: other CLUTs or texture pages):
 Magic / Armor / Mental Break orbs (red / blue / pink), Reflect's star (sketch placeholder page) vs Carbuncle's
 star crystal, Holy's blue cloud arch vs Holy (Lv4)'s rainbow arch, Aero (breath) swirl vs Rainbow Wind ring,
-Psychokinesis' screen trails (black in fx_023, dark bubbles in fx_0eb), Bahamut's blast plate (page 0x119) vs
+Psychokinesis' screen trails (black in fx_023's render but white light rays at run time, `FX_PSYCHOKINESIS_LIGHT_RAYS`; dark bubbles in fx_0eb), Bahamut's blast plate (page 0x119) vs
 the short form's smoke arc, Madeen's Y frame vs the short form's feather wings, Thievery's lens flares vs Lucky
 Seven's nearly empty sprite line. No module defines a name twice or two names for one index; the remaining
 generic names (`*_CYL_EMITTER`, `*_CALLBACK_EMITTER`, `*_FAN_EMITTER` of fans the render does not show) are
@@ -142,6 +142,22 @@ table the modules pass (89 call sites) targets an off-screen VRAM rect (x >= 0x1
 effect's sprites and models sample it: skipping the call turns their textured parts white or garbled
 (docs/runtime-findings.md, effect-data pass). Played tables are named by the texture they make
 (`FX_SLEEP_MOON_TEXTURE`, `FX_HOLY_STARFIELD_TEXTURE`); the others keep `*_BACKDROP`, with a "layer table" comment.
+
+## Placeholder pages (oddities)
+
+Some files ship test or placeholder textures (list in `docs/wip/fxdata_runtime.md`, "Oddities in the files"). What
+the runtime passes found:
+- Ark's kana test page (page 0x11B = (0x2C0, 0x100): a white page with the kana labels up / left / right / down,
+  uploaded by fx_1bf_2, the short Ark's group 2, and fx_17d_8 in the full one) is never sampled on screen. In the
+  short Ark it sits in VRAM from group 2's upload (~f907) to f1300 with nothing reading it; group 2 registers the
+  model at f1309, and by f1320 the page holds an animated red-violet nebula. The model draws from ~f1584 with that
+  nebula: the wide red glow band along Ark's beam hitting the planet, so entry 0x2 (and fx_17d_8's byte-identical
+  0x6) is `FX_ARK_BEAM_HAZE` (docs/runtime-findings.md, effect-data pass 2).
+- Ramuh short (fx_19f): the "dummy" placeholder is gone by run time; `FX_RAMUH_BLUE_AURA_COLUMN` samples a
+  blue-white marbled texture.
+- Ifrit (fx_114 / fx_1bd) tpage 0x117: the yellow placeholder is replaced by grey-white wavy streaks by the time
+  `FX_IFRIT_WHITE_HAZE` is fetched; `FX_IFRIT_CYLINDER` is fetched while the placeholder is still there and changes
+  nothing visible.
 
 ## Open questions (emulator)
 

@@ -474,7 +474,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             for (trail = 0; trail < 2; trail++) {
                 if (frame == 0) {
-                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_TRAIL), (s32)&work->posC,
+                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SPIRAL_STREAK), (s32)&work->posC,
                                         (s32 *)&work->posC, -1, trailScale, ex->math_cos(t >> 2), 1, (u8 *)&fx_17a_trails[trail], 1);
                 }
                 {
@@ -491,7 +491,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang2.vz = 0;
             for (k = 0, j = work->frame4 * 0x5C; k < 2; k++, j += 0x800) {
                 ex->btlfx_offsetPoint(&work->posC, (s32)&at2, 0, (XY32 *)&ang2, trailRadius, j);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_TRAIL), (s32)&at2, (s32 *)&work->posC, 0, trailScale,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_SPIRAL_STREAK), (s32)&at2, (s32 *)&work->posC, 0, trailScale,
                                     (ex->math_sin(t >> 1) >> 1) + 0x60E, 1, (u8 *)&fx_17a_trails[k], 1);
             }
             if (frame < 0x18) {

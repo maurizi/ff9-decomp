@@ -8,7 +8,7 @@
 /* fx_1a6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_WATER_GUN_BUBBLES   0x1 /* emitter: white bubble-ring anim quads, 22 frames */
-#define FX_WATER_GUN_PARTICLE  0x3 /* emitter: one particle element, renders black (look pending) */
+#define FX_WATER_GUN_SPRAY     0x3 /* emitter: one particle element, the white water splash spray over the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_WATER_GUN_SPLASH    0x5 /* emitter: blue water-splash crescents + white splash */
 #define FX_WATER_GUN_WATER_JET 0x6 /* emitter: screen trail with a water strip + white splash particles (sprites render black) */
 

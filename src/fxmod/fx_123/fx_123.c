@@ -341,7 +341,7 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0xC:
             work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_RINGS), (s32)&work->pos14);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_DARK_BURST), (s32)&work->pos14);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_SPECKS), (s32)&work->pos14);
             break;
         }
         return frame >= 0x1E;

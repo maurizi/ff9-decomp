@@ -14,7 +14,7 @@
 #define FX_RAMUH_LENS_FLASH_KEYS    0x7 /* table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH) */
 #define FX_RAMUH_BLUE_GLOW_RINGS    0xA /* emitter: blue glow quad and fading light-blue gouraud rings */
 #define FX_RAMUH_LIGHTNING_RIBBON_2 0xD /* trail: second blue-white electric ribbon drawn between key points */
-#define FX_RAMUH_SPARK_BURST        0x14 /* emitter: flashing white gouraud rings and blue spark sprites */
+#define FX_RAMUH_BOLT_SPARK_BURST   0x14 /* emitter: flashing white gouraud rings and blue spark sprites; at run time (fx_19f's byte-identical entry) small blue lightning-bolt glyphs in a glow, the cyan flash and bolt sparks round the strike; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_RAMUH_LENS_FLASH         0x15 /* particles: white-violet lens flash */
 #define FX_RAMUH_LIGHTNING_BOLT     0x16 /* trail: 8-frame blue-white lightning bolt */
 #define FX_RAMUH_THIN_ROD           0x18 /* 'so' model: thin dark rod with a red tip */
@@ -31,7 +31,7 @@
 #define FX_RAMUH_GREEN_DOME         0x26 /* 'so' model: teal-green gouraud hemisphere */
 #define FX_RAMUH_WHITE_RING         0x27 /* rings: white gouraud ring */
 #define FX_RAMUH_SPARK_RING         0x29 /* rings: pale cyan gouraud rings (pool items) */
-#define FX_RAMUH_SPARK_PARTICLE     0x2C /* emitter: one particle; the render still reads garbled blue strips (texture not resolved); runtime (docs/runtime-findings.md effect-data pass): not fetched in a full Ramuh: the module uses it in a branch that cast did not take (look pending) */
+#define FX_RAMUH_BOLT_SPARKS        0x2C /* emitter: one particle; not fetched in a full Ramuh (a branch that cast did not take); fx_19f's byte-identical entry is a blue lightning-bolt glyph sprite at run time, the small bolt sparks around the pillar; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_RAMUH_CAMERA_KEYS        0x2E /* table: per-frame camera point 0 (op82) */
 #define FX_RAMUH_CAMERA_KEYS_2      0x2F /* table: per-frame camera point 1 (op82) */
 #define FX_RAMUH_POOL_LIGHTNING     0x32 /* trail: 8-frame blue-white lightning of the op85 pool items */

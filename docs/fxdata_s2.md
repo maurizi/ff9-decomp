@@ -83,7 +83,7 @@ Notes:
 | fx_0b4 | 0xE | `FX_AERO_GREEN_RING` | render | emitter: orbiting green gouraud rings |
 | fx_0b4 | 0xF | `FX_AERO_WIND_RING` | render | emitter: orbiting pale green wind-ring particles |
 | fx_0b4 | 0x10 | `FX_AERO_GREEN_BURST` | render | emitter: green gust puffs fading to blue |
-| fx_0b4 | 0x11 | `FX_AERO_SPRITE_SWIRL` | kind/usage (look pending) | emitter: spiralling sprites; the render is still all black (texels blank in the file's upload, filled at run time?) |
+| fx_0b4 | 0x11 | `FX_AERO_GREEN_GLINTS` | runtime (low, look pending) | emitter: spiralling sprites, green four-point star glints at run time (not ablated) |
 | fx_0b4 | 0x19 | `FX_AERO_WIND_TRAIL` | render | emitter: white 3D wind trail spiralling |
 | fx_0b5 | 0x1 | `FX_RAINBOW_WIND_RAINBOW_TRAIL` | render | emitter: rainbow-coloured 3D trail spiralling up |
 | fx_0b5 | 0x2 | `FX_RAINBOW_WIND_WHIRLWIND` | render | emitter: blue-white whirlwind swirl particles |
@@ -135,7 +135,7 @@ Notes:
 | fx_0ba | 0x7 | `FX_RAMUH_LENS_FLASH_KEYS` | usage | table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH) |
 | fx_0ba | 0xA | `FX_RAMUH_BLUE_GLOW_RINGS` | render | emitter: blue glow quad and fading light-blue gouraud rings |
 | fx_0ba | 0xD | `FX_RAMUH_LIGHTNING_RIBBON_2` | render (fxdata d6121033) | trail: second blue-white electric ribbon drawn between key points |
-| fx_0ba | 0x14 | `FX_RAMUH_SPARK_BURST` | render (fxdata d6121033) | emitter: flashing white gouraud rings and blue spark sprites |
+| fx_0ba | 0x14 | `FX_RAMUH_BOLT_SPARK_BURST` | runtime (medium) | emitter: flashing white gouraud rings and blue spark sprites; at run time (fx_19f's byte-identical entry) small blue lightning-bolt glyphs in a glow, the cyan flash and bolt sparks round the strike |
 | fx_0ba | 0x15 | `FX_RAMUH_LENS_FLASH` | render | particles: white-violet lens flash |
 | fx_0ba | 0x16 | `FX_RAMUH_LIGHTNING_BOLT` | render (fxdata d6121033) | trail: 8-frame blue-white lightning bolt |
 | fx_0ba | 0x18 | `FX_RAMUH_THIN_ROD` | render (fxdata d6121033) | 'so' model: thin dark rod with a red tip |
@@ -152,7 +152,7 @@ Notes:
 | fx_0ba | 0x26 | `FX_RAMUH_GREEN_DOME` | render (fxdata d6121033) | 'so' model: teal-green gouraud hemisphere |
 | fx_0ba | 0x27 | `FX_RAMUH_WHITE_RING` | render | rings: white gouraud ring |
 | fx_0ba | 0x29 | `FX_RAMUH_SPARK_RING` | render | rings: pale cyan gouraud rings (pool items) |
-| fx_0ba | 0x2C | `FX_RAMUH_SPARK_PARTICLE` | kind/usage (look pending) | emitter: one particle; the render still reads garbled blue strips (texture not resolved); runtime: not fetched in a full Ramuh: the module uses it in a branch that cast did not take |
+| fx_0ba | 0x2C | `FX_RAMUH_BOLT_SPARKS` | runtime (medium) | emitter: one particle; not fetched in a full Ramuh (a branch that cast did not take); fx_19f's byte-identical entry is a blue lightning-bolt glyph sprite at run time, the small bolt sparks around the pillar |
 | fx_0ba | 0x2E | `FX_RAMUH_CAMERA_KEYS` | usage | table: per-frame camera point 0 (op82) |
 | fx_0ba | 0x2F | `FX_RAMUH_CAMERA_KEYS_2` | usage | table: per-frame camera point 1 (op82) |
 | fx_0ba | 0x32 | `FX_RAMUH_POOL_LIGHTNING` | render (fxdata d6121033) | trail: 8-frame blue-white lightning of the op85 pool items |
@@ -207,12 +207,12 @@ Notes:
 | fx_0cb | 0x8 | `FX_LIGHT_FLARE_RED_HALO` | render (fxdata d6121033) | 'so' model: red-orange gouraud halo ring, drawn fading with the fireball |
 | fx_0cb | 0xC | `FX_LIGHT_FLARE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (with the screen tint) |
 | fx_0cb | 0xF | `FX_LIGHT_FLARE_BACKDROP_2` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (with the rings) |
-| fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | kind/usage (look pending) | rings: textured ring drawn twice, tilted; the render reads unrelated texels (noise), texture not in the file |
+| fx_0cb | 0x11 | `FX_LIGHT_FLARE_GLOW_RING` | runtime | rings: textured ring drawn twice, tilted: the yellow-green glow ring round the target |
 | fx_0cb | 0x12 | `FX_LIGHT_FLARE_FIREBALL` | render (fxdata d6121033) | 'so' model: sphere with a fire texture, drawn fading |
 | fx_0cc | 0x2 | `FX_METEORITE_IMPACT_RING` | render | rings: white-pink gouraud ring at the impact |
 | fx_0cc | 0x3 | `FX_METEORITE_IMPACT_SMOKE` | render | particles: pink-white smoke puff at the impact |
 | fx_0cc | 0x7 | `FX_METEORITE_RED_GLOW` | render | particles: red glow around the falling rock |
-| fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | kind/usage (look pending) | emitter: sprites following the falling rock; the render is still black (texels blank in the file's upload) |
+| fx_0cc | 0x9 | `FX_METEORITE_EMBERS` | runtime (low, look pending) | emitter: sprites following the falling rock, small orange specks at run time |
 | fx_0cc | 0xC | `FX_METEORITE_IMPACT_FLASH` | render | particles: white radial flash at the impact |
 | fx_0cc | 0xF | `FX_METEORITE_ROCK` | render (fxdata d6121033) | 'so' model: dark brown rock (polyhedron), drawn spinning down |
 | fx_0cd | 0x1 | `FX_AERA_GREEN_WIND_RING` | render (fxdata d6121033) | 'so' model: ring of green wind streaks (grass-fringe cylinder) |
@@ -220,14 +220,14 @@ Notes:
 | fx_0cd | 0x4 | `FX_AERA_GREEN_RING` | render | emitter: green gouraud rings |
 | fx_0cd | 0x5 | `FX_AERA_WIND_RING` | render | emitter: orbiting white wind-ring particle |
 | fx_0cd | 0x7 | `FX_AERA_GREEN_BURST` | render | emitter: green gust puffs |
-| fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | kind/usage (look pending) | emitter: spiralling sprites + 3D trail; the render still reads garbled yellow texels (texture not resolved) |
+| fx_0cd | 0x8 | `FX_AERA_GREEN_WIND_BLADES` | runtime | emitter: spiralling sprites + 3D trail, the translucent green wind blades sweeping round the target |
 | fx_0cd | 0xA | `FX_AERA_GUST_RINGS` | render | emitter: cyan-green gouraud rings |
-| fx_0cd | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites; the render still reads garbled yellow texels (texture not resolved) |
+| fx_0cd | 0xC | `FX_AERA_SPRITE_BURST` | kind/usage (look pending) | emitter: sprites; the render still reads garbled yellow texels (texture not resolved); runtime: its run-time sprite is a tiny green glint; ablating it changes < 210 px |
 | fx_0cd | 0xD | `FX_AERA_GREEN_TORNADO` | render (fxdata d6121033) | 'so' model: twisted green column with a smoke texture (tornado) |
-| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | kind/usage (look pending) | emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved) |
+| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | kind/usage (look pending) | emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved); runtime: ablating it changes only scattered pink squiggle pixels (max 1234 px) |
 | fx_0ce | 0x2 | `FX_SCREECH_PURPLE_MIST` | render | emitter: dark purple mist rings and brown-pink gouraud rings |
 | fx_0ce | 0x7 | `FX_SCREECH_BLADE_RING` | render (fxdata d6121033) | 'so' model: ring of pale green curved blades |
-| fx_0ce | 0xB | `FX_SCREECH_DARK_RINGS` | kind/usage (look pending) | emitter: textured rings; the render is almost black (faint dark red) |
+| fx_0ce | 0xB | `FX_SCREECH_SOUND_RINGS` | runtime (medium) | emitter: textured rings, the pale expanding sound-wave rings over the target |
 | fx_0ce | 0xC | `FX_SCREECH_LILAC_RING` | render | emitter: lilac glow ring particle |
 | fx_0cf | 0x1 | `FX_STOCK_BREAK_SLASH_ARC` | render | emitter: blue slash arc, fans |
 | fx_0d0 | 0x7 | `FX_POWER_BREAK_RED_SWIRL` | render | emitter: red-white swirl ring particles |
@@ -382,18 +382,18 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0b1 | 0xa | `FX_CARBUNCLE_GREEN_MOTES` | emitter: faint pale round glow, the green motes drifting round the emerald crystal (runtime (medium)) |
 | fx_0b1 | 0x16 | `FX_CARBUNCLE_ORANGE_MOTES` | emitter: small orange glow, the orange motes swirling after the burst (runtime) |
 | fx_0b1 | 0x24 | `FX_CARBUNCLE_ORANGE_MOTES_2` | emitter: the same small orange glow motes (runtime) |
-| fx_0b4 | 0x11 | `FX_AERO_SPRITE_SWIRL` | emitter: spiralling sprites; the render is still all black (texels blank in the file's upload, filled at run time?) |
+| fx_0b4 | 0x11 | `FX_AERO_GREEN_GLINTS` | emitter: spiralling sprites, green four-point star glints at run time (not ablated) (runtime (low, look pending)) |
 | fx_0b8 | 0x2 | `FX_ATOMOS_BLUE_SPECKS` | emitter: sparse tiny blue specks flying round the gate as it opens (runtime (medium)) |
 | fx_0b8 | 0x8 | `FX_ATOMOS_BLUE_SPECKS_2` | emitter: the same tiny blue specks, during the vortex (runtime (medium)) |
 | fx_0b8 | 0xb | `FX_ATOMOS_FAINT_GLOW` | emitter: spiralling glow particles; the render is almost black (a faint white glow); runtime: with the run-time page its particle reads a grey zigzag band, nothing like the white mist on screen |
 | fx_0b8 | 0x22 | `FX_ATOMOS_BLUE_SPECKS_3` | emitter: the same blue specks round the black hole (runtime (medium)) |
-| fx_0ba | 0x2c | `FX_RAMUH_SPARK_PARTICLE` | emitter: one particle; the render still reads garbled blue strips (texture not resolved); runtime: not fetched in a full Ramuh: the module uses it in a branch that cast did not take |
-| fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | rings: textured ring drawn twice, tilted; the render reads unrelated texels (noise), texture not in the file |
-| fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | emitter: sprites following the falling rock; the render is still black (texels blank in the file's upload) |
-| fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | emitter: spiralling sprites + 3D trail; the render still reads garbled yellow texels (texture not resolved) |
-| fx_0cd | 0xc | `FX_AERA_SPRITE_BURST` | emitter: sprites; the render still reads garbled yellow texels (texture not resolved) |
-| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved) |
-| fx_0ce | 0xb | `FX_SCREECH_DARK_RINGS` | emitter: textured rings; the render is almost black (faint dark red) |
+| fx_0ba | 0x2c | `FX_RAMUH_BOLT_SPARKS` | emitter: one particle; not fetched in a full Ramuh (a branch that cast did not take); fx_19f's byte-identical entry is a blue lightning-bolt glyph sprite at run time, the small bolt sparks around the pillar (runtime (medium)) |
+| fx_0cb | 0x11 | `FX_LIGHT_FLARE_GLOW_RING` | rings: textured ring drawn twice, tilted: the yellow-green glow ring round the target (runtime) |
+| fx_0cc | 0x9 | `FX_METEORITE_EMBERS` | emitter: sprites following the falling rock, small orange specks at run time (runtime (low, look pending)) |
+| fx_0cd | 0x8 | `FX_AERA_GREEN_WIND_BLADES` | emitter: spiralling sprites + 3D trail, the translucent green wind blades sweeping round the target (runtime) |
+| fx_0cd | 0xc | `FX_AERA_SPRITE_BURST` | emitter: sprites; the render still reads garbled yellow texels (texture not resolved); runtime: its run-time sprite is a tiny green glint; ablating it changes < 210 px |
+| fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved); runtime: ablating it changes only scattered pink squiggle pixels (max 1234 px) |
+| fx_0ce | 0xb | `FX_SCREECH_SOUND_RINGS` | emitter: textured rings, the pale expanding sound-wave rings over the target (runtime (medium)) |
 | fx_0d3 | 0x5 | `FX_PHOENIX_RAINBOW_FAN` | emitter: fan of a rainbow gradient strip, the prismatic light rays behind Phoenix (runtime) |
 | fx_0d3 | 0x7 | `FX_PHOENIX_LENS_FLARE` | sprite line: lens-flare set (rainbow halo ring, yellow-green disc, white glow, red ring, blue disc) across Phoenix (runtime) |
 | fx_0d3 | 0x14 | `FX_PHOENIX_RAINBOW_FAN_2` | emitter: the same rainbow gradient fan, later rays (runtime) |

@@ -25,7 +25,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_DARK_RINGS), (s32)&work->pos18);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_SOUND_RINGS), (s32)&work->pos18);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }

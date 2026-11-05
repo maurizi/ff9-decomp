@@ -27,7 +27,7 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->hold0 == 0) {
             if (frame == 0x18) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_WHITE_RINGS), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_01F_WHITE_FLASH), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0xC8;
                 }
@@ -40,7 +40,7 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = 0xC8;
                 }
             }
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_01F_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_01F_BURST_TEXTURE), frame);
             if (frame >= 0x3C) {
                 return 1;
             }

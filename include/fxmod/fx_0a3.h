@@ -8,8 +8,8 @@
 
 /* fx_0a3 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ELECTROCUTE_BOLT_TRAIL   0x1 /* emitter: small blue bolt trail + sprites that render black or as faint dots (look pending) */
-#define FX_ELECTROCUTE_BOLT_TRAIL_2 0x2 /* emitter: small blue bolt trail + sprites that render black, spiralling (look pending) */
+#define FX_ELECTROCUTE_BLUE_BOLTS   0x1 /* emitter: blue bolt trail with blue glow sprites, the blue lightning crackling round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
+#define FX_ELECTROCUTE_BLUE_BOLTS_2 0x2 /* emitter: the same blue bolt trail + sprites, spiralling: part of the blue lightning round the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
 typedef struct {
     Pool6CEntry *emit0;

@@ -11,7 +11,7 @@
 #define FX_METEORITE_IMPACT_RING   0x2 /* rings: white-pink gouraud ring at the impact */
 #define FX_METEORITE_IMPACT_SMOKE  0x3 /* particles: pink-white smoke puff at the impact */
 #define FX_METEORITE_RED_GLOW      0x7 /* particles: red glow around the falling rock */
-#define FX_METEORITE_TRAIL_EMITTER 0x9 /* emitter: sprites following the falling rock; the render is still black (texels blank in the file's upload) (look pending) */
+#define FX_METEORITE_EMBERS        0x9 /* emitter: sprites following the falling rock, small orange specks at run time; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_METEORITE_IMPACT_FLASH  0xC /* particles: white radial flash at the impact */
 #define FX_METEORITE_ROCK          0xF /* 'so' model: dark brown rock (polyhedron), drawn spinning down */
 

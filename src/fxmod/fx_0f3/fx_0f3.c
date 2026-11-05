@@ -56,7 +56,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->pos18.vx = work->headPos10.vx;
                 work->pos18.vy = work->headPos10.vy;
                 work->pos18.vz = work->headPos10.vz;
-                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_SCREEN_TRAIL), (s32)&work->pos18);
+                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_GOLD_SPARK), (s32)&work->pos18);
                 if (work->emit24 != NULL) {
                     work->emit24->trails = (s32)fx_0f3_op80Trails[work->variant4];
                     work->emit24->trailSlots = 4;

@@ -7,7 +7,7 @@
 /* fx_037 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_DARKNESS_DARK_CRESCENTS 0x1 /* emitter: pale crescent quads tinted violet / green + coloured specks */
-#define FX_DARKNESS_SCREEN_TRAIL   0x2 /* emitter: orbiting screen trail; the strip reads a page of unrelated green sprite shapes, probably filled at run time (look pending) */
+#define FX_DARKNESS_GREEN_HAZE     0x2 /* emitter: orbiting screen trail, a strip of green glow dots on long streaks at run time: the dark-green haze at the frame edges; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_DARKNESS_WHITE_GLOW     0x3 /* emitter: white radial glow + one particle (texture not in the file) */
 #define FX_DARKNESS_DARK_ORBS      0x4 /* emitter: blue orbs turning violet then red */
 #define FX_DARKNESS_MAGENTA_STREAK 0x5 /* emitter: fan drawn as a thin magenta horizontal light streak */

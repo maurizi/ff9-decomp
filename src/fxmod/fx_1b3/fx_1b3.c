@@ -232,7 +232,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
-            emitter = work->emit80[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_FAN_EMITTER), (s32)&work->pos100);
+            emitter = work->emit80[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_GOLD_RAYS), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }

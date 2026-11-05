@@ -14,10 +14,10 @@
 #define FX_IFRIT_VEC_TRACK_2         0x9 /* table: vector track (fxm_vecTrackInit; byte-identical to fx_114 entry 0x24) */
 #define FX_IFRIT_ORANGE_RINGS        0xA /* emitter: orange gouraud rings, 16 frames (byte-identical to fx_114 entry 0xB) */
 #define FX_IFRIT_FLAME_RING          0xB /* model: flat ring, flame texture (byte-identical to fx_114 entry 0x22) */
-#define FX_IFRIT_WHITE_HAZE          0xD /* model: grid with grey-white wavy streaks, the white haze under Ifrit's fist (fx_114's entry, played there) (byte-identical to fx_114 entry 0x2A); runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_IFRIT_WHITE_HAZE          0xD /* model: grid with grey-white wavy streaks, the grey streaky haze over the floor under the target, turning orange as the lava cracks appear (byte-identical to fx_114 entry 0x2A); runtime (docs/runtime-findings.md effect-data pass 2: ablated here; pass 1 carried it from fx_114, medium) */
 #define FX_IFRIT_FLAME_DOME          0xE /* model: dome, flame texture (byte-identical to fx_114 entry 0x27) */
 #define FX_IFRIT_RED_GLOW 0x12 /* emitter: orbiting fan, a horizontal orange-red glow (byte-identical to fx_114 entry 0x26, same render) */
-#define FX_IFRIT_HEAT_DOME           0x13 /* model: hemisphere bowl, the translucent wavy dome (fx_114's entry, ablated together with its spoked ring there) (byte-identical to fx_114 entry 0x1E); runtime (docs/runtime-findings.md effect-data pass, low) (look pending: low) */
+#define FX_IFRIT_HEAT_DOME           0x13 /* model: hemisphere bowl, the bright yellow-white translucent glare dome over the fire dome (byte-identical to fx_114 entry 0x1E); runtime (docs/runtime-findings.md effect-data pass 2: ablated alone here) */
 #define FX_IFRIT_SHOT0_CAMERA_KEYS_2 0x14 /* table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[1]) */
 #define FX_IFRIT_SHOT0_CAMERA_KEYS_1 0x15 /* table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[0]) */
 #define FX_IFRIT_TRAIL_PATHS         0x16 /* table: offset table of position paths (fxm_offsetTableEntry + fxm_posPathInit) for the fire trails (byte-identical to fx_114 entry 0x17) */
@@ -27,7 +27,7 @@
 #define FX_IFRIT_PIECE_TRACKS        0x28 /* table: offset table of tracks, one per piece (fxm_offsetTableEntry; byte-identical to fx_114 entry 0x29) */
 #define FX_IFRIT_PIECE_MODELS        0x29 /* table: offset table of model data, one per piece (fxm_offsetTableEntry; byte-identical to fx_114 entry 0x28) */
 #define FX_IFRIT_BLOCK_CLUSTER       0x2B /* model: cluster of block chunks, orange streak texture (byte-identical to fx_114 entry 0x20) */
-#define FX_IFRIT_SPOKED_RING         0x2C /* model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime (docs/runtime-findings.md effect-data pass): fx_114's same entry is untextured and was only ablated together with the bowl (look pending) */
+#define FX_IFRIT_SPOKED_RING         0x2C /* model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime (docs/runtime-findings.md effect-data pass 2): ablating it alone changes only a few hundred scattered px (look pending) */
 
 typedef struct {
     s16 x, y, z;

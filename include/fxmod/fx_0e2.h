@@ -20,7 +20,7 @@
 #define FX_FENRIR_RIBBON_PATHS_D     0xF /* table: position paths of ribbons 2/3 (other branch) */
 #define FX_FENRIR_GREEN_RINGS_2      0x10 /* emitter: white-green / pale green gouraud rings */
 #define FX_FENRIR_WIND_RING          0x11 /* 'so' model: flat ring with a green wind texture */
-#define FX_FENRIR_SPARKS             0x12 /* emitter: spiral of white dot sparks */
+#define FX_FENRIR_CYAN_GLINTS        0x12 /* emitter: spiral of white dot sparks; at run time (fx_1fd's byte-identical entry) tiny cyan-white glints round the green whirlwind; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_FENRIR_GREEN_WIND_STRIP   0x17 /* trail: green wind-streak strip texture */
 #define FX_FENRIR_WIND_RING_2        0x1D /* 'so' model: flat ring with a green wind texture (same shape as WIND_RING) */
 #define FX_FENRIR_WIND_VORTEX        0x1F /* 'so' model: swirl of green wind blades (vortex), drawn with WIND_SHELL */

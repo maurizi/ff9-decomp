@@ -51,7 +51,7 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x0:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_WIND_STREAKS), (s32)&work->posA4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_GREEN_WIND_BLADES), (s32)&work->posA4);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1f6_op80Trails0;
                 emitter->trailSlots = 0x26;
@@ -59,7 +59,7 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x8:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_WIND_STREAKS), (s32)&work->posA4);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERA_GREEN_WIND_BLADES), (s32)&work->posA4);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1f6_op80Trails1;
                 emitter->trailSlots = 0x26;

@@ -14,10 +14,10 @@
 #define FX_BLASTER_LIGHT_CONE     0x4 /* emitter: fan drawn as a narrowing light cone fading pink to yellow */
 #define FX_BLASTER_PINK_STARBURST 0x5 /* emitter: pink starburst + violet petals */
 #define FX_BLASTER_VIOLET_PETALS  0x6 /* emitter: violet petal sprites */
-#define FX_BLASTER_TRAIL          0x7 /* emitter: flat orbiting trail; the grey strip reads a page of unrelated smoke shapes (look pending) */
+#define FX_BLASTER_WHITE_HAZE     0x7 /* emitter: flat orbiting trail, the white-violet haze band over the target's mouth; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_BLASTER_GREY_RING      0x8 /* emitter: lilac-grey gouraud rings */
 #define FX_BLASTER_VIOLET_RING    0xF /* emitter: white-violet gouraud rings */
-#define FX_BLASTER_TRAIL_2        0x10 /* trail: small strip, mostly black with magenta texels (look pending) */
+#define FX_BLASTER_TRAIL_2        0x10 /* trail: small strip, mostly black with magenta texels; runtime (docs/runtime-findings.md effect-data pass 2): drawn from the start (12 calls), its strip reads pink-violet stripes at run time; ablating it changes < 250 px (look pending) */
 
 typedef struct {
     s32 state0; /* state */

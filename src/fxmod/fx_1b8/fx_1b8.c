@@ -37,7 +37,7 @@ s32 fx_1b8_op81(s32 mode, Fx1b8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 8:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_DARK_QUADS), (s32)&work->pos20);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_TEAL_GLOWS), (s32)&work->pos20);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_WATER_SPOUT), (s32)&work->pos20);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_WATER_WAVE), (s32)&work->pos18);
             if (work->emit4 != NULL) {

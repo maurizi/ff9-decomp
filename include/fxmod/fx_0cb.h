@@ -13,7 +13,7 @@
 #define FX_LIGHT_FLARE_RED_HALO      0x8 /* 'so' model: red-orange gouraud halo ring, drawn fading with the fireball */
 #define FX_LIGHT_FLARE_BACKDROP      0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (with the screen tint) */
 #define FX_LIGHT_FLARE_BACKDROP_2    0xF /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (with the rings) */
-#define FX_LIGHT_FLARE_TEXTURED_RING 0x11 /* rings: textured ring drawn twice, tilted; the render reads unrelated texels (noise), texture not in the file (look pending) */
+#define FX_LIGHT_FLARE_GLOW_RING     0x11 /* rings: textured ring drawn twice, tilted: the yellow-green glow ring round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_LIGHT_FLARE_FIREBALL      0x12 /* 'so' model: sphere with a fire texture, drawn fading */
 
 typedef struct {

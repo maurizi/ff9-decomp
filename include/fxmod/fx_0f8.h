@@ -11,8 +11,8 @@
 #define FX_GRAND_LETHAL_BACKDROP     0x1 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_GRAND_LETHAL_BACKDROP_2   0x2 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_GRAND_LETHAL_PINK_FLARES  0x3 /* emitter: pink lens-flare glows and streaks */
-#define FX_GRAND_LETHAL_SPRITE_RINGS 0xD /* emitter: white / cyan / blue / grey gouraud rings with a sprite that renders as a flat violet square (texture not in the file) (look pending) */
-#define FX_GRAND_LETHAL_SWIRL_RINGS  0xE /* emitter: white swirl sprite with textured rings; the rings still read garbled multicolour texels (texture not resolved) (look pending) */
+#define FX_GRAND_LETHAL_FLAME_FLASH  0xD /* emitter: white / cyan / blue / grey gouraud rings with a large flame-tile sprite at run time: the bright yellow-orange fire glow filling the screen; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
+#define FX_GRAND_LETHAL_FLAME_VORTEX 0xE /* emitter: white swirl sprite with textured rings, the orange flame vortex swirling round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 
 typedef struct {
     Pool6CEntry *emit0;

@@ -20,7 +20,7 @@
 #define FX_FENRIR_GREEN_WIND_TRAIL 0x13 /* emitter: spiralling green wind-streak trail + grey smoke (byte-identical to fx_0e2 entry 0xE) */
 #define FX_FENRIR_SAND_RINGS       0x14 /* emitter: brown-salmon gouraud rings + spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0xD) */
 #define FX_FENRIR_RIBBON_PATHS_D   0x15 /* table: position paths of ribbons 2/3 (other branch) (byte-identical to fx_0e2 entry 0xF) */
-#define FX_FENRIR_SPARKS           0x16 /* emitter: spiral of spark sprites (texture not in the file) (byte-identical to fx_0e2 entry 0x12) (look pending) */
+#define FX_FENRIR_CYAN_GLINTS      0x16 /* emitter: spiral of tiny cyan-white glint sprites, the glints round the green whirlwind (byte-identical to fx_0e2 entry 0x12); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
 typedef struct {
     s16 x, y, z;

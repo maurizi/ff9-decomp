@@ -8,13 +8,13 @@
 /* fx_19f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_RAMUH_STAFF 0x5 /* 'so' model: gold gouraud staff with a hooked head (Ramuh's staff) (byte-identical to fx_0ba entry 0x4) */
-#define FX_RAMUH_LIGHTNING_RIBBON   0x6 /* trail: ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0x5) (look pending) */
+#define FX_RAMUH_LIGHTNING_RIBBON   0x6 /* trail: ribbon drawn between key points, crackling blue-white plasma strip at run time: the blue-white electric ribbons arcing across (byte-identical to fx_0ba entry 0x5); runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_RAMUH_LENS_FLASH_KEYS    0x8 /* table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH; byte-identical to fx_0ba entry 0x7) */
 #define FX_RAMUH_BLUE_GLOW_RINGS    0xC /* emitter: blue glow quad and fading light-blue gouraud rings (byte-identical to fx_0ba entry 0xA) */
-#define FX_RAMUH_LIGHTNING_RIBBON_2 0xF /* trail: second ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0xD) (look pending) */
-#define FX_RAMUH_SPARK_BURST        0x16 /* emitter: white gouraud rings + sprites (texture garbled in the render; byte-identical to fx_0ba entry 0x14) (look pending) */
+#define FX_RAMUH_LIGHTNING_RIBBON_2 0xF /* trail: second ribbon drawn between key points, the same blue-white plasma strip at run time (byte-identical to fx_0ba entry 0xD); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
+#define FX_RAMUH_BOLT_SPARK_BURST   0x16 /* emitter: white gouraud rings + small blue lightning-bolt glyph sprites in a glow, the cyan screen flash and bolt sparks round the strike (byte-identical to fx_0ba entry 0x14); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_RAMUH_LENS_FLASH         0x17 /* particles: white-violet lens flash (byte-identical to fx_0ba entry 0x15) */
-#define FX_RAMUH_LIGHTNING_BOLT     0x18 /* trail: 8-frame trail (texture garbled in the render; byte-identical to fx_0ba entry 0x16) (look pending) */
+#define FX_RAMUH_LIGHTNING_BOLT     0x18 /* trail: 8-frame trail, a blue forked lightning strip at run time (byte-identical to fx_0ba entry 0x16); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_RAMUH_THIN_ROD 0x1A /* 'so' model: thin dark rod with a red tip (byte-identical to fx_0ba entry 0x18) */
 #define FX_RAMUH_MOTION_KEYS_2      0x1B /* table: per-frame position / rotation keys (op81, second phase; byte-identical to fx_0ba entry 0x19) */
 #define FX_RAMUH_MOTION_KEYS        0x1C /* table: per-frame position / rotation keys (op81, first phase; byte-identical to fx_0ba entry 0x1A) */
@@ -22,10 +22,10 @@
 #define FX_RAMUH_CYAN_RING          0x1F /* rings: white / cyan / blue gouraud rings (byte-identical to fx_0ba entry 0x1D) */
 #define FX_RAMUH_ORANGE_LIGHTNING 0x20 /* trail: 8-frame orange lightning bolt (offset trail) (byte-identical to fx_0ba entry 0x1E, same render) */
 #define FX_RAMUH_ELECTRIC_BOWL 0x21 /* 'so' model: shallow bowl with blue electric flames around a white glow (byte-identical to fx_0ba entry 0x1F) */
-#define FX_RAMUH_DOME_COLUMN        0x22 /* 'so' model: dome-capped column (its texture pages hold a 'dummy' placeholder) (look pending) */
+#define FX_RAMUH_BLUE_AURA_COLUMN   0x22 /* 'so' model: dome-capped column; its page holds a blue-white marbled texture at run time (no 'dummy' placeholder): the huge glassy blue energy shroud round Ramuh's staff; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_RAMUH_GREY_RING          0x23 /* rings: grey gouraud ring */
 #define FX_RAMUH_GREEN_DOME 0x27 /* 'so' model: teal-green gouraud hemisphere (byte-identical to fx_0ba entry 0x26) */
-#define FX_RAMUH_SPARK_PARTICLE     0x2A /* emitter: one particle (texture garbled in the render; byte-identical to fx_0ba entry 0x2C); runtime (docs/runtime-findings.md effect-data pass): fx_0ba's same entry was not fetched in a full Ramuh (a branch that cast did not take) (look pending) */
+#define FX_RAMUH_BOLT_SPARKS        0x2A /* emitter: one particle, a blue lightning-bolt glyph sprite at run time: the small bolt sparks around the pillar (byte-identical to fx_0ba entry 0x2C); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_RAMUH_CAMERA_KEYS        0x2B /* table: per-frame camera point 0 (op82; byte-identical to fx_0ba entry 0x2E) */
 #define FX_RAMUH_CAMERA_KEYS_2      0x2C /* table: per-frame camera point 1 (op82; byte-identical to fx_0ba entry 0x2F) */
 

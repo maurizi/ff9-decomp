@@ -236,7 +236,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0xF | `FX_FENRIR_RIBBON_PATHS_D` | usage | table: position paths of ribbons 2/3 (other branch) |
 | 0x10 | `FX_FENRIR_GREEN_RINGS_2` | render | emitter: white-green / pale green gouraud rings |
 | 0x11 | `FX_FENRIR_WIND_RING` | render (fxdata d6121033) | 'so' model: flat ring with a green wind texture |
-| 0x12 | `FX_FENRIR_SPARKS` | render (fxdata d6121033) | emitter: spiral of white dot sparks |
+| 0x12 | `FX_FENRIR_CYAN_GLINTS` | runtime (medium) | emitter: spiral of white dot sparks; at run time (fx_1fd's byte-identical entry) tiny cyan-white glints round the green whirlwind |
 | 0x17 | `FX_FENRIR_GREEN_WIND_STRIP` | render | trail: green wind-streak strip texture |
 | 0x1D | `FX_FENRIR_WIND_RING_2` | render (fxdata d6121033) | 'so' model: flat ring with a green wind texture (same shape as WIND_RING) |
 | 0x1F | `FX_FENRIR_WIND_VORTEX` | render (fxdata d6121033) | 'so' model: swirl of green wind blades (vortex), drawn with WIND_SHELL |
@@ -452,7 +452,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x1 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | kind/usage (look pending) | emitter: animated quads; the render is still all black (texture not in the file) |
+| 0x1 | `FX_ZOMBIE_POWDER_BLUE_SPECKS` | runtime (medium) | emitter: animated quads, blue specks at run time: the blue glowing dust drifting round the caster |
 | 0x2 | `FX_ZOMBIE_POWDER_SPORE_TRAIL` | render | emitter: homing green spores, yellow puffs, sparkles |
 | 0x3 | `FX_ZOMBIE_POWDER_YELLOW_PUFFS` | render | emitter: yellow powder puffs |
 | 0x4 | `FX_ZOMBIE_POWDER_YELLOW_CLOUD` | render | emitter: yellow powder cloud |
@@ -471,7 +471,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x2 | `FX_TIDAL_FLAME_DOME` | kind/usage (look pending) | model: hemisphere, texture page 0x11A not in the file (magenta in the render) |
+| 0x2 | `FX_TIDAL_FLAME_FIRE_DOME` | runtime | model: hemisphere; page 0x11A holds flames at run time: the fire dome behind the target |
 | 0x3 | `FX_TIDAL_FLAME_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x8 | `FX_TIDAL_FLAME_RUNE_BURST` | render | emitter: white rune glyphs with cyan-blue rings, embers, blue light streak |
 | 0x9 | `FX_TIDAL_FLAME_FLAME_CLOUD` | render | emitter: embers + orange flame cloud |
@@ -508,5 +508,5 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0ec | 0xd | `FX_DOOM_GLOW_SHELL` | model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice; runtime: tpage computed by the C, not resolved |
 | fx_0ec | 0x10 | `FX_DOOM_SWIRL_SHELL` | model: shell on a grey marbled swirl page at run time (runtime (medium)) |
 | fx_0ec | 0x13 | `FX_DOOM_GOURAUD_SHELL` | model: gouraud capsule; the render draws it black (colours set by the C at run time?); runtime: still black with the run-time page |
-| fx_0f0 | 0x1 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | emitter: animated quads; the render is still all black (texture not in the file) |
-| fx_0f2 | 0x2 | `FX_TIDAL_FLAME_DOME` | model: hemisphere, texture page 0x11A not in the file (magenta in the render) |
+| fx_0f0 | 0x1 | `FX_ZOMBIE_POWDER_BLUE_SPECKS` | emitter: animated quads, blue specks at run time: the blue glowing dust drifting round the caster (runtime (medium)) |
+| fx_0f2 | 0x2 | `FX_TIDAL_FLAME_FIRE_DOME` | model: hemisphere; page 0x11A holds flames at run time: the fire dome behind the target (runtime) |

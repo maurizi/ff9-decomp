@@ -15,8 +15,8 @@
 #define FX_POLY_STAR_GLOWS     0x6 /* emitter: orange-to-green glows and violet star sprites */
 #define FX_POLY_GREEN_SPECKS_2 0x7 /* emitter: small green and cyan bow-tie specks */
 #define FX_POLY_CYAN_RINGS     0x8 /* emitter: white-cyan gouraud rings, 24 frames */
-#define FX_POLY_POLYHEDRON     0xD /* model: faceted polyhedron, texture not in the file (magenta in the render) (byte-identical to entry 0xE) (look pending) */
-#define FX_POLY_POLYHEDRON_2   0xE /* model: faceted polyhedron, registered with a tpage the C computes (not resolved by the tool) (byte-identical to entry 0xD) (look pending) */
+#define FX_POLY_GREEN_CRYSTAL  0xD /* model: faceted polyhedron, a green crystalline texture at run time: part of the green crystal over the target (byte-identical to entry 0xE); runtime (docs/runtime-findings.md effect-data pass 2) */
+#define FX_POLY_GREEN_CRYSTAL_2 0xE /* model: faceted polyhedron, registered with a tpage the C computes: also part of the green crystal over the target (byte-identical to entry 0xD); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
 typedef struct {
     s32 hold0; /* dead early-out flag, cleared at init and never set (see Fx046Work.hold0) */

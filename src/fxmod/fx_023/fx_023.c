@@ -69,7 +69,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->pos1C.vx = work->pos14.vx;
                 work->pos1C.vz = work->pos14.vz;
                 work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_GREY_RINGS), (s32)&work->pos14);
-                work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_SCREEN_TRAILS), (s32)&work->pos14);
+                work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_LIGHT_RAYS), (s32)&work->pos14);
                 if (work->emit10 != NULL) {
                     work->emit10->trails = (s32)fx_023_trails;
                     work->emit10->trailSlots = 0x3C;

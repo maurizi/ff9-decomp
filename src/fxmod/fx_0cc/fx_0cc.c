@@ -11,7 +11,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
 
     if (mode == 1) {
         part->state0 = 0;
-        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEORITE_TRAIL_EMITTER), (s32)&part->pos4);
+        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEORITE_EMBERS), (s32)&part->pos4);
         if (part->emitC != NULL) {
             part->emitC->otZ = 0;
         }

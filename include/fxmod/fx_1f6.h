@@ -13,9 +13,9 @@
 #define FX_AERA_WIND_RING    0x5 /* emitter: orbiting white wind-ring particle (byte-identical to fx_0cd entry 0x5) */
 #define FX_AERA_GREEN_TORNADO 0x6 /* 'so' model: twisted green column with a smoke texture (tornado) (byte-identical to fx_0cd entry 0xD) */
 #define FX_AERA_GREEN_BURST  0x7 /* emitter: green gust puffs (byte-identical to fx_0cd entry 0x7) */
-#define FX_AERA_WIND_STREAKS 0x8 /* emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) (byte-identical to fx_0cd entry 0x8) (look pending) */
+#define FX_AERA_GREEN_WIND_BLADES 0x8 /* emitter: spiralling sprites + 3D trail, the translucent green wind blades sweeping round the target (byte-identical to fx_0cd entry 0x8); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_AERA_GUST_RINGS   0xA /* emitter: cyan-green gouraud rings (byte-identical to fx_0cd entry 0xA) */
-#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites (texture garbled in the render) (byte-identical to fx_0cd entry 0xC) (look pending) */
+#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites (texture garbled in the render) (byte-identical to fx_0cd entry 0xC); runtime (docs/runtime-findings.md effect-data pass 2): as fx_0cd's entry 0xC: a tiny green glint sprite at run time, ablating it changes < 210 px (look pending) */
 
 typedef struct {
     s32 model0; /* model */

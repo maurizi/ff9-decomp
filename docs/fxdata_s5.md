@@ -157,7 +157,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_179 | 0x8 | `FX_MEDEO_STAR_FLASH` | render | emitter: blue and green star flashes |
 | fx_179 | 0x9 | `FX_MEDEO_COLOR_LIGHT_BARS` | render (fxdata d6121033) | emitter: three fans of blue / gold / green capsule-shaped light bars, + sprites that render transparent |
 | fx_179 | 0xA | `FX_MEDEO_COLOR_SMOKE_2` | render | emitter: spiral of yellow, purple, cyan and green smoke puffs |
-| fx_179 | 0xB | `FX_MEDEO_SPRITE_BURST` | kind/usage (look pending) | emitter: two sprite elements; the render is still all transparent |
+| fx_179 | 0xB | `FX_MEDEO_GREEN_SPECKS` | runtime (low, look pending) | emitter: two sprite elements, tiny green specks at run time |
 | fx_17a | 0x1 | `FX_MADEEN_BLUE_RING` | render | rings: black-to-blue gouraud rings |
 | fx_17a | 0x2 | `FX_MADEEN_BLUE_GLOW` | render | particles: blue glow (pool task) |
 | fx_17a | 0x3 | `FX_MADEEN_BLUE_RINGS` | render | rings: white-blue gouraud rings |
@@ -173,7 +173,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17a | 0xD | `FX_MADEEN_VIOLET_GLOW` | render (fxdata d6121033) | emitter: three fans, a horizontal violet-white glow |
 | fx_17a | 0xE | `FX_MADEEN_WHITE_GLOW` | render | particles: white-blue glow |
 | fx_17a | 0xF | `FX_MADEEN_BLUE_SPARKLES` | render | emitter: blue square sparkles and gold sprites |
-| fx_17a | 0x11 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file (magenta in the render) |
+| fx_17a | 0x11 | `FX_MADEEN_SPIRAL_STREAK` | runtime (medium) | trail: the thin white curved light streaks spiralling round the blast (the tool still resolves the strip's tpage to the placeholder page) |
 | fx_17a | 0x12 | `FX_MADEEN_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_17a | 0x13 | `FX_MADEEN_BLUE_STREAKS` | render | emitter: orbiting blue light streaks |
 | fx_17d_0 | 0x19 | `FX_ARK_CAMERA_KEYS_2` | usage | table: per-frame position keys for camera point 1 (op 0x82) |
@@ -265,7 +265,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_8 | 0x3 | `FX_ARK_ORANGE_BEAM` | render (fxdata d6121033) | 'so' model: long orange gouraud beam (same size as fx_17d_7's), work model slot 3 |
 | fx_17d_8 | 0x4 | `FX_ARK_DARK_BLUE_RING` | render (fxdata d6121033) | 'so' model: flat ring with a dark blue texture, work model slot 5 |
 | fx_17d_8 | 0x5 | `FX_ARK_FIRE_RING` | render | rings: white-yellow-red gouraud rings |
-| fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4; runtime: group 8 never became resident within 4600 frames of a full Ark; the kana page stays open |
+| fx_17d_8 | 0x6 | `FX_ARK_BEAM_HAZE` | runtime (medium) | 'so' model: flat panel on page 0x11B (a placeholder in the file), work model slot 4; group 8 was not reached in a full Ark; at run time the short Ark's byte-identical fx_1bf_2 entry 0x2 draws the page as a red-violet nebula, the wide red glow band along Ark's beam hitting the planet |
 | fx_17d_8 | 0x7 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_17d_8 | 0x9 | `FX_ARK_GREY_STAR_DISC` | render (fxdata d6121033) | 'so' model: shallow disc with a grey radial texture, work model slot 2 |
 | fx_17d_8 | 0xB | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites |
@@ -278,7 +278,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17f | 0x4 | `FX_MELT_GOO_RIPPLE` | render | emitter: pink ripple disc |
 | fx_17f | 0xB | `FX_MELT_GOO_SPLASH` | render | emitter: glossy purple goo splash |
 | fx_180 | 0x1 | `FX_ULTIMA_GLOW_DOME` | render | model: gouraud octagonal dome (20 polys) |
-| fx_180 | 0x2 | `FX_ULTIMA_NOISE_RING` | kind/usage (look pending) | emitter: ring whose texture still reads as noise, + pink gouraud ring |
+| fx_180 | 0x2 | `FX_ULTIMA_VIOLET_HAZE` | runtime | emitter: textured ring + pink gouraud ring, the violet haze vortex round the party |
 | fx_180 | 0x3 | `FX_ULTIMA_ROCK_DEBRIS` | render | emitter: grey rock chunks |
 | fx_180 | 0x4 | `FX_ULTIMA_GREY_TRAIL` | render | emitter: wobbling 3D trail with a grey streak texture |
 | fx_180 | 0x6 | `FX_ULTIMA_RED_LENS_FLARE` | render | emitter: red lens streak, white-pink rings, red sparks |
@@ -290,7 +290,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_180 | 0xC | `FX_ULTIMA_BLAST_RINGS` | render | emitter: white-pink, lilac and yellow-red gouraud rings, pink glows |
 | fx_180 | 0xD | `FX_ULTIMA_WHITE_BEAM` | render | emitter: spiralling white beam screen trail, pink sparks |
 | fx_180 | 0xE | `FX_ULTIMA_PINK_SPARKS` | render | emitter: sparse pink spark sprites |
-| fx_180 | 0xF | `FX_ULTIMA_NOISE_RING_2` | kind/usage (look pending) | emitter: ring whose texture still reads as noise, + pink-lilac gouraud rings |
+| fx_180 | 0xF | `FX_ULTIMA_VIOLET_GLOW` | runtime | emitter: textured ring + pink-lilac gouraud rings, the big soft violet glow sphere behind the white star burst |
 | fx_180 | 0x10 | `FX_ULTIMA_RED_FLARE` | render | emitter: red lens streak and white-red gouraud rings |
 | fx_180 | 0x11 | `FX_ULTIMA_CRIMSON_STREAK` | render (fxdata d6121033) | emitter: orbiting fan, a white-to-crimson light streak |
 | fx_180 | 0x12 | `FX_ULTIMA_PINK_TRAIL` | render | emitter: pink screen trail |
@@ -304,7 +304,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_180 | 0x1A | `FX_ULTIMA_PATH_SET_2` | usage | table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 |
 | fx_180 | 0x1D | `FX_ULTIMA_ROCK_SWIRL` | render | emitter: spiralling 3D trail of rock pieces, pink glows |
 | fx_180 | 0x1E | `FX_ULTIMA_ROCK_SWIRL_2` | render | emitter: spiralling 3D trail of rock pieces, pink glows |
-| fx_180 | 0x1F | `FX_ULTIMA_NOISE_RING_3` | kind/usage (look pending) | emitter: ring whose texture still reads as noise, + lilac gouraud ring |
+| fx_180 | 0x1F | `FX_ULTIMA_NOISE_RING_3` | kind/usage (look pending) | emitter: ring whose texture still reads as noise, + lilac gouraud ring; runtime: not fetched within 1000 frames (the run ended in the final explosion); not byte-identical to fx_1ec's 0x27 |
 | fx_180 | 0x20 | `FX_ULTIMA_ROCK_TRAIL_2` | render | emitter: spiralling screen trail of rock pieces |
 | fx_180 | 0x21 | `FX_ULTIMA_PURPLE_HAZE` | render (fxdata d6121033) | emitter: pink-purple smoke puffs |
 | fx_180 | 0x22 | `FX_ULTIMA_PATH_SET` | usage | table: 18 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x80 |
@@ -359,8 +359,8 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 |---|---|---|---|
 | fx_138 | 0xe | `FX_LUCKY_SEVEN_LENS_FLARE` | sprite line: lens-flare set (blue ring, dark red disc, orange rings, violet ring, rainbow halo) (runtime) |
 | fx_138 | 0x1b | `FX_LUCKY_SEVEN_RAINBOW_STRIPS` | model: slanted strips on a rainbow gradient page at run time (runtime (medium)) |
-| fx_179 | 0xb | `FX_MEDEO_SPRITE_BURST` | emitter: two sprite elements; the render is still all transparent |
-| fx_17a | 0x11 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file (magenta in the render) |
+| fx_179 | 0xb | `FX_MEDEO_GREEN_SPECKS` | emitter: two sprite elements, tiny green specks at run time (runtime (low, look pending)) |
+| fx_17a | 0x11 | `FX_MADEEN_SPIRAL_STREAK` | trail: the thin white curved light streaks spiralling round the blast (the tool still resolves the strip's tpage to the placeholder page) (runtime (medium)) |
 | fx_17d_0 | 0x1c | `FX_ARK_STAR_SPHERE` | 'so' model registered at the start of op 0x80: sphere on a starfield page at run time (white stars on black), the starry sky dome of Ark's space scene (runtime (medium)) |
 | fx_17d_2 | 0x2 | `FX_ARK_CLOUD_ARCH` | 'so' model: thin arch with a grey cloud wisp as Ark plunges through the clouds (runtime (medium)) |
 | fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | trail: strip texture not resolved (noise and green in the render); runtime: its strip reads noise in the run-time page |
@@ -368,7 +368,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_17d_5 | 0xd | `FX_ARK_LENS_FLARE` | sprite line: lens-flare set during the white blast (runtime) |
 | fx_17d_6 | 0xc | `FX_ARK_FAN_EMITTER_2` | emitter: two fans; the render shows small olive / orange garbled patches; runtime: not fetched within 4600 frames of a full Ark |
 | fx_17d_6 | 0xd | `FX_ARK_SPRITE_LINE` | sprite line: green textures, partly not resolved (almost empty in the render); runtime: not fetched within 4600 frames of a full Ark |
-| fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4; runtime: group 8 never became resident within 4600 frames of a full Ark; the kana page stays open |
-| fx_180 | 0x2 | `FX_ULTIMA_NOISE_RING` | emitter: ring whose texture still reads as noise, + pink gouraud ring |
-| fx_180 | 0xf | `FX_ULTIMA_NOISE_RING_2` | emitter: ring whose texture still reads as noise, + pink-lilac gouraud rings |
-| fx_180 | 0x1f | `FX_ULTIMA_NOISE_RING_3` | emitter: ring whose texture still reads as noise, + lilac gouraud ring |
+| fx_17d_8 | 0x6 | `FX_ARK_BEAM_HAZE` | 'so' model: flat panel on page 0x11B (a placeholder in the file), work model slot 4; group 8 was not reached in a full Ark; at run time the short Ark's byte-identical fx_1bf_2 entry 0x2 draws the page as a red-violet nebula, the wide red glow band along Ark's beam hitting the planet (runtime (medium)) |
+| fx_180 | 0x2 | `FX_ULTIMA_VIOLET_HAZE` | emitter: textured ring + pink gouraud ring, the violet haze vortex round the party (runtime) |
+| fx_180 | 0xf | `FX_ULTIMA_VIOLET_GLOW` | emitter: textured ring + pink-lilac gouraud rings, the big soft violet glow sphere behind the white star burst (runtime) |
+| fx_180 | 0x1f | `FX_ULTIMA_NOISE_RING_3` | emitter: ring whose texture still reads as noise, + lilac gouraud ring; runtime: not fetched within 1000 frames (the run ended in the final explosion); not byte-identical to fx_1ec's 0x27 |

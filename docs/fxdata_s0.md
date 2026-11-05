@@ -48,18 +48,18 @@ still render black.
 - fx_01b 0x1 `FX_FLOAT_CLOUD`: emitter: white puffy cloud particles bursting under the target (runtime)
 - fx_01b 0x3 `FX_FLOAT_CLOUD_2`: emitter: white cloud puffs (the second cloud emitter, same cloud texture) (runtime)
 - fx_01b 0x4 `FX_FLOAT_CLOUD_TEXTURE`: layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x200,0x180) 128x128, a white cloud sampled by the cloud burst (runtime)
-- fx_01f 0x3 `FX_01F_WHITE_RINGS`: emitter: textured rings (UV box reads a placeholder page, texture filled at run time) + white gouraud rings
-- fx_01f 0xD `FX_01F_BACKDROP`: layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool)
-- fx_023 0x8 `FX_PSYCHOKINESIS_SCREEN_TRAILS`: emitter: two screen trails, still render all black
+- fx_01f 0x3 `FX_01F_WHITE_FLASH`: emitter: textured rings + white gouraud rings, the huge white flash that swallows the target (runtime)
+- fx_01f 0xD `FX_01F_BURST_TEXTURE`: layer table: render-to-texture (btlfx_drawLayerTexture), drawn from the start; skipping it changes the red / white burst rays round the target (runtime (medium))
+- fx_023 0x8 `FX_PSYCHOKINESIS_LIGHT_RAYS`: emitter: two screen trails, the white light rays bursting from the target (byte-identical to fx_0eb entry 0x8, which renders as dark bubbles from that file's pages) (runtime)
 - fx_02a 0x4 `FX_SILENCE_NEBULA_TEXTURE`: layer table: render-to-texture (btlfx_drawLayerTexture): 4 layers into VRAM (0x240,0x190) 112x112, a blue-violet starry nebula sampled by the glowing ball on the target (runtime)
-- fx_033 0x5 `FX_SNORT_BREATH_TRAILS`: emitter: two spiralling screen trails; the strip's top shows grey smoke, the rest stays outside the file and the common pages
-- fx_034 0xA `FX_COLD_BREATH_ICE_CRYSTAL_2`: model: the same crystal shape, texture page 0x9A still not uploaded by the file or the common pages
-- fx_037 0x2 `FX_DARKNESS_SCREEN_TRAIL`: emitter: orbiting screen trail; the strip reads a page of unrelated green sprite shapes, probably filled at run time
+- fx_033 0x5 `FX_SNORT_SMOKE_STREAKS`: emitter: two spiralling screen trails, the grey smoke streaks blowing past the target (runtime (medium))
+- fx_034 0xA `FX_COLD_BREATH_ICE_CRYSTAL_2`: model: the same crystal shape (texture page 0x9A not in the file), one of the ice crystal shards on the target (runtime)
+- fx_037 0x2 `FX_DARKNESS_GREEN_HAZE`: emitter: orbiting screen trail, a strip of green glow dots on long streaks at run time: the dark-green haze at the frame edges (runtime (low, look pending))
 - fx_038 0xC `FX_COMET_HAZE_TEXTURE`: layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x200,0x180) 64x64, a dim violet haze band; skipping it changes nothing on screen (runtime (low, look pending))
-- fx_03b 0x3 `FX_TROUBLE_JUICE_SCREEN_TRAIL`: emitter: screen trail, still renders all black
-- fx_03b 0xA `FX_TROUBLE_JUICE_SCREEN_TRAIL_2`: emitter: screen trail, still renders all black
-- fx_043 0x1 `FX_INK_INK_TRAIL`: emitter: flat trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator
-- fx_043 0x2 `FX_INK_INK_SPRAY`: emitter: screen trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator
+- fx_03b 0x3 `FX_TROUBLE_JUICE_SCREEN_TRAIL`: emitter: screen trail, still renders all black; runtime: ablating it changes < 190 px
+- fx_03b 0xA `FX_TROUBLE_JUICE_SCREEN_TRAIL_2`: emitter: screen trail, still renders all black; runtime: started, not ablated
+- fx_043 0x1 `FX_INK_BLOTS`: emitter: flat trail + spark dots, the black ink blots splattered on the target (runtime)
+- fx_043 0x2 `FX_INK_BLOTS_2`: emitter: screen trail + spark dots, another set of the black ink blots on the target (runtime)
 - fx_04c 0x1 `FX_FLOAT_CLOUD`: emitter: white puffy cloud particles bursting under the target (runtime)
 - fx_04c 0x2 `FX_FLOAT_CLOUD_2`: emitter: white cloud puffs (the second cloud emitter, same cloud texture) (runtime)
 - fx_04c 0x5 `FX_FLOAT_CLOUD_TEXTURE`: layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x200,0x180) 128x128, a white cloud sampled by the cloud burst (runtime)
@@ -150,11 +150,11 @@ still render black.
 | fx_01e | 0x4 | `FX_1000_NEEDLES_NEEDLE_BURST` | render | emitter: orange specks, pink starbursts, white shard sprites, sparks (texture not in the file) |
 | fx_01e | 0x8 | `FX_1000_NEEDLES_NEEDLE_TRAILS` | render | emitter: flat trails with a white needle-streak strip |
 | fx_01f | 0x1 | `FX_01F_PINK_VORTEX` | render | emitter: white-violet-maroon gouraud rings + pink swirling orb |
-| fx_01f | 0x3 | `FX_01F_WHITE_RINGS` | kind/usage (look pending) | emitter: textured rings (UV box reads a placeholder page, texture filled at run time) + white gouraud rings |
+| fx_01f | 0x3 | `FX_01F_WHITE_FLASH` | runtime | emitter: textured rings + white gouraud rings, the huge white flash that swallows the target |
 | fx_01f | 0x4 | `FX_01F_RED_GLOW` | render | emitter: dark red glow with a white spot |
 | fx_01f | 0xB | `FX_01F_PINK_RINGS` | render | emitter: white-lilac-maroon and white-cream-pink gouraud rings |
 | fx_01f | 0xC | `FX_01F_RED_GLOW_2` | render | emitter: dark red glow with a white spot (orbiting) |
-| fx_01f | 0xD | `FX_01F_BACKDROP` | kind/usage (look pending) | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) |
+| fx_01f | 0xD | `FX_01F_BURST_TEXTURE` | runtime (medium) | layer table: render-to-texture (btlfx_drawLayerTexture), drawn from the start; skipping it changes the red / white burst rays round the target |
 | fx_020 | 0x2 | `FX_REGEN_GLINTS` | render | emitter: fan + blue glint, teal-white ring, blue / green star glints |
 | fx_020 | 0x8 | `FX_REGEN_LIGHT_TRAIL` | render | emitter: white-blue light trail + faint sparkle sprites |
 | fx_021 | 0x1 | `FX_OPEN_BOOK_DUST_PUFF` | render | emitter: white-grey dust puffs |
@@ -163,7 +163,7 @@ still render black.
 | fx_023 | 0x2 | `FX_PSYCHOKINESIS_GLYPH_ORBS` | render | emitter: pink orbs, each with a kana glyph, homing |
 | fx_023 | 0x3 | `FX_PSYCHOKINESIS_WHITE_RINGS_2` | render | emitter: white gouraud rings |
 | fx_023 | 0x7 | `FX_PSYCHOKINESIS_GREY_RINGS` | render | emitter: white rings fading to grey |
-| fx_023 | 0x8 | `FX_PSYCHOKINESIS_SCREEN_TRAILS` | kind/usage (look pending) | emitter: two screen trails, still render all black |
+| fx_023 | 0x8 | `FX_PSYCHOKINESIS_LIGHT_RAYS` | runtime | emitter: two screen trails, the white light rays bursting from the target (byte-identical to fx_0eb entry 0x8, which renders as dark bubbles from that file's pages) |
 | fx_024 | 0x7 | `FX_AERIAL_SLASH_DUST_CLOUD` | render | emitter: lilac dust clouds + green glint (byte-identical to fx_01d entry 0x3) |
 | fx_024 | 0xB | `FX_AERIAL_SLASH_STAR_FLASH` | render | emitter: white star flash with a blue halo |
 | fx_024 | 0xC | `FX_AERIAL_SLASH_BLUE_GUST` | render (fxdata d6121033) | emitter: fan drawn as a blue crescent gust + small blue spark quads (same call site as fx_01d entry 0x5) |
@@ -243,11 +243,11 @@ still render black.
 | fx_032 | 0x3 | `FX_GLOWING_EYES_GLOW_RINGS_2` | render | emitter: olive-yellow and white-cyan gouraud rings |
 | fx_032 | 0x4 | `FX_GLOWING_EYES_SMOKE` | render | emitter: grey smoke wisps |
 | fx_032 | 0x5 | `FX_GLOWING_EYES_SWIRL` | render | emitter: pale green swirling vortex |
-| fx_033 | 0x5 | `FX_SNORT_BREATH_TRAILS` | kind/usage (look pending) | emitter: two spiralling screen trails; the strip's top shows grey smoke, the rest stays outside the file and the common pages |
+| fx_033 | 0x5 | `FX_SNORT_SMOKE_STREAKS` | runtime (medium) | emitter: two spiralling screen trails, the grey smoke streaks blowing past the target |
 | fx_034 | 0x1 | `FX_COLD_BREATH_ICE_CRYSTAL` | render | model: ice crystal shape with a cracked-ice texture |
 | fx_034 | 0x2 | `FX_COLD_BREATH_FROST_BREATH` | render | emitter: violet-white frost mist streams |
 | fx_034 | 0x3 | `FX_COLD_BREATH_ICE_CHUNKS` | render | emitter: grey ice lumps + teal glows |
-| fx_034 | 0xA | `FX_COLD_BREATH_ICE_CRYSTAL_2` | kind/usage (look pending) | model: the same crystal shape, texture page 0x9A still not uploaded by the file or the common pages |
+| fx_034 | 0xA | `FX_COLD_BREATH_ICE_CRYSTAL_2` | runtime | model: the same crystal shape (texture page 0x9A not in the file), one of the ice crystal shards on the target |
 | fx_035 | 0x3 | `FX_DEVILS_CANDLE_FLAME` | render | emitter: teal / tan flame quads |
 | fx_035 | 0x8 | `FX_DEVILS_CANDLE_FLAME_2` | render | emitter: teal / tan flame quads |
 | fx_035 | 0x9 | `FX_DEVILS_CANDLE_FIRE` | render | emitter: red-orange-yellow flame tongues + red glow |
@@ -259,7 +259,7 @@ still render black.
 | fx_036 | 0xC | `FX_BLOWUP_SPARK_DOTS_2` | render (fxdata d6121033) | emitter: faint spark dots (btlfx_emitDots), at the targets |
 | fx_036 | 0xD | `FX_BLOWUP_SMOKE` | render | emitter: grey smoke puffs |
 | fx_037 | 0x1 | `FX_DARKNESS_DARK_CRESCENTS` | render | emitter: pale crescent quads tinted violet / green + coloured specks |
-| fx_037 | 0x2 | `FX_DARKNESS_SCREEN_TRAIL` | kind/usage (look pending) | emitter: orbiting screen trail; the strip reads a page of unrelated green sprite shapes, probably filled at run time |
+| fx_037 | 0x2 | `FX_DARKNESS_GREEN_HAZE` | runtime (low, look pending) | emitter: orbiting screen trail, a strip of green glow dots on long streaks at run time: the dark-green haze at the frame edges |
 | fx_037 | 0x3 | `FX_DARKNESS_WHITE_GLOW` | render | emitter: white radial glow + one particle (texture not in the file) |
 | fx_037 | 0x4 | `FX_DARKNESS_DARK_ORBS` | render | emitter: blue orbs turning violet then red |
 | fx_037 | 0x5 | `FX_DARKNESS_MAGENTA_STREAK` | render (fxdata d6121033) | emitter: fan drawn as a thin magenta horizontal light streak |
@@ -290,8 +290,8 @@ still render black.
 | fx_03a | 0x10 | `FX_EARTHQUAKE_RUBBLE` | render | emitter: yellow striped rubble quads |
 | fx_03b | 0x1 | `FX_TROUBLE_JUICE_SPLASH` | render | emitter: orange burst of juice blobs |
 | fx_03b | 0x2 | `FX_TROUBLE_JUICE_SCRIBBLE_RINGS` | render | emitter: ring with an orange scribble texture + cream gouraud rings |
-| fx_03b | 0x3 | `FX_TROUBLE_JUICE_SCREEN_TRAIL` | kind/usage (look pending) | emitter: screen trail, still renders all black |
-| fx_03b | 0xA | `FX_TROUBLE_JUICE_SCREEN_TRAIL_2` | kind/usage (look pending) | emitter: screen trail, still renders all black |
+| fx_03b | 0x3 | `FX_TROUBLE_JUICE_SCREEN_TRAIL` | kind/usage (look pending) | emitter: screen trail, still renders all black; runtime: ablating it changes < 190 px |
+| fx_03b | 0xA | `FX_TROUBLE_JUICE_SCREEN_TRAIL_2` | kind/usage (look pending) | emitter: screen trail, still renders all black; runtime: started, not ablated |
 | fx_03c | 0x2 | `FX_WIND_WIND_TRAILS` | render | emitter: two spiralling trails with a grey wind-streak strip |
 | fx_03d | 0x1 | `FX_LUNA_MAGENTA_RING` | render | emitter: white-magenta gouraud ring + two fans |
 | fx_03d | 0x2 | `FX_LUNA_GOLD_RINGS` | render | emitter: white-gold and dark magenta gouraud rings |
@@ -318,8 +318,8 @@ still render black.
 | fx_041 | 0x8 | `FX_WHIRL_SLASH_PATH` | kind/usage | point list: the slash path (fxm_posPathInit) |
 | fx_041 | 0xF | `FX_WHIRL_SLASH_GLINTS` | render | emitter: fan + yellow glints, sparks |
 | fx_041 | 0x10 | `FX_WHIRL_SLASH_GOLD_RINGS` | render | emitter: white-yellow-brown and white-red gouraud rings |
-| fx_043 | 0x1 | `FX_INK_INK_TRAIL` | kind/usage (look pending) | emitter: flat trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator |
-| fx_043 | 0x2 | `FX_INK_INK_SPRAY` | kind/usage (look pending) | emitter: screen trail that renders black + spark dots; whether the black strip is the ink or a missing texture needs the emulator |
+| fx_043 | 0x1 | `FX_INK_BLOTS` | runtime | emitter: flat trail + spark dots, the black ink blots splattered on the target |
+| fx_043 | 0x2 | `FX_INK_BLOTS_2` | runtime | emitter: screen trail + spark dots, another set of the black ink blots on the target |
 | fx_043 | 0x3 | `FX_INK_GREY_RINGS` | render | emitter: grey gouraud rings |
 | fx_044 | 0x1 | `FX_ULTRA_SOUND_WAVE_PINK_RINGS` | render | emitter: pink gouraud rings |
 | fx_044 | 0x2 | `FX_ULTRA_SOUND_WAVE_VIOLET_HALO` | render | emitter: violet ring-shaped glow |

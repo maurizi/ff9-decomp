@@ -10,7 +10,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_LIGHTNING_BOLT_PILLAR   0x1 /* trail: violet lightning pillar strip */
 #define FX_LIGHTNING_ELECTRIC_ARCS 0x3 /* emitter: blue / green electric arcs + embers */
-#define FX_LIGHTNING_TRAIL_2       0x4 /* trail: one frame, still not rendered by the tool (look pending) */
+#define FX_LIGHTNING_TRAIL_2       0x4 /* trail: one frame, still not rendered by the tool; runtime (docs/runtime-findings.md effect-data pass 2): drawn from the start (99 calls); not rendered by the tool, not ablated (look pending) */
 #define FX_LIGHTNING_BLUE_RING     0x6 /* rings: white-blue-violet gouraud rings */
 
 typedef struct {

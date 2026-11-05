@@ -8,13 +8,13 @@
 /* fx_1b2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_TIDAL_WAVE_PATH        0x1 /* table: vector path (fxm_vecPathInit) */
-#define FX_TIDAL_WAVE_CURL        0x2 /* model: curved sheet like a breaking wave (texture page 0x117 renders plain white) (look pending) */
+#define FX_TIDAL_WAVE_WATER_CURL  0x2 /* model: curved sheet like a breaking wave; page 0x117 holds blue-white water at run time: the white curling wave crest; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_TIDAL_WAVE_BACKDROP    0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_TIDAL_WAVE_WATER_ORBS  0x7 /* emitter: orbiting blue water-caustic orbs + grey-blue shard sprites */
 #define FX_TIDAL_WAVE_RED_TRAIL   0x8 /* emitter: helix flat trail, red caustic strip */
 #define FX_TIDAL_WAVE_WATER_TRAIL 0x9 /* emitter: spiralling screen trail, grey-blue water streak strip */
 #define FX_TIDAL_WAVE_PALE_RINGS  0xB /* emitter: white / cream / olive gouraud rings */
-#define FX_TIDAL_WAVE_DISC        0xC /* model: flat soft-edged disc (texture page 0x119 renders plain white) (look pending) */
+#define FX_TIDAL_WAVE_SURGE       0xC /* model: flat soft-edged disc, the big grey water surge sweeping over the party; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_TIDAL_WAVE_FOAM        0xD /* emitter: orbiting grey-white foam cloud quads, 17 frames */
 
 typedef struct {

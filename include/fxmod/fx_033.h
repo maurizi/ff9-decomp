@@ -6,7 +6,7 @@
 
 /* fx_033 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SNORT_BREATH_TRAILS 0x5 /* emitter: two spiralling screen trails; the strip's top shows grey smoke, the rest stays outside the file and the common pages (look pending) */
+#define FX_SNORT_SMOKE_STREAKS 0x5 /* emitter: two spiralling screen trails, the grey smoke streaks blowing past the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
 typedef struct {
     s32 timer0; /* knockback countdown */

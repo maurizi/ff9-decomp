@@ -9,10 +9,10 @@
 
 /* fx_0a0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_WEB_CALLBACK_EMITTER 0x1 /* emitter: orbit, one callback element, nothing drawable in the data (look pending) */
+#define FX_WEB_CALLBACK_EMITTER 0x1 /* emitter: orbit, one callback element, nothing drawable in the data; runtime (docs/runtime-findings.md effect-data pass 2): started, not ablated (look pending) */
 #define FX_WEB_WHITE_PUFFS      0x2 /* emitter: white puffs */
 #define FX_WEB_STRAND_LINE      0x6 /* table: strand line data (fxm_drawTrailLine) */
-#define FX_WEB_STRAND_TRAIL     0x7 /* trail: dark strip, still nearly black (look pending) */
+#define FX_WEB_STRANDS          0x7 /* trail: dark strip, the white web strands wrapping the target (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */

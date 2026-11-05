@@ -57,9 +57,9 @@ static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
 
     trail = ex->btlfx_getParticleTrail(pt, p);
     if (frame == 0) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_TRAIL), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)trail, 2);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRANDS), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)trail, 2);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_TRAIL), (s32)pos, (s32 *)p->origin, frame, *scale, fx_0a0_trailAlpha, 1,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRANDS), (s32)pos, (s32 *)p->origin, frame, *scale, fx_0a0_trailAlpha, 1,
                       (u8 *)trail, 2);
     if (frame < 0x28) {
         fade = ex->math_cos((frame << 10) / 40);

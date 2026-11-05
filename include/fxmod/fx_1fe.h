@@ -15,7 +15,7 @@
 #define FX_PHOENIX_PINK_RINGS       0x11 /* emitter: white / pink / copper gouraud rings (byte-identical to fx_0d3 entry 0x11) */
 #define FX_PHOENIX_GOLD_FEATHERS    0x12 /* emitter: golden feather quads (same call site as fx_0d3 entry 0x12, same kind) */
 #define FX_PHOENIX_FLAME_FEATHERS_2 0x15 /* emitter: copper flame-feather quads (cylinder) (same call site as fx_0d3 entry 0x18, same kind) */
-#define FX_PHOENIX_EMBERS           0x16 /* emitter: sprites, render empty (texture not in the file) (same call site as fx_0d3 entry 0xF, same kind) (look pending) */
+#define FX_PHOENIX_EMBERS           0x16 /* emitter: soft orange glowing mote sprites, the small embers drifting after the white-out (same call site as fx_0d3 entry 0xF, same kind); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_PHOENIX_FLAME_FEATHERS   0x17 /* emitter: copper flame-feather quads (same call site as fx_0d3 entry 0x17, same kind) */
 
 typedef struct {
