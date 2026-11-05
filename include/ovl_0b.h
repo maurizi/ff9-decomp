@@ -2131,7 +2131,7 @@ s32 btlfx_poolSize(s32, s32);
 void btlfx_poolInit(struct Unk800DA1B8 *, Unk80100C78Entry *, s32, s32, s32);
 
 typedef struct {
-    u16 unk0; /* not read */
+    u16 kind; /* BtlBgLayer.kind: every SprInfo is a BtlBgLayer (btlfx_drawLayerTexture's casts); btlfx_addSpriteQuad doesn't read it */
     u16 tpage; /* tpage (abr bits added) */
     u16 clut; /* clut */
     u16 pad6;
