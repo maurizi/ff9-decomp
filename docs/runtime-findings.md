@@ -4515,3 +4515,64 @@ was still not reached (not re-run).
 
 New save states: none (all runs from `disc3_malboro_lv99_calm`). Not done: E groups' entries marked still unknown above,
 full-Ark group 8 (fx_17d_8).
+
+## ATE menu reachability check  (status: proposed)
+
+Runtime check of the two anomaly lists in `docs/wip/ates.md` "Which fields really offer the menu" (2026-11-05,
+PCSX-Redux, `tools/rt/enter_field.py` from `field_dali_inn` (disc 1) / `field_iifa_tree` (disc 2); pokes are applied at
+main's dispatcher before the field init runs). Addresses: story `g_evtGlobalVars.h[0]` 0x8007AEF0, arrival `Gs16[0x2]`
+0x8007AEF2, `Gu16[0xEC]` 0x8007AFDC, `Gs8[0xEE]` 0x8007AFDE, `Gs16[0xF1]` 0x8007AFE1, `g_atePromptMode` 0x8007BC10,
+`EvtState.controlEnabled` 0x8007954C (g_evtStateData + 0x16EC), field vars (Fbit) at 0x80077E60. Screenshots in
+`build/atecheck/`.
+
+**Control (disc 1, 552 at story 3110, mask 1): CONFIRMED (R36 repeated).** `enter_field.py 552 --base-state
+field_dali_inn --frames 900 --poke 0x8007AEF0=260c --poke 0x8007AEF2=0000 --poke 0x8007AFDC=0100` → EC..F2 = `01 00 01
+28 02 01 00`, `g_atePromptMode` 1, "ACTIVE TIME EVENT" prompt bottom left (`d1_552.png`); `press select --wait 90` →
+"Select event / Small-Town Knight in a Big City / Cancel" (`d1_552_sel.png`).
+
+**Prompt but no handler: menu never opens CONFIRMED; the claim that the prompt shows is WRONG.**
+- What the scripts do (edis, every field in the list except 1607): the only `D7 1` is in **entry 0 tag 10**
+  (EVT_FUNC_RESUME, run by evt_init after a battle) behind `if (Fbit[0x9B] == 1)`. Fbit[0x9B] is the field-local
+  copy of "prompt on" that the standard ATE init block sets next to `D7 1` (552 +0x229). 563, 900, 914, 1052, 1862,
+  2105 and 2211 never set Fbit[0x9B], and evt_init clears the field vars, so the prompt can't appear. It's the common
+  resume helper copied into fields that have no ATE init block. 1607 differs: it sets Fbit[0x9B] and has a second `D7 1`
+  in entry 30 tag 0 (under `Fbit[0x99] == 1 && Fu8[0x18] != 0`). It wasn't run.
+- 563 Lindblum/T.D. Station (disc 1): same pokes as the control → EC = 1 but EE = 0, F1 = 0, `g_atePromptMode` 0, no prompt
+  (`d1_563.png`). Again with `--poke 0x8007AFDE=01 --poke 0x8007AFE1=0100` (as if 552 had left EE = 1; the init
+  leaves EE and F1 alone): no prompt; Select does nothing while the player can walk (`d1_563_ee1_sel.png`,
+  `d1_563_move.png`). Main menu open and closed: still no prompt. Battle 67 forced from there and won
+  (`enter_battle.py 67 --disc 1 --field 563 --base-state atecheck_d1_563_ee1`), then `trace evt_callObjectFunc
+  msg_setAtePrompt` over the return: evt_callObjectFunc(obj0, 0, 10, 0) from evt_init+0x734 runs, but
+  msg_setAtePrompt is only called once, with 0 (evt_init+0x218), and nothing draws (`d1_563_resume.png`).
+- 900 Treno/Pub (disc 2): `enter_field.py 900 --disc 2 --base-state field_iifa_tree --frames 900 --poke
+  0x8007AEF0=3011 --poke 0x8007AEF2=0000 --poke 0x8007AFDA=0000 --poke 0x8007AFDC=0100 --poke 0x8007AFDE=01 --poke
+  0x8007AFE1=0100` (story 4400, EA = 0, mask 1, EE = 1): no prompt, Select does nothing, the player walks
+  (`d2_900.png`, `d2_900_sel.png`, `d2_900_move.png`).
+- Proposed doc fix: these fields show neither the prompt nor the menu. Drop the "[prompt but no handler: …]"
+  brackets from the menu-field column, or reword them "resume-only D7 1, dead". ate_list.py should ignore a `D7 1`
+  in entry 0 tag 10 that sits behind Fbit[0x9B] when the field never sets Fbit[0x9B]. high (563, 900 run; the other
+  five share the same tag 10 bytes and have no Fbit[0x9B] setter).
+
+**Handler but no prompt, 1060 Cleyra/Cathedral (disc 2): mostly CONFIRMED, but Select still doesn't open the menu in
+normal play.**
+- The init's default arrival branch (any code except -16, 827, 828; 1059's real door code is 824) stores Gs16[0xEF] =
+  1060 and creates the handler (`NEW_CODE 3`). It never touches EE or F1, and has no `D7 1`.
+- `enter_field.py 1060 --disc 2 --base-state field_iifa_tree --frames 900 --poke 0x8007AEF0=7012 --poke
+  0x8007AEF2=0000 --poke 0x8007AFDE=01 --poke 0x8007AFE1=0100` (story 4720, EE = 1, F1 = 1): EE and F1 kept, EF =
+  1060, `g_atePromptMode` 0, no prompt (`d2_1060_ee1.png`). Select does nothing (`d2_1060_ee1_sel.png`), but the
+  player can't move either: `controlEnabled` stays 0. Same result at story 4725 and 4800, with arrival 0 and with
+  arrival 824 (`d2_1060_s7512.png`, `d2_1060_sc012.png`, `d2_1060_a824*.png`). In 1060 the only `ENABLE_CONTROL` ops
+  are the init's (behind `Fbit[0x9E] == 1`, field vars are 0x82 at +0x13, so bit 0x9E is clear) and the handler's
+  Cancel path. Free roam needs some other condition I didn't find. In this setup the handler's `controlEnabled == 1`
+  test blocks it.
+- Handler itself, with `write 0x8007954C 1 --size 1` (controlEnabled forced) and EE = 1: Select opens "ACTIVE TIME
+  EVENT / Select event / Don't Hate Me / Cancel" with no prompt on screen before it (`d2_1060_ee1_ctl_sel.png`).
+  With EE = 0 (`write 0x8007AFDE 0`), same forcing: no menu, and Zidane walks (`d2_1060_ee0_ctl_sel.png`,
+  `d2_1060_ee0_move.png`).
+- So: prompt absent (holds); menu armed only by a leftover Gs8[0xEE] = 1 (holds); but whether a player ever has
+  control in 1060 with a non-cutscene arrival is unresolved, so the menu may be unreachable in practice. medium. 2173
+  (disc 3) was not run.
+
+Save states (disc 1): `atecheck_d1_563_ee1` (563 entered with EE = 1, F1 = 1), `atecheck_d1_563_rewards` (rewards
+screen of battle 67 forced from 563). Disc 2: `atecheck_d2_900_ee1`, `atecheck_d2_1060_ee1` (1060, story 4720, EE =
+1, no control), `atecheck_d2_1060_menu_forced` (ATE window open after forcing controlEnabled).
