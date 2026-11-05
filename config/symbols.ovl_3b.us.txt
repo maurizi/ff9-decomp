@@ -24,4 +24,4 @@ s_menuPartyTitleRect = 0x801F4728; // [code] RECT of the title window (menuParty
 s_menuPartyHelpRect = 0x801F4730; // [code] RECT of the HELP window (menuParty_drawHelp)
 s_menuPartyListRect = 0x801F4738; // [code] RECT of the PARTY window (menuParty_drawParty)
 s_menuPartyInfoRect = 0x801F4740; // [code] RECT of the INFO window (menuParty_drawInfo)
-s_menuPartyImage = 0x801EDFE8; // [code] image data passed to func_80028720 by menuParty_init
+s_menuPartyImage = 0x801EDFE8; // type:u8 size:0x57C0 [code] image data passed to func_80028720 by menuParty_init

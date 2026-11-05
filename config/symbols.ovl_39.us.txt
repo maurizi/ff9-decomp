@@ -242,7 +242,7 @@ s_menuSaveAccessTitles = 0x801FB050; // [string] label index into main's D_80070
 
 s_menuSaveGaugeTexWindow = 0x801FB060; // [code] texture window reset after the gauge middle (menuSave_drawGauge)
 s_menuSaveGaugeColors = 0x801FB068; // [code] colours of the 3 gauge fill lines (menuSave_drawGauge)
-s_menuSaveImage = 0x801EE4D4; // [code] image data passed to func_80028720 by menuSave_loadImage
+s_menuSaveImage = 0x801EE4D4; // type:u8 size:0x4380 [code] image data passed to func_80028720 by menuSave_loadImage
 s_menuSaveBookImage = 0x801F2854; // [code] CLUT and 0x58x33 image of the book frames (menuSave_saveVram)
 s_menuSaveIconEven = 0x801F4104; // [code] card file icon for an even frame count (menuSave_buildCardHeader)
 s_menuSaveIconOdd = 0x801F41A4; // [code] card file icon for an odd frame count (menuSave_buildCardHeader)

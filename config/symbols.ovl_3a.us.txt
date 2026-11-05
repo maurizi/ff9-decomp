@@ -32,4 +32,4 @@ s_menuNamePortraitRect = 0x801F4B70; // [code] VRAM (960,432) 16x46, the portrai
 s_menuNameClutRestoreRect = 0x801F4B78; // [code] same CLUT row, restored by menuName_restoreClut
 s_menuNameIds = 0x801F4B80; // [code] menu argument -> name id table (menuName_getNameId)
 s_menuNameCharIdx = 0x801F4BB0; // [code] name id -> character index table (menuName_getCharIdx)
-s_menuNamePortraits = 0x801EE0B4; // [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menuName_loadPortrait
+s_menuNamePortraits = 0x801EE0B4; // type:u8 size:0x57C0 [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menuName_loadPortrait
