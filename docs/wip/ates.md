@@ -68,7 +68,7 @@ Variables a fixture should know (byte offsets = `event.K`):
 | 2-3 | `Gs16[0x2]` | arrival code (`EVT_GB_ARRIVAL_POINT`): which entrance / which ATE; leave 0 for a normal start |
 | 0xEA-0xEB (234-235) | `Gu16[0xEA]` | per-town "ATE already played from this field" bits (Treno, Black Mage Village, Conde Petie: bit = return slot - 3 or - 5); a set bit hides the prompt in that field. Leave 0 |
 | 0xEC-0xED (236-237) | `Gu16[0xEC]` | available-ATE bits |
-| 0xEE (238) | `Gs8[0xEE]` | prompt shown / Select handler armed (set by the init) |
+| 0xEE (238) | `Gs8[0xEE]` | prompt shown / Select handler armed (set by the init). It is a global and outlives the field: a field whose init doesn't touch it (611) keeps the previous field's 1, so "menu available here" is g_atePromptMode (reset by the event init, set by D7 1), not this byte |
 | 0xEF-0xF0 (239-240) | `Gs16[0xEF]` | return field or slot after the ATE |
 | 0xF1-0xF2 (241-242) | `Gs16[0xF1]` | menu row mask (set by the init) |
 | 0xF3-0xF9 | | saved player x, y, z, dir for the return |
@@ -202,10 +202,10 @@ direct start (arrival code + return field/slot); **start at the menu** = prompt 
 | 1 | Cat's Eye | opt | 350-358, 450 (3) | 351 Dali/Inn | 2640 | low | `kind=field, disc=1, field=351, story=2640, event.2=16, event.3=0, event.239=1, event.240=0, event.259=8, event.297=1` | `kind=field, disc=1, field=350, story=2640, event.259=8, event.297=1` | mask bit = Gbit[0x81B] ^ Gbit[0x810] |
 | 1 | Cat's Eye 2 | opt | 350-358, 450 (4) | 351 Dali/Inn | 2640 | low | `kind=field, disc=1, field=351, story=2640, event.2=16, event.3=0, event.239=1, event.240=0, event.259=16, event.297=1` | `kind=field, disc=1, field=350, story=2640, event.259=16, event.297=1` | mask bit = Gbit[0x81C] ^ Gbit[0x811] |
 | 1 | Dagger Tries Harder | opt | 350-358, 450 (5) | 354 Dali/Wpn. Shop | 2640 | low | `kind=field, disc=1, field=354, story=2640, event.2=16, event.3=0, event.239=1, event.240=0, event.259=4, event.297=1` | `kind=field, disc=1, field=350, story=2640, event.259=4, event.297=1` | mask bit = Gbit[0x81A] ^ Gbit[0x81F] |
-| 1 | Small-Town Knight in a Big City | opt | 550-573, 609, 611, 850 (0) | 555 Lindblum/Shopping Area | 3110 | high | `kind=field, disc=1, field=555, story=3110, event.2=1, event.3=0, event.239=40, event.240=2` | `kind=field, disc=1, field=552, story=3110, event.236=1, event.237=0` | set by 553 at story == 3110 && !Gbit[0xA57]; the menu line was verified (R36) |
-| 1 | Vivi's Shopping | REQ | 550-573, 609, 611, 850 (1) | 561 Lindblum/Item Shop | 3110 | high | `kind=field, disc=1, field=561, story=3110, event.2=1, event.3=0, event.239=40, event.240=2` | `kind=field, disc=1, field=552, story=3110, event.236=2, event.237=0` | forced from 552 (region, entry 22) while story < 3115 && !Gbit[0xA56] |
-| 1 | Steam Engine | opt | 550-573, 609, 611, 850 (2) | 609 L. Castle/Castle Bridge | 3110 | med | `kind=field, disc=1, field=609, story=3110, event.2=1, event.3=0, event.239=54, event.240=2` | `kind=field, disc=1, field=552, story=3110, event.236=4, event.237=0` | set by 566 if story < 3115, Gbit[0xA57] && !Gbit[0xA55] and bit 0 already gone |
-| 1 | Baku and His Crew | opt | 550-573, 609, 611, 850 (3) | 850 S. Gate/Bohden Arch | 3118 | med | `kind=field, disc=1, field=850, story=3118, event.2=1, event.3=0, event.239=53, event.240=2` | `kind=field, disc=1, field=552, story=3118, event.236=8, event.237=0` | set by 565 Hideout (\|= 8) after the 3118 scene |
+| 1 | Small-Town Knight in a Big City | opt | 550-573, 609, 850 (0) | 555 Lindblum/Shopping Area | 3110 | high | `kind=field, disc=1, field=555, story=3110, event.2=1, event.3=0, event.239=40, event.240=2` | `kind=field, disc=1, field=552, story=3110, event.236=1, event.237=0` | set by 553 at story == 3110 && !Gbit[0xA57]; the menu line was verified (R36) |
+| 1 | Vivi's Shopping | REQ | 550-573, 609, 850 (1) | 561 Lindblum/Item Shop | 3110 | high | `kind=field, disc=1, field=561, story=3110, event.2=1, event.3=0, event.239=40, event.240=2` | `kind=field, disc=1, field=552, story=3110, event.236=2, event.237=0` | forced from 552 (region, entry 22) while story < 3115 && !Gbit[0xA56] |
+| 1 | Steam Engine | opt | 550-573, 609, 850 (2) | 609 L. Castle/Castle Bridge | 3110 | med | `kind=field, disc=1, field=609, story=3110, event.2=1, event.3=0, event.239=54, event.240=2` | `kind=field, disc=1, field=552, story=3110, event.236=4, event.237=0` | set by 566 if story < 3115, Gbit[0xA57] && !Gbit[0xA55] and bit 0 already gone |
+| 1 | Baku and His Crew | opt | 550-573, 609, 850 (3) | 850 S. Gate/Bohden Arch | 3118 | med | `kind=field, disc=1, field=850, story=3118, event.2=1, event.3=0, event.239=53, event.240=2` | `kind=field, disc=1, field=552, story=3118, event.236=8, event.237=0` | set by 565 Hideout (\|= 8) after the 3118 scene |
 | 1 | What can I do? | REQ | - (-) | 611 L. Castle/Guest Room | 3118 | med | `kind=field, disc=1, field=611, story=3118, event.2=22, event.3=0, event.239=53, event.240=2` | - | forced from 565 Hideout init (story 3115 -> 3118), arrival 22 |
 | 1 | "Teach me, Mogster!" Lesson 1 | tutorial | - (-) | 652 Marsh/Shore | 2400 | med | `kind=field, disc=1, field=652, story=2400, event.2=0, event.3=208, event.239=6, event.240=1` | - | forced from 262 Evil Forest/Exit (story 2350 -> 2400) |
 | 1 | "Teach me, Mogster!" Lesson 2 | tutorial | - (-) | 652 Marsh/Shore | 2500 | low | `kind=field, disc=1, field=652, story=2500, event.2=0, event.3=224, event.239=50, event.240=1` | - | forced from 306 Ice Cavern/Cave (sets Gbit[0xD82]) |
@@ -286,7 +286,7 @@ fixture, merge by OR otherwise.
   ~20`. Return codes are the field ids.
 - **Dali** (350-358, 450): see the Dali section. Return slots 1 350, 2 351, 6 352, 7 354, 9 353, 10 355, 11 356, 12
   357, 13 358, 25 450. 351 builds its mask in `Fu8[0x2B]` (same formula).
-- **Lindblum, disc 1** (550-573; 609/611/850 show the same list): standard. 552 and 553 hide the prompt for arrival 1
+- **Lindblum, disc 1** (550-573; 609/850 show the same list; 611 L. Castle/Guest Room carries the list function (entry 3) but its init has no D7 prompt and starts no Select handler, so it never offers the menu: verified on the 3DS port's PC build at story 3120 with Baku and His Crew available, F39): standard. 552 and 553 hide the prompt for arrival 1
   and 2. Return codes are field ids.
 - **Treno, disc 2** (900-915): standard plus `Gu16[0xEA]` (bit = return slot - 3). Return slots: 903 6, 904 7, 905 8,
   908 11, 912 15, 915 18 (909, 914, 900 have none in their init).
