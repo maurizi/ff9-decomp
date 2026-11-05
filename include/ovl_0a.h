@@ -172,7 +172,7 @@ typedef struct {
     u8 sndVolume;
     u8 movieSndVolume;
     u8 soundBankSlot;
-    u8 unk5F; /* write-only: fld_soundCommand class 2 kind 2 sub 12 sets it, playing a sound effect clears it */
+    u8 unk5F; /* write-only: fld_soundCommand SND_TYPE_STREAM, SND_CMD_SET parameter 12 stores param1, SND_CMD_PLAY of a stream clears it (docs/wip/r42_runtime.md) */
     u8 modelQueueCount; /* g_fieldModelQueue count */
     u8 unk61[1]; /* write-only (cleared) */
     s16 unk62; /* write-only (cleared) */
@@ -1129,11 +1129,6 @@ typedef struct {
     s8 shadowOtBias; /* added to the shadow quads' OT index (fld_drawShadow) */
 } Unk800B3294Bias;
 
-/* texture set tables (fld_loadModelBundle) */
-typedef struct {
-    s16 unk0; /* not used by C */
-    s16 unk2; /* not used by C */
-} FieldTexPair; /* tpage/clut or u/v */
 
 /* ModelTexOfs as fld_loadModelBundle fills it in (signed view, the loads must stay lh): on input srcX is a key,
  * odd = the texture gets its own 128x128 page (dest = the page), even = a 32-row strip (src = the strip) that

@@ -86,7 +86,7 @@ typedef struct {
     unsigned int pad0_8 : 24;
     u8 effect; /* battle formula (BTL_FORMULA_*), item_useOnMember's kind */
     u8 pad5[3];
-    s32 unk8; /* not used by C */
+    s32 statuses; /* statuses added or removed (ovl_0b Unk8006B1F4.statuses: btl_addStatuses, btl_removeStatuses); not read in ovl_37 */
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */
 extern Unk8006B1F4 g_usableItemTable[];
 u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);

@@ -11613,3 +11613,13 @@ D_8006825C s_cdStatus  # [code] returned by CdStatus, also used by CdControl, Cd
 D_8006826C s_cdMode  # [code] returned by CdMode, set by CD_cw (CdlSetmode) and CD_init
 D_80068268 s_cdLastPos  # [code] CdlLOC returned by CdLastPos, written by CD_cw (initial 00:02:00 = LBA 0)
 D_800739B8 s_padPortWork  # [code] libpad port work area, 0x1E0 bytes cleared by _padInitDirPort, walked by func_80019F90 and func_8001A3CC
+
+## r42 struct fields (no C uses, header-only renames) and removed dead types
+# FIELDS include/ff9.h PadBuf: unk1=id
+# FIELDS include/ff9.h FileIdEntry: unk2=idHigh
+# FIELDS include/ovl_0b.h Unk800D4D6CCtx: unk2C=anchorZ
+# FIELDS include/ovl_0b.h TextTblEnt: unk2=layout
+# FIELDS include/ovl_33.h HelpOfs: unk2=layout
+# FIELDS include/ovl_37.h Unk8006B1F4: unk8=statuses
+# FIELDS include/ovl_38.h StatusEntry: unk2=helpOfs, unk4=pad4[2]+kind+count, unk8=first (byte-identical copy of ovl_0b g_btlCmdTable)
+# removed (never used in any binary or port): ff9.h Unk80021698, Unk8004EFB0, Unk8005AE14, FileIdParts; ovl_0a.h FieldTexPair

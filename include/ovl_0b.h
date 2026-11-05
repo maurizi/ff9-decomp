@@ -1845,7 +1845,7 @@ typedef struct {
 
 typedef struct {
     u16 text; /* text offset or id: enemy and enemy-ability names (Battle11C0.texts), g_btlAbilityHelp offsets, list-window title labels */
-    u16 unk2; /* not read */
+    u16 unk2; /* no access in any binary. g_btlAbilityHelpOfs: line count << 12 | probable width, as TextTblEnt.layout (all 192 entries); g_btluiListTitles: 0 */
 } U16Pair;
 
 
@@ -2214,7 +2214,7 @@ void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
  * never tested in ovl_0b. Evidence: [code] */
 #define BTLFX_SPRITE_FRAMES 0x7FFF
 /* sprite set header (btlfx_drawAnimQuads, btlfx_drawLayerSprite): u16 frame offsets, then at
-   unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
+   frameOfs[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
     u16 frameCount; /* frame count (& BTLFX_SPRITE_FRAMES) */
@@ -3181,7 +3181,7 @@ typedef struct {
     u32 unk0_17 : 15; /* not read in ovl_0b */
     u8 formula; /* btl_calcCmd formula, as BtlCmd8.formula */
     u8 power; /* as BtlCmd8.power (heal amount per item count + 1 for some formulas) */
-    u8 unk6; /* not read in ovl_0b */
+    u8 unk6; /* no access in any binary; 0 in all 32 g_usableItemTable entries of the exe */
     u8 rate; /* status hit rate in percent */
     s32 statuses; /* statuses added or removed (btl_addStatuses, btl_removeStatuses) */
 } Unk8006B1F4; /* 0xC */
@@ -3336,7 +3336,7 @@ typedef char *va_list;
 
 typedef struct {
     s16 ofs; /* offset from the entry table */
-    s16 unk2; /* not read */
+    s16 layout; /* bits 12-15 line count (newline codes 0xF7 + 1 in all 40 g_btlMessages entries), low 12 bits probably the widest line in pixels; no access in any binary */
 } TextTblEnt;
 
 typedef struct {
@@ -4704,7 +4704,7 @@ typedef struct {
         s32 sinCos; /* btlfx_emitTrailRibbonFlat: sin (low half) and cos (high half) of 0x400 - camera yaw */
         s32 abr; /* btlfx_emitTrailLines: semi-transparency mode << 5, or'ed into its draw-mode (0xE1) word */
     } mode;
-    s32 unk2C; /* unused (Unk800D50A0Ctx.anchorZ) */
+    s32 anchorZ; /* as Unk800D50A0Ctx.anchorZ; btlfx_emitTrailRibbonFlat / btlfx_emitTrailLines don't read it */
 } Unk800D4D6CCtx;
 void btlfx_emitTrailRibbonFlat(s32, Unk800D4D6CCtx *, u8 *, s32 *);
 void btlfx_emitTrailLines(s32, Unk800D4D6CCtx *, u8 *, s32 *);

@@ -2191,10 +2191,6 @@ PreloadEntry *preload_find(s32);
 s32 preload_wait(PreloadEntry *);
 void gfx_init(u32 *, u32 *, s32, s32);
 
-typedef struct {
-    u8 pad0[0x34];
-    u16 unk34; /* not used by C */
-} Unk80021698;
 
 extern s32 g_msgChoiceEnabled;
 extern s32 g_msgChoice;
@@ -2234,7 +2230,7 @@ typedef struct {
 /* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
 typedef struct {
     u16 id; /* id */
-    u16 unk2; /* not read by C */
+    u16 idHigh; /* high half of the type-2 table's u32 file id (docs/ff9img.md); file_find compares only id */
     s32 sector; /* start sector (the next entry's sector ends the file) */
 } FileIdEntry;
 
@@ -3029,12 +3025,6 @@ extern Unk8007B954 *g_msgTable;
 #define MSG_TEXT_BANKS 4 /* g_msgTextBanks (TEXT_BANK messages, msg_resetChoices) */
 extern u8 *g_msgTextBanks[];
 
-typedef struct {
-    u8 pad0[2];
-    s16 unk2; /* not used by C */
-    u8 pad4[9 - 4];
-    u8 unk9; /* not used by C */
-} Unk8004EFB0;
 
 /* ---- main batch 2 ---- */
 
@@ -3096,10 +3086,6 @@ typedef struct {
 } FadeWipe;
 extern FadeWipe g_fadeWipe;
 
-typedef struct {
-    s32 unk0; /* not used by C */
-    s32 unk4; /* not used by C */
-} Unk8005AE14;
 
 /* ---- main batch 3 ---- */
 typedef struct {
@@ -3385,7 +3371,7 @@ extern u8 g_padActAlign[]; /* actuator alignment */
 /* byte view of a g_padBuf pad buffer */
 typedef struct {
     u8 status; /* status, 0 = ok */
-    u8 unk1; /* not read by C */
+    u8 id; /* controller id byte: type << 4 | half-words of data (PAD_TYPE takes its high nibble from the hdr word); no access by name */
     u16 buttons; /* buttons, active low */
     u8 analog[4]; /* analog sticks */
 } PadBuf;
@@ -4018,12 +4004,6 @@ typedef struct {
     u8 padA[6];
 } Unk8001DE50b;
 
-/* PreloadEntry.fileId split into its parts */
-typedef struct {
-    u16 unk0; /* not used by C */
-    u8 unk2; /* not used by C */
-    u8 unk3; /* not used by C */
-} FileIdParts;
 
 /* TIM image: header, optional CLUT block (flag bit 3), then the pixel block */
 typedef struct {

@@ -84,12 +84,16 @@ extern u8 s_menuStatusCharCmds[][2];     /* by ability table row */
 extern s32 s_menuStatusBaseStatText[4];      /* text ids */
 extern s32 s_menuStatusBattleStatText[5];      /* text ids */
 
-/* local copy of the battle command table (built on the stack from .rodata) */
+/* local copy of the battle command table (built on the stack from .rodata). s_menuStatusCmdTable is byte-identical
+ * to ovl_0b's g_btlCmdTable (0x240 bytes, 48 entries; Unk800FD56C there), so the members follow that struct; ovl_38
+ * reads only nameOffset. Evidence: [code] */
 typedef struct {
     u16 nameOffset; /* offset of the command name in the string pool */
-    u16 unk2; /* not used by C */
-    s32 unk4; /* not used by C */
-    s32 unk8; /* not used by C */
+    u16 helpOfs; /* help text offset (ovl_0b Unk800FD56C.helpOfs into g_btlCmdHelp); not read in ovl_38 */
+    u8 pad4[6 - 4];
+    u8 kind; /* ovl_0b Unk800FD56C.kind (confirm handler); not read in ovl_38 */
+    u8 count; /* abilities of the command (ovl_0b Unk800FD56C.count); not read in ovl_38 */
+    s32 first; /* first ability index into ovl_0b g_btlCmdAbilities (Unk800FD56C.first); not read in ovl_38 */
 } StatusEntry;
 typedef struct {
     StatusEntry v[48];
