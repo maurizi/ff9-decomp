@@ -85,6 +85,8 @@ Two ways to start an ATE in a test:
 
 ## Dali (disc 1): "Queen Brahne's Steiner", field 355 (required)
 
+**Verified (2026-11-04, 3DS port in Azahar):** the direct line starts 355 with Steiner as the player.
+
 **What it is.** The Dali ATE with Steiner in the pub (field 355 "Dali/Pub"). It is forced: nobody presses Select.
 
 **How the game starts it (field 352 "Dali/Inn", entry 17 = Dagger's state machine, entry 19 tag 3 = talking to
@@ -137,6 +139,8 @@ Also `Gbit[0x837]` (event.262 bit 7) must be 0 in 355, and 450 offers the menu o
 `Gbit[0x827] == 1`.
 
 ## Dali field 450 ("Dali/Field", the farm): scene by story value
+
+**Verified (2026-11-04, 3DS port in Azahar):** story 2840 shows the barrels and the parked cargo ship, so layer 0x15 = the ship and model 240 = the barrels.
 
 450's init (e0t0 +0x149) picks the actor set and one background layer from the story counter:
 
