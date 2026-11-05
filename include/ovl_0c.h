@@ -428,6 +428,40 @@ typedef struct WmEffect {
 #define WM_CAM_HOLD 0
 #define WM_CAM_LOWER 1 /* the wanted height is more than the dead zone below the current one */
 #define WM_CAM_RAISE 2 /* ... above it */
+/* camera heights (y grows downward, sea level 0). Evidence: [code] wm_cameraFollow */
+#define WM_CAM_EYE_CEILING -0x47CF /* the eye never goes higher */
+#define WM_CAM_FLY_EYE_LOWEST -0x1194 /* while flying (WM_CTRL_FLY) the eye stays at least this high */
+#define WM_CAM_GROUND_TOP_FLY -0x2134 /* the ground under the eye counts as no higher than this when flying, */
+#define WM_CAM_GROUND_TOP -0x251C /* ... and than this otherwise (the peaks don't push the eye up further) */
+/* Two balls at the Iifa Tree (navi place 36 "Iifa Tree" (200097, -82107); on data set WM_DATASET_DISC4 the
+ * WM_BLOCKFX_MEMORIA_ORB sphere, g_worldBlockFx6Pos (196602, -10882, -82002), sits there). Evidence: [code]
+ * wm_cameraFollow, wm_movePlayer */
+#define WM_IIFA_X 0x2FF77 /* 196471 */
+#define WM_IIFA_Z -0x14031 /* -82001 */
+#define WM_IIFA_CAM_R 0x36B0 /* the camera eye is pushed up onto a ball of radius 14000 ... */
+#define WM_IIFA_CAM_Y 0x898 /* ... centred this far below sea level */
+#define WM_IIFA_FLY_R 0x9C4 /* a flyer within 2500 of the centre slides over (or under) a ball of radius 2500, */
+#define WM_IIFA_FLY_Y_DISC1 0x1964 /* centred at y = -6500 (data set WM_DATASET_DISC1) */
+#define WM_IIFA_FLY_Y_DISC4 0x1C20 /* or -7200 (data set WM_DATASET_DISC4) */
+#define WM_IIFA_FLY_NOCACHE_DISC1 0x1E78 /* above y = -7800 / -8500 there the ground poly cache is off */
+#define WM_IIFA_FLY_NOCACHE_DISC4 0x2134
+/* flight ceiling (wm_movePlayer): climbing slows down within WM_FLY_CEILING_SOFT of y = WM_FLY_CEILING */
+#define WM_FLY_CEILING -0x2A30
+#define WM_FLY_CEILING_SOFT 0x7E8
+/* Ipsen's Castle: the airships can't land within 1440 of (49120, -121408) (wm_findGetoffPos; navi place 44 "Ipsen's
+ * Castle" is at (49042, -121464); R41b saw the upside-down castle in a crater there) */
+#define WM_IPSEN_CASTLE_X 0xBFE0
+#define WM_IPSEN_CASTLE_Z -0x1DA40
+#define WM_IPSEN_CASTLE_R 0x5A0
+/* low-flight effects (wm_controlFly; y grows downward): spray and dust spawn only below these heights, and their
+ * strength (g_worldSprayTarget) falls off with the height */
+#define WM_AIRSHIP_SPRAY_ALT -0x800 /* WM_FX_AIRSHIP_SPRAY over water */
+#define WM_SAND_DUST_ALT -0x708 /* WM_FX_AIRSHIP_SAND / WM_FX_CHOCOBO_SAND over WM_TOPO_SAND */
+#define WM_CHOCOBO_SPRAY_ALT -100 /* WM_FX_CHOCOBO_SPRAY over water: the gold chocobo skimming the surface */
+/* wm_drawActors: actors are drawn only inside this box (view space, and world distance from the camera target) */
+#define WM_ACTOR_VIEW_NEAR 2001
+#define WM_ACTOR_VIEW_FAR 29000
+#define WM_ACTOR_VIEW_SIDE 20000
 /* world-map sound numbers (w_musicGetID; wm_sePlay & co., script requests WM_REQ_SE_*, WmMoveMode.loopSe,
  * g_worldAmbientSe). 0-5 and 39 play on SND_SE_GROUP_MENU, 6-7 and 20-24 on WM_SE_GROUP_VEHICLE, 25-26 on
  * WM_SE_GROUP_AMBIENT; 20-26 and 33 are two-voice sounds. Only those the code ties to something are named. */
@@ -449,7 +483,7 @@ typedef struct WmEffect {
 #define WM_SE_INVINCIBLE_LOOP 22 /* data: WmMoveMode.loopSe of WM_MOVE_INVINCIBLE (0x378 + 0x379) */
 #define WM_SE_HILDA_GARDE_LOOP 23 /* data: loopSe of WM_MOVE_HILDA_GARDE (0x554 + 0x555) */
 #define WM_SE_BOAT_LOOP 24 /* data: loopSe of WM_MOVE_BOAT, volume follows its speed (wm_controlSteer; 0x5D9 + 0x5DA) */
-#define WM_SE_RUMBLE_LOOP 25 /* data: g_worldAmbientSe[2], the source that also shakes the camera within 0x28 */
+#define WM_SE_RUMBLE_LOOP 25 /* data: g_worldAmbientSe[WM_AMBIENT_EARTH_SHRINE], which also shakes the camera */
                              /* (wm_updateMap; 0x37D + 0x37E); runtime (R41b): played there (Triquai Plains) */
 #define WM_SE_WIND_LOOP 26 /* data: g_worldAmbientSe[0] (at WM_BLOCKFX_CLAY, silenced by WM_FORM_CLAY) and [1] (the */
                            /* WM_TOPO_GUSTY_VALLEY source) (0x37F + 0x380); runtime (R41b): played at source 1, */
@@ -1145,6 +1179,11 @@ extern EvtObject *g_worldPlayer; /* player actor */
 extern WmMoveMode *g_worldMoveModeInfo;
 extern s32 g_worldWidth; /* map width (wraps) */
 extern s32 g_worldDepth; /* map height (wraps) */
+/* the world's size as the code wraps distances with constants (g_worldWidth / g_worldDepth hold the same from the
+ * cell map: 24 x 20 chunks of 0x4000, WM_CELL); a distance beyond half of it is shorter the other way round.
+ * Evidence: [code] wm_worldToView, wm_updateCamera, wm_controlFly's autopilot */
+#define WM_MAP_SIZE_X 0x60000
+#define WM_MAP_SIZE_Z 0x50000
 extern RECT g_worldVramParkRect;
 extern char s_wmStrFrameSystemDestructor[]; /* "w_frameSystemDestructor:\n" */
 extern WmNaviPlace g_worldNaviPlaces[][64];
@@ -1409,6 +1448,18 @@ extern u8 g_worldAmbientSeOn[3];
 extern s32 g_worldAmbientSeX[3]; /* sound source x */
 extern s32 g_worldAmbientSeZ[3]; /* sound source z */
 extern u8 g_worldAmbientSe[3]; /* sound ids */
+/* the three sources, named for the navi map place each sits at (g_worldNaviPlaces, world text bank 0). Distances are
+ * in units of 256. Evidence: [data] the source positions, [code] wm_updateMap */
+#define WM_AMBIENT_CLEYRA 0 /* (229279, -198701): place 18 "Cleyra"; WM_SE_WIND_LOOP, silent once WM_FORM_CLAY is set */
+                            /* and on data set WM_DATASET_DISC4 */
+#define WM_AMBIENT_WIND_SHRINE 1 /* (130781, -227819): place 38 "Wind Shrine" (131348, -231368), Gusty Valley; */
+                                 /* WM_SE_WIND_LOOP, and the WM_TOPO_GUSTY_VALLEY push */
+#define WM_AMBIENT_EARTH_SHRINE 2 /* (299201, -93859): place 26 "Earth Shrine" (299041, -94130); WM_SE_RUMBLE_LOOP and */
+                                  /* the camera shake */
+#define WM_AMBIENT_RADIUS 0x3F /* a source plays within this, louder the nearer */
+#define WM_AMBIENT_SHAKE_RADIUS 0x28 /* WM_AMBIENT_EARTH_SHRINE shakes the camera target within this */
+#define WM_AMBIENT_PUSH_RADIUS 0x22 /* WM_AMBIENT_WIND_SHRINE pushes a walker or chocobo toward +z within this */
+#define WM_AMBIENT_BLOCK_RADIUS 0x16 /* ... and within this nothing can get off onto WM_TOPO_GUSTY_VALLEY (wm_findGetoffPos) */
 extern u8 g_worldFormFlags[]; /* flags (wm_applyStoryForms), indexed by WM_FORM_* */
 /* g_worldFormFlags indices: the map forms wm_applyStoryForms switches to. Names from its "BGI Form : %s" debug
  * prints, whose cases are these indices; the status table holds index + 1 (0 = no change), see WM_FORM_STATUS. */

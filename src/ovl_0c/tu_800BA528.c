@@ -222,14 +222,14 @@ void wm_updateMap(void) {
         dx = (g_worldPlayer->pos.vx >> 8) - (g_worldAmbientSeX[i] >> 8);
         dz = (g_worldPlayer->pos.vz >> 8) - (g_worldAmbientSeZ[i] >> 8);
         g_worldAmbientSeDist[i] = SquareRoot0(dx * dx + dz * dz);
-        if (g_worldFormFlags[WM_FORM_CLAY] != 0 && i == 0) {
-            g_worldAmbientSeDist[0] = 100;
+        if (g_worldFormFlags[WM_FORM_CLAY] != 0 && i == WM_AMBIENT_CLEYRA) {
+            g_worldAmbientSeDist[WM_AMBIENT_CLEYRA] = 100;
         }
         dist = g_worldAmbientSeDist[i];
-        if (i == 0 && g_worldDataSet == WM_DATASET_DISC4) {
+        if (i == WM_AMBIENT_CLEYRA && g_worldDataSet == WM_DATASET_DISC4) {
             continue;
         }
-        if (dist < 0x3F) {
+        if (dist < WM_AMBIENT_RADIUS) {
             if (g_worldAmbientSeOn[i] == 0) {
                 g_worldAmbientSeOn[i] = 1;
                 wm_sePlay(g_worldAmbientSe[i], 0);
@@ -246,16 +246,16 @@ void wm_updateMap(void) {
             }
         }
     }
-    if (g_worldAmbientSeDist[2] < 0x28) {
-        shake = 0x78 - g_worldAmbientSeDist[2] * 3;
+    if (g_worldAmbientSeDist[WM_AMBIENT_EARTH_SHRINE] < WM_AMBIENT_SHAKE_RADIUS) {
+        shake = WM_AMBIENT_SHAKE_RADIUS * 3 - g_worldAmbientSeDist[WM_AMBIENT_EARTH_SHRINE] * 3;
         if (shake != 0 && g_worldMapLoaded != 0) {
             g_worldCameraTarget[1] += rand() % shake - shake / 2;
             g_worldCameraTarget[0] += rand() % shake - shake / 2;
             g_worldCameraTarget[2] += rand() % shake - shake / 2;
         }
     }
-    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == WM_TOPO_GUSTY_VALLEY && playerType - 1 < 7U) {
-        g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
+    if (g_worldAmbientSeDist[WM_AMBIENT_WIND_SHRINE] < WM_AMBIENT_PUSH_RADIUS && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == WM_TOPO_GUSTY_VALLEY && playerType - 1 < 7U) {
+        g_worldPlayer->pos.vz += (WM_AMBIENT_PUSH_RADIUS - g_worldAmbientSeDist[WM_AMBIENT_WIND_SHRINE]) * 8;
         if (g_worldPlayer->pos.vx == g_worldPlayer->prevPos.vx && g_worldPlayer->pos.vz == g_worldPlayer->prevPos.vz) {
             g_worldPlayer->prevPos.vx++;
         }
@@ -463,16 +463,16 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale) 
     outRel->vy = ((pos->vy * scale) >> 12) - g_worldCameraTarget[1];
     outRel->vz = pos->vz - g_worldCameraTarget[2];
     if (outRel->vx > 0xFFFF) {
-        outRel->vx -= 0x60000;
+        outRel->vx -= WM_MAP_SIZE_X;
     }
     if (outRel->vz > 0xFFFF) {
-        outRel->vz -= 0x50000;
+        outRel->vz -= WM_MAP_SIZE_Z;
     }
     if (outRel->vx < -0xFFFF) {
-        outRel->vx += 0x60000;
+        outRel->vx += WM_MAP_SIZE_X;
     }
     if (outRel->vz < -0xFFFF) {
-        outRel->vz += 0x50000;
+        outRel->vz += WM_MAP_SIZE_Z;
     }
     if (outScale != NULL) {
         *outScale = scale;

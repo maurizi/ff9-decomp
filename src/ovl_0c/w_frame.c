@@ -20,7 +20,7 @@ void wm_systemInit(void) {
     RECT saveRect = g_worldVramSaveRect;
 
     g_worldStartup = 1;
-    if (g_evtGlobalVars.b[0x65] & 1) {
+    if (g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] & EVT_GB_GENERAL_ADDITIVE_FADE) {
         fade_outAdditive(1);
     } else {
         fade_out(1);
