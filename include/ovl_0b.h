@@ -3181,7 +3181,7 @@ typedef struct {
     u32 unk0_17 : 15; /* not read in ovl_0b */
     u8 formula; /* btl_calcCmd formula, as BtlCmd8.formula */
     u8 power; /* as BtlCmd8.power (heal amount per item count + 1 for some formulas) */
-    u8 unk6; /* no access in any binary; 0 in all 32 g_usableItemTable entries of the exe */
+    u8 pad6; /* 0 in all 32 g_usableItemTable entries of the exe, no access in any binary */
     u8 rate; /* status hit rate in percent */
     s32 statuses; /* statuses added or removed (btl_addStatuses, btl_removeStatuses) */
 } Unk8006B1F4; /* 0xC */

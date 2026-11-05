@@ -119,8 +119,8 @@ extern Ovl64Dec g_mbgDecode;
 extern u8 g_mbgVlcTable[];
 
 typedef struct {
-    u8 unk0; /* not used by C */
-    u8 unk1; /* not used by C */
+    u8 run; /* zero run: the asm mbg_vlcBuildTable puts run << 10 into both MDEC words it builds per pair */
+    u8 level; /* coefficient level: the two words get level and -level & 0x3FF (MDEC run/level code) */
 } Ovl64Vlc;
 extern Ovl64Vlc g_mbgVlcPairs[108];
 extern s32 g_mbgVlcSize;

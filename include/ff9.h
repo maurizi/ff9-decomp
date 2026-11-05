@@ -2539,7 +2539,7 @@ typedef struct {
     u8 magic; /* (chr_calcBaseMagic) */
     u8 spirit; /* (chr_calcBaseSpirit) */
     u8 stones; /* magic stones (chr_calcMaxStones) */
-    u8 unk5; /* not read by C */
+    u8 pad5; /* 0 in all 12 classes of the exe, no access in any binary */
 } ClassStats; /* base stats per character class */
 extern ClassStats g_charClassStats[];
 void pad_initRepeat(void);

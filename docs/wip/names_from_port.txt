@@ -11626,3 +11626,6 @@ D_800739B8 s_padPortWork  # [code] libpad port work area, 0x1E0 bytes cleared by
 # FIELDS include/ff9.h MsgEntry8: unk0=packed (read through the u32 view in msg_getEntry)
 # FIELDS include/ff9.h CdReadCtx: unk18=requestSize
 # FIELDS include/ovl_0b.h Unk800AA958: unk20=bufStart
+# FIELDS include/ovl_64.h Ovl64Vlc: unk0=run, unk1=level (asm mbg_vlcBuildTable)
+# FIELDS include/ff9.h ClassStats: unk5=pad5 (0 in all 12 entries)
+# FIELDS include/ovl_0b.h Unk8006B1F4: unk6=pad6 (0 in all 32 entries)
