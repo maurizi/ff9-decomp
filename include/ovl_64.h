@@ -44,7 +44,9 @@ typedef struct {
     s16 count; /* count */
     Ovl64MovieInfo *entries;
 } Ovl64Movie; /* 8-byte entries */
-extern Ovl64Movie g_mbgMovieLists[6];
+/* 5 lists (the data has 5); mbg_getEntryCount / mbg_getEntryName bound the index with `>= 6` (an off-by-one in
+ * the original): list 5 would read g_mbgMaskBit (0x8000) as its count. mbg_play bounds it with `>= 5`. */
+extern Ovl64Movie g_mbgMovieLists[5];
 
 typedef struct {
     s32 x;
