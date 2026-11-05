@@ -172,7 +172,7 @@ typedef struct {
     u8 sndVolume;
     u8 movieSndVolume;
     u8 soundBankSlot;
-    u8 unk5F; /* write-only: fld_soundCommand SND_TYPE_STREAM, SND_CMD_SET parameter 12 stores param1, SND_CMD_PLAY of a stream clears it (docs/wip/r42_runtime.md) */
+    u8 unk5F; /* write-only: fld_soundCommand SND_TYPE_STREAM, SND_CMD_SET parameter 12 stores param1, SND_CMD_PLAY of a stream clears it. Dead: no field script on any disc issues a stream SET 12, no reads at runtime, a poked value changes nothing audible (R42) */
     u8 modelQueueCount; /* g_fieldModelQueue count */
     u8 unk61[1]; /* write-only (cleared) */
     s16 unk62; /* write-only (cleared) */
@@ -229,7 +229,13 @@ typedef struct {
 
 /* 0x38-byte object hanging off FieldMap.unkC */
 typedef struct {
-    s32 unk0; /* write-only (cleared) */
+    s32 overlaidDbHeader; /* sits on the first word of the field common file (FieldMap.commonFile == the area object):
+                           * fld_init registers that file as a database, then allocates this object on top of it
+                           * without unregistering it, so every db_lookup scans this word as the database header and
+                           * reads byte 1 as its type count. fld_initArea clears it, which empties the stale entry
+                           * (runtime R42: db_lookup+0x74 reads 0x800D1051 on field loads). A port that doesn't lay
+                           * this object over the common file must unregister or clear commonFile after
+                           * fld_readSoundBank. */
     s32 loadEnd;    /* end of the load area */
     void *msgTable;  /* file 0x6xxxx */
     void *areaFile;

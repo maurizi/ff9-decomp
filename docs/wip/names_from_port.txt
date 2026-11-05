@@ -11631,3 +11631,4 @@ D_800739B8 s_padPortWork  # [code] libpad port work area, 0x1E0 bytes cleared by
 # FIELDS include/ovl_0b.h Unk8006B1F4: unk6=pad6 (0 in all 32 entries)
 # FIELDS include/ovl_0b.h SprInfo: unk0=kind (BtlBgLayer view)
 WM_BLOCKFX_WINDMILL WM_BLOCKFX_DALI_WINDMILL  # [code] R43: navi place Dali is 120 units from the model (area Nolrich Heights)
+# FIELDS include/ovl_0a.h FieldMapObj: unk0=overlaidDbHeader [runtime] R42: db_lookup reads it as the stale common-file db header

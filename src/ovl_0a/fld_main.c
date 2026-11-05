@@ -278,7 +278,7 @@ void fld_initArea(void) {
     FieldMapObj *obj = g_gameState->gameData->ctx.field->area;
     s32 i;
 
-    obj->unk0 = 0;
+    obj->overlaidDbHeader = 0;
     obj->loadEnd = 0;
     obj->msgTable = NULL;
     obj->areaFile = NULL;
