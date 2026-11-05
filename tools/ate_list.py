@@ -211,6 +211,18 @@ def scan_field(d, field):
                 gotos = [x[3][0] for x in ins if x[0] > o and x[1] == OP_GOTO_FIELD][:1]
                 res['cards'].append({'entry': e, 'tag': tag, 'ofs': o, 'msg': args[2], 'title': ' '.join(txt(args[2])),
                                      'goto': gotos, 'if': conditions(ins, o)})
+    # a menu is reachable only if its object is created (NEW_CODE/NEW_REGION/NEW_ACTOR 0x07-0x09 with its entry)
+    # and the field shows the Select prompt (D7 1 or 5): Gs8[0xEE] outlives the field, so a running handler without
+    # a prompt only answers Select when the previous field left it at 1; a prompt without a handler does nothing.
+    started = set()
+    for e, tag, code in script_functions(data, s):
+        for o, op, fl, args, raw in dis(code):
+            if op in (0x07, 0x08, 0x09) and isinstance(args[0], int):
+                started.add(args[0])
+    select = bool(res['prompt'] & {1, 5})
+    for m in res['menus']:
+        m['started'] = m['entry'] in started
+        m['reachable'] = m['started'] and select
     res['prompt'] = sorted(res['prompt'], key=str)
     res['mask_source'] = sorted(res['mask_source'])
     res['story_tests'] = sorted(res['story_tests'])
@@ -256,7 +268,9 @@ def main():
             for w in r['local_mask']:
                 print(f"  local {w['var']} {w['op']} {w['value']}  if {' && '.join(w['if'])}")
             for m in r['menus']:
-                print(f"  menu e{m['entry']} t{m['tag']} +{m['ofs']:#x} list msg {m['list']:#x}: {m['rows']}")
+                state = 'reachable' if m['reachable'] else ('handler only (no Select prompt)' if m['started'] else
+                                                            'NOT REACHABLE (menu object never created)')
+                print(f"  menu e{m['entry']} t{m['tag']} +{m['ofs']:#x} list msg {m['list']:#x} [{state}]: {m['rows']}")
                 for c in m['choices']:
                     print(f"    bit {c['bit']}: card {c['card']} {c['title']!r} -> {c['goto']} {c['sets']}")
             for c in r['cards']:
