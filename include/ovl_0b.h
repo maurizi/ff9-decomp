@@ -3639,7 +3639,7 @@ typedef struct {
 typedef struct {
     s16 state; /* state */
     u16 nextState; /* state after the CD read */
-    s16 unk4; /* unk4-unkE, unk20: initialised only (btl_reloadPartyStep) */
+    s16 unk4; /* unk4-unkE, bufStart: initialised only (btl_reloadPartyStep) */
     s16 unk6; /* write-only (btl_reloadPartyStep) */
     s16 unk8; /* write-only (btl_reloadPartyStep) */
     s16 slot; /* party slot of the file being loaded */
@@ -3649,7 +3649,7 @@ typedef struct {
         s32 w[4];
         u16 h[8];
     } fileIds; /* file ids still to load, -1 = done */
-    s32 unk20; /* write-only (btl_reloadPartyStep) */
+    s32 bufStart; /* write-only: btl_reloadPartyStep sets it to the party buffer, the same value as buf */
     s32 buf; /* destination buffer */
 } Unk800AA958; /* party model load state */
 

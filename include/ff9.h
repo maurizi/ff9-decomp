@@ -362,7 +362,7 @@ typedef struct CdReadCtx {
     s32 offset; /* byte offset in the file this chunk starts at */
     s32 chunk; /* chunk size, -1 = all in, bytes read out (cdRead_update) */
     void (*onDone)(struct CdReadCtx *); /* done callback */
-    s32 unk18; /* write-only: cdRead_init stores the total size here too */
+    s32 requestSize; /* write-only: cdRead_init stores the requested size here as well as in size */
     s32 state; /* CDREAD_* (cdRead_update) */
     u8 *end; /* dest + bytes read */
 } CdReadCtx; /* GameData.cdRead */

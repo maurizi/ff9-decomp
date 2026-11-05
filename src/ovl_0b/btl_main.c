@@ -1395,7 +1395,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         st->unk8 = -1;
         st->unkE = 0;
         st->buf = (s32)partyBuf;
-        st->unk20 = (s32)partyBuf;
+        st->bufStart = (s32)partyBuf;
         if (*(g_gameState->gameData->ctx.battle->files->partyModels + k) != NULL) {
             db_unregister(*(g_gameState->gameData->ctx.battle->files->partyModels + k));
             *(g_gameState->gameData->ctx.battle->files->partyModels + k) = NULL;

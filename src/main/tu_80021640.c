@@ -53,7 +53,7 @@ CdReadCtx *cdRead_init(void *ctx, s32 sector, s32 size, void *dest, s32 offset, 
         cdCtx->end = dest;
         cdCtx->chunk = chunk;
         cdCtx->onDone = onDone;
-        cdCtx->unk18 = size;
+        cdCtx->requestSize = size;
         cdCtx->state = CDREAD_WAIT_CD;
     }
     return cdCtx;
