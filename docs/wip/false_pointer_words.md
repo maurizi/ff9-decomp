@@ -91,3 +91,11 @@ Data inside `.text` (`textbin` subsegments, `docs/text-data.md`) is emitted as
   `ClearOTagR`): the word at 0x80066720 is 0x80000000, emitted as `.word D_80000000`.
   Library data with an unknown layout; 0x80000000 is more likely a flag/terminator
   than a pointer to the bottom of RAM, but left as is.
+
+## Follow-ups (2026-11-04)
+
+- main `g_itemTable` (0x80069018, 0x1200 bytes) is now typed `u8` too: its word at 0x800694EC reads 0x800A1506
+  (found by the DS port's pass; tools/false_pointers.py had it under --hidden).
+- main `D_800103F0` (0x800103F0-0x800103FC, rodata of file_initImg): four REAL pointers, the `names[4]` initializer
+  of file_initImg (src/main/file.c) pointing at the disc exe names "\\SLUS_012.51;1" .. "\\SLUS_012.97;1" at
+  0x800103B0/C0/D0/E0. Compiled from C string literals; relocate them if you relocate the binary.
