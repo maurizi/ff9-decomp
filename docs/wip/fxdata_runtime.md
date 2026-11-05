@@ -2,7 +2,7 @@
 
 Every effect-data define whose comment still ends in "(look pending)" (217 defines in 115 modules, consistency pass of `docs/fxdata.md`), grouped by the battle setup that plays it, so one emulator session per group covers them. The define comment in `include/fxmod/<module>.h` has the details; `tools/docker.sh python3 tools/fxdata.py <module> --render` draws what the file alone gives.
 
-Status (effect-data runtime pass, docs/runtime-findings.md, applied): P1, P2, P3, P4 and P6 were played. The status column says **done** (renamed or confirmed, the "(look pending)" mark dropped), renamed but still pending (low confidence), or still unknown with the run-time reason; an empty status means not played yet. Left: 125 defines (the "left" column): P5 (10), P7 (17 of 18: its Ifrit, Ramuh and Ark twins carry the played entries' verdicts) and the E groups (65) untouched, plus 31 still unknown and 2 low-confidence names in the played groups (`grep "(look pending" include/fxmod/*.h` lists the same 125).
+Status (effect-data runtime passes 1 and 2, docs/runtime-findings.md, applied): every group was played (pass 1: P1-P4, P6; pass 2: P5, P7 and the E groups, enemy skills by forcing the effect id on Zidane's Attack, so caster-relative parts may differ from a real enemy cast). The status column says **done** (renamed or confirmed, the "(look pending)" mark dropped), renamed but still pending (low confidence), or still unknown with the run-time reason. Left: 64 defines (the "left" column): 19 low-confidence names and 45 still unknown (not fetched in the runs, or ablation changes nothing identifiable); `grep "(look pending" include/fxmod/*.h` lists the same 64. Not re-run: full Ark group 8 (fx_17d_8, settled through its short-Ark twin).
 
 How to play them (`docs/emulator.md`):
 
@@ -19,38 +19,38 @@ How to play them (`docs/emulator.md`):
 | P2 | White magic (Garnet / Eiko) | fx_00b fx_00e fx_01b fx_02a fx_04c fx_04f fx_057 fx_05a fx_060 fx_061 fx_07f fx_08d fx_090 fx_0a2 | 29 | 2 |
 | P3 | Blue magic (Quina) | fx_052 fx_081 fx_096 fx_0ec fx_138 fx_188 | 15 | 7 |
 | P4 | Sword Magic (Steiner, Vivi in the party) | fx_0d6 fx_0d8 fx_0d9 fx_0dd fx_0df | 7 | 3 |
-| P5 | Other party skills (Zidane Dyne, Amarant Elan, Medeo) | fx_079 fx_07a fx_0f2 fx_0f3 fx_0f4 fx_0f8 fx_179 | 10 | 10 |
-| P6 | Summons, full animation (Garnet / Eiko) | fx_0b1 fx_0b8 fx_0ba fx_0d3 fx_0e1_0 fx_0e1_1 fx_0e3_0 fx_0e3_1 fx_0fb_1 fx_114 fx_17d_0 fx_17d_2 fx_17d_5 fx_17d_6 fx_17d_8 | 38 | 13 |
-| P7 | Summons, short animation | fx_17a fx_19f fx_1a8 fx_1bd fx_1be fx_1bf_2 fx_1fd fx_1fe | 18 | 17 |
-| E1 | enemy: Yan | fx_01f | 2 | 2 |
-| E2 | enemy: Garland | fx_023 | 1 | 1 |
-| E3 | enemy: Shell Dragon | fx_033 | 1 | 1 |
-| E4 | enemy: Chimera | fx_034 fx_0a9 | 2 | 2 |
+| P5 | Other party skills (Zidane Dyne, Amarant Elan, Medeo) | fx_079 fx_07a fx_0f2 fx_0f3 fx_0f4 fx_0f8 fx_179 | 10 | 4 |
+| P6 | Summons, full animation (Garnet / Eiko) | fx_0b1 fx_0b8 fx_0ba fx_0d3 fx_0e1_0 fx_0e1_1 fx_0e3_0 fx_0e3_1 fx_0fb_1 fx_114 fx_17d_0 fx_17d_2 fx_17d_5 fx_17d_6 fx_17d_8 | 38 | 10 |
+| P7 | Summons, short animation | fx_17a fx_19f fx_1a8 fx_1bd fx_1be fx_1bf_2 fx_1fd fx_1fe | 18 | 4 |
+| E1 | enemy: Yan | fx_01f | 2 | 0 |
+| E2 | enemy: Garland | fx_023 | 1 | 0 |
+| E3 | enemy: Shell Dragon | fx_033 | 1 | 0 |
+| E4 | enemy: Chimera | fx_034 fx_0a9 | 2 | 1 |
 | E5 | enemy: Sand Scorpion / Seeker Bat | fx_037 | 1 | 1 |
 | E6 | enemy: Carrion Worm | fx_03b | 2 | 2 |
-| E7 | enemy: Gigan Octopus | fx_043 fx_1ad | 3 | 3 |
+| E7 | enemy: Gigan Octopus | fx_043 fx_1ad | 3 | 0 |
 | E8 | enemy: Axe Beak / Carve Spider | fx_0a0 | 2 | 2 |
-| E9 | enemy: Torama | fx_0a1 fx_0a3 | 4 | 4 |
-| E10 | enemy: Dragonfly | fx_0a4 | 1 | 1 |
+| E9 | enemy: Torama | fx_0a1 fx_0a3 | 4 | 1 |
+| E10 | enemy: Dragonfly | fx_0a4 | 1 | 0 |
 | E11 | enemy: Myconid | fx_0a5 | 1 | 1 |
-| E12 | enemy: Soulcage | fx_0b0 | 4 | 4 |
-| E13 | enemy: Griffin | fx_0b4 fx_1f6 | 3 | 3 |
-| E14 | enemy: Thorn / Zorn | fx_0cb fx_0cc | 2 | 2 |
-| E15 | enemy: Gimme Cat | fx_0cd fx_0ce | 4 | 4 |
-| E16 | enemy: Whale Zombie | fx_0f0 | 1 | 1 |
+| E12 | enemy: Soulcage | fx_0b0 | 4 | 0 |
+| E13 | enemy: Griffin | fx_0b4 fx_1f6 | 3 | 2 |
+| E14 | enemy: Thorn / Zorn | fx_0cb fx_0cc | 2 | 1 |
+| E15 | enemy: Gimme Cat | fx_0cd fx_0ce | 4 | 2 |
+| E16 | enemy: Whale Zombie | fx_0f0 | 1 | 0 |
 | E17 | enemy: Magic Vice / Mimic | fx_112 | 1 | 1 |
-| E18 | enemy: Prison Cage (Garnet) | fx_11d | 2 | 2 |
+| E18 | enemy: Prison Cage (Garnet) | fx_11d | 2 | 1 |
 | E19 | enemy: Maliris | fx_123 | 1 | 1 |
-| E20 | enemy: Benero / King Leo / Zenero | fx_125 | 2 | 2 |
-| E21 | enemy: Kuja / Trance Kuja | fx_180 fx_18a fx_1b4 fx_1ec | 9 | 9 |
-| E22 | enemy: Jabberwock | fx_18c | 1 | 1 |
+| E20 | enemy: Benero / King Leo / Zenero | fx_125 | 2 | 0 |
+| E21 | enemy: Kuja / Trance Kuja | fx_180 fx_18a fx_1b4 fx_1ec | 9 | 3 |
+| E22 | enemy: Jabberwock | fx_18c | 1 | 0 |
 | E23 | enemy: Moonlight Slash (enemy not labelled) | fx_1a2 | 3 | 3 |
-| E24 | enemy: Kraken | fx_1a6 fx_1ab | 2 | 2 |
-| E25 | enemy: Nova Dragon | fx_1b2 | 2 | 2 |
-| E26 | enemy: Necron | fx_1b3 fx_1f0 | 4 | 4 |
+| E24 | enemy: Kraken | fx_1a6 fx_1ab | 2 | 0 |
+| E25 | enemy: Nova Dragon | fx_1b2 | 2 | 0 |
+| E26 | enemy: Necron | fx_1b3 fx_1f0 | 4 | 3 |
 | E27 | enemy: Silver Dragon | fx_1b6 | 1 | 1 |
-| E28 | enemy: Gizamaluke | fx_1b8 fx_1b9 | 2 | 2 |
-| E29 | enemy: Ragtime Mouse | fx_1e6 | 1 | 1 |
+| E28 | enemy: Gizamaluke | fx_1b8 fx_1b9 | 2 | 0 |
+| E29 | enemy: Ragtime Mouse | fx_1e6 | 1 | 0 |
 
 ## P1: Black magic (Vivi), one target and all targets
 
@@ -162,16 +162,16 @@ How to play them (`docs/emulator.md`):
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_079 | Demi Shock | `FX_DEMI_SHOCK_TRAIL` | 0x9 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_079`) |  |
-| fx_079 | Demi Shock | `FX_DEMI_SHOCK_SPHERE` | 0xb | model | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_079`) |  |
-| fx_07a | Demi Shock (Elan) | `FX_DEMI_SHOCK_SPHERE` | 0xb | model | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_07a`) |  |
-| fx_07a | Demi Shock (Elan) | `FX_DEMI_SHOCK_TRAIL` | 0xc | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_07a`) |  |
-| fx_0f2 | Tidal Flame | `FX_TIDAL_FLAME_DOME` | 0x2 | model | texture page not uploaded by the file or the common / summon pages | VRAM dump of page 0x11A = (0x280, 0x100) while the effect plays |  |
-| fx_0f3 | Scoop Art | `FX_SCOOP_ART_SCREEN_TRAIL` | 0x8 | emitter | placeholder page in the file (filled or replaced at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f3`); screenshot at the frame the op starts the entry |  |
-| fx_0f4 | Shift Break | `FX_SHIFT_BREAK_CONE_RINGS` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f4`) |  |
-| fx_0f8 | Grand Lethal | `FX_GRAND_LETHAL_SPRITE_RINGS` | 0xd | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f8`) |  |
-| fx_0f8 | Grand Lethal | `FX_GRAND_LETHAL_SWIRL_RINGS` | 0xe | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f8`) |  |
-| fx_179 | Medeo | `FX_MEDEO_SPRITE_BURST` | 0xb | emitter | renders fully transparent | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_179`) |  |
+| fx_079 | Demi Shock | `FX_DEMI_SHOCK_TRAIL` | 0x9 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_079`) | renamed `FX_DEMI_SHOCK_SPARK_TRAIL`, still pending (low: trail: 3 px wide strip, the thin pink / orange spark lines from the caster to the sphere (the only trail-like element on screen)) |
+| fx_079 | Demi Shock | `FX_DEMI_SHOCK_SPHERE` | 0xb | model | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_079`) | **done**: `FX_DEMI_SHOCK_ENERGY_SHELL` |
+| fx_07a | Demi Shock (Elan) | `FX_DEMI_SHOCK_SPHERE` | 0xb | model | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_07a`) | **done**: `FX_DEMI_SHOCK_ENERGY_SHELL` |
+| fx_07a | Demi Shock (Elan) | `FX_DEMI_SHOCK_TRAIL` | 0xc | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_07a`) | renamed `FX_DEMI_SHOCK_SPARK_TRAIL`, still pending (low: trail: 3 px wide strip, the thin pink / orange spark lines from the caster to the sphere (byte-identical to fx_079 entry 0x9)) |
+| fx_0f2 | Tidal Flame | `FX_TIDAL_FLAME_DOME` | 0x2 | model | texture page not uploaded by the file or the common / summon pages | VRAM dump of page 0x11A = (0x280, 0x100) while the effect plays | **done**: `FX_TIDAL_FLAME_FIRE_DOME` |
+| fx_0f3 | Scoop Art | `FX_SCOOP_ART_SCREEN_TRAIL` | 0x8 | emitter | placeholder page in the file (filled or replaced at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f3`); screenshot at the frame the op starts the entry | renamed `FX_SCOOP_ART_GOLD_SPARK`, still pending (low: emitter: screen trail + sprite, a pale-gold gradient strip and a soft white-gold glow at run time: the yellow spark at the tip of the pink pillar) |
+| fx_0f4 | Shift Break | `FX_SHIFT_BREAK_CONE_RINGS` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f4`) | **done**: `FX_SHIFT_BREAK_WHITE_GLOW` (medium) |
+| fx_0f8 | Grand Lethal | `FX_GRAND_LETHAL_SPRITE_RINGS` | 0xd | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f8`) | **done**: `FX_GRAND_LETHAL_FLAME_FLASH` (medium) |
+| fx_0f8 | Grand Lethal | `FX_GRAND_LETHAL_SWIRL_RINGS` | 0xe | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f8`) | **done**: `FX_GRAND_LETHAL_FLAME_VORTEX` |
+| fx_179 | Medeo | `FX_MEDEO_SPRITE_BURST` | 0xb | emitter | renders fully transparent | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_179`) | renamed `FX_MEDEO_GREEN_SPECKS`, still pending (low: emitter: two sprite elements, tiny green specks at run time) |
 
 ## P6: Summons, full animation (Garnet / Eiko)
 
@@ -184,7 +184,7 @@ How to play them (`docs/emulator.md`):
 | fx_0b8 | Atomos | `FX_ATOMOS_SPRITES_2` | 0x8 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b8`) | **done**: `FX_ATOMOS_BLUE_SPECKS_2` (medium) |
 | fx_0b8 | Atomos | `FX_ATOMOS_FAINT_GLOW` | 0xb | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b8`) | still unknown: with the run-time page its particle reads a grey zigzag band, nothing like the white mist on screen |
 | fx_0b8 | Atomos | `FX_ATOMOS_SPRITES_3` | 0x22 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b8`) | **done**: `FX_ATOMOS_BLUE_SPECKS_3` (medium) |
-| fx_0ba | Ramuh | `FX_RAMUH_SPARK_PARTICLE` | 0x2c | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0ba`) | still unknown: not fetched in a full Ramuh: the module uses it in a branch that cast did not take |
+| fx_0ba | Ramuh | `FX_RAMUH_SPARK_PARTICLE` | 0x2c | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0ba`) | **done**: `FX_RAMUH_BOLT_SPARKS` (medium, from fx_19f's byte-identical entry played in pass 2) |
 | fx_0d3 | Phoenix | `FX_PHOENIX_FAN_EMITTER_2` | 0x5 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0d3`) | **done**: `FX_PHOENIX_RAINBOW_FAN` |
 | fx_0d3 | Phoenix | `FX_PHOENIX_SPRITE_LINE` | 0x7 | sprite line | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0d3`) | **done**: `FX_PHOENIX_LENS_FLARE` |
 | fx_0d3 | Phoenix | `FX_PHOENIX_FAN_EMITTER_5` | 0x14 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0d3`) | **done**: `FX_PHOENIX_RAINBOW_FAN_2` |
@@ -202,8 +202,8 @@ How to play them (`docs/emulator.md`):
 | fx_0e3_1 | Bahamut [group 1] | `FX_BAHAMUT_WHITE_BOLT_2` | 0x11 | trail | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0e3_1`) | **done**: name confirmed |
 | fx_0e3_1 | Bahamut [group 1] | `FX_BAHAMUT_WHITE_BOLT` | 0x15 | trail | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0e3_1`) | **done**: name confirmed |
 | fx_0fb_1 | Madeen | `FX_MADEEN_TRAIL` | 0x14 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0fb_1`) | still unknown: fetched as the blue-white blast starts; its strip reads only sparse dots in the run-time page |
-| fx_114 | Ifrit | `FX_IFRIT_SPOKED_RING` | 0x12 | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_114`); screenshot at the frame the op starts the entry | still unknown: untextured; only ablated together with the bowl, the change is attributed to the dome |
-| fx_114 | Ifrit | `FX_IFRIT_BOWL` | 0x1e | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_114`); screenshot at the frame the op starts the entry | renamed `FX_IFRIT_HEAT_DOME`, still pending (low: hemisphere bowl, the large translucent wavy dome over the scene (ablated together with entry 0x12)) |
+| fx_114 | Ifrit | `FX_IFRIT_SPOKED_RING` | 0x12 | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_114`); screenshot at the frame the op starts the entry | still unknown: untextured; pass 2 ablated fx_1bd's byte-identical entry alone: only a few hundred scattered px |
+| fx_114 | Ifrit | `FX_IFRIT_BOWL` | 0x1e | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_114`); screenshot at the frame the op starts the entry | **done**: `FX_IFRIT_HEAT_DOME` (pass 2: fx_1bd's byte-identical entry ablated alone) |
 | fx_114 | Ifrit | `FX_IFRIT_GRID_PLANE` | 0x2a | model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_IFRIT_WHITE_HAZE` (medium) |
 | fx_114 | Ifrit | `FX_IFRIT_CANOPY` | 0x81 | summon data entry 1 | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_114`); screenshot at the frame the op starts the entry | still unknown: untextured model at run time; ablating it (with 0x83) leaves the screen pixel-identical |
 | fx_114 | Ifrit | `FX_IFRIT_CYLINDER` | 0x83 | summon data entry 3 | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | still unknown: fetched while its page still holds the yellow dummy .TIM placeholder; ablating it leaves the screen pixel-identical |
@@ -214,240 +214,240 @@ How to play them (`docs/emulator.md`):
 | fx_17d_5 | Ark [group 5] | `FX_ARK_SPRITE_LINE` | 0xd | sprite line | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_17d_5`) | **done**: `FX_ARK_LENS_FLARE` |
 | fx_17d_6 | Ark [group 6] | `FX_ARK_FAN_EMITTER_2` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_17d_6`) | still unknown: not fetched within 4600 frames of a full Ark |
 | fx_17d_6 | Ark [group 6] | `FX_ARK_SPRITE_LINE` | 0xd | sprite line | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_17d_6`) | still unknown: not fetched within 4600 frames of a full Ark |
-| fx_17d_8 | Ark [group 8] | `FX_ARK_FLAT_PANEL` | 0x6 | 'so' model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x11B = (0x2c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | still unknown: group 8 never became resident within 4600 frames of a full Ark; the kana page stays open |
+| fx_17d_8 | Ark [group 8] | `FX_ARK_FLAT_PANEL` | 0x6 | 'so' model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x11B = (0x2c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_ARK_BEAM_HAZE` (medium: group 8 not reached; the short Ark's byte-identical fx_1bf_2 entry 0x2 settles it, the kana page is never sampled) |
 
 ## P7: Summons, short animation
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_17a | Madeen (short) | `FX_MADEEN_TRAIL` | 0x11 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_17a`) |  |
-| fx_19f | Judgement Bolt | `FX_RAMUH_LIGHTNING_RIBBON` | 0x6 | trail | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) |  |
-| fx_19f | Judgement Bolt | `FX_RAMUH_LIGHTNING_RIBBON_2` | 0xf | trail | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) |  |
-| fx_19f | Judgement Bolt | `FX_RAMUH_SPARK_BURST` | 0x16 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) |  |
-| fx_19f | Judgement Bolt | `FX_RAMUH_LIGHTNING_BOLT` | 0x18 | trail | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) |  |
-| fx_19f | Judgement Bolt | `FX_RAMUH_DOME_COLUMN` | 0x22 | 'so' model | placeholder page in the file (filled or replaced at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`); screenshot at the frame the op starts the entry |  |
-| fx_19f | Judgement Bolt | `FX_RAMUH_SPARK_PARTICLE` | 0x2a | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) | still unknown: fx_0ba's same entry was not fetched in a full Ramuh (a branch that cast did not take) |
-| fx_1a8 | Odin (short) | `FX_ODIN_FAN_STREAK` | 0x5 | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry |  |
-| fx_1a8 | Odin (short) | `FX_ODIN_SPECK_SPIRAL` | 0xc | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a8`) |  |
-| fx_1a8 | Odin (short) | `FX_ODIN_SPECKS` | 0x12 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a8`) |  |
-| fx_1a8 | Odin (short) | `FX_ODIN_CALLBACK_EMITTER` | 0x17 | emitter | drawn by the module's callback, nothing drawable in the data | screenshot at the frame the op starts the entry |  |
-| fx_1bd | Flames of Hell | `FX_IFRIT_GRID_PLANE` | 0xd | model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_IFRIT_WHITE_HAZE` (medium) |
-| fx_1bd | Flames of Hell | `FX_IFRIT_BOWL` | 0x13 | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_1bd`); screenshot at the frame the op starts the entry | renamed `FX_IFRIT_HEAT_DOME`, still pending (low: hemisphere bowl, the translucent wavy dome (fx_114's entry, ablated together with its spoked ring there)) |
-| fx_1bd | Flames of Hell | `FX_IFRIT_SPOKED_RING` | 0x2c | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_1bd`); screenshot at the frame the op starts the entry | still unknown: fx_114's same entry is untextured and was only ablated together with the bowl |
-| fx_1be | Atomos (short) | `FX_ATOMOS_SPHERE` | 0xc | 'so' model | page 0x117 = (0x1c0, 0x100) holds no texture in the file (run-time page) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry |  |
-| fx_1bf_2 | Ark (short) | `FX_ARK_FLAT_PANEL` | 0x2 | 'so' model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x11B = (0x2c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | still unknown: fx_17d_8's same entry was not reached within 4600 frames of a full Ark |
-| fx_1fd | Fenrir (2nd) (short) | `FX_FENRIR_SPARKS` | 0x16 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1fd`) |  |
-| fx_1fe | Phoenix (short) | `FX_PHOENIX_EMBERS` | 0x16 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1fe`) |  |
+| fx_17a | Madeen (short) | `FX_MADEEN_TRAIL` | 0x11 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_17a`) | **done**: `FX_MADEEN_SPIRAL_STREAK` (medium) |
+| fx_19f | Judgement Bolt | `FX_RAMUH_LIGHTNING_RIBBON` | 0x6 | trail | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) | **done**: name confirmed |
+| fx_19f | Judgement Bolt | `FX_RAMUH_LIGHTNING_RIBBON_2` | 0xf | trail | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) | **done**: name confirmed (medium) |
+| fx_19f | Judgement Bolt | `FX_RAMUH_SPARK_BURST` | 0x16 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) | **done**: `FX_RAMUH_BOLT_SPARK_BURST` (medium) |
+| fx_19f | Judgement Bolt | `FX_RAMUH_LIGHTNING_BOLT` | 0x18 | trail | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) | **done**: name confirmed (medium) |
+| fx_19f | Judgement Bolt | `FX_RAMUH_DOME_COLUMN` | 0x22 | 'so' model | placeholder page in the file (filled or replaced at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`); screenshot at the frame the op starts the entry | **done**: `FX_RAMUH_BLUE_AURA_COLUMN` |
+| fx_19f | Judgement Bolt | `FX_RAMUH_SPARK_PARTICLE` | 0x2a | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_19f`) | **done**: `FX_RAMUH_BOLT_SPARKS` (medium) |
+| fx_1a8 | Odin (short) | `FX_ODIN_FAN_STREAK` | 0x5 | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry | renamed `FX_ODIN_GOLD_RAYS`, still pending (low: emitter: two fan elements, a thin pale-gold streak at run time, matching the gold rays of the slash explosion) |
+| fx_1a8 | Odin (short) | `FX_ODIN_SPECK_SPIRAL` | 0xc | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a8`) | **done**: `FX_ODIN_BLACK_DEBRIS` |
+| fx_1a8 | Odin (short) | `FX_ODIN_SPECKS` | 0x12 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a8`) | renamed `FX_ODIN_RED_SPARKS`, still pending (low: emitter: speck sprites, tiny red sparks at run time (not separable on screen)) |
+| fx_1a8 | Odin (short) | `FX_ODIN_CALLBACK_EMITTER` | 0x17 | emitter | drawn by the module's callback, nothing drawable in the data | screenshot at the frame the op starts the entry | still unknown: started with the slash explosion; ablating it only shifts the random pink smoke puffs |
+| fx_1bd | Flames of Hell | `FX_IFRIT_GRID_PLANE` | 0xd | model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_IFRIT_WHITE_HAZE` (pass 2: ablated here) |
+| fx_1bd | Flames of Hell | `FX_IFRIT_BOWL` | 0x13 | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_1bd`); screenshot at the frame the op starts the entry | **done**: `FX_IFRIT_HEAT_DOME` (pass 2: ablated alone here, the yellow-white glare dome) |
+| fx_1bd | Flames of Hell | `FX_IFRIT_SPOKED_RING` | 0x2c | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_1bd`); screenshot at the frame the op starts the entry | still unknown: ablating it alone (pass 2) changes only a few hundred scattered px |
+| fx_1be | Atomos (short) | `FX_ATOMOS_SPHERE` | 0xc | 'so' model | page 0x117 = (0x1c0, 0x100) holds no texture in the file (run-time page) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_ATOMOS_RED_CLOUD_SPHERE` |
+| fx_1bf_2 | Ark (short) | `FX_ARK_FLAT_PANEL` | 0x2 | 'so' model | placeholder page in the file (filled or replaced at run time) | VRAM dump of page 0x11B = (0x2c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_ARK_BEAM_HAZE` (the kana page is never sampled: by the time the band draws, page 0x11B holds a red-violet nebula; the red glow band along Ark's beam) |
+| fx_1fd | Fenrir (2nd) (short) | `FX_FENRIR_SPARKS` | 0x16 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1fd`) | **done**: `FX_FENRIR_CYAN_GLINTS` (medium) |
+| fx_1fe | Phoenix (short) | `FX_PHOENIX_EMBERS` | 0x16 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1fe`) | **done**: name confirmed (medium) |
 
 ## E1: enemy Yan
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_01f | enemy !!! (Yan) | `FX_01F_WHITE_RINGS` | 0x3 | emitter | placeholder page in the file (filled or replaced at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_01f`); screenshot at the frame the op starts the entry |  |
-| fx_01f | enemy !!! (Yan) | `FX_01F_BACKDROP` | 0xd | backdrop | backdrop layer table, not drawn by the tool | screenshot of the backdrop / screen tint while the op draws it |  |
+| fx_01f | enemy !!! (Yan) | `FX_01F_WHITE_RINGS` | 0x3 | emitter | placeholder page in the file (filled or replaced at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_01f`); screenshot at the frame the op starts the entry | **done**: `FX_01F_WHITE_FLASH` |
+| fx_01f | enemy !!! (Yan) | `FX_01F_BACKDROP` | 0xd | backdrop | backdrop layer table, not drawn by the tool | screenshot of the backdrop / screen tint while the op draws it | **done**: `FX_01F_BURST_TEXTURE` (medium) |
 
 ## E2: enemy Garland
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_023 | enemy Psychokinesis (Garland) | `FX_PSYCHOKINESIS_SCREEN_TRAILS` | 0x8 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_023`) |  |
+| fx_023 | enemy Psychokinesis (Garland) | `FX_PSYCHOKINESIS_SCREEN_TRAILS` | 0x8 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_023`) | **done**: `FX_PSYCHOKINESIS_LIGHT_RAYS` |
 
 ## E3: enemy Shell Dragon
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_033 | enemy Snort (Shell Dragon, ...) | `FX_SNORT_BREATH_TRAILS` | 0x5 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_033`) |  |
+| fx_033 | enemy Snort (Shell Dragon, ...) | `FX_SNORT_BREATH_TRAILS` | 0x5 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_033`) | **done**: `FX_SNORT_SMOKE_STREAKS` (medium) |
 
 ## E4: enemy Chimera
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_034 | enemy Cold Breath (Chimera, ...) | `FX_COLD_BREATH_ICE_CRYSTAL_2` | 0xa | model | texture page not uploaded by the file or the common / summon pages | VRAM dump of page 0x9A = (0x280, 0x100) while the effect plays |  |
-| fx_0a9 | enemy Lightning (Chimera, ...) | `FX_LIGHTNING_TRAIL_2` | 0x4 | trail | not drawn by the tool | screenshot at the frame the op starts the entry |  |
+| fx_034 | enemy Cold Breath (Chimera, ...) | `FX_COLD_BREATH_ICE_CRYSTAL_2` | 0xa | model | texture page not uploaded by the file or the common / summon pages | VRAM dump of page 0x9A = (0x280, 0x100) while the effect plays | **done**: name confirmed |
+| fx_0a9 | enemy Lightning (Chimera, ...) | `FX_LIGHTNING_TRAIL_2` | 0x4 | trail | not drawn by the tool | screenshot at the frame the op starts the entry | still unknown: drawn from the start (99 calls); not rendered by the tool, not ablated |
 
 ## E5: enemy Sand Scorpion / Seeker Bat
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_037 | enemy Darkness (Sand Scorpion/Seeker Bat, ...) | `FX_DARKNESS_SCREEN_TRAIL` | 0x2 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_037`) |  |
+| fx_037 | enemy Darkness (Sand Scorpion/Seeker Bat, ...) | `FX_DARKNESS_SCREEN_TRAIL` | 0x2 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_037`) | renamed `FX_DARKNESS_GREEN_HAZE`, still pending (low: emitter: orbiting screen trail, a strip of green glow dots on long streaks at run time: the dark-green haze at the frame edges) |
 
 ## E6: enemy Carrion Worm
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_03b | enemy Trouble Juice (Carrion Worm) | `FX_TROUBLE_JUICE_SCREEN_TRAIL` | 0x3 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_03b`) |  |
-| fx_03b | enemy Trouble Juice (Carrion Worm) | `FX_TROUBLE_JUICE_SCREEN_TRAIL_2` | 0xa | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_03b`) |  |
+| fx_03b | enemy Trouble Juice (Carrion Worm) | `FX_TROUBLE_JUICE_SCREEN_TRAIL` | 0x3 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_03b`) | still unknown: ablating it changes < 190 px |
+| fx_03b | enemy Trouble Juice (Carrion Worm) | `FX_TROUBLE_JUICE_SCREEN_TRAIL_2` | 0xa | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_03b`) | still unknown: started, not ablated |
 
 ## E7: enemy Gigan Octopus
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_043 | enemy Ink (Gigan Octopus, ...) | `FX_INK_INK_TRAIL` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_043`) |  |
-| fx_043 | enemy Ink (Gigan Octopus, ...) | `FX_INK_INK_SPRAY` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_043`) |  |
-| fx_1ad | enemy 6 Legs (Gigan Octopus) | `FX_6_LEGS_POD` | 0x2 | 'so' model | page 0x117 = (0x1c0, 0x100) holds no texture in the file (run-time page) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry |  |
+| fx_043 | enemy Ink (Gigan Octopus, ...) | `FX_INK_INK_TRAIL` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_043`) | **done**: `FX_INK_BLOTS` |
+| fx_043 | enemy Ink (Gigan Octopus, ...) | `FX_INK_INK_SPRAY` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_043`) | **done**: `FX_INK_BLOTS_2` |
+| fx_1ad | enemy 6 Legs (Gigan Octopus) | `FX_6_LEGS_POD` | 0x2 | 'so' model | page 0x117 = (0x1c0, 0x100) holds no texture in the file (run-time page) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_6_LEGS_SLIME_SHELL` (medium) |
 
 ## E8: enemy Axe Beak / Carve Spider
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0a0 | enemy Web, String (Axe Beak/Carve Spider, ...) | `FX_WEB_CALLBACK_EMITTER` | 0x1 | emitter | drawn by the module's callback, nothing drawable in the data | screenshot at the frame the op starts the entry |  |
-| fx_0a0 | enemy Web, String (Axe Beak/Carve Spider, ...) | `FX_WEB_STRAND_TRAIL` | 0x7 | trail | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a0`) |  |
+| fx_0a0 | enemy Web, String (Axe Beak/Carve Spider, ...) | `FX_WEB_CALLBACK_EMITTER` | 0x1 | emitter | drawn by the module's callback, nothing drawable in the data | screenshot at the frame the op starts the entry | still unknown: started, not ablated |
+| fx_0a0 | enemy Web, String (Axe Beak/Carve Spider, ...) | `FX_WEB_STRAND_TRAIL` | 0x7 | trail | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a0`) | renamed `FX_WEB_STRANDS`, still pending (low: trail: dark strip, the white web strands wrapping the target (not ablated)) |
 
 ## E9: enemy Torama
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0a1 | enemy Blaster (Torama, ...) | `FX_BLASTER_TRAIL` | 0x7 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a1`) |  |
-| fx_0a1 | enemy Blaster (Torama, ...) | `FX_BLASTER_TRAIL_2` | 0x10 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a1`) |  |
-| fx_0a3 | enemy Electrocute (Torama, ...) | `FX_ELECTROCUTE_BOLT_TRAIL` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a3`) |  |
-| fx_0a3 | enemy Electrocute (Torama, ...) | `FX_ELECTROCUTE_BOLT_TRAIL_2` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a3`) |  |
+| fx_0a1 | enemy Blaster (Torama, ...) | `FX_BLASTER_TRAIL` | 0x7 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a1`) | **done**: `FX_BLASTER_WHITE_HAZE` (medium) |
+| fx_0a1 | enemy Blaster (Torama, ...) | `FX_BLASTER_TRAIL_2` | 0x10 | trail | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a1`) | still unknown: drawn from the start (12 calls), its strip reads pink-violet stripes at run time; ablating it changes < 250 px |
+| fx_0a3 | enemy Electrocute (Torama, ...) | `FX_ELECTROCUTE_BOLT_TRAIL` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a3`) | **done**: `FX_ELECTROCUTE_BLUE_BOLTS` |
+| fx_0a3 | enemy Electrocute (Torama, ...) | `FX_ELECTROCUTE_BOLT_TRAIL_2` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a3`) | **done**: `FX_ELECTROCUTE_BLUE_BOLTS_2` (medium) |
 
 ## E10: enemy Dragonfly
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0a4 | enemy Buzz (Dragonfly, ...) | `FX_BUZZ_SPRITE` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a4`) |  |
+| fx_0a4 | enemy Buzz (Dragonfly, ...) | `FX_BUZZ_SPRITE` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a4`) | **done**: `FX_BUZZ_INSECT` (medium) |
 
 ## E11: enemy Myconid
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0a5 | enemy Spore (Myconid) | `FX_SPORE_TRAIL` | 0x7 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a5`) |  |
+| fx_0a5 | enemy Spore (Myconid) | `FX_SPORE_TRAIL` | 0x7 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0a5`) | renamed `FX_SPORE_GREEN_GLOW`, still pending (low: emitter: orbiting trail + sprite, a pale gold strip and a soft green glow at run time) |
 
 ## E12: enemy Soulcage
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) |  |
-| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL_2` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) |  |
-| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL_3` | 0xa | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) |  |
-| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL_4` | 0xb | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) |  |
+| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) | **done**: `FX_LEAF_SWIRL_YELLOW_LEAVES` (medium) |
+| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL_2` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) | **done**: `FX_LEAF_SWIRL_YELLOW_LEAVES_2` (medium) |
+| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL_3` | 0xa | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) | **done**: `FX_LEAF_SWIRL_YELLOW_LEAVES_3` (medium) |
+| fx_0b0 | enemy Leaf Swirl (Soulcage) | `FX_LEAF_SWIRL_LEAF_TRAIL_4` | 0xb | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b0`) | **done**: `FX_LEAF_SWIRL_YELLOW_LEAVES_4` (medium) |
 
 ## E13: enemy Griffin
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0b4 | enemy Aero (Griffin, ...) | `FX_AERO_SPRITE_SWIRL` | 0x11 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b4`) |  |
-| fx_1f6 | enemy Aera (Griffin, ...) | `FX_AERA_WIND_STREAKS` | 0x8 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1f6`) |  |
-| fx_1f6 | enemy Aera (Griffin, ...) | `FX_AERA_SPRITE_BURST` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1f6`) |  |
+| fx_0b4 | enemy Aero (Griffin, ...) | `FX_AERO_SPRITE_SWIRL` | 0x11 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0b4`) | renamed `FX_AERO_GREEN_GLINTS`, still pending (low: emitter: spiralling sprites, green four-point star glints at run time (not ablated)) |
+| fx_1f6 | enemy Aera (Griffin, ...) | `FX_AERA_WIND_STREAKS` | 0x8 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1f6`) | **done**: `FX_AERA_GREEN_WIND_BLADES` (medium) |
+| fx_1f6 | enemy Aera (Griffin, ...) | `FX_AERA_SPRITE_BURST` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1f6`) | still unknown: as fx_0cd's entry 0xC: a tiny green glint sprite at run time, ablating it changes < 210 px |
 
 ## E14: enemy Thorn / Zorn
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0cb | enemy Light Flare (Thorn/Zorn) | `FX_LIGHT_FLARE_TEXTURED_RING` | 0x11 | rings | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cb`) |  |
-| fx_0cc | enemy Meteorite (Thorn/Zorn) | `FX_METEORITE_TRAIL_EMITTER` | 0x9 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cc`) |  |
+| fx_0cb | enemy Light Flare (Thorn/Zorn) | `FX_LIGHT_FLARE_TEXTURED_RING` | 0x11 | rings | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cb`) | **done**: `FX_LIGHT_FLARE_GLOW_RING` |
+| fx_0cc | enemy Meteorite (Thorn/Zorn) | `FX_METEORITE_TRAIL_EMITTER` | 0x9 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cc`) | renamed `FX_METEORITE_EMBERS`, still pending (low: emitter: sprites following the falling rock, small orange specks at run time) |
 
 ## E15: enemy Gimme Cat
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0cd | enemy Aera (Gimme Cat, ...) | `FX_AERA_WIND_STREAKS` | 0x8 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cd`) |  |
-| fx_0cd | enemy Aera (Gimme Cat, ...) | `FX_AERA_SPRITE_BURST` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cd`) |  |
-| fx_0ce | enemy Screech, Shriek (Gimme Cat, ...) | `FX_SCREECH_TRAIL` | 0x1 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0ce`) |  |
-| fx_0ce | enemy Screech, Shriek (Gimme Cat, ...) | `FX_SCREECH_DARK_RINGS` | 0xb | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0ce`) |  |
+| fx_0cd | enemy Aera (Gimme Cat, ...) | `FX_AERA_WIND_STREAKS` | 0x8 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cd`) | **done**: `FX_AERA_GREEN_WIND_BLADES` |
+| fx_0cd | enemy Aera (Gimme Cat, ...) | `FX_AERA_SPRITE_BURST` | 0xc | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0cd`) | still unknown: its run-time sprite is a tiny green glint; ablating it changes < 210 px |
+| fx_0ce | enemy Screech, Shriek (Gimme Cat, ...) | `FX_SCREECH_TRAIL` | 0x1 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0ce`) | still unknown: ablating it changes only scattered pink squiggle pixels (max 1234 px) |
+| fx_0ce | enemy Screech, Shriek (Gimme Cat, ...) | `FX_SCREECH_DARK_RINGS` | 0xb | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0ce`) | **done**: `FX_SCREECH_SOUND_RINGS` (medium) |
 
 ## E16: enemy Whale Zombie
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_0f0 | enemy Zombie Powder (Whale Zombie) | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | 0x1 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f0`) |  |
+| fx_0f0 | enemy Zombie Powder (Whale Zombie) | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | 0x1 | emitter | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_0f0`) | **done**: `FX_ZOMBIE_POWDER_BLUE_SPECKS` (medium) |
 
 ## E17: enemy Magic Vice / Mimic
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_112 | enemy Eat (Magic Vice/Mimic) | `FX_EAT_ORBIT_TRAIL` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_112`) |  |
+| fx_112 | enemy Eat (Magic Vice/Mimic) | `FX_EAT_ORBIT_TRAIL` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_112`) | still unknown: its run-time texture is a brown sphere with highlights; nothing identifiable on screen |
 
 ## E18: enemy Prison Cage (Garnet)
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_11d | enemy Absorb (Garnet/Prison Cage) | `FX_ABSORB_TRAIL` | 0x9 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_11d`) |  |
-| fx_11d | enemy Absorb (Garnet/Prison Cage) | `FX_ABSORB_TRAIL_2` | 0xa | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_11d`) |  |
+| fx_11d | enemy Absorb (Garnet/Prison Cage) | `FX_ABSORB_TRAIL` | 0x9 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_11d`) | **done**: `FX_ABSORB_PINK_ORBS` (medium) |
+| fx_11d | enemy Absorb (Garnet/Prison Cage) | `FX_ABSORB_TRAIL_2` | 0xa | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_11d`) | renamed `FX_ABSORB_PINK_ORBS_2`, still pending (low: emitter: 3D trail, the second emitter of the pink orb pair (byte-identical to entry 0x9; not ablated)) |
 
 ## E19: enemy Maliris
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_123 | enemy Raining Swords (Maliris) | `FX_RAINING_SWORDS_DARK_BURST` | 0xc | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_123`) |  |
+| fx_123 | enemy Raining Swords (Maliris) | `FX_RAINING_SWORDS_DARK_BURST` | 0xc | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_123`) | renamed `FX_RAINING_SWORDS_CYAN_SPECKS`, still pending (low: emitter: rings and sprites, tiny cyan specks at run time, + cyan dot specks) |
 
 ## E20: enemy Benero / King Leo / Zenero
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_125 | Poly | `FX_POLY_POLYHEDRON` | 0xd | model | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_125`) |  |
-| fx_125 | Poly | `FX_POLY_POLYHEDRON_2` | 0xe | model | tpage computed by the C (not resolved by the tool) | breakpoint on the model registration (tpage argument) + screenshot at the frame the op starts the entry |  |
+| fx_125 | Poly | `FX_POLY_POLYHEDRON` | 0xd | model | texture page not uploaded by the file or the common / summon pages | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_125`) | **done**: `FX_POLY_GREEN_CRYSTAL` |
+| fx_125 | Poly | `FX_POLY_POLYHEDRON_2` | 0xe | model | tpage computed by the C (not resolved by the tool) | breakpoint on the model registration (tpage argument) + screenshot at the frame the op starts the entry | **done**: `FX_POLY_GREEN_CRYSTAL_2` (medium) |
 
 ## E21: enemy Kuja / Trance Kuja
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_180 | enemy Ultima (Trance Kuja) | `FX_ULTIMA_NOISE_RING` | 0x2 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_180`) |  |
-| fx_180 | enemy Ultima (Trance Kuja) | `FX_ULTIMA_NOISE_RING_2` | 0xf | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_180`) |  |
-| fx_180 | enemy Ultima (Trance Kuja) | `FX_ULTIMA_NOISE_RING_3` | 0x1f | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_180`) |  |
-| fx_18a | enemy Transform (Kuja/Trance Kuja) | `FX_TRANSFORM_FAN_STREAK` | 0xa | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry |  |
-| fx_18a | enemy Transform (Kuja/Trance Kuja) | `FX_TRANSFORM_SPRITE_SPIRAL` | 0xc | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_18a`) |  |
-| fx_1b4 | enemy Flare Star (Kuja/Trance Kuja, ...) | `FX_FLARE_STAR_FAN_EMITTER` | 0xb | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry |  |
-| fx_1ec | enemy Ultima (Kuja/Trance Kuja) | `FX_ULTIMA_NOISE_RING` | 0x2 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ec`) |  |
-| fx_1ec | enemy Ultima (Kuja/Trance Kuja) | `FX_ULTIMA_NOISE_RING_2` | 0x12 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ec`) |  |
-| fx_1ec | enemy Ultima (Kuja/Trance Kuja) | `FX_ULTIMA_NOISE_RING_3` | 0x27 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ec`) |  |
+| fx_180 | enemy Ultima (Trance Kuja) | `FX_ULTIMA_NOISE_RING` | 0x2 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_180`) | **done**: `FX_ULTIMA_VIOLET_HAZE` |
+| fx_180 | enemy Ultima (Trance Kuja) | `FX_ULTIMA_NOISE_RING_2` | 0xf | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_180`) | **done**: `FX_ULTIMA_VIOLET_GLOW` |
+| fx_180 | enemy Ultima (Trance Kuja) | `FX_ULTIMA_NOISE_RING_3` | 0x1f | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_180`) | still unknown: not fetched within 1000 frames (the run ended in the final explosion); not byte-identical to fx_1ec's 0x27 |
+| fx_18a | enemy Transform (Kuja/Trance Kuja) | `FX_TRANSFORM_FAN_STREAK` | 0xa | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry | **done**: `FX_TRANSFORM_RED_SWEEP` (medium) |
+| fx_18a | enemy Transform (Kuja/Trance Kuja) | `FX_TRANSFORM_SPRITE_SPIRAL` | 0xc | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_18a`) | renamed `FX_TRANSFORM_RED_SPECKS`, still pending (low: emitter: spiral of sprites + sub-sprites, small dark-red glowing specks at run time (ablation changes part of the white-out) (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently)) |
+| fx_1b4 | enemy Flare Star (Kuja/Trance Kuja, ...) | `FX_FLARE_STAR_FAN_EMITTER` | 0xb | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry | **done**: `FX_FLARE_STAR_RED_RAYS` |
+| fx_1ec | enemy Ultima (Kuja/Trance Kuja) | `FX_ULTIMA_NOISE_RING` | 0x2 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ec`) | **done**: `FX_ULTIMA_VIOLET_HAZE` |
+| fx_1ec | enemy Ultima (Kuja/Trance Kuja) | `FX_ULTIMA_NOISE_RING_2` | 0x12 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ec`) | **done**: `FX_ULTIMA_VIOLET_GLOW` |
+| fx_1ec | enemy Ultima (Kuja/Trance Kuja) | `FX_ULTIMA_NOISE_RING_3` | 0x27 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ec`) | renamed `FX_ULTIMA_VIOLET_GLOW_2`, still pending (low: emitter: textured ring + lilac gouraud ring, started in the final blast; named by analogy with entry 0x12 (not ablated)) |
 
 ## E22: enemy Jabberwock
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_18c | enemy Light (Jabberwock) | `FX_LIGHT_PARTICLES` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_18c`) |  |
+| fx_18c | enemy Light (Jabberwock) | `FX_LIGHT_PARTICLES` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_18c`) | **done**: `FX_LIGHT_VIOLET_STREAKS` (medium) |
 
 ## E23: enemy Moonlight Slash (enemy not labelled)
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1a2 | enemy Moonlight Slash | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | 0x6 | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_1a2`); screenshot at the frame the op starts the entry |  |
-| fx_1a2 | enemy Moonlight Slash | `FX_MOONLIGHT_SLASH_SPRITES` | 0x8 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a2`) |  |
-| fx_1a2 | enemy Moonlight Slash | `FX_MOONLIGHT_SLASH_SPRITES_2` | 0x17 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a2`) |  |
+| fx_1a2 | enemy Moonlight Slash | `FX_MOONLIGHT_SLASH_SPIKED_SHAPE` | 0x6 | model | texture list not followed by the tool | VRAM dump of the listed pages while the effect plays (the pages its frames sample: `fxdata.py fx_1a2`); screenshot at the frame the op starts the entry | still unknown: untextured spiky model, fetched early; nothing visible in a forced cast with Zidane as the caster (a real enemy cast may differ) |
+| fx_1a2 | enemy Moonlight Slash | `FX_MOONLIGHT_SLASH_SPRITES` | 0x8 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a2`) | renamed `FX_MOONLIGHT_SLASH_BLUE_GLOWS`, still pending (low: emitter: three sprite elements, 24 frames, soft blue glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently)) |
+| fx_1a2 | enemy Moonlight Slash | `FX_MOONLIGHT_SLASH_SPRITES_2` | 0x17 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a2`) | renamed `FX_MOONLIGHT_SLASH_COLOR_GLOWS`, still pending (low: emitter: three sprite elements, 24 frames, blue, violet and green glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently)) |
 
 ## E24: enemy Kraken
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1a6 | enemy Water-gun (Kraken, ...) | `FX_WATER_GUN_PARTICLE` | 0x3 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a6`) |  |
-| fx_1ab | enemy Waterga (Kraken, ...) | `FX_WATERGA_RINGS` | 0x4 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ab`) |  |
+| fx_1a6 | enemy Water-gun (Kraken, ...) | `FX_WATER_GUN_PARTICLE` | 0x3 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1a6`) | **done**: `FX_WATER_GUN_SPRAY` |
+| fx_1ab | enemy Waterga (Kraken, ...) | `FX_WATERGA_RINGS` | 0x4 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1ab`) | **done**: `FX_WATERGA_WHITE_FOAM` (medium) |
 
 ## E25: enemy Nova Dragon
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1b2 | enemy Tidal Wave (Nova Dragon) | `FX_TIDAL_WAVE_CURL` | 0x2 | model | page 0x117 = (0x1c0, 0x100) holds no texture in the file (run-time page) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry |  |
-| fx_1b2 | enemy Tidal Wave (Nova Dragon) | `FX_TIDAL_WAVE_DISC` | 0xc | model | 15-bit page 0x119 drawn at run time (screen copy?) | VRAM dump of (0x240, 0x100) while the effect plays + screenshot at the frame the op starts the entry |  |
+| fx_1b2 | enemy Tidal Wave (Nova Dragon) | `FX_TIDAL_WAVE_CURL` | 0x2 | model | page 0x117 = (0x1c0, 0x100) holds no texture in the file (run-time page) | VRAM dump of page 0x117 = (0x1c0, 0x100) while the effect plays; screenshot at the frame the op starts the entry | **done**: `FX_TIDAL_WAVE_WATER_CURL` |
+| fx_1b2 | enemy Tidal Wave (Nova Dragon) | `FX_TIDAL_WAVE_DISC` | 0xc | model | 15-bit page 0x119 drawn at run time (screen copy?) | VRAM dump of (0x240, 0x100) while the effect plays + screenshot at the frame the op starts the entry | **done**: `FX_TIDAL_WAVE_SURGE` (medium) |
 
 ## E26: enemy Necron
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1b3 | enemy Death1 (Dummy/Necron) | `FX_DEATH1_FAN_EMITTER` | 0x6 | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry |  |
-| fx_1b3 | enemy Death1 (Dummy/Necron) | `FX_DEATH1_SCREEN_TRAIL` | 0x39 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b3`) |  |
-| fx_1b3 | enemy Death1 (Dummy/Necron) | `FX_DEATH1_SCREEN_TRAIL_2` | 0x3a | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b3`) |  |
-| fx_1f0 | enemy Appearance (Dummy/Necron) | `FX_APPEARANCE_SPRITES` | 0x4 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1f0`) |  |
+| fx_1b3 | enemy Death1 (Dummy/Necron) | `FX_DEATH1_FAN_EMITTER` | 0x6 | emitter | fan / streak too faint in the render to name | screenshot at the frame the op starts the entry | **done**: `FX_DEATH1_GOLD_RAYS` |
+| fx_1b3 | enemy Death1 (Dummy/Necron) | `FX_DEATH1_SCREEN_TRAIL` | 0x39 | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b3`) | still unknown: not fetched within 1000 frames of a forced cast (Zidane as the caster) |
+| fx_1b3 | enemy Death1 (Dummy/Necron) | `FX_DEATH1_SCREEN_TRAIL_2` | 0x3a | emitter | UVs read unrelated texels (texture filled at run time) | VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b3`) | still unknown: not fetched within 1000 frames of a forced cast (Zidane as the caster) |
+| fx_1f0 | enemy Appearance (Dummy/Necron) | `FX_APPEARANCE_SPRITES` | 0x4 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1f0`) | renamed `FX_APPEARANCE_WHITE_SPECKS`, still pending (low: emitter: sprites, tiny white specks at run time (ablation changes < 470 px)) |
 
 ## E27: enemy Silver Dragon
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1b6 | enemy Death (Silver Dragon) | `FX_DEATH_SPIRAL_TRAIL` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b6`) |  |
+| fx_1b6 | enemy Death (Silver Dragon) | `FX_DEATH_SPIRAL_TRAIL` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b6`) | still unknown: started as the screen goes white; its run-time strip is a white streak |
 
 ## E28: enemy Gizamaluke
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1b8 | enemy Death (Gizamaluke) | `FX_DEATH_DARK_QUADS` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b8`) |  |
-| fx_1b9 | enemy Appearance (Gizamaluke) | `FX_APPEARANCE_DARK_QUADS` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b9`) |  |
+| fx_1b8 | enemy Death (Gizamaluke) | `FX_DEATH_DARK_QUADS` | 0x1 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b8`) | **done**: `FX_DEATH_TEAL_GLOWS` (medium) |
+| fx_1b9 | enemy Appearance (Gizamaluke) | `FX_APPEARANCE_DARK_QUADS` | 0x2 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1b9`) | **done**: `FX_APPEARANCE_TEAL_GLOWS` (medium) |
 
 ## E29: enemy Ragtime Mouse
 
 | module | game name | define | index | kind | why pending | capture | status |
 |---|---|---|---|---|---|---|---|
-| fx_1e6 | enemy Correct!!! (False/Ragtime Mouse/True) | `FX_CORRECT_SPARKLES` | 0x4 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1e6`) |  |
+| fx_1e6 | enemy Correct!!! (False/Ragtime Mouse/True) | `FX_CORRECT_SPARKLES` | 0x4 | emitter | renders black / empty (texels blank in the upload or a blend mode) | screenshot at the frame the op starts the entry; VRAM dump while the effect plays (the pages its frames sample: `fxdata.py fx_1e6`) | **done**: `FX_CORRECT_YELLOW_STARS` (medium) |
 
 ## Oddities in the files (placeholder and test data)
 
@@ -457,11 +457,11 @@ the game overwrites them at run time (VRAM dump while the effect plays) or reall
 | where | what the file holds | entries that sample it |
 |---|---|---|
 | fx_07f (Silence, all targets) entry 0x1; fx_086 / fx_08f (Meteor) entry 0x4 | a white page with hand-written Japanese developer scribbles | `FX_SILENCE_RING_DISC`, `FX_METEOR_STREAK_SHELL` |
-| fx_17d_8 (Ark, group 8) entry 0x6, fx_1bf_2 (Ark short, group 2) entry 0x2 (byte-identical) | page 0x11B: a white page with the kana labels up / left / right / down around its edges (an orientation test texture) | `FX_ARK_FLAT_PANEL` |
+| fx_17d_8 (Ark, group 8) entry 0x6, fx_1bf_2 (Ark short, group 2) entry 0x2 (byte-identical) | page 0x11B: a white page with the kana labels up / left / right / down around its edges (an orientation test texture) | `FX_ARK_BEAM_HAZE`. Runtime pass 2: never sampled on screen. In the short Ark the page is in VRAM from group 2's upload (~f907) to f1300 with nothing reading it; the model is registered at f1309, and by f1320 the page holds an animated red-violet nebula, which the model draws from ~f1584 as the red glow band along Ark's beam |
 | fx_060 / fx_061 (Confuse) trail strips | a page of music staves with notes, smoke swirls and a hazy wave band: the real Confuse texture or a placeholder | `FX_CONFUSE_WAVE_TRAILS`, `FX_CONFUSE_ORBIT_TRAILS` |
 | fx_133 (enemy Disappear / Close Book): file 0x1B5's entry 0x1 | a test emitter: coloured puffs and sprites spelling "Dummy" (file 0x133's entry 0x1 is the real pale dust puff) | `FX_DISAPPEAR_DUST_PUFF` (the module plays both files) |
 | fx_0fb_1 / fx_17a (Madeen) page 0x138 | a hand-written placeholder in the file | `FX_MADEEN_LOOP_RIBBON` (named by shape) |
-| fx_19f (Ramuh short) | texture pages holding a "dummy" placeholder | `FX_RAMUH_DOME_COLUMN` |
+| fx_19f (Ramuh short) | texture pages holding a "dummy" placeholder | `FX_RAMUH_BLUE_AURA_COLUMN`. Runtime pass 2: replaced at run time by a blue-white marbled texture |
 | fx_04f (Reflect) entry 0x6 | a sketch-like placeholder page (the byte-identical Carbuncle star crystal samples a white page) | `FX_REFLECT_STAR` (named by shape) |
-| fx_114 / fx_1bd (Ifrit) tpage 0x117 | a yellow placeholder page in the file's upload | `FX_IFRIT_GRID_PLANE`, `FX_IFRIT_CYLINDER` |
-| fx_01f (enemy !!!, Yan) entry 0x3 | its textured rings' UV box reads a placeholder page | `FX_01F_WHITE_RINGS` |
+| fx_114 / fx_1bd (Ifrit) tpage 0x117 | a yellow placeholder page in the file's upload | `FX_IFRIT_WHITE_HAZE` (grey-white wavy streaks by the time it is fetched), `FX_IFRIT_CYLINDER` (fetched while the placeholder is still there; changes nothing visible) |
+| fx_01f (enemy !!!, Yan) entry 0x3 | its textured rings' UV box reads a placeholder page | `FX_01F_WHITE_FLASH` (runtime pass 2: the huge white flash over the target) |

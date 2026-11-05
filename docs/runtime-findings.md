@@ -4383,7 +4383,7 @@ Findings that change the picture:
 | P3 | fx_188 | `FX_LV3_DEF_LESS_PARTICLE` | still unknown | - | drawn from f253 (720 calls); still black with the run-time page build/fxrt/rr_p3_fx188_280/188/03_particles.png |
 | P3 | fx_188 | `FX_LV3_DEF_LESS_RING` | still unknown | - | drawn from f501; noise with the run-time page (f520) build/fxrt/rr_p3_fx188_520/188/14_rings.png |
 
-## Effect-data runtime pass 2 (fxdata_runtime.md: P7, P5, E)  (status: proposed)
+## Effect-data runtime pass 2 (fxdata_runtime.md: P7, P5, E)  (status: **applied**: renamed and confirmed names in include/fxmod (byte-identical twins included: fx_0ba Ramuh bolt sparks, fx_0e2 Fenrir glints, fx_17d_8 FX_ARK_BEAM_HAZE), low ones still marked "(look pending: low)", still-unknown ones pending with the reason; name clashes taken as FX_TRANSFORM_RED_SWEEP and FX_WATER_GUN_SPRAY; firstUseFxSeen: the compiled code reads GameData+0x55E, which is what include/ff9.h declares, so no change)
 
 Checklist `docs/wip/fxdata_runtime.md`, groups P7, P5 and the E groups (continuation of the pass above, same tools in
 `build/fxrt/`; new scratch scripts and sheets in `build/fxrt2/`). All runs from disc 3 `disc3_malboro_lv99_calm` (enemies
