@@ -257,7 +257,7 @@ void menuEquip_drawListRow(s32, s32, s32, MenuView *);
 
 typedef struct {
     u16 helpOffset;
-    u16 layout; /* bits 12-15 line count (newline codes 0xF7 + 1 in all 192 entries), low 12 bits probably the widest line in pixels; no access in any binary */
+    u16 layout; /* lines << 12 | text width, the packing of main's message-table word (MSG_ENTRY_W / MSG_ENTRY_LINES, msg_getEntry); the line count matches the 0xF7 newlines + 1 in all 192 entries; no access in any binary */
 } HelpOfs; /* item help text offsets into s_menuAbilityActionHelp */
 extern HelpOfs s_menuAbilityActionHelpOfs[];
 extern u8 s_menuAbilityActionHelp[];

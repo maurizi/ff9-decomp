@@ -1845,7 +1845,7 @@ typedef struct {
 
 typedef struct {
     u16 text; /* text offset or id: enemy and enemy-ability names (Battle11C0.texts), g_btlAbilityHelp offsets, list-window title labels */
-    u16 unk2; /* no access in any binary. g_btlAbilityHelpOfs: line count << 12 | probable width, as TextTblEnt.layout (all 192 entries); g_btluiListTitles: 0 */
+    u16 unk2; /* no access in any binary. g_btlAbilityHelpOfs: lines << 12 | text width, as TextTblEnt.layout (all 192 entries); g_btluiListTitles: 0 */
 } U16Pair;
 
 
@@ -3336,7 +3336,7 @@ typedef char *va_list;
 
 typedef struct {
     s16 ofs; /* offset from the entry table */
-    s16 layout; /* bits 12-15 line count (newline codes 0xF7 + 1 in all 40 g_btlMessages entries), low 12 bits probably the widest line in pixels; no access in any binary */
+    s16 layout; /* lines << 12 | text width, the packing of main's message-table word (MSG_ENTRY_W / MSG_ENTRY_LINES, msg_getEntry); the line count matches the 0xF7 newlines + 1 in all 40 g_btlMessages entries; no access in any binary */
 } TextTblEnt;
 
 typedef struct {

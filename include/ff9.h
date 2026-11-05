@@ -3732,7 +3732,7 @@ void pen_endFont(void);
 void msg_drawText(MsgWindow *);
 /* 8-byte message-table entry (g_msgTable in modes other than 4) */
 typedef struct {
-    u32 unk0; /* not read by C */
+    u32 packed; /* MSG_ENTRY_OFS / MSG_ENTRY_W word (msg_getEntry reads it through a u32 view of the table) */
     u16 unk4; /* not read by C */
     u8 lines; /* text lines: window height = lines * 14 + 6 (msg_getEntry) */
     u8 unk7; /* not read by C */

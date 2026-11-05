@@ -11623,3 +11623,4 @@ D_800739B8 s_padPortWork  # [code] libpad port work area, 0x1E0 bytes cleared by
 # FIELDS include/ovl_37.h Unk8006B1F4: unk8=statuses
 # FIELDS include/ovl_38.h StatusEntry: unk2=helpOfs, unk4=pad4[2]+kind+count, unk8=first (byte-identical copy of ovl_0b g_btlCmdTable)
 # removed (never used in any binary or port): ff9.h Unk80021698, Unk8004EFB0, Unk8005AE14, FileIdParts; ovl_0a.h FieldTexPair
+# FIELDS include/ff9.h MsgEntry8: unk0=packed (read through the u32 view in msg_getEntry)
