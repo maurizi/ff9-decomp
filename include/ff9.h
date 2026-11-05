@@ -1914,8 +1914,11 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_GENERAL_FLAGS 0x65 /* u8: printed as "General Global Flag" by wm_applyStoryForms (ovl_0c): */
 #define EVT_GB_GENERAL_MOGNET_FORM 0x80   /* the world map uses the replacement Mog Net form ("- Replace Mog Net -") */
 #define EVT_GB_GENERAL_CHOCOBO_FORM 0x40  /* the world map uses the replacement Chocobo Heaven form */
-#define EVT_GB_GENERAL_ADDITIVE_FADE 0x01 /* the world map's entry fades are additive (fade_outAdditive in wm_systemInit, */
-                                          /* fade_inAdditiveDefault in wm_cameraFollow, which clears it); who sets it: runtime pending R43 */
+#define EVT_GB_GENERAL_WM_WHITE_FADE 0x01 /* the next world-map entry fades in from white (fade_outAdditive in */
+                                          /* wm_systemInit, fade_inAdditiveDefault in wm_cameraFollow, which clears it). */
+                                          /* Runtime (R43): the field-exit snippet sets it for world entry points */
+                                          /* b[2] 65 / 83 (Desert Palace 2209/2211/2217, Gulug/Path 2360, Chocobo's */
+                                          /* Air Garden 2952, Dream World 2953) and clears it otherwise */
 extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under its own symbol (ovl_0c reads it that way) */
 #define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
 /* world map state, read by the world scripts (docs/r32/3ds-requests-7.md, runtime R37b) */

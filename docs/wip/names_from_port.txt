@@ -11632,3 +11632,11 @@ D_800739B8 s_padPortWork  # [code] libpad port work area, 0x1E0 bytes cleared by
 # FIELDS include/ovl_0b.h SprInfo: unk0=kind (BtlBgLayer view)
 WM_BLOCKFX_WINDMILL WM_BLOCKFX_DALI_WINDMILL  # [code] R43: navi place Dali is 120 units from the model (area Nolrich Heights)
 # FIELDS include/ovl_0a.h FieldMapObj: unk0=overlaidDbHeader [runtime] R42: db_lookup reads it as the stale common-file db header
+WM_STORY_VUBE_VIEW_FREE WM_STORY_CLEYRA_FALLEN  # [runtime] R43: field 1153 Red Rose/Bridge stores 0x137E after Cleyra falls (also where form CLAY starts)
+EVT_GB_GENERAL_ADDITIVE_FADE EVT_GB_GENERAL_WM_WHITE_FADE  # [runtime] R43: the world entry fades in from white; field exits set it for world entry points 65 / 83
+WM_IIFA_FLY_R WM_IIFA_CROWN_R  # [runtime] R43: the airship slides over the Iifa Tree's crown
+WM_IIFA_FLY_Y_DISC1 WM_IIFA_CROWN_Y_DISC1  # [runtime] R43
+WM_IIFA_FLY_Y_DISC4 WM_IIFA_CROWN_Y_DISC4  # [runtime] R43
+WM_IIFA_FLY_NOCACHE_DISC1 WM_IIFA_CROWN_NOCACHE_DISC1  # [runtime] R43
+WM_IIFA_FLY_NOCACHE_DISC4 WM_IIFA_CROWN_NOCACHE_DISC4  # [runtime] R43
+# new (R43, ovl_0c.h): WM_SE_CHEST_OPEN 3, WM_SE_CHEST_OPEN_2 4, WM_SE_MOOGLE_APPEAR 6, WM_SE_TENT_START 7, WM_SE_FLEET_LOOP 20, WM_SE_AIRSHIP_CUTSCENE_LOOP 21, WM_SE_DEAD_PEPPER 30, WM_SE_TENT_REST 31, WM_SE_MOOGLE_CALL 32, WM_SE_CHOCOBO_DIG 33, WM_SE_CHOCOBO_STEP_2 35, WM_SE_CHOCOBO_PECK 37, WM_SE_CHOCOBO_STEP 40, WM_SE_CHEST_RISE 41, WM_SE_CHEST_LAND 42, WM_CELL_TEX_AREA(form)

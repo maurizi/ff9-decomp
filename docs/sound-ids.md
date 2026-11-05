@@ -76,6 +76,32 @@ Ids used by a single screen keep their names in that overlay's header: ovl_65 re
 `SE_ITEMS` and `SE_SET`). ovl_0d's `TM_SE_*` values are indices into `g_tmSeIds`, not ids (except `TM_SOUND_BANK_SE`,
 the card game's SE bank, next to `TM_SOUND_BANK_MUSIC`).
 
+## World-map sound numbers
+ovl_0c's world sounds are numbers that `w_musicGetID` maps to one or two SE ids (`WM_SE_*` in ovl_0c.h). Most are
+requested only by the world script (op C4, `WM_REQ_SE_PLAY`); R43 logged `wm_sePlay` during each event
+(docs/runtime-findings.md "R43 runtime pass: world map"):
+
+| n | SE | name | event |
+|---|---|---|---|
+| 2 | 0x6C | WM_SE_ITEMS | each "Found N <item>!" line of a chocobo dig treasure |
+| 3 / 4 | 0x27D / 0x27E | WM_SE_CHEST_OPEN / _2 | together, the dug-up chest opens |
+| 6 | 0x552 | WM_SE_MOOGLE_APPEAR | the moogle arrives |
+| 7 | 0x553 | WM_SE_TENT_START | "Rest" chosen at the moogle's tent question |
+| 20 | 0x374 + 0x375 | WM_SE_FLEET_LOOP (low) | world file 9001, the disc 1 airship fleet cutscene |
+| 21 | 0x376 + 0x377 | WM_SE_AIRSHIP_CUTSCENE_LOOP (low) | world files 9004-9006, one airship over the mist |
+| 30 | 0x44B | WM_SE_DEAD_PEPPER | the chocobo's reaction to a Dead Pepper |
+| 31 | 0x4CF | WM_SE_TENT_REST | the black screen before the tent night scene |
+| 32 | 0x596 | WM_SE_MOOGLE_CALL | Square: Zidane calls the moogle |
+| 33 | 0x37A + 0x37B | WM_SE_CHOCOBO_DIG | Square on the chocobo at a dig spot (with 36) |
+| 35 / 40 | 0x37C / 0x37B | WM_SE_CHOCOBO_STEP_2 / _STEP (low) | chocobo step sound, by topography |
+| 36 | 0x44A | WM_SE_CHOCOBO_CALL | SE_CHOCOBO_CALL |
+| 37 | 0x37A | WM_SE_CHOCOBO_PECK | the chocobo pecks at the glowing ground |
+| 41 | 0xA47 | WM_SE_CHEST_RISE | the dug-up chest shoots out of the ground |
+| 42 | 0xC26 | WM_SE_CHEST_LAND | the chest lands next to the chocobo |
+
+0 (SE 0x68, never requested) and 34 (0x44C, an unreached chocobo script tag) stay numbers. The vehicle and ambient
+loops 22-26 and 38 are named from the code's tables (`WmMoveMode.loopSe`, `g_worldAmbientSe`).
+
 ## Music ids
 `MUSIC_VICTORY` 5 and `MUSIC_DEFEAT` 6 come from btl_playVictoryMusic's callers in btl_victory and the defeat exit
 phase. `MUSIC_TETRA_MASTER` 0x42 is what ovl_0d's tm_init starts. The title and ending songs are db ids (`TITLE_MUSIC`

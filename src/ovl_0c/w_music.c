@@ -48,10 +48,10 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
     case WM_SE_ITEMS:
         se.seIds[0] = SE_ITEMS;
         break;
-    case 3:
+    case WM_SE_CHEST_OPEN:
         se.seIds[0] = 0x27D;
         break;
-    case 4:
+    case WM_SE_CHEST_OPEN_2:
         se.seIds[0] = 0x27E;
         break;
     case WM_SE_HELP_OPEN:
@@ -68,37 +68,37 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
         return 1;
     } else {
         switch (sound) {
-        case 30:
+        case WM_SE_DEAD_PEPPER:
             se.seIds[0] = 0x44B;
             break;
-        case 31:
+        case WM_SE_TENT_REST:
             se.seIds[0] = 0x4CF;
             break;
-        case 32:
+        case WM_SE_MOOGLE_CALL:
             se.seIds[0] = 0x596;
             break;
         case 34:
             se.seIds[0] = 0x44C;
             break;
-        case 35:
+        case WM_SE_CHOCOBO_STEP_2:
             se.seIds[0] = 0x37C;
             break;
         case WM_SE_CHOCOBO_CALL:
             se.seIds[0] = SE_CHOCOBO_CALL;
             break;
-        case 37:
+        case WM_SE_CHOCOBO_PECK:
             se.seIds[0] = 0x37A;
             break;
         case WM_SE_AIRSHIP_WATER:
             se.seIds[0] = 0x5DB;
             break;
-        case 40:
+        case WM_SE_CHOCOBO_STEP:
             se.seIds[0] = 0x37B;
             break;
-        case 41:
+        case WM_SE_CHEST_RISE:
             se.seIds[0] = 0xA47;
             break;
-        case 42:
+        case WM_SE_CHEST_LAND:
             se.seIds[0] = 0xC26;
             break;
         }
@@ -109,10 +109,10 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
             return 1;
         } else {
             switch (sound) {
-            case 6:
+            case WM_SE_MOOGLE_APPEAR:
                 se.seIds[0] = 0x552;
                 break;
-            case 7:
+            case WM_SE_TENT_START:
                 se.seIds[0] = 0x553;
                 break;
             }
@@ -125,17 +125,17 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
                 /* the original third jump table is 8-aligned */
                 __asm__(".rdata\n\t.word 0\n\t.text");
                 switch (sound) {
-                case 33:
+                case WM_SE_CHOCOBO_DIG:
                     se.seIds[0] = 0x37A;
                     se.channelMask = 0;
                     se.seIds[1] = 0x37B;
                     break;
-                case 20:
+                case WM_SE_FLEET_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x374;
                     se.seIds[1] = 0x375;
                     break;
-                case 21:
+                case WM_SE_AIRSHIP_CUTSCENE_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
                     se.seIds[0] = 0x376;
                     se.seIds[1] = 0x377;
@@ -155,12 +155,12 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
                     se.seIds[0] = 0x5D9;
                     se.seIds[1] = 0x5DA;
                     break;
-                case 25:
+                case WM_SE_RUMBLE_LOOP:
                     se.channelMask = WM_SE_GROUP_AMBIENT;
                     se.seIds[0] = 0x37D;
                     se.seIds[1] = 0x37E;
                     break;
-                case 26:
+                case WM_SE_WIND_LOOP:
                     se.channelMask = WM_SE_GROUP_AMBIENT;
                     se.seIds[0] = 0x37F;
                     se.seIds[1] = 0x380;

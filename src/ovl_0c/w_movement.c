@@ -91,7 +91,7 @@ void wm_updateCamera(void) {
     g_worldCameraDir[0] = math_cos(angle);
     g_worldCameraDir[2] = math_sin(angle);
     VectorNormal((VECTOR *)g_worldCameraDir, (VECTOR *)g_worldCameraDir);
-    if (*g_worldStoryCounterPtr < WM_STORY_VUBE_VIEW_FREE && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) == WM_AREA_VUBE_DESERT) {
+    if (*g_worldStoryCounterPtr < WM_STORY_CLEYRA_FALLEN && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) == WM_AREA_VUBE_DESERT) {
         g_worldCamera->viewForceNormal = 1;
     }
 }
@@ -346,9 +346,9 @@ void wm_cameraFollow(void) {
     case 1:
         g_worldCameraStartPhase = 2;
         flagByte = &g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS];
-        if (*flagByte & EVT_GB_GENERAL_ADDITIVE_FADE) {
+        if (*flagByte & EVT_GB_GENERAL_WM_WHITE_FADE) {
             fade_inAdditiveDefault();
-            g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] &= ~EVT_GB_GENERAL_ADDITIVE_FADE;
+            g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] &= ~EVT_GB_GENERAL_WM_WHITE_FADE;
         } else {
             fade_inDefault();
         }
@@ -431,7 +431,7 @@ void wm_toggleCameraView(void) {
     u8 atEnd;
 
     if (g_worldCamera->viewForceNormal == 0
-        && (*g_worldStoryCounterPtr >= WM_STORY_VUBE_VIEW_FREE || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) != WM_AREA_VUBE_DESERT)) {
+        && (*g_worldStoryCounterPtr >= WM_STORY_CLEYRA_FALLEN || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) != WM_AREA_VUBE_DESERT)) {
         atEnd = 0;
         if (g_worldCamera->viewBlend == 0) {
             atEnd = 1;
@@ -1235,20 +1235,20 @@ void wm_movePlayer(WmActorType *cc) {
             cc->floorY = stepPos.vy;
             g_worldPlayerFloorPoly = h2;
         }
-        off = WM_IIFA_FLY_Y_DISC4;
+        off = WM_IIFA_CROWN_Y_DISC4;
         if (g_worldDataSet == WM_DATASET_DISC1) {
-            off = WM_IIFA_FLY_Y_DISC1;
-            lim = WM_IIFA_FLY_NOCACHE_DISC1;
+            off = WM_IIFA_CROWN_Y_DISC1;
+            lim = WM_IIFA_CROWN_NOCACHE_DISC1;
         } else {
-            lim = WM_IIFA_FLY_NOCACHE_DISC4;
+            lim = WM_IIFA_CROWN_NOCACHE_DISC4;
         }
         /* ez holds the x offset here; the names follow the original register use */
         ez = g_worldPlayer->pos.vx - WM_IIFA_X;
         y = g_worldPlayer->pos.vy;
         wz = g_worldPlayer->pos.vz - WM_IIFA_Z;
         dy = y + off;
-        if (ABS(ez) < WM_IIFA_FLY_R && ABS(wz) < WM_IIFA_FLY_R) {
-            dx = WM_IIFA_FLY_R * WM_IIFA_FLY_R - ez * ez;
+        if (ABS(ez) < WM_IIFA_CROWN_R && ABS(wz) < WM_IIFA_CROWN_R) {
+            dx = WM_IIFA_CROWN_R * WM_IIFA_CROWN_R - ez * ez;
             zz = wz * wz;
             dz = dx - dy * dy - zz;
             if (-lim < y) {

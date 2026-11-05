@@ -240,9 +240,10 @@
 #define WM_STORY_FIELD_SONG1 0x2580 /* wm_getSongMusicId: WM_SONG_NORMAL plays WM_SONG_FIELD1 in [0x2580, 0x26A2), */
 #define WM_STORY_FIELD_SONG2 0x26A2 /* WM_SONG_FIELD2 in [0x26A2, 0x26B6); wm_keepEntryMusic keeps the music there */
 #define WM_STORY_FIELD_SONG2_END 0x26B6
-#define WM_STORY_VUBE_VIEW_FREE 0x137E /* below it the camera view is forced to normal and can't be toggled while the */
-                                     /* player is in WM_AREA_VUBE_DESERT (wm_updateCamera, wm_toggleCameraView);    */
-                                     /* which event (disc 2, Cleyra) sets it: runtime pending R43 */
+#define WM_STORY_CLEYRA_FALLEN 0x137E /* set on the Red Rose (field 1153 "Red Rose/Bridge", disc 2) after Cleyra is   */
+                                    /* destroyed; also g_worldFormStoryThresholds[1], where form WM_FORM_CLAY starts. */
+                                    /* Below it the camera view is forced to normal and can't be toggled while the   */
+                                    /* player is in WM_AREA_VUBE_DESERT (wm_updateCamera, wm_toggleCameraView). R43   */
 #define WM_STORY_BLOCKFX3_ON 0x24EA /* WM_BLOCKFX_KIERA_DESERT emits in [0x24EA, 0x26A3) */
 #define WM_STORY_BLOCKFX3_OFF 0x26A3
 
@@ -384,7 +385,8 @@ typedef struct WmEffect {
 #define WM_FX_RISING_PUFF_2 3 /* subtractive blend; 2 lives 77 frames, 3 46 (3 is emitted by WM_BLOCKFX_GULUG_SUMMIT) */
 #define WM_FX_CLAY_SWIRL 23 /* circles WM_BLOCKFX_CLAY's centre (g_worldBlockFx4Pos) while rising, then drifts like 24 */
 #define WM_FX_MEMORIA_STREAM 25 /* code: 25 and 26 are drawn turned to face (WM_FX_MEMORIA_AIM_X, _Z), the */
-#define WM_FX_MEMORIA_STREAM_2 26 /* WM_BLOCKFX_MEMORIA_ORB sphere; who emits them: runtime pending R43 */
+#define WM_FX_MEMORIA_STREAM_2 26 /* WM_BLOCKFX_MEMORIA_ORB sphere. Never spawned (R43): no block-effect emitter */
+                                  /* and no world script requests them; 0 wm_spawnEffect calls at the orb */
 #define WM_FX_MEMORIA_AIM_X 0x30031 /* 196657, -81774: 240 units from the orb's centre g_worldBlockFx6Pos */
 #define WM_FX_MEMORIA_AIM_Z -0x13F6E
 /* WmEffect.abr: wm_spawnEffect's blend per type, passed to wm_drawSprite3D (abr & 3 into the tpage, 0xFF = no
@@ -438,13 +440,16 @@ typedef struct WmEffect {
  * wm_cameraFollow, wm_movePlayer */
 #define WM_IIFA_X 0x2FF77 /* 196471 */
 #define WM_IIFA_Z -0x14031 /* -82001 */
+/* the camera eye stays outside a dome over the whole Iifa Tree (runtime R43): */
 #define WM_IIFA_CAM_R 0x36B0 /* the camera eye is pushed up onto a ball of radius 14000 ... */
 #define WM_IIFA_CAM_Y 0x898 /* ... centred this far below sea level */
-#define WM_IIFA_FLY_R 0x9C4 /* a flyer within 2500 of the centre slides over (or under) a ball of radius 2500, */
-#define WM_IIFA_FLY_Y_DISC1 0x1964 /* centred at y = -6500 (data set WM_DATASET_DISC1) */
-#define WM_IIFA_FLY_Y_DISC4 0x1C20 /* or -7200 (data set WM_DATASET_DISC4) */
-#define WM_IIFA_FLY_NOCACHE_DISC1 0x1E78 /* above y = -7800 / -8500 there the ground poly cache is off */
-#define WM_IIFA_FLY_NOCACHE_DISC4 0x2134
+/* the Iifa Tree's crown (canopy), which the airship slides over (or passes under; wm_updateActorHeight undoes the */
+/* snap below the centre). Runtime R43: the ship rests on the tree's green top; disc 4 raises the crown by 700 */
+#define WM_IIFA_CROWN_R 0x9C4 /* a flyer within 2500 of the centre slides over (or under) a ball of radius 2500, */
+#define WM_IIFA_CROWN_Y_DISC1 0x1964 /* centred at y = -6500 (data set WM_DATASET_DISC1) */
+#define WM_IIFA_CROWN_Y_DISC4 0x1C20 /* or -7200 (data set WM_DATASET_DISC4) */
+#define WM_IIFA_CROWN_NOCACHE_DISC1 0x1E78 /* above y = -7800 / -8500 there the ground poly cache is off */
+#define WM_IIFA_CROWN_NOCACHE_DISC4 0x2134
 /* flight ceiling (wm_movePlayer): climbing slows down within WM_FLY_CEILING_SOFT of y = WM_FLY_CEILING */
 #define WM_FLY_CEILING -0x2A30
 #define WM_FLY_CEILING_SOFT 0x7E8
@@ -464,7 +469,7 @@ typedef struct WmEffect {
 #define WM_ACTOR_VIEW_SIDE 20000
 /* world-map sound numbers (w_musicGetID; wm_sePlay & co., script requests WM_REQ_SE_*, WmMoveMode.loopSe,
  * g_worldAmbientSe). 0-5 and 39 play on SND_SE_GROUP_MENU, 6-7 and 20-24 on WM_SE_GROUP_VEHICLE, 25-26 on
- * WM_SE_GROUP_AMBIENT; 20-26 and 33 are two-voice sounds. Only those the code ties to something are named. */
+ * WM_SE_GROUP_AMBIENT; 20-26 and 33 are two-voice sounds. Named from the code's tables, or for the script-only ones from runtime (R43). */
 /* SE group masks (WmSeIds.channelMask): wm_sePlay shifts the mask right by one per sound, so a two-sound entry's
  * second sound plays on mask >> 1. Runtime (R41): sailing, wm_soundCommand got (0xD301, 0x5D9, 0x8000) and
  * (0xD301, 0x5DA, 0x4000) for WM_SE_BOAT_LOOP. WM_SE_GROUP_AMBIENT is code only. */
@@ -474,12 +479,26 @@ typedef struct WmEffect {
 #define WM_SE_HELP_OPEN 5 /* SE_HELP_OPEN */
 #define WM_SE_CURSOR 39 /* SE_CURSOR */
 #define WM_SE_ITEMS 2 /* SE 0x6C, the sound ovl_65 plays for items received (SE_ITEMS) and ovl_15 for a Blackjack */
-                      /* win; which world event plays it: runtime pending R43 */
-/* Not named: 0 (SE 0x68), 3 / 4 (0x27D / 0x27E, next to SE_ENCOUNTER_3..1), 6 / 7 (0x552 / 0x553, vehicle group, next
- * to the Hilda Garde loop), 20 / 21 (two-voice vehicle loops 0x374+0x375 / 0x376+0x377, in no WmMoveMode), 30-35, 37,
- * 40-42: only the world script requests them (WM_REQ_SE_PLAY), so which event they belong to is a runtime question
- * (docs/wip/r43_runtime.md). */
-#define WM_SE_CHOCOBO_CALL 36 /* SE_CHOCOBO_CALL */
+                      /* win; runtime (R43): each "Found N <item>!" line of a chocobo dig treasure */
+/* Sounds only the world script requests (op C4: WM_REQ_SE_PLAY with the number). Runtime (R43): log of wm_sePlay /
+ * w_musicGetID during each event (docs/runtime-findings.md "R43 runtime pass: world map", row 3). Unknown: 0 (SE
+ * 0x68, no world script requests it) and 34 (0x44C, only in an unreached chocobo script tag after 30). */
+#define WM_SE_CHEST_OPEN 3 /* 0x27D: with 4, the dug-up treasure chest opens */
+#define WM_SE_CHEST_OPEN_2 4 /* 0x27E */
+#define WM_SE_MOOGLE_APPEAR 6 /* 0x552: the moogle arrives (its "Can I help you, kupo?" window opens) */
+#define WM_SE_TENT_START 7 /* 0x553: "Rest" chosen at the moogle's tent question, the screen starts to darken */
+#define WM_SE_FLEET_LOOP 20 /* 0x374 + 0x375: world file 9001 (disc 1 cutscene with the fleet of airships) (low) */
+#define WM_SE_AIRSHIP_CUTSCENE_LOOP 21 /* 0x376 + 0x377: world files 9004-9006 (one airship over the mist) (low) */
+#define WM_SE_DEAD_PEPPER 30 /* 0x44B: the chocobo's reaction to "Feed him a Dead Pepper" */
+#define WM_SE_TENT_REST 31 /* 0x4CF: the screen is black, before the night scene with the tent */
+#define WM_SE_MOOGLE_CALL 32 /* 0x596: Square on the world map, Zidane calls the moogle */
+#define WM_SE_CHOCOBO_DIG 33 /* 0x37A + 0x37B: Square on the chocobo at a dig spot (with WM_SE_CHOCOBO_CALL) */
+#define WM_SE_CHOCOBO_STEP_2 35 /* 0x37C: chocobo step on topographies 0x31 / 0x33 / 0x34 / 0x36-0x39 (low) */
+#define WM_SE_CHOCOBO_PECK 37 /* 0x37A: every 9 frames while the chocobo pecks at the glowing ground (Dead Pepper) */
+#define WM_SE_CHOCOBO_STEP 40 /* 0x37B: chocobo step on topographies 0x30 / 0x32 / 0x35 (low) */
+#define WM_SE_CHEST_RISE 41 /* 0xA47: the dug-up treasure chest shoots out of the ground */
+#define WM_SE_CHEST_LAND 42 /* 0xC26: the chest lands next to the chocobo */
+#define WM_SE_CHOCOBO_CALL 36 /* SE_CHOCOBO_CALL; runtime (R43): also with WM_SE_CHOCOBO_DIG */
 #define WM_SE_INVINCIBLE_LOOP 22 /* data: WmMoveMode.loopSe of WM_MOVE_INVINCIBLE (0x378 + 0x379) */
 #define WM_SE_HILDA_GARDE_LOOP 23 /* data: loopSe of WM_MOVE_HILDA_GARDE (0x554 + 0x555) */
 #define WM_SE_BOAT_LOOP 24 /* data: loopSe of WM_MOVE_BOAT, volume follows its speed (wm_controlSteer; 0x5D9 + 0x5DA) */
@@ -1331,40 +1350,58 @@ extern u8 g_worldChunkGeneration;
 extern u8 g_worldChunkFlags[]; /* map cells, g_worldChunksW per row */
 #define WM_CELL(x, y) g_worldChunkFlags[(y) * g_worldChunksW + (x)]
 #define WM_CELL_FORM 0x80 /* load the cell's story-form chunk (wm_applyStoryForms sets it; wm_chunkRequest clears it when the chunk has none) */
-#define WM_CELL_TEX_MASK 0x3F /* texture pack read with the chunk (w_readtxRequest) */
+#define WM_CELL_TEX_MASK 0x3F /* texture area: the texture pack read with the chunk (w_readtxRequest), shared by */
+                              /* all cells of the area (wm_readtxFind). Runtime (R43): story form f's textures are */
+                              /* texture area f + 1, so a form flags every cell of that area plus the cells whose */
+                              /* geometry changes */
+#define WM_CELL_TEX_AREA(form) ((form) + 1) /* texture area of story form WM_FORM_* (R43, data) */
 /* Map cells (16384 x 16384 world units: column = x >> 14, row = -z >> 14) that wm_applyStoryForms gives their
  * story-form chunk, as "column, row" pairs for WM_CELL_AT. Each is named for the navi map place whose world position
  * (g_worldNaviPlaces, name = world text bank 0 entry place + 1, docs/r32/3ds-requests-2.md) lies in it. Cleyra,
  * Lindblum and Alexandria sit on a cell corner, so their forms change the cells around it. Cells without a navi place
- * of their own are named for the nearest one (runtime: pending R43, docs/wip/r43_runtime.md). */
+ * of their own are named for the nearest one. Runtime (R43, data comparison of base and form chunks): a form's list is
+ * its geometry cells plus every cell of its texture area (WM_CELL_TEX_AREA), so some cells are in a form only for
+ * the shared texture and the form changes nothing there. */
 #define WM_CELL_AT(cell) WM_CELL(cell)
-#define WM_CELL_SOUTH_GATE 18, 14 /* places 6-10 "South Gate" (300090, -230918) */
-#define WM_CELL_DALI 17, 12 /* places 13 "Dali" (280253, -206433; WM_BLOCKFX_DALI_WINDMILL) and 12 "Observatory Mountain" */
+#define WM_CELL_SOUTH_GATE 18, 14 /* places 6-10 "South Gate" (300090, -230918); SGATE changes only texture area 1 */
+                                /* (the gate's round crest becomes a dark opening; R43) */
+#define WM_CELL_DALI 17, 12 /* places 13 "Dali" (280253, -206433; WM_BLOCKFX_DALI_WINDMILL) and 12 "Observatory Mountain"; */
+                          /* in SGATE through texture area 1 (R43) */
 #define WM_CELL_CLEYRA_W 13, 12 /* place 18 "Cleyra" (229548, -198479) is 170 units into the cell east of it; */
 #define WM_CELL_CLEYRA_E 14, 12 /* WM_BLOCKFX_CLAY's centre (229007, -198927) is in the west one */
 #define WM_CELL_LINDBLUM_NW 13, 16 /* place 24 "Lindblum" (229342, -278220) is 310 units from the corner of these four */
 #define WM_CELL_LINDBLUM_NE 14, 16
 #define WM_CELL_LINDBLUM_SW 13, 17 /* also place 25 "Lindblum Harbor" */
 #define WM_CELL_LINDBLUM_SE 14, 17 /* also place 22 "Pinnacle Rocks" */
+/* KUROMA (texture area 9) changes nothing in the data at its three cells: same geometry, same textures (R43) */
 #define WM_CELL_BLACK_MAGE_VILLAGE 14, 6 /* places 30 "Black Mage Village" and 31 "Fossil Roo" */
-#define WM_CELL_ALEXANDRIA_HARBOR 21, 10 /* place 0 "Alexandria Harbor" */
-#define WM_CELL_QUANS_DWELLING_E 22, 14 /* no place; east of place 4 "Quan's Dwelling" (21, 14) (runtime: pending R43) */
+#define WM_CELL_ALEXANDRIA_HARBOR 21, 10 /* place 0 "Alexandria Harbor"; in KUROMA through texture area 9 */
+#define WM_CELL_QUANS_DWELLING_E 22, 14 /* no place; east of place 4 "Quan's Dwelling" (21, 14); */
+                                   /* in KUROMA only through texture area 9, and KUROMA changes nothing (R43) */
 #define WM_CELL_ALEXANDRIA_NW 19, 10 /* place 1 "Alexandria" (328680, -178910) is 1600 units from the corner of these four */
 #define WM_CELL_ALEXANDRIA_SW 19, 11 /* also place 2 "Evil Forest" */
 #define WM_CELL_ALEXANDRIA_NE 20, 10
 #define WM_CELL_ALEXANDRIA_SE 20, 11
-#define WM_CELL_WATER_SHRINE 3, 9 /* place 43 "Water Shrine" (57147, -155460; WM_BLOCKFX_WATER_SHRINE) */
-#define WM_CELL_FIRE_SHRINE_E2 9, 1 /* no place; two east of WM_CELL_FIRE_SHRINE (runtime: pending R43) */
-#define WM_CELL_FIRE_SHRINE 7, 1 /* place 48 "Fire Shrine" (129014, -29732), Mount Gulug (WM_BLOCKFX_GULUG_SUMMIT) */
-#define WM_CELL_FIRE_SHRINE_E 8, 1 /* no place; east of it (runtime: pending R43) */
-#define WM_CELL_DRAGONS_GATE 14, 15 /* place 23 "Lindblum Dragon's Gate" (234496, -260825) */
-#define WM_CELL_MOGNET_CENTRAL 16, 1 /* place 28 "Mognet Central" */
-#define WM_CELL_CONDE_PETIE_PATH 13, 4 /* place 35 "Conde Petie Mountain Path" */
-#define WM_CELL_CONDE_PETIE_E 14, 5 /* no place; place 32 "Conde Petie" (229037, -90135) is 340 units west of it */
-#define WM_CELL_CHOCOBOS_PARADISE 0, 0 /* no navi position (place 49 "Chocobo's Paradise" has none); the map corner */
-                                    /* (runtime: pending R43) */
-#define WM_CELL_CHOCOBOS_FOREST 16, 14 /* place 19 "Chocobo's Forest" (278526, -243814) */
-#define WM_CELL_CHOCOBOS_LAGOON 9, 17 /* place 37 "Chocobo's Lagoon" */
+#define WM_CELL_WATER_SHRINE 3, 9 /* place 43 "Water Shrine" (57147, -155460; WM_BLOCKFX_WATER_SHRINE); */
+                                /* HOKORA_MIZU rebuilds its geometry, down below sea level (R43) */
+#define WM_CELL_FIRE_SHRINE_E2 9, 1 /* no place; two east of WM_CELL_FIRE_SHRINE (Seatence Ice Field); in */
+                                   /* HOKORA_MIZU only through texture area 11, nothing changes (R43) */
+#define WM_CELL_FIRE_SHRINE 7, 1 /* place 48 "Fire Shrine" (129014, -29732), Mount Gulug (WM_BLOCKFX_GULUG_SUMMIT); */
+                               /* HOKORA_HI cools its lava (texture area 4, polygons to WM_TOPO_MOUNTAIN; R43) */
+#define WM_CELL_FIRE_SHRINE_E 8, 1 /* no place; east half of the volcano: HOKORA_HI cools its lava as in (7, 1) */
+                                  /* (dark-crust texture, topography 0x3B -> WM_TOPO_MOUNTAIN; R43) */
+#define WM_CELL_DRAGONS_GATE 14, 15 /* place 23 "Lindblum Dragon's Gate" (234496, -260825); in HOKORA_HI only */
+                                  /* through texture area 4, its own textures are unchanged (R43) */
+#define WM_CELL_MOGNET_CENTRAL 16, 1 /* place 28 "Mognet Central"; MOG_NET adds 40 triangles there (R43) */
+#define WM_CELL_CONDE_PETIE_PATH 13, 4 /* place 35 "Conde Petie Mountain Path"; in MOG_NET only through texture */
+                                     /* area 13, nothing changes (R43) */
+#define WM_CELL_CONDE_PETIE_E 14, 5 /* no place; place 32 "Conde Petie" (229037, -90135) is 340 units west of it; */
+                                  /* in MOG_NET only through texture area 13, nothing changes (R43) */
+#define WM_CELL_CHOCOBOS_PARADISE 0, 0 /* no navi position (place 49 "Chocobo's Paradise" has none); the map corner. */
+                                    /* Runtime (R43): area 63 Uaho Island with its cell trigger; CHOCOBO_HEAVEN */
+                                    /* opens a cave mouth in its cliff (geometry and texture area 8) */
+#define WM_CELL_CHOCOBOS_FOREST 16, 14 /* place 19 "Chocobo's Forest" (278526, -243814); with the lagoon, in */
+#define WM_CELL_CHOCOBOS_LAGOON 9, 17 /* place 37 "Chocobo's Lagoon"; CHOCOBO_HEAVEN through texture area 8 */
 extern u16 g_worldFormStoryThresholds[11]; /* story progress thresholds (wm_applyStoryForms) */
 extern u8 g_worldFormStatusTable[][11];
 extern u32 g_worldLandCellTypes[2]; /* cell type masks */

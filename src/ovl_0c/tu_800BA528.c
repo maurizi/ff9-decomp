@@ -282,7 +282,8 @@ void wm_updateMap(void) {
     g_gameState->gameData->rainCount = 0;
 }
 
-/* mark the map cells changed by the story progress */
+/* mark the map cells changed by the story progress: each form flags its geometry cells and every cell of texture
+ * area WM_CELL_TEX_AREA(form) (runtime R43) */
 void wm_applyStoryForms(void) {
     s32 i;
     s32 form;

@@ -4687,7 +4687,7 @@ Results per cluster:
   `field_dali_inn`: 0 writes (menu_reset doesn't run there). The values stay 0 / 0xFFFF / 0 / 0. Confirmed
   write-only, so they stay `unkXX`.
 
-## R43 runtime pass: world map  (status: proposed)
+## R43 runtime pass: world map  (status: applied: WM_CELL_* comments + WM_CELL_TEX_AREA, WM_SE_* world sounds (0 and 34 stay numbers), WM_FX_MEMORIA_STREAM never spawned, WM_STORY_CLEYRA_FALLEN, EVT_GB_GENERAL_WM_WHITE_FADE, WM_IIFA_CROWN_*)
 Questions: docs/wip/r43_runtime.md (rows 1-7). Redux, LuaJIT off, 2026-11-05. Scratch in `build/r43/` (`form.py`
 world-map init from `disc3_pandemonium_lv99_field` via world 9007 with a break at the end of wm_applyStoryForms to set or
 clear WM_CELL_FORM / g_worldFormFlags, plus `--timhash` / `--timdump` for the form TIM packs; `formdiff.py`,
