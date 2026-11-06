@@ -11643,3 +11643,14 @@ WM_IIFA_FLY_NOCACHE_DISC4 WM_IIFA_CROWN_NOCACHE_DISC4  # [runtime] R43
 BJ_VRAM_X BJ_RESULT_VRAM_X  # [code] R44: 0x280 is only the result-banner page
 BJ_VRAM_Y BJ_RESULT_VRAM_Y  # [code]
 MENU_MAIN_LABEL_Y WIN_TITLE_Y  # [code] win_setTitle default label offset
+TM_SCORE_MID_X TM_SCORE_SLASH_X  # [runtime] R44: an ornamented diagonal slash
+TM_SCORE_MID_Y TM_SCORE_SLASH_Y  # [runtime] R44
+TM_R1_LABEL_X TM_R1_NAME_LABEL_X  # [runtime] R44: the label reads "-NAME"
+TM_R1_LABEL_Y TM_R1_NAME_LABEL_Y  # [runtime] R44
+TM_TITLE_SELECT_X TM_TITLE_CARD_X  # [runtime] R44: the sprite is "Card"
+TM_TITLE_SELECT_Y TM_TITLE_CARD_Y  # [runtime] R44
+TM_TITLE_SELECT2_X TM_TITLE_SELECTION_X  # [runtime] R44: "Selection"
+TM_TITLE_SELECT2_Y TM_TITLE_SELECTION_Y  # [runtime] R44
+TM_TITLE_ARROW_L_X TM_TITLE_MARK_L_X  # [runtime] R44: blinking "!" marks, not arrows
+TM_TITLE_ARROW_R_X TM_TITLE_MARK_R_X  # [runtime] R44
+TM_TITLE_ARROW_Y TM_TITLE_MARK_Y  # [runtime] R44

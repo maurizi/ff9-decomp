@@ -648,8 +648,8 @@ void *tm_drawScore(u32 *ot, SPRT *prim, TmState *tm) {
         prim++;
     }
     setSprt(prim);
-    prim->x0 = TM_SCORE_MID_X;
-    prim->y0 = TM_SCORE_MID_Y;
+    prim->x0 = TM_SCORE_SLASH_X;
+    prim->y0 = TM_SCORE_SLASH_Y;
     prim->r0 = bright;
     prim->g0 = bright;
     prim->b0 = bright;
@@ -711,8 +711,8 @@ void *tm_taskPlayerSelect(u32 *ot, void *prim, TmState *tm) {
             g_menuHelp.text = text_get(TM_HELP_SELECT);
             text_drawBlock(TM_R1_ICON_X, TM_R1_ICON_Y, TM_OT_TEXT, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
             setSprt(sp);
-            sp->x0 = TM_R1_LABEL_X;
-            sp->y0 = TM_R1_LABEL_Y;
+            sp->x0 = TM_R1_NAME_LABEL_X;
+            sp->y0 = TM_R1_NAME_LABEL_Y;
             sp->v0 = 0xD0;
             sp->w = 0x1C;
             sp->h = 8;
@@ -4154,8 +4154,8 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
         prim->h = 0x18;
         prim->u0 = 0xB8;
         prim->v0 = 0x78;
-        prim->x0 = TM_TITLE_SELECT_X;
-        prim->y0 = TM_TITLE_SELECT_Y;
+        prim->x0 = TM_TITLE_CARD_X;
+        prim->y0 = TM_TITLE_CARD_Y;
         prim->r0 = 0x80;
         prim->g0 = 0x80;
         prim->b0 = 0x80;
@@ -4167,8 +4167,8 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
         prim->h = 0x20;
         prim->u0 = 0x94;
         prim->v0 = 0xD2;
-        prim->x0 = TM_TITLE_SELECT2_X;
-        prim->y0 = TM_TITLE_SELECT2_Y;
+        prim->x0 = TM_TITLE_SELECTION_X;
+        prim->y0 = TM_TITLE_SELECTION_Y;
         prim->r0 = 0x80;
         prim->g0 = 0x80;
         prim->b0 = 0x80;
@@ -4193,8 +4193,8 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
         prim->h = 0x10;
         prim->u0 = 0xF0;
         prim->v0 = 0xB8;
-        prim->x0 = TM_TITLE_ARROW_R_X;
-        prim->y0 = TM_TITLE_ARROW_Y;
+        prim->x0 = TM_TITLE_MARK_R_X;
+        prim->y0 = TM_TITLE_MARK_Y;
         if (!(tm->timer & 0x20)) {
             prim->r0 = 0x80;
             prim->g0 = 0x80;
@@ -4212,8 +4212,8 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
         prim->h = 0x10;
         prim->u0 = 0xF0;
         prim->v0 = 0xB8;
-        prim->x0 = TM_TITLE_ARROW_L_X;
-        prim->y0 = TM_TITLE_ARROW_Y;
+        prim->x0 = TM_TITLE_MARK_L_X;
+        prim->y0 = TM_TITLE_MARK_Y;
         if (!(tm->timer & 0x20)) {
             prim->r0 = 0x80;
             prim->g0 = 0x80;
