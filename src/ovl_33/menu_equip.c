@@ -14,11 +14,11 @@ void menuEquip_init(void) {
     text_setBank(g_equipMenuText);
     help_setCallback(help_nullHandler);
     help_setCursorOnTop(1);
-    setRECT(&s_menuEquip.tabRect, 8, 8, 0xE4, 0x1A);
-    setRECT(&s_menuEquip.infoRect, 8, 0x26, 0x8C, 0xB6);
-    setRECT(&s_menuEquip.equipRect, 0x94, 0x26, 0xA0, 0x62);
-    setRECT(&s_menuEquip.abilityRect, 0x94, 0x8A, 0xA0, 0x52);
-    setRECT(&s_menuEquip.listRect, 0x94, 0x26, 0xA0, 0x62);
+    setRECT(&s_menuEquip.tabRect, EQUIP_TABS_WIN_X, EQUIP_TABS_WIN_Y, EQUIP_TABS_WIN_W, EQUIP_TABS_WIN_H);
+    setRECT(&s_menuEquip.infoRect, EQUIP_INFO_WIN_X, EQUIP_INFO_WIN_Y, EQUIP_INFO_WIN_W, EQUIP_INFO_WIN_H);
+    setRECT(&s_menuEquip.equipRect, EQUIP_SLOTS_WIN_X, EQUIP_SLOTS_WIN_Y, EQUIP_SLOTS_WIN_W, EQUIP_SLOTS_WIN_H);
+    setRECT(&s_menuEquip.abilityRect, EQUIP_ABIL_WIN_X, EQUIP_ABIL_WIN_Y, EQUIP_ABIL_WIN_W, EQUIP_ABIL_WIN_H);
+    setRECT(&s_menuEquip.listRect, EQUIP_SLOTS_WIN_X, EQUIP_SLOTS_WIN_Y, EQUIP_SLOTS_WIN_W, EQUIP_SLOTS_WIN_H);
     for (i = 0; i < PARTY_SIZE; i++) {
         lv = 0;
         chr = g_gameState->gameData->party[i];
@@ -120,10 +120,10 @@ void menuEquip_drawInfo(void) {
 
     rect = &s_menuEquip.infoRect;
     chr = g_gameState->gameData->party[s_menuEquip.slot];
-    ui_drawEtchedLine(rect->x + 3, rect->y + 0x3B, 0x1E, rect->w - 6);
-    ui_drawLabel(rect->x + 6, rect->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
-    win_drawBox(rect, 0x1E, WIN_STYLE_LINE_RULE);
-    ui_drawMemberHeader(rect->x + 8, rect->y + 9, 0x1D, (MemberSwitch *)&s_menuEquip.header);
+    ui_drawEtchedLine(rect->x + 3, rect->y + EQUIP_INFO_DIV_Y, EQUIP_OTZ_WIN, rect->w - 6);
+    ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, EQUIP_OTZ_WIN, g_labelInfo, UI_LABEL_NORMAL);
+    win_drawBox(rect, EQUIP_OTZ_WIN, WIN_STYLE_LINE_RULE);
+    ui_drawMemberHeader(rect->x + EQUIP_HEADER_X, rect->y + EQUIP_HEADER_Y, EQUIP_OTZ_TEXT, (MemberSwitch *)&s_menuEquip.header);
     cur.stats[0] = chr->speed;
     cur.stats[1] = chr->strength;
     cur.stats[2] = chr->magic;
@@ -173,24 +173,24 @@ void menuEquip_drawEquipment(void) {
     if (s_menuEquip.state == EQUIP_STATE_LIST) {
         return;
     }
-    ui_drawLabel(rect->x + 6, rect->y - 3, 0x1E, g_labelEquipment, UI_LABEL_NORMAL);
-    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(rect, 0x1E, WIN_STYLE_BEVEL);
-    for (i = 0, grey = 2, y8 = 8, y12 = 12, y10 = 10; i < 5; i++) {
+    ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, EQUIP_OTZ_WIN, g_labelEquipment, UI_LABEL_NORMAL);
+    win_drawBox(rect, EQUIP_OTZ_WIN, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, EQUIP_OTZ_WIN, WIN_STYLE_BEVEL);
+    for (i = 0, grey = 2, y8 = EQUIP_SLOT_ITEM_Y, y12 = EQUIP_SLOT_COLON_Y, y10 = EQUIP_SLOT_ICON_Y; i < EQUIP_SLOT_COUNT; i++) {
         sel = 0;
         if (s_menuEquip.tab == grey) {
             sel = (i == 0);
         }
-        ui_drawSprite(rect->x + 10, rect->y + y10, 0x1D, i + UI_SPRITE_EQUIP_SLOTS, sel);
-        ui_drawSmallDigits(rect->x + 0x19, rect->y + y12, 0x1D, s_menuEquipColon, sel ? grey : TEXT_PAL_WHITE);
+        ui_drawSprite(rect->x + EQUIP_SLOT_ICON_X, rect->y + y10, EQUIP_OTZ_TEXT, i + UI_SPRITE_EQUIP_SLOTS, sel);
+        ui_drawSmallDigits(rect->x + EQUIP_SLOT_COLON_X, rect->y + y12, EQUIP_OTZ_TEXT, s_menuEquipColon, sel ? grey : TEXT_PAL_WHITE);
         if (chr->equip[i] != ITEM_NONE) {
             it = &g_itemTable[chr->equip[i]];
-            ui_drawItemIcon(rect->x + 0x21, rect->y + y8, 0x1D, chr->equip[i], !sel);
-            text_drawBlock(rect->x + 0x31, rect->y + y8, 0x1D, g_itemNames + it->name, sel ? grey : TEXT_PAL_WHITE);
+            ui_drawItemIcon(rect->x + EQUIP_SLOT_ITEM_X, rect->y + y8, EQUIP_OTZ_TEXT, chr->equip[i], !sel);
+            text_drawBlock(rect->x + EQUIP_SLOT_NAME_X, rect->y + y8, EQUIP_OTZ_TEXT, g_itemNames + it->name, sel ? grey : TEXT_PAL_WHITE);
         }
-        y8 += 17;
-        y12 += 17;
-        y10 += 17;
+        y8 += EQUIP_SLOT_ROW_H;
+        y12 += EQUIP_SLOT_ROW_H;
+        y10 += EQUIP_SLOT_ROW_H;
     }
 }
 
@@ -212,14 +212,14 @@ void menuEquip_drawAbilities(void) {
 
     rect = &s_menuEquip.abilityRect;
     chr = g_gameState->gameData->party[s_menuEquip.slot];
-    ui_drawLabel(rect->x + 6, rect->y - 3, 0x13, g_labelAbility, UI_LABEL_NORMAL);
-    ui_drawEtchedLine(rect->x + 3, rect->y + 0x1A, 0x1E, rect->w - 6);
-    win_drawBox(rect, 0x1E, WIN_STYLE_LINE_RULE);
+    ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, EQUIP_OTZ_LIST_TEXT, g_labelAbility, UI_LABEL_NORMAL);
+    ui_drawEtchedLine(rect->x + 3, rect->y + EQUIP_ABIL_DIV_Y, EQUIP_OTZ_WIN, rect->w - 6);
+    win_drawBox(rect, EQUIP_OTZ_WIN, WIN_STYLE_LINE_RULE);
     if (s_menuEquip.state < EQUIP_STATE_SLOT) {
         return;
     }
-    ui_drawSprite(rect->x + 0xA, rect->y + 9, 0x1D, s_menuEquip.equipSlot + UI_SPRITE_EQUIP_SLOTS, 0);
-    ui_drawSmallDigits(rect->x + 0x19, rect->y + 0xB, 0x1D, s_menuEquipColon, TEXT_PAL_WHITE);
+    ui_drawSprite(rect->x + EQUIP_SLOT_ICON_X, rect->y + (EQUIP_SLOT_ICON_Y - 1), EQUIP_OTZ_TEXT, s_menuEquip.equipSlot + UI_SPRITE_EQUIP_SLOTS, 0);
+    ui_drawSmallDigits(rect->x + EQUIP_SLOT_COLON_X, rect->y + (EQUIP_SLOT_COLON_Y - 1), EQUIP_OTZ_TEXT, s_menuEquipColon, TEXT_PAL_WHITE);
     if (s_menuEquip.state == EQUIP_STATE_SLOT) {
         id = chr->equip[s_menuEquip.equipSlot];
     } else {
@@ -228,12 +228,12 @@ void menuEquip_drawAbilities(void) {
     if (id == ITEM_NONE) {
         return;
     }
-    ui_drawItemIcon(rect->x + 0x21, rect->y + 7, 0x1D, id, 1);
-    text_drawBlock(rect->x + 0x31, rect->y + 7, 0x1D, g_itemNames + g_itemTable[id].name, TEXT_PAL_WHITE);
-    for (i = 0; i < 3; i++) {
-        y3 = i * 15;
-        y2 = i * 15 + 0x21;
-        y1 = i * 15 + 0x22;
+    ui_drawItemIcon(rect->x + EQUIP_SLOT_ITEM_X, rect->y + (EQUIP_SLOT_ITEM_Y - 1), EQUIP_OTZ_TEXT, id, 1);
+    text_drawBlock(rect->x + EQUIP_SLOT_NAME_X, rect->y + (EQUIP_SLOT_ITEM_Y - 1), EQUIP_OTZ_TEXT, g_itemNames + g_itemTable[id].name, TEXT_PAL_WHITE);
+    for (i = 0; i < (s32)ARRAY_COUNT(g_itemTable[id].abilities); i++) {
+        y3 = i * EQUIP_ABIL_ROW_H;
+        y2 = i * EQUIP_ABIL_ROW_H + EQUIP_ABIL_ROW_Y;
+        y1 = i * EQUIP_ABIL_ROW_H + (EQUIP_ABIL_ROW_Y + 1);
         ab = g_itemTable[id].abilities[i];
         if (ab == 0) {
             continue;
@@ -267,14 +267,14 @@ void menuEquip_drawAbilities(void) {
                 } else {
                     flag = 1;
                 }
-                k = 0x26;
-                ui_drawApGauge(rect->x + 0x72, rect->y + (y3 + k), 0x1D, chr_getAp(chr->info.b.id, ab), ap, flag, 0);
+                k = EQUIP_ABIL_ROW_Y + 5;
+                ui_drawApGauge(rect->x + EQUIP_ABIL_GAUGE_X, rect->y + (y3 + k), EQUIP_OTZ_TEXT, chr_getAp(chr->info.b.id, ab), ap, flag, 0);
             }
-            text_drawBlock(rect->x + 0x18, rect->y + y2, 0x1D, name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-            ui_drawSprite(rect->x + 8, rect->y + y1, 0x1D, icon, ok ^ 1);
+            text_drawBlock(rect->x + EQUIP_ABIL_NAME_X, rect->y + y2, EQUIP_OTZ_TEXT, name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+            ui_drawSprite(rect->x + EQUIP_ABIL_ICON_X, rect->y + y1, EQUIP_OTZ_TEXT, icon, ok ^ 1);
         } else {
-            text_drawBlock(rect->x + 0x18, rect->y + y2, 0x1D, name, TEXT_PAL_GREY);
-            ui_drawSprite(rect->x + 8, rect->y + y1, 0x1D, ab < ABILITY_SUPPORT_FIRST ? 0xBE : 0xBF, 1);
+            text_drawBlock(rect->x + EQUIP_ABIL_NAME_X, rect->y + y2, EQUIP_OTZ_TEXT, name, TEXT_PAL_GREY);
+            ui_drawSprite(rect->x + EQUIP_ABIL_ICON_X, rect->y + y1, EQUIP_OTZ_TEXT, ab < ABILITY_SUPPORT_FIRST ? UI_SPRITE_ABIL_ACTION_NA : UI_SPRITE_ABIL_SUPPORT_NA, 1);
         }
     }
 }
@@ -287,26 +287,26 @@ void menuEquip_drawList(void) {
     EquipMenu *menu = &s_menuEquip;
     MenuList *list = &s_menuEquip.list;
     s32 w;
-    s32 k = 0x97;
+    s32 k = EQUIP_COUNT_LABEL_R;
     s32 i;
 
     if (menu->listOpen != 0) {
         w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
-        ui_drawLabel(wd->rect.x + 6, rect->y - 3, 0x14, g_winLabelStrings.labels[s_menuEquipSlotLabel[menu->equipSlot]], UI_LABEL_NORMAL);
-        ui_drawLabel(wd->rect.x - (w - k), rect->y - 3, 0x14, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
-        win_drawListBox(rect, 0x14, 1, list);
+        ui_drawLabel(wd->rect.x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, EQUIP_OTZ_LIST, g_winLabelStrings.labels[s_menuEquipSlotLabel[menu->equipSlot]], UI_LABEL_NORMAL);
+        ui_drawLabel(wd->rect.x - (w - k), rect->y + WIN_TITLE_Y, EQUIP_OTZ_LIST, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
+        win_drawListBox(rect, EQUIP_OTZ_LIST, 1, list);
         menuList_getView(list, &view);
-        win_setClip(NULL, 0x13, WIN_STYLE_LINE_RULE);
+        win_setClip(NULL, EQUIP_OTZ_LIST_TEXT, WIN_STYLE_LINE_RULE);
         for (i = 0; i < view.rows; i++) {
             menuEquip_drawListRow(0, i, view.first + i, &view);
         }
         if (list->scroll & MENULIST_SCROLL_PAGE) {
             menuList_getRowsRect(list, rect, &sub);
-            win_setClip(&sub, 0x13, WIN_STYLE_LINE_RULE);
+            win_setClip(&sub, EQUIP_OTZ_LIST_TEXT, WIN_STYLE_LINE_RULE);
             menuEquip_drawScrollRows();
         }
         if (wd->anim == 0) {
-            win_setClip(rect, 0x13, WIN_STYLE_LINE_RULE);
+            win_setClip(rect, EQUIP_OTZ_LIST_TEXT, WIN_STYLE_LINE_RULE);
         }
     }
 }
@@ -322,10 +322,10 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
 
     rect = &s_menuEquip.infoRect;
     blink = ((u32)g_menuFrame >> 4) & 1;
-    for (i = 0, y = rect->y + 0x44; i < 4; y += 0xC, i++) {
-        menuEquip_drawStatLabel(rect->x + 8, y, 0x1D, s_menuEquipBaseStatText[i], TEXT_PAL_WHITE);
+    for (i = 0, y = rect->y + EQUIP_BASE_STAT_Y; i < (s32)ARRAY_COUNT(cur->stats); y += EQUIP_STAT_ROW_H, i++) {
+        menuEquip_drawStatLabel(rect->x + EQUIP_STAT_LABEL_X, y, EQUIP_OTZ_TEXT, s_menuEquipBaseStatText[i], TEXT_PAL_WHITE);
         text_formatNumber(cur->stats[i], numText, 2, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(rect->x + 0x4A, y, 0x1D, numText, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(rect->x + EQUIP_BASE_STAT_X, y, EQUIP_OTZ_TEXT, numText, TEXT_PAL_WHITE);
         if (new != NULL) {
             diff = cur->stats[i] != new->stats[i];
             if (new->stats[i] >= cur->stats[i]) {
@@ -338,14 +338,14 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
                 col = TEXT_PAL_RED;
             }
             text_formatNumber(new->stats[i], numText, 2, TEXT_NUM_ASCII);
-            ui_drawSmallDigits(rect->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-            ui_drawSmallDigits(rect->x + 0x6D, y, 0x1D, numText, col);
+            ui_drawSmallDigits(rect->x + EQUIP_STAT_ARROW_X, y, EQUIP_OTZ_TEXT, s_menuEquipArrow, (diff && blink) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+            ui_drawSmallDigits(rect->x + EQUIP_BASE_STAT_NEW_X, y, EQUIP_OTZ_TEXT, numText, col);
         }
     }
-    for (i = 0, y = rect->y + 0x78; i < 5; y += 0xC, i++) {
-        menuEquip_drawStatLabel(rect->x + 8, y, 0x1D, s_menuEquipBattleStatText[i], TEXT_PAL_WHITE);
+    for (i = 0, y = rect->y + EQUIP_BATTLE_STAT_Y; i < (s32)ARRAY_COUNT(cur->defs); y += EQUIP_STAT_ROW_H, i++) {
+        menuEquip_drawStatLabel(rect->x + EQUIP_STAT_LABEL_X, y, EQUIP_OTZ_TEXT, s_menuEquipBattleStatText[i], TEXT_PAL_WHITE);
         text_formatNumber(cur->defs[i], numText, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(rect->x + 0x43, y, 0x1D, numText, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(rect->x + EQUIP_BATTLE_STAT_X, y, EQUIP_OTZ_TEXT, numText, TEXT_PAL_WHITE);
         if (new != NULL) {
             diff = cur->defs[i] != new->defs[i];
             if (new->defs[i] >= cur->defs[i]) {
@@ -358,8 +358,8 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
                 col = TEXT_PAL_RED;
             }
             text_formatNumber(new->defs[i], numText, 3, TEXT_NUM_ASCII);
-            ui_drawSmallDigits(rect->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-            ui_drawSmallDigits(rect->x + 0x66, y, 0x1D, numText, col);
+            ui_drawSmallDigits(rect->x + EQUIP_STAT_ARROW_X, y, EQUIP_OTZ_TEXT, s_menuEquipArrow, (diff && blink) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+            ui_drawSmallDigits(rect->x + EQUIP_BATTLE_STAT_NEW_X, y, EQUIP_OTZ_TEXT, numText, col);
         }
     }
 }
@@ -377,21 +377,21 @@ void menuEquip_drawCursor(void) {
     if (menu->state == EQUIP_STATE_TABS || (g_menuScreenFrame & 3)) {
         h = &g_menuHelp;
         x = s_menuEquipTabCursorX[s_menuEquip.tab][0];
-        h->y = menu->tabRect.y + 8;
-        h->otz = 0x1B;
-        h->x = menu->tabRect.x + x - 0x18;
+        h->y = menu->tabRect.y + EQUIP_TAB_CURSOR_DY;
+        h->otz = EQUIP_OTZ_CURSOR;
+        h->x = menu->tabRect.x + x - EQUIP_TAB_CURSOR_LEFT;
         help_drawCursor();
     }
     if (s_menuEquip.state == EQUIP_STATE_SLOT) {
-        g_menuHelp.otz = 0x12;
-        g_menuHelp.x = s_menuEquip.equipRect.x - 0x10;
-        k = s_menuEquip.equipSlot * 17 + 0xC;
+        g_menuHelp.otz = EQUIP_OTZ_SUB_CURSOR;
+        g_menuHelp.x = s_menuEquip.equipRect.x - EQUIP_SLOT_CURSOR_LEFT;
+        k = s_menuEquip.equipSlot * EQUIP_SLOT_ROW_H + EQUIP_SLOT_CURSOR_DY;
         g_menuHelp.y = s_menuEquip.equipRect.y + k;
         help_drawCursor();
     } else if (s_menuEquip.state == EQUIP_STATE_LIST) {
-        g_menuHelp.otz = 0x12;
-        g_menuHelp.x = s_menuEquip.listWin.rect.x - 0xD;
-        k = s_menuEquip.list.cursor * 15 + 0xA;
+        g_menuHelp.otz = EQUIP_OTZ_SUB_CURSOR;
+        g_menuHelp.x = s_menuEquip.listWin.rect.x - EQUIP_LIST_CURSOR_LEFT;
+        k = s_menuEquip.list.cursor * EQUIP_LIST_ROW_H + EQUIP_LIST_CURSOR_DY;
         g_menuHelp.y = s_menuEquip.listWin.rect.y + k;
         help_drawCursor();
     }
@@ -454,7 +454,7 @@ void menuEquip_dropUnlearnedSupport(Character *chr) {
         for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             if (chr->equip[i] != ITEM_NONE) {
                 it = &g_itemTable[chr->equip[i]];
-                for (j = 0; j < 3; j++) {
+                for (j = 0; j < (s32)ARRAY_COUNT(it->abilities); j++) {
                     id = it->abilities[j];
                     if (id != 0) {
                         if (id >= ABILITY_SUPPORT_FIRST) {
@@ -520,7 +520,7 @@ void menuEquip_buildItemList(void) {
             }
         }
     }
-    menuList_init(&s_menuEquip.list, count, 6, 1, 0x62);
+    menuList_init(&s_menuEquip.list, count, EQUIP_LIST_ROWS, 1, EQUIP_SLOTS_WIN_H);
 }
 
 void menuEquip_updateHelp(void) {
@@ -621,10 +621,10 @@ void menuEquip_drawTabs(void) {
     s32 i;
 
     rect = &s_menuEquip.tabRect;
-    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(rect, 0x1E, WIN_STYLE_BEVEL);
-    for (i = 0; i < 3; i++) {
-        text_drawBlock(rect->x + s_menuEquipTabX[i], rect->y + 6, 0x1D, text_get(i), TEXT_PAL_WHITE);
+    win_drawBox(rect, EQUIP_OTZ_WIN, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, EQUIP_OTZ_WIN, WIN_STYLE_BEVEL);
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuEquipTabX); i++) {
+        text_drawBlock(rect->x + s_menuEquipTabX[i], rect->y + EQUIP_TAB_TEXT_Y, EQUIP_OTZ_TEXT, text_get(i), TEXT_PAL_WHITE);
     }
 }
 
@@ -648,11 +648,11 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *view) {
     invSlot = s_menuEquip.items + i;
     x = s_menuEquip.listWin.rect.x;
     w = &s_menuEquip.listWin;
-    y = w->rect.y + row * 0xF + view->y;
-    ui_drawItemIcon(x + 0xB, y, 0x13, invSlot->id, 1);
-    text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[invSlot->id].name, TEXT_PAL_WHITE);
+    y = w->rect.y + row * EQUIP_LIST_ROW_H + view->y;
+    ui_drawItemIcon(x + EQUIP_LIST_ICON_X, y, EQUIP_OTZ_LIST_TEXT, invSlot->id, 1);
+    text_drawBlock(x + EQUIP_LIST_NAME_X, y, EQUIP_OTZ_LIST_TEXT, g_itemNames + g_itemTable[invSlot->id].name, TEXT_PAL_WHITE);
     text_formatNumber(invSlot->count, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(x + EQUIP_LIST_COUNT_X, y + 4, EQUIP_OTZ_LIST_TEXT, numText, TEXT_PAL_WHITE);
 }
 
 void menuEquip_openList(void) {

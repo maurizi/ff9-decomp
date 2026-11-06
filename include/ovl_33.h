@@ -184,6 +184,68 @@ enum {
     EQUIP_STATE_SLOT, /* picking an equipment slot */
     EQUIP_STATE_LIST  /* item list */
 };
+/* Equip screen layout (screen coordinates unless noted) */
+#define EQUIP_TABS_WIN_X 8 /* Equip / Optimize / Off tabs */
+#define EQUIP_TABS_WIN_Y 8
+#define EQUIP_TABS_WIN_W 0xE4
+#define EQUIP_TABS_WIN_H 0x1A
+#define EQUIP_TAB_TEXT_Y 6 /* relative to the window (x: s_menuEquipTabX) */
+#define EQUIP_TAB_CURSOR_LEFT 0x18 /* tab cursor: left of the window + s_menuEquipTabCursorX */
+#define EQUIP_TAB_CURSOR_DY 8
+#define EQUIP_INFO_WIN_X 8 /* INFO window: member header and the stat comparison */
+#define EQUIP_INFO_WIN_Y 0x26
+#define EQUIP_INFO_WIN_W 0x8C
+#define EQUIP_INFO_WIN_H 0xB6
+#define EQUIP_HEADER_X 8 /* relative to the INFO window */
+#define EQUIP_HEADER_Y 9
+#define EQUIP_INFO_DIV_Y 0x3B /* etched divider under the header */
+#define EQUIP_STAT_LABEL_X 8 /* stat rows, relative to the INFO window */
+#define EQUIP_STAT_ROW_H 0xC
+#define EQUIP_BASE_STAT_Y 0x44 /* Speed, Strength, Magic, Spirit */
+#define EQUIP_BASE_STAT_X 0x4A /* current value (2 digits) */
+#define EQUIP_BASE_STAT_NEW_X 0x6D /* value with the new item */
+#define EQUIP_BATTLE_STAT_Y 0x78 /* Attack, Defence, Evade, Magic Def, Magic Eva */
+#define EQUIP_BATTLE_STAT_X 0x43 /* current value (3 digits) */
+#define EQUIP_BATTLE_STAT_NEW_X 0x66
+#define EQUIP_STAT_ARROW_X 0x5C /* the arrow between them (blinks when the value changes) */
+#define EQUIP_SLOTS_WIN_X 0x94 /* EQUIPMENT window (the item list opens at the same rect) */
+#define EQUIP_SLOTS_WIN_Y 0x26
+#define EQUIP_SLOTS_WIN_W 0xA0
+#define EQUIP_SLOTS_WIN_H 0x62
+#define EQUIP_SLOT_ROW_H 17 /* EQUIPMENT rows, relative to the window: */
+#define EQUIP_SLOT_ICON_X 10 /* slot icon */
+#define EQUIP_SLOT_ICON_Y 10
+#define EQUIP_SLOT_COLON_X 0x19 /* ':' */
+#define EQUIP_SLOT_COLON_Y 12
+#define EQUIP_SLOT_ITEM_X 0x21 /* item icon */
+#define EQUIP_SLOT_ITEM_Y 8 /* item icon and name */
+#define EQUIP_SLOT_NAME_X 0x31
+#define EQUIP_SLOT_CURSOR_LEFT 0x10 /* slot cursor: left of the window */
+#define EQUIP_SLOT_CURSOR_DY 0xC
+#define EQUIP_ABIL_WIN_X 0x94 /* ABILITY window: the item's abilities (header row: the slot and item, 1 higher) */
+#define EQUIP_ABIL_WIN_Y 0x8A
+#define EQUIP_ABIL_WIN_W 0xA0
+#define EQUIP_ABIL_WIN_H 0x52
+#define EQUIP_ABIL_DIV_Y 0x1A /* etched divider under the item */
+#define EQUIP_ABIL_ROW_Y 0x21 /* ability rows: name y (icon 1 lower, AP gauge 5 lower) */
+#define EQUIP_ABIL_ROW_H 15
+#define EQUIP_ABIL_ICON_X 8
+#define EQUIP_ABIL_NAME_X 0x18
+#define EQUIP_ABIL_GAUGE_X 0x72
+#define EQUIP_LIST_ROWS 6 /* item list: visible rows */
+#define EQUIP_LIST_ROW_H 15
+#define EQUIP_LIST_ICON_X 0xB /* relative to the list window */
+#define EQUIP_LIST_NAME_X 0x1B
+#define EQUIP_LIST_COUNT_X 0x8A
+#define EQUIP_COUNT_LABEL_R 0x97 /* right edge of the count label */
+#define EQUIP_LIST_CURSOR_LEFT 0xD /* list cursor: left of the window */
+#define EQUIP_LIST_CURSOR_DY 0xA
+#define EQUIP_OTZ_SUB_CURSOR 0x12 /* slot / list cursor */
+#define EQUIP_OTZ_LIST_TEXT 0x13 /* item list contents; the ABILITY window's label */
+#define EQUIP_OTZ_LIST 0x14 /* item list window */
+#define EQUIP_OTZ_CURSOR 0x1B /* tab cursor */
+#define EQUIP_OTZ_TEXT 0x1D /* window contents */
+#define EQUIP_OTZ_WIN 0x1E /* tab, INFO, EQUIPMENT and ABILITY windows */
 /* the first halfword of EquipMenu, {tab, state}, read as one by menuEquip_drawInfo */
 #define EQUIP_TAB_STATE(tab, state) ((state) << 8 | (tab))
 
