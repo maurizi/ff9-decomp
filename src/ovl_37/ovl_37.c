@@ -16,10 +16,10 @@ void menuItem_init(void) {
     text_setBank(g_itemMenuText);
     help_setCallback(help_nullHandler);
     help_setCursorOnTop(1);
-    menuList_init(&s_menuItem.itemList, ITEM_SLOT_COUNT - 1, 0xB, 2, 0xAD);
-    menuList_init(&s_menuItem.keyList, s_menuItem.keyCount, 0xB, 2, 0xAD);
-    setRECT(&s_menuItem.cmdRect, 8, 8, 0xE4, 0x1A);
-    setRECT(&s_menuItem.listRect, 8, 0x2A, 0x12C, 0xAD);
+    menuList_init(&s_menuItem.itemList, ITEM_SLOT_COUNT - 1, ITEM_LIST_ROWS, ITEM_LIST_COLS, ITEM_LIST_WIN_H);
+    menuList_init(&s_menuItem.keyList, s_menuItem.keyCount, ITEM_LIST_ROWS, ITEM_LIST_COLS, ITEM_LIST_WIN_H);
+    setRECT(&s_menuItem.cmdRect, ITEM_TABS_WIN_X, ITEM_TABS_WIN_Y, ITEM_TABS_WIN_W, ITEM_TABS_WIN_H);
+    setRECT(&s_menuItem.listRect, ITEM_LIST_WIN_X, ITEM_LIST_WIN_Y, ITEM_LIST_WIN_W, ITEM_LIST_WIN_H);
     tween_start(&s_menuItem.charWin, 0, 0);
     menuItem_loadImages();
 }
@@ -159,29 +159,29 @@ void menuItem_drawList(void) {
     s32 idx;
 
     il = &s_menuItemTabs[s_menuItem.tab];
-    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
-    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
+    ui_drawLabel(s_menuItemListRect->x + ITEM_LIST_LABEL_X, s_menuItemListRect->y + WIN_TITLE_Y, ITEM_OTZ_WIN, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
+    ui_drawLabel(s_menuItemListRect->x + (ITEM_LIST_LABEL_X + ITEM_COL_W), s_menuItemListRect->y + WIN_TITLE_Y, ITEM_OTZ_WIN, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
     if (s_menuItem.tab != ITEM_TAB_KEY) {
         w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
-        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
-        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
+        ui_drawLabel((s_menuItemListRect->x + ITEM_COUNT_LABEL_R) - w, s_menuItemListRect->y + WIN_TITLE_Y, ITEM_OTZ_WIN, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
+        ui_drawLabel((s_menuItemListRect->x + (ITEM_COUNT_LABEL_R + ITEM_COL_W)) - w, s_menuItemListRect->y + WIN_TITLE_Y, ITEM_OTZ_WIN, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
     }
     menuList_getView(il->list, &view);
-    win_drawListBox(s_menuItemListRect, 0x1D, 1, il->list);
-    win_drawShadow(s_menuItemListRect, 0x1D, WIN_STYLE_LINE_RULE);
+    win_drawListBox(s_menuItemListRect, ITEM_OTZ_WIN, 1, il->list);
+    win_drawShadow(s_menuItemListRect, ITEM_OTZ_WIN, WIN_STYLE_LINE_RULE);
     idx = view.first * 2;
-    win_setClip(NULL, 0x1C, WIN_STYLE_LINE_RULE);
+    win_setClip(NULL, ITEM_OTZ_TEXT, WIN_STYLE_LINE_RULE);
     for (row = 0; row < view.rows; row++) {
-        for (col = 0; col < 2; col++) {
+        for (col = 0; col < ITEM_LIST_COLS; col++) {
             il->drawRow(col, row, idx++, &view);
         }
     }
     if (il->list->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect(il->list, s_menuItemListRect, &s_menuItemScrollClip);
-        win_setClip(&s_menuItemScrollClip, 0x1C, WIN_STYLE_LINE_RULE);
+        win_setClip(&s_menuItemScrollClip, ITEM_OTZ_TEXT, WIN_STYLE_LINE_RULE);
         menuItem_drawScrollRows();
     }
-    win_setClip(s_menuItemListRect, 0x1C, WIN_STYLE_LINE_RULE);
+    win_setClip(s_menuItemListRect, ITEM_OTZ_TEXT, WIN_STYLE_LINE_RULE);
 }
 
 void menuItem_drawCursor(void) {
@@ -200,42 +200,42 @@ void menuItem_drawCursor(void) {
         return;
     }
     if (s_menuItem.state == ITEM_STATE_TABS || blink) {
-        g_menuHelp.x = s_menuItemTabCursorX[s_menuItem.tab] - 0x10;
-        g_menuHelp.y = 0x10;
-        g_menuHelp.otz = 0x19;
+        g_menuHelp.x = s_menuItemTabCursorX[s_menuItem.tab] + ITEM_TAB_CURSOR_DX;
+        g_menuHelp.y = ITEM_TAB_CURSOR_Y;
+        g_menuHelp.otz = ITEM_OTZ_CURSOR;
         help_drawCursor();
     }
     if (s_menuItem.state == ITEM_STATE_ARRANGE || (s_menuItem.state == ITEM_STATE_MANUAL && blink)) {
-        g_menuHelp.x = 0x7E;
-        g_menuHelp.otz = 0x12;
-        g_menuHelp.y = s_menuItem.arrangeCursor * 15 + 0xE;
+        g_menuHelp.x = ITEM_ARRANGE_CURSOR_X;
+        g_menuHelp.otz = ITEM_OTZ_POPUP_CURSOR;
+        g_menuHelp.y = s_menuItem.arrangeCursor * ITEM_ROW_H + ITEM_ARRANGE_CURSOR_Y;
         help_drawCursor();
     }
     if (s_menuItem.state >= ITEM_STATE_LIST && s_menuItem.state != ITEM_STATE_ARRANGE && (s_menuItem.state == ITEM_STATE_LIST || blink)) {
         k = list->col ^ ((list->scroll >> 3) & 1);
-        g_menuHelp.otz = 0x19;
+        g_menuHelp.otz = ITEM_OTZ_CURSOR;
         /* Both arms are identical (jump2 merges them after register allocation); the test keeps the
          * hi part of &s_menuItem and the constant 2 live, which the original's registers need. */
         if (s_menuItem.tab == ITEM_TAB_KEY) {
-            g_menuHelp.x = k * 0x96;
-            g_menuHelp.y = list->cursor * 15 + 0x34;
+            g_menuHelp.x = k * ITEM_COL_W;
+            g_menuHelp.y = list->cursor * ITEM_ROW_H + ITEM_LIST_CURSOR_Y;
             help_drawCursor();
         } else {
-            g_menuHelp.x = k * 0x96;
-            g_menuHelp.y = list->cursor * 15 + 0x34;
+            g_menuHelp.x = k * ITEM_COL_W;
+            g_menuHelp.y = list->cursor * ITEM_ROW_H + ITEM_LIST_CURSOR_Y;
             help_drawCursor();
         }
     }
     if (s_menuItem.state == ITEM_STATE_TARGET) {
-        g_menuHelp.otz = 0x12;
-        g_menuHelp.x = s_menuItem.charWin.rect.x - 0xA;
-        g_menuHelp.y = s_menuItem.charWin.rect.y + (s16)(s_menuItem.slot * 43 + 0x12);
+        g_menuHelp.otz = ITEM_OTZ_POPUP_CURSOR;
+        g_menuHelp.x = s_menuItem.charWin.rect.x + ITEM_TARGET_CURSOR_X;
+        g_menuHelp.y = s_menuItem.charWin.rect.y + (s16)(s_menuItem.slot * ITEM_TARGET_ROW_H + ITEM_TARGET_CURSOR_Y);
         help_drawCursor();
     }
     if (s_menuItem.state == ITEM_STATE_MANUAL) {
         if (s_menuItem.swapPicked == 1 && blink && !(list->scroll & MENULIST_SCROLL_PAGE)) {
             firstRow = list->top;
-            if (s_menuItem.swapFrom >= firstRow * 2 && s_menuItem.swapFrom < (firstRow + 0xB) * 2) {
+            if (s_menuItem.swapFrom >= firstRow * ITEM_LIST_COLS && s_menuItem.swapFrom < (firstRow + ITEM_LIST_ROWS) * ITEM_LIST_COLS) {
                 if (list->scroll != 0) {
                     off = list->scrollPos;
                     if (!(list->scroll & MENULIST_SCROLL_UP)) {
@@ -243,16 +243,16 @@ void menuItem_drawCursor(void) {
                     }
                 }
                 swapIdx = s_menuItem.swapFrom;
-                g_menuHelp.x = (swapIdx & 1) * 0x96 + 2;
-                g_menuHelp.y = ((swapIdx >> 1) - list->top) * 15 + (s16)(off + 0x32);
-                g_menuHelp.otz = 0x12;
+                g_menuHelp.x = (swapIdx & 1) * ITEM_COL_W + ITEM_SWAP_CURSOR_X;
+                g_menuHelp.y = ((swapIdx >> 1) - list->top) * ITEM_ROW_H + (s16)(off + ITEM_SWAP_CURSOR_Y);
+                g_menuHelp.otz = ITEM_OTZ_POPUP_CURSOR;
                 help_drawCursor();
             }
         }
         k = list->col ^ ((list->scroll >> 3) & 1);
-        g_menuHelp.x = k * 0x96;
-        g_menuHelp.y = list->cursor * 15 + 0x34;
-        g_menuHelp.otz = 0x12;
+        g_menuHelp.x = k * ITEM_COL_W;
+        g_menuHelp.y = list->cursor * ITEM_ROW_H + ITEM_LIST_CURSOR_Y;
+        g_menuHelp.otz = ITEM_OTZ_POPUP_CURSOR;
         help_drawCursor();
     }
 }
@@ -263,18 +263,18 @@ void menuItem_openTarget(void) {
     GameState *gs;
     s32 k = (s_menuItemTabs[s_menuItem.tab].list->col ^ 1) & 1;
 
-    s_menuItem.charWin.rect.x = (u8)k == 0 ? 8 : 0xA4;
+    s_menuItem.charWin.rect.x = (u8)k == 0 ? ITEM_TARGET_WIN_X_LEFT : ITEM_TARGET_WIN_X_RIGHT;
     rect = &s_menuItem.charWin.rect;
-    rect->y = 0x26;
-    rect->w = 0x90;
-    rect->h = 0xB6;
+    rect->y = ITEM_TARGET_WIN_Y;
+    rect->w = ITEM_TARGET_WIN_W;
+    rect->h = ITEM_TARGET_WIN_H;
     tween_start(&s_menuItem.charWin, s_menuItemTargetOpen[k], 1);
     gs = g_gameState;
     menu = &s_menuItem;
     menu->slot = 0;
 loop:
     if (gs->gameData->party[menu->slot] == NULL) {
-        if (++menu->slot < 4) {
+        if (++menu->slot < PARTY_SIZE) {
             goto loop;
         }
     }
@@ -326,7 +326,7 @@ s32 menuItem_callChocobo(void) {
         if (wm_canCallChocobo()) {
             g_evtGlobalVars.b[0xB5] = 1;
             wm_callChocobo();
-            menu->popup = win_openFree(&s_menuItemKwehRect, 0xF, WIN_STYLE_BEVEL);
+            menu->popup = win_openFree(&s_menuItemKwehRect, ITEM_OTZ_KWEH, WIN_STYLE_BEVEL);
             win_setOnOpened(menu->popup, menuItem_onKwehOpened);
             win_setDrawContent(menu->popup, menuItem_drawKweh);
             win_setTitle(menu->popup, (s32)s_menuItemChocoboTitle);
@@ -406,14 +406,14 @@ void menuItem_updateKeyItemAnim(void) {
     if (s_menuItem.keyView != 0 && s_menuItem.keyViewPhase != 0) {
         if (s_menuItem.keyViewPhase == KEY_VIEW_OPENING) {
             s_menuItem.keyViewX += s_menuItemKeyItemSlide[s_menuItem.keyViewStep++];
-            if (s_menuItem.keyViewStep >= 0x16) {
+            if (s_menuItem.keyViewStep >= KEY_VIEW_OPEN_STEPS) {
                 s_menuItem.keyViewPhase = KEY_VIEW_SHOWN;
                 s_menuItem.keyViewStep = 0;
                 s_menuItem.state = ITEM_STATE_KEY_VIEW;
             }
         } else if (s_menuItem.keyViewPhase == KEY_VIEW_CLOSING) {
             s_menuItem.keyViewX += s_menuItemKeyItemSlide[s_menuItem.keyViewStep++];
-            if (s_menuItem.keyViewStep >= 8) {
+            if (s_menuItem.keyViewStep >= KEY_VIEW_CLOSE_STEPS) {
                 s_menuItem.keyViewStep = 0;
                 s_menuItem.keyViewPhase = 0;
                 s_menuItem.keyView = 0;
@@ -433,31 +433,31 @@ void menuItem_drawKeyItem(void) {
     if (menu->keyView != 0) {
         x = menu->keyViewX;
         name = g_keyItemNames + g_keyItemTable[menu->keyViewId].name;
-        text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, TEXT_PAL_HELP);
-        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[menu->keyViewId].desc, TEXT_PAL_HELP);
+        text_drawBlock(x + ((KEY_VIEW_W - text_measureWidth((s32)name)) >> 1), KEY_VIEW_NAME_Y, ITEM_OTZ_POPUP, name, TEXT_PAL_HELP);
+        text_drawBlock(x + KEY_VIEW_DESC_X, KEY_VIEW_DESC_Y, ITEM_OTZ_POPUP, s_menuItemKeyDesc + g_keyItemTable[menu->keyViewId].desc, TEXT_PAL_HELP);
         setlen(g_primPtr, PRIM_LEN(SPRT));
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-        ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | 0x410000;
-        ((SprtWords *)g_primPtr)->uvclut = (GetClut(0x3C0, 0x1B0) << 16) | 0x8000;
-        ((SprtWords *)g_primPtr)->wh = 0x8000B0;
-        addPrim(&g_ot[0x14], g_primPtr);
+        ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | (KEY_VIEW_Y << 16);
+        ((SprtWords *)g_primPtr)->uvclut = (GetClut(KEY_VIEW_CLUT_X, KEY_VIEW_CLUT_Y) << 16) | (KEY_VIEW_V << 8);
+        ((SprtWords *)g_primPtr)->wh = (KEY_VIEW_H << 16) | KEY_VIEW_W;
+        addPrim(&g_ot[ITEM_OTZ_POPUP], g_primPtr);
         g_primPtr += sizeof(SprtWords);
         setlen(g_primPtr, PRIM_LEN(SPRT));
         ((SprtWords *)g_primPtr)->rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
-        ((SprtWords *)g_primPtr)->xy = ((x + 3) & 0xFFFF) | 0xBE0000;
-        ((SprtWords *)g_primPtr)->uvclut = (GetClut(0x3C0, 0x1B1) << 16) | 0xFA00;
-        ((SprtWords *)g_primPtr)->wh = 0x600B0;
-        addPrim(&g_ot[0x14], g_primPtr);
+        ((SprtWords *)g_primPtr)->xy = ((x + KEY_VIEW_SHADOW_D) & 0xFFFF) | ((KEY_VIEW_Y + KEY_VIEW_H - KEY_VIEW_SHADOW_D) << 16);
+        ((SprtWords *)g_primPtr)->uvclut = (GetClut(KEY_VIEW_CLUT_X, KEY_VIEW_CLUT_Y + 1) << 16) | 0xFA00;
+        ((SprtWords *)g_primPtr)->wh = (KEY_VIEW_SHADOW_W << 16) | KEY_VIEW_W;
+        addPrim(&g_ot[ITEM_OTZ_POPUP], g_primPtr);
         g_primPtr += sizeof(SprtWords);
         setlen(g_primPtr, PRIM_LEN(SPRT));
         ((SprtWords *)g_primPtr)->rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
-        ((SprtWords *)g_primPtr)->xy = ((x + 0xAD) & 0xFFFF) | 0x440000;
-        ((SprtWords *)g_primPtr)->uvclut = (GetClut(0x3C0, 0x1B1) << 16) | 0x80AA;
-        ((SprtWords *)g_primPtr)->wh = 0x7A0006;
-        addPrim(&g_ot[0x14], g_primPtr);
+        ((SprtWords *)g_primPtr)->xy = ((x + (KEY_VIEW_W - KEY_VIEW_SHADOW_D)) & 0xFFFF) | ((KEY_VIEW_Y + KEY_VIEW_SHADOW_D) << 16);
+        ((SprtWords *)g_primPtr)->uvclut = (GetClut(KEY_VIEW_CLUT_X, KEY_VIEW_CLUT_Y + 1) << 16) | 0x80AA;
+        ((SprtWords *)g_primPtr)->wh = ((KEY_VIEW_H - KEY_VIEW_SHADOW_W) << 16) | KEY_VIEW_SHADOW_W;
+        addPrim(&g_ot[ITEM_OTZ_POPUP], g_primPtr);
         g_primPtr += sizeof(SprtWords);
         SetDrawTPage(g_primPtr, 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
-        addPrim(&g_ot[0x14], g_primPtr);
+        addPrim(&g_ot[ITEM_OTZ_POPUP], g_primPtr);
         g_primPtr += sizeof(DR_TPAGE);
     }
 }
@@ -606,11 +606,11 @@ void menuItem_drawTabs(void) {
     s32 i;
 
     rect = &s_menuItem.cmdRect;
-    for (i = 0; i < 3; i++) {
-        text_drawBlock(rect->x + s_menuItemTabX[i], rect->y + 6, 0x1C, text_get(s_menuItemTabText[i]), TEXT_PAL_WHITE);
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuItemTabX); i++) {
+        text_drawBlock(rect->x + s_menuItemTabX[i], rect->y + ITEM_TAB_TEXT_Y, ITEM_OTZ_TEXT, text_get(s_menuItemTabText[i]), TEXT_PAL_WHITE);
     }
-    win_drawBox(rect, 0x1D, WIN_STYLE_BEVEL);
-    win_drawShadow(rect, 0x1D, WIN_STYLE_BEVEL);
+    win_drawBox(rect, ITEM_OTZ_WIN, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, ITEM_OTZ_WIN, WIN_STYLE_BEVEL);
 }
 
 void menuItem_drawScrollRows(void) {
@@ -625,7 +625,7 @@ void menuItem_drawScrollRows(void) {
     menuList_getPageView(it->list, &view);
     idx = view.first * 2;
     for (; row < view.rows; row++) {
-        for (col = 0; col < 2; col++) {
+        for (col = 0; col < ITEM_LIST_COLS; col++) {
             it->drawRow(col, row, idx++, &view);
         }
     }
@@ -638,11 +638,11 @@ void menuItem_drawTargetWindow(void) {
     if (s_menuItem.charWinOpen != 0) {
         for (i = 0; i < PARTY_SIZE; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
-                ui_drawMemberSummary(rect->x + 8, rect->y + 6 + i * 0x2B, 0x14, i, s_menuItem.targetMode);
+                ui_drawMemberSummary(rect->x + ITEM_TARGET_ROW_X, rect->y + ITEM_TARGET_ROW_Y + i * ITEM_TARGET_ROW_H, ITEM_OTZ_POPUP, i, s_menuItem.targetMode);
             }
         }
-        win_drawBox(rect, 0x14, WIN_STYLE_BEVEL);
-        win_drawShadow(rect, 0x14, WIN_STYLE_BEVEL);
+        win_drawBox(rect, ITEM_OTZ_POPUP, WIN_STYLE_BEVEL);
+        win_drawShadow(rect, ITEM_OTZ_POPUP, WIN_STYLE_BEVEL);
     }
 }
 
@@ -651,27 +651,27 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *view) {
     ItemInfo *it;
     u8 ok;
     s32 x, y, x2;
-    s32 k = 0x2A;
+    s32 k = ITEM_LIST_WIN_Y;
     u8 numText[8];
 
     if (slot->count != 0 && slot->id != ITEM_NONE) {
         it = &g_itemTable[slot->id];
         ok = it->slots & ITEM_SLOT_USABLE;
-        x = col * 0x96;
-        y = row * 0xF + (view->y + k);
+        x = col * ITEM_COL_W;
+        y = row * ITEM_ROW_H + (view->y + k);
         text_formatNumber(slot->count, numText, 2, TEXT_NUM_ASCII);
-        x2 = x + 0x18;
-        text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-        ui_drawItemIcon(x2, y, 0x1C, slot->id, ok);
-        ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, numText, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        x2 = x + ITEM_ICON_X;
+        text_drawBlock(x + ITEM_NAME_X, y, ITEM_OTZ_TEXT, g_itemNames + it->name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        ui_drawItemIcon(x2, y, ITEM_OTZ_TEXT, slot->id, ok);
+        ui_drawSmallDigits(x2 + ITEM_COUNT_DX, y + ITEM_COUNT_DY, ITEM_OTZ_TEXT, numText, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
 }
 
 void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *view) {
-    u8 blink = (u32)g_menuFrame % 48 >= 0x10;
+    u8 blink = (u32)g_menuFrame % ITEM_NEW_BLINK_PERIOD >= ITEM_NEW_BLINK_OFF;
     u8 id;
     s32 x, y;
-    s32 k = 0x2A;
+    s32 k = ITEM_LIST_WIN_Y;
     u8 *name;
     s32 w;
     KeyItemInfo *info;
@@ -681,15 +681,15 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *view) {
         id = s_menuItem.keyItems[i];
         info = &g_keyItemTable[id];
         got = keyItem_isSeen(id);
-        x = col * 0x96 + 0x18;
-        y = row * 0xF + (view->y + k);
+        x = col * ITEM_COL_W + ITEM_ICON_X;
+        y = row * ITEM_ROW_H + (view->y + k);
         name = g_keyItemNames + info->name;
         if (!got) {
             w = x + text_measureWidth((s32)name);
-            ui_drawSprite(w + 5, y + 2, 0x1C, UI_SPRITE_NEW_TEXT, blink);
-            ui_drawSprite(w - 1, y - 1, 0x1C, UI_SPRITE_NEW_MARK, 0);
+            ui_drawSprite(w + 5, y + 2, ITEM_OTZ_TEXT, UI_SPRITE_NEW_TEXT, blink);
+            ui_drawSprite(w - 1, y - 1, ITEM_OTZ_TEXT, UI_SPRITE_NEW_MARK, 0);
         }
-        text_drawBlock(x, y, 0x1C, name, TEXT_PAL_WHITE);
+        text_drawBlock(x, y, ITEM_OTZ_TEXT, name, TEXT_PAL_WHITE);
     }
 }
 
@@ -713,7 +713,7 @@ void menuItem_stepKweh(void) {
         timer = s_menuItem.popupTimer;
         if (timer != 0) {
             s_menuItem.popupTimer = timer + 1;
-            if (timer >= 0x60) {
+            if (timer >= ITEM_KWEH_FRAMES) {
                 s_menuItem.popupTimer = 0;
                 if (g_gameState->mode == GS_MODE_WORLD) {
                     snd_stopSe(SE_CHOCOBO_CALL);
@@ -765,7 +765,7 @@ void menuItem_openArrange(void) {
     MenuList *list;
 
     list = s_menuItemTabs[1].list;
-    s_menuItem.popup = win_openFree(&s_menuItemArrangeRect, 0x14, WIN_STYLE_BEVEL);
+    s_menuItem.popup = win_openFree(&s_menuItemArrangeRect, ITEM_OTZ_POPUP, WIN_STYLE_BEVEL);
     win_setDrawContent(s_menuItem.popup, menuItem_drawArrangeWindow);
     win_setOnOpened(s_menuItem.popup, menuItem_onArrangeOpened);
     win_setOnClosed(s_menuItem.popup, menuItem_onArrangeClosed);
@@ -785,7 +785,7 @@ void menuItem_drawArrangeWindow(Window *w) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        text_drawBlock(win->x + 10, win->y + 6 + i * 15, w->otz, text_get(i + ITEM_TEXT_AUTO), TEXT_PAL_WHITE);
+        text_drawBlock(win->x + ITEM_ARRANGE_TEXT_X, win->y + ITEM_ARRANGE_TEXT_Y + i * ITEM_ROW_H, w->otz, text_get(i + ITEM_TEXT_AUTO), TEXT_PAL_WHITE);
     }
 }
 
@@ -815,8 +815,8 @@ void menuItem_showKeyItem(s32 id) {
     s_menuItem.keyViewPhase = KEY_VIEW_OPENING;
     s_menuItem.state = ITEM_STATE_BUSY;
     s_menuItem.keyViewStep = 0;
-    s_menuItem.keyViewX = 0x48;
-    s_menuItem.keyViewX -= tween_sumDeltas(0x16, s_menuItemKeyItemSlide);
+    s_menuItem.keyViewX = KEY_VIEW_X;
+    s_menuItem.keyViewX -= tween_sumDeltas(KEY_VIEW_OPEN_STEPS, s_menuItemKeyItemSlide);
     help_setLocked(1);
 }
 
@@ -824,7 +824,7 @@ void menuItem_hideKeyItem(void) {
     s_menuItem.keyViewPhase = KEY_VIEW_CLOSING;
     s_menuItem.state = ITEM_STATE_BUSY;
     s_menuItem.keyViewStep = 0;
-    s_menuItem.keyViewX = 0x48;
+    s_menuItem.keyViewX = KEY_VIEW_X;
 }
 
 s32 menuItem_getSlot(MenuList *list) {
