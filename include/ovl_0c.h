@@ -435,6 +435,11 @@ typedef struct WmEffect {
 #define WM_CAM_FLY_EYE_LOWEST -0x1194 /* while flying (WM_CTRL_FLY) the eye stays at least this high */
 #define WM_CAM_GROUND_TOP_FLY -0x2134 /* the ground under the eye counts as no higher than this when flying, */
 #define WM_CAM_GROUND_TOP -0x251C /* ... and than this otherwise (the peaks don't push the eye up further) */
+/* the world map's screen: SCREEN_W x WM_SCREEN_H (wm_init game_setScreenHeight); its centre is the default battle
+ * swirl centre (WmMapObj.swirlX/Y). The GTE geometry offset stays at (SCREEN_W / 2, SCREEN_H / 2) (wm_initCamera). */
+#define WM_SCREEN_H 0xDA
+#define WM_SCREEN_CX (SCREEN_W / 2)
+#define WM_SCREEN_CY (WM_SCREEN_H / 2)
 /* wm_cameraFollow tuning. The look-at point (g_worldCameraTarget) and the eye (g_worldCameraEye) chase their wanted
  * heights once the gap passes a dead zone, in steps divided by g_worldCameraEaseDiv (gap >> 5, clamped) on foot or
  * by a fixed divisor in the air / on the boat; steps under WM_CAM_MIN_STEP are dropped. Evidence: [code] */
@@ -1815,6 +1820,7 @@ extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
+#define UI_SPRITE_PAUSE 0xEB /* the pause sprite wm_togglePause centres on screen (g_worldPauseSprite); same in ovl_0a */
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void pen_locate(s32, s32);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */

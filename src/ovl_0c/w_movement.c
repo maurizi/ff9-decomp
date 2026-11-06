@@ -6,7 +6,7 @@ void wm_initCamera(void) {
     g_worldCameraFlags = cam;
     g_worldCamera = cam;
     g_gameState->gameData->projDist = 0xDC;
-    SetGeomOffset(0xA0, 0x70);
+    SetGeomOffset(SCREEN_W / 2, SCREEN_H / 2);
     g_worldCameraUp.vx = 0;
     g_worldCameraUp.vy = -0x4E20;
     g_worldCameraUp.vz = 0;

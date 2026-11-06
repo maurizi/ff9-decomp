@@ -56,7 +56,7 @@ void wm_init(void) {
     wm = g_gameState->gameData->ctx.world;
     wm_resetContext();
     g_gameState->vsyncMode = 3;
-    game_setScreenHeight(0xDA);
+    game_setScreenHeight(WM_SCREEN_H);
     game_freezeScreen();
     SetDispMask(1);
     g_gameState->gameData->modelHook = (s32 (*)(s32, void *))wm_loadActorModel;
@@ -134,7 +134,7 @@ s32 wm_loadSoundBanks(void) {
             rect = &g_worldParkedSoundRects[g_worldParkedSoundRectIdx];
             rect->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
             rect->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
-            rect->h = 218;
+            rect->h = WM_SCREEN_H;
             rect->w = size / 2 / rect->h + 1;
             LoadImage(rect, addr);
             DrawSync(0);
@@ -344,8 +344,8 @@ void wm_resetMapObj(void) {
     WorldMapObj *mapObj = g_gameState->gameData->ctx.world->obj;
     s32 i;
 
-    mapObj->swirlX = 0xA0;
-    mapObj->swirlY = 0x6D;
+    mapObj->swirlX = WM_SCREEN_CX;
+    mapObj->swirlY = WM_SCREEN_CY;
     mapObj->flags = 0;
     mapObj->heapEnd = NULL;
     mapObj->mapScript = NULL;
@@ -395,7 +395,7 @@ void wm_fetchParkedSound(void) {
 
     if (gd->ctx.world->parkedSoundSize != -1) {
         rect = &g_worldParkedSoundRects[g_worldParkedSoundRectIdx];
-        h = 0xDA;
+        h = WM_SCREEN_H;
         rect->x = g_gameState->drawEnv[gd->drawBuf].clip.x;
         rect->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
         dst = (u32 *)(g_loadAreaEnd + 0x91800);
@@ -1146,19 +1146,19 @@ void wm_calcSoundPanVolume(s16 posX, s16 posY, s16 posZ, s32 unused, u8 *outPan,
     }
     margin = z / 32;
     span = (128 - margin) * 2;
-    if ((u16)sxy.vx < 320) {
-        pan = sxy.vx * span / 320;
+    if ((u16)sxy.vx < SCREEN_W) {
+        pan = sxy.vx * span / SCREEN_W;
         pan += margin;
     } else if (sxy.vx < 0) {
-        if (sxy.vx < -320) {
-            sxy.vx = -320;
+        if (sxy.vx < -SCREEN_W) {
+            sxy.vx = -SCREEN_W;
         }
-        pan = (sxy.vx + 320) * margin / 320;
+        pan = (sxy.vx + SCREEN_W) * margin / SCREEN_W;
     } else {
-        if (sxy.vx >= 640) {
-            sxy.vx = 639;
+        if (sxy.vx >= (2 * SCREEN_W)) {
+            sxy.vx = (2 * SCREEN_W - 1);
         }
-        pan = (sxy.vx - 320) * margin / 320;
+        pan = (sxy.vx - SCREEN_W) * margin / SCREEN_W;
         pan += 255 - margin;
     }
     *outPan = pan;
@@ -1313,11 +1313,11 @@ void wm_startBattleTransition(void) {
         gte_ldv0(&pos);
         gte_rtps();
         gte_stsxy(&g_gameState->gameData->ctx.world->obj->swirlX);
-        if ((u16)g_gameState->gameData->ctx.world->obj->swirlX >= 320 ||
+        if ((u16)g_gameState->gameData->ctx.world->obj->swirlX >= SCREEN_W ||
             g_gameState->gameData->ctx.world->obj->swirlY < 0 ||
-            g_gameState->gameData->ctx.world->obj->swirlY >= 218) {
-            g_gameState->gameData->ctx.world->obj->swirlX = 160;
-            g_gameState->gameData->ctx.world->obj->swirlY = 109;
+            g_gameState->gameData->ctx.world->obj->swirlY >= WM_SCREEN_H) {
+            g_gameState->gameData->ctx.world->obj->swirlX = WM_SCREEN_CX;
+            g_gameState->gameData->ctx.world->obj->swirlY = WM_SCREEN_CY;
         }
     }
     g_gameState->gameData->ctx.world->flags &= ~WM_MAP_NO_TRANSITION;
@@ -1420,12 +1420,12 @@ void wm_togglePause(void) {
             g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
-        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, spriteW, g_worldPauseSprite);
+        ui_buildSprite((SCREEN_W - g_uiSprites[UI_SPRITE_PAUSE].w) / 2, (WM_SCREEN_H - g_uiSprites[UI_SPRITE_PAUSE].h) / 2, &g_worldPauseOT, UI_SPRITE_PAUSE, 0, spriteW, g_worldPauseSprite);
         setlen(&g_worldPauseTile, PRIM_LEN(TILE));
         g_worldPauseTile.code = GPU_TILE | GPU_ABE;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
         setXY0(&g_worldPauseTile, 0, 0);
-        setWH(&g_worldPauseTile, 320, 218);
+        setWH(&g_worldPauseTile, SCREEN_W, WM_SCREEN_H);
         setlen(&g_worldPauseTpage, PRIM_LEN(DR_TPAGE));
         link = getaddr(&g_worldPauseOT);
         g_worldPauseTpage.code[0] = _get_mode(0, 1, getTPage(0, 2, 0, 0));
@@ -1453,7 +1453,7 @@ void wm_copyViaVram(s32 dst, s32 src, s32 size) {
         rect.x = 0x280;
         rect.w = 0x140;
         rect.y = 0;
-        rect.h = 0xDA;
+        rect.h = WM_SCREEN_H;
     }
     file_copyViaVram(dst, src, size, rp);
 }

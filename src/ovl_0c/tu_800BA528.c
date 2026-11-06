@@ -1833,7 +1833,7 @@ void wm_naviDrawFullMap(void) {
         TILE(0x93, 0x5C, 0x118, 0xD1, 0x73, 0x5B, 0xF8, 0xD0, 0x3C2C)
     }
     TILE(0x20, 1, 0x120, 0xD9, 0, 0, 0xFF, 0xD8, 0x3C6B)
-    setXY4((POLY_F4 *)g_worldPrimPtr, 0, 0, 0x140, 0, 0, 0xDA, 0x140, 0xDA);
+    setXY4((POLY_F4 *)g_worldPrimPtr, 0, 0, SCREEN_W, 0, 0, WM_SCREEN_H, SCREEN_W, WM_SCREEN_H);
     setRGB0((POLY_F4 *)g_worldPrimPtr, 0, 0, 0);
     setPolyF4((POLY_F4 *)g_worldPrimPtr);
     addPrim(&ot[10], (POLY_F4 *)g_worldPrimPtr);
