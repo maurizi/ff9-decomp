@@ -42,6 +42,64 @@ enum {
 #define SAVE_LIST_Y  0x2A
 #define SAVE_LIST_W  0x12C
 #define SAVE_LIST_H  (SAVE_LIST_ROWS * SAVE_ROW_H)
+/* Save / load screen layout (screen coordinates unless noted) */
+#define SAVE_FADE_OTZ 7 /* fade_setOtz while the menu is open */
+#define SAVE_OTZ_HEADER 5 /* title, slot name and help windows (text one slot in front) */
+#define SAVE_OTZ_MESSAGE 0xF /* message popups */
+#define SAVE_OTZ_SAVED_MSG 0x14 /* "saved" popup over the file row */
+#define SAVE_OTZ_CONFIRM 0x19 /* yes / no popup */
+#define SAVE_OTZ_ACCESS 0x1E /* "Do not remove the MEMORY CARD" windows */
+#define SAVE_OTZ_CURSOR 0x2A /* file list cursor and scroll arrows */
+#define SAVE_OTZ_RULE 0x2C /* "File" label and rule */
+#define SAVE_OTZ_LIST 0x2D /* file rows */
+#define SAVE_OTZ_SLOT_CURSOR 0x32
+#define SAVE_OTZ_SLOT_WIN 0x34 /* MEMORY CARD slot window (text one slot in front) */
+#define SAVE_HELP_TEXT_X 0xA /* help / title text */
+#define SAVE_HELP_TEXT_Y 6
+#define SAVE_SLOT_TEXT_X 10 /* slot window: Slot 1 / Slot 2 */
+#define SAVE_SLOT_TEXT_Y 10
+#define SAVE_SLOT_ROW_H 18
+#define SAVE_SLOT_CURSOR_X 0x74 /* slot cursor (screen) */
+#define SAVE_SLOT_CURSOR_Y 0x6D
+#define SAVE_FILE_LABEL_X 0xE /* "File" label on the rule above the list */
+#define SAVE_FILE_LABEL_Y 0x23
+#define SAVE_RULE_Y 0x26
+#define SAVE_LIST_CURSOR_X 0 /* file cursor on row 0 */
+#define SAVE_LIST_CURSOR_Y 0x42
+#define SAVE_SAVED_MSG_Y 0x3F /* "saved" popup y on row 0 */
+#define SAVE_SCROLL_ARROW_X 0x12E
+#define SAVE_SCROLL_UP_Y 0x2C
+#define SAVE_SCROLL_DOWN_Y 0xCF
+/* file row, relative to the row */
+#define SAVE_FILE_HEADER_Y 3 /* "FILE n" "/DISC" n */
+#define SAVE_FILE_NAME_X 6
+#define SAVE_FILE_DISC_X 0x30
+#define SAVE_FILE_DISC_NUM_X 0x56
+#define SAVE_FILE_PORTRAIT_X 6 /* party portraits */
+#define SAVE_FILE_PORTRAIT_Y 0xD
+#define SAVE_FILE_PORTRAIT_W 0x21
+#define SAVE_FILE_PORTRAIT_H 0x2C
+#define SAVE_FILE_LEADER_X 0x90 /* leader name, "Lv" */
+#define SAVE_FILE_LEADER_Y 6
+#define SAVE_FILE_LV_Y 0x17
+#define SAVE_FILE_LEVEL_X 0xA2
+#define SAVE_FILE_LEVEL_Y 0x15
+#define SAVE_FILE_ICON_X 0xD8 /* "Time" / "Gil" icons */
+#define SAVE_FILE_TIME_Y 9 /* (values 1 lower) */
+#define SAVE_FILE_GIL_Y 0x16
+#define SAVE_FILE_VALUE_X 0xE4
+#define SAVE_FILE_PLACE_X 0x8E /* location box */
+#define SAVE_FILE_PLACE_Y 0x25
+#define SAVE_FILE_PLACE_W 0x9C
+#define SAVE_FILE_PLACE_H 0x15
+#define SAVE_FILE_PLACE_TEXT_X 8
+#define SAVE_FILE_PLACE_TEXT_Y 3
+#define SAVE_FILE_MSG_X 0x10 /* "Empty block" / other game / corrupted */
+#define SAVE_FILE_MSG_Y 0x16
+#define SAVE_BOOK_X 0xE /* access window: the book animation and its text */
+#define SAVE_BOOK_Y 0x12
+#define SAVE_ACCESS_TEXT_X 0x4A
+#define SAVE_ACCESS_TEXT_Y 0xE
 #define PORTRAIT_NONE 0xFF   /* SaveMember.portrait of an empty party slot */
 
 /* SaveFile.state: s_menuSaveFileDrawers index, text SAVE_TEXT_FILE_HELP + state */
@@ -485,6 +543,8 @@ extern u16 s_menuSaveCrcTable[256];
 typedef union { s32 w; u16 h; } Crc16;
 
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */
 u8 fld_getDiscChangeDisc(void); /* other overlay */
