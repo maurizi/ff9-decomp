@@ -2471,7 +2471,7 @@ void btlui_drawTargetList(Window *win) {
         if ((flags >> BTL_UNIT_TARGETABLE_BIT) & 1) {
             if (flags & BTL_UNIT_PARTY) {
                 if (unit->hp != 0) {
-                    pal = ((u16)(unit->max->maxHp / 6) >= unit->hp) * TEXT_PAL_YELLOW;
+                    pal = ((u16)(unit->max->maxHp / UI_LOW_STAT_DIV) >= unit->hp) * TEXT_PAL_YELLOW;
                 } else {
                     pal = TEXT_PAL_RED;
                 }
@@ -2899,7 +2899,7 @@ void btlui_drawListCursors(Window *win) {
                 break;
             }
         }
-        y += 0xC;
+        y += BTLUI_PANEL_ROW_H;
     }
     setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     tpage = (DR_TPAGE *)g_primPtr;
@@ -2926,7 +2926,7 @@ void btlui_drawHpList(Window *win) {
         text_formatNumber(unit->max->maxHp, maxText + 1, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         ui_drawDigits(w->x + 4, y, win->otz, hpText, pal);
         ui_drawDigits(w->x + 0x20, y - dy, win->otz, maxText, pal);
-        y += 12;
+        y += BTLUI_PANEL_ROW_H;
     }
 }
 
@@ -2942,10 +2942,10 @@ void btlui_drawMpList(Window *win) {
     while (unit != NULL) {
         if (unit->flags & BTL_UNIT_PARTY) {
             yy = y - dy;
-            pal = (unit->mp < (s16)(unit->max->maxMp / 6)) * DIGITS_YELLOW;
+            pal = (unit->mp < (s16)(unit->max->maxMp / UI_LOW_STAT_DIV)) * DIGITS_YELLOW;
             maxText[0] = '/';
             text_formatNumber(unit->mp, mpText, 3, TEXT_NUM_ASCII);
-            y += 0xC;
+            y += BTLUI_PANEL_ROW_H;
             text_formatNumber((s16)unit->max->maxMp, &maxText[1], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             ui_drawDigits(w->x + 4, yy, win->otz, mpText, pal);
             ui_drawDigits(w->x + 0x19, yy, win->otz, maxText, pal);
@@ -2973,13 +2973,13 @@ void btlui_drawStatusList(Window *win) {
             for (i = 0; i < 16; i++) {
                 if (st & g_btluiStatusIcons[i].status) {
                     ui_drawSprite(x, y, win->otz, g_btluiStatusIcons[i].icon, 0);
-                    x += 12;
-                    if (++iconCount >= 9) {
+                    x += BTLUI_STATUS_ICON_W;
+                    if (++iconCount >= BTLUI_STATUS_ICONS_MAX) {
                         break;
                     }
                 }
             }
-            y += 12;
+            y += BTLUI_PANEL_ROW_H;
         }
     }
 }
@@ -3004,7 +3004,7 @@ void btlui_drawStatusList2(Window *win) {
                 }
                 x += g_btluiStatusIcons2[i].width;
             }
-            y += 12;
+            y += BTLUI_PANEL_ROW_H;
         }
     }
 }
@@ -3061,7 +3061,7 @@ void btlui_openListWindow(s32 kind) {
     Unk80105078 *panel = btlui_getPanel();
     Window *w;
     g_btluiListWindowRect.y = panel->y;
-    g_btluiListWindowRect.h = panel->rowCount * 12 + 8;
+    g_btluiListWindowRect.h = panel->rowCount * BTLUI_PANEL_ROW_H + 8;
     w = win_open(&g_btluiListWindowRect, 0xA, WIN_STYLE_LINE, 1);
     g_btlUi->windows[1] = w;
     win_setDrawContent(w, btlui_drawListWindow);
@@ -3090,7 +3090,7 @@ void btlui_resizeListWindow(void) {
         w = g_btlUi->windows[1];
         rect = &w->cur;
         rect->y = w->y = panel->y;
-        h = panel->rowCount * 12 + 8;
+        h = panel->rowCount * BTLUI_PANEL_ROW_H + 8;
         w->h = h;
         if (w->state == WIN_STATE_CLOSING || w->state == WIN_STATE_OPEN) {
             rect->h = h;
@@ -3309,10 +3309,10 @@ void btlui_drawPanelHeader(void) {
     s32 i;
     Unk800F412C *label;
 
-    ui_drawRule(0x8E, g_btluiPanel->y, 8, 1, 0xA9, CONFIG_WINDOW_COLOR());
-    clipRect.x = 0x8E;
+    ui_drawRule(BTLUI_PANEL_X, g_btluiPanel->y, 8, 1, 0xA9, CONFIG_WINDOW_COLOR());
+    clipRect.x = BTLUI_PANEL_X;
     clipRect.y = g_btluiPanel->y - 3;
-    clipRect.w = g_gameState->dispEnv->disp.w - 0x8E;
+    clipRect.w = g_gameState->dispEnv->disp.w - BTLUI_PANEL_X;
     clipRect.h = 7;
     win_setClip(NULL, 7, WIN_STYLE_FRAMELESS);
     label = g_btluiPanel->labels;
@@ -3331,7 +3331,7 @@ void btlui_drawPanelHighlight(void) {
     s32 y;
     s32 rowOfs = 4;
     if (row != 0xFF && g_btluiFrameReady != 0) {
-        y = g_btluiPanel->y + (row * 12 + rowOfs);
+        y = g_btluiPanel->y + (row * BTLUI_PANEL_ROW_H + rowOfs);
         prim = &g_btluiPrims->highlight[g_drawBufs.cur];
         prim->y0 = prim->y1 = y;
         prim->y2 = prim->y3 = y + 13;
@@ -3343,7 +3343,7 @@ void btlui_drawPanelHighlight(void) {
 void btlui_drawPanelName(s32 unit, u32 row) {
     s32 k = g_btluiPanel->slot[row];
     SPRT *sprt = &g_btluiPrims->names[k][g_drawBufs.cur];
-    sprt->y0 = g_btluiPanel->y + row * 12 + 3;
+    sprt->y0 = g_btluiPanel->y + row * BTLUI_PANEL_ROW_H + 3;
     sprt->clut = g_btluiRowCluts[(u8)g_btluiPanel->rowColor[row]] + ((k >> 1) << 6);
     addPrim(&g_ot[16], sprt);
     if (row >= g_btluiPanel->rowCount - 1) {
@@ -3354,18 +3354,18 @@ void btlui_drawPanelName(s32 unit, u32 row) {
 void btlui_drawPanelGauges(BtlUnit *unit, s32 row) {
     s32 tranceKind = g_btluiPanel->tranceKind[row];
     u8 active = 0;
-    u32 y = g_btluiPanel->y + row * 12;
+    u32 y = g_btluiPanel->y + row * BTLUI_PANEL_ROW_H;
     if (unit->cmdIssued == 0) {
         active = g_btluiPanel->cantAct[row] == 0;
     }
-    if (tranceKind == 2) {
-        ui_drawGauge(0x10C, y + 10, 14, unit->trance, 0xFF, 1, active);
-        ui_drawGauge(0x108, y + 6, 14, unit->atb, unit->max->maxAtb, g_btluiPanel->atbKind[row], active);
-    } else if (tranceKind == 1) {
-        ui_drawGauge(0x108, y + 6, 14, unit->atb, unit->max->maxAtb, g_btluiPanel->atbKind[row], active);
-        ui_drawGauge(0x10C, y + 10, 14, unit->trance, 0xFF, tranceKind, active);
+    if (tranceKind == BTLUI_TRANCE_ACTIVE) {
+        ui_drawGauge(BTLUI_PANEL_TRANCE_X, y + 10, 14, unit->trance, 0xFF, 1, active);
+        ui_drawGauge(BTLUI_PANEL_ATB_X, y + 6, 14, unit->atb, unit->max->maxAtb, g_btluiPanel->atbKind[row], active);
+    } else if (tranceKind == BTLUI_TRANCE_GAUGE) {
+        ui_drawGauge(BTLUI_PANEL_ATB_X, y + 6, 14, unit->atb, unit->max->maxAtb, g_btluiPanel->atbKind[row], active);
+        ui_drawGauge(BTLUI_PANEL_TRANCE_X, y + 10, 14, unit->trance, 0xFF, tranceKind, active);
     } else {
-        ui_drawGauge(0x108, y + 8, 14, unit->atb, unit->max->maxAtb, g_btluiPanel->atbKind[row], active);
+        ui_drawGauge(BTLUI_PANEL_ATB_X, y + 8, 14, unit->atb, unit->max->maxAtb, g_btluiPanel->atbKind[row], active);
     }
 }
 
@@ -3378,7 +3378,7 @@ void btlui_cacheRows(void) {
         srcB.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
         srcA.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1] + g_btluiPanel->y;
         srcB.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1] + g_btluiPanel->y;
-        h = g_btluiPanel->rowCount * 12;
+        h = g_btluiPanel->rowCount * BTLUI_PANEL_ROW_H;
         srcB.h = h;
         srcA.h = h;
         SetDrawMove((DR_MOVE *)g_primPtr, &srcA, VRAM_BTLUI_CACHE_X, 0x1B0);
@@ -3402,10 +3402,10 @@ void btlui_drawCachedRows(void) {
             rowB = &g_btluiPrims->rowsB[i][g_drawBufs.cur];
             rowB->y0 = y;
             rowA->y0 = y;
-            y += 12;
+            y += BTLUI_PANEL_ROW_H;
             rowB->v0 = v;
             rowA->v0 = v;
-            v += 12;
+            v += BTLUI_PANEL_ROW_H;
             addPrim(&g_ot[18], rowA);
             addPrim(&g_ot[18], rowB);
         }
@@ -3528,7 +3528,7 @@ void btlui_updatePanelRowColor(s32 row) {
         g_btluiPanel->rowColor[row] = DIGITS_RED;
         return;
     }
-    g_btluiPanel->rowColor[row] = ((s32)(u16)(unit->max->maxHp / 6) >= hp) * DIGITS_YELLOW;
+    g_btluiPanel->rowColor[row] = ((s32)(u16)(unit->max->maxHp / UI_LOW_STAT_DIV) >= hp) * DIGITS_YELLOW;
 }
 
 void btlui_alignPanelLabel(Unk800F412C *label) {
@@ -3559,7 +3559,7 @@ void btlui_drawPanelHp(BtlUnit *unit, s32 row) {
     u8 digits[8];
     s32 dy = 6;
     text_formatNumber(unit->menu->gauges[0].shown, digits, 4, TEXT_NUM_ASCII);
-    ui_drawDigits(0xD0, g_btluiPanel->y + (row * 12 + dy), 0xE, digits, (u8)g_btluiPanel->rowColor[row]);
+    ui_drawDigits(BTLUI_PANEL_HP_X, g_btluiPanel->y + (row * BTLUI_PANEL_ROW_H + dy), 0xE, digits, (u8)g_btluiPanel->rowColor[row]);
 }
 
 void btlui_drawPanelMp(BtlUnit *unit, s32 row) {
@@ -3568,9 +3568,9 @@ void btlui_drawPanelMp(BtlUnit *unit, s32 row) {
     s32 pal;
     s32 dy = 6;
     mp = unit->menu->gauges[1].shown < 0 ? 0 : unit->menu->gauges[1].shown;
-    pal = ((s16)(unit->max->maxMp / 6) >= mp) * DIGITS_YELLOW;
+    pal = ((s16)(unit->max->maxMp / UI_LOW_STAT_DIV) >= mp) * DIGITS_YELLOW;
     text_formatNumber(mp, digits, 3, TEXT_NUM_ASCII);
-    ui_drawDigits(0xEF, g_btluiPanel->y + (row * 12 + dy), 0xE, digits, pal);
+    ui_drawDigits(BTLUI_PANEL_MP_X, g_btluiPanel->y + (row * BTLUI_PANEL_ROW_H + dy), 0xE, digits, pal);
 }
 
 void btlui_findHighlightRow(void) {
