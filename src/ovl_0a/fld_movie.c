@@ -1422,7 +1422,7 @@ void fld_updateEncounter(void) {
 
     if (g_gameState->gameData->ctx.field->area->scene->encounterStep == 0) {
         g_swirlFrame = 0;
-        g_swirlBuf = g_loadAreaEnd + 0x153F00;
+        g_swirlBuf = g_loadAreaEnd + FLD_WORK_SWIRL;
         fld_clearModelCache();
         g_gameState->gameData->ctx.field->area->scene->heapTop = g_modeHeap;
         player = evt_getPlayer();
@@ -1447,14 +1447,14 @@ void fld_updateEncounter(void) {
         fld_findBattleMusic();
         if (g_gameState->gameData->musicId[0] != g_gameState->gameData->ctx.field->area->scene->battleMusic
             && (g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
-            akao_fadeMusicVolume(0, 0xF, 0);
-            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = 7;
+            akao_fadeMusicVolume(0, FLD_ENCOUNTER_FADE, 0);
+            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = FLD_ENCOUNTER_MUSIC_WAIT;
         }
         if (g_gameState->gameData->sfxSlotId[0] != SE_NONE && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], SND_SE_GROUP_SLOT(0), 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], SND_SE_GROUP_SLOT(0), FLD_ENCOUNTER_FADE, 0);
         }
         if (g_gameState->gameData->sfxSlotId[1] != SE_NONE && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], SND_SE_GROUP_SLOT(1), 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], SND_SE_GROUP_SLOT(1), FLD_ENCOUNTER_FADE, 0);
         }
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].largeMotor = 0;
@@ -1487,7 +1487,7 @@ void fld_updateEncounter(void) {
                  * RAM here; a port guards it via PSX_NULLABLE (ff9-ds F37). */
                 preload_remove(PSX_NULLABLE(preload_waitCurrent())->fileId);
             }
-            preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
+            preload_discardRange((s32)g_loadAreaEnd, FLD_WORK_SIZE);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_1, 0, SND_PAN_CENTER, SND_VOL_MAX);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
@@ -1520,7 +1520,7 @@ void fld_updateEncounter(void) {
             if (g_gameState->gameData->ctx.field->area->scene->battleMusic != MUSIC_NONE
                 && !(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                 fld_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
-                akao_setMusicVolume(0, 0x7F);
+                akao_setMusicVolume(0, SND_VOL_MAX);
             }
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -3;
         }

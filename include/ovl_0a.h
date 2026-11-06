@@ -386,6 +386,15 @@ typedef struct {
  * centre, and the scroll position's distance from the background's left / top edge (fldbg_*) */
 #define FLD_SCREEN_CX (SCREEN_W / 2)
 #define FLD_SCREEN_CY (SCREEN_H / 2)
+/* the field's work RAM after the load area (offsets from g_loadAreaEnd). Evidence: [code] */
+#define FLD_WORK_SIZE 0x156F00 /* streamed sound banks and the battle preload may fill up to here */
+#define FLD_WORK_SWIRL 0x153F00 /* the encounter swirl's buffer (g_swirlBuf) fills the last 0x3000; field preloads stop */
+                                /* below it, and outside an active map sound bank loads leave it free */
+#define FLD_WORK_SWIRL_SIZE (FLD_WORK_SIZE - FLD_WORK_SWIRL)
+#define FLD_WORK_SOUND_PARK 0x146F00 /* the field's own sound bank is copied here through VRAM and uploaded from it */
+/* fld_updateEncounter */
+#define FLD_ENCOUNTER_FADE 0xF /* frames: field music and the slot sounds fade out ... */
+#define FLD_ENCOUNTER_MUSIC_WAIT 7 /* ... and the battle music loads this many frames after the encounter starts */
 #define FLD_PAUSE_LIGHT_FADE 200 /* fld_togglePause: with a fade at least this bright in every channel the pause
                                   * sprite is drawn subtractive (TPAGE_ABR 2), so it shows on a white screen */
 #define FLDBG_SCROLL_TO_PLAYER 3 /* fldbg_scrollToPlayer: scroll back to the player, then 0 (following resumes) */

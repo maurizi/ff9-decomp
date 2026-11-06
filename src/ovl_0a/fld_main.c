@@ -210,7 +210,7 @@ s32 fld_readSoundBank(void) {
     s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, 0x90164, 0);
     s32 size = (s32)db_lookupRegistered(DB_GET_SIZE, 0x90164, 0);
 
-    file_copyViaVram((s32)(g_loadAreaEnd + 0x146F00), addr, size, NULL);
+    file_copyViaVram((s32)(g_loadAreaEnd + FLD_WORK_SOUND_PARK), addr, size, NULL);
     DrawSync(0);
     g_gameState->gameData->ctx.field->soundBankSize = size;
     return 0;
@@ -717,7 +717,7 @@ void fld_startAudio(void) {
     }
     if (g_gameState->gameData->ctx.field->soundBankSize != -1) {
         akao_beginBankUpload();
-        akao_uploadBank((s32)g_loadAreaEnd + 0x146F00, g_gameState->gameData->ctx.field->soundBankSize, 1);
+        akao_uploadBank((s32)g_loadAreaEnd + FLD_WORK_SOUND_PARK, g_gameState->gameData->ctx.field->soundBankSize, 1);
         g_gameState->gameData->ctx.field->soundBankSize = -1;
     }
 }
