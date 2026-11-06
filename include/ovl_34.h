@@ -71,8 +71,8 @@ enum { CONFIG_SLIDE_NONE, CONFIG_SLIDE_RIGHT, CONFIG_SLIDE_LEFT }; /* ConfigMenu
 #define CONFIG_PORT_NAME_X 0xE /* character name */
 #define CONFIG_PORT_ICON0_X 0x60 /* CONFIG_SPRITE_PORT_SET: lit when the character's port bit is set */
 #define CONFIG_PORT_ICON1_X 0x92 /* CONFIG_SPRITE_PORT_CLEAR: lit when it is clear */
-#define CONFIG_SPRITE_PORT_SET 0xF8 /* (runtime: pending R44) */
-#define CONFIG_SPRITE_PORT_CLEAR 0x100 /* (runtime: pending R44) */
+#define CONFIG_SPRITE_PORT_SET 0xF8 /* (runtime: pending R44, docs/wip/r44_runtime_menus.md #1) */
+#define CONFIG_SPRITE_PORT_CLEAR 0x100 /* (runtime: pending R44, #1) */
 #define CONFIG_OTZ_SUB_CURSOR 0x10
 #define CONFIG_OTZ_SUB_TEXT 0x11 /* custom window contents */
 #define CONFIG_OTZ_SUB_WIN 0x12 /* custom windows */
