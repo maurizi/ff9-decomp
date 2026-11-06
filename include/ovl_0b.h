@@ -1667,8 +1667,9 @@ typedef struct BtlPopup {
 #define BTL_POPKIND_TEXT 2 /* btl_popupText */
 #define BTL_POPKIND_DONE 3 /* and up: the popup is removed */
 
+#define BTL_POPUP_RING_SIZE 16 /* BtlPopupRing.entries: popups shown at once */
 typedef struct {
-    BtlPopup entries[16];
+    BtlPopup entries[BTL_POPUP_RING_SIZE];
     s16 last; /* last entry handed out (counts down, wraps to 15) */
     s16 tick; /* btl_drawPopups calls */
     s32 scanUnit; /* BtlUnit *: unit being scanned (btl_startScan); btlseq_opEnd waits while set */
@@ -1683,6 +1684,14 @@ typedef struct {
     u8 hiddenMask; /* units hidden from status effects (mask) */
     u8 pad1D5[0x1D8 - 0x1D5];
 } BtlPopupRing; /* Battle.popups (0x1D8) */
+/* damage / text popup placement (btl_drawNumberPopup, btl_drawTextPopup, btl_clampPopup): screen limits a popup is kept
+ * inside, and the number font's pitch. Evidence: [code] */
+#define BTL_POPUP_LEFT    8   /* x and hard top limit */
+#define BTL_POPUP_RIGHT   312 /* right edge (a popup ending past it moves to 312 - w) */
+#define BTL_POPUP_TOP     21  /* first frame above this: the popup is shifted down for its whole life (info.b.yOfs) */
+#define BTL_POPUP_BOTTOM  211 /* bottom limit (moves to 210 - h) */
+#define BTL_POPUP_DIGIT_W 8   /* digit pitch of the number popups */
+#define BTL_POPUP_NUM_H   10  /* height btl_drawNumberPopup clamps a number by */
 
 /* Inlined copy of btl_clearCmd (clear a command); the original source inlines it. */
 static inline void btl_clearCmd_inline(BtlCmd *cmd) {

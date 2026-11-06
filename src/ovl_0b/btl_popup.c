@@ -79,7 +79,7 @@ BtlPopup *btl_newPopup(BtlUnit *owner) {
     ring = &g_gameState->gameData->ctx.battle->popups;
     i = ring->last - 1;
     if (i < 0) {
-        i = 15;
+        i = BTL_POPUP_RING_SIZE - 1;
     }
     ring->last = i;
     popup = &ring->entries[i];
@@ -167,7 +167,7 @@ u8 *btl_drawPopups(u8 *pkt) {
     gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     j = ring->last;
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < BTL_POPUP_RING_SIZE; i++) {
         popup = &ring->entries[j];
         if (popup->unit != NULL) {
             if (popup->info.b.kind >= BTL_POPKIND_DONE) {
@@ -178,14 +178,14 @@ u8 *btl_drawPopups(u8 *pkt) {
                 gte_ldv0(&popup->x);
                 gte_rtps();
                 gte_stsxy(&ctx.xy);
-                if (popup->info.b.yOfs != 0 && (u16)(ctx.xy.s.y - 21) < 180) {
+                if (popup->info.b.yOfs != 0 && (u16)(ctx.xy.s.y - BTL_POPUP_TOP) < 180) {
                     popup->info.b.yOfs = 0;
                 }
                 g_btlPopupDrawFns[popup->info.b.kind](popup, &ctx);
             }
         }
         j++;
-        if (j >= 16) {
+        if (j >= BTL_POPUP_RING_SIZE) {
             j = 0;
         }
     }
@@ -228,7 +228,7 @@ void btl_drawNumberPopup(BtlPopup *popup, Unk800CCD00 *ctx) {
         digits = popup->data.w;
         ctx->rgb = (step & BTL_POPANIM_SEMI) ? GPU_CODE(GPU_TGE | GPU_ABE) : GPU_CODE(GPU_TGE);
         ctx->clut = popup->clut;
-        width = (digits >> BTL_POPDIGITS_COUNT_SHIFT) * 8;
+        width = (digits >> BTL_POPDIGITS_COUNT_SHIFT) * BTL_POPUP_DIGIT_W;
         ctx->xy.s.x -= width >> 1;
         ctx->xy.s.y -= (step & BTL_POPANIM_Y) + 5;
         if (popup->info.b.noClamp == 0) {
@@ -236,13 +236,13 @@ void btl_drawNumberPopup(BtlPopup *popup, Unk800CCD00 *ctx) {
             if (popup->info.b.kind != BTL_POPKIND_HP) {
                 x = g_popupMpSprite.w + width;
             }
-            btl_clampPopup(popup, ctx, x, 10);
+            btl_clampPopup(popup, ctx, x, BTL_POPUP_NUM_H);
         } else {
             ctx->xy.s.y += popup->info.b.yOfs;
         }
         btl_drawPopupDigits(ctx, digits);
         if (popup->info.b.kind != BTL_POPKIND_HP) {
-            ctx->xy.s.x += (digits >> BTL_POPDIGITS_COUNT_SHIFT) * 8;
+            ctx->xy.s.x += (digits >> BTL_POPDIGITS_COUNT_SHIFT) * BTL_POPUP_DIGIT_W;
             ctx->xy.s.y += 3;
             btl_drawPopupGlyph(ctx, &g_popupMpSprite);
         }
@@ -278,22 +278,22 @@ void btl_drawTextPopup(BtlPopup *popup, Unk800CCD00 *ctx) {
 
 void btl_clampPopup(BtlPopup *popup, Unk800CCD00 *ctx, s32 w, s32 h) {
     if (popup->frame == 0) {
-        if (ctx->xy.s.y - 21 < 0) {
-            popup->info.b.yOfs = 21 - ctx->xy.s.y;
-        } else if (ctx->xy.s.y + h >= 211) {
+        if (ctx->xy.s.y - BTL_POPUP_TOP < 0) {
+            popup->info.b.yOfs = BTL_POPUP_TOP - ctx->xy.s.y;
+        } else if (ctx->xy.s.y + h >= BTL_POPUP_BOTTOM) {
             popup->info.b.yOfs = -46 - (ctx->xy.s.y + h);
         }
     }
-    if (ctx->xy.s.x < 8) {
-        ctx->xy.s.x = 8;
-    } else if (ctx->xy.s.x + w >= 313) {
-        ctx->xy.s.x = 312 - w;
+    if (ctx->xy.s.x < BTL_POPUP_LEFT) {
+        ctx->xy.s.x = BTL_POPUP_LEFT;
+    } else if (ctx->xy.s.x + w >= BTL_POPUP_RIGHT + 1) {
+        ctx->xy.s.x = BTL_POPUP_RIGHT - w;
     }
     ctx->xy.s.y += popup->info.b.yOfs;
-    if (ctx->xy.s.y < 8) {
-        ctx->xy.s.y = 8;
-    } else if (ctx->xy.s.y + h >= 211) {
-        ctx->xy.s.y = 210 - h;
+    if (ctx->xy.s.y < BTL_POPUP_LEFT) {
+        ctx->xy.s.y = BTL_POPUP_LEFT;
+    } else if (ctx->xy.s.y + h >= BTL_POPUP_BOTTOM) {
+        ctx->xy.s.y = BTL_POPUP_BOTTOM - 1 - h;
     }
 }
 
@@ -303,7 +303,7 @@ void btl_drawPopupDigits(Unk800CCD00 *ctx, u32 digits) {
     SpriteDef *glyph;
 
     i = (digits >> BTL_POPDIGITS_COUNT_SHIFT) - 1;
-    xy.vx = ctx->xy.s.x + (((s32)digits >> BTL_POPDIGITS_COUNT_SHIFT) - 1) * 8;
+    xy.vx = ctx->xy.s.x + (((s32)digits >> BTL_POPDIGITS_COUNT_SHIFT) - 1) * BTL_POPUP_DIGIT_W;
     xy.vy = ctx->xy.s.y;
     for (; i != -1; i--) {
         ctx->prim[0] = PRIM_TAG(SPRT);
@@ -314,7 +314,7 @@ void btl_drawPopupDigits(Unk800CCD00 *ctx, u32 digits) {
         ctx->prim[4] = (glyph->h << 16) | glyph->w;
         addPrim(ctx->ot, ctx->prim);
         ctx->prim += 5;
-        xy.vx -= 8;
+        xy.vx -= BTL_POPUP_DIGIT_W;
         digits >>= BTL_POPDIGITS_DIGIT_BITS;
     }
 }

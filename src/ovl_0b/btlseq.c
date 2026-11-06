@@ -669,7 +669,7 @@ void btl_clearPopups(void) {
     g_gameState->gameData->ctx.battle->popups.tick = 0;
     g_gameState->gameData->ctx.battle->popups.hiddenMask = 0xFF;
     popup = g_gameState->gameData->ctx.battle->popups.entries;
-    for (i = 15; i != -1; i--) {
+    for (i = BTL_POPUP_RING_SIZE - 1; i != -1; i--) {
         popup->unit = NULL;
         popup++;
     }
