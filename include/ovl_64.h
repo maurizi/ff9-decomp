@@ -86,6 +86,16 @@ typedef struct {
     s32 unk64; /* not used by C */
 } Ovl64State;
 /* Ovl64State.modeSwitch */
+/* frame geometry: a 320-pixel frame is MBG_VRAM_W_16 VRAM units wide in 16-bit mode, MBG_VRAM_W_24 in 24-bit
+ * (g_mbgRgb24); MDEC output goes to VRAM in 16-pixel-wide slices of MBG_SLICE_W_16 / _24 units */
+#define MBG_VRAM_W_16 0x140
+#define MBG_VRAM_W_24 0x1E0
+#define MBG_SLICE_W_16 0x10
+#define MBG_SLICE_W_24 0x18
+#define MBG_FRAME_TRIES 1000 /* mbg_streamGetFrame polls before giving up on a frame */
+#define MBG_MDEC_IN_WORDS 0x4000 /* a frame whose run-level data (DecDCTBufSize) needs more is dropped */
+#define MBG_VOLUME_DELAY 3 /* g_mbgPlayer.volumeDelay default (mbg_setVolume with < 0) */
+#define MBG_VOLUME_FADE 4 /* g_mbgPlayer.volumeFade default */
 #define MBG_SWITCH_NONE 0
 #define MBG_SWITCH_PENDING 1 /* mbg_setRgb24 while playing: switch the rgb24 mode at the next frame end */
 #define MBG_SWITCH_RESET_ENV 2 /* switched: mbg_update calls mbg_setGraphEnv and clears it */

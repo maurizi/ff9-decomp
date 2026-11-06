@@ -11,7 +11,7 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
     s32 status;
     s8 hi;
 
-    tries = 1000;
+    tries = MBG_FRAME_TRIES;
     info = NULL;
     maskData = NULL;
     rumble = NULL;
@@ -27,7 +27,7 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
         status = mbg_streamGetFrame(&data, &hdr, &info, &maskData, &rumble);
     }
     if (info != NULL) {
-        gte_SetGeomOffset((s16)info->ofsX + 0xA0, (s16)info->ofsY + 0x70);
+        gte_SetGeomOffset((s16)info->ofsX + SCREEN_W / 2, (s16)info->ofsY + SCREEN_H / 2);
         if (g_mbgPlayer.firstFrame != 0) {
             g_mbgGeomOffset.x = (s16)info->ofsX + 0xA0;
             g_mbgGeomOffset.y = (s16)info->ofsY + 0x70;
@@ -79,8 +79,8 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
         if (hi) {
             clearRect.x = 0;
             clearRect.y = 0;
-            clearRect.w = 0x3C0;
-            clearRect.h = 0xE0;
+            clearRect.w = 2 * MBG_VRAM_W_24;
+            clearRect.h = SCREEN_H;
         }
         g_mbgPlayer.width = hdr->width;
         g_mbgPlayer.height = hdr->height;
@@ -130,10 +130,10 @@ void mbg_mdecOutCallback(void) {
             if (g_mbgRgb24 == 1 && g_gameState->gameData->drawBuf == 0) {
                 g_mbgRgb24 = 0;
                 g_mbgPlayer.rgb24 = 0;
-                g_mbgDecode.frameRect[0].x = 0x140;
-                g_mbgDecode.frameRect[0].w = 0x140;
-                g_mbgDecode.frameRect[1].w = 0x140;
-                g_mbgDecode.slice.w = 0x10;
+                g_mbgDecode.frameRect[0].x = MBG_VRAM_W_16;
+                g_mbgDecode.frameRect[0].w = MBG_VRAM_W_16;
+                g_mbgDecode.frameRect[1].w = MBG_VRAM_W_16;
+                g_mbgDecode.slice.w = MBG_SLICE_W_16;
                 if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
                     g_fieldFlagQueue.mapFlags[1][0] = FLD_MAP_NO_BGI_ANIM | FLD_MAP_NO_WINDOWS;
                     g_fieldFlagQueue.gameFlags[1][0] |= GD_HIDE_SPRITES | GD_HIDE_MODELS;
@@ -142,10 +142,10 @@ void mbg_mdecOutCallback(void) {
             }
             if (g_mbgRgb24 == 0 && g_gameState->gameData->drawBuf == 1) {
                 g_mbgPlayer.rgb24 = 1;
-                g_mbgDecode.frameRect[0].x = 0x1E0;
-                g_mbgDecode.frameRect[0].w = 0x1E0;
-                g_mbgDecode.frameRect[1].w = 0x1E0;
-                g_mbgDecode.slice.w = 0x18;
+                g_mbgDecode.frameRect[0].x = MBG_VRAM_W_24;
+                g_mbgDecode.frameRect[0].w = MBG_VRAM_W_24;
+                g_mbgDecode.frameRect[1].w = MBG_VRAM_W_24;
+                g_mbgDecode.slice.w = MBG_SLICE_W_24;
                 g_gameState->gameData->flags |= GD_HIDE_MODELS | GD_HIDE_SPRITES;
                 g_mbgRgb24 = 1;
                 if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
@@ -213,9 +213,9 @@ s32 MBG_init(s32 mode, u8 **buf) {
     g_mbgState = 1;
     g_mbgFrame = 0;
     g_mbgIsBackground = 0;
-    g_mbgPlayer.volumeDelay = 3;
-    g_mbgPlayer.volumeFade = 4;
-    g_mbgPlayer.volume = 0x7F;
+    g_mbgPlayer.volumeDelay = MBG_VOLUME_DELAY;
+    g_mbgPlayer.volumeFade = MBG_VOLUME_FADE;
+    g_mbgPlayer.volume = SND_VOL_MAX;
     g_mbgPlayer.modeSwitch = MBG_SWITCH_NONE;
     g_mbgPlayer.vlcTable = g_mbgVlcTable;
     return 1;
@@ -229,7 +229,7 @@ static inline s32 func_8019_decode_first(void) {
     Ovl64Dec *dec = &g_mbgDecode;
 
     while (1) {
-        tries = 1000;
+        tries = MBG_FRAME_TRIES;
         result = -1;
         do {
             data = (u8 *)mbg_readFrame(dec);
@@ -245,7 +245,7 @@ static inline s32 func_8019_decode_first(void) {
     found:
         g_mbgFrame++;
         dec->inIdx ^= 1;
-        if (DecDCTBufSize((u16 *)data) > 0x4000) {
+        if (DecDCTBufSize((u16 *)data) > MBG_MDEC_IN_WORDS) {
             mbg_streamFreeFrame(data);
             result = -1;
         } else {
@@ -301,9 +301,9 @@ s32 mbg_play(u32 movie, s32 idx) {
         g_mbgDecode.frameRect[0].y = 0;
         g_mbgDecode.frameRect[1].x = w;
         g_mbgDecode.frameRect[1].y = 0;
-        g_mbgDecode.slice.w = 0x18;
-        g_mbgDecode.frameRect[0].w = 0x1E0;
-        g_mbgDecode.frameRect[1].w = 0x1E0;
+        g_mbgDecode.slice.w = MBG_SLICE_W_24;
+        g_mbgDecode.frameRect[0].w = MBG_VRAM_W_24;
+        g_mbgDecode.frameRect[1].w = MBG_VRAM_W_24;
         g_mbgDecode.frameDone = 0;
         g_mbgDecode.mdecIn[0] = (u32 *)g_mbgPlayer.mdecIn0;
         g_mbgDecode.mdecIn[1] = (u32 *)g_mbgPlayer.mdecIn1;
@@ -317,9 +317,9 @@ s32 mbg_play(u32 movie, s32 idx) {
         g_mbgDecode.frameRect[0].y = 0;
         g_mbgDecode.frameRect[1].x = w;
         g_mbgDecode.frameRect[1].y = 0;
-        g_mbgDecode.slice.w = 0x10;
-        g_mbgDecode.frameRect[0].w = 0x140;
-        g_mbgDecode.frameRect[1].w = 0x140;
+        g_mbgDecode.slice.w = MBG_SLICE_W_16;
+        g_mbgDecode.frameRect[0].w = MBG_VRAM_W_16;
+        g_mbgDecode.frameRect[1].w = MBG_VRAM_W_16;
         g_mbgDecode.frameDone = 0;
         g_mbgDecode.mdecIn[0] = (u32 *)g_mbgPlayer.mdecIn0;
         g_mbgDecode.mdecIn[1] = (u32 *)g_mbgPlayer.mdecIn1;
@@ -405,7 +405,7 @@ s32 mbg_update(s32 putDisp) {
     }
     st = &g_mbgPlayer;
     if ((s8)st->modeSwitch == MBG_SWITCH_RESET_ENV) {
-        mbg_setGraphEnv(0xE0, g_mbgRgb24);
+        mbg_setGraphEnv(SCREEN_H, g_mbgRgb24);
         st->modeSwitch = MBG_SWITCH_NONE;
     }
     st->streamPos = st->startPos;
@@ -432,7 +432,7 @@ s32 mbg_update(s32 putDisp) {
     DecDCTout(dec->mdecOut[dec->outIdx], (dec->slice.w * dec->slice.h) >> 1);
     while (1) {
         decCur = &g_mbgDecode;
-        tries = 1000;
+        tries = MBG_FRAME_TRIES;
         result = -1;
         do {
             data = (u8 *)mbg_readFrame(decCur);
@@ -448,7 +448,7 @@ s32 mbg_update(s32 putDisp) {
     found:
         g_mbgFrame++;
         decCur->inIdx ^= 1;
-        if (DecDCTBufSize((u16 *)data) > 0x4000) {
+        if (DecDCTBufSize((u16 *)data) > MBG_MDEC_IN_WORDS) {
             mbg_streamFreeFrame(data);
             result = -1;
         } else {
@@ -513,23 +513,23 @@ s32 mbg_setRgb24(s32 on) {
         k = 1;
         g_mbgRgb24 = k;
         g_mbgPlayer.rgb24 = k;
-        g_mbgDecode.frameRect[0].x = 0x1E0;
-        g_mbgDecode.slice.w = 0x18;
+        g_mbgDecode.frameRect[0].x = MBG_VRAM_W_24;
+        g_mbgDecode.slice.w = MBG_SLICE_W_24;
         g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
     } else {
         g_mbgRgb24 = 0;
         g_mbgPlayer.rgb24 = 0;
-        g_mbgDecode.frameRect[0].x = 0x140;
-        g_mbgDecode.slice.w = 0x10;
+        g_mbgDecode.frameRect[0].x = MBG_VRAM_W_16;
+        g_mbgDecode.slice.w = MBG_SLICE_W_16;
     }
     return 1;
 }
 
 void mbg_setDispEnv(s32 h, s32 hires, s32 i) {
-    s32 w = 0x140;
+    s32 w = MBG_VRAM_W_16;
 
     if (hires != 0) {
-        w = 0x1E0;
+        w = MBG_VRAM_W_24;
     }
     SetDefDispEnv(&g_gameState->dispEnv[i], w, 0, w, h);
     if (hires != 0) {
@@ -538,15 +538,15 @@ void mbg_setDispEnv(s32 h, s32 hires, s32 i) {
     }
     g_gameState->dispEnv[i].isinter = 0;
     g_gameState->dispEnv[i].screen.x = 0;
-    g_gameState->dispEnv[i].screen.y = (0xF0 - h) >> 1;
+    g_gameState->dispEnv[i].screen.y = (SCREEN_H_NTSC - h) >> 1;
     g_gameState->dispEnv[i].screen.h = h;
 }
 
 void mbg_setGraphEnv(s32 h, s32 hires) {
-    s32 w = 0x140;
+    s32 w = MBG_VRAM_W_16;
 
     if (hires != 0) {
-        w = 0x1E0;
+        w = MBG_VRAM_W_24;
     }
     SetDefDispEnv(&g_gameState->dispEnv[0], w, 0, w, h);
     SetDefDispEnv(&g_gameState->dispEnv[1], 0, 0, w, h);
@@ -558,11 +558,11 @@ void mbg_setGraphEnv(s32 h, s32 hires) {
     }
     g_gameState->dispEnv[0].isinter = 0;
     g_gameState->dispEnv[0].screen.x = 0;
-    g_gameState->dispEnv[0].screen.y = (0xF0 - h) >> 1;
+    g_gameState->dispEnv[0].screen.y = (SCREEN_H_NTSC - h) >> 1;
     g_gameState->dispEnv[0].screen.h = h;
     g_gameState->dispEnv[1].isinter = 0;
     g_gameState->dispEnv[1].screen.x = 0;
-    g_gameState->dispEnv[1].screen.y = (0xF0 - h) >> 1;
+    g_gameState->dispEnv[1].screen.y = (SCREEN_H_NTSC - h) >> 1;
     g_gameState->dispEnv[1].screen.h = h;
     SetDefDrawEnv(&g_gameState->drawEnv[0], 0, 0, w, h);
     SetDefDrawEnv(&g_gameState->drawEnv[1], w, 0, w, h);
@@ -632,7 +632,7 @@ s32 mbg_stop(void) {
         g_mbgPlayer.endCallback();
     }
     DecDCToutCallback(0);
-    mbg_setGraphEnv(0xE0, 0);
+    mbg_setGraphEnv(SCREEN_H, 0);
     ResetGraph(3);
     return 0;
 }
@@ -646,17 +646,17 @@ s32 mbg_getFrame(void) {
 
 void mbg_setVolume(s32 delay, s32 fade, s32 volume) {
     if (delay < 0) {
-        g_mbgPlayer.volumeDelay = 3;
+        g_mbgPlayer.volumeDelay = MBG_VOLUME_DELAY;
     } else {
         g_mbgPlayer.volumeDelay = delay;
     }
     if (fade < 0) {
-        g_mbgPlayer.volumeFade = 4;
+        g_mbgPlayer.volumeFade = MBG_VOLUME_FADE;
     } else {
         g_mbgPlayer.volumeFade = fade;
     }
     if (volume < 0) {
-        g_mbgPlayer.volume = 0x7F;
+        g_mbgPlayer.volume = SND_VOL_MAX;
     } else {
         g_mbgPlayer.volume = volume;
     }
