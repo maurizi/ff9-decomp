@@ -1105,7 +1105,7 @@ void btlui_openCmdMenu(void) {
     g_btlCmdMenu.trance = (u8)btl_hasStatus(g_btlUi->cmdUnit, BTL_STATUS_TRANCE) != 0;
     g_btlCmdMenu.charIndex = entry->chr->info.b.row;
     g_btlCmdMenu.unit = g_btlUi->cmdUnit;
-    sideCmd->side = 0;
+    sideCmd->side = BTLUI_SIDE_NONE;
     sideCmd->slide = 0;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
     w = win_open(&g_btluiCmdWindowRect, 0xF, WIN_STYLE_BEVEL, 3);
@@ -1118,11 +1118,11 @@ void btlui_openCmdMenu(void) {
 }
 
 void btlui_drawCmdList(Window *win) {
-    s32 y = win->y + 6;
-    s32 x = win->x + 0xA;
+    s32 y = win->y + BTLUI_CMD_TEXT_Y;
+    s32 x = win->x + BTLUI_CMD_TEXT_X;
     s32 i;
     u8 *name;
-    if (g_btlCmdMenu.sideCmd.side != 0) {
+    if (g_btlCmdMenu.sideCmd.side != BTLUI_SIDE_NONE) {
         btlui_drawSideCmd(REG_PASSTHROUGH(win));
     }
     for (i = 0; i < 4; i++) {
@@ -1133,7 +1133,7 @@ void btlui_drawCmdList(Window *win) {
             text_draw(x, y, win->otz, name, TEXT_PAL_WHITE);
         }
         do {
-            y += 15;
+            y += BTLUI_LIST_ROW_H;
         } while (0);
     }
 }
@@ -1150,7 +1150,7 @@ void btlui_drawCmdOverlay(Window *win) {
     RECT rc;
     if (win->state == WIN_STATE_OPEN) {
         if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(btlui_isTargetWindowOpen() & 0xFF) && (g_btluiVsyncTick & 1))) {
-            ui_drawHand(win->cur.x - 0xE, rect->y + (g_btlCmdMenu.cursor * 15 + dy), win->otz - 1);
+            ui_drawHand(win->cur.x - 0xE, rect->y + (g_btlCmdMenu.cursor * BTLUI_LIST_ROW_H + dy), win->otz - 1);
         }
     }
     if (win->state != WIN_STATE_OPEN) {
@@ -1183,22 +1183,22 @@ void btlui_drawSideCmd(Window *win) {
     Window *w = win;
 
     dx2 = 6;
-    if (sideCmd->slide == 1) {
-        off = (5 - sideCmd->slideFrame) * 3;
-    } else if (sideCmd->slide == 2) {
+    if (sideCmd->slide == BTLUI_SLIDE_OUT) {
+        off = (BTLUI_SIDE_SLIDE_FRAMES - sideCmd->slideFrame) * 3;
+    } else if (sideCmd->slide == BTLUI_SLIDE_BACK) {
         off = sideCmd->slideFrame * 5;
     }
     dx = 10;
-    if (sideCmd->side == 2) {
+    if (sideCmd->side == BTLUI_SIDE_LEFT) {
         dx = dx2;
         x = off + 4;
         rect.x = w->x + x;
     } else {
         rect.x = w->x - off;
     }
-    y = w->y + g_btlCmdMenu.cursor * 15;
-    rect.w = 0x3E;
-    rect.h = 0x11;
+    y = w->y + g_btlCmdMenu.cursor * BTLUI_LIST_ROW_H;
+    rect.w = BTLUI_SIDE_W;
+    rect.h = BTLUI_SIDE_H;
     rect.y = y + 4;
     text_draw(rect.x + dx, rect.y + 2, win->otz, text_get(g_btluiSideCmdTexts[g_btlSideCmd.side]), TEXT_PAL_WHITE);
     btlui_drawSideFrame(&rect, win->otz);
@@ -1207,7 +1207,7 @@ void btlui_drawSideCmd(Window *win) {
 void btlui_confirmCmd(void) {
     Unk800FD56C *cmd = &g_btlCmdTable[g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor]];
     void (*confirmFn)(Unk800FD56C *);
-    if (g_btlCmdMenu.sideCmd.side == 0) {
+    if (g_btlCmdMenu.sideCmd.side == BTLUI_SIDE_NONE) {
         if (g_btlCmdMenu.enabled[g_btlCmdMenu.cursor] != 0) {
             do {
                 snd_playSe(SE_CURSOR);
@@ -1495,9 +1495,9 @@ void btlui_updateCmdMenu(void) {
 void *btlui_getCmdHelpText(void) {
     s32 i;
     Unk800FD56C *cmd;
-    if (g_btlCmdMenu.sideCmd.side != 0 && g_btlCmdMenu.sideCmd.ready != 0) {
+    if (g_btlCmdMenu.sideCmd.side != BTLUI_SIDE_NONE && g_btlCmdMenu.sideCmd.ready != 0) {
         i = 7;
-        if (g_btlCmdMenu.sideCmd.side == 1) {
+        if (g_btlCmdMenu.sideCmd.side == BTLUI_SIDE_RIGHT) {
             i = 4;
         }
     } else {
@@ -1519,7 +1519,7 @@ void btlui_onCmdMenuOpened(void) {
 }
 
 void btlui_cmdCursorUp(void) {
-    if (g_btlCmdMenu.sideCmd.side == 0) {
+    if (g_btlCmdMenu.sideCmd.side == BTLUI_SIDE_NONE) {
         do {
             snd_playSe(SE_CURSOR);
             g_btlCmdMenu.cursor = g_btlCmdMenu.cursor != 0 ? g_btlCmdMenu.cursor - 1 : 3;
@@ -1528,7 +1528,7 @@ void btlui_cmdCursorUp(void) {
 }
 
 void btlui_cmdCursorDown(void) {
-    if (g_btlCmdMenu.sideCmd.side == 0) {
+    if (g_btlCmdMenu.sideCmd.side == BTLUI_SIDE_NONE) {
         do {
             snd_playSe(SE_CURSOR);
             g_btlCmdMenu.cursor = g_btlCmdMenu.cursor < 3 ? g_btlCmdMenu.cursor + 1 : 0;
@@ -1625,24 +1625,24 @@ void btlui_onPassClosed(Window *win) {
 }
 
 void btlui_slideLeft(void) {
-    if (g_btlSideCmd.side == 2) {
-        if (g_btlSideCmd.slide == 1) {
-            if (++g_btlSideCmd.slideFrame >= 5) {
+    if (g_btlSideCmd.side == BTLUI_SIDE_LEFT) {
+        if (g_btlSideCmd.slide == BTLUI_SLIDE_OUT) {
+            if (++g_btlSideCmd.slideFrame >= BTLUI_SIDE_SLIDE_FRAMES) {
                 g_btlSideCmd.ready = 1;
                 g_btlSideCmd.slide = 0;
             }
-        } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_LEFT)) {
+        } else if (g_btlSideCmd.slide == BTLUI_SLIDE_BACK && (g_padRepeat & PAD_LEFT)) {
             snd_playSe(SE_PAGE);
-            g_btlSideCmd.slide = 1;
-            g_btlSideCmd.side = 2;
+            g_btlSideCmd.slide = BTLUI_SLIDE_OUT;
+            g_btlSideCmd.side = BTLUI_SIDE_LEFT;
             g_btlSideCmd.ready = 0;
             g_btlSideCmd.slideFrame = 0;
         }
-    } else if (g_btlSideCmd.side == 0) {
+    } else if (g_btlSideCmd.side == BTLUI_SIDE_NONE) {
         if (g_padRepeat & PAD_LEFT) {
             snd_playSe(SE_PAGE);
-            g_btlSideCmd.slide = 1;
-            g_btlSideCmd.side = 2;
+            g_btlSideCmd.slide = BTLUI_SLIDE_OUT;
+            g_btlSideCmd.side = BTLUI_SIDE_LEFT;
             g_btlSideCmd.ready = 0;
             g_btlSideCmd.slideFrame = 0;
         }
@@ -1652,24 +1652,24 @@ void btlui_slideLeft(void) {
 }
 
 void btlui_slideRight(void) {
-    if (g_btlSideCmd.side == 1) {
-        if (g_btlSideCmd.slide == 1) {
-            if (++g_btlSideCmd.slideFrame >= 5) {
+    if (g_btlSideCmd.side == BTLUI_SIDE_RIGHT) {
+        if (g_btlSideCmd.slide == BTLUI_SLIDE_OUT) {
+            if (++g_btlSideCmd.slideFrame >= BTLUI_SIDE_SLIDE_FRAMES) {
                 g_btlSideCmd.ready = 1;
                 g_btlSideCmd.slide = 0;
             }
-        } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_RIGHT)) {
+        } else if (g_btlSideCmd.slide == BTLUI_SLIDE_BACK && (g_padRepeat & PAD_RIGHT)) {
             snd_playSe(SE_PAGE);
-            g_btlSideCmd.slide = 1;
-            g_btlSideCmd.side = 1;
+            g_btlSideCmd.slide = BTLUI_SLIDE_OUT;
+            g_btlSideCmd.side = BTLUI_SIDE_RIGHT;
             g_btlSideCmd.ready = 0;
             g_btlSideCmd.slideFrame = 0;
         }
-    } else if (g_btlSideCmd.side == 0) {
+    } else if (g_btlSideCmd.side == BTLUI_SIDE_NONE) {
         if (g_padRepeat & PAD_RIGHT) {
             snd_playSe(SE_PAGE);
-            g_btlSideCmd.slide = 1;
-            g_btlSideCmd.side = 1;
+            g_btlSideCmd.slide = BTLUI_SLIDE_OUT;
+            g_btlSideCmd.side = BTLUI_SIDE_RIGHT;
             g_btlSideCmd.ready = 0;
             g_btlSideCmd.slideFrame = 0;
         }
@@ -1680,12 +1680,12 @@ void btlui_slideRight(void) {
 
 void btlui_slideBack(void) {
     Unk80104FC0 *sideCmd = &g_btlCmdMenu.sideCmd;
-    if (sideCmd->side != 0) {
-        if (sideCmd->slide != 2) {
-            sideCmd->slide = 2;
+    if (sideCmd->side != BTLUI_SIDE_NONE) {
+        if (sideCmd->slide != BTLUI_SLIDE_BACK) {
+            sideCmd->slide = BTLUI_SLIDE_BACK;
             sideCmd->slideFrame = 0;
-        } else if (sideCmd->slideFrame++ >= 3) {
-            sideCmd->side = 0;
+        } else if (sideCmd->slideFrame++ >= BTLUI_SIDE_BACK_FRAMES) {
+            sideCmd->side = BTLUI_SIDE_NONE;
             sideCmd->slideFrame = 0;
         }
         sideCmd->ready = 0;
@@ -1867,7 +1867,7 @@ void btlui_drawListOverlay(Window *win) {
     }
     if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(btlui_isTargetWindowOpen() & 0xFF) && (g_btluiVsyncTick & 1))) {
         x = win->cur.x - 0x12;
-        y = rect->y + (win->list.cursor * 15 + dy);
+        y = rect->y + (win->list.cursor * BTLUI_LIST_ROW_H + dy);
         if (g_btluiList.cmdNo == BTL_CMD_DBL_BLK || g_btluiList.cmdNo == BTL_CMD_DBL_WHT) {
             ui_drawSprite(x + 7, y + 2, win->otz, g_btluiList.doubleCast + 0x5A, 0);
         }
@@ -1969,7 +1969,7 @@ void btlui_drawAbilityRow(s32 unused, s32 row, s32 index, MenuView *view) {
     if (state != 0) {
         x = rect->x;
         info = &g_gameState->gameData->ctx.battle->abilities[ability];
-        y = rect->y + row * 15 + view->y - dy;
+        y = rect->y + row * BTLUI_LIST_ROW_H + view->y - dy;
         pal = (state != 2) * TEXT_PAL_GREY;
         text_draw(x + 6, y, 7, g_btlAbilityNames + info->nameOfs, pal);
         if (info->mpCost != 0) {
@@ -2002,7 +2002,7 @@ void btlui_drawItemRow(s32 unused, s32 row, s32 index, Window *view) {
             x = rect->x;
             it = &g_itemTable[id];
             x5 = x + 5;
-            y = rect->y + row * 15 + view->y - dy;
+            y = rect->y + row * BTLUI_LIST_ROW_H + view->y - dy;
             ui_drawItemIcon(x5, y, 7, id, 1);
             text_draw(x + 0x14, y, 7, g_itemNames + it->name, TEXT_PAL_WHITE);
             text_formatNumber(count, digits, 2, TEXT_NUM_ASCII);
@@ -2030,7 +2030,7 @@ void btlui_drawThrowRow(s32 unused, s32 row, s32 index, Window *view) {
         if (count != 0) {
             x = rect->x;
             it = &g_itemTable[slot->id];
-            y = rect->y + row * 15 + view->y - dy;
+            y = rect->y + row * BTLUI_LIST_ROW_H + view->y - dy;
             text_formatNumber(count, digits, 2, TEXT_NUM_ASCII);
             text_draw(x + 5, y, 7, g_itemNames + it->name, TEXT_PAL_WHITE);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, digits, TEXT_PAL_WHITE);

@@ -3044,6 +3044,21 @@ typedef struct {
     u8 slide; /* 1 sliding out (btlui_slideLeft/Right), 2 sliding back (btlui_slideBack) */
     u8 slideFrame; /* 0-5 */
 } Unk80104FC0; /* g_btlCmdMenu.sideCmd */
+/* Unk80104FC0.side / .slide */
+#define BTLUI_SIDE_NONE  0
+#define BTLUI_SIDE_RIGHT 1 /* Defend (Right on the command window) */
+#define BTLUI_SIDE_LEFT  2 /* Change (Left) */
+#define BTLUI_SLIDE_OUT  1
+#define BTLUI_SLIDE_BACK 2
+#define BTLUI_SIDE_SLIDE_FRAMES 5 /* frames of the slide out (3 px a frame), then ready */
+#define BTLUI_SIDE_BACK_FRAMES  3 /* btlui_slideBack: the box is gone after frame 3 (5 px a frame) */
+/* battle command window and the ability / item lists (btlui_drawCmdList, btlui_drawCmdOverlay, btlui_drawSideCmd,
+ * the list windows) */
+#define BTLUI_LIST_ROW_H 15   /* row pitch: command rows, the hand cursor, ability / item rows */
+#define BTLUI_CMD_TEXT_X 0xA  /* command names: x inside the window */
+#define BTLUI_CMD_TEXT_Y 6    /* first command name's y inside the window */
+#define BTLUI_SIDE_W     0x3E /* Defend / Change box beside the cursor row */
+#define BTLUI_SIDE_H     0x11
 
 /* battle command menu (runtime: Vivi's menu -> Eiko's, docs/runtime-findings.md) */
 typedef struct {
