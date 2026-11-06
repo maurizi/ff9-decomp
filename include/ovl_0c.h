@@ -511,39 +511,39 @@ typedef struct WmEffect {
 #define WM_FLY_CEILING -0x2A30
 #define WM_FLY_CEILING_SOFT 0x7E8
 /* wm_movePlayer: boxes (centre, half size) where the walkmesh polygon cache is turned off (g_worldUsePolyCache = 0),
- * named for the navi place (g_worldNaviPlaces page 1) at or nearest their centre; the place names come from world
- * text bank 0 (runtime: pending R44 for places 11, 20, 27, 34, 39 and box A). Evidence: [code], navi place data */
-#define WM_NOCACHE_A_X 0x407F7 /* (264183, -245187); no navi place on it (19 "Chocobo's Forest" is 14400 away) */
-#define WM_NOCACHE_A_Z -0x3BDC3
-#define WM_NOCACHE_A_R 0x800
+ * named for the navi place (g_worldNaviPlaces page 1, name = world text bank 0 entry place + 1, read from the disc)
+ * at or nearest their centre. What makes the cache unusable there: runtime pending R44. Evidence: [code], data */
+#define WM_NOCACHE_CELL_16_14_X 0x407F7 /* (264183, -245187), map cell (16, 14): no navi place on it (19 "Chocobo's Forest" is 14400 away) */
+#define WM_NOCACHE_CELL_16_14_Z -0x3BDC3
+#define WM_NOCACHE_CELL_16_14_R 0x800
 #define WM_NOCACHE_CONDE_PETIE_X 0x37FA8 /* place 32 "Conde Petie" (229037, -90135) */
 #define WM_NOCACHE_CONDE_PETIE_Z -0x1606D
 #define WM_NOCACHE_CONDE_PETIE_R 0xC00
 #define WM_NOCACHE_ICE_CAVERN_X 0x4AD96 /* place 3 "Ice Cavern" (306501, -204700) */
 #define WM_NOCACHE_ICE_CAVERN_Z -0x32133
 #define WM_NOCACHE_ICE_CAVERN_R 0x400
-#define WM_NOCACHE_PLACE11_X 0x489E4 /* place 11 (297056, -215824) */
-#define WM_NOCACHE_PLACE11_Z -0x34BBF
-#define WM_NOCACHE_PLACE11_R 0x400
+#define WM_NOCACHE_ICE_CAVERN_2_X 0x489E4 /* place 11 "Ice Cavern" (297056, -215824), its second entrance */
+#define WM_NOCACHE_ICE_CAVERN_2_Z -0x34BBF
+#define WM_NOCACHE_ICE_CAVERN_2_R 0x400
 #define WM_NOCACHE_CHOCOBOS_LAGOON_X 0x250D4 /* place 37 "Chocobo's Lagoon" (151941, -289631) */
 #define WM_NOCACHE_CHOCOBOS_LAGOON_Z -0x46B95
 #define WM_NOCACHE_CHOCOBOS_LAGOON_R 0x400
-#define WM_NOCACHE_PLACE34_X 0x36F54 /* 1.6k from place 34 (226757, -59696), outside the box */
-#define WM_NOCACHE_PLACE34_Z -0xF131
-#define WM_NOCACHE_PLACE34_RX 0x60C
-#define WM_NOCACHE_PLACE34_RZ 0x800
-#define WM_NOCACHE_PLACE20_X 0x3D3D2 /* place 20 (250721, -224068) */
-#define WM_NOCACHE_PLACE20_Z -0x36C0F
-#define WM_NOCACHE_PLACE20_R 0x500
-#define WM_NOCACHE_PLACE27_X 0x4A02F /* 2.2k from place 27 (303345, -71006) */
-#define WM_NOCACHE_PLACE27_Z -0x11DD8
-#define WM_NOCACHE_PLACE27_R 0x400
+#define WM_NOCACHE_CONDE_PETIE_PATH_X 0x36F54 /* 1.6k from place 34 "Conde Petie Mountain Path" (226757, -59696) */
+#define WM_NOCACHE_CONDE_PETIE_PATH_Z -0xF131
+#define WM_NOCACHE_CONDE_PETIE_PATH_RX 0x60C
+#define WM_NOCACHE_CONDE_PETIE_PATH_RZ 0x800
+#define WM_NOCACHE_GIZAMALUKE_X 0x3D3D2 /* place 20 "Gizamaluke's Grotto" (250721, -224068) */
+#define WM_NOCACHE_GIZAMALUKE_Z -0x36C0F
+#define WM_NOCACHE_GIZAMALUKE_R 0x500
+#define WM_NOCACHE_DESERT_PALACE_X 0x4A02F /* 2.2k from place 27 "Desert Palace" (303345, -71006) */
+#define WM_NOCACHE_DESERT_PALACE_Z -0x11DD8
+#define WM_NOCACHE_DESERT_PALACE_R 0x400
 #define WM_NOCACHE_IPSENS_CASTLE_X 0xC02F /* place 44 "Ipsen's Castle" (49042, -121464) */
 #define WM_NOCACHE_IPSENS_CASTLE_Z -0x1D9EC
 #define WM_NOCACHE_IPSENS_CASTLE_R 0x500
-#define WM_NOCACHE_PLACE39_X 0x17A3B /* place 39 (97345, -262526) */
-#define WM_NOCACHE_PLACE39_Z -0x4014A
-#define WM_NOCACHE_PLACE39_R 0x400
+#define WM_NOCACHE_DAGUERREO_X 0x17A3B /* place 39 "Daguerreo" (97345, -262526) */
+#define WM_NOCACHE_DAGUERREO_Z -0x4014A
+#define WM_NOCACHE_DAGUERREO_R 0x400
 /* wm_movePlayer on the ground: when the step straight ahead is blocked, angles off the heading are tried in steps of
  * WM_STEP_TRY_ANGLE (both sides) up to WM_STEP_TRY_MAX (90 degrees, exclusive) */
 #define WM_STEP_TRY_ANGLE 0x80

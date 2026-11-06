@@ -1272,9 +1272,9 @@ void wm_movePlayer(WmActorType *cc) {
             }
         }
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_A_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_A_Z;
-    if (ABS(ex) < WM_NOCACHE_A_R && ABS(ez) < WM_NOCACHE_A_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_CELL_16_14_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_CELL_16_14_Z;
+    if (ABS(ex) < WM_NOCACHE_CELL_16_14_R && ABS(ez) < WM_NOCACHE_CELL_16_14_R) {
         g_worldUsePolyCache = 0;
     }
     ex = g_worldPlayer->pos.vx - WM_NOCACHE_CONDE_PETIE_X;
@@ -1287,9 +1287,9 @@ void wm_movePlayer(WmActorType *cc) {
     if (ABS(ex) < WM_NOCACHE_ICE_CAVERN_R && ABS(ez) < WM_NOCACHE_ICE_CAVERN_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE11_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE11_Z;
-    if (ABS(ex) < WM_NOCACHE_PLACE11_R && ABS(ez) < WM_NOCACHE_PLACE11_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_ICE_CAVERN_2_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_ICE_CAVERN_2_Z;
+    if (ABS(ex) < WM_NOCACHE_ICE_CAVERN_2_R && ABS(ez) < WM_NOCACHE_ICE_CAVERN_2_R) {
         g_worldUsePolyCache = 0;
     }
     ex = g_worldPlayer->pos.vx - WM_NOCACHE_CHOCOBOS_LAGOON_X;
@@ -1297,19 +1297,19 @@ void wm_movePlayer(WmActorType *cc) {
     if (ABS(ex) < WM_NOCACHE_CHOCOBOS_LAGOON_R && ABS(ez) < WM_NOCACHE_CHOCOBOS_LAGOON_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE34_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE34_Z;
-    if (ABS(ex) < WM_NOCACHE_PLACE34_RX && ABS(ez) < WM_NOCACHE_PLACE34_RZ) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_CONDE_PETIE_PATH_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_CONDE_PETIE_PATH_Z;
+    if (ABS(ex) < WM_NOCACHE_CONDE_PETIE_PATH_RX && ABS(ez) < WM_NOCACHE_CONDE_PETIE_PATH_RZ) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE20_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE20_Z;
-    if (ABS(ex) < WM_NOCACHE_PLACE20_R && ABS(ez) < WM_NOCACHE_PLACE20_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_GIZAMALUKE_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_GIZAMALUKE_Z;
+    if (ABS(ex) < WM_NOCACHE_GIZAMALUKE_R && ABS(ez) < WM_NOCACHE_GIZAMALUKE_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE27_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE27_Z;
-    if (ABS(ex) < WM_NOCACHE_PLACE27_R && ABS(ez) < WM_NOCACHE_PLACE27_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_DESERT_PALACE_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_DESERT_PALACE_Z;
+    if (ABS(ex) < WM_NOCACHE_DESERT_PALACE_R && ABS(ez) < WM_NOCACHE_DESERT_PALACE_R) {
         g_worldUsePolyCache = 0;
     }
     ex = g_worldPlayer->pos.vx - WM_NOCACHE_IPSENS_CASTLE_X;
@@ -1317,9 +1317,9 @@ void wm_movePlayer(WmActorType *cc) {
     if (ABS(ex) < WM_NOCACHE_IPSENS_CASTLE_R && ABS(ez) < WM_NOCACHE_IPSENS_CASTLE_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE39_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE39_Z;
-    if (ABS(ex) < WM_NOCACHE_PLACE39_R && ABS(ez) < WM_NOCACHE_PLACE39_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_DAGUERREO_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_DAGUERREO_Z;
+    if (ABS(ex) < WM_NOCACHE_DAGUERREO_R && ABS(ez) < WM_NOCACHE_DAGUERREO_R) {
         g_worldUsePolyCache = 0;
     }
     wm_wrapPos(&g_worldPlayer->pos.vx, &g_worldPlayer->pos.vz);
