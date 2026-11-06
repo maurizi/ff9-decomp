@@ -435,6 +435,58 @@ typedef struct WmEffect {
 #define WM_CAM_FLY_EYE_LOWEST -0x1194 /* while flying (WM_CTRL_FLY) the eye stays at least this high */
 #define WM_CAM_GROUND_TOP_FLY -0x2134 /* the ground under the eye counts as no higher than this when flying, */
 #define WM_CAM_GROUND_TOP -0x251C /* ... and than this otherwise (the peaks don't push the eye up further) */
+/* wm_cameraFollow tuning. The look-at point (g_worldCameraTarget) and the eye (g_worldCameraEye) chase their wanted
+ * heights once the gap passes a dead zone, in steps divided by g_worldCameraEaseDiv (gap >> 5, clamped) on foot or
+ * by a fixed divisor in the air / on the boat; steps under WM_CAM_MIN_STEP are dropped. Evidence: [code] */
+#define WM_CAM_SMOOTH_SNAP 16 /* an axis being smoothed (g_worldCameraSmoothX/Y/Z) snaps onto the player within this ... */
+#define WM_CAM_SMOOTH_DIV 8 /* ... and closes 1/8 of the gap a frame until then */
+#define WM_CAM_TARGET_DEADZONE 0x80 /* look-at height */
+#define WM_CAM_TARGET_EASE_MIN 0x20 /* g_worldCameraEaseDiv range for the look-at height */
+#define WM_CAM_TARGET_EASE_MAX 0x100
+#define WM_CAM_TARGET_RAISE_DIV 8 /* flying / steering: look-at height steps (gap past the dead zone / this) */
+#define WM_CAM_TARGET_LOWER_DIV 2
+#define WM_CAM_EYE_DEADZONE 0x100 /* eye height */
+#define WM_CAM_EYE_RAISE_DIV 4 /* flying / steering: eye height steps */
+#define WM_CAM_EYE_LOWER_DIV 32
+#define WM_CAM_EYE_STEP_MAX 0x200 /* walking: step size where the eye's speed-up (g_worldCameraEaseBoost) runs out */
+#define WM_CAM_MIN_STEP 5
+#define WM_CAM_PROBE_OFS 0x580 /* g_worldCameraFourProbes: the ground is sampled this far +-x and +-z of the eye */
+#define WM_CAM_RISE_SHIFT_FAST 2 /* walking: the eye rises 4x faster over WM_TOPO_MOUNTAIN, while held / turning, */
+#define WM_CAM_RISE_SHIFT_BLEND 3 /* ... and 8x while the view blends (viewBlend strictly between 0 and 0x1000) */
+/* player control (wm_controlWalk, wm_controlSteer, wm_controlFly). Evidence: [code] */
+#define WM_CAM_TURN_SPEED_WALK 0x20 /* L1 / R1 turn the camera by this a frame on foot and on the boat ... */
+#define WM_CAM_TURN_SPEED_FLY 0x10 /* ... and flying with auto-turn off */
+#define WM_WALK_TURN_DIV 3 /* the walker turns 1/3 of the way to the stick heading a frame */
+#define WM_FX_SCATTER 0x80 /* forest leaves spawn up to this far around the walker's previous position */
+#define WM_STEER_WAKE_SPEED 80 /* the boat leaves a wake above this speed */
+#define WM_STEER_SE_VOL_DIV 8 /* boat engine loop volume: speed / 8 + WM_STEER_SE_VOL_MIN ... */
+#define WM_STEER_SE_VOL_MIN 0x14
+#define WM_STEER_SE_FADE 0x3C /* ... reached in this many frames */
+#define WM_FLY_TURN_INVINCIBLE 600 /* Invincible / Hilda Garde turn rate scale (x / 256, less half the speed) */
+#define WM_FLY_TURN_HILDA_GARDE 580
+#define WM_AUTOPILOT_SPEED_MAX 400 /* autopilot (g_worldAutoPilot): speed = distance / 32 up to this; */
+#define WM_AUTOPILOT_ARRIVE 50 /* it stops once the speed falls under this or starts growing */
+#define WM_AUTOPILOT_TURN 20 /* turn rate while the heading is off by more than this */
+#define WM_FLY_ROLL_DIV 8 /* camera roll follows the stick by 1/8 a frame (to WmMoveMode.maxRoll) ... */
+#define WM_FLY_BANK_DIV 4 /* ... the model banks by 1/4 (to twice that) */
+#define WM_AIRSHIP_SPRAY_SPEED 60 /* low-flight spray needs more speed than this (airships) ... */
+#define WM_CHOCOBO_SPRAY_SPEED 30 /* ... or this (gold chocobo) */
+#define WM_LOW_FX_Y 100 /* WM_FX_AIRSHIP_SAND / WM_FX_CHOCOBO_SAND spawn this far below the flyer */
+/* wm_spawnEffect scale per spawn site (last argument) */
+#define WM_FX_SCALE_WATER_RIPPLE 24000
+#define WM_FX_SCALE_BEACH_SPLASH 0x900
+#define WM_FX_SCALE_SAND_DUST 0x2000
+#define WM_FX_SCALE_FOREST_LEAVES 0x6D80
+#define WM_FX_SCALE_BOAT_WAKE 15000 /* and _SIDE_WAKE */
+#define WM_FX_SCALE_AIRSHIP_SPRAY 32000 /* and WM_FX_AIRSHIP_SAND */
+#define WM_FX_SCALE_CHOCOBO_SPRAY 19200
+#define WM_FX_SCALE_CHOCOBO_SAND 25600
+/* wm_seFadeVolume fade lengths (frames) */
+#define WM_SE_FADE_LOOP_START 0x3C /* a move mode's loop sound fading in to WM_SE_LOOP_VOL (w_movementChange) */
+#define WM_SE_LOOP_VOL 0x3F
+#define WM_SE_FADE_SPRAY_IN 20 /* WM_SE_AIRSHIP_WATER following the spray strength */
+#define WM_SE_FADE_SPRAY_OUT 30 /* ... and fading out away from water */
+#define WM_SE_FADE_STOP 0x7F /* the loop sounds fading out on landing (w_movementChangeSP1) */
 /* Two balls at the Iifa Tree (navi place 36 "Iifa Tree" (200097, -82107); on data set WM_DATASET_DISC4 the
  * WM_BLOCKFX_MEMORIA_ORB sphere, g_worldBlockFx6Pos (196602, -10882, -82002), sits there). Evidence: [code]
  * wm_cameraFollow, wm_movePlayer */
