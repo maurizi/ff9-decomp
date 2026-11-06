@@ -364,8 +364,6 @@ extern u8 s_menuAbilityActionNames[];  /* item names */
 extern u8 s_menuAbilitySupportNames[];  /* ability names */
 extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_labelAbility;
 extern s32 g_labelTarget;

@@ -224,8 +224,4 @@ typedef struct {
 extern FrameRect s_menuChocographFramePieces[4]; /* frame pieces drawn by menuChocograph_drawFrame */
 extern u8 s_menuChocographFrameShadowPieces[2]; /* pieces that get a shadow */
 
-/* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
-
 #endif

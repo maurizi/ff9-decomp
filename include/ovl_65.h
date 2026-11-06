@@ -12,8 +12,6 @@ void btlui_loadPortraits(void);
 void btl_termBanner(void);
 
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 void timer_enable(u8);
 /* gameover_main steps (it counts them up with state++). Evidence: [code] */
 #define GAMEOVER_ST_START 0 /* one frame */

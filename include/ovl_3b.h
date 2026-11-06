@@ -93,8 +93,6 @@ extern RECT s_menuPartyListRect;
 extern RECT s_menuPartyInfoRect;
 
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 /* Defined as u8 in main, but callers here
  * (and ovl_3a) use the result unmasked, i.e. called it unprototyped. */
 s32 chr_getPortrait(s32);

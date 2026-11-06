@@ -543,8 +543,6 @@ extern u16 s_menuSaveCrcTable[256];
 typedef union { s32 w; u16 h; } Crc16;
 
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */
 u8 fld_getDiscChangeDisc(void); /* other overlay */

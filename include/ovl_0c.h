@@ -1836,7 +1836,6 @@ extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
-#define UI_SPRITE_PAUSE 0xEB /* the pause sprite wm_togglePause centres on screen (g_worldPauseSprite); same in ovl_0a (runtime pending R44) */
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void pen_locate(s32, s32);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */

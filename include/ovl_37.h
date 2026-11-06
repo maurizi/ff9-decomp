@@ -141,8 +141,6 @@ extern u8 s_menuItemTabText[3];
 extern RECT s_menuItemArrangeRect;
 
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {

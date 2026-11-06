@@ -155,7 +155,7 @@ void fld_discPromptDraw(void) {
     s32 y;
     HelpState *help;
 
-    ui_drawLabel(g_fieldDiscChangeRect.x + 8, g_fieldDiscChangeRect.y - 3, 0xA, g_fieldDiscChangeLabel, UI_LABEL_NORMAL);
+    ui_drawLabel(g_fieldDiscChangeRect.x + 8, g_fieldDiscChangeRect.y + WIN_TITLE_Y, 0xA, g_fieldDiscChangeLabel, UI_LABEL_NORMAL);
     text_drawBlock(g_fieldDiscChangeRect.x + 0xE, g_fieldDiscChangeRect.y + 0xA, 0xA, text_get(FLD_DISC_TEXT_PROMPT), TEXT_PAL_WHITE);
     text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x2E, 0xA, text_get(FLD_DISC_TEXT_YES), TEXT_PAL_WHITE);
     text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x3D, 0xA, text_get(FLD_DISC_TEXT_NO), TEXT_PAL_WHITE);

@@ -488,9 +488,9 @@ void win_setOnClosed(Window *win, void (*cb)(Window *)) {
 }
 
 void win_setTitle(Window *win, s32 title) {
-    win->titleX = 6;
+    win->titleX = WIN_TITLE_X;
     win->title = title;
-    win->titleY = -3;
+    win->titleY = WIN_TITLE_Y;
 }
 
 void win_setShadow(Window *win, u8 shadow) {

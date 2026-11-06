@@ -272,8 +272,6 @@ u32 menuCard_getStatsColor(void);
 extern u8 s_menuCardPointsUnit[];
 extern const u8 g_cardMenuText[]; /* text bank for this menu */
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 s32 card_getWins(void); /* collector points */
 s32 card_getLosses(void);
 s32 card_getDraws(void);

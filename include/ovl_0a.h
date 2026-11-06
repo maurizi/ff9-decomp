@@ -1472,7 +1472,6 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
-#define UI_SPRITE_PAUSE 0xEB /* the pause sprite fld_togglePause centres on screen (g_fieldPauseSprite; runtime pending R44) */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */

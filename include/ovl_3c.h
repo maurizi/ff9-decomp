@@ -242,8 +242,6 @@ extern u8 s_shopImage[];
 
 extern u8 g_shopBuyText[];
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 s32 item_getEquipSlot(s32); /* equip slot of an item, -1 = not equipment */
 s32 chr_getPortrait(s32); /* main.c defines it returning u8; used unmasked */
 typedef struct {

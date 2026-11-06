@@ -169,8 +169,6 @@ extern StatusTable s_menuStatusCmdTable;
 extern StatusPool s_menuStatusCmdNames;
 
 /* main exe: candidates for ff9.h */
-#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
-#define WIN_TITLE_Y (-3)
 extern s32 g_labelCommand;
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 

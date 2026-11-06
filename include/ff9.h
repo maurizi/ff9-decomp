@@ -1063,6 +1063,10 @@ extern Window g_windows[10];
 #define WIN_ANIM_TAIL 2 /* grow around the balloon tail (win_setTail) */
 #define WIN_ANIM_NONE 3 /* open (or close) at once */
 #define WIN_ANIM_ZOOM_X 4 /* grow from the centre horizontally only */
+/* a window label's offset from its box: the default Window.titleX / titleY (win_setTitle; win_setTitleAt sets
+ * others), also used by the menus that draw their labels with ui_drawLabel themselves */
+#define WIN_TITLE_X 6
+#define WIN_TITLE_Y (-3)
 
 void win_setOpenAnim(Window *, s32);
 void win_setCloseAnim(Window *, s32);
@@ -2756,6 +2760,8 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
+#define UI_SPRITE_PAUSE 0xEB /* the pause sprite fld_togglePause (ovl_0a, g_fieldPauseSprite) and wm_togglePause (ovl_0c,
+                             * g_worldPauseSprite) centre on screen (runtime pending R44) */
 /* event countdown timer box (timer_draw): "mm:ss" (EvtTimer.remaining counts frames, timer_getSeconds) in
  * UI_SPRITE_TIMER_DIGITS; x offsets from g_timerRect.x */
 #define TIMER_X             4    /* g_timerRect.x once shown */

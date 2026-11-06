@@ -1,7 +1,7 @@
 #include "ovl_3c.h"
 
 void shop_drawMessage(void) {
-    ui_drawLabel(s_shopMessageRect.x + 6, s_shopMessageRect.y - 3, s_shop.messageOtz, g_labelHelp, UI_LABEL_NORMAL);
+    ui_drawLabel(s_shopMessageRect.x + WIN_TITLE_X, s_shopMessageRect.y + WIN_TITLE_Y, s_shop.messageOtz, g_labelHelp, UI_LABEL_NORMAL);
     if (s_shop.help != NULL) {
         text_drawBlock(s_shopMessageRect.x + 0xA, s_shopMessageRect.y + 6, s_shop.messageOtz, s_shop.help, TEXT_PAL_WHITE);
     }

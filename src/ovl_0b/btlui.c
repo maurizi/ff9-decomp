@@ -1157,11 +1157,11 @@ void btlui_drawCmdOverlay(Window *win) {
         win_setClip(NULL, win->otz, WIN_STYLE_FRAMELESS);
     }
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
-        ui_drawLabel(win->x + 6, rect->y - 3, win->otz, g_winLabelStrings.command, win->active ? UI_LABEL_NORMAL : UI_LABEL_DIM);
+        ui_drawLabel(win->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, win->otz, g_winLabelStrings.command, win->active ? UI_LABEL_NORMAL : UI_LABEL_DIM);
     } else if (win->active != 0) {
         btlui_drawTranceLabel(win->x + 6, rect->y - 3, win->otz, s_btluiTranceLabel);
     } else {
-        ui_drawLabel(win->x + 6, rect->y - 3, win->otz, (s32)s_btluiTranceLabel, UI_LABEL_DIM);
+        ui_drawLabel(win->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, win->otz, (s32)s_btluiTranceLabel, UI_LABEL_DIM);
     }
     if (win->state != WIN_STATE_OPEN) {
         rc.x = rect->x;
@@ -2504,8 +2504,8 @@ void btlui_drawTargetListOverlay(Window *win) {
     if (win->state != WIN_STATE_OPEN) {
         win_setClip(NULL, win->otz, WIN_STYLE_FRAMELESS);
     }
-    ui_drawLabel(w->x + BTLUI_TGT_ENEMY_LABEL_X, rect->y - 3, win->otz, g_winLabelStrings.labelEnemy, UI_LABEL_NORMAL);
-    ui_drawLabel(w->x + BTLUI_TGT_PARTY_LABEL_X, rect->y - 3, win->otz, g_winLabelStrings.labelPlayer, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x + BTLUI_TGT_ENEMY_LABEL_X, rect->y + WIN_TITLE_Y, win->otz, g_winLabelStrings.labelEnemy, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x + BTLUI_TGT_PARTY_LABEL_X, rect->y + WIN_TITLE_Y, win->otz, g_winLabelStrings.labelPlayer, UI_LABEL_NORMAL);
     if (win->state != WIN_STATE_OPEN) {
         rc.x = rect->x;
         rc.y = rect->y - 3;
