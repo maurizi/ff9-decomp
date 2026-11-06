@@ -345,7 +345,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **out) {
                 sum += grp->packetSize;
                 grp++;
             }
-            if (obj->packets + (sum * 2 + (obj->model->boneCount * 32 + obj->model->groupCount * 12)) >= g_loadAreaEnd + 0xF1700) {
+            if (obj->packets + (sum * 2 + (obj->model->boneCount * 32 + obj->model->groupCount * 12)) >= g_loadAreaEnd + LOAD_MOVIE_OVL) {
                 out[i] = NULL;
             }
         }
@@ -1169,7 +1169,7 @@ void fld_movieUpdate(void) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
                 FileEntry *file = file_find(DIR_OVERLAYS, OVL_MOVIE);
                 cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11,
-                              (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
+                              (void *)(g_loadAreaEnd + LOAD_MOVIE_OVL), 0, LOAD_MOVIE_OVL_SIZE, NULL);
             }
             g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_READ_OVL;
         }

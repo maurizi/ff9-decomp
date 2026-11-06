@@ -26,7 +26,7 @@ s32 ending_messages(void) {
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 0);
-                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                x = SCREEN_W / 2 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, ENDING_MSG_Y, ot, msg, g_messagesPrim);
                 if (timer == ENDING_MSG_FADE_FRAMES) {
                     game_startFade(FADE_FLAT, FADE_SUB, ENDING_MSG_FADE_FRAMES, FADE_COLOR_FULL);
@@ -44,11 +44,11 @@ s32 ending_messages(void) {
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 1);
-                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                x = SCREEN_W / 2 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, ENDING_MSG_Y1, ot, msg, g_messagesPrim);
-                if (timer < 0x8C) {
+                if (timer < ENDING_MSG_SECOND_AT) {
                     msg = ending_getMessage(g_endingMessages, 2);
-                    x = 0xA0 - (ending_textWidth(msg) >> 1);
+                    x = SCREEN_W / 2 - (ending_textWidth(msg) >> 1);
                     g_messagesPrim = ending_drawText(x, ENDING_MSG_Y2, ot, msg, g_messagesPrim);
                 }
                 if (timer == ENDING_MSG_FADE_FRAMES) {
@@ -67,7 +67,7 @@ s32 ending_messages(void) {
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 3);
-                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                x = SCREEN_W / 2 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, ENDING_MSG_Y, ot, msg, g_messagesPrim);
                 if (timer == ENDING_MSG_FADE_FRAMES) {
                     game_startFade(FADE_FLAT, FADE_SUB, ENDING_MSG_FADE_FRAMES, FADE_COLOR_FULL);
@@ -85,11 +85,11 @@ s32 ending_messages(void) {
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 4);
-                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                x = SCREEN_W / 2 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, ENDING_MSG_Y1, ot, msg, g_messagesPrim);
-                if (timer < 0x8C) {
+                if (timer < ENDING_MSG_SECOND_AT) {
                     msg = ending_getMessage(g_endingMessages, 5);
-                    x = 0xA0 - (ending_textWidth(msg) >> 1);
+                    x = SCREEN_W / 2 - (ending_textWidth(msg) >> 1);
                     g_messagesPrim = ending_drawText(x, ENDING_MSG_Y2, ot, msg, g_messagesPrim);
                 }
                 if (timer == ENDING_MSG_FADE_FRAMES) {

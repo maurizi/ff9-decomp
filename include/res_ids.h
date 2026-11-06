@@ -149,4 +149,12 @@
 #define RAM_BTLFX_MODULE_HI(type) PSX_RAM(type, 0x801EC700) /* its second half: odd kind-1 groups (summons) */
 #define RAM_BTLFX_RING(type) PSX_RAM(type, 0x801F1700) /* effect data ring (0xC800 bytes, to 0x801FDF00) */
 
+/* The movie player in the load area (offsets from g_loadAreaEnd, which is the 0x800A7000 overlay slot). The field
+ * (fld_movieStart), the opening and the ending read OVL_MOVIE to LOAD_MOVIE_OVL (= 0x80198700, its link address)
+ * in one chunk of LOAD_MOVIE_OVL_SIZE (the file is 0x8800 bytes), and give MBG_init the work area right after it.
+ * Field models whose packets would reach LOAD_MOVIE_OVL are not drawn during a movie. Evidence: [code] */
+#define LOAD_MOVIE_OVL 0xF1700
+#define LOAD_MOVIE_OVL_SIZE 0x15000
+#define LOAD_MOVIE_WORK (LOAD_MOVIE_OVL + LOAD_MOVIE_OVL_SIZE) /* the MBG_init work area (FieldScene.movieWork) */
+
 #endif

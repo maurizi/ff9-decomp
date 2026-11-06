@@ -62,6 +62,8 @@ extern MbgMovieList g_mbgMovieLists[];
 #define ENDING_MSG_Y 0x64 /* a one-message page */
 #define ENDING_MSG_Y1 0x5F /* a two-message page: first, second */
 #define ENDING_MSG_Y2 0x7D
+#define ENDING_MSG_SECOND_AT 0x8C /* a two-message page shows its second message once its timer (counting down from
+                                   * ENDING_MSG_PAGE2/4_FRAMES) is below this */
 #define THEEND_SHOW_FRAMES 0x21C /* "THE END" picture: shown this long */
 #define THEEND_FADE_IN_FRAMES 0xB4
 #define THEEND_FADE_OUT_FRAMES 0x5A /* then to black, and the Blackjack check */
@@ -80,6 +82,8 @@ enum {
 #define ENDING_MOVIE_LIST 4    /* ovl_64 movie list of disc 4 */
 #define ENDING_FMV059     0x12 /* its entries: \ENDING\FMV059.STR, FMV060.STR */
 #define ENDING_FMV060     0x13
+#define ENDING_MOVIE_FADE_FRAMES 0x78 /* the screen fade ending_movieInit starts before a movie */
+#define LOAD_ENDING_DATA 0x10000 /* g_loadAreaEnd + this: where ending_loadData reads FILE_ENDING_DATA (g_endingData) */
 
 /* g_movieFlags (ending_playMovie), the bits of ovl_14's opening movie loop */
 #define MOVIE_NO_SCENES 0x1
@@ -91,8 +95,12 @@ enum {
 enum { MOVIE_ST_START, MOVIE_ST_OPEN, MOVIE_ST_PLAY, MOVIE_ST_END, MOVIE_ST_DONE };
 
 /* db ids of the music the ending plays through ending_soundCmd, and of its sound bank (ending_loadMusic) */
-#define ENDING_MUSIC      0x7009C
-#define ENDING_MUSIC_BANK 0x901F3
+#define ENDING_MUSIC      (DB_MUSIC | 0x9C)
+#define ENDING_MUSIC_BANK_ID 0x1F3 /* also GameData.musicBank[0] while it plays */
+#define ENDING_MUSIC_BANK (DB_SOUND_BANK | ENDING_MUSIC_BANK_ID)
+#define ENDING_MUSIC_FADE_FRAMES 0x5A /* volume ramp of ENDING_MUSIC: up from 0 when THE END or Blackjack starts it,
+                                      * down to 0 in ending_exit (which waits as long) */
+#define ENDING_MUSIC_START_FRAMES 0xA /* ending_soundCmd: a song that was not playing ramps up from 0 this fast */
 
 /* g_theEndState: ending_theEnd */
 enum {
@@ -155,6 +163,14 @@ typedef struct {
     s32 unkC; /* write-only (cleared) */
 } SceneMenu;
 #define SCENE_MENU_FADE_FRAMES 48
+/* ending_menu* (SCENE_MENU, never entered; the same code as ovl_14's title menu): four choices at
+ * g_endingMenuCursorPos, the hand cursor left of the selected one */
+#define ENDING_MENU_LAST (ARRAY_COUNT(g_endingMenuCursorPos) - 1) /* cursor wraps 0..this */
+#define ENDING_MENU_HAND_DX 0x1A
+#define ENDING_MENU_HAND_DY 3
+#define ENDING_MENU_HAND_OTZ 3
+#define ENDING_MENU_FADE_OUT_FRAMES 0x10 /* after a choice; then SCENE_CHOSEN */
+#define ENDING_MENU_FADE_IN_FRAMES 0x20 /* on entry, when scene_getFadeScreen is set */
 extern SceneMenu g_bjAction;
 extern SceneMenu g_bjWagerMenu;
 extern SceneMenu g_endingMenu;
@@ -173,6 +189,7 @@ extern SceneMenu g_endingMenu;
 #define BJ_DEALER_STAND 17 /* the dealer draws below this */
 
 #define BJ_DECKS     6
+#define BJ_SUITS     4 /* a card is rank * BJ_SUITS + suit (bj_drawHand) */
 #define BJ_DECK_SIZE 52
 #define BJ_SHOE_SIZE (BJ_DECKS * BJ_DECK_SIZE)
 #define BJ_SHUFFLE_PASSES 5
@@ -226,10 +243,31 @@ enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
 #define BJ_MAX_BET  1000
 #define BJ_BANKROLL 1000 /* g_bjBankroll's start, and the refill when it fell below BJ_MIN_BET */
 
-/* Where cards are dealt from (bj_drawShoe) */
-/* Blackjack table layout and sprite sheet (8-bit, tpage BJ_VRAM_X / BJ_VRAM_Y; CLUT rows at x 0) */
-#define BJ_VRAM_X 0x280
-#define BJ_VRAM_Y 0x100
+/* Blackjack textures (bj_init): TIMs of FILE_ENDING_DATA, all 8-bit with their palette row at x BJ_CLUT_X.
+ * Decoded from the file: the card sheet is one tpage (g_bjTpage) holding the face card pictures at its top left, the
+ * rank glyphs right of them and the card under them; the result banners are a separate 256x256 sheet. */
+#define BJ_TIM_CARD    (DB_TIM | 0x4F4C) /* 56x96: the card (BJ_CARD_W x BJ_CARD_H, patterned back) over the four
+                                          * suit pips, upside-down then upright (diamond, club, heart, spade) */
+#define BJ_TIM_RANKS   (DB_TIM | 0x4F4D) /* 40x182: corner ranks 2-10, J, Q, K, A (BJ_RANK_H rows), four columns */
+#define BJ_TIM_JACK    (DB_TIM | 0x4F4E) /* 42x51 face card pictures (BJ_PICTURE_W x BJ_PICTURE_H): a black mage */
+#define BJ_TIM_KING    (DB_TIM | 0x4F4F) /* a crowned bird */
+#define BJ_TIM_QUEEN   (DB_TIM | 0x4F50) /* a woman in white */
+#define BJ_TIM_RESULTS (DB_TIM | 0x4F51) /* WIN, LOSE, PERFECT and DRAW, each with a dark shadow copy, plus
+                                          * Tetra Master's COMBO, Card Select, Discard and digits */
+#define BJ_CARDS_VRAM_X 0x1C0 /* the card sheet (g_bjTpage) */
+#define BJ_CARDS_VRAM_Y 0x100
+#define BJ_RESULT_VRAM_X 0x280 /* the result banner sheet (bj_drawResult) */
+#define BJ_RESULT_VRAM_Y 0x100
+#define BJ_CLUT_X 0
+#define BJ_FACE_WHITE_FIRST 0x20 /* the face palette is BJ_TIM_CARD's own (the back's) with entries 0x20.. (the
+                                  * back's pattern) overwritten by g_bjClut's white */
+/* sheet coordinates (u/v in the card tpage; 8-bit, so VRAM x = BJ_CARDS_VRAM_X + u / 2) */
+#define BJ_RANK_BLACK_U 0x58 /* rank glyph columns: black (suit & 1) upright / upside-down, red upright / upside-down */
+#define BJ_RANK2_BLACK_U 0x62
+#define BJ_RANK_RED_U 0x6C
+#define BJ_RANK2_RED_U 0x76
+#define BJ_QUEEN_U 0x2C /* the Queen right of the Jack, the King under the Jack */
+#define BJ_KING_V 0x40
 #define BJ_CLUT_PICTURE_Y 0xE0 /* + 0-2: Jack / Queen / King pictures */
 #define BJ_CLUT_FACE_Y 0xE4 /* card face and pips */
 #define BJ_CLUT_BACK_Y 0xE5 /* card back */
@@ -259,7 +297,7 @@ enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
 #define BJ_PICTURE_Y 0xA
 #define BJ_PICTURE_W 0x2A
 #define BJ_PICTURE_H 0x33
-#define BJ_RESULT_H 0x28 /* result banner height (WIN / LOSE / PUSH, two layers each) */
+#define BJ_RESULT_H 0x28 /* result banner height (WIN / LOSE / DRAW for a push, two layers each) */
 #define BJ_RESULT_X 0x6C
 #define BJ_RESULT_DY 12 /* below the hand's y */
 #define BJ_VALUE_X 10 /* hand value digits, left of each hand */
@@ -277,6 +315,18 @@ enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
 #define BJ_SPLIT2_Y  0x60 /* the split hand */
 #define BJ_SHAKE_FRAMES 10 /* BJ_ST_BUST shakes the hand this long */
 #define BJ_RESULT_FRAMES 0x94
+#define BJ_SHUFFLE_FRAMES (BJ_SHOE_SIZE / 4) /* BJ_ST_SHUFFLE flashes every fourth card of the new shoe, one a frame */
+#define BJ_FADE_FRAMES 0x3C /* fade in after the shuffle starts, fade out (and wait) at the end of the session */
+/* the panel right of the table (bj_main): labels and values centred on BJ_PANEL_X, in g_bjStr* order */
+#define BJ_PANEL_X 0x10C
+#define BJ_PANEL_OTZ 0x10
+#define BJ_PANEL_BANKROLL_Y 0x58 /* "Bankroll" (yellow), its amount (cyan) BJ_PANEL_VALUE_DY under it */
+#define BJ_PANEL_WAGER_Y 0x70 /* "Wager" (yellow), the wager under it */
+#define BJ_PANEL_VALUE_DY 0xC
+#define BJ_PANEL_STAND_Y 0x90 /* the action list: grey when not possible (Double, Split) */
+#define BJ_PANEL_HIT_Y 0xA0
+#define BJ_PANEL_DOUBLE_Y 0xB0
+#define BJ_PANEL_SPLIT_Y 0xC0
 
 /* g_bjState: bj_main */
 enum {
@@ -312,7 +362,7 @@ extern s32 g_movieFrame; /* frame counter */
 extern u16 g_movieFlagQueue[2][4]; /* queued flag sets / clears */
 extern s32 g_bjBankroll; /* bankroll */
 extern s16 g_theEndInitWord; /* cleared by ending_theEndInit, never read */
-extern u16 g_endingImage;
+extern u16 g_endingImage; /* 0x4EE8: the 320x224 16-bit "THE END" picture with the copyright line */
 extern u8 g_bjCanDouble; /* double allowed */
 extern s32 g_bjWager; /* bet */
 extern u8 g_bjCanSplit; /* split allowed */
@@ -335,7 +385,7 @@ extern s32 g_bjTpageCount;
 extern u8 g_messagesPrims[2][0x2000]; /* primitive buffers */
 extern u32 g_messagesState;
 extern RECT g_bjClutRect;
-extern u32 g_bjClut[8]; /* CLUT */
+extern u32 g_bjClut[8]; /* 16 white CLUT entries (BJ_FACE_WHITE_FIRST) */
 extern DrTpageWords g_bjTpage;
 extern u32 g_bjState;
 extern SPRT g_bjSprites[2][256];

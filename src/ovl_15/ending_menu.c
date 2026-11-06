@@ -36,10 +36,10 @@ void ending_menuInput(void) {
     if (fade_isBusy() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
         if (g_padRepeat & PAD_UP) {
             snd_playSe(SE_CURSOR);
-            g_endingMenu.cursor = g_endingMenu.cursor != 0 ? g_endingMenu.cursor - 1 : 3;
+            g_endingMenu.cursor = g_endingMenu.cursor != 0 ? g_endingMenu.cursor - 1 : ENDING_MENU_LAST;
         } else if (g_padRepeat & PAD_DOWN) {
             snd_playSe(SE_CURSOR);
-            g_endingMenu.cursor = g_endingMenu.cursor < 3 ? g_endingMenu.cursor + 1 : 0;
+            g_endingMenu.cursor = g_endingMenu.cursor < ENDING_MENU_LAST ? g_endingMenu.cursor + 1 : 0;
         } else if (g_padRepeat & BTN_CROSS) {
             ending_menuDecide();
         }
@@ -59,7 +59,7 @@ void ending_menuTick(void) {
 
 void ending_menuDecide(void) {
     snd_playSe(SE_CURSOR);
-    fade_out(0x10);
+    fade_out(ENDING_MENU_FADE_OUT_FRAMES);
     fade_setOnDone(ending_menuOnFadeOut);
 }
 
@@ -74,9 +74,9 @@ void ending_menuDrawChoices(void) {
 
 void ending_menuDrawCursor(void) {
     if (fade_isBusy() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
-        g_menuHelp.x = g_endingMenuCursorPos[g_endingMenu.cursor].x - 0x1A;
-        g_menuHelp.y = g_endingMenuCursorPos[g_endingMenu.cursor].y + 3;
-        g_menuHelp.otz = 3;
+        g_menuHelp.x = g_endingMenuCursorPos[g_endingMenu.cursor].x - ENDING_MENU_HAND_DX;
+        g_menuHelp.y = g_endingMenuCursorPos[g_endingMenu.cursor].y + ENDING_MENU_HAND_DY;
+        g_menuHelp.otz = ENDING_MENU_HAND_OTZ;
         help_drawCursor(&g_menuHelp, &g_endingMenu);
     }
 }
@@ -103,5 +103,5 @@ void ending_menuStartFadeIn(void) {
     g_endingMenu.shown = 1;
     g_endingMenu.fadingIn = 0;
     g_endingMenu.fadeFrames = 0;
-    fade_in(0x20);
+    fade_in(ENDING_MENU_FADE_IN_FRAMES);
 }

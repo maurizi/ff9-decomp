@@ -528,7 +528,7 @@ void fld_initScene(void) {
     sc->vibration = NULL;
     sc->bg = NULL;
     sc->walkmesh = NULL;
-    base = g_loadAreaEnd + 0x106700;
+    base = g_loadAreaEnd + LOAD_MOVIE_WORK;
     sc->otBias = 0;
     sc->sprites = NULL;
     sc->shadows = NULL;

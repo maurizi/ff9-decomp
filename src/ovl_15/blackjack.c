@@ -6,7 +6,7 @@ s32 ending_playMovie(s32 list, s32 entry) {
     s32 i;
     s32 done;
 
-    mbgWork = g_loadAreaEnd + 0x106700;
+    mbgWork = g_loadAreaEnd + LOAD_MOVIE_WORK;
     timer = -1;
     ending_movieInit(list, entry);
     do {
@@ -76,7 +76,7 @@ s32 ending_movieInit(s32 list, s32 entry) {
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     file = file_find(DIR_OVERLAYS, OVL_MOVIE);
-    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + LOAD_MOVIE_OVL, 0, LOAD_MOVIE_OVL_SIZE, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     EnterCriticalSection();
@@ -89,7 +89,7 @@ s32 ending_movieInit(s32 list, s32 entry) {
         }
         mbg_streamSetBaseSector(h);
     }
-    game_startFade(FADE_FLAT, FADE_SUB, 0x78, FADE_COLOR_FULL);
+    game_startFade(FADE_FLAT, FADE_SUB, ENDING_MOVIE_FADE_FRAMES, FADE_COLOR_FULL);
     g_movieState = MOVIE_ST_START;
     g_movieFlags = 0;
     for (i = 1; i >= 0; i--) {
@@ -168,7 +168,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], sprt);
         g_bjSprtCount++;
         tpage = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setDrawTPage(tpage, 1, 0, GetTPage(1, 1, BJ_VRAM_X, BJ_VRAM_Y));
+        setDrawTPage(tpage, 1, 0, GetTPage(1, 1, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], tpage);
         g_bjTpageCount++;
         sprt = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
@@ -185,7 +185,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], sprt);
         g_bjSprtCount++;
         tpage = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setDrawTPage(tpage, 1, 0, GetTPage(1, 2, BJ_VRAM_X, BJ_VRAM_Y));
+        setDrawTPage(tpage, 1, 0, GetTPage(1, 2, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], tpage);
         g_bjTpageCount++;
         break;
@@ -205,7 +205,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], sprt);
         g_bjSprtCount++;
         tpage = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setDrawTPage(tpage, 1, 0, GetTPage(1, 1, BJ_VRAM_X, BJ_VRAM_Y));
+        setDrawTPage(tpage, 1, 0, GetTPage(1, 1, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], tpage);
         g_bjTpageCount++;
         sprt = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
@@ -222,7 +222,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], sprt);
         g_bjSprtCount++;
         tpage = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setDrawTPage(tpage, 1, 0, GetTPage(1, 2, BJ_VRAM_X, BJ_VRAM_Y));
+        setDrawTPage(tpage, 1, 0, GetTPage(1, 2, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], tpage);
         g_bjTpageCount++;
         break;
@@ -242,7 +242,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], sprt);
         g_bjSprtCount++;
         tpage = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setDrawTPage(tpage, 1, 0, GetTPage(1, 1, BJ_VRAM_X, BJ_VRAM_Y));
+        setDrawTPage(tpage, 1, 0, GetTPage(1, 1, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], tpage);
         g_bjTpageCount++;
         sprt = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
@@ -259,7 +259,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], sprt);
         g_bjSprtCount++;
         tpage = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setDrawTPage(tpage, 1, 0, GetTPage(1, 2, BJ_VRAM_X, BJ_VRAM_Y));
+        setDrawTPage(tpage, 1, 0, GetTPage(1, 2, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], tpage);
         g_bjTpageCount++;
         break;
@@ -296,7 +296,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     setRGB0(sprt, 0x80, 0x80, 0x80);
     sprt->x0 = x + BJ_RANK_X;
     sprt->y0 = y + BJ_RANK_Y;
-    sprt->u0 = (suit & 1) ? 0x58 : 0x6C;
+    sprt->u0 = (suit & 1) ? BJ_RANK_BLACK_U : BJ_RANK_RED_U;
     sprt->v0 = rank * BJ_RANK_H;
     sprt->w = BJ_RANK_W;
     sprt->h = BJ_RANK_H;
@@ -309,7 +309,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     setRGB0(sprt, 0x80, 0x80, 0x80);
     sprt->x0 = x + BJ_RANK2_X;
     sprt->y0 = y + BJ_RANK2_Y;
-    sprt->u0 = (suit & 1) ? 0x62 : 0x76;
+    sprt->u0 = (suit & 1) ? BJ_RANK2_BLACK_U : BJ_RANK2_RED_U;
     sprt->v0 = rank * BJ_RANK_H;
     sprt->w = BJ_RANK_W;
     sprt->h = BJ_RANK_H;
@@ -365,12 +365,12 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             setSprt(sprt);
             setRGB0(sprt, 0x80, 0x80, 0x80);
             if (face & 1) {
-                sprt->u0 = 0x2C;
+                sprt->u0 = BJ_QUEEN_U;
             } else {
                 sprt->u0 = 0;
             }
             if (face >> 1) {
-                sprt->v0 = 0x40;
+                sprt->v0 = BJ_KING_V;
             } else {
                 sprt->v0 = 0;
             }
@@ -579,7 +579,7 @@ s32 bj_drawHand(BjHand *hand, s32 dx, s32 dy, s32 count) {
             bj_drawCardBack(x, y);
             first = 0;
         } else {
-            bj_drawCard(card / 4, card % 4, x, y);
+            bj_drawCard(card / BJ_SUITS, card % BJ_SUITS, x, y);
         }
         x -= BJ_CARD_STEP;
     }
@@ -659,10 +659,10 @@ s32 bj_main(void) {
             break;
         case BJ_ST_SHUFFLE:
             if (timer == -1) {
-                timer = 0x4E;
+                timer = BJ_SHUFFLE_FRAMES;
                 bj_shoeInit(&g_bjShoe);
                 bj_shoeShuffle(&g_bjShoe);
-                game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_NONE);
+                game_startFade(FADE_FLAT, FADE_SUB, BJ_FADE_FRAMES, FADE_COLOR_NONE);
                 i = 0;
             } else if (timer != 0) {
                 card = g_bjShoe.cards[i];
@@ -1121,8 +1121,8 @@ s32 bj_main(void) {
             break;
         case BJ_ST_END:
             if (timer == -1) {
-                game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_FULL);
-                timer = 0x3C;
+                game_startFade(FADE_FLAT, FADE_SUB, BJ_FADE_FRAMES, FADE_COLOR_FULL);
+                timer = BJ_FADE_FRAMES;
                 if (g_bjBankroll < BJ_MIN_BET) {
                     g_bjBankroll = BJ_BANKROLL;
                 }
@@ -1175,21 +1175,21 @@ s32 bj_main(void) {
         bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
         addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + BJ_OTZ, &g_bjTpage);
         sprintf(text, g_bjStrBankroll);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x58, 0x10, text, TEXT_PAL_YELLOW);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_BANKROLL_Y, BJ_PANEL_OTZ, text, TEXT_PAL_YELLOW);
         sprintf(text, g_bjFmtLong, g_bjBankroll);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x64, 0x10, text, TEXT_PAL_CYAN);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_BANKROLL_Y + BJ_PANEL_VALUE_DY, BJ_PANEL_OTZ, text, TEXT_PAL_CYAN);
         sprintf(text, g_bjStrWager);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x70, 0x10, text, TEXT_PAL_YELLOW);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_WAGER_Y, BJ_PANEL_OTZ, text, TEXT_PAL_YELLOW);
         sprintf(text, g_bjFmtLong, g_bjWager);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x7C, 0x10, text, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_WAGER_Y + BJ_PANEL_VALUE_DY, BJ_PANEL_OTZ, text, TEXT_PAL_WHITE);
         sprintf(text, g_bjStrStand);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x90, 0x10, text, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_STAND_Y, BJ_PANEL_OTZ, text, TEXT_PAL_WHITE);
         sprintf(text, g_bjStrHit);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0xA0, 0x10, text, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_HIT_Y, BJ_PANEL_OTZ, text, TEXT_PAL_WHITE);
         sprintf(text, g_bjStrDouble);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0xB0, 0x10, text, g_bjCanDouble ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_DOUBLE_Y, BJ_PANEL_OTZ, text, g_bjCanDouble ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         sprintf(text, g_bjStrSplit);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0xC0, 0x10, text, g_bjCanSplit ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        ui_drawSmallDigits(BJ_PANEL_X - (text_measureSmall(text) >> 1), BJ_PANEL_SPLIT_Y, BJ_PANEL_OTZ, text, g_bjCanSplit ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         g_padActuator[0].smallMotor = 0;
         if (cnt > 0) {
             cnt--;
@@ -1214,33 +1214,33 @@ s32 bj_main(void) {
 s32 bj_init(void) {
     s32 tim;
 
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4C, 0);
-    file_setTimPos(tim, 0, 0xE4, 0x1C0, 0x180);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, BJ_TIM_CARD, 0);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_FACE_Y, BJ_CARDS_VRAM_X, BJ_CARDS_VRAM_Y + BJ_CARD_V);
     file_loadTim(tim);
-    file_setTimPos(tim, 0, 0xE5, 0x1C0, 0x180);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_BACK_Y, BJ_CARDS_VRAM_X, BJ_CARDS_VRAM_Y + BJ_CARD_V);
     file_loadTim(tim);
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4D, 0);
-    file_setTimPos(tim, 0, 0xE6, 0x1EC, 0x100);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, BJ_TIM_RANKS, 0);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_RANK_Y, BJ_CARDS_VRAM_X + BJ_RANK_BLACK_U / 2, BJ_CARDS_VRAM_Y);
     file_loadTim(tim);
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4E, 0);
-    file_setTimPos(tim, 0, 0xE0, 0x1C0, 0x100);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, BJ_TIM_JACK, 0);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_PICTURE_Y, BJ_CARDS_VRAM_X, BJ_CARDS_VRAM_Y);
     file_loadTim(tim);
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F50, 0);
-    file_setTimPos(tim, 0, 0xE1, 0x1D6, 0x100);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, BJ_TIM_QUEEN, 0);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_PICTURE_Y + 1, BJ_CARDS_VRAM_X + BJ_QUEEN_U / 2, BJ_CARDS_VRAM_Y);
     file_loadTim(tim);
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4F, 0);
-    file_setTimPos(tim, 0, 0xE2, 0x1C0, 0x140);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, BJ_TIM_KING, 0);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_PICTURE_Y + 2, BJ_CARDS_VRAM_X, BJ_CARDS_VRAM_Y + BJ_KING_V);
     file_loadTim(tim);
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F51, 0);
-    file_setTimPos(tim, 0, 0xE9, 0x280, 0x100);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, BJ_TIM_RESULTS, 0);
+    file_setTimPos(tim, BJ_CLUT_X, BJ_CLUT_RESULT_Y, BJ_RESULT_VRAM_X, BJ_RESULT_VRAM_Y);
     file_loadTim(tim);
-    setRECT(&g_bjClutRect, 0x20, 0xE4, 0x10, 1);
+    setRECT(&g_bjClutRect, BJ_FACE_WHITE_FIRST, BJ_CLUT_FACE_Y, ARRAY_COUNT(g_bjClut) * 2, 1);
     LoadImage(&g_bjClutRect, g_bjClut);
     DrawSync(0);
-    setDrawTPage(&g_bjTpage, 1, 1, getTPage(1, 0, 0x1C0, 0x100));
+    setDrawTPage(&g_bjTpage, 1, 1, getTPage(1, 0, BJ_CARDS_VRAM_X, BJ_CARDS_VRAM_Y));
     if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
         ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
-        ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, SND_VOL_MAX);
+        ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, ENDING_MUSIC_FADE_FRAMES, 0, SND_VOL_MAX);
     }
     game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_bjState = BJ_ST_START;

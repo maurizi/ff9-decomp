@@ -7,7 +7,7 @@ s32 opening_movieThenTitle(void) {
     s32 mbgStatus;
     s32 end;
 
-    mbgWork = g_loadAreaEnd + 0x106700;
+    mbgWork = g_loadAreaEnd + LOAD_MOVIE_WORK;
     timer = -1;
     opening_movieInit();
     do {
@@ -146,7 +146,7 @@ s32 opening_movieInit(void) {
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     file = file_find(DIR_OVERLAYS, OVL_MOVIE);
-    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, NULL);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + LOAD_MOVIE_OVL, 0, LOAD_MOVIE_OVL_SIZE, NULL);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     EnterCriticalSection();

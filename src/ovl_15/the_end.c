@@ -125,7 +125,7 @@ s32 ending_theEndInit(void) {
     file_loadTim(timAddr);
     akao_stopMusic(0);
     ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
-    ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, SND_VOL_MAX);
+    ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, ENDING_MUSIC_FADE_FRAMES, 0, SND_VOL_MAX);
     game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_theEndState = THEEND_ST_START;
     g_theEndInitWord = 0;
@@ -181,14 +181,14 @@ s32 ending_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                     akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
                 g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
-                g_gameState->gameData->musicBank[0] = 0x1F3;
+                g_gameState->gameData->musicBank[0] = ENDING_MUSIC_BANK_ID;
                 g_gameState->gameData->musicId[0] = soundId;
-                g_gameState->gameData->musicVolume[0] = 0x7F;
+                g_gameState->gameData->musicVolume[0] = SND_VOL_MAX;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             gd = g_gameState->gameData;
             if (!(gd->flags & GD_MUSIC_PLAYING)) {
-                akao_fadeMusicVolumeFrom(gd->musicHandle[0], 0xA, 0, gd->musicVolume[0]);
+                akao_fadeMusicVolumeFrom(gd->musicHandle[0], ENDING_MUSIC_START_FRAMES, 0, gd->musicVolume[0]);
             }
             g_endingSoundPending = -1;
             g_gameState->gameData->flags |= GD_MUSIC_LOADED | GD_MUSIC_PLAYING;
@@ -196,7 +196,7 @@ s32 ending_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         case SND_CMD_STOP:
             if (g_gameState->gameData->musicId[0] == (u16)id) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
-                g_gameState->gameData->musicVolume[0] = 0x7F;
+                g_gameState->gameData->musicVolume[0] = SND_VOL_MAX;
                 g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             }
             return 0;
@@ -327,8 +327,8 @@ void ending_exit(void) {
 
     SetDispMask(0);
     if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
-        ending_soundCmd(SND_SONG_VOL_INTPL, ENDING_MUSIC, 0x5A, 0, 0);
-        for (i = 0x59; i >= 0; i--) {
+        ending_soundCmd(SND_SONG_VOL_INTPL, ENDING_MUSIC, ENDING_MUSIC_FADE_FRAMES, 0, 0);
+        for (i = ENDING_MUSIC_FADE_FRAMES - 1; i >= 0; i--) {
             VSync(0);
         }
     }
@@ -354,7 +354,7 @@ void ending_loadData(void) {
     u8 *data;
     FileEntry *file;
 
-    data = g_loadAreaEnd + 0x10000;
+    data = g_loadAreaEnd + LOAD_ENDING_DATA;
     file = file_find(DIR_COMMON, FILE_ENDING_DATA);
     cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, data, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
