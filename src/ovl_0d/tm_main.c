@@ -109,7 +109,7 @@ s32 tm_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             gd = g_gameState->gameData;
             if (!(gd->flags & GD_MUSIC_PLAYING)) {
-                akao_fadeMusicVolumeFrom(gd->musicHandle[0], 0xA, 0, gd->musicVolume[0]);
+                akao_fadeMusicVolumeFrom(gd->musicHandle[0], TM_MUSIC_FADE_IN_FRAMES, 0, gd->musicVolume[0]);
             }
             g_tmMusicRequest = -1;
             g_gameState->gameData->flags |= GD_MUSIC_LOADED | GD_MUSIC_PLAYING;

@@ -559,6 +559,385 @@ s32 tm_getStockCursorId(TmState *);
 void tm_setHelpArea(s16);
 extern u8 g_tmSlash[];
 
+/* ---- Tetra Master layout and tuning (R44) ---- */
+/* Screen positions are pixels on the 320 x 240 card-game screen (the background is 20 x 15 tiles of 16). UVs are
+ * texel positions inside the texture page the sprite is drawn with. */
+#define TM_SCREEN_H 240 /* help-window bounds height (tm_setHelpArea, GET SELECT) */
+#define TM_NUM_OPPONENTS 256 /* g_tmOpponents entries */
+#define TM_NUM_DECKS 64      /* g_tmDecks entries */
+#define TM_STARTER_CARDS 8   /* random cards tm_setup gives a player who has fewer than TM_HAND_SIZE */
+
+/* VRAM (tm_setup): where each graphics file and its CLUT row go (every CLUT at x 0), and the texture pages the draw
+ * functions use. The 8-bit page at (TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y) also covers the coin file below the parts file,
+ * so the coin's sprites are drawn from that page with v >= 0x80. */
+#define TM_VRAM_BG_X 0x280       /* TM_FILE_BG, y 0 */
+#define TM_VRAM_BG_RIGHT_X 0x300 /* TM_FILE_BG_RIGHT, y 0 */
+#define TM_VRAM_BOARD_X 0x340    /* TM_FILE_BOARD, y 0 */
+#define TM_VRAM_PARTS_X 0x300    /* TM_FILE_SCORE_DIGITS: score numerals, card frames and backs, blocks, arrows */
+#define TM_VRAM_PARTS_Y 0x100
+#define TM_VRAM_COIN_Y 0x180     /* TM_FILE_COIN, at x TM_VRAM_PARTS_X: coin, pointer, badges, stat font */
+#define TM_VRAM_BATTLE_X 0x200   /* TM_FILE_BATTLE: the clash animation */
+#define TM_VRAM_BATTLE_Y 0x100
+#define TM_VRAM_SELECT_X 0x340   /* TM_FILE_SELECT_PARTS: stock icons and digits, "Select!", battle digits */
+#define TM_VRAM_SELECT_Y 0x1E0
+#define TM_VRAM_RESULT_X 0x280   /* TM_FILE_RESULT_TEXT: result banners, stock titles, combo label */
+#define TM_VRAM_RESULT_Y 0x100
+#define TM_VRAM_CARDS_Y 0x100    /* card pictures: TM_CARDS_PER_PAGE per page, page p at x p * TM_CARD_PAGE_W */
+#define TM_CARD_PAGE_W 128       /* VRAM columns of one card page (256 texels at 8 bpp) */
+#define TM_CARDS_PER_PAGE 30
+#define TM_CARDS_PER_ROW 6       /* TM_CARD_W x TM_CARD_H cells, 5 rows per page */
+#define TM_CARD_TIM_SIZE 0xA80   /* each card's TIM in TM_FILE_CARDS */
+#define TM_CLUT_BG 0xE0
+#define TM_CLUT_BOARD 0xE7
+#define TM_CLUT_RESULT 0xE9
+#define TM_CLUT_PARTS 0xEA
+#define TM_CLUT_COIN 0xEB
+#define TM_CLUT_BATTLE 0xEC
+#define TM_CLUT_SELECT 0xED
+#define TM_CLUT_BG_RIGHT 0xEE   /* also the stock frame and record panel pieces, drawn from the BG_RIGHT page */
+#define TM_CLUT_CARDS_X 0x180   /* card picture CLUTs: one row per card id from TM_CLUT_CARDS_Y */
+#define TM_CLUT_CARDS_Y 0x19C
+
+/* OT layers (higher = farther; the scene OT has OT_LEN entries) */
+#define TM_OT_BG 0xFFE         /* background tiles */
+#define TM_OT_BOARD 0xFFA      /* board picture, stock frame and titles */
+#define TM_OT_TEXT TM_OT_BOARD /* labels and digits (text_drawBlock / ui_drawSmallDigits / ui_drawDigits) */
+#define TM_OT_SCORE 0xFF0      /* captured-card counts */
+#define TM_OT_BLOCK 100        /* block stones */
+#define TM_OT_BLOCK_ZOOM 99    /* the block zooming in (ENEMY APEAR) */
+#define TM_OT_CARDS_BACK 0x3C  /* hand card i at TM_OT_CARDS_BACK - i (earlier cards farther) */
+#define TM_OT_CARDS 0x28       /* card depth while dealt or in the stock (+ i there), the selected captured card, the R1 label */
+#define TM_OT_DEFENDER 0x27    /* the two cards of a battle, in front of the others */
+#define TM_OT_ATTACKER 0x26
+#define TM_OT_FLASH 30         /* capture flash, clash sprite, trade badge */
+#define TM_OT_PANEL 11         /* stock grid, frame bars and counts; battle value digits */
+#define TM_OT_COIN 10          /* coin toss, combo label */
+#define TM_OT_WIN_TOP 6        /* confirm / don't-have-5 windows */
+#define TM_OT_CURSOR_BACK 6    /* held pointer, stock hand behind the discard window */
+#define TM_OT_WIN 5            /* other message windows, the R1 card name box */
+#define TM_OT_HELP 4           /* g_menuHelp.otz */
+#define TM_OT_CURSOR 3         /* pointer, hand cursor, the GET SELECT stock-count box */
+#define TM_OT_RESULT 1         /* WIN / LOSE / PERFECT / DRAW banner */
+
+/* Fades and timings (frames) */
+#define TM_START_FADE_FRAMES 12    /* fade_in at tm_setup */
+#define TM_FIELD_FADE_STEP 4       /* FIELD FADE: the background darkens / the board brightens by this per frame, */
+#define TM_FIELD_FADE_FRAMES 0x20  /* and after this many frames the enemy hand is dealt (ENEMY APEAR) */
+#define TM_END_FADE_FRAMES 30      /* END FADE: screen wipe and music fade-out */
+#define TM_MUSIC_FADE_IN_FRAMES 10 /* song volume ramp when the music starts (tm_soundCmd) */
+#define TM_RESULT_FADE_STEP 8      /* result banner brightness per frame */
+#define TM_RESULT_INPUT_DELAY 0x22 /* RESULT: frames before Circle / Cross continue */
+#define TM_NAME_SLIDE_FRAMES 10    /* R1 held: frames the card name box takes to slide in */
+#define TM_NAME_SLIDE_STEP 12      /* pixels per frame of that slide */
+#define TM_STOCK_SCROLL_FRAMES 4   /* L1 / R1 step to another copy of the card in the stock */
+#define TM_GATHER_FRAMES 20        /* cards gliding back into the hands after the game (tm_startCardMove) */
+#define TM_GATHER_PAUSE 10         /* frames after that before the trade starts */
+#define TM_TRADE_MOVE_FRAMES 10    /* a traded card gliding to the middle and back (tm_nextTrade) */
+#define TM_VALUES_FRAMES 60        /* battle values stay this long after the last battle frame */
+#define TM_COMBO_FRAMES 50         /* combo label */
+#define TM_FLASH_IN_STEP 30        /* FLASH / FLASH2 brightening per frame */
+#define TM_FLASH_HOLD 10           /* FLASH: frames from the start until it fades */
+#define TM_FLASH_OUT_STEP 15       /* FLASH fade-out per frame */
+#define TM_FLASH2_OUT_STEP 12      /* FLASH2 (trade flips) fade-out per frame */
+#define TM_COMBO_BAR_STEP 9        /* combo sweep bars fade per frame */
+#define TM_COMBO_SWEEP_FRAMES 28   /* the bars cross the whole card in this many frames */
+#define TM_FLASH_BAR_W 4           /* thickness of a combo sweep bar */
+#define TM_FLASH_ARROW_FRAMES 0x15 /* FLASH ARROW: the combo arrow blinks this long */
+#define TM_APPEAR_DELAY 15         /* ENEMY APEAR: frames before the first enemy card lands */
+#define TM_APPEAR_STAGGER 6        /* frames between two enemy cards landing */
+#define TM_APPEAR_FRAMES 0x29      /* ENEMY APEAR lasts at least this long (and until the blocks are done) */
+#define TM_BLOCK_INTERVAL 9        /* frames between two block stones appearing */
+#define TM_BLOCK_ZOOM_FRAMES 10    /* a block stone shrinks onto its square over this many frames */
+#define TM_THINK_MIN 15            /* ENEMY THINK: first pause, TM_THINK_MIN + (rand & TM_THINK_RAND) frames, */
+#define TM_THINK_RAND 0xF
+#define TM_THINK_CARD_FRAMES 4     /* then the hand cards are pulled out one after another, this long each */
+#define TM_LUNGE_FRAMES 15         /* BATTLE: the two cards lunge at each other from TM_FIGHT_CLASH */
+#define TM_CLASH_W 40              /* clash animation frame size: 4 frames per row of the battle file, 4 ticks */
+#define TM_CLASH_H 0x30            /* each; the first TM_LUNGE_FRAMES frames are TM_CLASH_W tall */
+#define TM_COIN_SPIN_FRAMES 0x29   /* COIN: minimum spin before the coin stops on the winner's face */
+#define TM_COIN_FRAMES 8          /* spin animation frames (g_tmCoinFrames), one per frame */
+#define TM_COIN_FACE_PLAYER 7      /* coin frame (g_tmCoinFrames) that shows the player's face */
+#define TM_COIN_FACE_ENEMY 3
+#define TM_COIN_FLY_START 0x1E     /* after landing: frames until the coin flies off, */
+#define TM_COIN_FLY_FRAMES 12      /* and the flight; COIN ends at TM_COIN_FLY_START + TM_COIN_FLY_FRAMES */
+#define TM_COIN_FADE_STEP 10       /* coin brightness lost per frame of the flight */
+
+/* Odds */
+/* tm_dealEnemyHand: a roll 0-255 picks TmDeck.ids[slot]. Slots 0-11 each take TM_DECK_ODDS rolls, the rare slots
+ * 12-15 the rest: 12 / 256, 2 / 256, 1 / 256, 1 / 256. */
+#define TM_DECK_ODDS 20
+#define TM_DECK_BAND(slot) (((slot) + 1) * TM_DECK_ODDS) /* roll below this: slot or lower */
+#define TM_DECK_BAND_12 252
+#define TM_DECK_BAND_13 254
+#define TM_DECK_BAND_14 255
+/* tm_placeBlocks: a roll 0-99 picks the number of block stones (cumulative bands; 6 otherwise, 3 %) */
+#define TM_BLOCKS_BAND_0 3  /* none, 3 % */
+#define TM_BLOCKS_BAND_1 7  /* 1 block, 4 % */
+#define TM_BLOCKS_BAND_2 12 /* 2, 5 % */
+#define TM_BLOCKS_BAND_3 17 /* 3, 5 % */
+#define TM_BLOCKS_BAND_4 27 /* 4, 10 % */
+#define TM_BLOCKS_BAND_5 97 /* 5, 70 % */
+/* Card type changes: rand() & mask == 0 */
+#define TM_UPGRADE_X_MASK 0x3F /* a P or M card that wins a battle becomes X (1 / 64) */
+#define TM_UPGRADE_A_MASK 0x7F /* an X card that wins a battle becomes A (1 / 128) */
+#define TM_RANDOM_X_MASK 0x7F  /* a freshly made card is X whatever its data says (1 / 128, tm_makeCard) */
+/* tm_enemySelect scoring. A square scores (cards it captures unopposed) * weight + (win percent of the battle it
+ * starts) * multiplier; the weights depend on the current card counts. */
+#define TM_AI_TIED_WEIGHT 0x40  /* counts equal */
+#define TM_AI_AHEAD_WEIGHT 0x43 /* enemy ahead */
+#define TM_AI_BEHIND_WEIGHT 1   /* enemy behind: battles count TM_AI_BEHIND_MUL times instead */
+#define TM_AI_BEHIND_MUL 5
+#define TM_AI_WEAK_PCT 29       /* chance per move that TM_AI_WEAK scores at all (else a random free square) */
+#define TM_AI_FAIR_PCT 63
+#define TM_AI_STRONG_PCT 93
+#define TM_AI_EXPERT_RISK_PCT 60   /* TM_AI_EXPERT: a battle below this win percent scores win% - 100 (negative), */
+#define TM_AI_EXPERT_RISK_BASE 145 /* one at or above it TM_AI_EXPERT_RISK_BASE - win% (best just above the line) */
+#define TM_AI_SCORE_NONE (-0x7FFF) /* occupied square / no best yet */
+#define TM_AI_TIE_ROLL 1000        /* ties: each equal square is taken with chance 1 / count, rolled out of this */
+
+/* Card stats tm_levelUpStat raises (one at random after a win) */
+enum { TM_STAT_POWER, TM_STAT_PDEF, TM_STAT_MDEF, TM_NUM_STATS };
+
+/* Board and hands */
+#define TM_BOARD_PIC_X 0x30     /* board picture: 14 x 15 tiles from here; the background only shows beside it */
+#define TM_BOARD_PIC_TILES 14
+#define TM_BG_TILES_X 16        /* TM_FILE_BG: 256 pixels wide; TM_FILE_BG_RIGHT fills the last 4 tile columns */
+#define TM_BG_RIGHT_TILES 4
+#define TM_BG_TILES_Y 15
+#define TM_SMALL_CARD_W 0x22    /* a small card (TmCard.small, the 5-card player hand) */
+#define TM_SMALL_CARD_H 0x29
+#define TM_PLAYER_HAND_Y 8      /* first player hand card; later ones TM_HAND_STEP (TM_HAND_STEP_SMALL) apart */
+#define TM_HAND_STEP 0x34
+#define TM_HAND_STEP_SMALL 0x2A
+#define TM_SMALL_HAND_DX 4      /* small hand cards sit this much right of TM_PLAYER_HAND_X */
+#define TM_ENEMY_HAND_Y 0x1A    /* enemy hand: cards TM_ENEMY_HAND_STEP apart */
+#define TM_ENEMY_HAND_STEP 14
+#define TM_ENEMY_PULL_X 0x1A    /* ENEMY THINK: the card being considered, pulled out of the hand */
+#define TM_CAPTURED_SEL_X 0x16  /* GET SELECT: the captured card under the cursor */
+#define TM_DEAL_Y 0x12C         /* enemy cards start below the screen and drop in */
+#define TM_PILE_Y 0x19          /* after the game: hands stacked from here, TM_PILE_STEP apart (tm_stackHands */
+#define TM_PILE_STEP 32         /* squeezes 5 or more into TM_PILE_SPAN) */
+#define TM_PILE_SPAN 0x80
+#define TM_TRADE_CARD_X 0x8B    /* a card changing hands is shown here (screen middle) */
+#define TM_TRADE_CARD_Y 0x55
+#define TM_TRADE_DROP_Y 0x99    /* CHANGE2: it glides from there towards this y, then joins its pile */
+#define TM_PILE_DIM_STEP 22     /* stock screen: the copies behind the shown card get this much darker each */
+#define TM_CARD_DIM 0x40        /* unselected hand cards (PLAYER CARD SET), non-target board cards (BATTLE SELECT) */
+#define TM_TARGET_BLINK 24      /* BATTLE SELECT: a target card's face darkens by this every other 16 frames */
+
+/* Pointer (tm_drawCursor): an animated 24 x 16 hand from the coin file, with a shadow TM_POINTER_SHADOW down-right */
+enum {
+    TM_CURSOR_POINT, /* the active pointer */
+    TM_CURSOR_HELD,  /* translucent copy left at the hand card while placing it */
+    TM_CURSOR_MIRROR /* pointing left (POLY_FT4 with swapped u), right of a captured card in GET SELECT */
+};
+#define TM_POINTER_W 0x18
+#define TM_POINTER_H 0x10
+#define TM_POINTER_FRAMES 8 /* animation frames, TM_POINTER_W apart */
+#define TM_POINTER_TICKS 6 /* frames per animation frame */
+#define TM_POINTER_SHADOW 4
+#define TM_UV_POINTER_V 0x80
+#define TM_CURSOR_DX (-0xF) /* pointer left of a card or square */
+#define TM_CURSOR_DY 6
+#define TM_CURSOR_SMALL_DX (-0x12) /* left of a small card */
+#define TM_CURSOR_SMALL_DY 3
+#define TM_HELP_DX 2 /* g_menuHelp.x/y relative to the pointer */
+#define TM_HELP_DY 1
+#define TM_GET_CURSOR_DX 0x22 /* GET SELECT mirrored pointer, from the captured card */
+#define TM_GET_CURSOR_DY 5
+#define TM_GET_HELP_DX 0x25
+#define TM_GET_HELP_DY 6
+#define TM_GET_HELP_W 0x12C   /* help bounds right of the card */
+
+/* Sprites in the parts page (TM_VRAM_PARTS_*) */
+#define TM_UV_FRAME_V 0x40       /* card frames and block stones, TM_CARD_W x TM_CARD_H each */
+#define TM_UV_FRAME_PLAYER_U 8   /* blue frame (also the shrunk small cards) */
+#define TM_UV_FRAME_ENEMY_U 0x38 /* red frame */
+#define TM_UV_BLOCK_U 0x68       /* block stone, TmBlock.style 0 */
+#define TM_UV_BLOCK2_U 0x98      /* style 1 */
+#define TM_UV_CARD_BACK_U 0xC8   /* TmCard.hidden */
+#define TM_UV_STAT_U 0x50        /* stat font (coin file, 8 x 8): glyph g at u TM_UV_STAT_U + g * 8 */
+#define TM_UV_STAT_V 0xC0
+#define TM_GLYPH_A 0xA           /* the type letters; A shares the hex digit's glyph */
+#define TM_GLYPH_P 0x10
+#define TM_GLYPH_M 0x11
+#define TM_GLYPH_X 0x12
+#define TM_STAT_Y 0x28           /* stat row on a card: power, type, physical and magic defence */
+#define TM_STAT_POWER_X 9
+#define TM_STAT_TYPE_X 15
+#define TM_STAT_PDEF_X 0x15
+#define TM_STAT_MDEF_X 0x1B
+#define TM_UV_NEW_CARD_U 0x20    /* trade badge (CARD_CHANGE, coin file): "NEW Card" when you win your first copy, */
+#define TM_UV_NEW_CARD_V 0x90
+#define TM_UV_LAST_ONE_U 0xC0    /* "Last ONE!" when you lose your last copy */
+#define TM_UV_LAST_ONE_V 0x80
+#define TM_BADGE_X 0xA3          /* at the top right of the traded card */
+#define TM_BADGE_Y 0x45
+#define TM_BADGE_W 0x38
+#define TM_BADGE_H 0x18
+
+/* Score: captured-card counts (tm_drawScore), big numerals: 1-9 at u (n - 1) * 16, 0 and 10 separate */
+#define TM_SCORE_PLAYER_X 0x28
+#define TM_SCORE_PLAYER_Y 0xB9
+#define TM_SCORE_ENEMY_X 0x1A
+#define TM_SCORE_ENEMY_Y 0x93
+#define TM_SCORE_DIGIT_W 0x10
+#define TM_SCORE_H 0x20
+#define TM_UV_SCORE_PLAYER_V 0   /* blue */
+#define TM_UV_SCORE_ENEMY_V 0x20 /* orange */
+#define TM_UV_SCORE_ZERO_U 0x90
+#define TM_UV_SCORE_TEN_U 0xA0   /* "10", two digits wide */
+#define TM_SCORE_MID_X 0x10      /* the 0x30-wide piece between the two counts (runtime: pending R44) */
+#define TM_SCORE_MID_Y 0xAA
+
+/* Battle values (tm_drawBattleValues): select-parts digits over each fighting card */
+#define TM_VALUE_DX 8
+#define TM_VALUE_DY 0x12
+#define TM_BIG_DIGIT_ADV 9 /* advance per digit (10 x 16 glyphs) */
+
+/* Combo label (tm_drawCombo): digit at the square's pointer position, "COMBO" right of it, both shadowed */
+#define TM_COMBO_DY 0x11 /* comboY from the square's top (comboX: the pointer's TM_CURSOR_DX) */
+#define TM_COMBO_LABEL_DX 0x10
+#define TM_LABEL_SHADOW 2
+
+/* Coin toss (tm_taskCoin) */
+#define TM_COIN_X 0x9D
+#define TM_COIN_Y 0x5C
+#define TM_COIN_H 0x28
+
+/* Result banner (tm_drawResult): two layers, additive then subtractive, at y TM_RESULT_Y */
+#define TM_RESULT_Y 0x58
+#define TM_RESULT_H 0x28
+#define TM_RESULT_PERFECT_X 0x4A
+#define TM_RESULT_WIN_X 0x6C
+#define TM_RESULT_LOSE_X 0x6A
+#define TM_RESULT_DRAW_X 0x5C
+
+/* BATTLE SELECT target marker ("Select!", select-parts page) */
+#define TM_SELECT_MARK_DX 5
+#define TM_SELECT_MARK_DY 0x15
+
+/* R1 card name box (PLAYER CARD SELECT) and the GET SELECT stock-count box: text TM_BOX_PAD_X in, TM_BOX_TEXT_DY
+ * down */
+#define TM_NAME_BOX_CX 0x11A /* centred on the hand column, kept left of the screen edge minus TM_BOX_PAD_X * 2 */
+#define TM_BOX_H 0x19
+#define TM_BOX_PAD_X 8
+#define TM_BOX_TEXT_DY 6
+#define TM_GET_BOX_X 0x52    /* GET SELECT "Stock: n" box, TM_GET_BOX_DY above the card */
+#define TM_GET_BOX_DY 9
+#define TM_R1_ICON_X 0x12    /* top left: the R1 button icon (TM_TEXT_ICON_R1) */
+#define TM_R1_ICON_Y 9
+#define TM_R1_LABEL_X 0x1F   /* and the coin-file label beside it (runtime: pending R44) */
+#define TM_R1_LABEL_Y 0xC
+
+/* Message windows (win_openFree, centred unless an x is given): text TM_WIN_TEXT_X in, width = text +
+ * 2 * TM_WIN_TEXT_X (2 * TM_BOX_PAD_X for the trade window) */
+#define TM_WIN_TEXT_X 9
+#define TM_WIN_DRAW_Y 0x59    /* "The game ended in a draw..." */
+#define TM_WIN_DRAW_H 0x2B
+#define TM_WIN_LESS5_Y 0x5B   /* "You don't have 5 cards..." */
+#define TM_WIN_LESS5_H 0x2B
+#define TM_WIN_OVER100_Y 0x5B /* "You have over 100 cards..." */
+#define TM_WIN_OVER100_H 0x2A
+#define TM_WIN_QUIT_Y 0x54    /* "End card game? Yes/No" */
+#define TM_WIN_QUIT_H 0x38
+#define TM_WIN_CONFIRM_Y 0x53 /* "Confirm selection? Yes/No" */
+#define TM_WIN_CONFIRM_H 0x3A
+#define TM_WIN_REMATCH_Y 0x54 /* "Play a rematch? Yes/No" */
+#define TM_WIN_REMATCH_H 0x39
+#define TM_WIN_DISCARD_X 0xB9 /* "Discard? Yes/No", right of the stock grid */
+#define TM_WIN_DISCARD_Y 0x35
+#define TM_WIN_DISCARD_H 0x38
+#define TM_WIN_TRADE_Y 0x96   /* " Received " / " Lost " + card name */
+#define TM_WIN_TRADE_H 0x1A
+#define TM_TRADE_TEXT_CX 0x9F
+/* Yes / No hand positions and help widths (tm_setHelpArea) */
+#define TM_ASK_HAND_X 0x7B    /* confirm and quit windows */
+#define TM_ASK_YES_Y 0x6C
+#define TM_ASK_NO_Y 0x7B
+#define TM_ASK_HELP_W 0x8D
+#define TM_REMATCH_HAND_X 0x7D
+#define TM_REMATCH_YES_Y 0x6B
+#define TM_REMATCH_NO_Y 0x7B
+#define TM_REMATCH_HELP_W 0x89
+#define TM_DISCARD_HAND_X 0xBC
+#define TM_DISCARD_YES_Y 0x4D
+#define TM_DISCARD_NO_Y 0x5C
+#define TM_DISCARD_HELP_W 0xCE
+#define TM_HAND_HELP_W 0x104  /* PLAYER CARD SELECT help width (TM_HAND_HELP_W_SMALL for the 5-card hand) */
+#define TM_HAND_HELP_W_SMALL 0x108
+
+/* Stock screen (tm_drawStock, tm_stockInput, tm_showStockCard) */
+#define TM_STOCK_GRID_X 0x12  /* the TM_STOCK_SIDE x TM_STOCK_SIDE card-kind grid, column = id / TM_STOCK_SIDE */
+#define TM_STOCK_GRID_Y 0x2D
+#define TM_STOCK_CELL 15      /* grid pitch; each cell a 16 x 16 rarity icon */
+#define TM_STOCK_HAND_DY 3    /* hand cursor at the cell's TM_CURSOR_DX, this far down */
+#define TM_STOCK_COUNT_DX 9   /* copy count: ones digit this far into the cell, the others TM_STOCK_DIGIT_W left */
+#define TM_STOCK_COUNT_DY 8
+#define TM_STOCK_DIGIT_W 4    /* 4 x 5 digits */
+#define TM_STOCK_FRAME_X 9    /* grid frame: horizontal bars TM_STOCK_FRAME_W wide */
+#define TM_STOCK_FRAME_TOP_Y 0x29
+#define TM_STOCK_FRAME_BOTTOM_Y 0xBE
+#define TM_STOCK_FRAME_W 0xA8
+#define TM_STOCK_FRAME_LEFT_X 0xD /* vertical bars TM_STOCK_FRAME_H tall */
+#define TM_STOCK_FRAME_RIGHT_X 0xA5
+#define TM_STOCK_FRAME_SIDE_Y 0x2B
+#define TM_STOCK_FRAME_H 0x98
+#define TM_STOCK_HELP_X 0xD   /* help bounds while picking in the grid */
+#define TM_STOCK_HELP_W 0x9E
+#define TM_STOCK_HELP_H 0xDE
+#define TM_STOCK_LABEL_Y 0xCB /* "Stock:" n  "Type:" n under the grid */
+#define TM_STOCK_VALUE_Y 0xC9
+#define TM_STOCK_COUNT_LABEL_X 0x19
+#define TM_STOCK_COUNT_X 0x43
+#define TM_STOCK_TYPES_LABEL_X 0x65
+#define TM_STOCK_TYPES_X 0x89
+#define TM_RECORD_LABEL_X 0xBC /* WIN / LOSE / DRAW record panel (card selection only) */
+#define TM_RECORD_VALUE_X 0xDC
+#define TM_RECORD_WIN_Y 0x42
+#define TM_RECORD_LOSE_Y 0x4C
+#define TM_RECORD_DRAW_Y 0x56
+#define TM_RECORD_LEFT_X 0xB5  /* its frame: 8 x 8 corners and edges */
+#define TM_RECORD_RIGHT_X 0xF6
+#define TM_RECORD_TOP_Y 0x3D
+#define TM_RECORD_BOTTOM_Y 0x5A
+#define TM_RECORD_EDGE_X 0xB9  /* first top / bottom edge piece (8 of them) */
+#define TM_RECORD_SIDE_Y 0x43  /* first side piece (3 of them) */
+#define TM_RECORD_FILL_X 0xB8
+#define TM_RECORD_FILL_Y 0x41
+#define TM_RECORD_FILL_W 0x46
+#define TM_RECORD_FILL_H 0x1E
+#define TM_STOCK_CARD_X 0xC2   /* the card under the cursor, its copies piled TM_PILE_DX right and 1 down each */
+#define TM_STOCK_CARD_Y 0x81
+#define TM_PILE_DX 4
+#define TM_STOCK_NO_X 0xD8     /* "NO" label and card number above it, centred on the number's width */
+#define TM_STOCK_NO_Y 0x78
+#define TM_STOCK_NUM_X 0xE6
+#define TM_STOCK_NUM_Y 0x76
+#define TM_STOCK_NAME_CX 0xD9  /* card name below it */
+#define TM_STOCK_NAME_Y 0xC7
+#define TM_COPY_NUM_X 0xBF     /* "n / total" copy counter between the L1 and R1 icons */
+#define TM_COPY_SLASH_X 0xD4
+#define TM_COPY_TOTAL_X 0xDB
+#define TM_COPY_Y 0xBA
+#define TM_COPY_L1_X 0xB5
+#define TM_COPY_R1_X 0xF1
+#define TM_COPY_ICON_Y 0xB6
+/* Stock title sprites (result-text page). Card selection shows two (runtime: pending R44); discarding shows one
+ * between two blinking arrows. */
+#define TM_TITLE_SELECT_X 0x58
+#define TM_TITLE_SELECT_Y 0xA
+#define TM_TITLE_SELECT2_X 0x8C
+#define TM_TITLE_SELECT2_Y 0xC
+#define TM_TITLE_DISCARD_X 0x79
+#define TM_TITLE_DISCARD_Y 0xE
+#define TM_TITLE_ARROW_R_X 0xCA
+#define TM_TITLE_ARROW_L_X 0x66
+#define TM_TITLE_ARROW_Y 0x12
+#define TM_TITLE_TEXT_Y 0x10   /* title window callbacks no C code installs (tm_drawSelectTitle, tm_drawDiscardTitle) */
+#define TM_TITLE_TEXT_SELECT_X 0x8A
+#define TM_TITLE_TEXT_DISCARD_X 0x82
+
 /* main exe: candidates for ff9.h */
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 s32 text_measureDigits(u8 *);

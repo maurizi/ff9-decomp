@@ -325,22 +325,23 @@ void tm_setup(TmState *tm) {
     tm_loadImageFile();
     cardTims = tm_getFileEntry(TM_FILE_CARDS);
     for (i = 0; i < CARD_KINDS; i++) {
-        x = i / 30;
-        y = i % 30;
-        row = y / 6;
-        tm_loadTim((TmTim *)(cardTims + i * 0xA80), x * 128 + (y % 6) * 21, row * 51 + 0x100, 0x180, i + 0x19C);
+        x = i / TM_CARDS_PER_PAGE;
+        y = i % TM_CARDS_PER_PAGE;
+        row = y / TM_CARDS_PER_ROW;
+        tm_loadTim((TmTim *)(cardTims + i * TM_CARD_TIM_SIZE), x * TM_CARD_PAGE_W + (y % TM_CARDS_PER_ROW) * (TM_CARD_W / 2),
+                   row * TM_CARD_H + TM_VRAM_CARDS_Y, TM_CLUT_CARDS_X, i + TM_CLUT_CARDS_Y);
     }
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BG_RIGHT), 0x300, 0, 0, 0xEE);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BG), 0x280, 0, 0, 0xE0);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BOARD), 0x340, 0, 0, 0xE7);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_SCORE_DIGITS), 0x300, 0x100, 0, 0xEA);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_COIN), 0x300, 0x180, 0, 0xEB);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BATTLE), 0x200, 0x100, 0, 0xEC);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_SELECT_PARTS), 0x340, 0x1E0, 0, 0xED);
-    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_RESULT_TEXT), 0x280, 0x100, 0, 0xE9);
-    tm_copyFileEntry((u8 *)g_tmOpponents, TM_FILE_OPPONENTS, 0x200);
-    tm_copyFileEntry((u8 *)g_tmCardData, TM_FILE_CARD_DATA, 0x1F4);
-    tm_copyFileEntry((u8 *)g_tmDecks, TM_FILE_DECKS, 0x400);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BG_RIGHT), TM_VRAM_BG_RIGHT_X, 0, 0, TM_CLUT_BG_RIGHT);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BG), TM_VRAM_BG_X, 0, 0, TM_CLUT_BG);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BOARD), TM_VRAM_BOARD_X, 0, 0, TM_CLUT_BOARD);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_SCORE_DIGITS), TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y, 0, TM_CLUT_PARTS);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_COIN), TM_VRAM_PARTS_X, TM_VRAM_COIN_Y, 0, TM_CLUT_COIN);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BATTLE), TM_VRAM_BATTLE_X, TM_VRAM_BATTLE_Y, 0, TM_CLUT_BATTLE);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_SELECT_PARTS), TM_VRAM_SELECT_X, TM_VRAM_SELECT_Y, 0, TM_CLUT_SELECT);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_RESULT_TEXT), TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y, 0, TM_CLUT_RESULT);
+    tm_copyFileEntry((u8 *)g_tmOpponents, TM_FILE_OPPONENTS, TM_NUM_OPPONENTS * sizeof(TmOpponent));
+    tm_copyFileEntry((u8 *)g_tmCardData, TM_FILE_CARD_DATA, CARD_KINDS * sizeof(TmCardData));
+    tm_copyFileEntry((u8 *)g_tmDecks, TM_FILE_DECKS, TM_NUM_DECKS * sizeof(TmDeck));
     g_evtMode = EVT_MODE_FIELD;
     g_gameState->vsyncMode = 0;
     game_initGfx();
@@ -350,8 +351,8 @@ void tm_setup(TmState *tm) {
     g_menuHelp.text = 0;
     g_menuHelp.x = 0x50;
     g_menuHelp.y = 0x50;
-    g_menuHelp.otz = 4;
-    fade_in(0xC);
+    g_menuHelp.otz = TM_OT_HELP;
+    fade_in(TM_START_FADE_FRAMES);
     tm->wins = 0;
     tm->losses = 0;
     tm->draws = 0;
@@ -403,7 +404,7 @@ void tm_setup(TmState *tm) {
     tm->arrowOdds[8] = 1;
     tm->oddsRow = 0;
     if (card_countAll() < TM_HAND_SIZE) {
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < TM_STARTER_CARDS; i++) {
             tm_addRandomCard(tm, rand() % CARD_KINDS);
         }
     }
@@ -465,12 +466,12 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *prim, TmState *tm) {
     s32 y;
 
     bright = tm->brightness;
-    for (x = 0; x < 16; x++) {
-        for (y = 0; y < 15; y++) {
-            if (tm->showBoard == 0 || x < 3) {
-                if (tm->task == TM_TASK_FIELD_FADE && x >= 3) {
-                    if (tm->timer * 4 < 0x80) {
-                        bright = 0x80 - tm->timer * 4;
+    for (x = 0; x < TM_BG_TILES_X; x++) {
+        for (y = 0; y < TM_BG_TILES_Y; y++) {
+            if (tm->showBoard == 0 || x < TM_BOARD_PIC_X / 16) {
+                if (tm->task == TM_TASK_FIELD_FADE && x >= TM_BOARD_PIC_X / 16) {
+                    if (tm->timer * TM_FIELD_FADE_STEP < 0x80) {
+                        bright = 0x80 - tm->timer * TM_FIELD_FADE_STEP;
                     } else {
                         bright = 0;
                     }
@@ -483,43 +484,43 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *prim, TmState *tm) {
                 prim->g0 = bright;
                 prim->b0 = bright;
                 prim->u0 = x * 16;
-                prim->clut = getClut(0, 0xE0);
-                AddPrim(ot + 0xFFE, prim);
+                prim->clut = getClut(0, TM_CLUT_BG);
+                AddPrim(ot + TM_OT_BG, prim);
                 prim++;
             }
         }
     }
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x280, 0));
-    AddPrim(ot + 0xFFE, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_BG_X, 0));
+    AddPrim(ot + TM_OT_BG, prim);
     do {
         prim = (SPRT_16 *)((DR_TPAGE *)prim + 1);
     } while (0);
-    for (x = 0; x < 4; x++) {
-        for (y = 0; y < 15; y++) {
+    for (x = 0; x < TM_BG_RIGHT_TILES; x++) {
+        for (y = 0; y < TM_BG_TILES_Y; y++) {
             if (tm->showBoard == 0 || x > 0) {
                 if (tm->task == TM_TASK_FIELD_FADE && x == 0) {
-                    if (tm->timer * 4 < 0x80) {
-                        bright = 0x80 - tm->timer * 4;
+                    if (tm->timer * TM_FIELD_FADE_STEP < 0x80) {
+                        bright = 0x80 - tm->timer * TM_FIELD_FADE_STEP;
                     } else {
                         bright = 0;
                     }
                 }
                 setSprt16(prim);
-                prim->x0 = x * 16 + 0x100;
+                prim->x0 = x * 16 + TM_BG_TILES_X * 16;
                 prim->y0 = y * 16;
                 prim->v0 = y * 16;
                 prim->r0 = bright;
                 prim->g0 = bright;
                 prim->b0 = bright;
                 prim->u0 = x * 16;
-                prim->clut = getClut(0, 0xE0);
-                AddPrim(ot + 0xFFE, prim);
+                prim->clut = getClut(0, TM_CLUT_BG);
+                AddPrim(ot + TM_OT_BG, prim);
                 prim++;
             }
         }
     }
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x300, 0));
-    AddPrim(ot + 0xFFE, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_BG_RIGHT_X, 0));
+    AddPrim(ot + TM_OT_BG, prim);
     return (DR_TPAGE *)prim + 1;
 }
 
@@ -531,35 +532,35 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *prim, TmState *tm) {
 
     bright = tm->brightness;
     if (tm->task == TM_TASK_FIELD_FADE) {
-        bright = tm->timer * 4;
+        bright = tm->timer * TM_FIELD_FADE_STEP;
     }
-    for (x = 0; x < 14; x++) {
-        for (y = 0; y < 15; y++) {
+    for (x = 0; x < TM_BOARD_PIC_TILES; x++) {
+        for (y = 0; y < TM_BG_TILES_Y; y++) {
             setSprt16(prim);
             if (tm->task == TM_TASK_FIELD_FADE) {
                 prim->code = GPU_SPRT_16 | GPU_ABE;
             }
-            prim->x0 = x * 16 + 0x30;
+            prim->x0 = x * 16 + TM_BOARD_PIC_X;
             prim->y0 = y * 16;
             prim->v0 = y * 16;
             prim->r0 = bright;
             prim->g0 = bright;
             prim->b0 = bright;
             prim->u0 = x * 16;
-            prim->clut = getClut(0, 0xE7);
-            AddPrim(ot + 0xFFA, prim);
+            prim->clut = getClut(0, TM_CLUT_BOARD);
+            AddPrim(ot + TM_OT_BOARD, prim);
             prim++;
         }
     }
     tp = (DR_TPAGE *)prim;
-    setDrawTPage(tp, 0, 0, GetTPage(1, 1, 0x340, 0));
-    AddPrim(ot + 0xFFA, tp);
+    setDrawTPage(tp, 0, 0, GetTPage(1, 1, TM_VRAM_BOARD_X, 0));
+    AddPrim(ot + TM_OT_BOARD, tp);
     tp++;
-    if (tm->task == TM_TASK_FIELD_FADE && tm->timer >= 0x20) {
+    if (tm->task == TM_TASK_FIELD_FADE && tm->timer >= TM_FIELD_FADE_FRAMES) {
         tm->showBoard = 1;
         tm_dealEnemyHand(tm);
         tm->showScore = 1;
-        for (y = 4; y >= 0; y--) {
+        for (y = TM_HAND_SIZE - 1; y >= 0; y--) {
             tm->landed[y] = 0;
         }
         tm->showBlocks = 1;
@@ -612,25 +613,25 @@ void *tm_drawScore(u32 *ot, SPRT *prim, TmState *tm) {
     for (i = 0; i < 2; i++) {
         if (i == 0) {
             count = tm_countOnBoard(tm, TM_PLAYER);
-            x = 0x28;
-            y = 0xB9;
-            v = 0;
+            x = TM_SCORE_PLAYER_X;
+            y = TM_SCORE_PLAYER_Y;
+            v = TM_UV_SCORE_PLAYER_V;
         } else {
             count = tm_countOnBoard(tm, TM_ENEMY);
-            x = 0x1A;
-            y = 0x93;
-            v = 0x20;
+            x = TM_SCORE_ENEMY_X;
+            y = TM_SCORE_ENEMY_Y;
+            v = TM_UV_SCORE_ENEMY_V;
         }
-        u = (count - 1) * 16;
+        u = (count - 1) * TM_SCORE_DIGIT_W;
         if (count == 0) {
-            u = 0x90;
+            u = TM_UV_SCORE_ZERO_U;
         }
-        if (count == 10) {
-            u = 0xA0;
-            x -= 8;
-            w = 0x20;
+        if (count == TM_NUM_CARDS) {
+            u = TM_UV_SCORE_TEN_U;
+            x -= TM_SCORE_DIGIT_W / 2;
+            w = TM_SCORE_DIGIT_W * 2;
         } else {
-            w = 0x10;
+            w = TM_SCORE_DIGIT_W;
         }
         setSprt(prim);
         prim->x0 = x;
@@ -640,27 +641,27 @@ void *tm_drawScore(u32 *ot, SPRT *prim, TmState *tm) {
         prim->b0 = bright;
         prim->u0 = u;
         prim->v0 = v;
-        prim->clut = getClut(0, 0xEA);
+        prim->clut = getClut(0, TM_CLUT_PARTS);
         prim->w = w;
-        prim->h = 0x20;
-        AddPrim(ot + 0xFF0, prim);
+        prim->h = TM_SCORE_H;
+        AddPrim(ot + TM_OT_SCORE, prim);
         prim++;
     }
     setSprt(prim);
-    prim->x0 = 0x10;
-    prim->y0 = 0xAA;
+    prim->x0 = TM_SCORE_MID_X;
+    prim->y0 = TM_SCORE_MID_Y;
     prim->r0 = bright;
     prim->g0 = bright;
     prim->b0 = bright;
     prim->u0 = 0xC0;
     prim->v0 = 0;
-    prim->clut = getClut(0, 0xEA);
+    prim->clut = getClut(0, TM_CLUT_PARTS);
     prim->w = 0x30;
-    prim->h = 0x20;
-    AddPrim(ot + 0xFF0, prim);
+    prim->h = TM_SCORE_H;
+    AddPrim(ot + TM_OT_SCORE, prim);
     prim++;
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x300, 0x100));
-    AddPrim(ot + 0xFF0, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
+    AddPrim(ot + TM_OT_SCORE, prim);
     return (DR_TPAGE *)prim + 1;
 }
 
@@ -683,47 +684,47 @@ void *tm_taskPlayerSelect(u32 *ot, void *prim, TmState *tm) {
         pad = g_padRepeat;
         card = tm_getHandCard(tm, TM_PLAYER, tm->cursor);
         if (tm_countInHand(tm, TM_PLAYER) != TM_HAND_SIZE) {
-            ry = card->y + 0x34;
+            ry = card->y + TM_HAND_STEP;
             if (tm->cursor == 3) {
-                ry = card->y - 0x19;
+                ry = card->y - TM_BOX_H;
             }
         } else {
-            ry = card->y + 0x2A;
+            ry = card->y + TM_HAND_STEP_SMALL;
             if (tm->cursor == 4) {
-                ry = card->y - 0x19;
+                ry = card->y - TM_BOX_H;
             }
         }
         if (tm_countInHand(tm, TM_PLAYER) != 0) {
             if (tm_countPlayerHand(tm, TM_PLAYER) != TM_HAND_SIZE) {
-                w = 0x104;
-                x = card->x - 0xF;
-                y = card->y + 6;
+                w = TM_HAND_HELP_W;
+                x = card->x + TM_CURSOR_DX;
+                y = card->y + TM_CURSOR_DY;
             } else {
-                w = 0x108;
-                x = card->x - 0x12;
-                y = card->y + 3;
+                w = TM_HAND_HELP_W_SMALL;
+                x = card->x + TM_CURSOR_SMALL_DX;
+                y = card->y + TM_CURSOR_SMALL_DY;
             }
             tm_setHelpArea(w);
-            sp = tm_drawCursor(ot, prim, tm, x, y, 0);
-            g_menuHelp.x = x + 2;
-            g_menuHelp.y = y + 1;
+            sp = tm_drawCursor(ot, prim, tm, x, y, TM_CURSOR_POINT);
+            g_menuHelp.x = x + TM_HELP_DX;
+            g_menuHelp.y = y + TM_HELP_DY;
             g_menuHelp.text = text_get(TM_HELP_SELECT);
-            text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
+            text_drawBlock(TM_R1_ICON_X, TM_R1_ICON_Y, TM_OT_TEXT, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
             setSprt(sp);
-            sp->x0 = 0x1F;
-            sp->y0 = 0xC;
+            sp->x0 = TM_R1_LABEL_X;
+            sp->y0 = TM_R1_LABEL_Y;
             sp->v0 = 0xD0;
             sp->w = 0x1C;
             sp->h = 8;
-            sp->clut = getClut(0, 0xEB);
+            sp->clut = getClut(0, TM_CLUT_COIN);
             sp->u0 = 0x64;
             sp->r0 = 0x80;
             sp->g0 = 0x80;
             sp->b0 = 0x80;
-            AddPrim(ot + 0x28, sp);
+            AddPrim(ot + TM_OT_CARDS, sp);
             sp++;
-            setDrawTPage((DR_TPAGE *)sp, 0, 0, GetTPage(1, 0, 0x300, 0x100));
-            AddPrim(ot + 0x28, sp);
+            setDrawTPage((DR_TPAGE *)sp, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
+            AddPrim(ot + TM_OT_CARDS, sp);
             prim = (DR_TPAGE *)sp + 1;
             if (pad & PAD_UP) {
                 if (tm->cursor != 0) {
@@ -740,24 +741,24 @@ void *tm_taskPlayerSelect(u32 *ot, void *prim, TmState *tm) {
                 }
             }
             if (g_padHeld & BTN_R1) {
-                if (tm->nameSlide < 0xA) {
+                if (tm->nameSlide < TM_NAME_SLIDE_FRAMES) {
                     tm->nameSlide++;
                 }
             } else if (tm->nameSlide > 0) {
                 tm->nameSlide--;
             }
             if (tm->nameSlide > 0) {
-                nameRect.w = card_getNameWidth(card->id) + 0x10;
-                nameRect.x = 0x11A - nameRect.w / 2;
-                if (nameRect.x + nameRect.w >= 0x140) {
-                    nameRect.x = 0x130 - card_getNameWidth(card->id);
+                nameRect.w = card_getNameWidth(card->id) + TM_BOX_PAD_X * 2;
+                nameRect.x = TM_NAME_BOX_CX - nameRect.w / 2;
+                if (nameRect.x + nameRect.w >= SCREEN_W) {
+                    nameRect.x = SCREEN_W - TM_BOX_PAD_X * 2 - card_getNameWidth(card->id);
                 }
                 nameRect.y = ry;
-                nameRect.h = 0x19;
-                k = tm->nameSlide * 0xC - 0x78;
+                nameRect.h = TM_BOX_H;
+                k = tm->nameSlide * TM_NAME_SLIDE_STEP - TM_NAME_SLIDE_STEP * TM_NAME_SLIDE_FRAMES;
                 nameRect.x -= k;
-                text_drawBlock(nameRect.x + 8, nameRect.y + 6, 5, (u8 *)card_getName(card->id), TEXT_PAL_WHITE);
-                win_drawBox(&nameRect, 5, WIN_STYLE_BEVEL);
+                text_drawBlock(nameRect.x + TM_BOX_PAD_X, nameRect.y + TM_BOX_TEXT_DY, TM_OT_WIN, (u8 *)card_getName(card->id), TEXT_PAL_WHITE);
+                win_drawBox(&nameRect, TM_OT_WIN, WIN_STYLE_BEVEL);
             }
             if (pad & BTN_CROSS) {
                 tm->task = TM_TASK_PLAYER_SET;
@@ -789,18 +790,18 @@ void *tm_taskPlayerSet(u32 *ot, void *prim, TmState *tm) {
     cell = tm_getCell(tm, tm->boardX, tm->boardY);
     cx = tm->boardX * TM_SQUARE_W + TM_BOARD_X;
     cy = tm->boardY * TM_SQUARE_H + TM_BOARD_Y;
-    prim = tm_drawCursor(ot, prim, tm, cx - 0xF, cy + 6, 0);
+    prim = tm_drawCursor(ot, prim, tm, cx + TM_CURSOR_DX, cy + TM_CURSOR_DY, TM_CURSOR_POINT);
     card = tm_getHandCard(tm, TM_PLAYER, tm->cursor);
     if (tm_countPlayerHand(tm, TM_PLAYER) != TM_HAND_SIZE) {
-        x = card->x - 0xF;
-        y = card->y + 6;
+        x = card->x + TM_CURSOR_DX;
+        y = card->y + TM_CURSOR_DY;
     } else {
-        x = card->x - 0x12;
-        y = card->y + 3;
+        x = card->x + TM_CURSOR_SMALL_DX;
+        y = card->y + TM_CURSOR_SMALL_DY;
     }
-    prim = tm_drawCursor(ot, prim, tm, x, y, 1);
-    g_menuHelp.x = cx - 0xD;
-    g_menuHelp.y = cy + 7;
+    prim = tm_drawCursor(ot, prim, tm, x, y, TM_CURSOR_HELD);
+    g_menuHelp.x = cx + (TM_CURSOR_DX + TM_HELP_DX);
+    g_menuHelp.y = cy + (TM_CURSOR_DY + TM_HELP_DY);
     if (cell->state == TM_CELL_EMPTY) {
         g_menuHelp.text = text_get(TM_HELP_PLACE);
     } else {
@@ -855,7 +856,7 @@ void *tm_taskPlayerSet(u32 *ot, void *prim, TmState *tm) {
 void tm_taskResult(TmState *tm) {
     RECT rect;
 
-    if ((g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) && tm->timer >= 0x22) {
+    if ((g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) && tm->timer >= TM_RESULT_INPUT_DELAY) {
         tm->showBoard = 0;
         tm->showScore = 0;
         tm->showBlocks = 0;
@@ -872,11 +873,11 @@ void tm_taskResult(TmState *tm) {
             if ((u32)(tm->opponent - TM_OPP_FORCED) < TM_OPP_FORCED_NUM) {
                 rect.x = 0x59;
                 rect.w = 0x8F;
-                rect.w = text_measureWidth(text_get(TM_TEXT_DRAW)) + 0x12;
-                rect.x = 0xA0 - rect.w / 2;
-                rect.y = 0x59;
-                rect.h = 0x2B;
-                tm->infoWin = win_openFree(&rect, 5, WIN_STYLE_BEVEL);
+                rect.w = text_measureWidth(text_get(TM_TEXT_DRAW)) + 2 * TM_WIN_TEXT_X;
+                rect.x = SCREEN_W / 2 - rect.w / 2;
+                rect.y = TM_WIN_DRAW_Y;
+                rect.h = TM_WIN_DRAW_H;
+                tm->infoWin = win_openFree(&rect, TM_OT_WIN, WIN_STYLE_BEVEL);
                 win_setDrawContent(tm->infoWin, tm_drawDrawWin);
                 win_setShadow(tm->infoWin, 1);
                 tm_waitWindow(tm->infoWin);
@@ -897,7 +898,7 @@ void tm_taskExtension(TmState *tm) {
 }
 
 void tm_drawDrawWin(Window *win) {
-    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_DRAW), TEXT_PAL_WHITE);
+    text_drawBlock(win->x + TM_WIN_TEXT_X, win->y + 7, win->otz, text_get(TM_TEXT_DRAW), TEXT_PAL_WHITE);
 }
 
 void tm_autoPlace(TmState *tm) {
@@ -945,11 +946,11 @@ void tm_taskTryAgain(TmState *tm) {
             win_close(tm->msgWin);
             if (tm->cursor == TM_SEL_YES) {
                 if (card_countAll() < TM_HAND_SIZE) {
-                    rect.w = text_measureWidth(text_get(TM_TEXT_LESS_5)) + 0x12;
-                    rect.x = 0xA0 - rect.w / 2;
-                    rect.y = 0x5B;
-                    rect.h = 0x2B;
-                    tm->less5Win = win_openFree(&rect, 6, WIN_STYLE_BEVEL);
+                    rect.w = text_measureWidth(text_get(TM_TEXT_LESS_5)) + 2 * TM_WIN_TEXT_X;
+                    rect.x = SCREEN_W / 2 - rect.w / 2;
+                    rect.y = TM_WIN_LESS5_Y;
+                    rect.h = TM_WIN_LESS5_H;
+                    tm->less5Win = win_openFree(&rect, TM_OT_WIN_TOP, WIN_STYLE_BEVEL);
                     win_setDrawContent(tm->less5Win, tm_drawLess5Win);
                     win_setShadow(tm->less5Win, 1);
                     tm_waitWindow(tm->less5Win);
@@ -986,17 +987,17 @@ void tm_taskTryAgain(TmState *tm) {
             }
         }
         if (tm->cursor == TM_SEL_YES) {
-            g_menuHelp.x = 0x7D;
-            g_menuHelp.y = 0x6B;
+            g_menuHelp.x = TM_REMATCH_HAND_X;
+            g_menuHelp.y = TM_REMATCH_YES_Y;
             g_menuHelp.text = text_get(TM_HELP_PLAY_AGAIN);
-            ui_drawHand(0x7D, 0x6B, 3);
+            ui_drawHand(TM_REMATCH_HAND_X, TM_REMATCH_YES_Y, TM_OT_CURSOR);
         } else {
-            g_menuHelp.x = 0x7D;
-            g_menuHelp.y = 0x7B;
+            g_menuHelp.x = TM_REMATCH_HAND_X;
+            g_menuHelp.y = TM_REMATCH_NO_Y;
             g_menuHelp.text = text_get(TM_HELP_END_GAME);
-            ui_drawHand(0x7D, 0x7B, 3);
+            ui_drawHand(TM_REMATCH_HAND_X, TM_REMATCH_NO_Y, TM_OT_CURSOR);
         }
-        tm_setHelpArea(0x89);
+        tm_setHelpArea(TM_REMATCH_HELP_W);
     }
 }
 
@@ -1009,19 +1010,20 @@ void tm_stockInput(TmState *tm) {
     TmCard *card;
     CardEntry *entry;
 
-    ui_drawHand(tm->stockCol * 15 + 3, tm->stockRow * 15 + 0x30, 3);
+    ui_drawHand(tm->stockCol * TM_STOCK_CELL + (TM_STOCK_GRID_X + TM_CURSOR_DX),
+                tm->stockRow * TM_STOCK_CELL + (TM_STOCK_GRID_Y + TM_STOCK_HAND_DY), TM_OT_CURSOR);
     if (tm->task == TM_TASK_CHOICE || tm->task == TM_TASK_CARD_AWAY) {
-        g_menuHelp.x = tm->stockCol * 15 + 3;
-        g_menuHelp.y = tm->stockRow * 15 + 0x30;
+        g_menuHelp.x = tm->stockCol * TM_STOCK_CELL + (TM_STOCK_GRID_X + TM_CURSOR_DX);
+        g_menuHelp.y = tm->stockRow * TM_STOCK_CELL + (TM_STOCK_GRID_Y + TM_STOCK_HAND_DY);
         if (tm->task == TM_TASK_CHOICE) {
             g_menuHelp.text = text_get((u32)(tm->opponent - TM_OPP_FORCED) >= TM_OPP_FORCED_NUM ? TM_HELP_STOCK : TM_HELP_STOCK_FORCED);
         } else {
             g_menuHelp.text = text_get(TM_HELP_DISCARD_PICK);
         }
-        rect.x = 0xD;
-        rect.w = 0x9E;
+        rect.x = TM_STOCK_HELP_X;
+        rect.w = TM_STOCK_HELP_W;
         rect.y = 0;
-        rect.h = 0xDE;
+        rect.h = TM_STOCK_HELP_H;
         help_setBounds(&rect);
     }
     pad = g_padRepeat;
@@ -1039,11 +1041,11 @@ void tm_stockInput(TmState *tm) {
             tm_playSe(TM_SE_CARD);
             pad = 0;
             tm->phase = 0;
-            tm->scrollTimer = 4;
+            tm->scrollTimer = TM_STOCK_SCROLL_FRAMES;
         } else if (pad & BTN_L1) {
             pad = 0;
             tm->phase = 1;
-            tm->scrollTimer = 4;
+            tm->scrollTimer = TM_STOCK_SCROLL_FRAMES;
             tm->copyIdx--;
             tm_playSe(TM_SE_CARD);
             if (tm->copyIdx == -1) {
@@ -1076,12 +1078,12 @@ void tm_stockInput(TmState *tm) {
     if (tm->task == TM_TASK_CHOICE) {
         if (((pad & BTN_CIRCLE) && tm->handCount == 0) || (pad & BTN_SQUARE)) {
             if (tm->opponent != TM_OPP_FORCED) if (tm->opponent != TM_OPP_FORCED + 1) if (tm->opponent != TM_OPP_FORCED + 2) if (tm->opponent != TM_OPP_FORCED + 3) {
-                rect.w = text_measureWidth(text_get(TM_TEXT_QUIT_ASK)) + 0x12;
-                rect.x = 0xA0 - rect.w / 2;
-                rect.y = 0x54;
-                rect.h = 0x38;
+                rect.w = text_measureWidth(text_get(TM_TEXT_QUIT_ASK)) + 2 * TM_WIN_TEXT_X;
+                rect.x = SCREEN_W / 2 - rect.w / 2;
+                rect.y = TM_WIN_QUIT_Y;
+                rect.h = TM_WIN_QUIT_H;
                 tm->quitChoice = 1;
-                tm->quitWin = win_openFree(&rect, 5, WIN_STYLE_BEVEL);
+                tm->quitWin = win_openFree(&rect, TM_OT_WIN, WIN_STYLE_BEVEL);
                 win_setDrawContent(tm->quitWin, tm_drawQuitWin);
                 win_setShadow(tm->quitWin, 1);
                 tm_waitWindow(tm->quitWin);
@@ -1099,8 +1101,8 @@ void tm_stockInput(TmState *tm) {
         } else if (pad & BTN_CROSS) {
             if (tm->autoPlay != 0) {
                 card_clearAll();
-                tm->stockCol = rand() % 10;
-                tm->stockRow = rand() % 10;
+                tm->stockCol = rand() % TM_STOCK_SIDE;
+                tm->stockRow = rand() % TM_STOCK_SIDE;
                 tm->copyIdx = 0;
                 if (card_countOf(tm_getStockCursorId(tm)) == 0) {
                     tm_addRandomCard(tm, tm_getStockCursorId(tm));
@@ -1126,11 +1128,11 @@ void tm_stockInput(TmState *tm) {
                 tm_playSe(TM_SE_CARD);
                 if (++tm->handCount == TM_HAND_SIZE) {
                     g_menuHelpText = 0;
-                    rect.w = text_measureWidth(text_get(TM_TEXT_CONFIRM)) + 0x12;
-                    rect.x = 0xA0 - rect.w / 2;
-                    rect.y = 0x53;
-                    rect.h = 0x3A;
-                    tm->msgWin = win_openFree(&rect, 6, WIN_STYLE_BEVEL);
+                    rect.w = text_measureWidth(text_get(TM_TEXT_CONFIRM)) + 2 * TM_WIN_TEXT_X;
+                    rect.x = SCREEN_W / 2 - rect.w / 2;
+                    rect.y = TM_WIN_CONFIRM_Y;
+                    rect.h = TM_WIN_CONFIRM_H;
+                    tm->msgWin = win_openFree(&rect, TM_OT_WIN_TOP, WIN_STYLE_BEVEL);
                     win_setDrawContent(tm->msgWin, tm_drawConfirmWin);
                     win_setShadow(tm->msgWin, 1);
                     tm_waitWindow(tm->msgWin);
@@ -1141,12 +1143,12 @@ void tm_stockInput(TmState *tm) {
         }
     } else if ((pad & BTN_CROSS) && card_countOf(tm_getStockCursorId(tm)) != 0) {
         g_menuHelpText = 0;
-        rect.w = text_measureWidth(text_get(TM_TEXT_DISCARD_ASK)) + 0x12;
-        rect.x = 0xB9;
-        rect.h = 0x38;
-        rect.y = 0x35;
+        rect.w = text_measureWidth(text_get(TM_TEXT_DISCARD_ASK)) + 2 * TM_WIN_TEXT_X;
+        rect.x = TM_WIN_DISCARD_X;
+        rect.h = TM_WIN_DISCARD_H;
+        rect.y = TM_WIN_DISCARD_Y;
         tm->cursor = 1;
-        tm->infoWin = win_openFree(&rect, 5, WIN_STYLE_BEVEL);
+        tm->infoWin = win_openFree(&rect, TM_OT_WIN, WIN_STYLE_BEVEL);
         win_setDrawContent(tm->infoWin, tm_drawDiscardWin);
         win_setShadow(tm->infoWin, 1);
         tm_waitWindow(tm->infoWin);
@@ -1167,8 +1169,8 @@ void tm_taskChoice2(TmState *tm) {
                 tm->task = TM_TASK_FIELD_FADE;
             } else {
                 tm->task = TM_TASK_CHOICE;
-                tm->handCount = 4;
-                card = &tm->cards[4];
+                tm->handCount = TM_HAND_SIZE - 1;
+                card = &tm->cards[TM_HAND_SIZE - 1];
                 card_addWithStats(card->id, card->arrows, card->power, card->type, card->pdef, card->mdef);
             }
             win_close(tm->msgWin);
@@ -1195,26 +1197,26 @@ void tm_taskChoice2(TmState *tm) {
             tm_playSe(TM_SE_CURSOR);
         }
         if (tm->cursor == TM_SEL_YES) {
-            g_menuHelp.x = 0x7B;
-            g_menuHelp.y = 0x6C;
+            g_menuHelp.x = TM_ASK_HAND_X;
+            g_menuHelp.y = TM_ASK_YES_Y;
             g_menuHelp.text = text_get(TM_HELP_BEGIN);
-            ui_drawHand(0x7B, 0x6C, 3);
+            ui_drawHand(TM_ASK_HAND_X, TM_ASK_YES_Y, TM_OT_CURSOR);
         } else {
-            g_menuHelp.x = 0x7B;
-            g_menuHelp.y = 0x7B;
+            g_menuHelp.x = TM_ASK_HAND_X;
+            g_menuHelp.y = TM_ASK_NO_Y;
             g_menuHelp.text = text_get(TM_HELP_RESELECT);
-            ui_drawHand(0x7B, 0x7B, 3);
+            ui_drawHand(TM_ASK_HAND_X, TM_ASK_NO_Y, TM_OT_CURSOR);
         }
-        tm_setHelpArea(0x8D);
+        tm_setHelpArea(TM_ASK_HELP_W);
     }
 }
 
 void tm_drawConfirmWin(Window *win) {
-    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_CONFIRM), TEXT_PAL_WHITE);
+    text_drawBlock(win->x + TM_WIN_TEXT_X, win->y + 7, win->otz, text_get(TM_TEXT_CONFIRM), TEXT_PAL_WHITE);
 }
 
 void tm_drawLess5Win(Window *win) {
-    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_LESS_5), TEXT_PAL_WHITE);
+    text_drawBlock(win->x + TM_WIN_TEXT_X, win->y + 7, win->otz, text_get(TM_TEXT_LESS_5), TEXT_PAL_WHITE);
 }
 
 void tm_taskStageSelect(TmState *tm) {
@@ -1241,7 +1243,7 @@ void tm_taskStageSelect(TmState *tm) {
             tm_openStock(tm);
         }
     } else {
-        if ((pad & PAD_DOWN) && tm->oddsRow != 8) {
+        if ((pad & PAD_DOWN) && tm->oddsRow != ARRAY_COUNT(tm->arrowOdds) - 1) {
             tm->oddsRow++;
         }
         if ((pad & PAD_UP) && tm->oddsRow != 0) {
@@ -1307,20 +1309,21 @@ void tm_taskCardAway2(TmState *tm) {
             tm_playSe(TM_SE_CURSOR);
         }
         if (tm->cursor == TM_SEL_YES) {
-            g_menuHelp.x = 0xBC;
-            g_menuHelp.y = 0x4D;
+            g_menuHelp.x = TM_DISCARD_HAND_X;
+            g_menuHelp.y = TM_DISCARD_YES_Y;
             g_menuHelp.text = text_get(TM_HELP_DISCARD_YES);
-            ui_drawHand(0xBC, 0x4D, 3);
+            ui_drawHand(TM_DISCARD_HAND_X, TM_DISCARD_YES_Y, TM_OT_CURSOR);
         } else {
-            g_menuHelp.x = 0xBC;
-            g_menuHelp.y = 0x5C;
+            g_menuHelp.x = TM_DISCARD_HAND_X;
+            g_menuHelp.y = TM_DISCARD_NO_Y;
             g_menuHelp.text = text_get(TM_HELP_DISCARD_NO);
-            ui_drawHand(0xBC, 0x5C, 3);
+            ui_drawHand(TM_DISCARD_HAND_X, TM_DISCARD_NO_Y, TM_OT_CURSOR);
         }
-        tm_setHelpArea(0xCE);
+        tm_setHelpArea(TM_DISCARD_HELP_W);
     }
     if (tm->timer & 3) {
-        ui_drawHand(tm->stockCol * 15 + 3, tm->stockRow * 15 + 0x30, 6);
+        ui_drawHand(tm->stockCol * TM_STOCK_CELL + (TM_STOCK_GRID_X + TM_CURSOR_DX),
+                    tm->stockRow * TM_STOCK_CELL + (TM_STOCK_GRID_Y + TM_STOCK_HAND_DY), TM_OT_CURSOR_BACK);
     }
 }
 
@@ -1373,11 +1376,11 @@ void *tm_taskBattleSelect(u32 *ot, void *prim, TmState *tm) {
             tm_playSe(TM_SE_BUZZER);
         }
     }
-    x = tm->boardX * 43;
-    y = tm->boardY * 52;
-    prim = tm_drawCursor(ot, prim, tm, x + 0x39, y + 0xE, 0);
-    g_menuHelp.x = x + 0x3B;
-    g_menuHelp.y = y + 0xF;
+    x = tm->boardX * TM_SQUARE_W;
+    y = tm->boardY * TM_SQUARE_H;
+    prim = tm_drawCursor(ot, prim, tm, x + (TM_BOARD_X + TM_CURSOR_DX), y + (TM_BOARD_Y + TM_CURSOR_DY), TM_CURSOR_POINT);
+    g_menuHelp.x = x + (TM_BOARD_X + TM_CURSOR_DX + TM_HELP_DX);
+    g_menuHelp.y = y + (TM_BOARD_Y + TM_CURSOR_DY + TM_HELP_DY);
     g_menuHelp.text = text_get(TM_HELP_NO_BATTLE);
     cell = tm_getCell(tm, tm->boardX, tm->boardY);
     if (cell->state == TM_CELL_CARD) {
@@ -1417,7 +1420,7 @@ void tm_setHelpArea(s16 width) {
     rect.x = 0;
     rect.y = 0;
     rect.w = width;
-    rect.h = 0xF0;
+    rect.h = TM_SCREEN_H;
     help_setBounds(&rect);
 }
 
@@ -1450,17 +1453,17 @@ void *tm_taskGetSelect(u32 *ot, void *prim, TmState *tm) {
     sel = tm_getCaptured(tm, tm->getCursor);
     x = sel->x;
     y = sel->y;
-    prim = tm_drawCursor(ot, prim, tm, x + 0x22, y + 5, 2);
-    g_menuHelp.x = x + 0x25;
-    g_menuHelp.y = y + 6;
+    prim = tm_drawCursor(ot, prim, tm, x + TM_GET_CURSOR_DX, y + TM_GET_CURSOR_DY, TM_CURSOR_MIRROR);
+    g_menuHelp.x = x + TM_GET_HELP_DX;
+    g_menuHelp.y = y + TM_GET_HELP_DY;
     g_menuHelp.text = text_get(TM_HELP_TAKE);
-    helpRect.x = x + 0x2A;
-    helpRect.w = 0x12C;
+    helpRect.x = x + TM_CARD_W;
+    helpRect.w = TM_GET_HELP_W;
     helpRect.y = 0;
-    helpRect.h = 0xF0;
+    helpRect.h = TM_SCREEN_H;
     help_setBounds(&helpRect);
     if (pad & BTN_CROSS) {
-        if (tm->hasLostCard != 0 && sel == &tm->cards[tm->lostSlot + 5]) {
+        if (tm->hasLostCard != 0 && sel == &tm->cards[tm->lostSlot + TM_HAND_SIZE]) {
             tm->hasLostCard = 0;
         }
         tm_clearFlips(tm);
@@ -1474,13 +1477,13 @@ void *tm_taskGetSelect(u32 *ot, void *prim, TmState *tm) {
                 if (card->owner == TM_ENEMY) {
                     flipArr[k].card = card;
                     flipArr[k].mode = TM_FLIP_CHANGE;
-                    flipArr[k].arg = 0;
+                    flipArr[k].arg = TM_PLAYER;
                     k++;
                 }
             } else if (card->owner == TM_PLAYER && sel != card) {
                 flipArr[k].card = card;
                 flipArr[k].mode = TM_FLIP_CHANGE;
-                flipArr[k].arg = 1;
+                flipArr[k].arg = TM_ENEMY;
                 k++;
             }
         }
@@ -1503,12 +1506,12 @@ void *tm_taskGetSelect(u32 *ot, void *prim, TmState *tm) {
     text_copy(msg, text_get(TM_TEXT_STOCK));
     text_append(msg, num);
     text_append(msg, text_get(TM_TEXT_STOCK_END));
-    r2.w = text_measureWidth((s32)msg) + 0x10;
-    r2.x = 0x52;
-    r2.y = sel->y - 9;
-    r2.h = 0x19;
-    text_drawBlock(0x5A, r2.y + 6, 3, msg, TEXT_PAL_WHITE);
-    win_drawBox(&r2, 3, WIN_STYLE_BEVEL);
+    r2.w = text_measureWidth((s32)msg) + TM_BOX_PAD_X * 2;
+    r2.x = TM_GET_BOX_X;
+    r2.y = sel->y - TM_GET_BOX_DY;
+    r2.h = TM_BOX_H;
+    text_drawBlock(TM_GET_BOX_X + TM_BOX_PAD_X, r2.y + TM_BOX_TEXT_DY, TM_OT_CURSOR, msg, TEXT_PAL_WHITE);
+    win_drawBox(&r2, TM_OT_CURSOR, WIN_STYLE_BEVEL);
     return prim;
 }
 
@@ -1548,7 +1551,7 @@ void tm_taskGameQuit(TmState *tm) {
                                   card->pdef, card->mdef);
                 }
                 tm->handCount = 0;
-                card_setGameResult(1);
+                card_setGameResult(TM_RESULT_LOSE);
                 tm->quitting = 1;
                 tm_startEndFade(tm);
             } else {
@@ -1558,24 +1561,24 @@ void tm_taskGameQuit(TmState *tm) {
             tm_playSe(TM_SE_CURSOR);
         }
         if (tm->quitChoice == TM_SEL_YES) {
-            g_menuHelp.x = 0x7B;
-            g_menuHelp.y = 0x6C;
+            g_menuHelp.x = TM_ASK_HAND_X;
+            g_menuHelp.y = TM_ASK_YES_Y;
             g_menuHelp.text = text_get(TM_HELP_QUIT_YES);
-            ui_drawHand(0x7B, 0x6C, 3);
+            ui_drawHand(TM_ASK_HAND_X, TM_ASK_YES_Y, TM_OT_CURSOR);
         } else {
-            g_menuHelp.x = 0x7B;
-            g_menuHelp.y = 0x7B;
+            g_menuHelp.x = TM_ASK_HAND_X;
+            g_menuHelp.y = TM_ASK_NO_Y;
             g_menuHelp.text = text_get(TM_HELP_QUIT_NO);
-            ui_drawHand(0x7B, 0x7B, 3);
+            ui_drawHand(TM_ASK_HAND_X, TM_ASK_NO_Y, TM_OT_CURSOR);
         }
-        tm_setHelpArea(0x8D);
+        tm_setHelpArea(TM_ASK_HELP_W);
     } else {
         g_menuHelp.text = NULL;
     }
 }
 
 void tm_drawQuitWin(Window *win) {
-    text_drawBlock(win->x + 9, win->y + 6, win->otz, text_get(TM_TEXT_QUIT_ASK), TEXT_PAL_WHITE);
+    text_drawBlock(win->x + TM_WIN_TEXT_X, win->y + 6, win->otz, text_get(TM_TEXT_QUIT_ASK), TEXT_PAL_WHITE);
 }
 
 void *tm_drawBattleSelect(u32 *ot, void *prim, TmState *tm) {
@@ -1647,7 +1650,7 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *tm) {
     atkCard = tm_getCardAt(tm, tm->srcX, tm->srcY);
     defCard = tm_getCardAt(tm, tm->dstX, tm->dstY);
     tm_getBattleValues((s32)tm, &pos, atkCard, defCard);
-    tm->valuesTimer = 0x3C;
+    tm->valuesTimer = TM_VALUES_FRAMES;
     if (tm->timer == TM_FIGHT_CLASH) {
         tm_playSe(TM_SE_BATTLE);
     }
@@ -1655,12 +1658,12 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *tm) {
         tm->atkShown = pos.atk;
         tm->defShown = pos.def;
     } else if (tm->timer < TM_FIGHT_ROLL) {
-        x = (tm->srcX + tm->dstX) * 43 / 2 + 0x48;
-        y = (tm->srcY + tm->dstY) * 26 + 9;
+        x = (tm->srcX + tm->dstX) * TM_SQUARE_W / 2 + TM_BOARD_X;
+        y = (tm->srcY + tm->dstY) * (TM_SQUARE_H / 2) + (TM_BOARD_Y + 1);
         bright = tm->brightness;
-        h = 0x30;
-        if (tm->timer - TM_FIGHT_CLASH < 0xF) {
-            h = 0x28;
+        h = TM_CLASH_H;
+        if (tm->timer - TM_FIGHT_CLASH < TM_LUNGE_FRAMES) {
+            h = TM_CLASH_W;
         }
         setlen(prim, PRIM_LEN(SPRT));
         prim->code = GPU_SPRT | GPU_ABE;
@@ -1669,15 +1672,15 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *tm) {
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
-        prim->w = 0x28;
+        prim->w = TM_CLASH_W;
         prim->h = h;
-        prim->u0 = (((tm->timer - TM_FIGHT_CLASH) & 0xF) >> 2) * 40;
-        prim->v0 = ((tm->timer - TM_FIGHT_CLASH) / 16) * 40;
-        otSlot = ot + 30;
-        prim->clut = getClut(0, 0xEC);
+        prim->u0 = (((tm->timer - TM_FIGHT_CLASH) & 0xF) >> 2) * TM_CLASH_W;
+        prim->v0 = ((tm->timer - TM_FIGHT_CLASH) / 16) * TM_CLASH_W;
+        otSlot = ot + TM_OT_FLASH;
+        prim->clut = getClut(0, TM_CLUT_BATTLE);
         AddPrim(otSlot, prim);
         prim++;
-        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 1, 0x200, 0x100));
+        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 1, TM_VRAM_BATTLE_X, TM_VRAM_BATTLE_Y));
         AddPrim(otSlot, prim);
         tm->atkShown = pos.atk;
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
@@ -1687,8 +1690,8 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *tm) {
             tm->atkRoll = rand() % pos.atk;
             tm->defRoll = rand() % pos.def;
         }
-        tm->atkShown = pos.atk - (pos.atk - tm->atkRoll) * (tm->timer - TM_FIGHT_ROLL) / 23;
-        tm->defShown = pos.def - (pos.def - tm->defRoll) * (tm->timer - TM_FIGHT_ROLL) / 23;
+        tm->atkShown = pos.atk - (pos.atk - tm->atkRoll) * (tm->timer - TM_FIGHT_ROLL) / (TM_FIGHT_END - TM_FIGHT_ROLL);
+        tm->defShown = pos.def - (pos.def - tm->defRoll) * (tm->timer - TM_FIGHT_ROLL) / (TM_FIGHT_END - TM_FIGHT_ROLL);
         if (tm->timer >= TM_FIGHT_END) {
             flip = tm->flips;
             tm_clearFlips(tm);
@@ -1716,12 +1719,12 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *tm) {
             switch (winner->type) {
             case TM_TYPE_P:
             case TM_TYPE_M:
-                if ((rand() & 0x3F) == 0) {
+                if ((rand() & TM_UPGRADE_X_MASK) == 0) {
                     winner->type = TM_TYPE_X;
                 }
                 break;
             case TM_TYPE_X:
-                if ((rand() & 0x7F) == 0) {
+                if ((rand() & TM_UPGRADE_A_MASK) == 0) {
                     winner->type = TM_TYPE_A;
                 }
                 break;
@@ -1816,7 +1819,7 @@ void tm_taskTurn(TmState *tm) {
         tm->turn = TM_ENEMY;
         tm->timer = 0;
         tm->phase = 0;
-        tm->thinkDelay = (rand() & 0xF) + 0xF;
+        tm->thinkDelay = (rand() & TM_THINK_RAND) + TM_THINK_MIN;
         tm->task = TM_TASK_ENEMY_THINK;
     } else {
         tm->nameSlide = 0;
@@ -1852,11 +1855,11 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
     flipArr = tm->flips;
     tick = tm->timer;
     if (tm->phase == 0) {
-        k = tick * 30;
+        k = tick * TM_FLASH_IN_STEP;
         if (k >= 0x100) {
             bright = 0xFF;
             if (tm->flashMode == TM_FLIP_COMBO) {
-                tm->comboTimer = 0x32;
+                tm->comboTimer = TM_COMBO_FRAMES;
                 tm->valuesTimer = 0;
                 tm->comboShown = tm->comboCount;
                 tm_playSe(TM_SE_COMBO);
@@ -1866,7 +1869,7 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
             bright = k;
         }
     } else {
-        k = 0xFF - (tick - 10) * 15;
+        k = 0xFF - (tick - TM_FLASH_HOLD) * TM_FLASH_OUT_STEP;
         bright = k;
         if (k < 0) {
             bright = 0;
@@ -1888,11 +1891,11 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
                 setXY0(prim, flipArr[i].x * TM_SQUARE_W + TM_BOARD_X, flipArr[i].y * TM_SQUARE_H + TM_BOARD_Y);
                 setWH(prim, TM_CARD_W, TM_CARD_H);
                 setRGB0(prim, bright, bright, bright);
-                AddPrim(ot + 0x1E, prim);
+                AddPrim(ot + TM_OT_FLASH, prim);
                 prim++;
             }
             if (tm->flashMode == TM_FLIP_COMBO) {
-                k = 0xFF - tick * 9;
+                k = 0xFF - tick * TM_COMBO_BAR_STEP;
                 bright = k;
                 bar = &tbl.v[flipArr[i].arg];
                 dx = bar->dirX;
@@ -1907,44 +1910,44 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
                 switch (bar->shape) {
                 case 0:
                     x = bx;
-                    w = 0x2A;
-                    h = 4;
-                    y = by - (tick * 51 / 28) * dy;
+                    w = TM_CARD_W;
+                    h = TM_FLASH_BAR_W;
+                    y = by - (tick * TM_CARD_H / TM_COMBO_SWEEP_FRAMES) * dy;
                     break;
                 case 1:
-                    x = bx + tick * 42 / 28 * dx;
-                    w = tick * 42 / 28;
-                    h = 4;
-                    y = by - (tick * 51 / 28) * dy;
+                    x = bx + tick * TM_CARD_W / TM_COMBO_SWEEP_FRAMES * dx;
+                    w = tick * TM_CARD_W / TM_COMBO_SWEEP_FRAMES;
+                    h = TM_FLASH_BAR_W;
+                    y = by - (tick * TM_CARD_H / TM_COMBO_SWEEP_FRAMES) * dy;
                     if (dy == -1) {
-                        y -= 4;
+                        y -= TM_FLASH_BAR_W;
                     }
                     setlen(prim, PRIM_LEN(TILE));
                     prim->code = GPU_TILE | GPU_ABE;
                     setXY0(prim, x, y);
                     setWH(prim, w, h);
                     setRGB0(prim, bright, bright, bright);
-                    AddPrim(ot + 0x1E, prim);
+                    AddPrim(ot + TM_OT_FLASH, prim);
                     prim++;
                     x = bx + w * ex;
-                    w = 4;
-                    y = by - (tick * 51 / 28) * ey;
-                    h = tick * 51 / 28;
+                    w = TM_FLASH_BAR_W;
+                    y = by - (tick * TM_CARD_H / TM_COMBO_SWEEP_FRAMES) * ey;
+                    h = tick * TM_CARD_H / TM_COMBO_SWEEP_FRAMES;
                     if (ex == 1) {
-                        x -= 4;
+                        x -= TM_FLASH_BAR_W;
                     }
                     if (ey != 0) {
-                        y += 4;
+                        y += TM_FLASH_BAR_W;
                     }
-                    if (h >= 4) {
-                        h -= 4;
+                    if (h >= TM_FLASH_BAR_W) {
+                        h -= TM_FLASH_BAR_W;
                     }
                     break;
                 case 2:
                     y = by;
-                    x = bx + tick * 42 / 28 * dx;
-                    w = 4;
-                    h = 0x33;
+                    x = bx + tick * TM_CARD_W / TM_COMBO_SWEEP_FRAMES * dx;
+                    w = TM_FLASH_BAR_W;
+                    h = TM_CARD_H;
                     break;
                 }
                 setlen(prim, PRIM_LEN(TILE));
@@ -1952,7 +1955,7 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
                 setXY0(prim, x, y);
                 setWH(prim, w, h);
                 setRGB0(prim, bright, bright, bright);
-                AddPrim(ot + 0x1E, prim);
+                AddPrim(ot + TM_OT_FLASH, prim);
                 prim++;
             }
             if (tm->flashMode == TM_FLIP_BATTLE) {
@@ -1965,7 +1968,7 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
                 } else {
                     setRGB0(prim, 0x76, 0x76, 0x76);
                 }
-                AddPrim(ot + 0x1E, prim);
+                AddPrim(ot + TM_OT_FLASH, prim);
                 prim++;
             }
         }
@@ -1974,7 +1977,7 @@ void *tm_drawFlash(u32 *ot, TILE *prim, TmState *tm) {
      * to use bright (make_regs_eqv picks the register whose last use comes later), so the test stays on k (a2). */
     k = 0;
     SetDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 1, 0, 0));
-    AddPrim(ot + 0x1E, prim);
+    AddPrim(ot + TM_OT_FLASH, prim);
     prim = (TILE *)((DR_TPAGE *)prim + 1);
     return prim;
 }
@@ -1988,14 +1991,14 @@ void *tm_drawFlash2(u32 *ot, TILE *prim, TmState *tm) {
 
     flipArr = tm->flips;
     if (tm->phase == 0) {
-        bright = level = tm->timer * 30;
+        bright = level = tm->timer * TM_FLASH_IN_STEP;
         if (level >= 0x100) {
             bright = 0xFF;
             tm->timer = 0;
             tm->phase = 1;
         }
     } else {
-        bright = level = 0xFF - tm->timer * 12;
+        bright = level = 0xFF - tm->timer * TM_FLASH2_OUT_STEP;
         if (level < 0) {
             bright = 0;
             if (tm->result == TM_RESULT_WIN) {
@@ -2016,8 +2019,8 @@ void *tm_drawFlash2(u32 *ot, TILE *prim, TmState *tm) {
             prim->code = GPU_TILE | GPU_ABE;
             prim->x0 = card->x;
             prim->y0 = card->y;
-            prim->w = 0x2A;
-            prim->h = 0x33;
+            prim->w = TM_CARD_W;
+            prim->h = TM_CARD_H;
             prim->r0 = bright;
             prim->g0 = bright;
             prim->b0 = bright;
@@ -2032,7 +2035,7 @@ void *tm_drawFlash2(u32 *ot, TILE *prim, TmState *tm) {
 }
 
 void tm_taskFlashArrow(TmState *tm) {
-    if (tm->timer >= 0x15) {
+    if (tm->timer >= TM_FLASH_ARROW_FRAMES) {
         tm->timer = 0;
         tm->task = TM_TASK_FLASH;
         tm_playSe(TM_SE_FLASH);
@@ -2073,44 +2076,44 @@ void tm_layoutCards(TmState *tm) {
     if (tm->task == TM_TASK_BATTLE) {
         atkCard = tm_getCell(tm, tm->srcX, tm->srcY)->card;
         defCard = tm_getCell(tm, tm->dstX, tm->dstY)->card;
-        if ((u32)(tm->timer - 0x23) < 0xF) {
-            k = tm->timer - 0x23;
-            if (tm->timer >= 0x2A) {
-                k = 0x32 - tm->timer;
+        if ((u32)(tm->timer - TM_FIGHT_CLASH) < TM_LUNGE_FRAMES) {
+            k = tm->timer - TM_FIGHT_CLASH;
+            if (tm->timer >= TM_FIGHT_CLASH + TM_LUNGE_FRAMES / 2) {
+                k = TM_FIGHT_CLASH + TM_LUNGE_FRAMES - tm->timer;
             }
         } else {
             k = 0;
         }
-        dx = (tm->srcX - tm->dstX) * 0x2A00 / 270;
-        dy = (tm->srcY - tm->dstY) * 0x3300 / 270;
+        dx = (tm->srcX - tm->dstX) * (TM_CARD_W << 8) / 270;
+        dy = (tm->srcY - tm->dstY) * (TM_CARD_H << 8) / 270;
         k = k * k;
     }
-    x = 8;
+    x = TM_PLAYER_HAND_Y;
     cards = tm->cards;
     for (i = 0, enemyIdx = 0; i < TM_NUM_CARDS; i++) {
         card = &cards[i];
         if (tm->task == TM_TASK_CHOICE || tm->task == TM_TASK_GAME_QUIT || tm->quitting != 0) {
-            card->depth = i + 0x28;
+            card->depth = i + TM_OT_CARDS;
         } else {
-            card->depth = 0x3C - i;
+            card->depth = TM_OT_CARDS_BACK - i;
         }
         if (card->owner == TM_PLAYER) {
             if (card->onBoard == 0) {
                 card->small = 0;
                 card->y = x;
                 if (tm_countPlayerHand(tm, TM_PLAYER) == TM_HAND_SIZE || tm->task == TM_TASK_CHOICE || tm->task == TM_TASK_GAME_QUIT || tm->quitting != 0) {
-                    x += 0x2A;
-                    card->x = TM_PLAYER_HAND_X + 4;
+                    x += TM_HAND_STEP_SMALL;
+                    card->x = TM_PLAYER_HAND_X + TM_SMALL_HAND_DX;
                     card->small = 1;
                 } else {
-                    x += 0x34;
+                    x += TM_HAND_STEP;
                     card->small = 0;
                     card->x = TM_PLAYER_HAND_X;
                 }
             }
             if (tm->task == TM_TASK_GET_SELECT && i >= TM_HAND_SIZE) {
                 if (tm_getCaptured(tm, tm->getCursor) == card) {
-                    card->x = 0x16;
+                    card->x = TM_CAPTURED_SEL_X;
                 } else {
                     card->x = TM_ENEMY_HAND_X;
                 }
@@ -2120,28 +2123,28 @@ void tm_layoutCards(TmState *tm) {
             }
         }
         if (card->owner == TM_ENEMY && card->onBoard == 0) {
-            card->y = enemyIdx * 14 + 0x1A;
+            card->y = enemyIdx * TM_ENEMY_HAND_STEP + TM_ENEMY_HAND_Y;
             enemyIdx++;
             card->x = TM_ENEMY_HAND_X;
         }
         if (tm->task == TM_TASK_BATTLE) {
             if (atkCard == card) {
-                base = tm->srcX * 43;
-                offset = dx * k / 256 - 0x48;
+                base = tm->srcX * TM_SQUARE_W;
+                offset = dx * k / 256 - TM_BOARD_X;
                 card->x = base - offset;
-                base = tm->srcY * 52;
-                offset = dy * k / 256 - 8;
+                base = tm->srcY * TM_SQUARE_H;
+                offset = dy * k / 256 - TM_BOARD_Y;
                 card->y = base - offset;
-                card->depth = 0x26;
+                card->depth = TM_OT_ATTACKER;
             }
             if (defCard == card) {
-                base = tm->dstX * 43;
-                offset = dx * k / 256 + 0x48;
+                base = tm->dstX * TM_SQUARE_W;
+                offset = dx * k / 256 + TM_BOARD_X;
                 card->x = base + offset;
-                base = tm->dstY * 52;
-                offset = dy * k / 256 + 8;
+                base = tm->dstY * TM_SQUARE_H;
+                offset = dy * k / 256 + TM_BOARD_Y;
                 card->y = base + offset;
-                card->depth = 0x27;
+                card->depth = TM_OT_DEFENDER;
             }
         }
     }
@@ -2170,11 +2173,11 @@ void *tm_drawCards(u32 *ot, void *prim, TmState *tm) {
         curTask = tm->task;
         statBright = faceBright;
         if (curTask == TM_TASK_BATTLE_SELECT && cards[i].onBoard == 1) {
-            faceBright = 0x40;
+            faceBright = TM_CARD_DIM;
             statBright = faceBright;
             for (k = 0; k < tm->numTargets; k++) {
                 if (&cards[i] == tm->targets[k]) {
-                    faceBright = tm->brightness - ((tm->timer & 0x10) >> 4) * 24;
+                    faceBright = tm->brightness - ((tm->timer & 0x10) >> 4) * TM_TARGET_BLINK;
                     statBright = tm->brightness;
                 }
             }
@@ -2185,12 +2188,12 @@ void *tm_drawCards(u32 *ot, void *prim, TmState *tm) {
         }
         if (curTask == TM_TASK_CHOICE || curTask == TM_TASK_CARD_AWAY || curTask == TM_TASK_CARD_AWAY2 || curTask == TM_TASK_GAME_QUIT || tm->quitting != 0) {
             if (i >= TM_HAND_SIZE) {
-                faceBright -= (i - 5) * 22;
-                statBright -= (i - 5) * 22;
+                faceBright -= (i - TM_HAND_SIZE) * TM_PILE_DIM_STEP;
+                statBright -= (i - TM_HAND_SIZE) * TM_PILE_DIM_STEP;
             }
         }
-        if (curTask == 1 && card->owner == TM_PLAYER && card->onBoard == 0) {
-            statBright = 0x40;
+        if (curTask == TM_TASK_PLAYER_SET && card->owner == TM_PLAYER && card->onBoard == 0) {
+            statBright = TM_CARD_DIM;
             faceBright = statBright;
             if (card == tm_getHandCard(tm, TM_PLAYER, tm->cursor)) {
                 statBright = 0x80;
@@ -2201,24 +2204,24 @@ void *tm_drawCards(u32 *ot, void *prim, TmState *tm) {
         if (tm->task == TM_TASK_BATTLE_SELECT && faceBright != statBright) {
             otSlot = ot + z;
             setSprt((SPRT *)prim);
-            ((SPRT *)prim)->x0 = card->x + 5;
-            ((SPRT *)prim)->y0 = card->y + 0x15;
+            ((SPRT *)prim)->x0 = card->x + TM_SELECT_MARK_DX;
+            ((SPRT *)prim)->y0 = card->y + TM_SELECT_MARK_DY;
             ((SPRT *)prim)->v0 = 0xF0;
             ((SPRT *)prim)->w = 0x20;
             ((SPRT *)prim)->h = 0x10;
             ((SPRT *)prim)->u0 = 0x80;
-            ((SPRT *)prim)->clut = getClut(0, 0xED);
+            ((SPRT *)prim)->clut = getClut(0, TM_CLUT_SELECT);
             ((SPRT *)prim)->r0 = 0x80;
             ((SPRT *)prim)->g0 = 0x80;
             ((SPRT *)prim)->b0 = 0x80;
             AddPrim(otSlot, prim);
             prim = (SPRT *)prim + 1;
-            setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, 0x340, 0x1E0));
+            setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, TM_VRAM_SELECT_X, TM_VRAM_SELECT_Y));
             AddPrim(otSlot, prim);
             prim = (DR_TPAGE *)prim + 1;
         }
         if (tm->task == TM_TASK_GET_SELECT && tm_getCaptured(tm, tm->getCursor) == card) {
-            z = 0x28;
+            z = TM_OT_CARDS;
         }
         if (card->hidden == 0) {
             sel = 0;
@@ -2238,51 +2241,51 @@ void *tm_drawCards(u32 *ot, void *prim, TmState *tm) {
             setSprt((SPRT *)prim);
             ((SPRT *)prim)->x0 = card->x;
             ((SPRT *)prim)->y0 = cards[i].y;
-            ((SPRT *)prim)->w = 0x2A;
-            ((SPRT *)prim)->h = 0x33;
+            ((SPRT *)prim)->w = TM_CARD_W;
+            ((SPRT *)prim)->h = TM_CARD_H;
             ((SPRT *)prim)->r0 = faceBright;
             ((SPRT *)prim)->g0 = faceBright;
             ((SPRT *)prim)->b0 = faceBright;
             if (cards[i].owner == TM_PLAYER) {
-                ((SPRT *)prim)->u0 = 8;
+                ((SPRT *)prim)->u0 = TM_UV_FRAME_PLAYER_U;
             } else {
-                ((SPRT *)prim)->u0 = 0x38;
+                ((SPRT *)prim)->u0 = TM_UV_FRAME_ENEMY_U;
             }
-            ((SPRT *)prim)->v0 = 0x40;
+            ((SPRT *)prim)->v0 = TM_UV_FRAME_V;
             if (cards[i].hidden == 1) {
-                ((SPRT *)prim)->u0 = 0xC8;
-                ((SPRT *)prim)->v0 = 0x40;
+                ((SPRT *)prim)->u0 = TM_UV_CARD_BACK_U;
+                ((SPRT *)prim)->v0 = TM_UV_FRAME_V;
             }
-            ((SPRT *)prim)->clut = getClut(0, 0xEA);
+            ((SPRT *)prim)->clut = getClut(0, TM_CLUT_PARTS);
             AddPrim(ot + z, prim);
             prim = (SPRT *)prim + 1;
         } else {
             SetPolyFT4((POLY_FT4 *)prim);
             ((POLY_FT4 *)prim)->x0 = cards[i].x;
             ((POLY_FT4 *)prim)->y0 = cards[i].y;
-            ((POLY_FT4 *)prim)->x1 = cards[i].x + 0x22;
+            ((POLY_FT4 *)prim)->x1 = cards[i].x + TM_SMALL_CARD_W;
             ((POLY_FT4 *)prim)->y1 = cards[i].y;
             ((POLY_FT4 *)prim)->x2 = cards[i].x;
-            ((POLY_FT4 *)prim)->y2 = cards[i].y + 0x29;
-            ((POLY_FT4 *)prim)->x3 = cards[i].x + 0x22;
-            ((POLY_FT4 *)prim)->y3 = cards[i].y + 0x29;
-            ((POLY_FT4 *)prim)->u0 = 8;
-            ((POLY_FT4 *)prim)->u1 = 0x32;
-            ((POLY_FT4 *)prim)->v0 = 0x40;
-            ((POLY_FT4 *)prim)->v1 = 0x40;
-            ((POLY_FT4 *)prim)->u2 = 8;
-            ((POLY_FT4 *)prim)->v2 = 0x73;
-            ((POLY_FT4 *)prim)->u3 = 0x32;
-            ((POLY_FT4 *)prim)->v3 = 0x73;
-            ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
+            ((POLY_FT4 *)prim)->y2 = cards[i].y + TM_SMALL_CARD_H;
+            ((POLY_FT4 *)prim)->x3 = cards[i].x + TM_SMALL_CARD_W;
+            ((POLY_FT4 *)prim)->y3 = cards[i].y + TM_SMALL_CARD_H;
+            ((POLY_FT4 *)prim)->u0 = TM_UV_FRAME_PLAYER_U;
+            ((POLY_FT4 *)prim)->u1 = TM_UV_FRAME_PLAYER_U + TM_CARD_W;
+            ((POLY_FT4 *)prim)->v0 = TM_UV_FRAME_V;
+            ((POLY_FT4 *)prim)->v1 = TM_UV_FRAME_V;
+            ((POLY_FT4 *)prim)->u2 = TM_UV_FRAME_PLAYER_U;
+            ((POLY_FT4 *)prim)->v2 = TM_UV_FRAME_V + TM_CARD_H;
+            ((POLY_FT4 *)prim)->u3 = TM_UV_FRAME_PLAYER_U + TM_CARD_W;
+            ((POLY_FT4 *)prim)->v3 = TM_UV_FRAME_V + TM_CARD_H;
+            ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y);
             ((POLY_FT4 *)prim)->r0 = faceBright;
             ((POLY_FT4 *)prim)->g0 = faceBright;
             ((POLY_FT4 *)prim)->b0 = faceBright;
-            ((POLY_FT4 *)prim)->clut = getClut(0, 0xEA);
+            ((POLY_FT4 *)prim)->clut = getClut(0, TM_CLUT_PARTS);
             AddPrim(ot + z, prim);
             prim = (POLY_FT4 *)prim + 1;
         }
-        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x300, 0x100));
+        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
         AddPrim(ot + z, prim);
         prim = (DR_TPAGE *)prim + 1;
     }
@@ -2297,13 +2300,13 @@ void tm_startCardMove(TmState *tm) {
         cardArr[i].fromY = cardArr[i].y << 8;
         if (i < TM_HAND_SIZE) {
             cardArr[i].toX = (TM_PLAYER_HAND_X << 8);
-            cardArr[i].toY = i * 0x2000 + 0x1900;
+            cardArr[i].toY = i * (TM_PILE_STEP << 8) + (TM_PILE_Y << 8);
         } else {
             cardArr[i].toX = TM_ENEMY_HAND_X << 8;
-            cardArr[i].toY = (i - 5) * 0x2000 + 0x1900;
+            cardArr[i].toY = (i - TM_HAND_SIZE) * (TM_PILE_STEP << 8) + (TM_PILE_Y << 8);
         }
     }
-    tm->moveFrames = 0x14;
+    tm->moveFrames = TM_GATHER_FRAMES;
     tm->timer = 0;
     tm->task = TM_TASK_CARD_MOVE;
 }
@@ -2336,14 +2339,14 @@ void *tm_taskCardMove(u32 *ot, void *prim, TmState *tm) {
         for (i = 0; i < TM_NUM_CARDS; i++) {
             if (i < TM_HAND_SIZE) {
                 cards[i].x = TM_PLAYER_HAND_X;
-                cards[i].y = i * 32 + 0x19;
+                cards[i].y = i * TM_PILE_STEP + TM_PILE_Y;
             } else {
                 cards[i].x = TM_ENEMY_HAND_X;
-                cards[i].y = i * 32 - 0x87;
+                cards[i].y = i * TM_PILE_STEP + (TM_PILE_Y - TM_HAND_SIZE * TM_PILE_STEP);
             }
         }
     }
-    if (tm->moveFrames + 10 < tm->timer) {
+    if (tm->moveFrames + TM_GATHER_PAUSE < tm->timer) {
         if (tm->result == TM_RESULT_WIN) {
             if (tm_countOwned(tm, TM_PLAYER) != TM_NUM_CARDS && tm_countCaptured(tm) != 1) {
                 tm->getCursor = 0;
@@ -2365,7 +2368,7 @@ void *tm_taskCardMove(u32 *ot, void *prim, TmState *tm) {
             }
         } else {
             ownedCount = tm_countKept(tm, TM_PLAYER);
-            skip = (rand() & 0xFF) % (5 - ownedCount);
+            skip = (rand() & 0xFF) % (TM_HAND_SIZE - ownedCount);
         }
         cards = tm->cards;
         flipArr = tm->flips;
@@ -2379,7 +2382,7 @@ void *tm_taskCardMove(u32 *ot, void *prim, TmState *tm) {
                     if (k != skip && tm_countOwned(tm, TM_ENEMY) != TM_NUM_CARDS) {
                         flipArr[j].card = card;
                         flipArr[j].mode = TM_FLIP_CHANGE;
-                        flipArr[j].arg = 0;
+                        flipArr[j].arg = TM_PLAYER;
                         j++;
                         flag = 1;
                     }
@@ -2389,7 +2392,7 @@ void *tm_taskCardMove(u32 *ot, void *prim, TmState *tm) {
                 }
             } else if (card->owner == TM_PLAYER) {
                 st = tm->result;
-                if (st == 1) {
+                if (st == TM_RESULT_LOSE) {
                     flipArr[j].card = card;
                     flipArr[j].mode = st;
                     flipArr[j].arg = st;
@@ -2454,10 +2457,10 @@ void tm_nextTrade(TmState *tm) {
     s32 j;
     TmCard *cardArr;
 
-    owner = 1;
+    owner = TM_ENEMY;
     if (tm->result == TM_RESULT_WIN) {
-        owner = 0;
-        j = 5;
+        owner = TM_PLAYER;
+        j = TM_HAND_SIZE;
         x = TM_ENEMY_HAND_X;
     } else {
         j = 0;
@@ -2469,7 +2472,7 @@ void tm_nextTrade(TmState *tm) {
         if ((cardArr + j)[i].owner == owner && (cardArr + j)[i].x == x) {
             found = 1;
             tm->tradeCard = &(cardArr + j)[i];
-            tm->moveFrames = 0xA;
+            tm->moveFrames = TM_TRADE_MOVE_FRAMES;
             tm->timer = 0;
             (cardArr + j)[i].fromX = (cardArr + j)[i].x << 8;
             (cardArr + j)[i].fromY = (cardArr + j)[i].y << 8;
@@ -2478,11 +2481,11 @@ void tm_nextTrade(TmState *tm) {
     }
     if (found == 0) {
         if (card_countAll() > CARD_MAX) {
-            rect.w = text_measureWidth(text_get(TM_TEXT_OVER_100)) + 0x12;
-            rect.x = 0xA0 - rect.w / 2;
-            rect.y = 0x5B;
-            rect.h = 0x2A;
-            tm->infoWin = win_openFree(&rect, 5, WIN_STYLE_BEVEL);
+            rect.w = text_measureWidth(text_get(TM_TEXT_OVER_100)) + 2 * TM_WIN_TEXT_X;
+            rect.x = SCREEN_W / 2 - rect.w / 2;
+            rect.y = TM_WIN_OVER100_Y;
+            rect.h = TM_WIN_OVER100_H;
+            tm->infoWin = win_openFree(&rect, TM_OT_WIN, WIN_STYLE_BEVEL);
             win_setDrawContent(tm->infoWin, tm_drawOver100Win);
             win_setShadow(tm->infoWin, 1);
             tm_waitWindow(tm->infoWin);
@@ -2500,11 +2503,11 @@ void tm_nextTrade(TmState *tm) {
 }
 
 void tm_drawOver100Win(Window *win) {
-    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_OVER_100), TEXT_PAL_WHITE);
+    text_drawBlock(win->x + TM_WIN_TEXT_X, win->y + 7, win->otz, text_get(TM_TEXT_OVER_100), TEXT_PAL_WHITE);
 }
 
 void tm_drawDiscardTitle(Window *win) {
-    text_drawBlock(0x82, 0x10, win->otz, text_get(TM_TEXT_DISCARD), TEXT_PAL_WHITE);
+    text_drawBlock(TM_TITLE_TEXT_DISCARD_X, TM_TITLE_TEXT_Y, win->otz, text_get(TM_TEXT_DISCARD), TEXT_PAL_WHITE);
 }
 
 void *tm_taskCardChange(u32 *ot, void *prim, TmState *tm) {
@@ -2522,8 +2525,8 @@ void *tm_taskCardChange(u32 *ot, void *prim, TmState *tm) {
 
     card = tm->tradeCard;
     if (tm->timer < tm->moveFrames) {
-        dx = (0x8B00 - card->fromX) / tm->moveFrames;
-        dy = (0x5500 - card->fromY) / tm->moveFrames;
+        dx = ((TM_TRADE_CARD_X << 8) - card->fromX) / tm->moveFrames;
+        dy = ((TM_TRADE_CARD_Y << 8) - card->fromY) / tm->moveFrames;
         card->x = (card->fromX + dx * tm->timer) >> 8;
         card->y = (card->fromY + dy * tm->timer) >> 8;
         tm_stackHands(tm, 0);
@@ -2554,8 +2557,8 @@ void *tm_taskCardChange(u32 *ot, void *prim, TmState *tm) {
         }
     }
     tradeLost = tm->result;
-    card->x = 0x8B;
-    card->y = 0x55;
+    card->x = TM_TRADE_CARD_X;
+    card->y = TM_TRADE_CARD_Y;
     g_tmTradeLost = tradeLost;
     g_tmTradeCardId = id = card->id;
     text_copy(msg, (u8 *)card_getName(id));
@@ -2565,12 +2568,12 @@ void *tm_taskCardChange(u32 *ot, void *prim, TmState *tm) {
         text_append(msg, text_get(TM_TEXT_LOST));
     }
     text_append(msg, text_get(TM_TEXT_TRADE_END));
-    w = text_measureWidth(msg) + 0x10;
-    rect.x = 0xA0 - w / 2;
-    rect.y = 0x96;
+    w = text_measureWidth(msg) + TM_BOX_PAD_X * 2;
+    rect.x = SCREEN_W / 2 - w / 2;
+    rect.y = TM_WIN_TRADE_Y;
     rect.w = w;
-    rect.h = 0x1A;
-    tm->msgWin = win_openFree(&rect, 5, WIN_STYLE_BEVEL);
+    rect.h = TM_WIN_TRADE_H;
+    tm->msgWin = win_openFree(&rect, TM_OT_WIN, WIN_STYLE_BEVEL);
     win_setDrawContent(tm->msgWin, tm_drawTradeWin);
     win_setShadow(tm->msgWin, 1);
     tm_waitWindow(tm->msgWin);
@@ -2586,26 +2589,26 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *prim, TmState *tm) {
     bright = tm->brightness;
     if (g_tmTradeBadge != 0) {
         setSprt(prim);
-        prim->x0 = 0xA3;
-        prim->y0 = 0x45;
+        prim->x0 = TM_BADGE_X;
+        prim->y0 = TM_BADGE_Y;
         if (tm->result == TM_RESULT_WIN) {
-            prim->u0 = 0x20;
-            prim->v0 = 0x90;
+            prim->u0 = TM_UV_NEW_CARD_U;
+            prim->v0 = TM_UV_NEW_CARD_V;
         } else {
-            prim->u0 = 0xC0;
-            prim->v0 = 0x80;
+            prim->u0 = TM_UV_LAST_ONE_U;
+            prim->v0 = TM_UV_LAST_ONE_V;
         }
-        prim->w = 0x38;
-        prim->h = 0x18;
-        prim->clut = getClut(0, 0xEB);
+        prim->w = TM_BADGE_W;
+        prim->h = TM_BADGE_H;
+        prim->clut = getClut(0, TM_CLUT_COIN);
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
-        AddPrim(ot + 30, prim);
+        AddPrim(ot + TM_OT_FLASH, prim);
         prim++;
         tp = (DR_TPAGE *)prim;
-        setDrawTPage(tp, 0, 0, GetTPage(1, 0, 0x300, 0x100));
-        AddPrim(ot + 30, tp);
+        setDrawTPage(tp, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
+        AddPrim(ot + TM_OT_FLASH, tp);
         prim = (SPRT *)(tp + 1);
     }
     return prim;
@@ -2623,12 +2626,12 @@ void tm_drawTradeWin(Window *w) {
     }
     text_append(msg, (u8 *)card_getName(g_tmTradeCardId));
     text_append(msg, text_get(TM_TEXT_TRADE_END));
-    text_drawBlock(0x9F - text_measureWidth((s32)msg) / 2, win->y + 6, w->otz, msg, TEXT_PAL_WHITE);
+    text_drawBlock(TM_TRADE_TEXT_CX - text_measureWidth((s32)msg) / 2, win->y + 6, w->otz, msg, TEXT_PAL_WHITE);
 }
 
 void tm_endTrade(TmState *tm) {
     TmCard *card = tm->tradeCard;
-    card->depth = 0x28;
+    card->depth = TM_OT_CARDS;
     card->fromX = card->x << 8;
     card->fromY = card->y << 8;
     tm->timer = 0;
@@ -2648,11 +2651,11 @@ void *tm_taskChange2(u32 *ot, void *prim, TmState *tm) {
         } else {
             dx = ((TM_ENEMY_HAND_X << 8) - card->fromX) / tm->moveFrames;
         }
-        dy = (0x9900 - card->fromY) / tm->moveFrames;
+        dy = ((TM_TRADE_DROP_Y << 8) - card->fromY) / tm->moveFrames;
         card->x = (card->fromX + dx * tm->timer) >> 8;
         card->y = (card->fromY + dy * tm->timer) >> 8;
     } else {
-        card->y = 0x19;
+        card->y = TM_PILE_Y;
         if (tm->result == TM_RESULT_WIN) {
             card->x = TM_PLAYER_HAND_X;
         } else {
@@ -2693,26 +2696,26 @@ void tm_stackHands(TmState *tm, s32 flag) {
                 count++;
             }
         }
-        step = 0x20;
-        if (count >= 5) {
-            step = 0x80 / (count - 1);
+        step = TM_PILE_STEP;
+        if (count >= TM_HAND_SIZE) {
+            step = TM_PILE_SPAN / (count - 1);
         }
         j = 0;
         for (i = 0; i < TM_HAND_SIZE; i++) {
             if (first[i].x == x) {
                 if (flag != 0) {
-                    first[i].depth = 0x3C - j;
+                    first[i].depth = TM_OT_CARDS_BACK - j;
                 }
-                first[i].y = j * step + 0x19;
+                first[i].y = j * step + TM_PILE_Y;
                 j++;
             }
         }
         for (i = 0; i < TM_HAND_SIZE; i++) {
             if (second[i].x == x) {
                 if (flag != 0) {
-                    second[i].depth = 0x3C - j;
+                    second[i].depth = TM_OT_CARDS_BACK - j;
                 }
-                second[i].y = j * step + 0x19;
+                second[i].y = j * step + TM_PILE_Y;
                 j++;
             }
         }
@@ -2830,7 +2833,7 @@ void tm_initHands(TmState *tm) {
         card->owner = TM_PLAYER;
         card->onBoard = 0;
         card->hidden = 0;
-        card->depth = 0x28;
+        card->depth = TM_OT_CARDS;
         card->id = 0;
         card->arrows = rand();
         card->power = rand();
@@ -2881,42 +2884,42 @@ void tm_dealEnemyHand(TmState *tm) {
     for (i = 0; i < TM_HAND_SIZE; i++) {
         card = &base[i];
         card->x = TM_ENEMY_HAND_X;
-        card->y = 0x12C;
+        card->y = TM_DEAL_Y;
         card->owner = TM_ENEMY;
         card->onBoard = 0;
         card->hidden = 1;
         card->small = 0;
-        card->depth = 0x28;
+        card->depth = TM_OT_CARDS;
         roll = rand() & 0xFF;
-        if (roll < 20) {
+        if (roll < TM_DECK_BAND(0)) {
             k = 0;
-        } else if (roll < 40) {
+        } else if (roll < TM_DECK_BAND(1)) {
             k = 1;
-        } else if (roll < 60) {
+        } else if (roll < TM_DECK_BAND(2)) {
             k = 2;
-        } else if (roll < 80) {
+        } else if (roll < TM_DECK_BAND(3)) {
             k = 3;
-        } else if (roll < 100) {
+        } else if (roll < TM_DECK_BAND(4)) {
             k = 4;
-        } else if (roll < 120) {
+        } else if (roll < TM_DECK_BAND(5)) {
             k = 5;
-        } else if (roll < 140) {
+        } else if (roll < TM_DECK_BAND(6)) {
             k = 6;
-        } else if (roll < 160) {
+        } else if (roll < TM_DECK_BAND(7)) {
             k = 7;
-        } else if (roll < 180) {
+        } else if (roll < TM_DECK_BAND(8)) {
             k = 8;
-        } else if (roll < 200) {
+        } else if (roll < TM_DECK_BAND(9)) {
             k = 9;
-        } else if (roll < 220) {
+        } else if (roll < TM_DECK_BAND(10)) {
             k = 10;
-        } else if (roll < 240) {
+        } else if (roll < TM_DECK_BAND(11)) {
             k = 11;
-        } else if (roll < 252) {
+        } else if (roll < TM_DECK_BAND_12) {
             k = 12;
-        } else if (roll < 254) {
+        } else if (roll < TM_DECK_BAND_13) {
             k = 13;
-        } else if (roll < 255) {
+        } else if (roll < TM_DECK_BAND_14) {
             k = 14;
         } else {
             k = 15;
@@ -2974,7 +2977,7 @@ void tm_showStockCard(TmState *tm) {
     for (i = 4, cardPtr = &tm->cards[9]; i >= 0; i--, cardPtr--) {
         cardPtr->visible = 0;
     }
-    i = 5;
+    i = TM_HAND_SIZE;
     if (tm->handCount != i && tm->task != TM_TASK_END_FADE) {
         c0 = (TmCard *)tm_getStockCursorId(tm);
         copies = card_countOf((s32)c0);
@@ -2983,20 +2986,20 @@ void tm_showStockCard(TmState *tm) {
             text_formatNumber((s32)c0 + 1, numText, TEXT_NUM_NO_PAD, 3);
             i = text_measureDigits(numText) + 0xE;
             w = i / 2;
-            ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, g_tmNoLabel, TEXT_PAL_WHITE);
-            ui_drawDigits(0xE6 - w, 0x76, 0xFFA, numText, DIGITS_WHITE);
+            ui_drawSmallDigits(TM_STOCK_NO_X - w, TM_STOCK_NO_Y, TM_OT_TEXT, g_tmNoLabel, TEXT_PAL_WHITE);
+            ui_drawDigits(TM_STOCK_NUM_X - w, TM_STOCK_NUM_Y, TM_OT_TEXT, numText, DIGITS_WHITE);
             shown = copies;
             k = tm->copyIdx;
             c0 = &tm->cards[TM_HAND_SIZE];
-            if (shown >= 6) {
-                shown = 5;
+            if (shown >= TM_HAND_SIZE + 1) {
+                shown = TM_HAND_SIZE;
             }
             for (i = 0; i < shown; i++) {
                 card = &c0[i];
                 dx = 0;
                 if (tm->scrollTimer != 0) {
                     if (tm->phase == 0) {
-                        dx = tm->scrollTimer - 4;
+                        dx = tm->scrollTimer - TM_STOCK_SCROLL_FRAMES;
                         if (i == 0) {
                             dx = 0;
                         }
@@ -3008,9 +3011,9 @@ void tm_showStockCard(TmState *tm) {
                     }
                 }
                 entry = card_find(tm_getStockCursorId(tm), k);
-                card->x = 0xC2 + i * 4 + dx;
-                card->y = i + 0x81;
-                card->depth = i + 0x28;
+                card->x = TM_STOCK_CARD_X + i * TM_PILE_DX + dx;
+                card->y = i + TM_STOCK_CARD_Y;
+                card->depth = i + TM_OT_CARDS;
                 card->visible = 1;
                 card->small = 0;
                 card->onBoard = 1;
@@ -3032,10 +3035,10 @@ void tm_showStockCard(TmState *tm) {
                 }
             }
             i = card_getNameWidth(tm_getStockCursorId(tm));
-            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)card_getName(tm_getStockCursorId(tm)), TEXT_PAL_WHITE);
+            text_drawBlock(TM_STOCK_NAME_CX - i / 2, TM_STOCK_NAME_Y, TM_OT_TEXT, (u8 *)card_getName(tm_getStockCursorId(tm)), TEXT_PAL_WHITE);
         }
     } else {
-        tm->cards[5].visible = 0;
+        tm->cards[TM_HAND_SIZE].visible = 0;
     }
 }
 
@@ -3094,20 +3097,20 @@ void tm_levelUpStat(TmState *tm, TmCard *card, s32 stat) {
     TmCard base;
 
     tm_makeCard(tm, &base, card->id, 0);
-    if (stat == 0 && card->power != base.power) {
+    if (stat == TM_STAT_POWER && card->power != base.power) {
         card->power++;
     }
-    if (stat == 1 && card->pdef != base.pdef) {
+    if (stat == TM_STAT_PDEF && card->pdef != base.pdef) {
         card->pdef++;
     }
-    if (stat == 2 && card->mdef != base.mdef) {
+    if (stat == TM_STAT_MDEF && card->mdef != base.mdef) {
         card->mdef++;
     }
     printf("AP=%x : PD=%x : MD=%x \n", card->power, card->pdef, card->mdef);
 }
 
 void tm_levelUpRandom(TmState *tm, TmCard *card) {
-    tm_levelUpStat(tm, card, rand() % 3);
+    tm_levelUpStat(tm, card, rand() % TM_NUM_STATS);
 }
 
 void tm_makeCard(TmState *tm, TmCard *card, s32 cardId, s32 random) {
@@ -3182,7 +3185,7 @@ void tm_makeCard(TmState *tm, TmCard *card, s32 cardId, s32 random) {
     for (i = 0; i < arrowCount; i++) {
         done = 0;
         while (done == 0) {
-            bp = &dirs.v[rand() & 7];
+            bp = &dirs.v[rand() & (TM_NUM_DIRS - 1)];
             if (!(card->arrows & *bp)) {
                 card->arrows |= *bp;
                 done = 1;
@@ -3190,7 +3193,7 @@ void tm_makeCard(TmState *tm, TmCard *card, s32 cardId, s32 random) {
         }
     }
     card->type = tbl[(u8)id].type;
-    if (!(rand() & 0x7F)) {
+    if (!(rand() & TM_RANDOM_X_MASK)) {
         card->type = TM_TYPE_X;
     }
 }
@@ -3203,8 +3206,8 @@ void tm_taskEnemyAppear(TmState *tm) {
 
     enemyHand = &tm->cards[TM_HAND_SIZE];
     for (i = 0; i < TM_HAND_SIZE; i++) {
-        elapsed = tm->timer - 0xF;
-        drop = i * 6 - elapsed;
+        elapsed = tm->timer - TM_APPEAR_DELAY;
+        drop = i * TM_APPEAR_STAGGER - elapsed;
         if (drop <= 0) {
             drop = 0;
             if (tm->landed[i] == 0) {
@@ -3212,10 +3215,10 @@ void tm_taskEnemyAppear(TmState *tm) {
                 tm_playSe(TM_SE_CARD);
             }
         }
-        enemyHand[i].depth = 0x3C - i;
-        enemyHand[i].y = drop * drop + i * 0xE + 0x1A;
+        enemyHand[i].depth = TM_OT_CARDS_BACK - i;
+        enemyHand[i].y = drop * drop + i * TM_ENEMY_HAND_STEP + TM_ENEMY_HAND_Y;
     }
-    if (tm->timer >= 0x29 && tm->blocksDone != 0) {
+    if (tm->timer >= TM_APPEAR_FRAMES && tm->blocksDone != 0) {
         tm->timer = 0;
         tm->phase = 0;
         if (rand() & 1) {
@@ -3239,16 +3242,16 @@ void tm_animEnemyThink(TmState *tm) {
         if (enemyHand[i].onBoard == 0) {
             enemyHand[i].x = TM_ENEMY_HAND_X;
             if (tm->phase == 1) {
-                if (handIdx == tm->timer / 4) {
-                    enemyHand[i].x = 0x1A;
+                if (handIdx == tm->timer / TM_THINK_CARD_FRAMES) {
+                    enemyHand[i].x = TM_ENEMY_PULL_X;
                 }
             } else if (handIdx == 0) {
-                enemyHand[i].x = 0x1A;
+                enemyHand[i].x = TM_ENEMY_PULL_X;
             }
             handIdx++;
         }
     }
-    if (tm->timer != 0 && tm->phase == 1 && !(tm->timer & 3)) {
+    if (tm->timer != 0 && tm->phase == 1 && !(tm->timer & (TM_THINK_CARD_FRAMES - 1))) {
         tm_playSe(TM_SE_CARD);
     }
 }
@@ -3265,38 +3268,38 @@ void *tm_drawCardStats(u32 *ot, SPRT *prim, TmState *tm, TmCard *card, u8 bright
     } else {
         y -= 2;
     }
-    prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 9, y + 0x28, card->power >> 4, bright);
+    prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_POWER_X, y + TM_STAT_Y, card->power >> 4, bright);
     switch (card->type) {
     case TM_TYPE_P:
-        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 15, y + 0x28, 0x10, bright);
+        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_TYPE_X, y + TM_STAT_Y, TM_GLYPH_P, bright);
         break;
     case TM_TYPE_M:
-        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 15, y + 0x28, 0x11, bright);
+        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_TYPE_X, y + TM_STAT_Y, TM_GLYPH_M, bright);
         break;
     case TM_TYPE_X:
-        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 15, y + 0x28, 0x12, bright);
+        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_TYPE_X, y + TM_STAT_Y, TM_GLYPH_X, bright);
         break;
     case TM_TYPE_A:
-        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 15, y + 0x28, 0xA, bright);
+        prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_TYPE_X, y + TM_STAT_Y, TM_GLYPH_A, bright);
         break;
     }
-    prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 0x15, y + 0x28, card->pdef >> 4, bright);
-    prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + 0x1B, y + 0x28, card->mdef >> 4, bright);
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x300, 0x100));
+    prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_PDEF_X, y + TM_STAT_Y, card->pdef >> 4, bright);
+    prim = tm_drawStatGlyph(ot, prim, (s32)tm, x + TM_STAT_MDEF_X, y + TM_STAT_Y, card->mdef >> 4, bright);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
     AddPrim(ot, prim);
     return (DR_TPAGE *)prim + 1;
 }
 
 SPRT *tm_drawStatGlyph(void *ot, SPRT *prim, s32 unused, s32 x, s32 y, s32 glyph, s32 bright) {
     setSprt(prim);
-    prim->v0 = 0xC0;
-    prim->clut = getClut(0, 0xEB);
+    prim->v0 = TM_UV_STAT_V;
+    prim->clut = getClut(0, TM_CLUT_COIN);
     prim->x0 = x;
     prim->w = 8;
     prim->h = 8;
     setRGB0(prim, bright, bright, bright);
     prim->y0 = y;
-    prim->u0 = glyph * 8 + 0x50;
+    prim->u0 = glyph * 8 + TM_UV_STAT_U;
     AddPrim(ot, prim);
     return prim + 1;
 }
@@ -3309,19 +3312,19 @@ void tm_checkGameEnd(TmState *tm) {
         playerCount = tm_countOnBoard(tm, TM_PLAYER);
         enemyCount = tm_countOnBoard(tm, TM_ENEMY);
         if (playerCount > enemyCount) {
-            card_setGameResult(0);
+            card_setGameResult(TM_RESULT_WIN);
             card_addWin();
             tm->result = TM_RESULT_WIN;
             tm->wins++;
         }
         if (playerCount < enemyCount) {
-            card_setGameResult(1);
+            card_setGameResult(TM_RESULT_LOSE);
             card_addLoss();
             tm->result = TM_RESULT_LOSE;
             tm->losses++;
         }
         if (playerCount == enemyCount) {
-            card_setGameResult(2);
+            card_setGameResult(TM_RESULT_DRAW);
             card_addDraw();
             tm->result = TM_RESULT_DRAW;
             tm->draws++;
@@ -3335,20 +3338,20 @@ void *tm_drawResult(u32 *ot, SPRT *prim, TmState *tm) {
     u8 bright;
     s32 snd;
 
-    bright = tm->timer * 8;
-    if (tm->timer * 8 >= 0x100) {
+    bright = tm->timer * TM_RESULT_FADE_STEP;
+    if (tm->timer * TM_RESULT_FADE_STEP >= 0x100) {
         bright = 0xFF;
     }
     if ((u8)(bright - 0xF5) < 8) {
         switch (tm->result) {
-        case 0:
+        case TM_RESULT_WIN:
             if (tm_countOnBoard(tm, TM_PLAYER) != TM_NUM_CARDS) {
                 snd = TM_SE_WIN;
             } else {
                 snd = TM_SE_PERFECT;
             }
             break;
-        case 1:
+        case TM_RESULT_LOSE:
             snd = TM_SE_LOSE;
             break;
         default:
@@ -3358,149 +3361,149 @@ void *tm_drawResult(u32 *ot, SPRT *prim, TmState *tm) {
         tm_playSe(snd);
     }
     switch (tm->result) {
-    case 0:
+    case TM_RESULT_WIN:
         if (tm_countOnBoard(tm, TM_PLAYER) == TM_NUM_CARDS) {
             setlen(prim, PRIM_LEN(SPRT));
             prim->code = GPU_SPRT | GPU_ABE;
-            prim->x0 = 0x4A;
-            prim->y0 = 0x58;
+            prim->x0 = TM_RESULT_PERFECT_X;
+            prim->y0 = TM_RESULT_Y;
             prim->w = 0xA8;
-            prim->h = 0x28;
+            prim->h = TM_RESULT_H;
             prim->r0 = bright;
             prim->g0 = bright;
             prim->b0 = bright;
             prim->u0 = 0;
             prim->v0 = 0x50;
-            prim->clut = getClut(0, 0xE9);
-            AddPrim(ot + 1, prim);
+            prim->clut = getClut(0, TM_CLUT_RESULT);
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim++;
-            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, 0x280, 0x100));
-            AddPrim(ot + 1, prim);
+            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim = (SPRT *)((DR_TPAGE *)prim + 1);
             setlen(prim, PRIM_LEN(SPRT));
             prim->code = GPU_SPRT | GPU_ABE;
-            prim->x0 = 0x4A;
-            prim->y0 = 0x58;
+            prim->x0 = TM_RESULT_PERFECT_X;
+            prim->y0 = TM_RESULT_Y;
             prim->w = 0xB0;
-            prim->h = 0x28;
+            prim->h = TM_RESULT_H;
             prim->r0 = bright;
             prim->g0 = bright;
             prim->b0 = bright;
             prim->u0 = 0;
             prim->v0 = 0x78;
-            prim->clut = getClut(0, 0xE9);
-            AddPrim(ot + 1, prim);
+            prim->clut = getClut(0, TM_CLUT_RESULT);
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim++;
-            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, 0x280, 0x100));
-            AddPrim(ot + 1, prim);
+            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim = (SPRT *)((DR_TPAGE *)prim + 1);
         } else {
             setlen(prim, PRIM_LEN(SPRT));
             prim->code = GPU_SPRT | GPU_ABE;
-            prim->x0 = 0x6C;
-            prim->y0 = 0x58;
+            prim->x0 = TM_RESULT_WIN_X;
+            prim->y0 = TM_RESULT_Y;
             prim->w = 0x68;
-            prim->h = 0x28;
+            prim->h = TM_RESULT_H;
             prim->u0 = 0;
             prim->v0 = 0;
             prim->r0 = bright;
             prim->g0 = bright;
             prim->b0 = bright;
-            prim->clut = getClut(0, 0xE9);
-            AddPrim(ot + 1, prim);
+            prim->clut = getClut(0, TM_CLUT_RESULT);
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim++;
-            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, 0x280, 0x100));
-            AddPrim(ot + 1, prim);
+            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim = (SPRT *)((DR_TPAGE *)prim + 1);
             setlen(prim, PRIM_LEN(SPRT));
             prim->code = GPU_SPRT | GPU_ABE;
-            prim->x0 = 0x6C;
-            prim->y0 = 0x58;
+            prim->x0 = TM_RESULT_WIN_X;
+            prim->y0 = TM_RESULT_Y;
             prim->w = 0x70;
-            prim->h = 0x28;
+            prim->h = TM_RESULT_H;
             prim->r0 = bright;
             prim->g0 = bright;
             prim->b0 = bright;
             prim->u0 = 0x68;
             prim->v0 = 0;
-            prim->clut = getClut(0, 0xE9);
-            AddPrim(ot + 1, prim);
+            prim->clut = getClut(0, TM_CLUT_RESULT);
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim++;
-            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, 0x280, 0x100));
-            AddPrim(ot + 1, prim);
+            setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+            AddPrim(ot + TM_OT_RESULT, prim);
             prim = (SPRT *)((DR_TPAGE *)prim + 1);
         }
         break;
-    case 1:
+    case TM_RESULT_LOSE:
         setlen(prim, PRIM_LEN(SPRT));
         prim->code = GPU_SPRT | GPU_ABE;
-        prim->x0 = 0x6A;
-        prim->y0 = 0x58;
+        prim->x0 = TM_RESULT_LOSE_X;
+        prim->y0 = TM_RESULT_Y;
         prim->w = 0x68;
-        prim->h = 0x28;
+        prim->h = TM_RESULT_H;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
         prim->u0 = 0;
         prim->v0 = 0x28;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 1, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim++;
-        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, 0x280, 0x100));
-        AddPrim(ot + 1, prim);
+        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
         setlen(prim, PRIM_LEN(SPRT));
         prim->code = GPU_SPRT | GPU_ABE;
-        prim->x0 = 0x6A;
-        prim->y0 = 0x58;
+        prim->x0 = TM_RESULT_LOSE_X;
+        prim->y0 = TM_RESULT_Y;
         prim->w = 0x70;
-        prim->h = 0x28;
+        prim->h = TM_RESULT_H;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
         prim->u0 = 0x68;
         prim->v0 = 0x28;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 1, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim++;
-        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, 0x280, 0x100));
-        AddPrim(ot + 1, prim);
+        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
         break;
     default:
         setlen(prim, PRIM_LEN(SPRT));
         prim->code = GPU_SPRT | GPU_ABE;
-        prim->x0 = 0x5C;
-        prim->y0 = 0x58;
+        prim->x0 = TM_RESULT_DRAW_X;
+        prim->y0 = TM_RESULT_Y;
         prim->w = 0x88;
-        prim->h = 0x28;
+        prim->h = TM_RESULT_H;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
         prim->u0 = 0;
         prim->v0 = 0xA0;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 1, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim++;
-        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, 0x280, 0x100));
-        AddPrim(ot + 1, prim);
+        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 1, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
         setlen(prim, PRIM_LEN(SPRT));
         prim->code = GPU_SPRT | GPU_ABE;
-        prim->x0 = 0x5C;
-        prim->y0 = 0x58;
+        prim->x0 = TM_RESULT_DRAW_X;
+        prim->y0 = TM_RESULT_Y;
         prim->w = 0x90;
-        prim->h = 0x28;
+        prim->h = TM_RESULT_H;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
         prim->u0 = 0;
         prim->v0 = 0xC8;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 1, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim++;
-        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, 0x280, 0x100));
-        AddPrim(ot + 1, prim);
+        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 2, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+        AddPrim(ot + TM_OT_RESULT, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
         break;
     }
@@ -3519,7 +3522,7 @@ void tm_revealBlocks(TmState *tm) {
     if (tm->blocksDone == 0) {
         if (tm->numBlocks != 0) {
             tm->blocks[tm->blockIdx].hidden = 0;
-            if (tm->blockTimer >= 9) {
+            if (tm->blockTimer >= TM_BLOCK_INTERVAL) {
                 tm_playSe(TM_SE_BLOCK);
                 tm->blockTimer = 0;
                 if (++tm->blockIdx == tm->numBlocks) {
@@ -3554,14 +3557,14 @@ void *tm_drawBlocks(u32 *ot, void *prim, TmState *tm) {
             continue;
         }
         if (tm->task == TM_TASK_ENEMY_APPEAR && tm->blocksDone == 0 && i == tm->blockIdx) {
-            zoom = 10 - tm->blockTimer;
+            zoom = TM_BLOCK_ZOOM_FRAMES - tm->blockTimer;
             if (zoom < 0) {
                 zoom = 0;
             }
             dx = zoom * 4 / 3;
             dy = zoom * 5 / 3;
-            dw = dx + 0x2A;
-            dh = dy + 0x33;
+            dw = dx + TM_CARD_W;
+            dh = dy + TM_CARD_H;
             SetPolyFT4((POLY_FT4 *)prim);
             ((POLY_FT4 *)prim)->x0 = blockArr[i].x - dx;
             ((POLY_FT4 *)prim)->y0 = blockArr[i].y - dy;
@@ -3571,24 +3574,24 @@ void *tm_drawBlocks(u32 *ot, void *prim, TmState *tm) {
             ((POLY_FT4 *)prim)->y2 = blockArr[i].y + dh;
             ((POLY_FT4 *)prim)->x3 = blockArr[i].x + dw;
             ((POLY_FT4 *)prim)->y3 = blockArr[i].y + dh;
-            u = 0x98;
+            u = TM_UV_BLOCK2_U;
             if (blockArr[i].style == 0) {
-                u = 0x68;
+                u = TM_UV_BLOCK_U;
             }
             ((POLY_FT4 *)prim)->u0 = u;
-            ((POLY_FT4 *)prim)->v0 = 0x40;
-            ((POLY_FT4 *)prim)->u1 = u + 0x2A;
-            ((POLY_FT4 *)prim)->v1 = 0x40;
+            ((POLY_FT4 *)prim)->v0 = TM_UV_FRAME_V;
+            ((POLY_FT4 *)prim)->u1 = u + TM_CARD_W;
+            ((POLY_FT4 *)prim)->v1 = TM_UV_FRAME_V;
             ((POLY_FT4 *)prim)->u2 = u;
-            ((POLY_FT4 *)prim)->v2 = 0x73;
-            ((POLY_FT4 *)prim)->u3 = u + 0x2A;
-            ((POLY_FT4 *)prim)->v3 = 0x73;
+            ((POLY_FT4 *)prim)->v2 = TM_UV_FRAME_V + TM_CARD_H;
+            ((POLY_FT4 *)prim)->u3 = u + TM_CARD_W;
+            ((POLY_FT4 *)prim)->v3 = TM_UV_FRAME_V + TM_CARD_H;
             ((POLY_FT4 *)prim)->r0 = bright;
             ((POLY_FT4 *)prim)->g0 = bright;
             ((POLY_FT4 *)prim)->b0 = bright;
-            ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
-            ((POLY_FT4 *)prim)->clut = getClut(0, 0xEA);
-            AddPrim(ot + 99, prim);
+            ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y);
+            ((POLY_FT4 *)prim)->clut = getClut(0, TM_CLUT_PARTS);
+            AddPrim(ot + TM_OT_BLOCK_ZOOM, prim);
             prim = (POLY_FT4 *)prim + 1;
         } else {
             setSprt((SPRT *)prim);
@@ -3601,19 +3604,19 @@ void *tm_drawBlocks(u32 *ot, void *prim, TmState *tm) {
             ((SPRT *)prim)->g0 = bright;
             ((SPRT *)prim)->b0 = bright;
             if (blockArr[i].style == 0) {
-                ((SPRT *)prim)->u0 = 0x68;
-                ((SPRT *)prim)->v0 = 0x40;
+                ((SPRT *)prim)->u0 = TM_UV_BLOCK_U;
+                ((SPRT *)prim)->v0 = TM_UV_FRAME_V;
             } else {
-                ((SPRT *)prim)->u0 = 0x98;
-                ((SPRT *)prim)->v0 = 0x40;
+                ((SPRT *)prim)->u0 = TM_UV_BLOCK2_U;
+                ((SPRT *)prim)->v0 = TM_UV_FRAME_V;
             }
-            ((SPRT *)prim)->clut = getClut(0, 0xEA);
-            ((SPRT *)prim)->w = 0x2A;
-            ((SPRT *)prim)->h = 0x33;
-            AddPrim(ot + 100, prim);
+            ((SPRT *)prim)->clut = getClut(0, TM_CLUT_PARTS);
+            ((SPRT *)prim)->w = TM_CARD_W;
+            ((SPRT *)prim)->h = TM_CARD_H;
+            AddPrim(ot + TM_OT_BLOCK, prim);
             prim = (SPRT *)prim + 1;
-            setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 1, 0x300, 0x100));
-            AddPrim(ot + 100, prim);
+            setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 1, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
+            AddPrim(ot + TM_OT_BLOCK, prim);
             prim = (DR_TPAGE *)prim + 1;
         }
     }
@@ -3635,17 +3638,17 @@ void tm_placeBlocks(TmState *tm) {
         base[i].x = 0;
     }
     roll = rand() % 100;
-    if (roll < 3) {
+    if (roll < TM_BLOCKS_BAND_0) {
         count = 0;
-    } else if (roll >= 3 && roll < 7) {
+    } else if (roll >= TM_BLOCKS_BAND_0 && roll < TM_BLOCKS_BAND_1) {
         count = 1;
-    } else if (roll >= 7 && roll < 12) {
+    } else if (roll >= TM_BLOCKS_BAND_1 && roll < TM_BLOCKS_BAND_2) {
         count = 2;
-    } else if (roll >= 12 && roll < 17) {
+    } else if (roll >= TM_BLOCKS_BAND_2 && roll < TM_BLOCKS_BAND_3) {
         count = 3;
-    } else if (roll >= 17 && roll < 27) {
+    } else if (roll >= TM_BLOCKS_BAND_3 && roll < TM_BLOCKS_BAND_4) {
         count = 4;
-    } else if (roll >= 27 && roll < 97) {
+    } else if (roll >= TM_BLOCKS_BAND_4 && roll < TM_BLOCKS_BAND_5) {
         count = 5;
     } else {
         count = 6;
@@ -3673,7 +3676,7 @@ void *tm_taskEnemyThink(u32 *ot, void *prim, TmState *tm) {
         if (tm->timer > tm->thinkDelay) {
             tm->timer = 0;
             tm->phase = 1;
-            tm->thinkDelay = (rand() % (tm_countInHand(tm, TM_ENEMY) + 1)) * 4 - 2;
+            tm->thinkDelay = (rand() % (tm_countInHand(tm, TM_ENEMY) + 1)) * TM_THINK_CARD_FRAMES - 2;
         }
     } else if (tm->timer > tm->thinkDelay) {
         tm->task = TM_TASK_ENEMY_SELECT;
@@ -3682,7 +3685,7 @@ void *tm_taskEnemyThink(u32 *ot, void *prim, TmState *tm) {
 }
 
 void tm_enemySelect(TmState *tm) {
-    s32 score[80];
+    s32 score[TM_HAND_SIZE * TM_BOARD_SIZE * TM_BOARD_SIZE];
     TmBattle battle;
     s32 bc;
     s32 by;
@@ -3706,28 +3709,28 @@ void tm_enemySelect(TmState *tm) {
         return;
     }
     if (tm_countOwned(tm, TM_ENEMY) == tm_countOwned(tm, TM_PLAYER)) {
-        wgt = 0x40;
+        wgt = TM_AI_TIED_WEIGHT;
         mul = 1;
     } else if (tm_countOwned(tm, TM_ENEMY) >= tm_countOwned(tm, TM_PLAYER)) {
-        wgt = 0x43;
+        wgt = TM_AI_AHEAD_WEIGHT;
         mul = 1;
     } else {
-        wgt = 1;
-        mul = 5;
+        wgt = TM_AI_BEHIND_WEIGHT;
+        mul = TM_AI_BEHIND_MUL;
     }
-    if (tm->aiLevel == TM_AI_WEAK && rand() % 100 >= 0x1D) {
+    if (tm->aiLevel == TM_AI_WEAK && rand() % 100 >= TM_AI_WEAK_PCT) {
         wgt = 0;
         mul = 0;
     }
-    if (tm->aiLevel == TM_AI_FAIR && rand() % 100 >= 0x3F) {
+    if (tm->aiLevel == TM_AI_FAIR && rand() % 100 >= TM_AI_FAIR_PCT) {
         wgt = 0;
         mul = 0;
     }
-    if (tm->aiLevel == TM_AI_STRONG && rand() % 100 >= 0x5D) {
+    if (tm->aiLevel == TM_AI_STRONG && rand() % 100 >= TM_AI_STRONG_PCT) {
         wgt = 0;
         mul = 0;
     }
-    best = -0x7FFF;
+    best = TM_AI_SCORE_NONE;
     cnt = 0;
     k = 0;
     for (handIdx = 0; handIdx < tm_countInHand(tm, TM_ENEMY); handIdx++) {
@@ -3735,10 +3738,10 @@ void tm_enemySelect(TmState *tm) {
             for (y = 0; y < TM_BOARD_SIZE; y++) {
                 score[k] = 0;
                 if (tm_getCell(tm, x, y)->state != TM_CELL_EMPTY) {
-                    score[k] = -0x7FFF;
+                    score[k] = TM_AI_SCORE_NONE;
                 } else {
                     card = tm_getHandCard(tm, TM_ENEMY, handIdx);
-                    eval = tm_evalPlacement(tm, 1, x, y, card);
+                    eval = tm_evalPlacement(tm, TM_ENEMY, x, y, card);
                     if (eval > 0) {
                         score[k] += eval * wgt;
                     }
@@ -3747,10 +3750,10 @@ void tm_enemySelect(TmState *tm) {
                         winPct = battle.atk * 100 / (battle.atk + battle.def);
                         if (tm->aiLevel == TM_AI_EXPERT) {
                             mul = 1;
-                            if (winPct < 0x3C) {
+                            if (winPct < TM_AI_EXPERT_RISK_PCT) {
                                 winPct = winPct - 100;
                             } else {
-                                winPct = 0x91 - winPct;
+                                winPct = TM_AI_EXPERT_RISK_BASE - winPct;
                             }
                         }
                         score[k] += winPct * mul;
@@ -3768,7 +3771,7 @@ void tm_enemySelect(TmState *tm) {
         }
     }
     bx = 0;
-    best = -0x7FFF;
+    best = TM_AI_SCORE_NONE;
     k = 0;
     by = 0;
     bc = 0;
@@ -3776,7 +3779,7 @@ void tm_enemySelect(TmState *tm) {
         for (x = 0; x < TM_BOARD_SIZE; x++) {
             for (y = 0; y < TM_BOARD_SIZE; y++) {
                 take = best < score[k];
-                if (best == score[k] && rand() % 1000 < 1000 / cnt) {
+                if (best == score[k] && rand() % TM_AI_TIE_ROLL < TM_AI_TIE_ROLL / cnt) {
                     take++;
                 }
                 if (take) {
@@ -3913,8 +3916,8 @@ s32 tm_setFlips(TmState *tm, s32 owner, s32 x, s32 y, s32 nextTask, s32 mode) {
                 tm->comboDirs |= bit;
                 if (mode == TM_FLIP_COMBO) {
                     flipArr[i].arg = i;
-                    tm->comboX = x * 43 + 0x39;
-                    tm->comboY = y * 52 + 0x19;
+                    tm->comboX = x * TM_SQUARE_W + (TM_BOARD_X + TM_CURSOR_DX);
+                    tm->comboY = y * TM_SQUARE_H + (TM_BOARD_Y + TM_COMBO_DY);
                     tm->comboCount++;
                 }
                 flipArr[i].mode = mode;
@@ -4009,10 +4012,10 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *prim, TmState *tm, s32 x, s32 y, u8 arrowM
             prim->b0 = col;
             prim->u0 = tbl.v[i].u;
             prim->v0 = tbl.v[i].v;
-            prim->clut = getClut(0, 0xEA);
+            prim->clut = getClut(0, TM_CLUT_PARTS);
             AddPrim(ot, prim);
             prim++;
-            setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x300, 0x100));
+            setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
             AddPrim(ot, prim);
             prim = (SPRT_16 *)((DR_TPAGE *)prim + 1);
         }
@@ -4029,14 +4032,14 @@ void *tm_drawCursor(u32 *ot, void *prim, TmState *tm, s32 x, s32 y, s32 mode) {
     u8 u2;
     u32 *otSlot;
 
-    if (mode != 2) {
-        z = 3;
-        if (mode != 0) {
-            z = 6;
+    if (mode != TM_CURSOR_MIRROR) {
+        z = TM_OT_CURSOR;
+        if (mode != TM_CURSOR_POINT) {
+            z = TM_OT_CURSOR_BACK;
         }
         bright = tm->brightness;
         setSprt((SPRT *)prim);
-        if (mode != 0) {
+        if (mode != TM_CURSOR_POINT) {
             ((SPRT *)prim)->code = GPU_SPRT | GPU_ABE;
         }
         ((SPRT *)prim)->x0 = x;
@@ -4044,54 +4047,58 @@ void *tm_drawCursor(u32 *ot, void *prim, TmState *tm, s32 x, s32 y, s32 mode) {
         ((SPRT *)prim)->r0 = bright;
         ((SPRT *)prim)->g0 = bright;
         ((SPRT *)prim)->b0 = bright;
-        u = ((tm->animFrame / 6) & 7) * 24;
-        if (mode != 0) {
-            u = ((tm->savedFrame / 6) & 7) * 24;
+        u = ((tm->animFrame / TM_POINTER_TICKS) & (TM_POINTER_FRAMES - 1)) * TM_POINTER_W;
+        if (mode != TM_CURSOR_POINT) {
+            u = ((tm->savedFrame / TM_POINTER_TICKS) & (TM_POINTER_FRAMES - 1)) * TM_POINTER_W;
         }
         otSlot = ot + z;
         ((SPRT *)prim)->u0 = u;
-        ((SPRT *)prim)->v0 = 0x80;
-        ((SPRT *)prim)->clut = getClut(0, 0xEB);
-        ((SPRT *)prim)->w = 0x18;
-        ((SPRT *)prim)->h = 0x10;
+        ((SPRT *)prim)->v0 = TM_UV_POINTER_V;
+        ((SPRT *)prim)->clut = getClut(0, TM_CLUT_COIN);
+        ((SPRT *)prim)->w = TM_POINTER_W;
+        ((SPRT *)prim)->h = TM_POINTER_H;
         AddPrim(otSlot, prim);
         prim = (SPRT *)prim + 1;
         ((SPRT *)prim)->code = GPU_SPRT | GPU_ABE;
         setlen((SPRT *)prim, PRIM_LEN(SPRT));
-        ((SPRT *)prim)->x0 = x + 4;
-        ((SPRT *)prim)->y0 = y + 4;
+        ((SPRT *)prim)->x0 = x + TM_POINTER_SHADOW;
+        ((SPRT *)prim)->y0 = y + TM_POINTER_SHADOW;
         ((SPRT *)prim)->r0 = 0;
         ((SPRT *)prim)->g0 = 0;
         ((SPRT *)prim)->b0 = 0;
         ((SPRT *)prim)->u0 = u;
-        ((SPRT *)prim)->v0 = 0x80;
-        ((SPRT *)prim)->clut = getClut(0, 0xEB);
-        ((SPRT *)prim)->w = 0x18;
-        ((SPRT *)prim)->h = 0x10;
+        ((SPRT *)prim)->v0 = TM_UV_POINTER_V;
+        ((SPRT *)prim)->clut = getClut(0, TM_CLUT_COIN);
+        ((SPRT *)prim)->w = TM_POINTER_W;
+        ((SPRT *)prim)->h = TM_POINTER_H;
         AddPrim(otSlot, prim);
         prim = (SPRT *)prim + 1;
-        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x300, 0x100));
+        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
         AddPrim(otSlot, prim);
         prim = (DR_TPAGE *)prim + 1;
     } else {
-        u = ((tm->animFrame / 6) & 7) * 24;
+        u = ((tm->animFrame / TM_POINTER_TICKS) & (TM_POINTER_FRAMES - 1)) * TM_POINTER_W;
         SetPolyFT4((POLY_FT4 *)prim);
-        setXY4((POLY_FT4 *)prim, x, y, x + 0x18, y, x, y + 0x10, x + 0x18, y + 0x10);
-        u2 = u + 0x17;
-        setUV4((POLY_FT4 *)prim, u2, 0x80, u, 0x80, u2, 0x90, u, 0x90);
-        ((POLY_FT4 *)prim)->clut = getClut(0, 0xEB);
+        setXY4((POLY_FT4 *)prim, x, y, x + TM_POINTER_W, y, x, y + TM_POINTER_H, x + TM_POINTER_W, y + TM_POINTER_H);
+        u2 = u + (TM_POINTER_W - 1);
+        setUV4((POLY_FT4 *)prim, u2, TM_UV_POINTER_V, u, TM_UV_POINTER_V, u2, TM_UV_POINTER_V + TM_POINTER_H, u,
+            TM_UV_POINTER_V + TM_POINTER_H);
+        ((POLY_FT4 *)prim)->clut = getClut(0, TM_CLUT_COIN);
         setRGB0((POLY_FT4 *)prim, 0x80, 0x80, 0x80);
-        ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
-        AddPrim(ot + 3, prim);
+        ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y);
+        AddPrim(ot + TM_OT_CURSOR, prim);
         prim = (POLY_FT4 *)prim + 1;
         SetPolyFT4((POLY_FT4 *)prim);
-        setXY4((POLY_FT4 *)prim, x + 4, y + 4, x + 0x1C, y + 4, x + 4, y + 0x14, x + 0x1C, y + 0x14);
-        setUV4((POLY_FT4 *)prim, u2, 0x80, u, 0x80, u2, 0x90, u, 0x90);
-        ((POLY_FT4 *)prim)->clut = getClut(0, 0xEB);
+        setXY4((POLY_FT4 *)prim, x + TM_POINTER_SHADOW, y + TM_POINTER_SHADOW, x + (TM_POINTER_SHADOW + TM_POINTER_W),
+               y + TM_POINTER_SHADOW, x + TM_POINTER_SHADOW, y + (TM_POINTER_SHADOW + TM_POINTER_H),
+               x + (TM_POINTER_SHADOW + TM_POINTER_W), y + (TM_POINTER_SHADOW + TM_POINTER_H));
+        setUV4((POLY_FT4 *)prim, u2, TM_UV_POINTER_V, u, TM_UV_POINTER_V, u2, TM_UV_POINTER_V + TM_POINTER_H, u,
+            TM_UV_POINTER_V + TM_POINTER_H);
+        ((POLY_FT4 *)prim)->clut = getClut(0, TM_CLUT_COIN);
         setRGB0((POLY_FT4 *)prim, 0, 0, 0);
-        ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
+        ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y);
         setSemiTrans((POLY_FT4 *)prim, 1);
-        AddPrim(ot + 3, prim);
+        AddPrim(ot + TM_OT_CURSOR, prim);
         prim = (POLY_FT4 *)prim + 1;
     }
     return prim;
@@ -4147,47 +4154,47 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
         prim->h = 0x18;
         prim->u0 = 0xB8;
         prim->v0 = 0x78;
-        prim->x0 = 0x58;
-        prim->y0 = 0xA;
+        prim->x0 = TM_TITLE_SELECT_X;
+        prim->y0 = TM_TITLE_SELECT_Y;
         prim->r0 = 0x80;
         prim->g0 = 0x80;
         prim->b0 = 0x80;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 0xFFA, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim++;
         SetSprt(prim);
         prim->w = 0x61;
         prim->h = 0x20;
         prim->u0 = 0x94;
         prim->v0 = 0xD2;
-        prim->x0 = 0x8C;
-        prim->y0 = 0xC;
+        prim->x0 = TM_TITLE_SELECT2_X;
+        prim->y0 = TM_TITLE_SELECT2_Y;
         prim->r0 = 0x80;
         prim->g0 = 0x80;
         prim->b0 = 0x80;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 0xFFA, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_BOARD, prim);
     } else {
         SetSprt(prim);
         prim->w = 0x4E;
         prim->h = 0x15;
         prim->u0 = 0x98;
         prim->v0 = 0xBC;
-        prim->x0 = 0x79;
-        prim->y0 = 0xE;
+        prim->x0 = TM_TITLE_DISCARD_X;
+        prim->y0 = TM_TITLE_DISCARD_Y;
         prim->r0 = 0x80;
         prim->g0 = 0x80;
         prim->b0 = 0x80;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 0xFFA, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim++;
         SetSprt(prim);
         prim->w = 0x10;
         prim->h = 0x10;
         prim->u0 = 0xF0;
         prim->v0 = 0xB8;
-        prim->x0 = 0xCA;
-        prim->y0 = 0x12;
+        prim->x0 = TM_TITLE_ARROW_R_X;
+        prim->y0 = TM_TITLE_ARROW_Y;
         if (!(tm->timer & 0x20)) {
             prim->r0 = 0x80;
             prim->g0 = 0x80;
@@ -4197,16 +4204,16 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
             prim->g0 = 0x40;
             prim->b0 = 0x40;
         }
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 0xFFA, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim++;
         SetSprt(prim);
         prim->w = 0x10;
         prim->h = 0x10;
         prim->u0 = 0xF0;
         prim->v0 = 0xB8;
-        prim->x0 = 0x66;
-        prim->y0 = 0x12;
+        prim->x0 = TM_TITLE_ARROW_L_X;
+        prim->y0 = TM_TITLE_ARROW_Y;
         if (!(tm->timer & 0x20)) {
             prim->r0 = 0x80;
             prim->g0 = 0x80;
@@ -4216,12 +4223,12 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
             prim->g0 = 0x40;
             prim->b0 = 0x40;
         }
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 0xFFA, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_BOARD, prim);
     }
     prim++;
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x280, 0x100));
-    AddPrim(ot + 0xFFA, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+    AddPrim(ot + TM_OT_BOARD, prim);
     prim = (SPRT *)((DR_TPAGE *)prim + 1);
 
     for (i = 0; i < CARD_KINDS; i++) {
@@ -4233,14 +4240,14 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
                 prim->r0 = 0x80;
                 prim->g0 = 0x80;
                 prim->b0 = 0x80;
-                prim->clut = getClut(0, 0xED);
-                prim->w = 4;
+                prim->clut = getClut(0, TM_CLUT_SELECT);
+                prim->w = TM_STOCK_DIGIT_W;
                 prim->h = 5;
                 prim->u0 = (digit % 5) * 4;
                 prim->v0 = (digit / 5) * 8 - 0x10;
-                prim->x0 = (i / 10) * 15 + 0x1B;
-                prim->y0 = (i % 10) * 15 + 0x35;
-                AddPrim(ot + 11, prim);
+                prim->x0 = (i / TM_STOCK_SIDE) * TM_STOCK_CELL + (TM_STOCK_GRID_X + TM_STOCK_COUNT_DX);
+                prim->y0 = (i % TM_STOCK_SIDE) * TM_STOCK_CELL + (TM_STOCK_GRID_Y + TM_STOCK_COUNT_DY);
+                AddPrim(ot + TM_OT_PANEL, prim);
                 prim++;
             }
             rest /= 10;
@@ -4249,38 +4256,38 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
                 digit = rest;
                 digit %= 10;
                 SetSprt(prim);
-                prim->w = 4;
+                prim->w = TM_STOCK_DIGIT_W;
                 prim->h = 5;
                 prim->r0 = 0x80;
                 prim->g0 = 0x80;
                 prim->b0 = 0x80;
-                prim->clut = getClut(0, 0xED);
+                prim->clut = getClut(0, TM_CLUT_SELECT);
                 prim->u0 = (digit % 5) * 4;
                 prim->v0 = (digit / 5) * 8 - 0x10;
-                prim->x0 = (i / 10) * 15 + 0x17;
-                prim->y0 = (i % 10) * 15 + 0x35;
-                AddPrim(ot + 11, prim);
+                prim->x0 = (i / TM_STOCK_SIDE) * TM_STOCK_CELL + (TM_STOCK_GRID_X + TM_STOCK_COUNT_DX - TM_STOCK_DIGIT_W);
+                prim->y0 = (i % TM_STOCK_SIDE) * TM_STOCK_CELL + (TM_STOCK_GRID_Y + TM_STOCK_COUNT_DY);
+                AddPrim(ot + TM_OT_PANEL, prim);
                 prim++;
                 if (copies >= 100) {
                     SetSprt(prim);
-                    prim->w = 4;
+                    prim->w = TM_STOCK_DIGIT_W;
                     prim->h = 5;
                     prim->u0 = 4;
                     prim->v0 = 0xF0;
-                    prim->x0 = (i / 10) * 15 + 0x13;
-                    prim->y0 = (i % 10) * 15 + 0x35;
+                    prim->x0 = (i / TM_STOCK_SIDE) * TM_STOCK_CELL + (TM_STOCK_GRID_X + TM_STOCK_COUNT_DX - 2 * TM_STOCK_DIGIT_W);
+                    prim->y0 = (i % TM_STOCK_SIDE) * TM_STOCK_CELL + (TM_STOCK_GRID_Y + TM_STOCK_COUNT_DY);
                     prim->r0 = 0x80;
                     prim->g0 = 0x80;
                     prim->b0 = 0x80;
-                    prim->clut = getClut(0, 0xED);
-                    AddPrim(ot + 11, prim);
+                    prim->clut = getClut(0, TM_CLUT_SELECT);
+                    AddPrim(ot + TM_OT_PANEL, prim);
                     prim++;
                 }
             }
         }
         SetSprt16((SPRT_16 *)prim);
-        ((SPRT_16 *)prim)->x0 = (i / 10) * 15 + 0x12;
-        ((SPRT_16 *)prim)->y0 = (i % 10) * 15 + 0x2D;
+        ((SPRT_16 *)prim)->x0 = (i / TM_STOCK_SIDE) * TM_STOCK_CELL + TM_STOCK_GRID_X;
+        ((SPRT_16 *)prim)->y0 = (i % TM_STOCK_SIDE) * TM_STOCK_CELL + TM_STOCK_GRID_Y;
         if (copies == 0) {
             ((SPRT_16 *)prim)->u0 = 0;
             ((SPRT_16 *)prim)->v0 = 0xE0;
@@ -4296,217 +4303,217 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
             ((SPRT_16 *)prim)->r0 = 0x80;
             ((SPRT_16 *)prim)->g0 = 0x80;
             ((SPRT_16 *)prim)->b0 = 0x80;
-            ((SPRT_16 *)prim)->clut = getClut(0, 0xED);
-            AddPrim(ot + 11, prim);
+            ((SPRT_16 *)prim)->clut = getClut(0, TM_CLUT_SELECT);
+            AddPrim(ot + TM_OT_PANEL, prim);
         } while (0);
         prim = (SPRT *)((SPRT_16 *)prim + 1);
     }
 
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, 0x340, 0x1E0));
-    AddPrim(ot + 11, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, TM_VRAM_SELECT_X, TM_VRAM_SELECT_Y));
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim = (SPRT *)((DR_TPAGE *)prim + 1);
     SetSprt(prim);
-    prim->w = 0xA8;
+    prim->w = TM_STOCK_FRAME_W;
     prim->h = 8;
     prim->u0 = 0x58;
     prim->v0 = 0xF0;
-    prim->x0 = 9;
-    prim->y0 = 0x29;
+    prim->x0 = TM_STOCK_FRAME_X;
+    prim->y0 = TM_STOCK_FRAME_TOP_Y;
     prim->r0 = 0x80;
     prim->g0 = 0x80;
     prim->b0 = 0x80;
-    prim->clut = getClut(0, 0xEE);
-    AddPrim(ot + 11, prim);
+    prim->clut = getClut(0, TM_CLUT_BG_RIGHT);
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim++;
     SetSprt(prim);
-    prim->w = 0xA8;
+    prim->w = TM_STOCK_FRAME_W;
     prim->h = 8;
     prim->u0 = 0x58;
     prim->v0 = 0xF8;
-    prim->x0 = 9;
-    prim->y0 = 0xBE;
+    prim->x0 = TM_STOCK_FRAME_X;
+    prim->y0 = TM_STOCK_FRAME_BOTTOM_Y;
     prim->r0 = 0x80;
     prim->g0 = 0x80;
     prim->b0 = 0x80;
-    prim->clut = getClut(0, 0xEE);
-    AddPrim(ot + 11, prim);
+    prim->clut = getClut(0, TM_CLUT_BG_RIGHT);
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim++;
     SetSprt(prim);
     prim->w = 8;
-    prim->h = 0x98;
+    prim->h = TM_STOCK_FRAME_H;
     prim->u0 = 0xF0;
     prim->v0 = 0x58;
-    prim->x0 = 0xD;
-    prim->y0 = 0x2B;
+    prim->x0 = TM_STOCK_FRAME_LEFT_X;
+    prim->y0 = TM_STOCK_FRAME_SIDE_Y;
     prim->r0 = 0x80;
     prim->g0 = 0x80;
     prim->b0 = 0x80;
-    prim->clut = getClut(0, 0xEE);
-    AddPrim(ot + 11, prim);
+    prim->clut = getClut(0, TM_CLUT_BG_RIGHT);
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim++;
     SetSprt(prim);
     prim->w = 8;
-    prim->h = 0x98;
+    prim->h = TM_STOCK_FRAME_H;
     prim->u0 = 0xF8;
     prim->v0 = 0x58;
-    prim->x0 = 0xA5;
-    prim->y0 = 0x2B;
+    prim->x0 = TM_STOCK_FRAME_RIGHT_X;
+    prim->y0 = TM_STOCK_FRAME_SIDE_Y;
     prim->r0 = 0x80;
     prim->g0 = 0x80;
     prim->b0 = 0x80;
-    prim->clut = getClut(0, 0xEE);
-    AddPrim(ot + 11, prim);
+    prim->clut = getClut(0, TM_CLUT_BG_RIGHT);
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim++;
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, 0x300, 0));
-    AddPrim(ot + 11, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, TM_VRAM_BG_RIGHT_X, 0));
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim = (SPRT *)((DR_TPAGE *)prim + 1);
     setTile((TILE *)prim);
-    ((TILE *)prim)->x0 = 0x12;
-    ((TILE *)prim)->y0 = 0x2D;
-    ((TILE *)prim)->w = 0x95;
-    ((TILE *)prim)->h = 0x95;
+    ((TILE *)prim)->x0 = TM_STOCK_GRID_X;
+    ((TILE *)prim)->y0 = TM_STOCK_GRID_Y;
+    ((TILE *)prim)->w = TM_STOCK_SIDE * TM_STOCK_CELL - 1;
+    ((TILE *)prim)->h = TM_STOCK_SIDE * TM_STOCK_CELL - 1;
     ((TILE *)prim)->r0 = 0x20;
     ((TILE *)prim)->g0 = 0x18;
     ((TILE *)prim)->b0 = 0x18;
-    AddPrim(ot + 11, prim);
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim = (SPRT *)((TILE *)prim + 1);
     setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 2, 0, 0));
-    AddPrim(ot + 11, prim);
+    AddPrim(ot + TM_OT_PANEL, prim);
     prim = (SPRT *)((DR_TPAGE *)prim + 1);
 
-    ui_drawSmallDigits(0x19, 0xCB, 0xFFA, "Stock:", TEXT_PAL_GREEN);
+    ui_drawSmallDigits(TM_STOCK_COUNT_LABEL_X, TM_STOCK_LABEL_Y, TM_OT_TEXT, "Stock:", TEXT_PAL_GREEN);
     text_formatNumber(g_tmStockCount, numText, 3, 3);
-    ui_drawDigits(0x43, 0xC9, 0xFFA, numText, DIGITS_WHITE);
-    ui_drawSmallDigits(0x65, 0xCB, 0xFFA, "Type:", TEXT_PAL_GREEN);
+    ui_drawDigits(TM_STOCK_COUNT_X, TM_STOCK_VALUE_Y, TM_OT_TEXT, numText, DIGITS_WHITE);
+    ui_drawSmallDigits(TM_STOCK_TYPES_LABEL_X, TM_STOCK_LABEL_Y, TM_OT_TEXT, "Type:", TEXT_PAL_GREEN);
     text_formatNumber(g_tmStockTypes, numText, 3, 3);
-    ui_drawDigits(0x89, 0xC9, 0xFFA, numText, DIGITS_WHITE);
+    ui_drawDigits(TM_STOCK_TYPES_X, TM_STOCK_VALUE_Y, TM_OT_TEXT, numText, DIGITS_WHITE);
 
     if ((u32)(tm->task - TM_TASK_CHOICE) < 2 || tm->task == TM_TASK_GAME_QUIT || tm->task == TM_TASK_END_FADE) {
 
-        ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", TEXT_PAL_GREEN);
+        ui_drawSmallDigits(TM_RECORD_LABEL_X, TM_RECORD_WIN_Y, TM_OT_TEXT, "WIN", TEXT_PAL_GREEN);
         text_formatNumber(card_getWins(), numText, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x42, 0xFFA, numText, TEXT_PAL_WHITE);
-        ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", TEXT_PAL_GREEN);
+        ui_drawSmallDigits(TM_RECORD_VALUE_X, TM_RECORD_WIN_Y, TM_OT_TEXT, numText, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(TM_RECORD_LABEL_X, TM_RECORD_LOSE_Y, TM_OT_TEXT, "LOSE", TEXT_PAL_GREEN);
         text_formatNumber(card_getLosses(), numText, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, numText, TEXT_PAL_WHITE);
-        ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", TEXT_PAL_GREEN);
+        ui_drawSmallDigits(TM_RECORD_VALUE_X, TM_RECORD_LOSE_Y, TM_OT_TEXT, numText, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(TM_RECORD_LABEL_X, TM_RECORD_DRAW_Y, TM_OT_TEXT, "DRAW", TEXT_PAL_GREEN);
         text_formatNumber(card_getDraws(), numText, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x56, 0xFFA, numText, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(TM_RECORD_VALUE_X, TM_RECORD_DRAW_Y, TM_OT_TEXT, numText, TEXT_PAL_WHITE);
 
         setSprt8(prim);
-        ((SPRT_8 *)prim)->x0 = 0xB5;
-        ((SPRT_8 *)prim)->y0 = 0x3D;
+        ((SPRT_8 *)prim)->x0 = TM_RECORD_LEFT_X;
+        ((SPRT_8 *)prim)->y0 = TM_RECORD_TOP_Y;
         ((SPRT_8 *)prim)->r0 = 0x80;
         ((SPRT_8 *)prim)->g0 = 0x80;
         ((SPRT_8 *)prim)->b0 = 0x80;
         ((SPRT_8 *)prim)->u0 = 0x38;
         ((SPRT_8 *)prim)->v0 = 0xF0;
-        ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-        AddPrim(ot + 0xFFA, prim);
+        ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((SPRT_8 *)prim + 1);
         setSprt8(prim);
-        ((SPRT_8 *)prim)->x0 = 0xF6;
-        ((SPRT_8 *)prim)->y0 = 0x3D;
+        ((SPRT_8 *)prim)->x0 = TM_RECORD_RIGHT_X;
+        ((SPRT_8 *)prim)->y0 = TM_RECORD_TOP_Y;
         ((SPRT_8 *)prim)->r0 = 0x80;
         ((SPRT_8 *)prim)->g0 = 0x80;
         ((SPRT_8 *)prim)->b0 = 0x80;
         ((SPRT_8 *)prim)->u0 = 0x48;
         ((SPRT_8 *)prim)->v0 = 0xF0;
-        ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-        AddPrim(ot + 0xFFA, prim);
+        ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((SPRT_8 *)prim + 1);
         setSprt8(prim);
-        ((SPRT_8 *)prim)->x0 = 0xB5;
-        ((SPRT_8 *)prim)->y0 = 0x5A;
+        ((SPRT_8 *)prim)->x0 = TM_RECORD_LEFT_X;
+        ((SPRT_8 *)prim)->y0 = TM_RECORD_BOTTOM_Y;
         ((SPRT_8 *)prim)->r0 = 0x80;
         ((SPRT_8 *)prim)->g0 = 0x80;
         ((SPRT_8 *)prim)->b0 = 0x80;
         ((SPRT_8 *)prim)->u0 = 0x38;
         ((SPRT_8 *)prim)->v0 = 0xF8;
-        ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-        AddPrim(ot + 0xFFA, prim);
+        ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((SPRT_8 *)prim + 1);
         setSprt8(prim);
-        ((SPRT_8 *)prim)->x0 = 0xF6;
-        ((SPRT_8 *)prim)->y0 = 0x5A;
+        ((SPRT_8 *)prim)->x0 = TM_RECORD_RIGHT_X;
+        ((SPRT_8 *)prim)->y0 = TM_RECORD_BOTTOM_Y;
         ((SPRT_8 *)prim)->r0 = 0x80;
         ((SPRT_8 *)prim)->g0 = 0x80;
         ((SPRT_8 *)prim)->b0 = 0x80;
         ((SPRT_8 *)prim)->u0 = 0x48;
         ((SPRT_8 *)prim)->v0 = 0xF8;
-        ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-        AddPrim(ot + 0xFFA, prim);
+        ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((SPRT_8 *)prim + 1);
         for (i = 0; i < 8; i++) {
             setSprt8(prim);
-            ((SPRT_8 *)prim)->y0 = 0x3D;
-            ((SPRT_8 *)prim)->x0 = i * 8 + 0xB9;
+            ((SPRT_8 *)prim)->y0 = TM_RECORD_TOP_Y;
+            ((SPRT_8 *)prim)->x0 = i * 8 + TM_RECORD_EDGE_X;
             ((SPRT_8 *)prim)->r0 = 0x80;
             ((SPRT_8 *)prim)->g0 = 0x80;
             ((SPRT_8 *)prim)->b0 = 0x80;
             ((SPRT_8 *)prim)->u0 = 0x40;
             ((SPRT_8 *)prim)->v0 = 0xF0;
-            ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-            AddPrim(ot + 0xFFA, prim);
+            ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+            AddPrim(ot + TM_OT_BOARD, prim);
             prim = (SPRT *)((SPRT_8 *)prim + 1);
             setSprt8(prim);
-            ((SPRT_8 *)prim)->y0 = 0x5A;
-            ((SPRT_8 *)prim)->x0 = i * 8 + 0xB9;
+            ((SPRT_8 *)prim)->y0 = TM_RECORD_BOTTOM_Y;
+            ((SPRT_8 *)prim)->x0 = i * 8 + TM_RECORD_EDGE_X;
             ((SPRT_8 *)prim)->r0 = 0x80;
             ((SPRT_8 *)prim)->g0 = 0x80;
             ((SPRT_8 *)prim)->b0 = 0x80;
             ((SPRT_8 *)prim)->u0 = 0x40;
             ((SPRT_8 *)prim)->v0 = 0xF8;
-            ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-            AddPrim(ot + 0xFFA, prim);
+            ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+            AddPrim(ot + TM_OT_BOARD, prim);
             prim = (SPRT *)((SPRT_8 *)prim + 1);
         }
         for (i = 0; i < 3; i++) {
             setSprt8(prim);
-            ((SPRT_8 *)prim)->x0 = 0xB5;
-            ((SPRT_8 *)prim)->y0 = i * 8 + 0x43;
+            ((SPRT_8 *)prim)->x0 = TM_RECORD_LEFT_X;
+            ((SPRT_8 *)prim)->y0 = i * 8 + TM_RECORD_SIDE_Y;
             ((SPRT_8 *)prim)->r0 = 0x80;
             ((SPRT_8 *)prim)->g0 = 0x80;
             ((SPRT_8 *)prim)->b0 = 0x80;
             ((SPRT_8 *)prim)->u0 = 0x50;
             ((SPRT_8 *)prim)->v0 = 0xF8;
-            ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-            AddPrim(ot + 0xFFA, prim);
+            ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+            AddPrim(ot + TM_OT_BOARD, prim);
             prim = (SPRT *)((SPRT_8 *)prim + 1);
             setSprt8(prim);
-            ((SPRT_8 *)prim)->x0 = 0xF6;
-            ((SPRT_8 *)prim)->y0 = i * 8 + 0x43;
+            ((SPRT_8 *)prim)->x0 = TM_RECORD_RIGHT_X;
+            ((SPRT_8 *)prim)->y0 = i * 8 + TM_RECORD_SIDE_Y;
             ((SPRT_8 *)prim)->r0 = 0x80;
             ((SPRT_8 *)prim)->g0 = 0x80;
             ((SPRT_8 *)prim)->b0 = 0x80;
             ((SPRT_8 *)prim)->u0 = 0x50;
             ((SPRT_8 *)prim)->v0 = 0xF0;
-            ((SPRT_8 *)prim)->clut = getClut(0, 0xEE);
-            AddPrim(ot + 0xFFA, prim);
+            ((SPRT_8 *)prim)->clut = getClut(0, TM_CLUT_BG_RIGHT);
+            AddPrim(ot + TM_OT_BOARD, prim);
             prim = (SPRT *)((SPRT_8 *)prim + 1);
         }
         setTile((TILE *)prim);
-        ((TILE *)prim)->x0 = 0xB8;
-        ((TILE *)prim)->y0 = 0x41;
-        ((TILE *)prim)->w = 0x46;
-        ((TILE *)prim)->h = 0x1E;
+        ((TILE *)prim)->x0 = TM_RECORD_FILL_X;
+        ((TILE *)prim)->y0 = TM_RECORD_FILL_Y;
+        ((TILE *)prim)->w = TM_RECORD_FILL_W;
+        ((TILE *)prim)->h = TM_RECORD_FILL_H;
         ((TILE *)prim)->r0 = 0x20;
         ((TILE *)prim)->g0 = 0x18;
         ((TILE *)prim)->b0 = 0x18;
-        AddPrim(ot + 0xFFA, prim);
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((TILE *)prim + 1);
-        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, 0x300, 0));
-        AddPrim(ot + 0xFFA, prim);
+        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, TM_VRAM_BG_RIGHT_X, 0));
+        AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
     }
     if (tm->handCount != TM_HAND_SIZE && tm->task != TM_TASK_AWAY_INFO && card_countOf(tm_getStockCursorId(tm)) >= 2) {
         text_formatNumber(tm->copyIdx + 1, numText, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, numText, TEXT_PAL_WHITE);
-        ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(TM_COPY_NUM_X, TM_COPY_Y, TM_OT_TEXT, numText, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(TM_COPY_SLASH_X, TM_COPY_Y, TM_OT_TEXT, g_tmSlash, TEXT_PAL_WHITE);
         text_formatNumber(card_countOf(tm_getStockCursorId(tm)), numText, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, numText, TEXT_PAL_WHITE);
-        text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), TEXT_PAL_WHITE);
-        text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
+        ui_drawSmallDigits(TM_COPY_TOTAL_X, TM_COPY_Y, TM_OT_TEXT, numText, TEXT_PAL_WHITE);
+        text_drawBlock(TM_COPY_L1_X, TM_COPY_ICON_Y, TM_OT_TEXT, text_get(TM_TEXT_ICON_L1), TEXT_PAL_WHITE);
+        text_drawBlock(TM_COPY_R1_X, TM_COPY_ICON_Y, TM_OT_TEXT, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
     }
     if (tm->handCount == 0) {
         g_tmStockTypes = card_countKinds();
@@ -4522,7 +4529,7 @@ void tm_openStock(TmState *tm) {
 }
 
 void tm_drawSelectTitle(Window *win) {
-    text_drawBlock(0x8A, 0x10, win->otz, text_get(TM_TEXT_SELECT_CARDS), TEXT_PAL_WHITE);
+    text_drawBlock(TM_TITLE_TEXT_SELECT_X, TM_TITLE_TEXT_Y, win->otz, text_get(TM_TEXT_SELECT_CARDS), TEXT_PAL_WHITE);
 }
 
 void tm_resetStockCursor(TmState *tm) {
@@ -4540,49 +4547,49 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *tm, TmCard *card, u8 bright,
     s32 v;
 
     id = card->id;
-    page = (u8)(id / 30);
-    slot = (u8)(id % 30);
-    u = (slot % 6) * 42;
-    v = (slot / 6) * 51;
+    page = (u8)(id / TM_CARDS_PER_PAGE);
+    slot = (u8)(id % TM_CARDS_PER_PAGE);
+    u = (slot % TM_CARDS_PER_ROW) * TM_CARD_W;
+    v = (slot / TM_CARDS_PER_ROW) * TM_CARD_H;
     if (flip == 0) {
         setSprt((SPRT *)prim);
         ((SPRT *)prim)->x0 = card->x;
         ((SPRT *)prim)->y0 = card->y;
-        ((SPRT *)prim)->w = 0x2A;
-        ((SPRT *)prim)->h = 0x33;
+        ((SPRT *)prim)->w = TM_CARD_W;
+        ((SPRT *)prim)->h = TM_CARD_H;
         ((SPRT *)prim)->r0 = bright;
         ((SPRT *)prim)->g0 = bright;
         ((SPRT *)prim)->b0 = bright;
         ((SPRT *)prim)->u0 = u;
         ((SPRT *)prim)->v0 = v;
-        ((SPRT *)prim)->clut = getClut(0x180, id + 0x19C);
+        ((SPRT *)prim)->clut = getClut(TM_CLUT_CARDS_X, id + TM_CLUT_CARDS_Y);
         AddPrim(ot, prim);
         prim = (SPRT *)prim + 1;
-        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 0, page << 7, 0x100));
+        setDrawTPage((DR_TPAGE *)prim, 1, 0, GetTPage(1, 0, page * TM_CARD_PAGE_W, TM_VRAM_CARDS_Y));
         AddPrim(ot, prim);
         prim = (DR_TPAGE *)prim + 1;
     } else {
         SetPolyFT4(prim);
         ((POLY_FT4 *)prim)->x0 = card->x;
         ((POLY_FT4 *)prim)->y0 = card->y;
-        ((POLY_FT4 *)prim)->x1 = card->x + 0x22;
+        ((POLY_FT4 *)prim)->x1 = card->x + TM_SMALL_CARD_W;
         ((POLY_FT4 *)prim)->y1 = card->y;
         ((POLY_FT4 *)prim)->x2 = card->x;
-        ((POLY_FT4 *)prim)->y2 = card->y + 0x29;
-        ((POLY_FT4 *)prim)->x3 = card->x + 0x22;
-        ((POLY_FT4 *)prim)->y3 = card->y + 0x29;
+        ((POLY_FT4 *)prim)->y2 = card->y + TM_SMALL_CARD_H;
+        ((POLY_FT4 *)prim)->x3 = card->x + TM_SMALL_CARD_W;
+        ((POLY_FT4 *)prim)->y3 = card->y + TM_SMALL_CARD_H;
         ((POLY_FT4 *)prim)->u0 = u;
         ((POLY_FT4 *)prim)->v0 = v;
-        ((POLY_FT4 *)prim)->u1 = u + 0x2A;
+        ((POLY_FT4 *)prim)->u1 = u + TM_CARD_W;
         ((POLY_FT4 *)prim)->v1 = v;
         ((POLY_FT4 *)prim)->u2 = u;
-        ((POLY_FT4 *)prim)->v2 = v + 0x33;
-        ((POLY_FT4 *)prim)->u3 = u + 0x2A;
-        ((POLY_FT4 *)prim)->v3 = v + 0x33;
+        ((POLY_FT4 *)prim)->v2 = v + TM_CARD_H;
+        ((POLY_FT4 *)prim)->u3 = u + TM_CARD_W;
+        ((POLY_FT4 *)prim)->v3 = v + TM_CARD_H;
         ((POLY_FT4 *)prim)->r0 = bright;
         ((POLY_FT4 *)prim)->g0 = bright;
         ((POLY_FT4 *)prim)->b0 = bright;
-        ((POLY_FT4 *)prim)->clut = getClut(0x180, id + 0x19C);
+        ((POLY_FT4 *)prim)->clut = getClut(TM_CLUT_CARDS_X, id + TM_CLUT_CARDS_Y);
         ((POLY_FT4 *)prim)->tpage = ((page * 2) & 0xE) | TPAGE_8BIT | TPAGE_Y_BIT; /* x = page * 128 */
         AddPrim(ot, prim);
         prim = (POLY_FT4 *)prim + 1;
@@ -4607,35 +4614,36 @@ void *tm_taskCoin(u32 *ot, SPRT *prim, TmState *tm) {
     tick = tm->timer;
     flip = 0;
     if (tm->phase == 0) {
-        frame = tick & 7;
-        if (tick >= 0x29 && ((tm->turn == TM_PLAYER && frame == 7) || (tm->turn == TM_ENEMY && frame == 3))) {
+        frame = tick & (TM_COIN_FRAMES - 1);
+        if (tick >= TM_COIN_SPIN_FRAMES &&
+            ((tm->turn == TM_PLAYER && frame == TM_COIN_FACE_PLAYER) || (tm->turn == TM_ENEMY && frame == TM_COIN_FACE_ENEMY))) {
             tm->phase = 1;
             tm->timer = 0;
             tm_stopSe(TM_SE_COIN);
         }
     } else {
-        frame = 3;
+        frame = TM_COIN_FACE_ENEMY;
         if (tm->turn == TM_PLAYER) {
-            frame = 7;
+            frame = TM_COIN_FACE_PLAYER;
         }
-        if (tick >= 0x1F) {
-            flyFrame = tick - 0x1E;
+        if (tick >= TM_COIN_FLY_START + 1) {
+            flyFrame = tick - TM_COIN_FLY_START;
             flip = 1;
-            dy = -(flyFrame * 82) / 12;
-            dx = (flyFrame * 124) / 12;
+            dy = -(flyFrame * 82) / TM_COIN_FLY_FRAMES;
+            dx = (flyFrame * 124) / TM_COIN_FLY_FRAMES;
             if (tm->turn == TM_ENEMY) {
-                dy = -(flyFrame * 66) / 12;
-                dx = (flyFrame * -119) / 12;
+                dy = -(flyFrame * 66) / TM_COIN_FLY_FRAMES;
+                dx = (flyFrame * -119) / TM_COIN_FLY_FRAMES;
             }
         }
-        if (tick >= 0x2A) {
+        if (tick >= TM_COIN_FLY_START + TM_COIN_FLY_FRAMES) {
             if (tm->turn == TM_PLAYER) {
                 tm->nameSlide = 0;
                 tm->task = TM_TASK_PLAYER_SELECT;
             } else {
                 tm->timer = 0;
                 tm->phase = 0;
-                tm->thinkDelay = (rand() & 0xF) + 0xF;
+                tm->thinkDelay = (rand() & TM_THINK_RAND) + TM_THINK_MIN;
                 tm->task = TM_TASK_ENEMY_THINK;
             }
         }
@@ -4646,28 +4654,28 @@ void *tm_taskCoin(u32 *ot, SPRT *prim, TmState *tm) {
     }
     fr = &frames.v[frame];
     prim->w = fr->w;
-    prim->h = 0x28;
+    prim->h = TM_COIN_H;
     prim->u0 = fr->u;
     prim->v0 = fr->v;
-    k = dx + 0x9D;
+    k = dx + TM_COIN_X;
     prim->x0 = fr->x + k;
-    prim->y0 = dy + 0x5C;
+    prim->y0 = dy + TM_COIN_Y;
     if (flip == 0) {
         bright = 0x80;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
     } else {
-        bright = (0x2A - tick) * 10;
+        bright = (TM_COIN_FLY_START + TM_COIN_FLY_FRAMES - tick) * TM_COIN_FADE_STEP;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
     }
-    prim->clut = getClut(0, 0xEB);
-    AddPrim(ot + 10, prim);
+    prim->clut = getClut(0, TM_CLUT_COIN);
+    AddPrim(ot + TM_OT_COIN, prim);
     prim++;
-    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 1, 0x300, 0x100));
-    AddPrim(ot + 10, prim);
+    setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 1, TM_VRAM_PARTS_X, TM_VRAM_PARTS_Y));
+    AddPrim(ot + TM_OT_COIN, prim);
     return (DR_TPAGE *)prim + 1;
 }
 
@@ -4684,26 +4692,26 @@ void *tm_drawCombo(u32 *ot, SPRT *prim, TmState *tm) {
         prim->h = 0x10;
         prim->u0 = 0xA0;
         prim->v0 = 0xF0;
-        prim->x0 = tm->comboX + 0x10;
+        prim->x0 = tm->comboX + TM_COMBO_LABEL_DX;
         prim->y0 = tm->comboY;
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 10, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_COIN, prim);
         prim++;
         SetSprt(prim);
         prim->w = 0x38;
         prim->h = 0x10;
         prim->u0 = 0xA0;
         prim->v0 = 0xF0;
-        prim->x0 = tm->comboX + 0x12;
-        prim->y0 = tm->comboY + 2;
+        prim->x0 = tm->comboX + (TM_COMBO_LABEL_DX + TM_LABEL_SHADOW);
+        prim->y0 = tm->comboY + TM_LABEL_SHADOW;
         prim->r0 = 0;
         prim->g0 = 0;
         prim->b0 = 0;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 10, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_COIN, prim);
         prim++;
         SetSprt(prim);
         prim->w = 0x10;
@@ -4715,24 +4723,24 @@ void *tm_drawCombo(u32 *ot, SPRT *prim, TmState *tm) {
         prim->r0 = bright;
         prim->g0 = bright;
         prim->b0 = bright;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 10, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_COIN, prim);
         prim++;
         SetSprt(prim);
         prim->w = 0x38;
         prim->h = 0x10;
         prim->u0 = tm->comboShown * 16;
         prim->v0 = 0xF0;
-        prim->x0 = tm->comboX + 2;
-        prim->y0 = tm->comboY + 2;
+        prim->x0 = tm->comboX + TM_LABEL_SHADOW;
+        prim->y0 = tm->comboY + TM_LABEL_SHADOW;
         prim->r0 = 0;
         prim->g0 = 0;
         prim->b0 = 0;
-        prim->clut = getClut(0, 0xE9);
-        AddPrim(ot + 10, prim);
+        prim->clut = getClut(0, TM_CLUT_RESULT);
+        AddPrim(ot + TM_OT_COIN, prim);
         prim++;
-        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, 0x280, 0x100));
-        AddPrim(ot + 10, prim);
+        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(1, 0, TM_VRAM_RESULT_X, TM_VRAM_RESULT_Y));
+        AddPrim(ot + TM_OT_COIN, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
         tm->comboTimer--;
     }
@@ -4754,34 +4762,34 @@ void *tm_drawBattleValues(u32 *ot, void *vp, TmState *tm) {
         for (i = 0; i < 2; i++) {
             if (i == 0) {
                 value = tm->atkShown;
-                x = atkCard->x + 8;
-                y = atkCard->y + 0x12;
+                x = atkCard->x + TM_VALUE_DX;
+                y = atkCard->y + TM_VALUE_DY;
             } else {
                 value = tm->defShown;
-                x = defCard->x + 8;
-                y = defCard->y + 0x12;
+                x = defCard->x + TM_VALUE_DX;
+                y = defCard->y + TM_VALUE_DY;
             }
             if (value < 10) {
-                x += 9;
+                x += TM_BIG_DIGIT_ADV;
             } else if (value < 100) {
                 x += 4;
             }
             if (value >= 100) {
                 prim = tm_drawBigDigit(ot, prim, x, y, value / 100);
                 value %= 100;
-                x += 9;
+                x += TM_BIG_DIGIT_ADV;
                 prim = tm_drawBigDigit(ot, prim, x, y, value / 10);
-                x += 9;
+                x += TM_BIG_DIGIT_ADV;
                 value %= 10;
             } else if (value >= 10) {
                 prim = tm_drawBigDigit(ot, prim, x, y, value / 10);
-                x += 9;
+                x += TM_BIG_DIGIT_ADV;
                 value %= 10;
             }
             prim = tm_drawBigDigit(ot, prim, x, y, value);
         }
-        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, 0x340, 0x1E0));
-        AddPrim(ot + 11, prim);
+        setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, TM_VRAM_SELECT_X, TM_VRAM_SELECT_Y));
+        AddPrim(ot + TM_OT_PANEL, prim);
         prim = (SPRT *)((DR_TPAGE *)prim + 1);
         tm->valuesTimer--;
     }
@@ -4802,8 +4810,8 @@ void *tm_drawBigDigit(u32 *ot, SPRT *prim, s32 x, s32 y, s32 digit) {
     prim->g0 = 0x80;
     prim->b0 = 0x80;
     prim->u0 = u;
-    prim->clut = getClut(0, 0xED);
-    AddPrim(ot + 11, prim);
+    prim->clut = getClut(0, TM_CLUT_SELECT);
+    AddPrim(ot + TM_OT_PANEL, prim);
     return prim + 1;
 }
 
@@ -4815,11 +4823,11 @@ void tm_askRematch(TmState *tm) {
     RECT rect;
 
     if ((u32)(tm->opponent - TM_OPP_FORCED) >= TM_OPP_FORCED_NUM) {
-        rect.w = text_measureWidth((s32)text_get(TM_TEXT_REMATCH)) + 0x12;
-        rect.x = 0xA0 - rect.w / 2;
-        rect.y = 0x54;
-        rect.h = 0x39;
-        tm->msgWin = win_openFree(&rect, 5, WIN_STYLE_BEVEL);
+        rect.w = text_measureWidth((s32)text_get(TM_TEXT_REMATCH)) + 2 * TM_WIN_TEXT_X;
+        rect.x = SCREEN_W / 2 - rect.w / 2;
+        rect.y = TM_WIN_REMATCH_Y;
+        rect.h = TM_WIN_REMATCH_H;
+        tm->msgWin = win_openFree(&rect, TM_OT_WIN, WIN_STYLE_BEVEL);
         win_setDrawContent(tm->msgWin, tm_drawRematchWin);
         win_setShadow(tm->msgWin, 1);
         tm_waitWindow(tm->msgWin);
@@ -4831,21 +4839,21 @@ void tm_askRematch(TmState *tm) {
 }
 
 void tm_drawRematchWin(Window *win) {
-    text_drawBlock(win->x + 9, win->y + 6, win->otz, text_get(TM_TEXT_REMATCH), TEXT_PAL_WHITE);
+    text_drawBlock(win->x + TM_WIN_TEXT_X, win->y + 6, win->otz, text_get(TM_TEXT_REMATCH), TEXT_PAL_WHITE);
 }
 
 void tm_taskEndFade(TmState *tm) {
     fade_setAngle((tm->timer * 0x88) & 0xFF8);
-    if (tm->timer >= 0x1F) {
+    if (tm->timer >= TM_END_FADE_FRAMES + 1) {
         tm->task = TM_TASK_EXIT;
     }
 }
 
 void tm_startEndFade(TmState *tm) {
     tm->timer = 0;
-    game_startFade(FADE_WIPE, FADE_SUB, 0x1E, FADE_COLOR_FULL);
+    game_startFade(FADE_WIPE, FADE_SUB, TM_END_FADE_FRAMES, FADE_COLOR_FULL);
     fade_setAngle(0);
-    tm_soundCmd(SND_SONG_VOL_FROM_INTPL, MUSIC_TETRA_MASTER, 0x1E, 0x7F, 0);
+    tm_soundCmd(SND_SONG_VOL_FROM_INTPL, MUSIC_TETRA_MASTER, TM_END_FADE_FRAMES, SND_VOL_MAX, 0);
     tm->task = TM_TASK_END_FADE;
 }
 
