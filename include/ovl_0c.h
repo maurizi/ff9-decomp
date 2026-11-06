@@ -658,7 +658,7 @@ typedef struct {
 /* wm_updateActors: tilts settling back each frame. Evidence: [code] */
 #define WM_ROLL_SETTLE_STEP 10 /* the mount's rotZ eases to 0, the camera roll to 0 (turning slowly or not at all), */
                                /* a landed vehicle's rotZ to WM_VEHICLE_REST_ROLL, by this a frame */
-#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest */
+#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest (runtime pending R44) */
 #define WM_VEHICLE_FLY_SETTLE_STEP 16 /* ... flying straight */
 #define WM_ROLL_SETTLE_SPEED 300 /* the camera roll also levels out below this speed */
 
@@ -1345,7 +1345,7 @@ extern u8 s_menuMainText[]; /* text */
 #define MENU_MAIN_HELP_W 0xE8
 #define MENU_MAIN_HELP_BOTTOM 0xF /* lines above the display's bottom */
 /* party panel */
-#define MENU_MAIN_PORTRAIT_X_BACK 8 /* portrait x with battleRow set */
+#define MENU_MAIN_PORTRAIT_X_BACK 8 /* portrait x with battleRow set (which row: runtime pending R44) */
 #define MENU_MAIN_PORTRAIT_X_FRONT 0x16 /* portrait x with battleRow clear: shifted right */
 #define MENU_MAIN_PORTRAIT_Y 1
 #define MENU_MAIN_PORTRAIT_H 0x2D
@@ -1836,7 +1836,7 @@ extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
-#define UI_SPRITE_PAUSE 0xEB /* the pause sprite wm_togglePause centres on screen (g_worldPauseSprite); same in ovl_0a */
+#define UI_SPRITE_PAUSE 0xEB /* the pause sprite wm_togglePause centres on screen (g_worldPauseSprite); same in ovl_0a (runtime pending R44) */
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void pen_locate(s32, s32);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
