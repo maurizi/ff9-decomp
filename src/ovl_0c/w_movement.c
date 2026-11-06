@@ -1178,7 +1178,7 @@ void wm_movePlayer(WmActorType *cc) {
         saved = g_worldMoveMode;
         if (g_worldFastWalk != 0) {
             g_worldMoveMode = WM_MOVE_FAST_WALK;
-            spd *= 4;
+            spd *= WM_FAST_WALK_MUL;
         }
         i = 0;
         do {
@@ -1213,8 +1213,8 @@ void wm_movePlayer(WmActorType *cc) {
                     break;
                 }
             }
-            i += 0x80;
-        } while (i < 0x400);
+            i += WM_STEP_TRY_ANGLE;
+        } while (i < WM_STEP_TRY_MAX);
         if (g_worldFastWalk != 0) {
             g_worldMoveMode = saved;
         }
@@ -1270,54 +1270,54 @@ void wm_movePlayer(WmActorType *cc) {
             }
         }
     }
-    ex = g_worldPlayer->pos.vx - 0x407F7;
-    ez = g_worldPlayer->pos.vz + 0x3BDC3;
-    if (ABS(ex) < 0x800 && ABS(ez) < 0x800) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_A_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_A_Z;
+    if (ABS(ex) < WM_NOCACHE_A_R && ABS(ez) < WM_NOCACHE_A_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x37FA8;
-    ez = g_worldPlayer->pos.vz + 0x1606D;
-    if (ABS(ex) < 0xC00 && ABS(ez) < 0xC00) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_CONDE_PETIE_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_CONDE_PETIE_Z;
+    if (ABS(ex) < WM_NOCACHE_CONDE_PETIE_R && ABS(ez) < WM_NOCACHE_CONDE_PETIE_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x4AD96;
-    ez = g_worldPlayer->pos.vz + 0x32133;
-    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_ICE_CAVERN_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_ICE_CAVERN_Z;
+    if (ABS(ex) < WM_NOCACHE_ICE_CAVERN_R && ABS(ez) < WM_NOCACHE_ICE_CAVERN_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x489E4;
-    ez = g_worldPlayer->pos.vz + 0x34BBF;
-    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE11_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE11_Z;
+    if (ABS(ex) < WM_NOCACHE_PLACE11_R && ABS(ez) < WM_NOCACHE_PLACE11_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x250D4;
-    ez = g_worldPlayer->pos.vz + 0x46B95;
-    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_CHOCOBOS_LAGOON_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_CHOCOBOS_LAGOON_Z;
+    if (ABS(ex) < WM_NOCACHE_CHOCOBOS_LAGOON_R && ABS(ez) < WM_NOCACHE_CHOCOBOS_LAGOON_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x36F54;
-    ez = g_worldPlayer->pos.vz + 0xF131;
-    if (ABS(ex) < 0x60C && ABS(ez) < 0x800) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE34_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE34_Z;
+    if (ABS(ex) < WM_NOCACHE_PLACE34_RX && ABS(ez) < WM_NOCACHE_PLACE34_RZ) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x3D3D2;
-    ez = g_worldPlayer->pos.vz + 0x36C0F;
-    if (ABS(ex) < 0x500 && ABS(ez) < 0x500) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE20_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE20_Z;
+    if (ABS(ex) < WM_NOCACHE_PLACE20_R && ABS(ez) < WM_NOCACHE_PLACE20_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x4A02F;
-    ez = g_worldPlayer->pos.vz + 0x11DD8;
-    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE27_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE27_Z;
+    if (ABS(ex) < WM_NOCACHE_PLACE27_R && ABS(ez) < WM_NOCACHE_PLACE27_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0xC02F;
-    ez = g_worldPlayer->pos.vz + 0x1D9EC;
-    if (ABS(ex) < 0x500 && ABS(ez) < 0x500) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_IPSENS_CASTLE_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_IPSENS_CASTLE_Z;
+    if (ABS(ex) < WM_NOCACHE_IPSENS_CASTLE_R && ABS(ez) < WM_NOCACHE_IPSENS_CASTLE_R) {
         g_worldUsePolyCache = 0;
     }
-    ex = g_worldPlayer->pos.vx - 0x17A3B;
-    ez = g_worldPlayer->pos.vz + 0x4014A;
-    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_PLACE39_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_PLACE39_Z;
+    if (ABS(ex) < WM_NOCACHE_PLACE39_R && ABS(ez) < WM_NOCACHE_PLACE39_R) {
         g_worldUsePolyCache = 0;
     }
     wm_wrapPos(&g_worldPlayer->pos.vx, &g_worldPlayer->pos.vz);

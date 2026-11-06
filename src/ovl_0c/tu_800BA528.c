@@ -1587,7 +1587,7 @@ void wm_naviUpdate(void) {
                 if (g_evtGlobalVars.b[EVT_GB_NAVI_PLACE] == 0) {
                     best = 0x7FFFFFFF;
                     bi = -1;
-                    for (i = 0; i < 64; i++) {
+                    for (i = 0; i < (s32)ARRAY_COUNT(g_worldNaviPlaces[0]); i++) {
                         if ((u8)wm_naviIsPlaceKnown(i)) {
                             fx = ((g_worldNaviPlaces[g_worldNaviPage][i].mapX << 12) - g_worldNaviCursorX) >> 12;
                             fz = ((g_worldNaviPlaces[g_worldNaviPage][i].mapY << 12) - g_worldNaviCursorY) >> 12;
@@ -1623,7 +1623,7 @@ void wm_naviUpdate(void) {
                 }
             }
             last = -1;
-            for (i = 0; i < 64; i++) {
+            for (i = 0; i < (s32)ARRAY_COUNT(g_worldNaviPlaces[0]); i++) {
                 ex = (g_worldNaviPlaces[g_worldNaviPage][i].mapX << 12) - g_worldNaviCursorX;
                 ez = (g_worldNaviPlaces[g_worldNaviPage][i].mapY << 12) - g_worldNaviCursorY;
                 if (g_worldNaviPage != 1 || ((u32)(i - 6) >= 4 && i != 15)) {
@@ -1632,9 +1632,9 @@ void wm_naviUpdate(void) {
                     if (best < lim) {
                         ang = ez >= 0 ? ez : -ez;
                         if (ang < lim && (u8)wm_naviIsPlaceKnown(i)) {
-                            g_worldNaviCursorX += ex >> 3;
-                            g_worldNaviCursorY += ez >> 3;
-                            if (best < 0x1000 && ang < 0x1000) {
+                            g_worldNaviCursorX += ex >> WM_NAVI_PULL_SHIFT;
+                            g_worldNaviCursorY += ez >> WM_NAVI_PULL_SHIFT;
+                            if (best < WM_NAVI_ON_PLACE && ang < WM_NAVI_ON_PLACE) {
                                 g_worldNaviPlace = i;
                                 last = i;
                             }
