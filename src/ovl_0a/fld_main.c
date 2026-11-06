@@ -560,8 +560,8 @@ void fld_initScene(void) {
         info->nextColor.c[3] = 0;
         info->mirror = NULL;
     }
-    sc->encounterScreenX = 0xA0;
-    sc->encounterScreenY = 0x70;
+    sc->encounterScreenX = FLD_SCREEN_CX;
+    sc->encounterScreenY = FLD_SCREEN_CY;
     sc->battleMusic = MUSIC_NONE;
     sc->battleMusicBank = 0xFFFF;
     sc->encounterStep = 0;

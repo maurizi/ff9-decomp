@@ -546,20 +546,20 @@ void fld_getSoundPanVolume(s16 posX, s16 posY, s16 posZ, u8 *outPan, u8 *outVolu
     }
     edge = z / 32;
     span = (128 - edge) * 2;
-    if ((u16)sxy.vx < 320) {
-        pan = sxy.vx * span / 320;
+    if ((u16)sxy.vx < SCREEN_W) {
+        pan = sxy.vx * span / SCREEN_W;
         pan += edge;
     } else if (sxy.vx < 0) {
-        if (sxy.vx < -320) {
-            sxy.vx = -320;
+        if (sxy.vx < -SCREEN_W) {
+            sxy.vx = -SCREEN_W;
         }
-        pan = sxy.vx + 320;
-        pan = pan * edge / 320;
+        pan = sxy.vx + SCREEN_W;
+        pan = pan * edge / SCREEN_W;
     } else {
-        if (sxy.vx >= 640) {
-            sxy.vx = 639;
+        if (sxy.vx >= (2 * SCREEN_W)) {
+            sxy.vx = (2 * SCREEN_W - 1);
         }
-        pan = (sxy.vx - 320) * edge / 320;
+        pan = (sxy.vx - SCREEN_W) * edge / SCREEN_W;
         pan += 255;
         pan -= edge;
     }
@@ -1750,8 +1750,8 @@ void fld_showSplashImage(void) {
         pkt += sizeof(SPRT);
         setSprt(spr[i]);
         setRGB0(spr[i], 0x80, 0x80, 0x80);
-        spr[i]->x0 = (0x140 - img->w * 4) >> 1;
-        spr[i]->y0 = (0xE0 - img->h) / 2;
+        spr[i]->x0 = (SCREEN_W - img->w * 4) >> 1;
+        spr[i]->y0 = (SCREEN_H - img->h) / 2;
         spr[i]->u0 = 0;
         spr[i]->v0 = 0;
         spr[i]->w = img->w * 4 - 1;

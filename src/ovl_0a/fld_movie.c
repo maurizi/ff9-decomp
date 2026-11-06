@@ -1300,7 +1300,7 @@ void fld_movieFinish(void) {
     g_fieldMovieFlags &= ~FLD_MVF_PER_MOVIE;
     field->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
     g_gameState->vsyncMode = 2;
-    g_gameState->dispEnv[0].disp.x = 0x140;
+    g_gameState->dispEnv[0].disp.x = SCREEN_W;
     g_gameState->dispEnv[1].disp.x = 0;
     fld_soundCommand(SND_STREAM_VOL, -1, g_gameState->gameData->ctx.field->area->scene->sndVolume, 0, 0);
 }
@@ -1436,11 +1436,11 @@ void fld_updateEncounter(void) {
             gte_ldv0(&worldPos);
             gte_rtps();
             gte_stsxy(&g_gameState->gameData->ctx.field->area->scene->encounterScreenX);
-            if ((u16)g_gameState->gameData->ctx.field->area->scene->encounterScreenX >= 320
+            if ((u16)g_gameState->gameData->ctx.field->area->scene->encounterScreenX >= SCREEN_W
                 || g_gameState->gameData->ctx.field->area->scene->encounterScreenY < 0
-                || g_gameState->gameData->ctx.field->area->scene->encounterScreenY >= 224) {
-                g_gameState->gameData->ctx.field->area->scene->encounterScreenX = 160;
-                g_gameState->gameData->ctx.field->area->scene->encounterScreenY = 112;
+                || g_gameState->gameData->ctx.field->area->scene->encounterScreenY >= SCREEN_H) {
+                g_gameState->gameData->ctx.field->area->scene->encounterScreenX = FLD_SCREEN_CX;
+                g_gameState->gameData->ctx.field->area->scene->encounterScreenY = FLD_SCREEN_CY;
             }
             fldbg_resetGeomOffset();
         }
@@ -1554,14 +1554,14 @@ void fld_togglePause(void) {
             g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
-        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (224 - g_uiSprites[235].h) / 2, &g_fieldTempOt, 0xEB, 0, &spriteW, &g_fieldPauseSprite);
+        ui_buildSprite((SCREEN_W - g_uiSprites[UI_SPRITE_PAUSE].w) / 2, (SCREEN_H - g_uiSprites[UI_SPRITE_PAUSE].h) / 2, &g_fieldTempOt, UI_SPRITE_PAUSE, 0, &spriteW, &g_fieldPauseSprite);
         bright = 0;
         if (fade_isActive() || fade_isBusy()) {
             bright = 1;
         }
         subtractive = fade_isSubtractive();
         if (bright && subtractive == 0) {
-            if (fade_getType() == 2) {
+            if (fade_getType() == FADE_WIPE) {
                 fade_getWipeColors(wipeRgb);
                 color.b[0] = (wipeRgb[0] + wipeRgb[4]) >> 1;
                 color.b[1] = (wipeRgb[1] + wipeRgb[5]) >> 1;
@@ -1569,12 +1569,12 @@ void fld_togglePause(void) {
             } else {
                 color = fade_getColor();
             }
-            if (color.b[0] >= 200 && color.b[1] >= 200 && color.b[2] >= 200) {
+            if (color.b[0] >= FLD_PAUSE_LIGHT_FADE && color.b[1] >= FLD_PAUSE_LIGHT_FADE && color.b[2] >= FLD_PAUSE_LIGHT_FADE) {
                 setSemiTrans(&g_fieldPauseSprite.sprite, 1);
                 sp = &g_fieldPauseSprite.sprite;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
-                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].tpage), tpage_getY((s16)g_uiSprites[235].tpage)));
+                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[UI_SPRITE_PAUSE].tpage), tpage_getY((s16)g_uiSprites[UI_SPRITE_PAUSE].tpage)));
             }
         }
         setlen(&g_fieldPauseDim, PRIM_LEN(TILE));

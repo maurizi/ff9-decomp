@@ -2690,8 +2690,8 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *ovl, FieldBgState *st, BgFollowO
     s16 w;
 
     ot = g_fieldBgCtx.ot[*g_fieldBgCtx.bufIndex];
-    x = ovl->x + bg->posX - (st->scroll.x - 0xA0);
-    y = ovl->y + bg->posY - (st->scroll.y - 0x70);
+    x = ovl->x + bg->posX - (st->scroll.x - FLD_SCREEN_CX);
+    y = ovl->y + bg->posY - (st->scroll.y - FLD_SCREEN_CY);
     if (x > 0) {
         quad = &follow->quads[*g_fieldBgCtx.bufIndex][0];
         edgeA = y;
@@ -2798,10 +2798,10 @@ s32 fldbg_updateFollowOverlays(void) {
         for (i = 0; i < g_fieldBgFollowOverlayCount; i++, follow++) {
             ovl = (BgOverlay *)((u16)follow->overlay * sizeof(BgOverlay) + (u32)objs);
             if ((ovl->flags & FLDBG_OVL_VISIBLE) && ovl->cameraId == st->cameraId) {
-                x = st->scroll.x + (sx - bg->posX - (follow->offsetX + 0xA0));
+                x = st->scroll.x + (sx - bg->posX - (follow->offsetX + FLD_SCREEN_CX));
                 y = follow->offsetY;
                 ovl->x = x;
-                ovl->y = st->scroll.y + (sy - bg->posX - (y + 0x70));
+                ovl->y = st->scroll.y + (sy - bg->posX - (y + FLD_SCREEN_CY));
                 if (follow->abr >= 0) {
                     fldbg_drawFollowMask(bg, ovl, st, follow);
                 }
@@ -2829,12 +2829,12 @@ s32 fldbg_initOverlays(u8 *heap, BgSprt **spritesOut) {
     x = (cam->scrollMinX + cam->scrollMaxX) / 2;
     g_fieldBgState.scroll.x = (g_fieldBgState.parallaxOriginX = x);
     g_fieldBgState.scroll.y = (g_fieldBgState.parallaxOriginY = (cam->scrollMinY + cam->scrollMaxY) / 2);
-    x -= 160;
+    x -= FLD_SCREEN_CX;
     h->screenX = h->posX - x;
     ovlCount = h->overlayCount;
     objs = (BgOverlay *)((u8 *)h + h->overlayOffset);
     size = ovlCount * 3;
-    y = g_fieldBgState.scroll.y - 112;
+    y = g_fieldBgState.scroll.y - FLD_SCREEN_CY;
     h->screenY = h->posY - (s16)y;
     g_fieldBgCtx.overlayRgb = heap;
     while (size / 4 * 4 != size) {
@@ -2915,8 +2915,8 @@ s32 fldbg_drawOverlay(BgOverlay *ovl, u8 *unused) {
             ox = g_fieldBgState.viewportPos[ovl->viewport][0];
             oy = g_fieldBgState.viewportPos[ovl->viewport][1];
         } else {
-            ox = g_fieldBgState.viewportPos[ovl->viewport][0] + 0xA0 - g_fieldBgState.scroll.x;
-            oy = g_fieldBgState.viewportPos[ovl->viewport][1] + 0x70 - g_fieldBgState.scroll.y;
+            ox = g_fieldBgState.viewportPos[ovl->viewport][0] + FLD_SCREEN_CX - g_fieldBgState.scroll.x;
+            oy = g_fieldBgState.viewportPos[ovl->viewport][1] + FLD_SCREEN_CY - g_fieldBgState.scroll.y;
         }
         wx = g_fieldBgState.viewportSize[ovl->viewport][0];
         wy = g_fieldBgState.viewportSize[ovl->viewport][1];
@@ -3018,8 +3018,8 @@ s32 fldbg_drawOverlay(BgOverlay *ovl, u8 *unused) {
             ox = g_fieldBgState.viewportPos[ovl->viewport][0];
             oy = g_fieldBgState.viewportPos[ovl->viewport][1];
         } else {
-            ox = g_fieldBgState.viewportPos[ovl->viewport][0] + 0xA0 - g_fieldBgState.scroll.x;
-            oy = g_fieldBgState.viewportPos[ovl->viewport][1] + 0x70 - g_fieldBgState.scroll.y;
+            ox = g_fieldBgState.viewportPos[ovl->viewport][0] + FLD_SCREEN_CX - g_fieldBgState.scroll.x;
+            oy = g_fieldBgState.viewportPos[ovl->viewport][1] + FLD_SCREEN_CY - g_fieldBgState.scroll.y;
         }
         wx = g_fieldBgState.viewportSize[ovl->viewport][0];
         wy = g_fieldBgState.viewportSize[ovl->viewport][1];
@@ -3083,11 +3083,11 @@ s32 fldbg_drawOverlay(BgOverlay *ovl, u8 *unused) {
 
         for (i = 0; i < nTiles; i++) {
             tx = x + pos[i].x;
-            if (tx < -15 || tx >= 320) {
+            if (tx < -15 || tx >= SCREEN_W) {
                 continue;
             }
             ty = y + pos[i].y;
-            if (ty < -15 || ty >= 224) {
+            if (ty < -15 || ty >= SCREEN_H) {
                 continue;
             }
             otz = z + pos[i].pad;
@@ -3275,10 +3275,10 @@ s32 fldbg_updateScroll(void) {
         tmp = h->cameraOffset;
         tmp = (s32)h - -tmp; /* keeps the h + off operand order (plus h tmp) */
         tmp = tmp + g_fieldBgState.cameraId * sizeof(BgCamera);
-        val = 160;
+        val = FLD_SCREEN_CX;
         y = *(s16 *)&g_fieldBgState.scroll.x - (((BgCamera *)tmp)->width >> 1);
         i = val - y;
-        geomY = 112 - (*(s16 *)&g_fieldBgState.scroll.y - (((BgCamera *)tmp)->height >> 1));
+        geomY = FLD_SCREEN_CY - (*(s16 *)&g_fieldBgState.scroll.y - (((BgCamera *)tmp)->height >> 1));
         g_fieldBgState.geomOffsetX = i;
         g_fieldBgState.geomOffsetY = geomY;
         if (mode == FLDBG_SCROLL_START) {
@@ -3351,7 +3351,7 @@ s32 fldbg_followPlayer(void) {
         sv.vz = 0;
     }
     ReadGeomOffset(&ofx, &ofy);
-    gte_SetGeomOffset(0xA0, 0x70);
+    gte_SetGeomOffset(FLD_SCREEN_CX, FLD_SCREEN_CY);
     gte_SetRotMatrix(g_fieldBgState.viewMatrix);
     gte_SetTransMatrix(g_fieldBgState.viewMatrix);
     gte_SetGeomScreen(*g_fieldBgState.projDist);
@@ -3367,38 +3367,38 @@ s32 fldbg_followPlayer(void) {
     }
     x = (g_fieldBgState.playerScreenX + x) >> 1;
     y = (g_fieldBgState.playerScreenY + y) >> 1;
-    sx = 320 - x;
-    sy = 224 - y;
+    sx = SCREEN_W - x;
+    sy = SCREEN_H - y;
     g_fieldBgState.playerScreenX = x;
     g_fieldBgState.playerScreenY = y;
     wx = (cam->width >> 1) + (s16)cam->centerX;
-    lim = wx - 160;
+    lim = wx - FLD_SCREEN_CX;
     cx = lim + x;
     {
-        s32 ofsY = (cam->height >> 1) + (s16)cam->centerY - 112;
+        s32 ofsY = (cam->height >> 1) + (s16)cam->centerY - FLD_SCREEN_CY;
         cy = ofsY + y;
     }
     if (cx < cam->scrollMinX) {
         {
-            s32 limX = cam->scrollMinX - 160;
+            s32 limX = cam->scrollMinX - FLD_SCREEN_CX;
             sx = wx - limX;
         }
     } else if (cam->scrollMaxX < cx) {
         {
-            s32 limX = cam->scrollMaxX - 160;
+            s32 limX = cam->scrollMaxX - FLD_SCREEN_CX;
             sx = wx - limX;
         }
     }
     if (cy < cam->scrollMinY) {
         {
             s32 camMidY = ((cam->height >> 1) + (s16)cam->centerY);
-            s32 limY = cam->scrollMinY - 112;
+            s32 limY = cam->scrollMinY - FLD_SCREEN_CY;
             sy = camMidY - limY;
         }
     } else if (cam->scrollMaxY < cy) {
         {
             s32 camMidY = ((cam->height >> 1) + (s16)cam->centerY);
-            s32 limY = cam->scrollMaxY - 112;
+            s32 limY = cam->scrollMaxY - FLD_SCREEN_CY;
             sy = camMidY - limY;
         }
     }
@@ -3549,7 +3549,7 @@ BgSprt *fldbg_init(void) {
     origin.vx = 0;
     origin.vy = 0;
     origin.vz = 0;
-    gte_SetGeomOffset(0xA0, 0x70);
+    gte_SetGeomOffset(FLD_SCREEN_CX, FLD_SCREEN_CY);
     gte_SetRotMatrix(g_fieldBgState.viewMatrix);
     gte_SetTransMatrix(g_fieldBgState.viewMatrix);
     gte_ldv0(&origin);
@@ -3590,8 +3590,8 @@ s32 fldbg_draw(void) {
     fldbg_updateFollowOverlays();
     st = &g_fieldBgState;
     h = g_fieldBgCtx.data;
-    h->screenX = h->posX - (s16)(st->scroll.x - 0xA0);
-    h->screenY = h->posY - (s16)(st->scroll.y - 0x70);
+    h->screenX = h->posX - (s16)(st->scroll.x - FLD_SCREEN_CX);
+    h->screenY = h->posY - (s16)(st->scroll.y - FLD_SCREEN_CY);
     ovls = (BgOverlay *)((u8 *)h + h->overlayOffset);
     for (j = 0; j < h->overlayCount; j++) {
         if ((ovls[j].flags & FLDBG_OVL_VISIBLE) && ovls[j].cameraId == st->cameraId) {
@@ -3644,7 +3644,7 @@ s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode) {
     anchor.vz = player->pos.vz;
     ox = (s16)cam->centerX;
     oy = (s16)cam->centerY;
-    gte_SetGeomOffset(ox + 0xA0, oy + 0x70);
+    gte_SetGeomOffset(ox + FLD_SCREEN_CX, oy + FLD_SCREEN_CY);
     {
         /* the original's "r"(st->unk1C) operand was reloaded into $t0; as a hard-register variable
            it is one less reference to st, which keeps st below the unk76 temporary in local-alloc */
@@ -3660,11 +3660,11 @@ s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode) {
         st = NULL;
     }
     {
-        s32 ofsX = (cam->width >> 1) - 0xA0;
+        s32 ofsX = (cam->width >> 1) - FLD_SCREEN_CX;
         x = ofsX + xy[0];
     }
     {
-        s32 ofsY = (cam->height >> 1) - 0x70;
+        s32 ofsY = (cam->height >> 1) - FLD_SCREEN_CY;
         y = ofsY + xy[1];
     }
     if (x < cam->scrollMinX) {
@@ -4006,7 +4006,7 @@ s32 fldbg_applyGeomOffset(void) {
 
 s32 fldbg_resetGeomOffset(void) {
     if (!(mbg_getStatus() & MBG_STATUS_PLAYING)) {
-        gte_SetGeomOffset(0xA0, 0x70);
+        gte_SetGeomOffset(FLD_SCREEN_CX, FLD_SCREEN_CY);
     }
     return 1;
 }
@@ -4359,21 +4359,21 @@ s32 fldbg_setScrollLimits(s32 cameraId, s16 minX, s16 maxX, s16 minY, s16 maxY) 
     BgCamera *cam = &((BgCamera *)((u8 *)g_fieldBgData + g_fieldBgData->cameraOffset))[cameraId];
     s16 limit;
 
-    cam->scrollMinX = limit = minX + 160;
-    if (limit > cam->width - 160) {
-        cam->scrollMinX = cam->width - 160;
+    cam->scrollMinX = limit = minX + FLD_SCREEN_CX;
+    if (limit > cam->width - FLD_SCREEN_CX) {
+        cam->scrollMinX = cam->width - FLD_SCREEN_CX;
     }
-    cam->scrollMaxX = limit = maxX - 160;
-    if (limit < 160) {
-        cam->scrollMaxX = 160;
+    cam->scrollMaxX = limit = maxX - FLD_SCREEN_CX;
+    if (limit < FLD_SCREEN_CX) {
+        cam->scrollMaxX = FLD_SCREEN_CX;
     }
-    cam->scrollMinY = limit = minY + 112;
-    if (limit > cam->height - 112) {
-        cam->scrollMinY = cam->height - 112;
+    cam->scrollMinY = limit = minY + FLD_SCREEN_CY;
+    if (limit > cam->height - FLD_SCREEN_CY) {
+        cam->scrollMinY = cam->height - FLD_SCREEN_CY;
     }
-    cam->scrollMaxY = limit = maxY - 112;
-    if (limit < 112) {
-        cam->scrollMaxY = 112;
+    cam->scrollMaxY = limit = maxY - FLD_SCREEN_CY;
+    if (limit < FLD_SCREEN_CY) {
+        cam->scrollMaxY = FLD_SCREEN_CY;
     }
     return 1;
 }

@@ -382,6 +382,12 @@ typedef struct {
 #define FLDBG_SCROLL_MODE 0x7 /* scripted scroll state, stepped by fldbg_updateScroll; fldbg_followPlayer only runs at 0 */
 #define FLDBG_SCROLL_START 1 /* fldbg_scrollTo: first frame (becomes FLDBG_SCROLL_RUN) */
 #define FLDBG_SCROLL_RUN 2 /* fldbg_scrollTo's scroll in progress */
+/* the field screen's centre (res_ids.h SCREEN_W x SCREEN_H): the GTE geometry offset, the default encounter swirl
+ * centre, and the scroll position's distance from the background's left / top edge (fldbg_*) */
+#define FLD_SCREEN_CX (SCREEN_W / 2)
+#define FLD_SCREEN_CY (SCREEN_H / 2)
+#define FLD_PAUSE_LIGHT_FADE 200 /* fld_togglePause: with a fade at least this bright in every channel the pause
+                                  * sprite is drawn subtractive (TPAGE_ABR 2), so it shows on a white screen */
 #define FLDBG_SCROLL_TO_PLAYER 3 /* fldbg_scrollToPlayer: scroll back to the player, then 0 (following resumes) */
 #define FLDBG_SCROLL_HELD 4 /* a fldbg_scrollTo scroll ended: the camera stays put (no following) */
 #define FLDBG_SCROLL_SMOOTH 0x8 /* fldbg_updateScroll eases with math_cos instead of moving linearly (scroll argument 8) */
@@ -1457,6 +1463,7 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
+#define UI_SPRITE_PAUSE 0xEB /* the pause sprite fld_togglePause centres on screen (g_fieldPauseSprite) */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
