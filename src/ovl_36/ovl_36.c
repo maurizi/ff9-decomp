@@ -23,9 +23,9 @@ void menuCard_init(void) {
     menuCard_loadImages();
     menuCard_initImageCache();
     help_setCallback(s_menuCard.kinds ? menuCard_updateHelp : 0);
-    setRECT(&s_menuCard.gridRect, 8, 0x26, 0x9E, 0xB6);
-    setRECT(&s_menuCard.infoRect, 0xAA, 0x26, 0x8A, 0x4E);
-    setRECT(&s_menuCard.cardInfoRect, 0xAA, 0x76, 0x8A, 0x66);
+    setRECT(&s_menuCard.gridRect, CARD_GRID_WIN_X, CARD_GRID_WIN_Y, CARD_GRID_WIN_W, CARD_GRID_WIN_H);
+    setRECT(&s_menuCard.infoRect, CARD_INFO_WIN_X, CARD_INFO_WIN_Y, CARD_INFO_WIN_W, CARD_INFO_WIN_H);
+    setRECT(&s_menuCard.cardInfoRect, CARD_CARDINFO_WIN_X, CARD_CARDINFO_WIN_Y, CARD_CARDINFO_WIN_W, CARD_CARDINFO_WIN_H);
     for (i = 0; i < CARD_KINDS; i++) {
         s_menuCard.shown[i] = 0;
     }
@@ -37,8 +37,8 @@ void menuCard_init(void) {
         id = s_menuCardRepeatIds[i];
         s_menuCard.saved[i].repeatDelay = pad_getRepeatDelay(0, id);
         s_menuCard.saved[i].repeatInterval = pad_getRepeatInterval(0, id);
-        pad_setRepeatDelay(0, id, 0x10);
-        pad_setRepeatInterval(0, id, 10);
+        pad_setRepeatDelay(0, id, CARD_PAD_REPEAT_DELAY);
+        pad_setRepeatInterval(0, id, CARD_PAD_REPEAT_INTERVAL);
     }
     menuCard_refresh();
     id = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
@@ -100,7 +100,7 @@ void menuCard_openDiscard(void) {
         snd_playSe(SE_CURSOR);
         s_menuCard.state = CARD_ST_NONE;
         s_menuCard.discardCursor = CARD_DISCARD_NO;
-        s_menuCard.discardWin = win_openFree(&s_menuCardDiscardRect, 10, WIN_STYLE_BEVEL);
+        s_menuCard.discardWin = win_openFree(&s_menuCardDiscardRect, CARD_OTZ_DISCARD, WIN_STYLE_BEVEL);
         win_setDrawContent(s_menuCard.discardWin, menuCard_drawDiscardWindow);
         win_setOnOpened(s_menuCard.discardWin, menuCard_onDiscardOpened);
         win_setOnClosed(s_menuCard.discardWin, menuCard_onDiscardClosed);
@@ -123,28 +123,28 @@ void menuCard_drawGrid(void) {
     s32 y;
     u8 *label;
     s32 w;
-    s32 k = 8;
-    s32 k2 = 0x80;
+    s32 k = CARD_COUNT_GAP;
+    s32 k2 = CARD_TYPE_X;
 
     rect = &s_menuCard.gridRect;
     total = card_countAll();
     kinds = card_countKinds();
-    ui_drawLabel(rect->x + 8, rect->y - 3, 0x1E, g_labelCard, UI_LABEL_NORMAL);
-    win_drawBox(rect, 0x1E, WIN_STYLE_LINE_RULE);
-    win_drawShadow(rect, 0x1E, WIN_STYLE_LINE_RULE);
+    ui_drawLabel(rect->x + CARD_LABEL_X, rect->y + WIN_TITLE_Y, CARD_OTZ_WIN, g_labelCard, UI_LABEL_NORMAL);
+    win_drawBox(rect, CARD_OTZ_WIN, WIN_STYLE_LINE_RULE);
+    win_drawShadow(rect, CARD_OTZ_WIN, WIN_STYLE_LINE_RULE);
     label = text_get(CARD_TEXT_STOCK);
     w = text_measureWidth(label);
     text_formatNumber(total, numText, 3, TEXT_NUM_ASCII);
-    text_drawBlock(rect->x + 8, rect->y + 0xA2, 0x14, label, TEXT_PAL_WHITE);
-    ui_drawDigits(rect->x + (w + k), rect->y + 0xA4, 0x14, numText, DIGITS_WHITE);
+    text_drawBlock(rect->x + CARD_STOCK_X, rect->y + CARD_COUNT_TEXT_Y, CARD_OTZ_TEXT, label, TEXT_PAL_WHITE);
+    ui_drawDigits(rect->x + (w + k), rect->y + CARD_COUNT_DIGITS_Y, CARD_OTZ_TEXT, numText, DIGITS_WHITE);
     label = text_get(CARD_TEXT_TYPE);
     w = text_measureWidth(label);
     text_formatNumber(kinds, numText, 3, TEXT_NUM_ASCII);
-    ui_drawDigits(rect->x + 0x80, rect->y + 0xA4, 0x14, numText, DIGITS_WHITE);
-    text_drawBlock(rect->x - (w - k2), rect->y + 0xA2, 0x14, label, TEXT_PAL_WHITE);
-    for (cardId = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
-        for (j = 0, y = 10; j < CARD_GRID_ROWS; j++, y += 15) {
-            menuCard_drawCell(rect->x + x, rect->y + y, 0x14, cardId);
+    ui_drawDigits(rect->x + CARD_TYPE_X, rect->y + CARD_COUNT_DIGITS_Y, CARD_OTZ_TEXT, numText, DIGITS_WHITE);
+    text_drawBlock(rect->x - (w - k2), rect->y + CARD_COUNT_TEXT_Y, CARD_OTZ_TEXT, label, TEXT_PAL_WHITE);
+    for (cardId = 0, i = 0, x = CARD_CELL_X; i < CARD_GRID_COLS; i++, x += CARD_CELL_PITCH) {
+        for (j = 0, y = CARD_CELL_Y; j < CARD_GRID_ROWS; j++, y += CARD_CELL_PITCH) {
+            menuCard_drawCell(rect->x + x, rect->y + y, CARD_OTZ_TEXT, cardId);
             cardId++;
         }
     }
@@ -160,42 +160,42 @@ void menuCard_drawInfo(void) {
     s32 w;
 
     rect = &s_menuCard.infoRect;
-    if (card_getWins() <= 99999) {
+    if (card_getWins() <= CARD_RECORD_MAX) {
         winCount = card_getWins();
     } else {
-        winCount = 99999;
+        winCount = CARD_RECORD_MAX;
     }
-    if (card_getLosses() <= 99999) {
+    if (card_getLosses() <= CARD_RECORD_MAX) {
         lossCount = card_getLosses();
     } else {
-        lossCount = 99999;
+        lossCount = CARD_RECORD_MAX;
     }
-    if (card_getDraws() <= 99999) {
+    if (card_getDraws() <= CARD_RECORD_MAX) {
         drawCount = card_getDraws();
     } else {
-        drawCount = 99999;
+        drawCount = CARD_RECORD_MAX;
     }
     rank = s_menuCard.rank;
-    ui_drawLabel(rect->x + 8, rect->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
-    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(rect, 0x1F, WIN_STYLE_BEVEL);
-    ui_drawEtchedLine(rect->x + 4, rect->y + 0x24, 0x14, rect->w - 9);
+    ui_drawLabel(rect->x + CARD_LABEL_X, rect->y + WIN_TITLE_Y, CARD_OTZ_WIN, g_labelInfo, UI_LABEL_NORMAL);
+    win_drawBox(rect, CARD_OTZ_WIN, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, CARD_OTZ_SHADOW, WIN_STYLE_BEVEL);
+    ui_drawEtchedLine(rect->x + 4, rect->y + CARD_INFO_DIV_Y, CARD_OTZ_TEXT, rect->w - 9);
     text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], numText, 4, TEXT_NUM_ASCII);
-    text_drawBlock(rect->x + 0xA, rect->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), TEXT_PAL_WHITE);
-    text_drawBlock(rect->x + 0xA, rect->y + 0x14, 0x14, text_get(rank), TEXT_PAL_WHITE);
-    text_drawBlock(rect->x + 0xA, rect->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), TEXT_PAL_WHITE);
-    text_drawBlock(rect->x + 0xA, rect->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), TEXT_PAL_WHITE);
-    text_drawBlock(rect->x + 0xA, rect->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), TEXT_PAL_WHITE);
-    ui_drawSmallDigits(rect->x + 0x5A, rect->y + 9, 0x14, numText, TEXT_PAL_WHITE);
-    ui_drawSmallDigits(rect->x + 0x78, rect->y + 0xB, 0x14, s_menuCardPointsUnit, TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + CARD_INFO_TEXT_X, rect->y + CARD_INFO_LEVEL_Y, CARD_OTZ_TEXT, text_get(CARD_TEXT_COLLECTORS), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + CARD_INFO_TEXT_X, rect->y + CARD_INFO_RANK_Y, CARD_OTZ_TEXT, text_get(rank), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + CARD_INFO_TEXT_X, rect->y + CARD_INFO_RECORD_Y, CARD_OTZ_TEXT, text_get(CARD_TEXT_WIN), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + CARD_INFO_TEXT_X, rect->y + (CARD_INFO_RECORD_Y + CARD_INFO_RECORD_H), CARD_OTZ_TEXT, text_get(CARD_TEXT_LOSE), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + CARD_INFO_TEXT_X, rect->y + (CARD_INFO_RECORD_Y + 2 * CARD_INFO_RECORD_H), CARD_OTZ_TEXT, text_get(CARD_TEXT_DRAW), TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + CARD_INFO_POINTS_X, rect->y + CARD_INFO_POINTS_Y, CARD_OTZ_TEXT, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + CARD_INFO_UNIT_X, rect->y + CARD_INFO_UNIT_Y, CARD_OTZ_TEXT, s_menuCardPointsUnit, TEXT_PAL_WHITE);
     w = menuCard_drawInfo_width(text_get(CARD_TEXT_DRAW));
     text_formatNumber(winCount, numText, 5, TEXT_NUM_ASCII);
-    w += 0xB;
-    ui_drawSmallDigits(rect->x + w, rect->y + 0x2A, 0x14, numText, TEXT_PAL_WHITE);
+    w += CARD_INFO_RECORD_GAP;
+    ui_drawSmallDigits(rect->x + w, rect->y + (CARD_INFO_RECORD_Y + 4), CARD_OTZ_TEXT, numText, TEXT_PAL_WHITE);
     text_formatNumber(lossCount, numText, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(rect->x + w, rect->y + 0x34, 0x14, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + w, rect->y + (CARD_INFO_RECORD_Y + CARD_INFO_RECORD_H + 4), CARD_OTZ_TEXT, numText, TEXT_PAL_WHITE);
     text_formatNumber(drawCount, numText, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(rect->x + w, rect->y + 0x3E, 0x14, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + w, rect->y + (CARD_INFO_RECORD_Y + 2 * CARD_INFO_RECORD_H + 4), CARD_OTZ_TEXT, numText, TEXT_PAL_WHITE);
 }
 
 void menuCard_drawCardStack(s32 id) {
@@ -218,8 +218,8 @@ void menuCard_drawCardStack(s32 id) {
     rect = &s_menuCard.cardInfoRect;
     stackDepth = s_menuCard.count[id];
     cnt = stackDepth;
-    if (stackDepth >= 6) {
-        stackDepth = 5;
+    if (stackDepth >= CARD_STACK_DRAWN + 1) {
+        stackDepth = CARD_STACK_DRAWN;
     }
     turn = &s_menuCard.flip;
     cache = &s_menuCard.cache;
@@ -230,35 +230,35 @@ void menuCard_drawCardStack(s32 id) {
             text_formatNumber(s_menuCard.shown[id] + 1, numText, 3, TEXT_NUM_ASCII);
             text_formatNumber(cnt, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             numText[3] = '/';
-            ui_drawSmallDigits(rect->x + 0x2B, rect->y + 0x43, 0x14, numText, TEXT_PAL_WHITE);
+            ui_drawSmallDigits(rect->x + CARD_COPY_TEXT_X, rect->y + CARD_COPY_TEXT_Y, CARD_OTZ_TEXT, numText, TEXT_PAL_WHITE);
             prevBtn = text_getButtonSprite(PAD_SLOT_L1);
             nextBtn = text_getButtonSprite(PAD_SLOT_R1);
-            ui_drawSprite(rect->x + 0x1E, rect->y + 0x41, 0x14, prevBtn, 0);
-            ui_drawSprite(rect->x + 0x5E, rect->y + 0x41, 0x14, nextBtn, 0);
+            ui_drawSprite(rect->x + CARD_PREV_BTN_X, rect->y + CARD_FLIP_BTN_Y, CARD_OTZ_TEXT, prevBtn, 0);
+            ui_drawSprite(rect->x + CARD_NEXT_BTN_X, rect->y + CARD_FLIP_BTN_Y, CARD_OTZ_TEXT, nextBtn, 0);
         }
         i = 0;
-        menuCard_drawSprite(rect->x + 0x10, rect->y + 0x50, 0x14, CARD_SPR_NAME_ICON, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
-        text_drawBlock(rect->x + 0x20, rect->y + 0x50, 0x14, name, TEXT_PAL_WHITE);
+        menuCard_drawSprite(rect->x + CARD_NAME_ICON_X, rect->y + CARD_NAME_Y, CARD_OTZ_TEXT, CARD_SPR_NAME_ICON, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+        text_drawBlock(rect->x + CARD_NAME_X, rect->y + CARD_NAME_Y, CARD_OTZ_TEXT, name, TEXT_PAL_WHITE);
 
         while (i < stackDepth) {
-            dx = i * 4 + 0x2E;
+            dx = i * CARD_STACK_STEP_X + CARD_STACK_X;
             x = rect->x + dx;
-            dy = i + 9;
+            dy = i + CARD_STACK_Y;
             y = rect->y + dy;
             if (i != 0 && turn->active != 0) {
                 if (turn->dir == 0) {
-                    x += turn->ticks - 4;
+                    x += turn->ticks - CARD_FLIP_FRAMES;
                 } else {
                     x -= turn->ticks;
                 }
             }
-            menuCard_drawCard(x, y, 0x14, id, i, same);
+            menuCard_drawCard(x, y, CARD_OTZ_TEXT, id, i, same);
             i++;
 
         }
     }
-    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(rect, 0x1F, WIN_STYLE_BEVEL);
+    win_drawBox(rect, CARD_OTZ_WIN, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, CARD_OTZ_SHADOW, WIN_STYLE_BEVEL);
 }
 
 void menuCard_drawCellHighlight(void) {
@@ -271,8 +271,8 @@ void menuCard_drawCellHighlight(void) {
     if (pulse >= 0x20) {
         pulse = 0x3F - pulse;
     }
-    x = rect->x + (s16)(s_menuCard.col * 15 + 4);
-    y = rect->y + (s16)(s_menuCard.row * 15 + 10);
+    x = rect->x + (s16)(s_menuCard.col * CARD_CELL_PITCH + CARD_CELL_X);
+    y = rect->y + (s16)(s_menuCard.row * CARD_CELL_PITCH + CARD_CELL_Y);
     setlen(g_primPtr, PRIM_LEN(LINE_F3));
     rgbc = (pulse * 8) | GPU_CODE(GPU_LINE_F3);
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
@@ -297,16 +297,16 @@ void menuCard_drawCursor(void) {
 
     if (!fade_isBusy()) {
         if (s_menuCard.state == CARD_ST_GRID || (s_menuCard.state == CARD_ST_DISCARD && blink)) {
-            g_menuHelp.otz = 0x11;
-            g_menuHelp.x = s_menuCard.gridRect.x + s_menuCard.col * 15 - 20;
-            g_menuHelp.y = s_menuCard.gridRect.y + s_menuCard.row * 15 + 14;
+            g_menuHelp.otz = CARD_OTZ_CURSOR;
+            g_menuHelp.x = s_menuCard.gridRect.x + s_menuCard.col * CARD_CELL_PITCH - CARD_GRID_CURSOR_LEFT;
+            g_menuHelp.y = s_menuCard.gridRect.y + s_menuCard.row * CARD_CELL_PITCH + CARD_GRID_CURSOR_DY;
             help_drawCursor();
         }
         if (s_menuCard.state == CARD_ST_DISCARD) {
             Window *w = s_menuCard.discardWin;
-            g_menuHelp.x = w->x + 0x16;
-            g_menuHelp.y = w->y + (s16)(s_menuCard.discardCursor * 15 + 0x32);
-            g_menuHelp.otz = 9;
+            g_menuHelp.x = w->x + CARD_DISCARD_CURSOR_X;
+            g_menuHelp.y = w->y + (s16)(s_menuCard.discardCursor * CARD_DISCARD_ROW_H + CARD_DISCARD_CURSOR_Y);
+            g_menuHelp.otz = CARD_OTZ_DISCARD_CURSOR;
             help_drawCursor();
         }
     }
@@ -378,7 +378,7 @@ void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
     u32 rgbc;
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
-    shade = 0x80 - dim * 0x16;
+    shade = 0x80 - dim * CARD_STACK_DIM;
     rgbc = shade | (shade << 8) | (shade << 16) | GPU_CODE(GPU_SPRT);
     sprt = (SprtWords *)g_primPtr;
     sprt->rgbc = rgbc;
@@ -390,7 +390,7 @@ void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
     SetDrawTPage(g_primPtr, 1, 1, getTPage(1, 1, 0x3C0, 0x100));
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
-    menuCard_drawSprite(x, y, 0x14, CARD_SPR_FRAME, rgbc);
+    menuCard_drawSprite(x, y, CARD_OTZ_TEXT, CARD_SPR_FRAME, rgbc);
 }
 
 void menuCard_refresh(void) {
@@ -535,9 +535,9 @@ void menuCard_updateHelp(void) {
     } else if (s_menuCard.state == CARD_ST_DISCARD) {
         if (s_menuCard.discardCursor == CARD_DISCARD_NO) {
             bounds.x = 0;
-            bounds.y = 0x8C;
+            bounds.y = CARD_DISCARD_HELP_Y;
             bounds.w = g_gameState->dispEnv->disp.w;
-            bounds.h = g_gameState->dispEnv->disp.h - 0x8C;
+            bounds.h = g_gameState->dispEnv->disp.h - CARD_DISCARD_HELP_Y;
             help_setBounds(&bounds);
         }
         g_menuHelp.text = text_get(s_menuCard.discardCursor + CARD_TEXT_HELP_DISCARD);
@@ -616,7 +616,7 @@ void menuCard_drawCardInfo(void) {
     s32 cur;
 
     cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
-    ui_drawLabel(rect->x + 8, rect->y - 3, 0x1E, g_labelCardInfo, UI_LABEL_NORMAL);
+    ui_drawLabel(rect->x + CARD_LABEL_X, rect->y + WIN_TITLE_Y, CARD_OTZ_WIN, g_labelCardInfo, UI_LABEL_NORMAL);
     if (imgCache->shown != CARD_NONE) {
         if (imgCache->shown != cur && imgCache->fading != 0) {
             menuCard_drawCardStack(imgCache->prev);
@@ -626,8 +626,8 @@ void menuCard_drawCardInfo(void) {
             } while (0);
         }
     }
-    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(rect, 0x1F, WIN_STYLE_BEVEL);
+    win_drawBox(rect, CARD_OTZ_WIN, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, CARD_OTZ_SHADOW, WIN_STYLE_BEVEL);
 }
 
 void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
@@ -637,14 +637,14 @@ void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
     if (flag) {
         if (dim == 0) {
             card = card_find(id, (s32)s_menuCard.shown[id] % (s32)s_menuCard.count[id]);
-            menuCard_drawStats(x, y, 0x14, card);
-            menuCard_drawArrows(x, y, 0x14, card);
+            menuCard_drawStats(x, y, CARD_OTZ_TEXT, card);
+            menuCard_drawArrows(x, y, CARD_OTZ_TEXT, card);
         }
-        menuCard_drawFace(x, y, 0x14, dim);
+        menuCard_drawFace(x, y, CARD_OTZ_TEXT, dim);
         return;
     }
-    shade = 0x80 - dim * 0x16;
-    menuCard_drawSprite(x, y, 0x14, CARD_SPR_BACK, shade | (shade << 8) | (shade << 16) | GPU_CODE(GPU_SPRT));
+    shade = 0x80 - dim * CARD_STACK_DIM;
+    menuCard_drawSprite(x, y, CARD_OTZ_TEXT, CARD_SPR_BACK, shade | (shade << 8) | (shade << 16) | GPU_CODE(GPU_SPRT));
 }
 
 void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
@@ -662,17 +662,17 @@ void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
         icon = card_getRarity(id) + CARD_SPR_CELL_STACK;
         digit = owned % 10;
         tens = owned / 10;
-        menuCard_drawSprite(x + 9, y + 7, 0x14, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+        menuCard_drawSprite(x + 9, y + 7, CARD_OTZ_TEXT, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         if (owned >= 10) {
             digit = tens % 10;
-            menuCard_drawSprite(x + 5, y + 7, 0x14, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+            menuCard_drawSprite(x + 5, y + 7, CARD_OTZ_TEXT, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         }
         if (owned >= 100) {
             digit = owned / 100;
-            menuCard_drawSprite(x + 1, y + 7, 0x14, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+            menuCard_drawSprite(x + 1, y + 7, CARD_OTZ_TEXT, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         }
     }
-    menuCard_drawSprite(x, y, 0x14, icon, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+    menuCard_drawSprite(x, y, CARD_OTZ_TEXT, icon, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
 }
 
 void menuCard_drawArrows(s32 x, s32 y, s32 otz, CardEntry *card) {
@@ -699,7 +699,7 @@ void menuCard_drawStats(s32 x, s32 y, s32 otz, CardEntry *card) {
     statSpr[2] = (card->physDef >> 4) + CARD_SPR_HEX;
     statSpr[3] = (card->magicDef >> 4) + CARD_SPR_HEX;
     for (i = 0; i < 4; i++) {
-        menuCard_drawSprite(x + 9 + i * 6, y + 0x26, otz, statSpr[i], color);
+        menuCard_drawSprite(x + CARD_STATS_X + i * CARD_STATS_STEP, y + CARD_STATS_Y, otz, statSpr[i], color);
     }
 }
 
@@ -722,7 +722,7 @@ void menuCard_updateFade(void) {
     CardCache *imgCache = &s_menuCard.cache;
 
     if (imgCache->fading != 0) {
-        if (++imgCache->fadeTicks >= 4) {
+        if (++imgCache->fadeTicks >= CARD_FADE_FRAMES) {
             imgCache->fading = 0;
             imgCache->fadeTicks = 0;
         }
@@ -815,9 +815,9 @@ void menuCard_onDiscardClosed(Window *w) {
 }
 
 void menuCard_drawDiscardWindow(Window *w) {
-    text_drawBlock(w->x + 0xE, w->y + 0xA, w->otz, text_get(CARD_TEXT_DISCARD), TEXT_PAL_WHITE);
-    text_drawBlock(w->x + 0x30, w->y + 0x2E, w->otz, text_get(CARD_TEXT_DISCARD + 1), TEXT_PAL_WHITE);
-    text_drawBlock(w->x + 0x30, w->y + 0x3D, w->otz, text_get(CARD_TEXT_DISCARD + 2), TEXT_PAL_WHITE);
+    text_drawBlock(w->x + CARD_DISCARD_TEXT_X, w->y + CARD_DISCARD_TEXT_Y, w->otz, text_get(CARD_TEXT_DISCARD), TEXT_PAL_WHITE);
+    text_drawBlock(w->x + CARD_DISCARD_CHOICE_X, w->y + CARD_DISCARD_CHOICE_Y, w->otz, text_get(CARD_TEXT_DISCARD + 1), TEXT_PAL_WHITE);
+    text_drawBlock(w->x + CARD_DISCARD_CHOICE_X, w->y + (CARD_DISCARD_CHOICE_Y + CARD_DISCARD_ROW_H), w->otz, text_get(CARD_TEXT_DISCARD + 2), TEXT_PAL_WHITE);
 }
 
 void menuCard_initFlip(void) {

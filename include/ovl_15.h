@@ -54,6 +54,18 @@ extern MbgMovieList g_mbgMovieLists[];
 /* ---- this overlay ---- */
 
 #define SCREEN_OTZ 8 /* OT slot of the end image and the message text */
+#define ENDING_MSG_FADE_FRAMES 0x14 /* ending_messages: each page fades in, and out over its last this-many frames */
+#define ENDING_MSG_SHORT_FRAMES 0xA0 /* pages 1 and 3 (one message) */
+#define ENDING_MSG_PAGE2_FRAMES 0xDC /* page 2 (messages 1 and 2) */
+#define ENDING_MSG_PAGE4_FRAMES 0x118 /* page 4 (messages 4 and 5) */
+#define ENDING_MSG_PAUSE_FRAMES 0x3C /* black between pages */
+#define ENDING_MSG_Y 0x64 /* a one-message page */
+#define ENDING_MSG_Y1 0x5F /* a two-message page: first, second */
+#define ENDING_MSG_Y2 0x7D
+#define THEEND_SHOW_FRAMES 0x21C /* "THE END" picture: shown this long */
+#define THEEND_FADE_IN_FRAMES 0xB4
+#define THEEND_FADE_OUT_FRAMES 0x5A /* then to black, and the Blackjack check */
+#define THEEND_LEFT_W 0xC0 /* the 16-bit picture is drawn as two sprites split here */
 #define BJ_OTZ 10     /* OT slot of all Blackjack sprites */
 
 /* g_endingState: the states of ending_main */
@@ -215,6 +227,45 @@ enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
 #define BJ_BANKROLL 1000 /* g_bjBankroll's start, and the refill when it fell below BJ_MIN_BET */
 
 /* Where cards are dealt from (bj_drawShoe) */
+/* Blackjack table layout and sprite sheet (8-bit, tpage BJ_VRAM_X / BJ_VRAM_Y; CLUT rows at x 0) */
+#define BJ_VRAM_X 0x280
+#define BJ_VRAM_Y 0x100
+#define BJ_CLUT_PICTURE_Y 0xE0 /* + 0-2: Jack / Queen / King pictures */
+#define BJ_CLUT_FACE_Y 0xE4 /* card face and pips */
+#define BJ_CLUT_BACK_Y 0xE5 /* card back */
+#define BJ_CLUT_RANK_Y 0xE6 /* corner rank glyphs */
+#define BJ_CLUT_RESULT_Y 0xE9 /* result banners */
+#define BJ_CARD_W 0x38 /* card face / back (texture v BJ_CARD_V) */
+#define BJ_CARD_H 0x48
+#define BJ_CARD_V 0x80
+#define BJ_RANK_W 9 /* corner rank glyph (v = rank * BJ_RANK_H) */
+#define BJ_RANK_H 14
+#define BJ_RANK_X 2 /* top-left corner rank, relative to the card */
+#define BJ_RANK_Y 1
+#define BJ_RANK2_X 0x2C /* bottom-right corner rank (the upside-down glyph) */
+#define BJ_RANK2_Y 0x38
+#define BJ_SUIT_X 1 /* corner suit pips */
+#define BJ_SUIT_Y 0xF
+#define BJ_SUIT2_X 0x2B
+#define BJ_SUIT2_Y 0x2D
+#define BJ_PIP_SIZE 0xB /* suit pip (u = suit * BJ_PIP_U_STEP) */
+#define BJ_PIP_U_STEP 12
+#define BJ_PIP_V 0xD5 /* upright pip */
+#define BJ_PIP_V_FLIPPED 0xCA /* upside-down pip, used from BJ_PIP_FLIP_Y down (g_bjPips) */
+#define BJ_PIP_FLIP_Y 0x1F
+#define BJ_ACE_PIP_X 0x16 /* the ace's centre pip */
+#define BJ_ACE_PIP_Y 0x1E
+#define BJ_PICTURE_X 7 /* face card picture */
+#define BJ_PICTURE_Y 0xA
+#define BJ_PICTURE_W 0x2A
+#define BJ_PICTURE_H 0x33
+#define BJ_RESULT_H 0x28 /* result banner height (WIN / LOSE / PUSH, two layers each) */
+#define BJ_RESULT_X 0x6C
+#define BJ_RESULT_DY 12 /* below the hand's y */
+#define BJ_VALUE_X 10 /* hand value digits, left of each hand */
+#define BJ_VALUE_DY 0x20 /* below the hand's y */
+#define BJ_HARD_VALUE_DY 0x2A /* soft hand: its hard value under it, in cyan */
+#define BJ_VALUE_OTZ 0x10
 #define BJ_SHOE_X 0xF0
 #define BJ_SHOE_Y 0xA
 #define BJ_DEAL_FRAMES 30 /* frames a dealt card flies */

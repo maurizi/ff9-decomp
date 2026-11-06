@@ -15,6 +15,83 @@ enum { SHOP_KIND_ITEMS, SHOP_KIND_EQUIPMENT, SHOP_KIND_SYNTH };
 enum { SHOP_MODE_INIT, SHOP_MODE_UPDATE, SHOP_MODE_EXIT }; /* s_shopModes[kind][option][] */
 #define SHOP_OTZ_MENU 5
 #define SHOP_OTZ_MODE 0x24
+#define SHOP_OTZ_SHADOW 0x28 /* title window shadow */
+#define SHOP_OTZ_QTY 0xA /* quantity popup (its cursor one slot in front) */
+#define SHOP_OTZ_CURSOR 0x14
+#define SHOP_OTZ_PARTY_LABEL 0x1D /* party window label (s_shopBuyPartyLabel: weapon or armour) */
+#define SHOP_OTZ_TEXT 0x1E /* buy / sell / synth window contents */
+#define SHOP_OTZ_WIN 0x23 /* buy / sell / synth windows */
+#define SHOP_PORTRAIT_COUNT 0xD /* portraits in s_shopImage (ui_loadPortraits) */
+
+/* Shop screen layout (screen coordinates unless noted). Buy and Synth share it. */
+#define SHOP_TITLE_TEXT_X 0xA /* shop title, relative to s_shopTitleRect */
+#define SHOP_TITLE_TEXT_Y 6
+#define SHOP_ROW_H 0xF /* list and menu row height */
+#define SHOP_MENU_CURSOR_X 0x6E /* Buy / Sell / Exit menu cursor */
+#define SHOP_MENU_CURSOR_Y 0x6A
+#define SHOP_LIST_WIN_X 8 /* item / recipe list */
+#define SHOP_LIST_WIN_Y 0x26
+#define SHOP_LIST_WIN_W 0xB4
+#define SHOP_LIST_WIN_H 0xAD /* full height (item shop) */
+#define SHOP_LIST_WIN_H_EQUIP 0x71 /* with the party window below (a shop that sells equipment) */
+#define SHOP_LIST_ROWS 0xB
+#define SHOP_LIST_ROWS_EQUIP 7
+#define SHOP_LIST_LABEL_X 0xE /* "Item" label */
+#define SHOP_PRICE_LABEL_R 0xA6 /* right edge of the "Price" label */
+#define SHOP_ROW_ICON_X 0x18 /* row (screen x): item icon */
+#define SHOP_ROW_NAME_DX 0x10 /* name after the icon */
+#define SHOP_ROW_PRICE_DX 0x72 /* price digits after the icon */
+#define SHOP_LIST_CURSOR_LEFT 8 /* list cursor: left of the window */
+#define SHOP_LIST_CURSOR_DY 0xB
+#define SHOP_INFO_WIN_X 0xBC /* INFO window: gil, owned, equipped (same height as the list) */
+#define SHOP_INFO_WIN_Y 0x26
+#define SHOP_INFO_WIN_W 0x78
+#define SHOP_INFO_TEXT_X 8 /* row labels (y from s_shopBuyInfoRowY / s_shopSynthInfoRowY, text 4 higher) */
+#define SHOP_GIL_X 0x39 /* gil amounts (7 digits + "G"), here and in the quantity window */
+#define SHOP_COUNT_X 0x5C /* counts (2 digits), here and in the quantity window */
+#define SHOP_SYNTH_DIV_Y 0x36 /* synth INFO: etched divider above the ingredients */
+#define SHOP_INGREDIENT_ICON_X 0xC /* synth INFO: ingredient rows (name 0x10 right, 1 lower) */
+#define SHOP_INGREDIENT_Y 0x4C
+#define SHOP_INGREDIENT_ROW_H 17
+#define SHOP_PARTY_WIN_X 8 /* party window: who can equip the item, with the stat change */
+#define SHOP_PARTY_WIN_Y 0x97
+#define SHOP_PARTY_WIN_W 0x12C
+#define SHOP_PARTY_WIN_H 0x45
+#define SHOP_PARTY_X 0xF /* first portrait */
+#define SHOP_PARTY_Y 0x9E
+#define SHOP_PARTY_COL_W 0x24
+#define SHOP_PORTRAIT_H 0x2D
+#define SHOP_STAT_Y 0x2E /* stat icon under the portrait (digits SHOP_STAT_DIGITS_X right, 1 lower) */
+#define SHOP_STAT_DIGITS_X 0xC
+#define SHOP_STAT_UP_Y 0x27 /* SHOP_ICON_UP / SHOP_ICON_DOWN above it */
+#define SHOP_STAT_DOWN_Y 0x28
+#define SHOP_QTY_WIN_X 0x62 /* quantity popup (buy / synth; sell's is higher) */
+#define SHOP_QTY_WIN_Y 0x60
+#define SHOP_QTY_WIN_W 0x7C
+#define SHOP_QTY_WIN_H 0x45
+#define SHOP_QTY_ICON_X 8 /* relative to the popup */
+#define SHOP_QTY_NAME_X 0x18
+#define SHOP_QTY_ITEM_Y 8
+#define SHOP_QTY_DIV_Y 0x18
+#define SHOP_QTY_TEXT_X 0xC /* "Quantity" / "Price" (values 4 lower) */
+#define SHOP_QTY_QUANTITY_Y 0x1E
+#define SHOP_QTY_PRICE_Y 0x2E
+#define SHOP_QTY_CURSOR_LEFT 0xE /* quantity cursor: left of the popup, at the quantity */
+#define SHOP_SELL_WIN_X 8 /* sell list: two columns over the whole width */
+#define SHOP_SELL_WIN_Y 0x2A
+#define SHOP_SELL_WIN_W 0x12C
+#define SHOP_SELL_WIN_H 0xAD
+#define SHOP_SELL_ROWS 0xB
+#define SHOP_SELL_COLS 2
+#define SHOP_SELL_COL_W 0x96
+#define SHOP_SELL_ICON_X 0x18 /* row, relative to the column */
+#define SHOP_SELL_NAME_X 0x28
+#define SHOP_SELL_COUNT_X 0x84
+#define SHOP_SELL_COUNT_LABEL_R 0x8A /* right edge of each column's count label */
+#define SHOP_SELL_CURSOR_Y 0x34 /* sell list cursor on row 0 (x: column * SHOP_SELL_COL_W) */
+#define SHOP_SELL_QTY_WIN_Y 0x40 /* sell quantity popup */
+#define SHOP_SELL_INFO_WIN_Y 0x87 /* sell INFO popup under it */
+#define SHOP_SELL_INFO_WIN_H 0x3E
 #define SHOP_FADE_OTZ 7      /* fade_setOtz while the shop is open */
 
 /* ShopBuy/ShopSynth/ShopSell.state: index into their input tables */
@@ -165,6 +242,8 @@ extern u8 s_shopImage[];
 
 extern u8 g_shopBuyText[];
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 s32 item_getEquipSlot(s32); /* equip slot of an item, -1 = not equipment */
 s32 chr_getPortrait(s32); /* main.c defines it returning u8; used unmasked */
 typedef struct {

@@ -31,7 +31,7 @@ s32 opening_attract(s32 idx) {
                     file_setTimPos(tim, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
                     file_loadTim(tim);
                     timer = ATTRACT_FRAMES;
-                    game_startFade(FADE_FLAT, FADE_SUB, 0xF0, FADE_COLOR_NONE);
+                    game_startFade(FADE_FLAT, FADE_SUB, ATTRACT_FADE_FRAMES, FADE_COLOR_NONE);
                 } else if (timer != 0) {
                     pad = g_padPortPressed[0];
                     setSprt(&g_attractSprites[g_gameState->gameData->drawBuf][0]);
@@ -42,8 +42,8 @@ s32 opening_attract(s32 idx) {
                     g_attractSprites[g_gameState->gameData->drawBuf][0].y0 = 0;
                     g_attractSprites[g_gameState->gameData->drawBuf][0].u0 = 0;
                     g_attractSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
-                    g_attractSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
-                    g_attractSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].w = ATTRACT_LEFT_W;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].h = SCREEN_H;
                     g_attractSprites[g_gameState->gameData->drawBuf][0].clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_attractSprites[g_gameState->gameData->drawBuf][0]);
                     setDrawTPage(&g_attractTpages[g_gameState->gameData->drawBuf][0], 1, 1, getTPage(2, 0, VRAM_IMAGE_X, VRAM_IMAGE_Y));
@@ -53,28 +53,28 @@ s32 opening_attract(s32 idx) {
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
-                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->x0 = 0xC0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->x0 = ATTRACT_LEFT_W;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->y0 = 0;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->u0 = 0;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
-                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
-                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->w = SCREEN_W - ATTRACT_LEFT_W;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->h = SCREEN_H;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_attractSprites[g_gameState->gameData->drawBuf] + 1));
-                    setDrawTPage(g_attractTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + 0xC0, VRAM_IMAGE_Y));
+                    setDrawTPage(g_attractTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + ATTRACT_LEFT_W, VRAM_IMAGE_Y));
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_attractTpages[g_gameState->gameData->drawBuf] + 1));
                     pad &= PAD_CROSS | PAD_START;
                     btn = pad;
                     if (!(g_attractFlags.bits & ATTRACT_FADING) || btn) {
                         if (btn) {
-                            if (timer >= 0x1F) {
-                                timer = 0x1E;
+                            if (timer >= ATTRACT_SKIP_FADE_FRAMES + 1) {
+                                timer = ATTRACT_SKIP_FADE_FRAMES;
                             }
                             g_attractSkipped = 1;
                             g_padPortMask[0] = -1;
                             g_attractFlags.bits |= ATTRACT_SKIP;
                         }
-                        if (!(g_attractFlags.bits & ATTRACT_FADING) && timer < 0xF1) {
+                        if (!(g_attractFlags.bits & ATTRACT_FADING) && timer < ATTRACT_FADE_FRAMES + 1) {
                             game_startFade(FADE_FLAT, FADE_SUB, timer, FADE_COLOR_FULL);
                             g_attractFlags.bits |= ATTRACT_FADING;
                         }
@@ -107,7 +107,7 @@ s32 opening_attract(s32 idx) {
             if (!(g_attractFlags.bits & ATTRACT_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
                 game_startFade(FADE_FLAT, FADE_SUB, TITLE_IDLE_FADE, FADE_COLOR_FULL);
                 if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
-                    opening_soundCmd(SND_SONG_VOL_INTPL, TITLE_MUSIC, 0x5A, 0, 0);
+                    opening_soundCmd(SND_SONG_VOL_INTPL, TITLE_MUSIC, TITLE_IDLE_FADE, 0, 0);
                 }
                 g_attractFlags.bits |= ATTRACT_IDLE_FADE;
             }

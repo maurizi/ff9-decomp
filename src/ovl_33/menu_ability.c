@@ -50,12 +50,12 @@ void menuAbility_init(void) {
     menuAbility_onInit();
     help_setCallback(help_nullHandler);
     help_setCursorOnTop(1);
-    setRECT(&s_menuAbility.tabRect, 8, 8, 0xE4, 0x1A);
-    setRECT(&s_menuAbility.playerRect, 8, 0x26, 0xD0, 0x38);
-    setRECT(&s_menuAbility.infoRect, 0xD8, 0x26, 0x5C, 0x38);
-    setRECT(&s_menuAbility.commandRect, 0x8E, 0x40, 0x46, 0x1A);
-    setRECT(&s_menuAbility.listRect, 8, 0x5E, 0x12C, 0x80);
-    setRECT(&s_menuAbility.targetRect, 0, 0x26, 0x90, 0xB6);
+    setRECT(&s_menuAbility.tabRect, ABIL_TABS_WIN_X, ABIL_TABS_WIN_Y, ABIL_TABS_WIN_W, ABIL_TABS_WIN_H);
+    setRECT(&s_menuAbility.playerRect, ABIL_PLAYER_WIN_X, ABIL_PLAYER_WIN_Y, ABIL_PLAYER_WIN_W, ABIL_PLAYER_WIN_H);
+    setRECT(&s_menuAbility.infoRect, ABIL_INFO_WIN_X, ABIL_INFO_WIN_Y, ABIL_INFO_WIN_W, ABIL_INFO_WIN_H);
+    setRECT(&s_menuAbility.commandRect, ABIL_CMD_WIN_X, ABIL_CMD_WIN_Y, ABIL_CMD_WIN_W, ABIL_CMD_WIN_H);
+    setRECT(&s_menuAbility.listRect, ABIL_LIST_WIN_X, ABIL_LIST_WIN_Y, ABIL_LIST_WIN_W, ABIL_LIST_WIN_H);
+    setRECT(&s_menuAbility.targetRect, 0, ABIL_TARGET_WIN_Y, ABIL_TARGET_WIN_W, ABIL_TARGET_WIN_H);
     s_menuAbility.targetWinOpen = 0;
     tween_start(&s_menuAbility.targetWin, 0, 0);
     menuAbility_loadImages();
@@ -80,9 +80,9 @@ void menuAbility_updateAnims(void) {
     if (menu->targetWin.anim != 0) {
         tween_step(&menu->targetWin);
     }
-    if (++menu->animTick >= 7) {
+    if (++menu->animTick >= ABIL_ICON_ANIM_TICKS) {
         menu->animTick = 0;
-        if (++menu->animFrame >= 7) {
+        if (++menu->animFrame >= ABIL_ICON_ANIM_FRAMES) {
             menu->animFrame = 0;
         }
     }
@@ -208,18 +208,18 @@ void menuAbility_drawPlayer(void) {
 
     rect = &s_menuAbility.playerRect;
     chr = g_gameState->gameData->party[s_menuAbility.slot];
-    ui_drawMemberHeader(rect->x + 8, rect->y + 5, 0x1D, (MemberSwitch *)&s_menuAbility.header);
-    box.w = 0x5B;
-    box.h = 0x12;
-    box.x = rect->x + 0x72;
-    box.y = rect->y + 4;
-    ui_drawStatusIcons(box.x + 3, box.y + 4, 0x1D, chr->status, 0);
-    win_drawBox(&box, 0x1D, WIN_STYLE_LINE);
+    ui_drawMemberHeader(rect->x + ABIL_HEADER_X, rect->y + ABIL_HEADER_Y, ABIL_OTZ_WIN, (MemberSwitch *)&s_menuAbility.header);
+    box.w = ABIL_ICONBOX_W;
+    box.h = ABIL_ICONBOX_H;
+    box.x = rect->x + ABIL_ICONBOX_X;
+    box.y = rect->y + ABIL_ICONBOX_Y;
+    ui_drawStatusIcons(box.x + 3, box.y + 4, ABIL_OTZ_WIN, chr->status, 0);
+    win_drawBox(&box, ABIL_OTZ_WIN, WIN_STYLE_LINE);
     if (s_menuAbility.tab == ABILITY_TAB_SUPPORT) {
-        ui_drawStones(box.x + 0x19, box.y + 0x14, 0x1D, chr->stones, chr->maxStones);
+        ui_drawStones(box.x + ABIL_STONES_DX, box.y + ABIL_STONES_DY, ABIL_OTZ_WIN, chr->stones, chr->maxStones);
     }
-    ui_drawLabel(rect->x + 6, rect->y - 3, 0x1D, g_labelPlayer, UI_LABEL_NORMAL);
-    win_drawBox(rect, 0x1D, WIN_STYLE_LINE_RULE);
+    ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, ABIL_OTZ_WIN, g_labelPlayer, UI_LABEL_NORMAL);
+    win_drawBox(rect, ABIL_OTZ_WIN, WIN_STYLE_LINE_RULE);
 }
 
 void menuAbility_drawInfo(void) {
@@ -237,10 +237,10 @@ void menuAbility_drawInfo(void) {
     chr = g_gameState->gameData->party[s_menuAbility.slot];
     list = &s_menuAbility.lists[s_menuAbility.tab];
     idx = (list->top + list->cursor) * 2 + list->col;
-    ui_drawLabel(rect->x + 6, rect->y - 3, 0x1D, g_labelInfo, UI_LABEL_NORMAL);
-    win_drawBox(rect, 0x1D, WIN_STYLE_BEVEL);
-    text_drawBlock(rect->x + 8, rect->y + 8, 0x1C, text_get(ABILITY_TEXT_AP), TEXT_PAL_WHITE);
-    text_drawBlock(rect->x + 8, rect->y + 0x16, 0x1C, text_get(ABILITY_TEXT_EQUIP), TEXT_PAL_WHITE);
+    ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, ABIL_OTZ_WIN, g_labelInfo, UI_LABEL_NORMAL);
+    win_drawBox(rect, ABIL_OTZ_WIN, WIN_STYLE_BEVEL);
+    text_drawBlock(rect->x + ABIL_INFO_TEXT_X, rect->y + ABIL_INFO_AP_Y, ABIL_OTZ_TEXT, text_get(ABILITY_TEXT_AP), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + ABIL_INFO_TEXT_X, rect->y + ABIL_INFO_EQUIP_Y, ABIL_OTZ_TEXT, text_get(ABILITY_TEXT_EQUIP), TEXT_PAL_WHITE);
     if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH || s_menuAbility.state == ABILITY_STATE_BUSY || list->count == 0) {
         return;
     }
@@ -257,14 +257,14 @@ void menuAbility_drawInfo(void) {
         return;
     }
     if (chr_canLearnAbilities(chr)) {
-        ui_drawApGauge(rect->x + 0x2D, rect->y + 0xC, 0x1C, chr_getAp(chr->info.b.id, id), chr_getApNeeded(chr->info.b.id, id), flag, 0);
+        ui_drawApGauge(rect->x + ABIL_INFO_GAUGE_X, rect->y + ABIL_INFO_GAUGE_Y, ABIL_OTZ_TEXT, chr_getAp(chr->info.b.id, id), chr_getApNeeded(chr->info.b.id, id), flag, 0);
     }
     if (s_menuAbility.equipSlots[id] != 0) {
         x = rect->x;
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             if ((s_menuAbility.equipSlots[id] >> i) & 1) {
-                ui_drawItemIcon(x + 8, rect->y + 0x24, 0x1C, s_menuAbility.equipItems[id][i], 1);
-                x += 0x10;
+                ui_drawItemIcon(x + ABIL_INFO_TEXT_X, rect->y + ABIL_INFO_ITEMS_Y, ABIL_OTZ_TEXT, s_menuAbility.equipItems[id][i], 1);
+                x += ABIL_INFO_ITEM_W;
             }
         }
     }
@@ -285,11 +285,11 @@ void menuAbility_drawCommand(void) {
     if (menu->tab != ABILITY_TAB_SUPPORT) {
         if (menu->state != ABILITY_STATE_TABS && menu->state != ABILITY_STATE_SWITCH && menu->state != ABILITY_STATE_BUSY) {
             if (menuAbility_getActionState(menu->actions[idx].id, chr) != 0) {
-                text_drawBlock(rect->x + 8, rect->y + 6, 0x1B, s_menuAbilityCmdNames + s_menuAbilityCmds[menu->actions[idx].cmd].name, TEXT_PAL_WHITE);
+                text_drawBlock(rect->x + ABIL_CMD_TEXT_X, rect->y + ABIL_CMD_TEXT_Y, ABIL_OTZ_CMD, s_menuAbilityCmdNames + s_menuAbilityCmds[menu->actions[idx].cmd].name, TEXT_PAL_WHITE);
             }
         }
-        ui_drawLabel(rect->x + 6, rect->y - 3, 0x1B, g_labelCommand, UI_LABEL_NORMAL);
-        win_drawBox(rect, 0x1B, WIN_STYLE_BEVEL);
+        ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, ABIL_OTZ_CMD, g_labelCommand, UI_LABEL_NORMAL);
+        win_drawBox(rect, ABIL_OTZ_CMD, WIN_STYLE_BEVEL);
     }
 }
 
@@ -303,14 +303,14 @@ void menuAbility_drawList(void) {
     RECT *rect = &s_menuAbility.listRect;
 
     list = &s_menuAbility.lists[s_menuAbility.tab];
-    ui_drawLabel(rect->x + 0xE, rect->y - 3, 0x1C, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
-    ui_drawLabel(rect->x + 0xA4, rect->y - 3, 0x1C, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
-    ui_drawLabel(rect->x + 0x7C, rect->y - 3, 0x1C, g_winLabelStrings.abilityCost, UI_LABEL_NORMAL);
-    ui_drawLabel(rect->x + 0x112, rect->y - 3, 0x1C, g_winLabelStrings.abilityCost, UI_LABEL_NORMAL);
-    win_drawListBox(rect, 0x1D, 1, list);
+    ui_drawLabel(rect->x + ABIL_LIST_LABEL_X, rect->y + WIN_TITLE_Y, ABIL_OTZ_TEXT, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
+    ui_drawLabel(rect->x + (ABIL_LIST_LABEL_X + ABIL_COL_W), rect->y + WIN_TITLE_Y, ABIL_OTZ_TEXT, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
+    ui_drawLabel(rect->x + ABIL_COST_LABEL_X, rect->y + WIN_TITLE_Y, ABIL_OTZ_TEXT, g_winLabelStrings.abilityCost, UI_LABEL_NORMAL);
+    ui_drawLabel(rect->x + (ABIL_COST_LABEL_X + ABIL_COL_W), rect->y + WIN_TITLE_Y, ABIL_OTZ_TEXT, g_winLabelStrings.abilityCost, UI_LABEL_NORMAL);
+    win_drawListBox(rect, ABIL_OTZ_WIN, 1, list);
     if (list->count != 0) {
         menuList_getView(list, &view);
-        win_setClip(NULL, 0x1C, WIN_STYLE_LINE_RULE);
+        win_setClip(NULL, ABIL_OTZ_TEXT, WIN_STYLE_LINE_RULE);
         idx = view.first * 2;
         for (row = 0; row < view.rows; row++) {
             for (col = 0; col < 2; col++) {
@@ -319,10 +319,10 @@ void menuAbility_drawList(void) {
         }
         if (list->scroll & MENULIST_SCROLL_PAGE) {
             menuList_getRowsRect(list, rect, &sub);
-            win_setClip(&sub, 0x1C, WIN_STYLE_LINE_RULE);
+            win_setClip(&sub, ABIL_OTZ_TEXT, WIN_STYLE_LINE_RULE);
             menuAbility_drawScrollRows();
         }
-        win_setClip(rect, 0x1C, WIN_STYLE_LINE_RULE);
+        win_setClip(rect, ABIL_OTZ_TEXT, WIN_STYLE_LINE_RULE);
     }
 }
 
@@ -332,11 +332,11 @@ void menuAbility_drawTargetWindow(void) {
     s32 i;
 
     if (menu->targetWinOpen != 0) {
-        ui_drawLabel(rect->x + 8, rect->y - 3, 0x14, g_labelTarget, UI_LABEL_NORMAL);
-        win_drawBox(rect, 0x14, WIN_STYLE_BEVEL);
+        ui_drawLabel(rect->x + ABIL_TARGET_LABEL_X, rect->y + WIN_TITLE_Y, ABIL_OTZ_TARGET, g_labelTarget, UI_LABEL_NORMAL);
+        win_drawBox(rect, ABIL_OTZ_TARGET, WIN_STYLE_BEVEL);
         for (i = 0; i < PARTY_SIZE; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
-                ui_drawMemberSummary(rect->x + 8, rect->y + 6 + i * 0x2B, 0x13, i, s_menuAbility.targetMode);
+                ui_drawMemberSummary(rect->x + ABIL_TARGET_ROW_X, rect->y + ABIL_TARGET_ROW_Y + i * ABIL_TARGET_ROW_H, ABIL_OTZ_TARGET_TEXT, i, s_menuAbility.targetMode);
             }
         }
     }
@@ -363,10 +363,10 @@ void menuAbility_drawCursor(void) {
         HelpState *h1;
         rect = &s_menuAbility.tabRect;
         h1 = &g_menuHelp;
-        k = s_menuAbilityTabCursorX[s_menuAbility.tab][0] - 0x18;
+        k = s_menuAbilityTabCursorX[s_menuAbility.tab][0] - ABIL_TAB_CURSOR_LEFT;
         g_menuHelp.x = rect->x + k;
-        ry = rect->y + 8;
-        h1->otz = 0x17;
+        ry = rect->y + ABIL_TAB_CURSOR_DY;
+        h1->otz = ABIL_OTZ_CURSOR;
         h1->y = ry;
         help_drawCursor();
     }
@@ -376,24 +376,24 @@ void menuAbility_drawCursor(void) {
         h2 = &g_menuHelp;
         k = list->col;
         k ^= (list->scroll >> 3) & 1;
-        k = k * 150 - 10;
+        k = k * ABIL_COL_W - ABIL_LIST_CURSOR_LEFT;
         g_menuHelp.x = s_menuAbility.listRect.x + k;
-        k = list->cursor * 15 + 10;
-        h2->otz = 0x17;
+        k = list->cursor * ABIL_ROW_H + ABIL_LIST_CURSOR_DY;
+        h2->otz = ABIL_OTZ_CURSOR;
         h2->y = s_menuAbility.listRect.y + k;
         help_drawCursor();
     }
     if (s_menuAbility.state == ABILITY_STATE_TARGET) {
         rect = &s_menuAbility.targetWin.rect;
         if (s_menuAbility.target & ABILITY_TARGET_ALL) {
-            g_menuHelp.otz = 0x12;
+            g_menuHelp.otz = ABIL_OTZ_TARGET_CURSOR;
             if (blink) {
                 for (i = 0; i < PARTY_SIZE; i++) {
-                    y = i * 0x2B + 0x12;
+                    y = i * ABIL_TARGET_ROW_H + ABIL_TARGET_CURSOR_Y;
                     if (g_gameState->gameData->party[i] != NULL) {
-                        ui_drawHand(rect->x - 10, rect->y + y, g_menuHelp.otz);
+                        ui_drawHand(rect->x + ABIL_TARGET_CURSOR_X, rect->y + y, g_menuHelp.otz);
                         if (!done) {
-                            g_menuHelp.x = rect->x - 10;
+                            g_menuHelp.x = rect->x + ABIL_TARGET_CURSOR_X;
                             done = 1;
                             g_menuHelp.y = rect->y + y;
                         }
@@ -401,11 +401,11 @@ void menuAbility_drawCursor(void) {
                 }
             }
         } else {
-            g_menuHelp.x = s_menuAbility.targetWin.rect.x - 10;
+            g_menuHelp.x = s_menuAbility.targetWin.rect.x + ABIL_TARGET_CURSOR_X;
             h3 = &g_menuHelp;
-            k = s_menuAbility.target * 0x2B + 0x12;
+            k = s_menuAbility.target * ABIL_TARGET_ROW_H + ABIL_TARGET_CURSOR_Y;
             ry = rect->y;
-            h3->otz = 0x12;
+            h3->otz = ABIL_OTZ_TARGET_CURSOR;
             h3->y = ry + k;
             help_drawCursor();
         }
@@ -452,16 +452,16 @@ void menuAbility_setMember(s32 slot, s32 dir) {
             abil++;
         }
     }
-    menuList_init(&s_menuAbility.lists[0], nItems, 8, 2, 0x80);
-    menuList_init(&s_menuAbility.lists[1], nAbils, 8, 2, 0x80);
+    menuList_init(&s_menuAbility.lists[0], nItems, ABIL_LIST_ROWS, ABIL_LIST_COLS, ABIL_LIST_WIN_H);
+    menuList_init(&s_menuAbility.lists[1], nAbils, ABIL_LIST_ROWS, ABIL_LIST_COLS, ABIL_LIST_WIN_H);
     s_menuAbility.actionCount = nItems;
     s_menuAbility.supportCount = nAbils;
-    memset(s_menuAbility.equipSlots, 0, 0x100);
+    memset(s_menuAbility.equipSlots, 0, sizeof(s_menuAbility.equipSlots));
     for (slot = 0; slot < EQUIP_SLOT_COUNT; slot++) {
         id = chr->equip[slot];
         if (id != ITEM_NONE) {
             it = &g_itemTable[id];
-            for (j = 0; j < 3; j++) {
+            for (j = 0; j < (s32)ARRAY_COUNT(it->abilities); j++) {
                 s_menuAbility.equipSlots[it->abilities[j]] |= 1 << slot;
                 s_menuAbility.equipItems[it->abilities[j]][slot] = id;
             }
@@ -525,10 +525,10 @@ void menuAbility_selectAction(void) {
                 ls = s_menuAbility.lists + s_menuAbility.tab;
                 s_menuAbility.targetWin.rect = s_menuAbility.targetRect;
                 if (ls->col == 0) {
-                    s_menuAbility.targetWin.rect.x = 0xA4;
+                    s_menuAbility.targetWin.rect.x = ABIL_TARGET_WIN_X_RIGHT;
                     tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenL, 1);
                 } else {
-                    s_menuAbility.targetWin.rect.x = 8;
+                    s_menuAbility.targetWin.rect.x = ABIL_TARGET_WIN_X_LEFT;
                     tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenR, 1);
                 }
                 s_menuAbility.targetWinOpen = 1;
@@ -617,9 +617,9 @@ void menuAbility_updateHelp(void) {
             return;
         }
         bounds.x = 0;
-        bounds.y = 0x5E;
+        bounds.y = ABIL_LIST_WIN_Y;
         bounds.w = g_gameState->dispEnv->disp.w;
-        bounds.h = g_gameState->dispEnv->disp.h - 0x5E;
+        bounds.h = g_gameState->dispEnv->disp.h - ABIL_LIST_WIN_Y;
         help_setBounds(&bounds);
         i = menuAbility_getSlot(list);
         if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
@@ -663,15 +663,15 @@ void menuAbility_initSupportCursor(void) {
     chr = g_gameState->gameData->party[s_menuAbility.slot];
     list = &s_menuAbility.lists[1];
     for (; i < s_menuAbility.supportCount; i++) {
-        if (menuAbility_getSupportState_inline(s_menuAbility.supports[i], chr) >= 3) {
+        if (menuAbility_getSupportState_inline(s_menuAbility.supports[i], chr) >= ABILITY_USABLE) {
             sel = i;
             break;
         }
     }
     row = sel / 2;
     list->col = sel % 2;
-    if (row - 7 >= 0) {
-        list->top = row - 7;
+    if (row - (ABIL_LIST_ROWS - 1) >= 0) {
+        list->top = row - (ABIL_LIST_ROWS - 1);
     } else {
         list->top = 0;
     }
@@ -740,9 +740,9 @@ void menuAbility_drawTabs(void) {
     s32 i;
 
     rect = &s_menuAbility.tabRect;
-    win_drawBox(rect, 0x1D, WIN_STYLE_BEVEL);
+    win_drawBox(rect, ABIL_OTZ_WIN, WIN_STYLE_BEVEL);
     for (i = 0; i < 2; i++) {
-        text_drawBlock(rect->x + s_menuAbilityTabX[i], rect->y + 6, 0x1C, text_get(i), s_menuAbility.tabEnabled[i] == 0 ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
+        text_drawBlock(rect->x + s_menuAbilityTabX[i], rect->y + ABIL_TAB_TEXT_Y, ABIL_OTZ_TEXT, text_get(i), s_menuAbility.tabEnabled[i] == 0 ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
     }
 }
 
@@ -765,11 +765,11 @@ void menuAbility_drawScrollRows(void) {
 void menuAbility_drawRow(s32 col, s32 row, s32 z, MenuView *view) {
     Character *chr = g_gameState->gameData->party[s_menuAbility.slot];
     s32 x, y;
-    s32 dx = 8;
-    s32 dy = 0x5E;
+    s32 dx = ABIL_ROW_X;
+    s32 dy = ABIL_LIST_WIN_Y;
 
-    x = col * 0x96 + (s_menuAbility.listRect.x + dx);
-    y = row * 0xF + (view->y + dy);
+    x = col * ABIL_COL_W + (s_menuAbility.listRect.x + dx);
+    y = row * ABIL_ROW_H + (view->y + dy);
     if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
         menuAbility_drawActionRow(x, y, z, chr);
     } else {
@@ -789,10 +789,10 @@ void menuAbility_drawActionRow(s32 x, s32 y, s32 idx, Character *chr) {
     st = menuAbility_getActionState(id, chr);
     if (st != 0) {
         col = s_menuAbilityStateColor[st];
-        text_drawBlock(x + 8, y, 0x1C, s_menuAbilityActionNames + info->nameOffset, col);
+        text_drawBlock(x + ABIL_ROW_ACTION_NAME_X, y, ABIL_OTZ_TEXT, s_menuAbilityActionNames + info->nameOffset, col);
         if (info->mpCost != 0) {
             text_formatNumber(menuAbility_getMpCost(info), numText, 3, TEXT_NUM_ASCII);
-            ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, numText, col);
+            ui_drawSmallDigits(x + ABIL_ROW_COST_X, y + ABIL_ROW_COST_DY, ABIL_OTZ_TEXT, numText, col);
         }
     }
 }
@@ -810,16 +810,16 @@ void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *chr) {
     if (st != 0) {
         col = s_menuAbilityStateColor[st];
         if (st == ABILITY_EQUIPPED) {
-            menuAbility_drawIcon(x + 8, y, 0x1C, s_menuAbility.animFrame);
+            menuAbility_drawIcon(x + ABIL_ROW_ICON_X, y, ABIL_OTZ_TEXT, s_menuAbility.animFrame);
         }
         if (!(CONFIG_WINDOW_COLOR())) {
-            menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 9 : 10);
+            menuAbility_drawIcon(x + ABIL_ROW_ICON_X, y, ABIL_OTZ_TEXT, st >= ABILITY_USABLE ? ABIL_ICON_SUPPORT : ABIL_ICON_SUPPORT_NA);
         } else {
-            menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 7 : 8);
+            menuAbility_drawIcon(x + ABIL_ROW_ICON_X, y, ABIL_OTZ_TEXT, st >= ABILITY_USABLE ? ABIL_ICON_SUPPORT_CLASSIC : ABIL_ICON_SUPPORT_CLASSIC_NA);
         }
-        text_drawBlock(x + 0x18, y, 0x1C, s_menuAbilitySupportNames + sup->name, col);
+        text_drawBlock(x + ABIL_ROW_SUPPORT_NAME_X, y, ABIL_OTZ_TEXT, s_menuAbilitySupportNames + sup->name, col);
         text_formatNumber(sup->stones, numText, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, numText, col);
+        ui_drawSmallDigits(x + ABIL_ROW_COST_X, y + ABIL_ROW_COST_DY, ABIL_OTZ_TEXT, numText, col);
     }
 }
 
@@ -979,7 +979,7 @@ void menuAbility_initActionCursor(void) {
     }
     row = sel / 2;
     list->col = sel % 2;
-    top = row - 7;
+    top = row - (ABIL_LIST_ROWS - 1);
     if (top >= 0) {
         list->top = top;
     } else {

@@ -15,6 +15,88 @@ enum { CHOCO_TAB_SELECT, CHOCO_TAB_CANCEL };
 
 #define CHOCOGRAPH_COUNT 24
 #define CHOCO_LIST_ROWS  7 /* visible list rows (menuList_init) */
+/* Chocograph screen layout (screen coordinates unless noted) */
+#define CHOCO_TITLE_WIN_X 0xE4 /* "Chocograph" title */
+#define CHOCO_TITLE_WIN_Y 8
+#define CHOCO_TITLE_WIN_W 0x50
+#define CHOCO_TITLE_WIN_H 0x1A
+#define CHOCO_TITLE_TEXT_X 7
+#define CHOCO_TEXT_Y 6 /* title / tab text */
+#define CHOCO_TABS_WIN_X 8 /* Select / Cancel tabs */
+#define CHOCO_TABS_WIN_Y 8
+#define CHOCO_TABS_WIN_W 0xD8
+#define CHOCO_TABS_WIN_H 0x1A
+#define CHOCO_TAB_TEXT_X 0x2C /* first tab text, relative to the window */
+#define CHOCO_TAB_W 0x60 /* tab spacing */
+#define CHOCO_TAB_CURSOR_X 0x1C /* tab cursor (screen) */
+#define CHOCO_TAB_CURSOR_Y 0x11
+#define CHOCO_SELECTED_WIN_X 8 /* SELECTED window: the chocograph being searched for */
+#define CHOCO_SELECTED_WIN_Y 0x26
+#define CHOCO_SELECTED_WIN_W 0xB7
+#define CHOCO_SELECTED_WIN_H 0x43
+#define CHOCO_SEL_ICON_X 0x10 /* relative to the window */
+#define CHOCO_SEL_ICON_Y 0x2C
+#define CHOCO_SEL_NAME_X 0x21
+#define CHOCO_SEL_NAME_Y 0x2E
+#define CHOCO_SEL_FRAME_X 0x48 /* picture frame */
+#define CHOCO_SEL_FRAME_Y 7
+#define CHOCO_FRAME_INSET 4 /* the picture inside its frame */
+#define CHOCO_FRAME_SHADOW_D 3 /* the frame's drop shadow offset */
+#define CHOCO_ABIL_WIN_X 0xBF /* CHOCOBO ABILITY window: the abilities learnt */
+#define CHOCO_ABIL_WIN_Y 0x26
+#define CHOCO_ABIL_WIN_W 0x75
+#define CHOCO_ABIL_WIN_H 0x21
+#define CHOCO_ABIL_ICON_X 0xB
+#define CHOCO_ABIL_ICON_Y 5
+#define CHOCO_ABIL_ICON_W 0x13 /* ability icon spacing (also in the hint window) */
+#define CHOCO_COUNT_WIN_X 0xBF /* Inventory / Loc. Found counts */
+#define CHOCO_COUNT_WIN_Y 0x47
+#define CHOCO_COUNT_WIN_W 0x75
+#define CHOCO_COUNT_WIN_H 0x22
+#define CHOCO_COUNT_TEXT_X 9
+#define CHOCO_COUNT_INV_Y 3
+#define CHOCO_COUNT_FOUND_Y 0xF
+#define CHOCO_COUNT_DIGITS_X 0x5E /* (digits 4 below their label's y) */
+#define CHOCO_LIST_WIN_X 8 /* CHOCOGRAPH list */
+#define CHOCO_LIST_WIN_Y 0x6B
+#define CHOCO_LIST_WIN_W 0x86
+#define CHOCO_LIST_WIN_H 0x71
+#define CHOCO_LIST_LABEL_X 0x10
+#define CHOCO_ROW_H 0xF
+#define CHOCO_ROW_ICON_X 0xE /* row (screen x) */
+#define CHOCO_ROW_NAME_DX 0x11
+#define CHOCO_LIST_CURSOR_Y 0x74 /* list cursor on row 0 (screen) */
+#define CHOCO_HINT_WIN_X 0x8E /* HINT window: picture, clue and Ability Required */
+#define CHOCO_HINT_WIN_Y 0x6B
+#define CHOCO_HINT_WIN_W 0xA6
+#define CHOCO_HINT_WIN_H 0x71
+#define CHOCO_HINT_FRAME_X 8
+#define CHOCO_HINT_FRAME_Y 8
+#define CHOCO_CLUE_X 0xC
+#define CHOCO_CLUE_Y 0x31
+#define CHOCO_REQ_X 0x42 /* "Ability Required" and its icons */
+#define CHOCO_REQ_TEXT_Y 6
+#define CHOCO_REQ_ICON_Y 0x16
+#define CHOCO_LABEL_X 8 /* window labels */
+#define CHOCO_OTZ_CURSOR 0x1B
+#define CHOCO_OTZ_TEXT 0x1C
+#define CHOCO_OTZ_WIN 0x1D
+#define CHOCO_OTZ_SHADOW 0x1E /* SELECTED, count, HINT and ability window shadows */
+/* chocograph pictures: CHOCO_PICTURE_W x CHOCO_PICTURE_H, 8-bit, CHOCO_PICTURE_COLS per row from VRAM (0,
+ * CHOCO_PICTURE_VRAM_Y), CLUT row CHOCO_PICTURE_CLUT_Y + id */
+#define CHOCO_PICTURE_W 0x2A
+#define CHOCO_PICTURE_H 0x1C
+#define CHOCO_PICTURE_COLS 3
+#define CHOCO_PICTURE_VRAM_Y 0x100
+#define CHOCO_PICTURE_CLUT_Y 0x1E8
+#define CHOCO_FRAME_CLUT_X 0x3C0 /* picture frame CLUT (its shadow uses the next row) */
+#define CHOCO_FRAME_CLUT_Y 0x1FE
+/* on the world map, menuChocograph_restoreVram copies the selected chocograph's CLUT and pixels here first
+ * (runtime: pending R44, docs/wip/r44_runtime_menus.md #2) */
+#define CHOCO_WM_CLUT_X 0x280
+#define CHOCO_WM_CLUT_Y 0xF6
+#define CHOCO_WM_PICTURE_X 0x318
+#define CHOCO_WM_PICTURE_Y 0xB0
 #define CHOCO_LAST_PAGE  (CHOCOGRAPH_COUNT - CHOCO_LIST_ROWS) /* highest list scroll top */
 
 /* Event variable bytes (g_evtGlobalVars.b) */
@@ -141,5 +223,9 @@ typedef struct {
 } FrameRect; /* window frame piece: position, uv, size */
 extern FrameRect s_menuChocographFramePieces[4]; /* frame pieces drawn by menuChocograph_drawFrame */
 extern u8 s_menuChocographFrameShadowPieces[2]; /* pieces that get a shadow */
+
+/* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 
 #endif

@@ -18,6 +18,10 @@ enum {
     DISC_ST_ERROR_CLOSE  /* fading the error image out */
 };
 #define DISC_ERROR_FRAMES 180
+#define DISC_FADE_FRAMES 0x18 /* fade_out / fade_in around every check and the error panel */
+#define DISC_SPINUP_FRAMES 600 /* discChange_checkDisc: give up (DISC_CHECK_NO_DISC) if not in standby by then */
+#define DISC_IMG_INIT_TRIES 10 /* file_initImg attempts before the disc counts as unreadable */
+#define DISC_SEEK_SECTOR 5 /* test seek target (CdIntToPos) */
 
 /* discChange_checkDisc results */
 enum {
@@ -35,6 +39,16 @@ enum {
 #define DISC_PICTURE_W 160 /* the 320x224 16-bit picture is read and drawn as two halves */
 #define DISC_PICTURE_HALF_BYTES 0x11800 /* 160 * 224 * 2 */
 #define DISC_PICTURE_HALF_SECTORS 0x23
+/* screen layout: the picture fills the screen in two DISC_PICTURE_W x SCREEN_H sprites; in DISC_ST_ERROR /
+ * DISC_ST_ERROR_CLOSE the error panel (its own image in VRAM, loaded with the picture) replaces it */
+#define DISC_OTZ 6 /* OT slot of the picture and the panel */
+#define DISC_PANEL_X 0x4E
+#define DISC_PANEL_Y 0x1C
+#define DISC_PANEL_W 0xC2
+#define DISC_PANEL_H 0xA8
+#define DISC_PANEL_VRAM_X 0x140 /* panel pixels (tpage) */
+#define DISC_PANEL_VRAM_Y 0x100
+#define DISC_PANEL_CLUT_Y 0x1FF /* panel CLUT row (x 0) */
 #define DISC_PICTURE_BUF PSX_RAM(u32 *, 0x801CDF00) /* CD read buffer for one half */
 
 /* Disc change state (s_discChange). */

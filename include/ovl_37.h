@@ -20,6 +20,70 @@ enum {
 enum { ITEM_TAB_USE, ITEM_TAB_ARRANGE, ITEM_TAB_KEY }; /* ItemMenu.tab */
 
 enum { KEY_VIEW_NONE, KEY_VIEW_OPENING, KEY_VIEW_SHOWN, KEY_VIEW_CLOSING }; /* ItemMenu.keyViewPhase */
+#define KEY_VIEW_OPEN_STEPS 0x16 /* s_menuItemKeyItemSlide steps of the slide in */
+#define KEY_VIEW_CLOSE_STEPS 8 /* and of the slide out */
+#define ITEM_KWEH_FRAMES 0x60 /* "Kweeeh!" popup shown this long, then the menu closes */
+#define ITEM_NEW_BLINK_PERIOD 48 /* key item "NEW" marker: blink cycle */
+#define ITEM_NEW_BLINK_OFF 0x10 /* frames of the cycle it is hidden */
+
+/* Item screen layout (screen coordinates unless noted) */
+#define ITEM_TABS_WIN_X 8 /* Use / Arrange / Key tab window */
+#define ITEM_TABS_WIN_Y 8
+#define ITEM_TABS_WIN_W 0xE4
+#define ITEM_TABS_WIN_H 0x1A
+#define ITEM_TAB_TEXT_Y 6 /* tab texts, relative to the window (x: s_menuItemTabX) */
+#define ITEM_LIST_WIN_X 8 /* item / key item list window */
+#define ITEM_LIST_WIN_Y 0x2A
+#define ITEM_LIST_WIN_W 0x12C
+#define ITEM_LIST_WIN_H 0xAD
+#define ITEM_LIST_ROWS 0xB /* visible rows */
+#define ITEM_LIST_COLS 2
+#define ITEM_ROW_H 15
+#define ITEM_COL_W 0x96
+#define ITEM_LIST_LABEL_X 0xE /* "Item" label over each column, relative to the window */
+#define ITEM_COUNT_LABEL_R 0x8A /* right edge of the count label over each column, relative to the window */
+#define ITEM_ICON_X 0x18 /* row: item icon (key items: the name), relative to the column */
+#define ITEM_NAME_X 0x28 /* row: item name */
+#define ITEM_COUNT_DX 0x6C /* row: count digits, relative to the icon */
+#define ITEM_COUNT_DY 4
+#define ITEM_TAB_CURSOR_DX (-0x10) /* cursor on the tabs: relative to s_menuItemTabCursorX */
+#define ITEM_TAB_CURSOR_Y 0x10
+#define ITEM_LIST_CURSOR_Y 0x34 /* cursor on list row 0 (x: column * ITEM_COL_W) */
+#define ITEM_SWAP_CURSOR_X 2 /* Manual arrange: the picked item's cursor */
+#define ITEM_SWAP_CURSOR_Y 0x32
+#define ITEM_ARRANGE_CURSOR_X 0x7E /* cursor in the Auto / Manual popup */
+#define ITEM_ARRANGE_CURSOR_Y 0xE
+#define ITEM_ARRANGE_TEXT_X 10 /* Auto / Manual, relative to the popup */
+#define ITEM_ARRANGE_TEXT_Y 6
+#define ITEM_TARGET_WIN_X_LEFT 8 /* character select window: opens over the column the cursor is not in */
+#define ITEM_TARGET_WIN_X_RIGHT 0xA4
+#define ITEM_TARGET_WIN_Y 0x26
+#define ITEM_TARGET_WIN_W 0x90
+#define ITEM_TARGET_WIN_H 0xB6
+#define ITEM_TARGET_ROW_X 8 /* member summaries, relative to the window */
+#define ITEM_TARGET_ROW_Y 6
+#define ITEM_TARGET_ROW_H 0x2B
+#define ITEM_TARGET_CURSOR_X (-0xA) /* relative to the window */
+#define ITEM_TARGET_CURSOR_Y 0x12
+#define ITEM_OTZ_POPUP_CURSOR 0x12 /* cursor over a popup / the target window */
+#define ITEM_OTZ_POPUP 0x14 /* target window, Arrange popup, key item card */
+#define ITEM_OTZ_KWEH 0xF /* "Kweeeh!" popup */
+#define ITEM_OTZ_CURSOR 0x19
+#define ITEM_OTZ_TEXT 0x1C /* tab and list contents */
+#define ITEM_OTZ_WIN 0x1D /* tab and list windows */
+/* key item card (menuItem_drawKeyItem): slides in from the left to x KEY_VIEW_X */
+#define KEY_VIEW_X 0x48
+#define KEY_VIEW_Y 0x41
+#define KEY_VIEW_W 0xB0
+#define KEY_VIEW_H 0x80
+#define KEY_VIEW_V 0x80 /* card texture v (its tpage is the font page) */
+#define KEY_VIEW_CLUT_X 0x3C0 /* card CLUT; the shadow's CLUT is the next row */
+#define KEY_VIEW_CLUT_Y 0x1B0
+#define KEY_VIEW_SHADOW_D 3 /* drop shadow strips along the bottom and right edges, offset by this */
+#define KEY_VIEW_SHADOW_W 6
+#define KEY_VIEW_NAME_Y 0x50 /* key item name, centred on the card */
+#define KEY_VIEW_DESC_X 0xD /* description, relative to the card */
+#define KEY_VIEW_DESC_Y 0x66
 
 /* g_itemMenuText ids */
 #define ITEM_TEXT_USE          0   /* "Use", "Arrange", "Key": the tabs, + ITEM_TAB_* */
@@ -77,6 +141,8 @@ extern u8 s_menuItemTabText[3];
 extern RECT s_menuItemArrangeRect;
 
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {

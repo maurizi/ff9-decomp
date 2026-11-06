@@ -4,24 +4,24 @@ void opening_bootScreen(void) {
     RECT *imgRect;
     s32 framesLeft;
 
-    framesLeft = 0xD2;
+    framesLeft = BOOT_SCREEN_FRAMES;
     opening_bootScreenLoad();
     file_getTimRects((void *)g_bootScreenImage, NULL, &imgRect);
     imgRect->w *= 4;
     do {
         opening_bootClearOt();
         pad_update();
-        if (framesLeft == 0xD2) {
-            game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_NONE);
-        } else if (framesLeft == 0x3C) {
-            game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_FULL);
+        if (framesLeft == BOOT_SCREEN_FRAMES) {
+            game_startFade(FADE_FLAT, FADE_SUB, BOOT_FADE_FRAMES, FADE_COLOR_NONE);
+        } else if (framesLeft == BOOT_FADE_FRAMES) {
+            game_startFade(FADE_FLAT, FADE_SUB, BOOT_FADE_FRAMES, FADE_COLOR_FULL);
         }
         setSprt(&g_bootScreenSprite[g_gameState->gameData->drawBuf]);
         g_bootScreenSprite[g_gameState->gameData->drawBuf].r0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].g0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].b0 = 0x80;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].x0 = (0x140 - imgRect->w) / 2;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].y0 = (0xE0 - imgRect->h) / 2;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].x0 = (SCREEN_W - imgRect->w) / 2;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].y0 = (SCREEN_H - imgRect->h) / 2;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].u0 = 0;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].v0 = 0;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].w = imgRect->w;

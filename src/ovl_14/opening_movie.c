@@ -23,7 +23,7 @@ s32 opening_movieThenTitle(void) {
             } else {
                 if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                     opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
-                    opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, 0x5A, 0, SND_VOL_MAX);
+                    opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, TITLE_MUSIC_FADE_IN, 0, SND_VOL_MAX);
                 }
                 g_movieSkipped = 1;
                 g_movieState = MOVIE_ST_END;
@@ -62,7 +62,7 @@ s32 opening_movieThenTitle(void) {
                         cd_pause();
                         if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                             opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
-                            opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, 0x5A, 0, SND_VOL_MAX);
+                            opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, TITLE_MUSIC_FADE_IN, 0, SND_VOL_MAX);
                         }
                     }
                     if (g_movieLastFrame >= g_mbgFrame) {

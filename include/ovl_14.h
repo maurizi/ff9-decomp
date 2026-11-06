@@ -226,6 +226,12 @@ extern DR_TPAGE g_attractTpages[2][2];
 extern u8 g_attractSkipped;
 #define ATTRACT_IMAGES 4     /* images per attract set */
 #define ATTRACT_FRAMES 0x3A2 /* frames per image */
+#define ATTRACT_FADE_FRAMES 0xF0 /* each image fades in, and out over its last this-many frames */
+#define ATTRACT_SKIP_FADE_FRAMES 0x1E /* Start/Cross: the image fades out over at most this */
+#define ATTRACT_LEFT_W 0xC0 /* the 16-bit SCREEN_W x SCREEN_H image is drawn as two sprites split here */
+#define BOOT_SCREEN_FRAMES 0xD2 /* boot screen (opening_bootScreen) shown this long, centred */
+#define BOOT_FADE_FRAMES 0x3C /* fading in at the start, out over the last this-many frames */
+#define TITLE_MUSIC_FADE_IN 0x5A /* title music volume ramp up from 0 when opening_movie starts it */
 s32 opening_attractInit(s32);
 s32 opening_attractFree(s32);
 void opening_attractClearOt(void);

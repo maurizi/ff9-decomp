@@ -50,6 +50,86 @@ enum {
     ABILITY_STATE_SWITCH  /* L1/R1: header sliding to another member */
 };
 #define ABILITY_TARGET_ALL 0x80 /* AbilityMenu.target: all members */
+#define ABIL_ICON_ANIM_TICKS 7 /* frames per equipped-support icon frame */
+#define ABIL_ICON_ANIM_FRAMES 7 /* s_menuAbilityIcons 0-6: the equipped-support animation */
+#define ABIL_ICON_SUPPORT_CLASSIC 7 /* s_menuAbilityIcons: support icon in the Classic window colour */
+#define ABIL_ICON_SUPPORT_CLASSIC_NA 8 /* the same, greyed */
+#define ABIL_ICON_SUPPORT 9 /* support icon in the Normal window colour */
+#define ABIL_ICON_SUPPORT_NA 10 /* the same, greyed */
+
+/* Ability screen layout (screen coordinates unless noted) */
+#define ABIL_TABS_WIN_X 8 /* Use / Equip tabs */
+#define ABIL_TABS_WIN_Y 8
+#define ABIL_TABS_WIN_W 0xE4
+#define ABIL_TABS_WIN_H 0x1A
+#define ABIL_TAB_TEXT_Y 6 /* relative to the window (x: s_menuAbilityTabX) */
+#define ABIL_TAB_CURSOR_LEFT 0x18 /* left of s_menuAbilityTabCursorX */
+#define ABIL_TAB_CURSOR_DY 8
+#define ABIL_PLAYER_WIN_X 8 /* PLAYER window: member header, status icons, stones */
+#define ABIL_PLAYER_WIN_Y 0x26
+#define ABIL_PLAYER_WIN_W 0xD0
+#define ABIL_PLAYER_WIN_H 0x38
+#define ABIL_HEADER_X 8 /* relative to the PLAYER window */
+#define ABIL_HEADER_Y 5
+#define ABIL_ICONBOX_X 0x72 /* status-ailment icon box, relative to the PLAYER window */
+#define ABIL_ICONBOX_Y 4
+#define ABIL_ICONBOX_W 0x5B
+#define ABIL_ICONBOX_H 0x12
+#define ABIL_STONES_DX 0x19 /* magic stones gauge, relative to the icon box */
+#define ABIL_STONES_DY 0x14
+#define ABIL_INFO_WIN_X 0xD8 /* INFO window: AP gauge and the equipment teaching the ability */
+#define ABIL_INFO_WIN_Y 0x26
+#define ABIL_INFO_WIN_W 0x5C
+#define ABIL_INFO_WIN_H 0x38
+#define ABIL_INFO_TEXT_X 8 /* "AP" / "Equip" labels and the item icons, relative to the window */
+#define ABIL_INFO_AP_Y 8
+#define ABIL_INFO_EQUIP_Y 0x16
+#define ABIL_INFO_GAUGE_X 0x2D
+#define ABIL_INFO_GAUGE_Y 0xC
+#define ABIL_INFO_ITEMS_Y 0x24
+#define ABIL_INFO_ITEM_W 0x10 /* item icon spacing */
+#define ABIL_CMD_WIN_X 0x8E /* COMMAND window: the command an action ability belongs to */
+#define ABIL_CMD_WIN_Y 0x40
+#define ABIL_CMD_WIN_W 0x46
+#define ABIL_CMD_WIN_H 0x1A
+#define ABIL_CMD_TEXT_X 8
+#define ABIL_CMD_TEXT_Y 6
+#define ABIL_LIST_WIN_X 8 /* ability list (also the top of the help bounds) */
+#define ABIL_LIST_WIN_Y 0x5E
+#define ABIL_LIST_WIN_W 0x12C
+#define ABIL_LIST_WIN_H 0x80
+#define ABIL_LIST_ROWS 8 /* visible rows */
+#define ABIL_LIST_COLS 2
+#define ABIL_ROW_H 15
+#define ABIL_COL_W 0x96
+#define ABIL_ROW_X 8 /* first column, relative to the window */
+#define ABIL_LIST_LABEL_X 0xE /* "Ability" label over each column, relative to the window */
+#define ABIL_COST_LABEL_X 0x7C /* "MP" / stone cost label over each column */
+#define ABIL_ROW_ACTION_NAME_X 8 /* row, relative to the column: action ability name */
+#define ABIL_ROW_ICON_X 8 /* support ability icon */
+#define ABIL_ROW_SUPPORT_NAME_X 0x18 /* support ability name */
+#define ABIL_ROW_COST_X 0x6C /* MP / stone cost digits */
+#define ABIL_ROW_COST_DY 4
+#define ABIL_LIST_CURSOR_LEFT 10 /* list cursor: left of the window + column * ABIL_COL_W */
+#define ABIL_LIST_CURSOR_DY 10
+#define ABIL_TARGET_WIN_X_LEFT 8 /* target window: opens over the column the cursor is not in */
+#define ABIL_TARGET_WIN_X_RIGHT 0xA4
+#define ABIL_TARGET_WIN_Y 0x26
+#define ABIL_TARGET_WIN_W 0x90
+#define ABIL_TARGET_WIN_H 0xB6
+#define ABIL_TARGET_LABEL_X 8
+#define ABIL_TARGET_ROW_X 8 /* member summaries, relative to the window */
+#define ABIL_TARGET_ROW_Y 6
+#define ABIL_TARGET_ROW_H 0x2B
+#define ABIL_TARGET_CURSOR_X (-10)
+#define ABIL_TARGET_CURSOR_Y 0x12
+#define ABIL_OTZ_TARGET_CURSOR 0x12
+#define ABIL_OTZ_TARGET_TEXT 0x13
+#define ABIL_OTZ_TARGET 0x14 /* target window */
+#define ABIL_OTZ_CURSOR 0x17
+#define ABIL_OTZ_CMD 0x1B /* COMMAND window (in front of PLAYER) */
+#define ABIL_OTZ_TEXT 0x1C /* window contents */
+#define ABIL_OTZ_WIN 0x1D /* tab, PLAYER, INFO and list windows */
 
 /* g_abilityMenuText (Ability screen text) ids */
 #define ABILITY_TEXT_TAB_HELP          2   /* help of each tab, + ABILITY_TAB_* */
@@ -104,6 +184,68 @@ enum {
     EQUIP_STATE_SLOT, /* picking an equipment slot */
     EQUIP_STATE_LIST  /* item list */
 };
+/* Equip screen layout (screen coordinates unless noted) */
+#define EQUIP_TABS_WIN_X 8 /* Equip / Optimize / Off tabs */
+#define EQUIP_TABS_WIN_Y 8
+#define EQUIP_TABS_WIN_W 0xE4
+#define EQUIP_TABS_WIN_H 0x1A
+#define EQUIP_TAB_TEXT_Y 6 /* relative to the window (x: s_menuEquipTabX) */
+#define EQUIP_TAB_CURSOR_LEFT 0x18 /* tab cursor: left of the window + s_menuEquipTabCursorX */
+#define EQUIP_TAB_CURSOR_DY 8
+#define EQUIP_INFO_WIN_X 8 /* INFO window: member header and the stat comparison */
+#define EQUIP_INFO_WIN_Y 0x26
+#define EQUIP_INFO_WIN_W 0x8C
+#define EQUIP_INFO_WIN_H 0xB6
+#define EQUIP_HEADER_X 8 /* relative to the INFO window */
+#define EQUIP_HEADER_Y 9
+#define EQUIP_INFO_DIV_Y 0x3B /* etched divider under the header */
+#define EQUIP_STAT_LABEL_X 8 /* stat rows, relative to the INFO window */
+#define EQUIP_STAT_ROW_H 0xC
+#define EQUIP_BASE_STAT_Y 0x44 /* Speed, Strength, Magic, Spirit */
+#define EQUIP_BASE_STAT_X 0x4A /* current value (2 digits) */
+#define EQUIP_BASE_STAT_NEW_X 0x6D /* value with the new item */
+#define EQUIP_BATTLE_STAT_Y 0x78 /* Attack, Defence, Evade, Magic Def, Magic Eva */
+#define EQUIP_BATTLE_STAT_X 0x43 /* current value (3 digits) */
+#define EQUIP_BATTLE_STAT_NEW_X 0x66
+#define EQUIP_STAT_ARROW_X 0x5C /* the arrow between them (blinks when the value changes) */
+#define EQUIP_SLOTS_WIN_X 0x94 /* EQUIPMENT window (the item list opens at the same rect) */
+#define EQUIP_SLOTS_WIN_Y 0x26
+#define EQUIP_SLOTS_WIN_W 0xA0
+#define EQUIP_SLOTS_WIN_H 0x62
+#define EQUIP_SLOT_ROW_H 17 /* EQUIPMENT rows, relative to the window: */
+#define EQUIP_SLOT_ICON_X 10 /* slot icon */
+#define EQUIP_SLOT_ICON_Y 10
+#define EQUIP_SLOT_COLON_X 0x19 /* ':' */
+#define EQUIP_SLOT_COLON_Y 12
+#define EQUIP_SLOT_ITEM_X 0x21 /* item icon */
+#define EQUIP_SLOT_ITEM_Y 8 /* item icon and name */
+#define EQUIP_SLOT_NAME_X 0x31
+#define EQUIP_SLOT_CURSOR_LEFT 0x10 /* slot cursor: left of the window */
+#define EQUIP_SLOT_CURSOR_DY 0xC
+#define EQUIP_ABIL_WIN_X 0x94 /* ABILITY window: the item's abilities (header row: the slot and item, 1 higher) */
+#define EQUIP_ABIL_WIN_Y 0x8A
+#define EQUIP_ABIL_WIN_W 0xA0
+#define EQUIP_ABIL_WIN_H 0x52
+#define EQUIP_ABIL_DIV_Y 0x1A /* etched divider under the item */
+#define EQUIP_ABIL_ROW_Y 0x21 /* ability rows: name y (icon 1 lower, AP gauge 5 lower) */
+#define EQUIP_ABIL_ROW_H 15
+#define EQUIP_ABIL_ICON_X 8
+#define EQUIP_ABIL_NAME_X 0x18
+#define EQUIP_ABIL_GAUGE_X 0x72
+#define EQUIP_LIST_ROWS 6 /* item list: visible rows */
+#define EQUIP_LIST_ROW_H 15
+#define EQUIP_LIST_ICON_X 0xB /* relative to the list window */
+#define EQUIP_LIST_NAME_X 0x1B
+#define EQUIP_LIST_COUNT_X 0x8A
+#define EQUIP_COUNT_LABEL_R 0x97 /* right edge of the count label */
+#define EQUIP_LIST_CURSOR_LEFT 0xD /* list cursor: left of the window */
+#define EQUIP_LIST_CURSOR_DY 0xA
+#define EQUIP_OTZ_SUB_CURSOR 0x12 /* slot / list cursor */
+#define EQUIP_OTZ_LIST_TEXT 0x13 /* item list contents; the ABILITY window's label */
+#define EQUIP_OTZ_LIST 0x14 /* item list window */
+#define EQUIP_OTZ_CURSOR 0x1B /* tab cursor */
+#define EQUIP_OTZ_TEXT 0x1D /* window contents */
+#define EQUIP_OTZ_WIN 0x1E /* tab, INFO, EQUIPMENT and ABILITY windows */
 /* the first halfword of EquipMenu, {tab, state}, read as one by menuEquip_drawInfo */
 #define EQUIP_TAB_STATE(tab, state) ((state) << 8 | (tab))
 
@@ -222,6 +364,8 @@ extern u8 s_menuAbilityActionNames[];  /* item names */
 extern u8 s_menuAbilitySupportNames[];  /* ability names */
 extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_labelAbility;
 extern s32 g_labelTarget;

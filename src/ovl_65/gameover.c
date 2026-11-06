@@ -22,7 +22,7 @@ void gameover_main(s32 image) {
             break;
         case GAMEOVER_ST_FADE_IN:
             setRGB0(&cur->fade, shade, shade, shade);
-            shade -= 4;
+            shade -= GAMEOVER_FADE_STEP;
             addPrim(&cur->ot[0], &cur->picTpage0);
             addPrim(&cur->ot[0], &cur->picTpage1);
             addPrim(&cur->ot[1], &cur->fadeTpage);
@@ -41,7 +41,7 @@ void gameover_main(s32 image) {
             }
             break;
         case GAMEOVER_ST_FADE_OUT:
-            shade += 4;
+            shade += GAMEOVER_FADE_STEP;
             if (shade >= 0x100) {
                 ClearImage(&rect, 0, 0, 0);
                 DrawSync(0);
@@ -82,15 +82,15 @@ void gameover_initDisp(DispBuf *bufs) {
         bufs[i].draw.isbg = 1;
         bufs[i].disp.isinter = 0;
         setRECT(&bufs[i].disp.screen, 0, 8, 256, SCREEN_H);
-        gfx_initTpageSprt(&bufs[i].picTpage0, GetTPage(2, 0, 0, 256));
+        gfx_initTpageSprt(&bufs[i].picTpage0, GetTPage(2, 0, 0, GAMEOVER_PIC_VRAM_Y));
         setXY0(&bufs[i].pic0, 0, 0);
         setUV0(&bufs[i].pic0, 0, 0);
-        setWH(&bufs[i].pic0, 256, 224);
+        setWH(&bufs[i].pic0, GAMEOVER_PIC_LEFT_W, SCREEN_H);
         setRGB0(&bufs[i].pic0, 0x80, 0x80, 0x80);
-        gfx_initTpageSprt(&bufs[i].picTpage1, GetTPage(2, 0, 256, 256));
-        setXY0(&bufs[i].pic1, 256, 0);
+        gfx_initTpageSprt(&bufs[i].picTpage1, GetTPage(2, 0, GAMEOVER_PIC_LEFT_W, GAMEOVER_PIC_VRAM_Y));
+        setXY0(&bufs[i].pic1, GAMEOVER_PIC_LEFT_W, 0);
         setUV0(&bufs[i].pic1, 0, 0);
-        setWH(&bufs[i].pic1, 64, 224);
+        setWH(&bufs[i].pic1, SCREEN_W - GAMEOVER_PIC_LEFT_W, SCREEN_H);
         setRGB0(&bufs[i].pic1, 0x80, 0x80, 0x80);
         gfx_initTpageTile(&bufs[i].fadeTpage, GetTPage(0, 2, 0, 0));
         setXY0(&bufs[i].fade, 0, 0);
