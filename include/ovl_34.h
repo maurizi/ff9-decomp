@@ -25,6 +25,61 @@ enum {
 };
 
 enum { CONFIG_SLIDE_NONE, CONFIG_SLIDE_RIGHT, CONFIG_SLIDE_LEFT }; /* ConfigMenu.sliderDir */
+#define CONFIG_SLIDER_FRAMES 5 /* a speed slider step animates over this many frames */
+#define CONFIG_SLIDER_W 0x5A /* speed slider track length */
+#define CONFIG_RUMBLE_TEST_FRAMES 9 /* vibration test pulse when the Vibration row is set to ON */
+#define CONFIG_SCROLL_SPEED 4 /* list scroll by one row: pixels per frame */
+#define CONFIG_PAGE_SCROLL_SPEED 9 /* list scroll by a page (L1/R1): pixels per frame */
+
+/* Config screen layout (screen coordinates unless noted) */
+#define CONFIG_LIST_X 8 /* option rows: each row is its own WIN_STYLE_LINE box */
+#define CONFIG_LIST_Y 0x2A
+#define CONFIG_LIST_W 0x12C
+#define CONFIG_LIST_ROWS 9 /* visible rows */
+#define CONFIG_ROW_H 0x14
+#define CONFIG_LIST_H 0xB4 /* CONFIG_LIST_ROWS * CONFIG_ROW_H */
+#define CONFIG_TITLE_LABEL_X 0x10 /* "Config" label on the rule above the list */
+#define CONFIG_TITLE_LABEL_Y 0x23
+#define CONFIG_RULE_Y 0x26
+#define CONFIG_ROW_DIV_X 0x70 /* row: etched divider between the title and the options */
+#define CONFIG_ROW_TITLE_X 0xF /* row: title */
+#define CONFIG_ROW_TEXT_Y 6 /* row: text y (menuConfig_drawText draws 4 higher) */
+#define CONFIG_CHOICE_X 0x90 /* row: first of the two options */
+#define CONFIG_CHOICE_W 0x5A /* row: option spacing */
+#define CONFIG_SLOW_R 0x9C /* slider row: right edge of "Slow" */
+#define CONFIG_SLIDER_X 0x9E /* slider row: the track */
+#define CONFIG_FAST_X 0x103 /* slider row: "Fast" */
+#define CONFIG_SCROLL_ARROW_X 0x12E /* list scroll arrows */
+#define CONFIG_SCROLL_UP_Y 0x2C
+#define CONFIG_SCROLL_DOWN_Y 0xCF
+#define CONFIG_CURSOR_X 0 /* list cursor */
+#define CONFIG_CURSOR_Y 0x31
+#define CONFIG_SUB_ROW_H 0x11 /* custom windows (button mapping, controller port): row height */
+#define CONFIG_SUB_CURSOR_Y 0x33
+#define CONFIG_PAD_CURSOR_X 0x66 /* button mapping window cursor */
+#define CONFIG_PORT_CURSOR_X 0x65 /* controller port window cursor */
+#define CONFIG_EXIT_TEXT_X 0x2A /* "Press Start / Circle to exit." in the second custom window */
+#define CONFIG_EXIT_TEXT_Y 8
+#define CONFIG_PAD_NEW_LABEL_X 0xB /* button mapping window: "New" / "Normal" column labels */
+#define CONFIG_PAD_NORMAL_LABEL_X 0x2D
+#define CONFIG_PAD_ROW_Y 0xB /* button mapping rows: button icons */
+#define CONFIG_PAD_NEW_X 0x10 /* the button now mapped to the action */
+#define CONFIG_PAD_ARROW_X 0x27 /* the arrow between them (y + 3) */
+#define CONFIG_PAD_NORMAL_X 0x3A /* the action's default button */
+#define CONFIG_PAD_TEXT_X 0x54 /* the action (y + 1) */
+#define CONFIG_PORT_ROW_Y 0xA /* controller port rows */
+#define CONFIG_PORT_NAME_X 0xE /* character name */
+#define CONFIG_PORT_ICON0_X 0x60 /* CONFIG_SPRITE_PORT_SET: lit when the character's port bit is set */
+#define CONFIG_PORT_ICON1_X 0x92 /* CONFIG_SPRITE_PORT_CLEAR: lit when it is clear */
+#define CONFIG_SPRITE_PORT_SET 0xF8 /* (runtime: pending R44) */
+#define CONFIG_SPRITE_PORT_CLEAR 0x100 /* (runtime: pending R44) */
+#define CONFIG_OTZ_SUB_CURSOR 0x10
+#define CONFIG_OTZ_SUB_TEXT 0x11 /* custom window contents */
+#define CONFIG_OTZ_SUB_WIN 0x12 /* custom windows */
+#define CONFIG_OTZ_ARROWS 0x14
+#define CONFIG_OTZ_CURSOR 0x15
+#define CONFIG_OTZ_RULE 0x16 /* "Config" label and rule */
+#define CONFIG_OTZ_ROWS 0x17 /* option rows */
 
 /* g_configMenuText ids */
 #define CONFIG_TEXT_PAD_EXIT   0    /* "Press Start to exit." (button mapping window) */
@@ -97,6 +152,8 @@ typedef struct {
 extern ConfigPadEntry s_menuConfigPadActions[PAD_SLOT_COUNT];
 
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 

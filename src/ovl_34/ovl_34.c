@@ -5,7 +5,7 @@ void menuConfig_init(void) {
     s32 i;
 
     text_setBank(g_configMenuText);
-    menuList_init(&s_menuConfig.list, CONFIG_ROW_COUNT, 9, 1, 0xB4);
+    menuList_init(&s_menuConfig.list, CONFIG_ROW_COUNT, CONFIG_LIST_ROWS, 1, CONFIG_LIST_H);
     menu = &s_menuConfig;
     menu->subCursor = 0;
     menu->editing = 0;
@@ -34,30 +34,30 @@ void menuConfig_drawRows(void) {
     s32 i;
     MenuList *list = &s_menuConfig.list;
 
-    win_setClip(NULL, 0x17, WIN_STYLE_FRAMELESS);
+    win_setClip(NULL, CONFIG_OTZ_ROWS, WIN_STYLE_FRAMELESS);
     menuConfig_getListView(list, &sp);
     i = 0;
-    rowRect.x = 8;
-    rowRect.w = 0x12C;
+    rowRect.x = CONFIG_LIST_X;
+    rowRect.w = CONFIG_LIST_W;
     rowRect.y = 0;
-    rowRect.h = 0x14;
+    rowRect.h = CONFIG_ROW_H;
     for (; i < sp.rows; i++) {
-        rowRect.y = i * 0x14 + (s16)(sp.y + 0x2A);
-        menuConfig_drawRow(&rowRect, 0x17, sp.first + i);
-        win_drawBox(&rowRect, 0x17, WIN_STYLE_LINE);
+        rowRect.y = i * CONFIG_ROW_H + (s16)(sp.y + CONFIG_LIST_Y);
+        menuConfig_drawRow(&rowRect, CONFIG_OTZ_ROWS, sp.first + i);
+        win_drawBox(&rowRect, CONFIG_OTZ_ROWS, WIN_STYLE_LINE);
     }
     if (list->scroll & MENULIST_SCROLL_PAGE) {
-        pageRect.x = 8;
-        pageRect.y = 0x2A;
-        pageRect.w = 0x12C;
+        pageRect.x = CONFIG_LIST_X;
+        pageRect.y = CONFIG_LIST_Y;
+        pageRect.w = CONFIG_LIST_W;
         pageRect.h = 0xA8C;
         menuConfig_getScrollClip(list, &pageRect, &clip);
-        win_setClip(&clip, 0x17, WIN_STYLE_FRAMELESS);
+        win_setClip(&clip, CONFIG_OTZ_ROWS, WIN_STYLE_FRAMELESS);
         menuConfig_drawScrollRows();
     }
-    rowRect.y = 0x2A;
-    rowRect.h = 0xB4;
-    win_setClip(&rowRect, 0x17, WIN_STYLE_FRAMELESS);
+    rowRect.y = CONFIG_LIST_Y;
+    rowRect.h = CONFIG_LIST_H;
+    win_setClip(&rowRect, CONFIG_OTZ_ROWS, WIN_STYLE_FRAMELESS);
 }
 
 void menuConfig_inputList(void) {
@@ -153,15 +153,15 @@ void menuConfig_drawPadMap(void) {
     RECT *r2;
     s32 i = 0;
 
-    ui_drawLabel(rect->x + 0xB, rect->y - 3, 0x11, g_winLabelStrings.labelNew, UI_LABEL_NORMAL);
-    ui_drawLabel(rect->x + 0x2D, rect->y - 3, 0x11, g_winLabelStrings.labelNormal, UI_LABEL_NORMAL);
+    ui_drawLabel(rect->x + CONFIG_PAD_NEW_LABEL_X, rect->y + WIN_TITLE_Y, CONFIG_OTZ_SUB_TEXT, g_winLabelStrings.labelNew, UI_LABEL_NORMAL);
+    ui_drawLabel(rect->x + CONFIG_PAD_NORMAL_LABEL_X, rect->y + WIN_TITLE_Y, CONFIG_OTZ_SUB_TEXT, g_winLabelStrings.labelNormal, UI_LABEL_NORMAL);
     r2 = &s_menuConfig.wins[1].rect;
-    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), TEXT_PAL_WHITE);
+    text_drawBlock(r2->x + CONFIG_EXIT_TEXT_X, r2->y + CONFIG_EXIT_TEXT_Y, CONFIG_OTZ_SUB_TEXT, text_get(CONFIG_TEXT_PAD_EXIT), TEXT_PAL_WHITE);
     for (; i < PAD_SLOT_COUNT; i++) {
-        ui_drawSprite(rect->x + 0x10, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> CFG_PADMAP_SHIFT(i)) & CFG_PADMAP_ACTION_MASK].icon, 0);
-        menuConfig_drawSmallText(rect->x + 0x27, rect->y + 0xE + i * 0x11, 0x11, s_menuConfigPadArrow, TEXT_PAL_WHITE);
-        ui_drawSprite(rect->x + 0x3A, rect->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[i].icon, 0);
-        menuConfig_drawText(rect->x + 0x54, rect->y + 0xC + i * 0x11, 0x11, s_menuConfigPadActions[i].text, TEXT_PAL_WHITE);
+        ui_drawSprite(rect->x + CONFIG_PAD_NEW_X, rect->y + CONFIG_PAD_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, s_menuConfigPadActions[(g_gameState->padMap >> CFG_PADMAP_SHIFT(i)) & CFG_PADMAP_ACTION_MASK].icon, 0);
+        menuConfig_drawSmallText(rect->x + CONFIG_PAD_ARROW_X, rect->y + (CONFIG_PAD_ROW_Y + 3) + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, s_menuConfigPadArrow, TEXT_PAL_WHITE);
+        ui_drawSprite(rect->x + CONFIG_PAD_NORMAL_X, rect->y + CONFIG_PAD_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, s_menuConfigPadActions[i].icon, 0);
+        menuConfig_drawText(rect->x + CONFIG_PAD_TEXT_X, rect->y + (CONFIG_PAD_ROW_Y + 1) + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, s_menuConfigPadActions[i].text, TEXT_PAL_WHITE);
     }
 }
 
@@ -172,12 +172,12 @@ void menuConfig_drawBattleControl(void) {
     u8 on;
 
     r2 = &s_menuConfig.wins[1].rect;
-    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), TEXT_PAL_WHITE);
+    text_drawBlock(r2->x + CONFIG_EXIT_TEXT_X, r2->y + CONFIG_EXIT_TEXT_Y, CONFIG_OTZ_SUB_TEXT, text_get(CONFIG_TEXT_PORT_EXIT), TEXT_PAL_WHITE);
     for (i = 0; i < s_menuConfig.charCount; i++) {
         on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
-        text_drawBlock(rect->x + 0xE, rect->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, TEXT_PAL_WHITE);
-        menuConfig_drawIcon(rect->x + 0x60, rect->y + 0xA + i * 0x11, 0x11, 0xF8, on);
-        menuConfig_drawIcon(rect->x + 0x92, rect->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
+        text_drawBlock(rect->x + CONFIG_PORT_NAME_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, TEXT_PAL_WHITE);
+        menuConfig_drawIcon(rect->x + CONFIG_PORT_ICON0_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, CONFIG_SPRITE_PORT_SET, on);
+        menuConfig_drawIcon(rect->x + CONFIG_PORT_ICON1_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, CONFIG_SPRITE_PORT_CLEAR, on == 0);
     }
 }
 
@@ -186,21 +186,21 @@ void menuConfig_drawCursor(void) {
 
     i = s_menuConfig.list.top + s_menuConfig.list.cursor;
     if (!fade_isBusy()) {
-        g_menuHelp.x = 0;
-        g_menuHelp.otz = 0x15;
-        g_menuHelp.y = s_menuConfig.list.cursor * 0x14 + 0x31;
+        g_menuHelp.x = CONFIG_CURSOR_X;
+        g_menuHelp.otz = CONFIG_OTZ_CURSOR;
+        g_menuHelp.y = s_menuConfig.list.cursor * CONFIG_ROW_H + CONFIG_CURSOR_Y;
         if (s_menuConfig.editing == 0 || (g_menuScreenFrame & 3)) {
             help_drawCursor();
         }
         if (s_menuConfig.editing != 0 && !menuConfig_isWindowMoving()) {
             if (i == CONFIG_ROW_CONTROLLER) {
-                g_menuHelp.x = 0x66;
-                g_menuHelp.y = s_menuConfig.subCursor * 0x11 + 0x33;
+                g_menuHelp.x = CONFIG_PAD_CURSOR_X;
+                g_menuHelp.y = s_menuConfig.subCursor * CONFIG_SUB_ROW_H + CONFIG_SUB_CURSOR_Y;
             } else if (i == CONFIG_ROW_BTL_CONTROL) {
-                g_menuHelp.x = 0x65;
-                g_menuHelp.y = s_menuConfig.subCursor * 0x11 + 0x33;
+                g_menuHelp.x = CONFIG_PORT_CURSOR_X;
+                g_menuHelp.y = s_menuConfig.subCursor * CONFIG_SUB_ROW_H + CONFIG_SUB_CURSOR_Y;
             }
-            g_menuHelp.otz = 0x10;
+            g_menuHelp.otz = CONFIG_OTZ_SUB_CURSOR;
             help_drawCursor();
         }
     }
@@ -327,7 +327,7 @@ void menuConfig_stepSlider(void) {
     s32 i;
     s32 step;
 
-    if (s_menuConfig.sliderDir != 0 && ++s_menuConfig.sliderTicks >= 5) {
+    if (s_menuConfig.sliderDir != 0 && ++s_menuConfig.sliderTicks >= CONFIG_SLIDER_FRAMES) {
         i = s_menuConfig.list.top + s_menuConfig.list.cursor;
         step = 0xFF;
         if (s_menuConfig.sliderDir == CONFIG_SLIDE_RIGHT) {
@@ -429,20 +429,20 @@ ScrollPos *menuConfig_getListView(MenuList *list, ScrollPos *view) {
     if (scrollFlags & MENULIST_SCROLL_PAGE) {
         if (scrollFlags & MENULIST_SCROLL_UP) {
             remain = list->height - list->scrollPos;
-            rows = (remain + 19) / 20;
+            rows = (remain + CONFIG_ROW_H - 1) / CONFIG_ROW_H;
             view->rows = rows;
             view->first = list->top + (list->visibleRows - rows);
-            view->y = (list->visibleRows - view->rows) * 20;
+            view->y = (list->visibleRows - view->rows) * CONFIG_ROW_H;
         } else {
             remain = list->height - list->scrollPos;
-            view->rows = (remain + 19) / 20;
+            view->rows = (remain + CONFIG_ROW_H - 1) / CONFIG_ROW_H;
             view->first = list->top;
             view->y = 0;
         }
     } else if (scrollFlags & MENULIST_SCROLL_UP) {
         view->rows = list->visibleRows + 1;
         view->first = list->top - 1;
-        view->y = list->scrollPos - 20;
+        view->y = list->scrollPos - CONFIG_ROW_H;
     } else if (scrollFlags & MENULIST_SCROLL_DOWN) {
         view->first = list->top;
         view->rows = list->visibleRows + 1;
@@ -487,8 +487,8 @@ void menuConfig_draw(void) {
 
     s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->drawBuf ^ 1] - (s_menuConfig.prim - k);
     s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->drawBuf];
-    ui_drawLabel(0x10, 0x23, 0x16, g_labelConfig, UI_LABEL_NORMAL);
-    ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
+    ui_drawLabel(CONFIG_TITLE_LABEL_X, CONFIG_TITLE_LABEL_Y, CONFIG_OTZ_RULE, g_labelConfig, UI_LABEL_NORMAL);
+    ui_drawRule(CONFIG_LIST_X, CONFIG_RULE_Y, CONFIG_OTZ_RULE, 0, CONFIG_LIST_W, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     menuConfig_drawRows();
     menuConfig_drawSubWindows();
     menuConfig_drawScrollArrows();
@@ -567,79 +567,79 @@ void menuConfig_drawScrollRows(void) {
 
     menuConfig_getScrollView(&s_menuConfig.list, &sp);
     i = 0;
-    rowRect.x = 8;
-    rowRect.w = 0x12C;
+    rowRect.x = CONFIG_LIST_X;
+    rowRect.w = CONFIG_LIST_W;
     rowRect.y = 0;
-    rowRect.h = 0x14;
+    rowRect.h = CONFIG_ROW_H;
     for (; i < sp.rows; i++) {
-        rowRect.y = i * 0x14 + (s16)(sp.y + 0x2A);
-        menuConfig_drawRow(&rowRect, 0x17, sp.first + i);
-        win_drawBox(&rowRect, 0x17, WIN_STYLE_LINE);
+        rowRect.y = i * CONFIG_ROW_H + (s16)(sp.y + CONFIG_LIST_Y);
+        menuConfig_drawRow(&rowRect, CONFIG_OTZ_ROWS, sp.first + i);
+        win_drawBox(&rowRect, CONFIG_OTZ_ROWS, WIN_STYLE_LINE);
     }
 }
 
 void menuConfig_drawRow(RECT *rect, s32 otz, s32 i) {
-    ui_drawEtchedLine(rect->x + 0x70, rect->y + 1, otz, 4 - rect->h);
+    ui_drawEtchedLine(rect->x + CONFIG_ROW_DIV_X, rect->y + 1, otz, 4 - rect->h);
     s_menuConfigRowDraw[i](rect, otz);
 }
 
 void menuConfig_drawSoundRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_SOUND) & 1, CONFIG_ROW_SOUND);
 }
 
 void menuConfig_drawControllerRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_CONTROLLER) & 1, CONFIG_ROW_CONTROLLER);
 }
 
 void menuConfig_drawCursorRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_CURSOR) & 1, CONFIG_ROW_CURSOR);
 }
 
 void menuConfig_drawAtbRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_ATB].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_ATB].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_ATB) & 1, CONFIG_ROW_ATB);
 }
 
 void menuConfig_drawCameraRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_CAMERA) & 1, CONFIG_ROW_CAMERA);
 }
 
 void menuConfig_drawBattleControlRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_BTL_CONTROL) & 1, CONFIG_ROW_BTL_CONTROL);
 }
 
 void menuConfig_drawMovementRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_MOVEMENT) & 1, CONFIG_ROW_MOVEMENT);
 }
 
 void menuConfig_drawBattleSpeedRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].title, TEXT_PAL_WHITE);
     menuConfig_drawSliderRow(rect, otz, (g_gameState->config >> CFG_SHIFT_BTL_SPEED) & CFG_SPEED_MASK, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
 }
 
 void menuConfig_drawMessageSpeedRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].title, TEXT_PAL_WHITE);
     menuConfig_drawSliderRow(rect, otz, (g_gameState->config >> CFG_SHIFT_MSG_SPEED) & CFG_SPEED_MASK, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
 }
 
 void menuConfig_drawHereIconRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_HERE_ICON) & 1, CONFIG_ROW_HERE_ICON);
 }
 
 void menuConfig_drawWindowColorRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1, CONFIG_ROW_WINDOW_COLOR);
 }
 
 void menuConfig_drawTargetWindowRow(RECT *rect, s32 otz) {
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].title, TEXT_PAL_WHITE);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(rect, otz, (g_gameState->config >> CFG_BIT_TARGET_WINDOW) & 1, CONFIG_ROW_TARGET_WINDOW);
 }
 
@@ -648,13 +648,13 @@ void menuConfig_drawVibrationRow(RECT *rect, s32 otz) {
     u32 sel;
 
     if (menuConfig_hasVibration()) {
-        pal = 0;
+        pal = TEXT_PAL_WHITE;
         sel = (u8)g_gameState->config;
         sel >>= CFG_BIT_VIBRATION;
     } else {
         sel = pal = 2;
     }
-    menuConfig_drawText(rect->x + 0xF, rect->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_VIBRATION].title, pal);
+    menuConfig_drawText(rect->x + CONFIG_ROW_TITLE_X, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[CONFIG_ROW_VIBRATION].title, pal);
     menuConfig_drawChoice(rect, otz, sel, CONFIG_ROW_VIBRATION);
 }
 
@@ -663,8 +663,8 @@ void menuConfig_drawSubWindows(void) {
 
     i = s_menuConfig.list.top + s_menuConfig.list.cursor;
     if (s_menuConfig.editing != 0) {
-        win_drawBox(&s_menuConfig.wins[0].rect, 0x12, WIN_STYLE_BEVEL);
-        win_drawBox(&s_menuConfig.wins[1].rect, 0x12, WIN_STYLE_BEVEL);
+        win_drawBox(&s_menuConfig.wins[0].rect, CONFIG_OTZ_SUB_WIN, WIN_STYLE_BEVEL);
+        win_drawBox(&s_menuConfig.wins[1].rect, CONFIG_OTZ_SUB_WIN, WIN_STYLE_BEVEL);
         if (i == CONFIG_ROW_CONTROLLER) {
             menuConfig_drawPadMap();
             return;
@@ -681,29 +681,29 @@ void menuConfig_drawScrollArrows(void) {
 
     list = &s_menuConfig.list;
     blink = (((u32)g_menuFrame >> 4) ^ 1) & 1;
-    ui_drawSprite(0x12E, 0x2C, 0x14, UI_SPRITE_SCROLL_UP, list->top != 0 ? blink : 1);
-    ui_drawSprite(0x12E, 0xCF, 0x14, UI_SPRITE_SCROLL_DOWN, list->top < list->rows - list->visibleRows ? blink : 1);
+    ui_drawSprite(CONFIG_SCROLL_ARROW_X, CONFIG_SCROLL_UP_Y, CONFIG_OTZ_ARROWS, UI_SPRITE_SCROLL_UP, list->top != 0 ? blink : 1);
+    ui_drawSprite(CONFIG_SCROLL_ARROW_X, CONFIG_SCROLL_DOWN_Y, CONFIG_OTZ_ARROWS, UI_SPRITE_SCROLL_DOWN, list->top < list->rows - list->visibleRows ? blink : 1);
 }
 
 void menuConfig_drawChoice(RECT *rect, s32 otz, s32 sel, s32 item) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        menuConfig_drawText(rect->x + 0x90 + i * 0x5A, rect->y + 6, otz, s_menuConfigRowText[item].options[i], sel != i ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
+        menuConfig_drawText(rect->x + CONFIG_CHOICE_X + i * CONFIG_CHOICE_W, rect->y + CONFIG_ROW_TEXT_Y, otz, s_menuConfigRowText[item].options[i], sel != i ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
     }
 }
 
 void menuConfig_drawSliderRow(RECT *rect, s32 otz, s32 value, s32 maxValue, s32 item) {
-    s32 step = 0x12 / maxValue;
+    s32 step = (CONFIG_SLIDER_W / CONFIG_SLIDER_FRAMES) / maxValue;
     s32 x;
     s32 y;
     s32 pos;
     s32 cur;
     s32 w;
 
-    pos = value * step * 5;
+    pos = value * step * CONFIG_SLIDER_FRAMES;
     x = rect->x;
-    y = rect->y + 6;
+    y = rect->y + CONFIG_ROW_TEXT_Y;
     cur = s_menuConfig.list.top + s_menuConfig.list.cursor;
     w = text_measureWidth(text_get(s_menuConfigSlowText));
     if (item == cur && s_menuConfig.sliderDir != 0) {
@@ -713,9 +713,9 @@ void menuConfig_drawSliderRow(RECT *rect, s32 otz, s32 value, s32 maxValue, s32 
             pos += -s_menuConfig.sliderTicks * step;
         }
     }
-    menuConfig_drawText(x - w + 0x9C, y, otz, (u8)s_menuConfigSlowText, TEXT_PAL_WHITE);
-    menuConfig_drawText(x + 0x103, y, otz, (u8)s_menuConfigFastText, TEXT_PAL_WHITE);
-    menuConfig_drawSlider(x + 0x9E, y, otz, pos, 0x5A);
+    menuConfig_drawText(x - w + CONFIG_SLOW_R, y, otz, (u8)s_menuConfigSlowText, TEXT_PAL_WHITE);
+    menuConfig_drawText(x + CONFIG_FAST_X, y, otz, (u8)s_menuConfigFastText, TEXT_PAL_WHITE);
+    menuConfig_drawSlider(x + CONFIG_SLIDER_X, y, otz, pos, CONFIG_SLIDER_W);
 }
 
 void menuConfig_drawSmallText(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
@@ -749,8 +749,8 @@ void menuConfig_stepScroll(void) {
     if (list->scroll != 0) {
         if (!(list->scroll & MENULIST_SCROLL_PAGE)) {
             dec = list->scroll & MENULIST_SCROLL_UP;
-            list->scrollPos += 4;
-            if (list->scrollPos >= 0x14) {
+            list->scrollPos += CONFIG_SCROLL_SPEED;
+            if (list->scrollPos >= CONFIG_ROW_H) {
                 newTop = list->top;
                 if (dec) {
                     newTop--;
@@ -762,8 +762,8 @@ void menuConfig_stepScroll(void) {
                 list->scrollPos = 0;
             }
         } else {
-            list->scrollPos += 9;
-            if (list->scrollPos >= 0xB4) {
+            list->scrollPos += CONFIG_PAGE_SCROLL_SPEED;
+            if (list->scrollPos >= CONFIG_LIST_H) {
                 list->scroll = 0;
                 list->scrollPos = 0;
                 list->top = list->pageTop;
@@ -774,7 +774,7 @@ void menuConfig_stepScroll(void) {
 
 void menuConfig_stepRumble(void) {
     if (s_menuConfig.rumbleTest != 0) {
-        if (++s_menuConfig.rumbleTicks >= 9) {
+        if (++s_menuConfig.rumbleTicks >= CONFIG_RUMBLE_TEST_FRAMES) {
             s_menuConfig.rumbleTest = 0;
             s_menuConfig.rumbleTicks = 0;
             menuConfig_setRumble(0);
@@ -817,7 +817,7 @@ u8 menuConfig_hasVibration(void) {
         if (PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_ANALOG) {
             return 1;
         }
-        if (g_padPortState[i] == 6) {
+        if (g_padPortState[i] == PadStateStable) {
             return 1;
         }
     }
@@ -844,13 +844,13 @@ ScrollPos *menuConfig_getScrollView(MenuList *list, ScrollPos *view) {
     s32 ofs;
 
     if (list->scroll & MENULIST_SCROLL_UP) {
-        view->rows = (list->scrollPos + 0x13) / 20;
+        view->rows = (list->scrollPos + CONFIG_ROW_H - 1) / CONFIG_ROW_H;
         view->first = list->pageTop + (list->visibleRows - view->rows);
-        view->y = list->scrollPos - view->rows * 0x14;
+        view->y = list->scrollPos - view->rows * CONFIG_ROW_H;
     } else {
         ofs = list->scrollPos;
         view->y = list->height - ofs;
-        view->rows = (ofs + 0x13) / 20;
+        view->rows = (ofs + CONFIG_ROW_H - 1) / CONFIG_ROW_H;
         view->first = list->pageTop;
     }
     return view;
