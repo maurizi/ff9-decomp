@@ -21,6 +21,11 @@ void timer_enable(u8);
 #define GAMEOVER_ST_WAIT 2 /* picture shown until Cross */
 #define GAMEOVER_ST_FADE_OUT 3 /* back to black, then the screen is cleared */
 #define GAMEOVER_ST_DONE 4
+#define GAMEOVER_FADE_STEP 4 /* fade tile shade change per frame */
+/* the GAME OVER picture: 16-bit SCREEN_W x SCREEN_H at VRAM (0, GAMEOVER_PIC_VRAM_Y), drawn as two sprites split at
+ * x GAMEOVER_PIC_LEFT_W (a 16-bit sprite spans at most 256 pixels) */
+#define GAMEOVER_PIC_VRAM_Y 256
+#define GAMEOVER_PIC_LEFT_W 256
 /* battleEnd_update's result (battleEnd_main). Evidence: [code] */
 #define BATTLE_END_UPD_RUNNING 0
 #define BATTLE_END_UPD_RETURN 1 /* rewards done: back to the mode the battle came from (work->returnMode) */
