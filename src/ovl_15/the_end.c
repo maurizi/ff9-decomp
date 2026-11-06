@@ -20,8 +20,8 @@ s32 ending_theEnd(void) {
         case THEEND_ST_SHOW:
             if (timer == -1) {
                 game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
-                timer = 0x21C;
-                game_startFade(FADE_FLAT, FADE_SUB, 0xB4, FADE_COLOR_NONE);
+                timer = THEEND_SHOW_FRAMES;
+                game_startFade(FADE_FLAT, FADE_SUB, THEEND_FADE_IN_FRAMES, FADE_COLOR_NONE);
             } else if (timer != 0) {
                 setSprt(&g_theEndSprites[g_gameState->gameData->drawBuf][0]);
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
@@ -31,8 +31,8 @@ s32 ending_theEnd(void) {
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].y0 = 0;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].u0 = 0;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
-                g_theEndSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
-                g_theEndSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].w = THEEND_LEFT_W;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].h = SCREEN_H;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
                 addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->drawBuf][0]);
                 setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, getTPage(2, 0, VRAM_IMAGE_X, VRAM_IMAGE_Y));
@@ -42,15 +42,15 @@ s32 ending_theEnd(void) {
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
-                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->x0 = 0xC0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->x0 = THEEND_LEFT_W;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->y0 = 0;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->u0 = 0;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
-                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
-                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->w = SCREEN_W - THEEND_LEFT_W;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->h = SCREEN_H;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
                 addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndSprites[g_gameState->gameData->drawBuf] + 1));
-                setDrawTPage(g_theEndTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + 0xC0, VRAM_IMAGE_Y));
+                setDrawTPage(g_theEndTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + THEEND_LEFT_W, VRAM_IMAGE_Y));
                 addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->drawBuf] + 1));
             }
             break;
@@ -63,8 +63,8 @@ s32 ending_theEnd(void) {
             g_theEndSprites[g_gameState->gameData->drawBuf][0].y0 = 0;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].u0 = 0;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
-            g_theEndSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
-            g_theEndSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].w = THEEND_LEFT_W;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].h = SCREEN_H;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->drawBuf][0]);
             setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, getTPage(2, 0, VRAM_IMAGE_X, VRAM_IMAGE_Y));
@@ -74,18 +74,18 @@ s32 ending_theEnd(void) {
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
-            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->x0 = 0xC0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->x0 = THEEND_LEFT_W;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->y0 = 0;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->u0 = 0;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
-            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
-            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->w = SCREEN_W - THEEND_LEFT_W;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->h = SCREEN_H;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndSprites[g_gameState->gameData->drawBuf] + 1));
-            setDrawTPage(g_theEndTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + 0xC0, VRAM_IMAGE_Y));
+            setDrawTPage(g_theEndTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + THEEND_LEFT_W, VRAM_IMAGE_Y));
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->drawBuf] + 1));
             if (timer == -1) {
-                timer = 0x5A;
+                timer = THEEND_FADE_OUT_FRAMES;
                 game_startFade(FADE_FLAT, FADE_SUB, timer, FADE_COLOR_FULL);
             } else if (--timer == 0) {
                 g_theEndState = THEEND_ST_BLACKJACK;

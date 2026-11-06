@@ -54,6 +54,18 @@ extern MbgMovieList g_mbgMovieLists[];
 /* ---- this overlay ---- */
 
 #define SCREEN_OTZ 8 /* OT slot of the end image and the message text */
+#define ENDING_MSG_FADE_FRAMES 0x14 /* ending_messages: each page fades in, and out over its last this-many frames */
+#define ENDING_MSG_SHORT_FRAMES 0xA0 /* pages 1 and 3 (one message) */
+#define ENDING_MSG_PAGE2_FRAMES 0xDC /* page 2 (messages 1 and 2) */
+#define ENDING_MSG_PAGE4_FRAMES 0x118 /* page 4 (messages 4 and 5) */
+#define ENDING_MSG_PAUSE_FRAMES 0x3C /* black between pages */
+#define ENDING_MSG_Y 0x64 /* a one-message page */
+#define ENDING_MSG_Y1 0x5F /* a two-message page: first, second */
+#define ENDING_MSG_Y2 0x7D
+#define THEEND_SHOW_FRAMES 0x21C /* "THE END" picture: shown this long */
+#define THEEND_FADE_IN_FRAMES 0xB4
+#define THEEND_FADE_OUT_FRAMES 0x5A /* then to black, and the Blackjack check */
+#define THEEND_LEFT_W 0xC0 /* the 16-bit picture is drawn as two sprites split here */
 #define BJ_OTZ 10     /* OT slot of all Blackjack sprites */
 
 /* g_endingState: the states of ending_main */
