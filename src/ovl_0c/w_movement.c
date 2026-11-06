@@ -926,7 +926,7 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
         }
         sx = (typeInfo->shadowWidth * sx) >> 11;
         sz = (typeInfo->shadowDepth * sz) >> 12;
-        fade = (0x8000 - depth) >> 3;
+        fade = (WM_SHADOW_FADE_DEPTH - depth) >> 3;
         fade *= g_worldWeatherData.work[0].shadowShade;
         fade >>= 12;
         if (fade < 0) {
@@ -943,19 +943,19 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
         if (sz < 0) {
             sz = 0;
         }
-        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = sx * 14;
-        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = sx * 12;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = sx * WM_SHADOW_SCALE_X_MUL;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = sx * WM_SHADOW_SCALE_Z_MUL;
         g_gameState->gameData->ctx.world->obj->shadows[k].shade = sz;
         ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_worldOtBias;
         wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, typeInfo->shadowJoint);
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     } else {
-        size = 0x7D0;
+        size = WM_SHADOW_PLAIN_SIZE;
         if (g_worldFog != 0) {
-            size = 0xAF0;
+            size = WM_SHADOW_PLAIN_SIZE_FOG;
         }
-        fade = (0x7060 - depth) >> 2;
+        fade = (WM_SHADOW_PLAIN_FADE_DEPTH - depth) >> 2;
         fade *= g_worldWeatherData.work[4].shadowShade;
         fade >>= 12;
         if (fade < 0) {
@@ -973,12 +973,12 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
         if (alpha < 0) {
             alpha = 0;
         }
-        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = 0x302;
-        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = 0x294;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = WM_SHADOW_PLAIN_SCALE_X;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = WM_SHADOW_PLAIN_SCALE_Z;
         g_gameState->gameData->ctx.world->obj->shadows[k].shade = alpha;
         ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
-        g_worldOtBias = -0x46;
-        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] -= 0x46;
+        g_worldOtBias = -WM_SHADOW_PLAIN_OT_BIAS;
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] -= WM_SHADOW_PLAIN_OT_BIAS;
         wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, typeInfo->shadowJoint);
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     }
@@ -1045,48 +1045,50 @@ void wm_updateActors(void) {
     }
     if (g_worldMountActor != NULL) {
         if (g_worldMountActor->rotZ < 0) {
-            g_worldMountActor->rotZ += 10;
+            g_worldMountActor->rotZ += WM_ROLL_SETTLE_STEP;
         }
         if (g_worldMountActor->rotZ > 0) {
-            g_worldMountActor->rotZ -= 10;
+            g_worldMountActor->rotZ -= WM_ROLL_SETTLE_STEP;
         }
-        if (g_worldMountActor->rotZ > -10 && g_worldMountActor->rotZ < 10) {
+        if (g_worldMountActor->rotZ > -WM_ROLL_SETTLE_STEP && g_worldMountActor->rotZ < WM_ROLL_SETTLE_STEP) {
             g_worldMountActor->rotZ = 0;
         }
     }
     if (g_worldVehicleActor != NULL) {
         if (g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
-            if (g_worldVehicleActor->rotZ < 14) {
-                g_worldVehicleActor->rotZ += 10;
+            if (g_worldVehicleActor->rotZ < WM_VEHICLE_REST_ROLL) {
+                g_worldVehicleActor->rotZ += WM_ROLL_SETTLE_STEP;
             }
-            if (g_worldVehicleActor->rotZ >= 15) {
-                g_worldVehicleActor->rotZ -= 10;
+            if (g_worldVehicleActor->rotZ >= WM_VEHICLE_REST_ROLL + 1) {
+                g_worldVehicleActor->rotZ -= WM_ROLL_SETTLE_STEP;
             }
-            if (g_worldVehicleActor->rotZ >= 5 && g_worldVehicleActor->rotZ < 24) {
-                g_worldVehicleActor->rotZ = 14;
+            if (g_worldVehicleActor->rotZ >= WM_VEHICLE_REST_ROLL - WM_ROLL_SETTLE_STEP + 1 &&
+                g_worldVehicleActor->rotZ < WM_VEHICLE_REST_ROLL + WM_ROLL_SETTLE_STEP) {
+                g_worldVehicleActor->rotZ = WM_VEHICLE_REST_ROLL;
             }
         } else if (g_worldFlyTurning == 0) {
-            if (g_worldVehicleActor->rotZ < 14) {
-                g_worldVehicleActor->rotZ += 16;
+            if (g_worldVehicleActor->rotZ < WM_VEHICLE_REST_ROLL) {
+                g_worldVehicleActor->rotZ += WM_VEHICLE_FLY_SETTLE_STEP;
             }
-            if (g_worldVehicleActor->rotZ >= 15) {
-                g_worldVehicleActor->rotZ -= 16;
+            if (g_worldVehicleActor->rotZ >= WM_VEHICLE_REST_ROLL + 1) {
+                g_worldVehicleActor->rotZ -= WM_VEHICLE_FLY_SETTLE_STEP;
             }
-            if (g_worldVehicleActor->rotZ >= -1 && g_worldVehicleActor->rotZ < 30) {
-                g_worldVehicleActor->rotZ = 14;
+            if (g_worldVehicleActor->rotZ >= WM_VEHICLE_REST_ROLL - WM_VEHICLE_FLY_SETTLE_STEP + 1 &&
+                g_worldVehicleActor->rotZ < WM_VEHICLE_REST_ROLL + WM_VEHICLE_FLY_SETTLE_STEP) {
+                g_worldVehicleActor->rotZ = WM_VEHICLE_REST_ROLL;
             }
         }
     }
     if (evt_getPlayer() != NULL) {
-        if (g_worldPlayerTurn == 0 || g_worldPlayerSpeed < 300) {
+        if (g_worldPlayerTurn == 0 || g_worldPlayerSpeed < WM_ROLL_SETTLE_SPEED) {
             if (g_worldCameraRoll > 0) {
-                g_worldCameraRoll -= 10;
+                g_worldCameraRoll -= WM_ROLL_SETTLE_STEP;
                 if (g_worldCameraRoll < 0) {
                     g_worldCameraRoll = 0;
                 }
             }
             if (g_worldCameraRoll < 0) {
-                g_worldCameraRoll += 10;
+                g_worldCameraRoll += WM_ROLL_SETTLE_STEP;
                 if (g_worldCameraRoll > 0) {
                     g_worldCameraRoll = 0;
                 }

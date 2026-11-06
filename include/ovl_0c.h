@@ -644,7 +644,23 @@ typedef struct {
 #define WM_ACTOR_AIRSHIP 9 /* the Hilda Garde 3 (runtime, disc 3; rideMode WM_MOVE_HILDA_GARDE) */
 #define WM_ACTOR_AIRSHIP2 10 /* the Invincible (from data: flying, rideMode WM_MOVE_INVINCIBLE) */
 #define WM_ACTOR_MOOGLE 11 /* g_worldMoogleActor (model 307), comes when called with Square */
-#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel and wm_drawActorShadow draw nothing for it */
+#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel draws nothing for it; wm_drawActorShadow gives it a fixed shadow */
+/* wm_drawActorShadow. Evidence: [code] */
+#define WM_SHADOW_FADE_DEPTH 0x8000 /* a model's shadow fades out towards this view depth */
+#define WM_SHADOW_SCALE_X_MUL 14 /* WmShadow.scaleX / scaleZ = the lift-scaled width x these */
+#define WM_SHADOW_SCALE_Z_MUL 12
+#define WM_SHADOW_PLAIN_SIZE 0x7D0 /* WM_ACTOR_NO_MODEL's fixed shadow: strength (x shadowDepth), bigger in fog */
+#define WM_SHADOW_PLAIN_SIZE_FOG 0xAF0
+#define WM_SHADOW_PLAIN_FADE_DEPTH 0x7060
+#define WM_SHADOW_PLAIN_SCALE_X 0x302
+#define WM_SHADOW_PLAIN_SCALE_Z 0x294
+#define WM_SHADOW_PLAIN_OT_BIAS 0x46 /* drawn this many OT entries nearer */
+/* wm_updateActors: tilts settling back each frame. Evidence: [code] */
+#define WM_ROLL_SETTLE_STEP 10 /* the mount's rotZ eases to 0, the camera roll to 0 (turning slowly or not at all), */
+                               /* a landed vehicle's rotZ to WM_VEHICLE_REST_ROLL, by this a frame */
+#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest */
+#define WM_VEHICLE_FLY_SETTLE_STEP 16 /* ... flying straight */
+#define WM_ROLL_SETTLE_SPEED 300 /* the camera roll also levels out below this speed */
 
 /* camera preset, blended by wm_updateCameraPreset / wm_calcCameraPreset */
 typedef struct {
