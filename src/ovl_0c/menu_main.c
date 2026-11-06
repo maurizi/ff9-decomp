@@ -176,9 +176,9 @@ void menuMain_drawMember(s32 slot) {
 
     chr = g_gameState->gameData->party[slot];
     panelRect = &s_menuMain.panels[slot].rect;
-    x = panelRect->x + MENU_MAIN_PORTRAIT_X_BACK;
+    x = panelRect->x + MENU_MAIN_PORTRAIT_X_FRONT;
     if (!chr->info.b.battleRow) {
-        x = panelRect->x + MENU_MAIN_PORTRAIT_X_FRONT;
+        x = panelRect->x + MENU_MAIN_PORTRAIT_X_BACK;
     }
     ui_drawPortrait(x, panelRect->y + MENU_MAIN_PORTRAIT_Y, MENU_MAIN_OTZ_PANEL, slot, MENU_MAIN_PORTRAIT_H, chr->hp == 0);
     text_drawBlock(panelRect->x + MENU_MAIN_STATS_X, panelRect->y + MENU_MAIN_NAME_Y, MENU_MAIN_OTZ_PANEL, chr->name, TEXT_PAL_WHITE);

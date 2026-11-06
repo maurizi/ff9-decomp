@@ -156,7 +156,7 @@ typedef union {
     struct {
         u32 id : 4;    /* character id (index into GameData.unk3C) */
         u32 kind : 5;  /* model/appearance kind (chr_calcAppearance; btlfx_getUnitKind, battle model and motion tables; 2 = Sword Magic user); index into g_portraitByKind */
-        u32 battleRow : 1; /* = the battle unit's row (flags >> 8 & 3, btl_toggleRow); toggled by the menu's Order; event op 0x62 */
+        u32 battleRow : 1; /* 1 = front row, 0 = back row ([runtime] R44); = the battle unit's row (flags >> 8 & 3, btl_toggleRow); toggled by the menu's Order; event op 0x62 */
         u32 victoryPose : 1; /* runtime: with it the character strikes its victory pose at the end of a won battle (btl_update), without it stays in its idle stance; event op 0xDB sets it */
         u32 recruited : 1; /* chr_setRecruited / chr_clearRecruited; members counted by chr_join's level average, shops, config */
         u32 row : 5;   /* ability table row (g_abilityRows) */
@@ -2760,8 +2760,8 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
-#define UI_SPRITE_PAUSE 0xEB /* the pause sprite fld_togglePause (ovl_0a, g_fieldPauseSprite) and wm_togglePause (ovl_0c,
-                             * g_worldPauseSprite) centre on screen (runtime pending R44) */
+#define UI_SPRITE_PAUSE 0xEB /* the word "PAUSE" ([runtime] R44), which fld_togglePause (ovl_0a, g_fieldPauseSprite) and
+                             * wm_togglePause (ovl_0c, g_worldPauseSprite) centre on screen */
 /* event countdown timer box (timer_draw): "mm:ss" (EvtTimer.remaining counts frames, timer_getSeconds) in
  * UI_SPRITE_TIMER_DIGITS; x offsets from g_timerRect.x */
 #define TIMER_X             4    /* g_timerRect.x once shown */

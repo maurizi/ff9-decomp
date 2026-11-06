@@ -397,7 +397,7 @@ typedef struct {
 #define FLD_ENCOUNTER_FADE 0xF /* frames: field music and the slot sounds fade out ... */
 #define FLD_ENCOUNTER_MUSIC_WAIT 7 /* ... and the battle music loads this many frames after the encounter starts */
 #define FLD_PAUSE_LIGHT_FADE 200 /* fld_togglePause: with a fade at least this bright in every channel the pause
-                                  * sprite is drawn subtractive (TPAGE_ABR 2), so it shows on a white screen */
+                                  * sprite is drawn subtractive (TPAGE_ABR 2), so it shows (dark) on a white screen ([runtime] R44) */
 #define FLDBG_SCROLL_TO_PLAYER 3 /* fldbg_scrollToPlayer: scroll back to the player, then 0 (following resumes) */
 #define FLDBG_SCROLL_HELD 4 /* a fldbg_scrollTo scroll ended: the camera stays put (no following) */
 #define FLDBG_SCROLL_SMOOTH 0x8 /* fldbg_updateScroll eases with math_cos instead of moving linearly (scroll argument 8) */

@@ -11654,3 +11654,9 @@ TM_TITLE_SELECT2_Y TM_TITLE_SELECTION_Y  # [runtime] R44
 TM_TITLE_ARROW_L_X TM_TITLE_MARK_L_X  # [runtime] R44: blinking "!" marks, not arrows
 TM_TITLE_ARROW_R_X TM_TITLE_MARK_R_X  # [runtime] R44
 TM_TITLE_ARROW_Y TM_TITLE_MARK_Y  # [runtime] R44
+MENU_MAIN_PORTRAIT_X_BACK MENU_MAIN_PORTRAIT_X_FRONT  # [runtime] R44: names were swapped; battleRow set = front row, x 8
+MENU_MAIN_PORTRAIT_X_FRONT MENU_MAIN_PORTRAIT_X_BACK  # [runtime] R44: battleRow clear = back row, x 0x16
+WM_NOCACHE_CELL_16_14_X WM_NOCACHE_RIVER_GORGE_X  # [runtime] R44 (medium): a river canyon
+WM_NOCACHE_CELL_16_14_Z WM_NOCACHE_RIVER_GORGE_Z  # [runtime] R44
+WM_NOCACHE_CELL_16_14_R WM_NOCACHE_RIVER_GORGE_R  # [runtime] R44
+WM_ACTOR_NO_MODEL WM_ACTOR_SHADOW_ONLY  # [runtime] R44: a shadow with nothing drawn above it

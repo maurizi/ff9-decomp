@@ -1,5 +1,11 @@
 # R44: runtime questions from the layout / tuning pass over ovl_0a (field) and ovl_0c (world map)
 
+**Status: answered and applied** (docs/runtime-findings.md, "R44 runtime pass: layout and tuning"): Q1 portrait x
+names swapped (battleRow set = front row: `MENU_MAIN_PORTRAIT_X_FRONT` 8, `_BACK` 0x16), Q2 status box / shade
+confirmed, Q3 `UI_SPRITE_PAUSE` = "PAUSE", Q4 `FLD_PAUSE_LIGHT_FADE` confirmed, Q5a `WM_NOCACHE_CELL_16_14_*` ->
+`WM_NOCACHE_RIVER_GORGE_*` (medium); still pending (low): Q5b why the cache is off, the Air Garden guess for
+`WM_ACTOR_SHADOW_ONLY` (Q6, was `WM_ACTOR_NO_MODEL`), and Q7 `WM_VEHICLE_REST_ROLL` (rotZ 14 but no visible tilt).
+
 Round R44 named screen layout and tuning literals: the main menu's layout (`MENU_MAIN_*`, menu_main.c, identical in
 ovl_0a and ovl_0c), the field / world screen centre (`FLD_SCREEN_*`, `WM_SCREEN_*`), the field work RAM layout
 (`FLD_WORK_*`), camera follow and player control tuning (`WM_CAM_*`, `WM_WALK_*`, `WM_STEER_*`, `WM_FLY_*`,
