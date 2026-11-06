@@ -686,7 +686,7 @@ void akao_execChannel(AkaoChannel *chan, u32 chBit) {
                  * through whatever word follows the table; on the PS1 that is data (an address error there).
                  * A port may send indices >= 0x20 to akao_opInvalid. */
                 g_akaoOpsFE[vel](chan, chBit);
-            } else if (op - AKAO_OP_NOTE_LEN < 14) {
+            } else if (op - AKAO_OP_NOTE_LEN < AKAO_OP_REST_LEN - AKAO_OP_NOTE_LEN + 1) { /* note, tie or rest with a length byte */
                 op = (op - AKAO_OP_NOTE_LEN) * AKAO_NOTE_LENGTHS;
                 chan->noteTicks = *chan->pc++;
             } else {
@@ -713,13 +713,13 @@ void akao_execChannel(AkaoChannel *chan, u32 chBit) {
     }
     if (chan->noteTicks != 0) {
         if (vel >= AKAO_NOTE_REST || (vel < AKAO_NOTE_TIE && !(chan->legato & (AKAO_LEGATO | AKAO_LEGATO_SE)))) {
-            chan->gateTicks -= 2;
+            chan->gateTicks -= AKAO_GATE_GAP;
         }
     } else {
         chan->noteTicks = g_akaoNoteLengths[op % AKAO_NOTE_LENGTHS];
         len = chan->noteTicks;
         if ((vel < AKAO_NOTE_TIE || vel >= AKAO_NOTE_REST) && !(chan->legato & (AKAO_LEGATO | AKAO_LEGATO_SE))) {
-            len -= 2;
+            len -= AKAO_GATE_GAP;
         }
         chan->gateTicks = len;
     }
