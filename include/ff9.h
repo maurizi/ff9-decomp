@@ -1988,6 +1988,15 @@ enum {
     TM_TYPE_X, /* "X": power against the lower defence */
     TM_TYPE_A  /* "A": the highest own stat against the lowest of the target */
 };
+#define CARD_TYPE_X_ODDS 0x7F /* card_rollStats: rand() & 0x7F == 0 (1 in 128) makes the card TM_TYPE_X */
+/* card_rollStats: arrow count from one rand() % 100 roll, cumulative upper bounds of each band (roll 0: no arrows) */
+#define CARD_ARROWS_1_BAND 9    /* 1-8:   1 arrow  (8%) */
+#define CARD_ARROWS_2_BAND 0x22 /* 9-33:  2 arrows (25%) */
+#define CARD_ARROWS_3_BAND 0x41 /* 34-64: 3 arrows (31%) */
+#define CARD_ARROWS_4_BAND 0x53 /* 65-82: 4 arrows (18%) */
+#define CARD_ARROWS_5_BAND 0x5C /* 83-91: 5 arrows (9%) */
+#define CARD_ARROWS_6_BAND 0x61 /* 92-96: 6 arrows (5%) */
+#define CARD_ARROWS_7_BAND 0x63 /* 97-98: 7 arrows (2%); 99: all 8 */
 
 typedef struct {
     u8 id; /* card id, 0xFF = none */

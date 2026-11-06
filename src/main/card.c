@@ -238,19 +238,19 @@ void card_rollStats(CardEntry *card, u8 id) {
     roll = rand() % 100;
     if (roll <= 0) {
         arrowCount = 0;
-    } else if (roll < 9) {
+    } else if (roll < CARD_ARROWS_1_BAND) {
         arrowCount = 1;
-    } else if (roll < 0x22) {
+    } else if (roll < CARD_ARROWS_2_BAND) {
         arrowCount = 2;
-    } else if (roll < 0x41) {
+    } else if (roll < CARD_ARROWS_3_BAND) {
         arrowCount = 3;
-    } else if (roll < 0x53) {
+    } else if (roll < CARD_ARROWS_4_BAND) {
         arrowCount = 4;
-    } else if (roll < 0x5C) {
+    } else if (roll < CARD_ARROWS_5_BAND) {
         arrowCount = 5;
-    } else if (roll < 0x61) {
+    } else if (roll < CARD_ARROWS_6_BAND) {
         arrowCount = 6;
-    } else if (roll < 0x63) {
+    } else if (roll < CARD_ARROWS_7_BAND) {
         arrowCount = 7;
     } else {
         arrowCount = 8;
@@ -267,7 +267,7 @@ void card_rollStats(CardEntry *card, u8 id) {
         } while (!done);
     }
     card->type = tbl[id].type;
-    if (!(rand() & 0x7F)) {
+    if (!(rand() & CARD_TYPE_X_ODDS)) {
         card->type = TM_TYPE_X;
     }
 }
