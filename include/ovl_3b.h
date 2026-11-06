@@ -46,6 +46,46 @@ typedef struct {
 } PartySelect;
 extern PartySelect s_menuParty;
 
+#define PARTY_RESERVE_COLS 4 /* reserve portraits per line (2 lines) */
+#define PARTY_RESERVE_COLS_SHIFT 2 /* log2(PARTY_RESERVE_COLS) */
+#define PARTY_PORTRAIT_COUNT 0xD /* portraits in s_menuPartyImage (ui_loadPortraits) */
+
+/* Party select screen layout (window rects are .data). Offsets are from the window unless noted. */
+#define PARTY_OTZ_CURSOR 4
+#define PARTY_OTZ_TEXT   6 /* members, portraits, texts */
+#define PARTY_OTZ_LIST   7 /* party list window (labelled Party) */
+#define PARTY_OTZ_BOX    8 /* title, help and info windows */
+#define PARTY_OTZ_SHADOW 9 /* the WIN_STYLE_LINE_RULE windows' shadows */
+#define PARTY_TITLE_X 9 /* "Form Party" */
+#define PARTY_TEXT_Y 6 /* title / help text */
+#define PARTY_HELP_TEXT_X 0x12 /* "Select N member(s)." */
+#define PARTY_RULE_LABEL_X 0xC /* Help / Info labels */
+#define PARTY_LIST_LABEL_X 8 /* Party label */
+#define PARTY_ROW_X 8 /* party list: member rows */
+#define PARTY_ROW_Y 6
+#define PARTY_ROW_H 0x33
+#define PARTY_DIV_Y 0x35 /* etched divider under each party row (and under the info window's member) */
+#define PARTY_EMPTY_W 0x8D /* "Character N" of an empty slot is centred in this width */
+#define PARTY_EMPTY_Y 0x15
+#define PARTY_INFO_MEMBER_X 0x10 /* info window: the member under the cursor */
+#define PARTY_RESERVE_X 0x10 /* info window: reserve portraits */
+#define PARTY_RESERVE_Y 0x3A
+#define PARTY_RESERVE_COL_W 0x25
+#define PARTY_RESERVE_ROW_H 0x30
+#define PARTY_PORTRAIT_W 0x20 /* menuParty_drawPortrait: status icons are centred in this width */
+#define PARTY_PORTRAIT_H 0x2D
+#define PARTY_ICON_Y0 8 /* first status icon this far above the portrait's bottom */
+#define PARTY_ICON_STEP 7 /* each further icon this much higher */
+#define PARTY_STATUS_DX 0x26 /* member row: name/level/HP after the portrait */
+#define PARTY_STATUS_DY 3
+/* cursor (screen coordinates): party slot pos at (PARTY_CURSOR_X, PARTY_CURSOR_Y + pos * PARTY_ROW_H), reserve
+ * slot at PARTY_CURSOR_RESERVE_X/Y by column and line; the swap target's cursor is PARTY_SWAP_CURSOR_D lower right */
+#define PARTY_CURSOR_X 0
+#define PARTY_CURSOR_Y 0x20
+#define PARTY_CURSOR_RESERVE_X 0x8C
+#define PARTY_CURSOR_RESERVE_Y 0x86
+#define PARTY_SWAP_CURSOR_D 4
+
 /* Window RECTs (.data) */
 extern RECT s_menuPartyTitleRect;
 extern RECT s_menuPartyHelpRect;
@@ -53,6 +93,8 @@ extern RECT s_menuPartyListRect;
 extern RECT s_menuPartyInfoRect;
 
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 /* Defined as u8 in main, but callers here
  * (and ovl_3a) use the result unmasked, i.e. called it unprototyped. */
 s32 chr_getPortrait(s32);
