@@ -9,24 +9,24 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *chr) {
     }
     text_formatNumber(chr->level, numText, 2, TEXT_NUM_ASCII);
     text_drawBlock(x, y, otz, chr->name, TEXT_PAL_WHITE);
-    ui_drawSmallDigits(x + 0x24, y + 0xE, otz, numText, TEXT_PAL_WHITE);
-    ui_drawSprite(x, y + 0xE, otz, UI_SPRITE_LV, 0);
-    ui_drawSprite(x, y + 0x17, otz, UI_SPRITE_HP, 0);
-    ui_drawSprite(x, y + 0x20, otz, UI_SPRITE_MP, 0);
+    ui_drawSmallDigits(x + UI_CHRSTAT_LV_X, y + UI_CHRSTAT_LV_Y, otz, numText, TEXT_PAL_WHITE);
+    ui_drawSprite(x, y + UI_CHRSTAT_LV_Y, otz, UI_SPRITE_LV, 0);
+    ui_drawSprite(x, y + UI_CHRSTAT_HP_Y, otz, UI_SPRITE_HP, 0);
+    ui_drawSprite(x, y + UI_CHRSTAT_MP_Y, otz, UI_SPRITE_MP, 0);
     if (chr->hp != 0) {
-        col = ((u16)(chr->maxHp / 6) >= chr->hp) * TEXT_PAL_YELLOW;
+        col = ((u16)(chr->maxHp / UI_LOW_STAT_DIV) >= chr->hp) * TEXT_PAL_YELLOW;
     } else {
         col = TEXT_PAL_RED;
     }
     text_formatNumber(chr->hp, numText, 4, TEXT_NUM_ASCII);
     numText[4] = '/';
     text_formatNumber(chr->maxHp, numText + 5, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(x + 0x16, y + 0x17, otz, numText, col);
-    col = ((s16)((s16)chr->maxMp / 6) >= (s16)chr->mp) * TEXT_PAL_YELLOW;
+    ui_drawSmallDigits(x + UI_CHRSTAT_HP_X, y + UI_CHRSTAT_HP_Y, otz, numText, col);
+    col = ((s16)((s16)chr->maxMp / UI_LOW_STAT_DIV) >= (s16)chr->mp) * TEXT_PAL_YELLOW;
     text_formatNumber((s16)chr->mp, numText, 3, TEXT_NUM_ASCII);
     numText[3] = '/';
     text_formatNumber((s16)chr->maxMp, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, numText, col);
+    ui_drawSmallDigits(x + UI_CHRSTAT_MP_X, y + UI_CHRSTAT_MP_Y, otz, numText, col);
 }
 
 void ui_drawMemberHeader(s32 x, s32 y, s32 otz, MemberSwitch *memberSw) {
@@ -58,9 +58,9 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, MemberSwitch *memberSw) {
         win_drawLineBorder(&r2, otz, 0, CONFIG_WINDOW_COLOR());
         ui_drawPartyPortrait(px, y, otz, memberSw->nextMember, nextChr->hp == 0);
         win_setClip(&r1, otz, WIN_STYLE_FRAMELESS);
-        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[memberSw->nextMember]);
+        ui_drawCharStatus(x + UI_MEMBER_STATS_X, y + 3, otz, g_gameState->gameData->party[memberSw->nextMember]);
     } else {
-        ui_drawCharStatus(x + 0x26, y + 3, otz, curChr);
+        ui_drawCharStatus(x + UI_MEMBER_STATS_X, y + 3, otz, curChr);
     }
     ui_drawPartyPortrait(x, y, otz, memberSw->member, curChr->hp == 0);
 }
@@ -453,7 +453,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
     PolyG4Words *poly;
     TileWords *tile;
 
-    w = cur * 36 / max;
+    w = cur * UI_GAUGE_W / max;
     colors = &g_gaugeColors[style];
     if (cur != 0) {
         if (blink && cur >= max) {
@@ -500,7 +500,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
     tile = (TileWords *)g_primPtr;
     tile->rgbc = *(u32 *)&colors->c[0];
     tile->xy = (x + 1) | ((y + 1) << 16);
-    tile->wh = (w < 36 ? 0x30000 : 0x10000) | 0x26;
+    tile->wh = (w < UI_GAUGE_W ? 0x30000 : 0x10000) | 0x26;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(TileWords);
 }
@@ -653,7 +653,7 @@ void ui_drawMember(s32 x, s32 y, s32 otz, s32 slot) {
 
     if (chr != NULL) {
         ui_drawPartyPortrait(x, y, otz, slot, chr->hp == 0);
-        ui_drawMemberStats(x + 0x26, y + 3, otz, slot);
+        ui_drawMemberStats(x + UI_MEMBER_STATS_X, y + 3, otz, slot);
     }
 }
 
@@ -662,10 +662,10 @@ void ui_drawMemberSummary(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
     if (chr != NULL && mode >= 0) {
         if (mode < 3) {
             ui_drawPortrait(x, y, otz, slot, 0x29, chr->hp == 0);
-            ui_drawMemberStats(x + 0x26, y, otz, slot);
+            ui_drawMemberStats(x + UI_MEMBER_STATS_X, y, otz, slot);
         } else if (mode < 5) {
             ui_drawPortrait(x, y, otz, slot, 0x29, chr->hp == 0);
-            ui_drawCharStatuses(x + 0x26, y, otz, slot);
+            ui_drawCharStatuses(x + UI_MEMBER_STATS_X, y, otz, slot);
         }
     }
 }
@@ -852,9 +852,9 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     }
     text_formatNumber(chr->level, numText, 2, TEXT_NUM_ASCII);
     text_drawBlock(x, y, otz, chr->name, TEXT_PAL_WHITE);
-    ui_drawSmallDigits(x + 0x26, y + 0xE, otz, numText, TEXT_PAL_WHITE);
-    ui_drawSprite(x, y + 0xE, otz, UI_SPRITE_LV, 0);
-    ui_drawStatusIcons(x, y + 0x1C, otz, chr->status, 0);
+    ui_drawSmallDigits(x + UI_CHRSTAT_LV_X_STATUSES, y + UI_CHRSTAT_LV_Y, otz, numText, TEXT_PAL_WHITE);
+    ui_drawSprite(x, y + UI_CHRSTAT_LV_Y, otz, UI_SPRITE_LV, 0);
+    ui_drawStatusIcons(x, y + UI_CHRSTAT_STATUS_Y, otz, chr->status, 0);
     rect.x = x - 4;
     rect.y = y + 0x18;
     rect.w = 0x60;
@@ -872,9 +872,9 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *str, s32 unused, SprtWords *sprt) 
         if (*str != ' ') {
             if (*str == '/') {
                 idx = 11;
-                adv = 4;
+                adv = UI_SMALL_SLASH_ADV;
             } else {
-                adv = 5;
+                adv = UI_SMALL_DIGIT_ADV;
                 if (*str != '%') {
                     idx = *str - '0';
                 } else {
@@ -890,7 +890,7 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *str, s32 unused, SprtWords *sprt) 
             addPrim(ot, sprt);
             sprt++;
         } else {
-            adv = 5;
+            adv = UI_SMALL_DIGIT_ADV;
         }
         str++;
         x += adv;

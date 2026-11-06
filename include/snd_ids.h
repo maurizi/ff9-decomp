@@ -117,6 +117,7 @@
 #define AKAO_NOTE_TIE  0x84 /* 0x84-0x8E: tie, the note goes on (no key-on) */
 #define AKAO_NOTE_REST 0x8F /* 0x8F-0x99: rest (key-off) */
 #define AKAO_NOTE_END  0x9A /* 0x9A-0x9F aren't notes (akao_peekNextNote: AKAO_OP_END) */
+#define AKAO_GATE_GAP 2 /* a note or rest without legato keys off 2 ticks before its length ends (gateTicks, akao_execChannel) */
 #define AKAO_OP_LOOP_START   0xC8 /* akao_opC8: push a loop (depth 4) at the next byte */
 #define AKAO_OP_LOOP_END     0xC9 /* + count (0: 256): akao_opC9, back to the loop start until the count is reached */
 #define AKAO_OP_LOOP_FOREVER 0xCA /* akao_opCA: back to the loop start (ends the channel once AKAO_CH_STOP_REQUESTED) */

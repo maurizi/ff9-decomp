@@ -705,6 +705,35 @@ typedef struct BtlCalc {
 #define BTL_CALC_NO_DAMAGE     0x80 /* hit without damage numbers: hit motion and trance only (btl_applyCalcResult) */
 #define BTL_CALC_WEAPON_STATUS 0x100 /* add the caster's weapon status set (weapon[1]) on a hit */
 
+/* btl_calcCmd balance bands and odds: what each threshold decides (the values are Square's data). Rolls are RAND8()
+ * (0-255) unless noted; RAND16() % 100 rolls are percentages. Evidence: [code] */
+/* Steal (BTL_FORMULA_STEAL): Enemy steal slots 3 (rarest) .. 0 are tried in that order, each slot taking the roll
+ * RAND8() < odds; slot 0 takes what is left. Master Thief raises the odds and skips empty slots. */
+#define BTL_STEAL_ODDS_SLOT3     1  /* 1/256 */
+#define BTL_STEAL_ODDS_SLOT2     16 /* 16/256 */
+#define BTL_STEAL_ODDS_SLOT1     64 /* 64/256 */
+#define BTL_STEAL_MT_ODDS_SLOT3  32 /* Master Thief, slot 3 filled: 32/256 */
+#define BTL_STEAL_MT_ODDS_SLOT2  32 /* Master Thief, slot 2 filled */
+#define BTL_STEAL_MT_ODDS_SLOT1  64 /* Master Thief, slot 1 filled */
+/* Six Dragons (BTL_FORMULA_SIX_DRAGONS): one RAND16() % 100 roll, cumulative upper bounds of each outcome band */
+#define BTL_SIX_DRAGONS_FULL_RESTORE 10 /* < 10: HP and MP to max (10%) */
+#define BTL_SIX_DRAGONS_HP_RESTORE   30 /* < 30: HP to max (20%) */
+#define BTL_SIX_DRAGONS_MP_RESTORE   50 /* < 50: MP to max (20%) */
+#define BTL_SIX_DRAGONS_HP_TO_1      65 /* < 65: HP to 1 (15%) */
+#define BTL_SIX_DRAGONS_MP_TO_1      80 /* < 80: MP to 1 (15%); the other 20%: HP and MP to 1 */
+/* other odds */
+#define BTL_COMET_HIT_ODDS          0xAB /* BTL_FORMULA_RANDOM_MAGIC: an effect-BTLFX_EFFECT_COMET ability hits when RAND8() < 171 (2/3) */
+#define BTL_SHORT_SUMMON_ODDS_RICH  0xE6 /* btl_rollShortSummon: caster's mp > 2 x the cost, RAND8() < 230 casts the short version */
+#define BTL_SHORT_SUMMON_ODDS       0xAA /* btl_rollShortSummon otherwise: RAND8() < 170 */
+/* healing items (BTL_FORMULA_ITEM_HEAL / ITEM_MP_HEAL): multiplier on the item's power */
+#define BTL_ITEM_HEAL_MULT          15 /* HP/MP = item power x 15 */
+#define BTL_ITEM_HEAL_MULT_CHEMIST  30 /* with Chemist: doubled */
+/* random low HP values */
+#define BTL_REVIVE_HP_RANGE         10 /* Phoenix Down revives with RAND8() % 10 + 1 HP; on undead/zombie sets 0-9 */
+#define BTL_LOW_HP_RANGE            9  /* BTL_FORMULA_LOW_HP_STATUS, and the Low HP status of BTL_FORMULA_RANDOM_STATUS: hp = RAND8() % 9 + 1 */
+#define BTL_SPEAR_TRANCE_MIN_MULT   4  /* BTL_FORMULA_SPEAR_TRANCE: multiplier raised to at least 4 before the split over the targets */
+#define BTL_EVT_POWER_DAMAGE_CAP_EXP 14 /* BTL_FORMULA_EVT_POWER_DAMAGE: from exponent 14 (1 << 13 = 8192) the damage is DAMAGE_MAX */
+
 /* BtlCmd as the sequence interpreter reads it (BtlScript.cmd) */
 typedef struct {
     u8 pad0[4];
@@ -1638,8 +1667,9 @@ typedef struct BtlPopup {
 #define BTL_POPKIND_TEXT 2 /* btl_popupText */
 #define BTL_POPKIND_DONE 3 /* and up: the popup is removed */
 
+#define BTL_POPUP_RING_SIZE 16 /* BtlPopupRing.entries: popups shown at once */
 typedef struct {
-    BtlPopup entries[16];
+    BtlPopup entries[BTL_POPUP_RING_SIZE];
     s16 last; /* last entry handed out (counts down, wraps to 15) */
     s16 tick; /* btl_drawPopups calls */
     s32 scanUnit; /* BtlUnit *: unit being scanned (btl_startScan); btlseq_opEnd waits while set */
@@ -1654,6 +1684,14 @@ typedef struct {
     u8 hiddenMask; /* units hidden from status effects (mask) */
     u8 pad1D5[0x1D8 - 0x1D5];
 } BtlPopupRing; /* Battle.popups (0x1D8) */
+/* damage / text popup placement (btl_drawNumberPopup, btl_drawTextPopup, btl_clampPopup): screen limits a popup is kept
+ * inside, and the number font's pitch. Evidence: [code] */
+#define BTL_POPUP_LEFT    8   /* x and hard top limit */
+#define BTL_POPUP_RIGHT   312 /* right edge (a popup ending past it moves to 312 - w) */
+#define BTL_POPUP_TOP     21  /* first frame above this: the popup is shifted down for its whole life (info.b.yOfs) */
+#define BTL_POPUP_BOTTOM  211 /* bottom limit (moves to 210 - h) */
+#define BTL_POPUP_DIGIT_W 8   /* digit pitch of the number popups */
+#define BTL_POPUP_NUM_H   10  /* height btl_drawNumberPopup clamps a number by */
 
 /* Inlined copy of btl_clearCmd (clear a command); the original source inlines it. */
 static inline void btl_clearCmd_inline(BtlCmd *cmd) {
@@ -2979,6 +3017,20 @@ typedef struct {
     u8 tranceKind[4]; /* per row: 0 no trance gauge, 1 gauge, 2 in trance */
 } Unk80105078;
 extern Unk80105078 *g_btluiPanel;
+/* battle party panel layout (btlui_drawPanel*, the HP/MP/status list windows): one row per party member, name | HP |
+ * MP | ATB gauge (Trance gauge under it), the header labels above (g_btluiPanelLabels). Evidence: [code] */
+#define BTLUI_PANEL_ROW_H    12   /* row pitch: panel rows, the list windows' rows (h = rows * 12 + 8) */
+#define BTLUI_PANEL_X        0x8E /* left edge of the header rule and its clip */
+#define BTLUI_PANEL_HP_X     0xD0 /* HP digits (btlui_drawPanelHp) */
+#define BTLUI_PANEL_MP_X     0xEF /* MP digits (btlui_drawPanelMp) */
+#define BTLUI_PANEL_ATB_X    0x108 /* ATB gauge */
+#define BTLUI_PANEL_TRANCE_X 0x10C /* Trance gauge, 4 px under the ATB gauge */
+#define BTLUI_STATUS_ICON_W  12   /* btlui_drawStatusList: icon pitch */
+#define BTLUI_STATUS_ICONS_MAX 9  /* btlui_drawStatusList: icons shown per member */
+/* Unk80105078.tranceKind */
+#define BTLUI_TRANCE_NONE    0 /* no Trance gauge: ATB gauge centred in the row */
+#define BTLUI_TRANCE_GAUGE   1 /* Trance gauge under the ATB gauge */
+#define BTLUI_TRANCE_ACTIVE  2 /* in Trance: the Trance gauge drawn first, in gauge style 1 */
 extern s32 g_btluiPanelY[];
 extern Unk800F3F10 g_btluiListHideSlide;
 extern Unk800F3F10 g_btluiListHideTitleSlide;
@@ -2992,6 +3044,30 @@ typedef struct {
     u8 slide; /* 1 sliding out (btlui_slideLeft/Right), 2 sliding back (btlui_slideBack) */
     u8 slideFrame; /* 0-5 */
 } Unk80104FC0; /* g_btlCmdMenu.sideCmd */
+/* Unk80104FC0.side / .slide */
+#define BTLUI_SIDE_NONE  0
+#define BTLUI_SIDE_RIGHT 1 /* Defend (Right on the command window) */
+#define BTLUI_SIDE_LEFT  2 /* Change (Left) */
+#define BTLUI_SLIDE_OUT  1
+#define BTLUI_SLIDE_BACK 2
+#define BTLUI_SIDE_SLIDE_FRAMES 5 /* frames of the slide out (3 px a frame), then ready */
+#define BTLUI_SIDE_BACK_FRAMES  3 /* btlui_slideBack: the box is gone after frame 3 (5 px a frame) */
+/* battle command window and the ability / item lists (btlui_drawCmdList, btlui_drawCmdOverlay, btlui_drawSideCmd,
+ * the list windows) */
+#define BTLUI_LIST_ROW_H 15   /* row pitch: command rows, the hand cursor, ability / item rows */
+#define BTLUI_CMD_TEXT_X 0xA  /* command names: x inside the window */
+#define BTLUI_CMD_TEXT_Y 6    /* first command name's y inside the window */
+#define BTLUI_SIDE_W     0x3E /* Defend / Change box beside the cursor row */
+#define BTLUI_SIDE_H     0x11
+/* target window (btlui_drawTargetList, btlui_drawTargetListOverlay): enemy column left, party column right of an
+ * etched divider, rows BTLUI_LIST_ROW_H apart, a hand left of each targeted name */
+#define BTLUI_TGT_DIVIDER_X  0x6E /* the etched line between the columns */
+#define BTLUI_TGT_ENEMY_X    0xC  /* enemy names */
+#define BTLUI_TGT_PARTY_X    0x7A /* party names */
+#define BTLUI_TGT_ENEMY_LABEL_X 8    /* "Enemy" label on the top edge */
+#define BTLUI_TGT_PARTY_LABEL_X 0x76 /* "Player" label */
+#define BTLUI_TGT_ENEMY_HAND_X (-0xC) /* hand cursor, from the open rect's x */
+#define BTLUI_TGT_PARTY_HAND_X 0x62
 
 /* battle command menu (runtime: Vivi's menu -> Eiko's, docs/runtime-findings.md) */
 typedef struct {

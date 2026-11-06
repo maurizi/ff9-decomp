@@ -1898,6 +1898,7 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_TRANCE_ENABLED 0x10      /* Trance gauge shown and filled (menuStatus_drawExp, btl_cmd) */
 #define EVT_GB_DAGGER_FALTERS 0x11      /* Dagger may fail to act after Alexandria (btl_cmd) */
 #define EVT_GB_SUMMON_MP_X4 0x12        /* summons marked flags & 4 cost 4x MP (Ramuh 22 -> 88) */
+#define EVT_GB_POWER_DAMAGE_EXP 0xC0    /* exponent of BTL_FORMULA_EVT_POWER_DAMAGE: 1 << (n - 1) damage, DAMAGE_MAX from 14 */
 #define EVT_GB_BATTLE_NO_HUD 0xC1       /* battle runs without the HUD (btl_update) */
 #define EVT_GB_NO_ACTION_ABILITIES 0xE3 /* action abilities unusable from the menu (menu_ability) */
 #define EVT_GB_BATTLE_AI_FLAGS 0xC7     /* battle AI script flags (encounters 337, 891) */
@@ -1987,6 +1988,15 @@ enum {
     TM_TYPE_X, /* "X": power against the lower defence */
     TM_TYPE_A  /* "A": the highest own stat against the lowest of the target */
 };
+#define CARD_TYPE_X_ODDS 0x7F /* card_rollStats: rand() & 0x7F == 0 (1 in 128) makes the card TM_TYPE_X */
+/* card_rollStats: arrow count from one rand() % 100 roll, cumulative upper bounds of each band (roll 0: no arrows) */
+#define CARD_ARROWS_1_BAND 9    /* 1-8:   1 arrow  (8%) */
+#define CARD_ARROWS_2_BAND 0x22 /* 9-33:  2 arrows (25%) */
+#define CARD_ARROWS_3_BAND 0x41 /* 34-64: 3 arrows (31%) */
+#define CARD_ARROWS_4_BAND 0x53 /* 65-82: 4 arrows (18%) */
+#define CARD_ARROWS_5_BAND 0x5C /* 83-91: 5 arrows (9%) */
+#define CARD_ARROWS_6_BAND 0x61 /* 92-96: 6 arrows (5%) */
+#define CARD_ARROWS_7_BAND 0x63 /* 97-98: 7 arrows (2%); 99: all 8 */
 
 typedef struct {
     u8 id; /* card id, 0xFF = none */
@@ -2746,6 +2756,16 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
+/* event countdown timer box (timer_draw): "mm:ss" (EvtTimer.remaining counts frames, timer_getSeconds) in
+ * UI_SPRITE_TIMER_DIGITS; x offsets from g_timerRect.x */
+#define TIMER_X             4    /* g_timerRect.x once shown */
+#define TIMER_SLIDE_FRAMES  8    /* slides in from the left (8 px a frame from x -0x3C), blinking, for 8 frames */
+#define TIMER_DIGIT_Y       8
+#define TIMER_MIN_TENS_X    5    /* drawn only when non-zero */
+#define TIMER_MIN_ONES_X     0xF
+#define TIMER_COLON_X       0x19
+#define TIMER_SEC_TENS_X    0x23
+#define TIMER_SEC_ONES_X    0x2D
 /* msg_drawAtePrompt (ATE_PROMPT_*). Evidence [runtime] (R41: each sprite id swapped for a button glyph) */
 #define UI_SPRITE_ATE_ACTIVE 0x80 /* "ACTIVE TIME EVENT" in blue / white, left to right */
 #define UI_SPRITE_ATE_TIME   0x81
@@ -2757,6 +2777,22 @@ typedef struct {
 #define UI_SPRITE_ATE_EVENT_GREY  0x21
 #define UI_SPRITE_ABIL_SUPPORT_OFF 0xF4 /* support ability, not equipped */
 #define UI_SPRITE_EQUIP_SLOTS 0xF9 /* + Character.equip slot: the slot icons (ovl_33 equip, ovl_38 status) */
+/* party member status block (ui_drawCharStatus, ui_drawCharStatuses; the menus' member rows): offsets from the block's
+ * x/y. Name on top, then the Lv / HP / MP rows, each a UI_SPRITE_LV/HP/MP tag at x + 0 and small digits after it */
+#define UI_MEMBER_STATS_X   0x26 /* the block's x right of the party portrait (ui_drawMember, ui_drawMemberSummary, ui_drawMemberHeader) */
+#define UI_CHRSTAT_LV_Y     0x0E /* Lv row */
+#define UI_CHRSTAT_HP_Y     0x17 /* HP row */
+#define UI_CHRSTAT_MP_Y     0x20 /* MP row */
+#define UI_CHRSTAT_LV_X     0x24 /* level digits */
+#define UI_CHRSTAT_LV_X_STATUSES 0x26 /* level digits in ui_drawCharStatuses (the status-icon variant) */
+#define UI_CHRSTAT_STATUS_Y 0x1C /* ui_drawCharStatuses: status icon row, in place of HP/MP */
+#define UI_CHRSTAT_HP_X     0x16 /* "hp/maxHp" digits */
+#define UI_CHRSTAT_MP_X     0x1D /* "mp/maxMp" digits */
+#define UI_LOW_STAT_DIV     6    /* HP / MP numbers turn yellow at or below max / 6 (ui_drawCharStatus, the battle panel) */
+#define UI_GAUGE_W          36   /* ui_drawGauge: bar length in pixels at cur == max */
+/* ui_buildDigits: pen advance of the small digit font */
+#define UI_SMALL_DIGIT_ADV  5 /* digits, '%' and blanks */
+#define UI_SMALL_SLASH_ADV  4 /* '/' */
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows
@@ -4234,6 +4270,38 @@ typedef struct {
 /* WinLayout.anchor: TEXT_WIN_* or */
 #define WINLAYOUT_ANCHOR_NONE 0x00 /* no header code: centred on the screen, or a balloon placed automatically */
 #define WINLAYOUT_ANCHOR_POS 0xFF /* TEXT_WIN_POS */
+/* dialog window placement on the 320x224 screen (evt_getMsgLayout). Evidence: [code] */
+#define MSGWIN_MARGIN       12  /* corner anchors: x / y from the left / top edge */
+#define MSGWIN_RIGHT        308 /* right-anchored windows end here (320 - 12) */
+#define MSGWIN_CENTER_X     160 /* centred windows: x = 160 - w / 2 */
+#define MSGWIN_CENTER_Y     74  /* TEXT_WIN_CENTER: y = 74 - h / 2 */
+#define MSGWIN_DEFAULT_Y    110 /* WINLAYOUT_ANCHOR_NONE: y = 110 - h / 2 */
+#define MSGWIN_BOTTOM_Y     (-48) /* bottom anchors: y = -48 - h, i.e. bottom edge at 208 once the s8 WinLayout.y wraps */
+#define MSGWIN_ATE_MIN_W    0x72 /* MSG_FLAG_ATE windows are at least this wide */
+#define MSGWIN_BALLOON_MIN_W 0x1D /* balloon and MSG_FLAG_NO_TAIL windows: minimum width */
+/* message window text metrics (msg_renderText, msg_getLayout) */
+#define MSG_LINE_H          14 /* line pitch: TEXT_NEWLINE, window height per line, the choice cursor */
+#define MSG_TAB_W           0x12 /* TEXT_TAB advance */
+#define MSG_PAD_W           9  /* window width = the entry's text width + 9 */
+#define MSG_PAD_H           6  /* window height = lines * MSG_LINE_H + 6 */
+#define MSG_TEXT_INSET      2  /* text origin inside the window (msg_drawWindowContent) */
+/* speech balloons (evt_placeBalloon, evt_followBalloon): the tail sits at the speaker's projected anchor point, the
+ * box is centred over the tail's allowed span and clamped to the screen */
+#define EVT_HEAD_ANCHOR_RAISE 50 /* anchor point this far above an object's scaled height (world units): the balloon
+                                  * anchor, and evt_setDrawPosAtObject's ("here" icon, the player's bubble) */
+#define BALLOON_TAIL_OFS     6   /* tail x from the anchor's screen x, towards the box */
+#define BALLOON_TAIL_MIN_R   32  /* tail x range, box to the left of the tail (right = 1) */
+#define BALLOON_TAIL_MAX_R   304
+#define BALLOON_TAIL_MIN_L   16  /* tail x range, box to the right of the tail */
+#define BALLOON_TAIL_MAX_L   288
+#define BALLOON_FLIP_L_X     40  /* auto side: an anchor left of x 40 flips a right-side box, */
+#define BALLOON_FLIP_R_X     280 /* one right of x 280 picks the right side */
+#define BALLOON_LEFT         8   /* box x and y limits */
+#define BALLOON_RIGHT        312
+#define BALLOON_TOP          8
+#define BALLOON_BOTTOM       212
+#define BALLOON_GAP_ABOVE    16  /* box above the anchor: its bottom edge 16 px over it */
+#define BALLOON_GAP_BELOW    32  /* box below the anchor: its top edge 32 px under it */
 s32 msg_overlapsRect(WinLayout *r);
 extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);
@@ -4353,6 +4421,18 @@ typedef struct {
 #define EVT_PLAYER_WALK_SPEED 30
 #define EVT_PLAYER_RUN_SPEED 60
 #define EVT_DIR_NONE 0x8000
+#define EVT_PUSH_FRAMES 25 /* g_evtPushFrames: frames of walking into a pushable object, then -25 frames of cooldown */
+/* random encounters (evt_rollEncounter): the player's walked distance (g_evtEncounterDist, math_length3 per frame) */
+#define EVT_ENCOUNTER_STEP_DIST 0x3C0 /* walked between two encounter rolls */
+#define EVT_ENCOUNTER_GRACE (-0x5A0)  /* start value when the event system initialises: the first roll comes 0x5A0 later */
+/* actors turning their head to look at others (evt_updateLookAt, evt_relaxLookAt). Evidence: [code] */
+#define EVT_LOOK_STEP      100  /* the look-at point moves at most this far a frame */
+#define EVT_LOOK_AHEAD     500  /* resting look-at point: this far in front, at head height */
+#define EVT_LOOK_MIN_DIST  1000 /* speakers and actors nearer than this (math_dist2 / math_distSq2) are not looked at */
+#define EVT_LOOK_MAX_DY    399  /* only actors within +-399 in height */
+#define EVT_LOOK_SCORE_BIAS 4000000 /* candidate score = distance - this + (angle - EVT_LOOK_CONE); lowest wins */
+#define EVT_LOOK_CONE      0x280 /* head-turn limit (56 degrees): further round, look 0x280 to that side or turn (evt_callTurnScript) */
+#define EVT_LOOK_FRONT     0x380 /* the look-at point is dropped once it is more than 79 degrees off the facing */
 #define EVT_OP_CLEAR_COLOR 0x6B /* r, g, b: game_setClearColor */
 #define EVT_OP_BG_SCROLL_TO 0x6F /* x, y, frames, mode: fldbg_scrollTo */
 #define EVT_OP_BG_SCROLL_TO_PLAYER 0x70 /* fldbg_scrollToPlayer */

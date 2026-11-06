@@ -475,7 +475,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
 s32 evt_rollEncounter(EvtObject *obj) {
     s32 id = 0;
 
-    if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
+    if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > EVT_ENCOUNTER_STEP_DIST) {
         g_evtEncounterDist = 0;
         g_evtEncounterChance += g_evtState->encounterRate;
         if (rand8_inline() < (g_evtEncounterChance >> 3)) {
@@ -497,7 +497,7 @@ static inline void evt_placeBalloon_pos(EvtObject *obj, s32 *x, s32 *y) {
     SVECTOR sv;
 
     sv.vx = obj->pos.vx;
-    sv.vy = obj->pos.vy + ((obj->height * (s8)obj->scale) >> 6) - 50;
+    sv.vy = obj->pos.vy + ((obj->height * (s8)obj->scale) >> 6) - EVT_HEAD_ANCHOR_RAISE;
     sv.vz = obj->pos.vz;
     if (obj->kind == EVT_KIND_ACTOR) {
         sv.vx += obj->balloonOfsX;
@@ -512,32 +512,32 @@ static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx)
     s32 tx, lo, hi;
 
     if (right) {
-        tx = sx - 6;
-        if (tx < 32) {
-            tx = 32;
+        tx = sx - BALLOON_TAIL_OFS;
+        if (tx < BALLOON_TAIL_MIN_R) {
+            tx = BALLOON_TAIL_MIN_R;
         }
-        if (tx > 304) {
-            tx = 304;
+        if (tx > BALLOON_TAIL_MAX_R) {
+            tx = BALLOON_TAIL_MAX_R;
         }
         lo = tx + 8 - width;
         hi = tx - 24;
     } else {
-        tx = sx + 6;
-        if (tx > 288) {
-            tx = 288;
+        tx = sx + BALLOON_TAIL_OFS;
+        if (tx > BALLOON_TAIL_MAX_L) {
+            tx = BALLOON_TAIL_MAX_L;
         }
-        if (tx < 16) {
-            tx = 16;
+        if (tx < BALLOON_TAIL_MIN_L) {
+            tx = BALLOON_TAIL_MIN_L;
         }
         lo = tx + 24 - width;
         hi = tx - 8;
     }
     *ptx = tx;
-    if (lo < 8) {
-        lo = 8;
+    if (lo < BALLOON_LEFT) {
+        lo = BALLOON_LEFT;
     }
-    if (hi > 312 - width) {
-        hi = 312 - width;
+    if (hi > BALLOON_RIGHT - width) {
+        hi = BALLOON_RIGHT - width;
     }
     w->x = (lo + hi) >> 1;
 }
@@ -547,22 +547,22 @@ static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixe
     s32 ty;
 
     if (*below) {
-        ty = sy - h - 16;
-        if (!fixed && ty < 8) {
+        ty = sy - h - BALLOON_GAP_ABOVE;
+        if (!fixed && ty < BALLOON_TOP) {
             *below ^= 1;
-            ty = sy + 32;
+            ty = sy + BALLOON_GAP_BELOW;
         }
     } else {
-        ty = sy + 32;
-        if (!fixed && ty > 212 - h) {
+        ty = sy + BALLOON_GAP_BELOW;
+        if (!fixed && ty > BALLOON_BOTTOM - h) {
             *below = 1;
-            ty = sy - h - 16;
+            ty = sy - h - BALLOON_GAP_ABOVE;
         }
     }
-    if (ty < 8) {
-        ty = 8;
-    } else if (ty > 212 - h) {
-        ty = 212 - h;
+    if (ty < BALLOON_TOP) {
+        ty = BALLOON_TOP;
+    } else if (ty > BALLOON_BOTTOM - h) {
+        ty = BALLOON_BOTTOM - h;
     }
     w->y = ty;
 }
@@ -602,7 +602,7 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
         right = dir & 1;
     }
     if (fixed == 0) {
-        right = right ? right ^ (sx < 40) : sx > 280;
+        right = right ? right ^ (sx < BALLOON_FLIP_L_X) : sx > BALLOON_FLIP_R_X;
     }
     evt_placeBalloon_x(w, sx, right, &tx);
     evt_placeBalloon_y(w, sy, &below, fixed);
@@ -619,32 +619,32 @@ static inline s32 evt_followBalloon_x(s32 width, s32 sx, s32 right, s32 *ptx) {
     s32 tx, lo, hi;
 
     if (right) {
-        tx = sx - 6;
-        if (tx < 32) {
-            tx = 32;
+        tx = sx - BALLOON_TAIL_OFS;
+        if (tx < BALLOON_TAIL_MIN_R) {
+            tx = BALLOON_TAIL_MIN_R;
         }
-        if (tx > 304) {
-            tx = 304;
+        if (tx > BALLOON_TAIL_MAX_R) {
+            tx = BALLOON_TAIL_MAX_R;
         }
         lo = tx + 8 - width;
         hi = tx - 24;
     } else {
-        tx = sx + 6;
-        if (tx > 288) {
-            tx = 288;
+        tx = sx + BALLOON_TAIL_OFS;
+        if (tx > BALLOON_TAIL_MAX_L) {
+            tx = BALLOON_TAIL_MAX_L;
         }
-        if (tx < 16) {
-            tx = 16;
+        if (tx < BALLOON_TAIL_MIN_L) {
+            tx = BALLOON_TAIL_MIN_L;
         }
         lo = tx + 24 - width;
         hi = tx - 8;
     }
     *ptx = tx;
-    if (lo < 8) {
-        lo = 8;
+    if (lo < BALLOON_LEFT) {
+        lo = BALLOON_LEFT;
     }
-    if (hi > 312 - width) {
-        hi = 312 - width;
+    if (hi > BALLOON_RIGHT - width) {
+        hi = BALLOON_RIGHT - width;
     }
     return (lo + hi) >> 1;
 }
@@ -653,14 +653,14 @@ static inline s32 evt_followBalloon_y(s32 h, s32 *sy, s32 below) {
     s32 ty;
 
     if (below) {
-        ty = *sy - h - 16;
+        ty = *sy - h - BALLOON_GAP_ABOVE;
     } else {
-        ty = *sy + 32;
+        ty = *sy + BALLOON_GAP_BELOW;
     }
-    if (ty < 8) {
-        ty = 8;
-    } else if (ty > 212 - h) {
-        ty = 212 - h;
+    if (ty < BALLOON_TOP) {
+        ty = BALLOON_TOP;
+    } else if (ty > BALLOON_BOTTOM - h) {
+        ty = BALLOON_BOTTOM - h;
     }
     return ty;
 }
@@ -693,12 +693,12 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
 
     w->tailOffset = 0;
     w->tailMode = 0;
-    if ((flags & MSG_FLAG_ATE) && w->w < 0x72) {
-        w->w = 0x72;
+    if ((flags & MSG_FLAG_ATE) && w->w < MSGWIN_ATE_MIN_W) {
+        w->w = MSGWIN_ATE_MIN_W;
     }
     if (flags & MSG_FLAG_BALLOON) {
-        if (w->w < 0x1D) {
-            w->w = 0x1D;
+        if (w->w < MSGWIN_BALLOON_MIN_W) {
+            w->w = MSGWIN_BALLOON_MIN_W;
         }
         switch (w->anchor) {
         case TEXT_WIN_BOTTOM_RIGHT:
@@ -722,41 +722,41 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
         wh = w->h;
         switch (w->anchor) {
         case TEXT_WIN_TOP_LEFT:
-            w->x = 12;
-            w->y = 12;
+            w->x = MSGWIN_MARGIN;
+            w->y = MSGWIN_MARGIN;
             break;
         case TEXT_WIN_TOP:
-            w->x = 160 - (ww >> 1);
-            w->y = 12;
+            w->x = MSGWIN_CENTER_X - (ww >> 1);
+            w->y = MSGWIN_MARGIN;
             break;
         case TEXT_WIN_TOP_RIGHT:
-            w->x = 308 - ww;
-            w->y = 12;
+            w->x = MSGWIN_RIGHT - ww;
+            w->y = MSGWIN_MARGIN;
             break;
         case TEXT_WIN_CENTER:
-            w->x = 160 - (ww >> 1);
-            w->y = 74 - (wh >> 1);
+            w->x = MSGWIN_CENTER_X - (ww >> 1);
+            w->y = MSGWIN_CENTER_Y - (wh >> 1);
             break;
         case TEXT_WIN_BOTTOM_LEFT:
-            w->x = 12;
-            w->y = -48 - wh;
+            w->x = MSGWIN_MARGIN;
+            w->y = MSGWIN_BOTTOM_Y - wh;
             break;
         case TEXT_WIN_BOTTOM:
-            w->x = 160 - (ww >> 1);
-            w->y = -48 - wh;
+            w->x = MSGWIN_CENTER_X - (ww >> 1);
+            w->y = MSGWIN_BOTTOM_Y - wh;
             break;
         case TEXT_WIN_BOTTOM_RIGHT:
-            w->x = 308 - ww;
-            w->y = -48 - wh;
+            w->x = MSGWIN_RIGHT - ww;
+            w->y = MSGWIN_BOTTOM_Y - wh;
             break;
         case WINLAYOUT_ANCHOR_NONE:
-            w->x = 160 - (ww >> 1);
-            w->y = 110 - (wh >> 1);
+            w->x = MSGWIN_CENTER_X - (ww >> 1);
+            w->y = MSGWIN_DEFAULT_Y - (wh >> 1);
             break;
         }
     }
-    if ((flags & MSG_FLAG_NO_TAIL) && w->w < 0x1D) {
-        w->w = 0x1D;
+    if ((flags & MSG_FLAG_NO_TAIL) && w->w < MSGWIN_BALLOON_MIN_W) {
+        w->w = MSGWIN_BALLOON_MIN_W;
     }
     w->tailMode |= flags & (MSG_FLAG_FRAMELESS | MSG_FLAG_NO_FOLLOW);
     return w;
@@ -2475,7 +2475,7 @@ void evt_movePlayer(EvtObject *obj) {
             }
         } while (0);
     }
-    g_evtPushFrames = g_evtPlayerBlocked != 0 ? (g_evtPushFrames < 25 ? g_evtPushFrames + g_evtPushable : -25)
+    g_evtPushFrames = g_evtPlayerBlocked != 0 ? (g_evtPushFrames < EVT_PUSH_FRAMES ? g_evtPushFrames + g_evtPushable : -EVT_PUSH_FRAMES)
                                  : (g_evtPushFrames < 0 ? g_evtPushFrames + 1 : 0);
 }
 
@@ -2524,7 +2524,7 @@ static inline void evt_updateLookAt_ahead(EvtObject *obj, s32 angle, VECTOR *out
     SetTransMatrix(&mtx);
     ofs.vx = 0;
     ofs.vy = (obj->height * (s8)obj->scale) >> 6;
-    ofs.vz = -500;
+    ofs.vz = -EVT_LOOK_AHEAD;
     gte_ldv0(&ofs);
     gte_rtv0tr();
     gte_stlvnl(out);
@@ -2536,13 +2536,13 @@ void evt_relaxLookAt(EvtObject *obj, Unk8004AFF0 *mdl) {
 
     evt_updateLookAt_ahead(obj, obj->pos.rotY, &out);
     dist = math_length3(out.vx - obj->lookAtX, out.vy - obj->lookAtY, out.vz - obj->lookAtZ);
-    if (dist < 100) {
-        dist = 100;
+    if (dist < EVT_LOOK_STEP) {
+        dist = EVT_LOOK_STEP;
         obj->moveFlags &= ~(EVT_MOVE_LOOK_RELEASED | EVT_MOVE_LOOKED_AT_SPEAKER | EVT_MOVE_LOOKING);
     }
-    obj->lookAtX += (out.vx - obj->lookAtX) * 100 / dist;
-    obj->lookAtY += (out.vy - obj->lookAtY) * 100 / dist;
-    obj->lookAtZ += (out.vz - obj->lookAtZ) * 100 / dist;
+    obj->lookAtX += (out.vx - obj->lookAtX) * EVT_LOOK_STEP / dist;
+    obj->lookAtY += (out.vy - obj->lookAtY) * EVT_LOOK_STEP / dist;
+    obj->lookAtZ += (out.vz - obj->lookAtZ) * EVT_LOOK_STEP / dist;
     mdl->flags |= MDL_LOOK_AT;
     mdl->lookAtX = obj->lookAtX;
     mdl->lookAtY = obj->lookAtY;
@@ -2554,12 +2554,12 @@ static inline void evt_updateLookAt_approach(EvtObject *obj, Unk8004AFF0 *mdl, V
     s32 dist;
 
     dist = math_length3(target->vx - obj->lookAtX, target->vy - obj->lookAtY, target->vz - obj->lookAtZ);
-    if (dist < 100) {
-        dist = 100;
+    if (dist < EVT_LOOK_STEP) {
+        dist = EVT_LOOK_STEP;
     }
-    obj->lookAtX += (target->vx - obj->lookAtX) * 100 / dist;
-    obj->lookAtY += (target->vy - obj->lookAtY) * 100 / dist;
-    obj->lookAtZ += (target->vz - obj->lookAtZ) * 100 / dist;
+    obj->lookAtX += (target->vx - obj->lookAtX) * EVT_LOOK_STEP / dist;
+    obj->lookAtY += (target->vy - obj->lookAtY) * EVT_LOOK_STEP / dist;
+    obj->lookAtZ += (target->vz - obj->lookAtZ) * EVT_LOOK_STEP / dist;
     mdl->flags |= MDL_LOOK_AT;
     mdl->lookAtX = obj->lookAtX;
     mdl->lookAtY = obj->lookAtY;
@@ -2576,7 +2576,7 @@ static inline s32 evt_updateLookAt_infront(EvtObject *obj) {
         if (diff > 0x800) {
             diff -= 0x1000;
         }
-        ok = (u32)(diff + 0x37F) < 0x6FF;
+        ok = (u32)(diff + EVT_LOOK_FRONT - 1) < 2 * EVT_LOOK_FRONT - 1;
         if (!ok) {
             obj->moveFlags &= ~EVT_MOVE_LOOKING;
         }
@@ -2595,7 +2595,7 @@ static inline s32 evt_updateLookAt_infront2(EvtObject *obj, s32 *pa) {
         if (diff > 0x800) {
             diff -= 0x1000;
         }
-        ok = (u32)(diff + 0x37F) < 0x6FF;
+        ok = (u32)(diff + EVT_LOOK_FRONT - 1) < 2 * EVT_LOOK_FRONT - 1;
         if (!ok) {
             obj->moveFlags &= ~EVT_MOVE_LOOKING;
         }
@@ -2625,7 +2625,7 @@ void evt_updateLookAt(EvtObject *obj) {
     mdl = (Unk8004AFF0 *)((ModelSlot *)game_getModel(obj->modelSlot))->model;
     tgt = NULL;
     if ((obj->moveFlags & EVT_MOVE_LOOK_AT_SPEAKER) && g_evtLookTarget != NULL && g_evtLookTarget != obj &&
-        math_dist2(obj->pos.vx - g_evtLookTarget->pos.vx, obj->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
+        math_dist2(obj->pos.vx - g_evtLookTarget->pos.vx, obj->pos.vz - g_evtLookTarget->pos.vz, 0) >= EVT_LOOK_MIN_DIST) {
         tgt = g_evtLookTarget;
         obj->moveFlags |= EVT_MOVE_LOOKED_AT_SPEAKER;
     }
@@ -2643,16 +2643,16 @@ void evt_updateLookAt(EvtObject *obj) {
             bestd = 0;
             for (node = g_evtState->objects; node != NULL; node = node->next) {
                 other = node->obj;
-                if (other != obj && other->kind == EVT_KIND_ACTOR && (u32)(other->pos.vy - y + 399) < 799 && (other->moveFlags & EVT_MOVE_LOOK_TARGET) &&
+                if (other != obj && other->kind == EVT_KIND_ACTOR && (u32)(other->pos.vy - y + EVT_LOOK_MAX_DY) < 2 * EVT_LOOK_MAX_DY + 1 && (other->moveFlags & EVT_MOVE_LOOK_TARGET) &&
                     (lookMask & other->lookParam0)) {
                     score = math_distSq2(other->pos.vx - x, other->pos.vz - z, 0);
-                    if (score >= 1000) {
+                    if (score >= EVT_LOOK_MIN_DIST) {
                         angle = evt_angleToObject(obj, other, obj->pos.rotY);
-                        score -= 4000000;
+                        score -= EVT_LOOK_SCORE_BIAS;
                         if (angle < 0) {
                             angle = -angle;
                         }
-                        angle -= 640;
+                        angle -= EVT_LOOK_CONE;
                         if (angle < 0) {
                             score += angle;
                             if (score < bestd) {
@@ -2685,12 +2685,12 @@ void evt_updateLookAt(EvtObject *obj) {
                     if (relAngle > 0x800) {
                         relAngle -= 0x1000;
                     }
-                    if ((u32)(relAngle + 0x27F) < 0x4FF) {
+                    if ((u32)(relAngle + EVT_LOOK_CONE - 1) < 2 * EVT_LOOK_CONE - 1) {
                         point.vy = (((obj->pos.vy << 6) + obj->height * (s8)obj->scale) * 3 + (point.vy << 6) +
                                 tgt->height * (s8)tgt->scale) >> 8;
                         evt_updateLookAt_approach(obj, mdl, &point);
                     } else if (evt_callTurnScript(obj, ang)) {
-                        angle = relAngle > 0x280 ? 0x280 : -0x280;
+                        angle = relAngle > EVT_LOOK_CONE ? EVT_LOOK_CONE : -EVT_LOOK_CONE;
                         evt_updateLookAt_ahead(obj, angle + obj->pos.rotY, &point);
                         evt_updateLookAt_approach(obj, mdl, &point);
                     }
@@ -3389,7 +3389,7 @@ void evt_init(u8 *data) {
     g_evtHalted = 0;
     g_evtCameraChanged = 0;
     g_evtCamera = 0;
-    g_evtEncounterDist = -0x5A0;
+    g_evtEncounterDist = EVT_ENCOUNTER_GRACE;
     evt = g_evtState;
     evt->encounterRate = 0;
     g_evtEncounterChance = 0;
@@ -3584,7 +3584,7 @@ void evt_setDrawPosAtObject(EvtObject *obj, s32 dx, s32 dy) {
     GameData *gd;
 
     vec.vx = obj->pos.vx;
-    vec.vy = obj->pos.vy + ((obj->height * (s8)obj->scale) >> 6) - 50;
+    vec.vy = obj->pos.vy + ((obj->height * (s8)obj->scale) >> 6) - EVT_HEAD_ANCHOR_RAISE;
     vec.vz = obj->pos.vz;
     if (g_evtMode == EVT_MODE_FIELD) {
         fldbg_applyGeomOffset();
