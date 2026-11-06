@@ -542,20 +542,20 @@ static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx)
     w->x = (lo + hi) >> 1;
 }
 
-static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
+static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *above, s32 fixed) {
     s32 h = w->h;
     s32 ty;
 
-    if (*below) {
+    if (*above) {
         ty = sy - h - BALLOON_GAP_ABOVE;
         if (!fixed && ty < BALLOON_TOP) {
-            *below ^= 1;
+            *above ^= 1;
             ty = sy + BALLOON_GAP_BELOW;
         }
     } else {
         ty = sy + BALLOON_GAP_BELOW;
         if (!fixed && ty > BALLOON_BOTTOM - h) {
-            *below = 1;
+            *above = 1;
             ty = sy - h - BALLOON_GAP_ABOVE;
         }
     }
@@ -571,7 +571,7 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
     s32 sx, sy;
     s32 ox, oy;
     s32 tx;
-    s32 below;
+    s32 above;
     s32 right;
     s32 id;
     EvtObject *other;
@@ -591,27 +591,27 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
         other = evt_getObject_inline(id);
         if (other != NULL) {
             evt_placeBalloon_pos(other, &ox, &oy);
-            below = sy < oy;
+            above = sy < oy;
             right = sx < ox;
         } else {
-            below = 1;
+            above = 1;
             right = 0;
         }
     } else {
-        below = (dir >> 1) & 1;
+        above = (dir >> 1) & 1;
         right = dir & 1;
     }
     if (fixed == 0) {
         right = right ? right ^ (sx < BALLOON_FLIP_L_X) : sx > BALLOON_FLIP_R_X;
     }
     evt_placeBalloon_x(w, sx, right, &tx);
-    evt_placeBalloon_y(w, sy, &below, fixed);
+    evt_placeBalloon_y(w, sy, &above, fixed);
     if (fixed == 0 && msg_overlapsRect(w)) {
-        below ^= 1;
-        evt_placeBalloon_y(w, sy, &below, 0);
+        above ^= 1;
+        evt_placeBalloon_y(w, sy, &above, 0);
     }
     w->tailOffset = tx - w->x;
-    w->tailMode = (below << 1) | right;
+    w->tailMode = (above << 1) | right;
 }
 
 /* bubble x/y targets for evt_followBalloon (evt_placeBalloon_x/_y without the flip logic) */
@@ -649,10 +649,10 @@ static inline s32 evt_followBalloon_x(s32 width, s32 sx, s32 right, s32 *ptx) {
     return (lo + hi) >> 1;
 }
 
-static inline s32 evt_followBalloon_y(s32 h, s32 *sy, s32 below) {
+static inline s32 evt_followBalloon_y(s32 h, s32 *sy, s32 above) {
     s32 ty;
 
-    if (below) {
+    if (above) {
         ty = *sy - h - BALLOON_GAP_ABOVE;
     } else {
         ty = *sy + BALLOON_GAP_BELOW;
@@ -669,16 +669,16 @@ void evt_followBalloon(EvtObject *obj, Window *w) {
     s32 sx, sy;
     s32 tx;
     s32 ox, oy;
-    s32 right, below;
+    s32 right, above;
     s32 x, y;
 
     ox = w->x;
     oy = w->y;
     evt_placeBalloon_pos(obj, &sx, &sy);
-    below = (w->tailMode >> 1) & 1;
+    above = (w->tailMode >> 1) & 1;
     right = w->tailMode & 1;
     x = evt_followBalloon_x(w->w - 3, sx, right, &tx);
-    y = evt_followBalloon_y(w->h - 3, &sy, below);
+    y = evt_followBalloon_y(w->h - 3, &sy, above);
     w->x = (ox + x) >> 1;
     w->y = (oy + y) >> 1;
     w->tailX = tx - w->x - right * 16;

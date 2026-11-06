@@ -99,11 +99,12 @@ extern u8 s_menuMainStatusAbnormal[];
 #define MENU_MAIN_HELP_W 0xE8
 #define MENU_MAIN_HELP_BOTTOM 0xF /* lines above the display's bottom */
 /* party panel */
-#define MENU_MAIN_PORTRAIT_X_BACK 8 /* portrait x with battleRow set (which row: runtime pending R44) */
-#define MENU_MAIN_PORTRAIT_X_FRONT 0x16 /* portrait x with battleRow clear: shifted right */
+#define MENU_MAIN_PORTRAIT_X_FRONT 8 /* portrait x with battleRow set (front row) */
+#define MENU_MAIN_PORTRAIT_X_BACK 0x16 /* portrait x with battleRow clear (back row): shifted right */
 #define MENU_MAIN_PORTRAIT_Y 1
 #define MENU_MAIN_PORTRAIT_H 0x2D
-#define MENU_MAIN_SHADE_X 8 /* the translucent tile behind the portrait (menuMain_drawPortraitShade) */
+#define MENU_MAIN_SHADE_X 8 /* the translucent tile behind the portrait (menuMain_drawPortraitShade): the dark backdrop
+                            * of the portrait slot, spanning both rows' positions */
 #define MENU_MAIN_SHADE_W 0x2E
 #define MENU_MAIN_SHADE_H 0x30
 #define MENU_MAIN_STATS_X 0x3C /* name, LV, HP and MP column */

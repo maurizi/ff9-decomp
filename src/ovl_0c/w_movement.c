@@ -875,7 +875,7 @@ s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused) { /* its caller 
             }
         }
         wm_calcBoneMatrices(obj, objSlot->actor->animFrame);
-        if (act->actorType != WM_ACTOR_NO_MODEL) {
+        if (act->actorType != WM_ACTOR_SHADOW_ONLY) {
             groups = obj->model->groupCount;
             if (typeInfo->terrainClass != 0 && typeInfo->rideOffset > 0) {
                 obj->clipY = pos->vy - typeInfo->rideOffset + 100;
@@ -914,7 +914,7 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
     typeInfo = &g_worldActorTypeInfo[act->actorType];
     k = act->modelSlot;
     sx = 0x1000;
-    if (act->actorType != WM_ACTOR_NO_MODEL) {
+    if (act->actorType != WM_ACTOR_SHADOW_ONLY) {
         lift = typeInfo->floorY - act->pos.vy;
         pos->vy += lift;
         pos->vy -= lift / 8;
@@ -1272,9 +1272,9 @@ void wm_movePlayer(WmActorType *cc) {
             }
         }
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_CELL_16_14_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_CELL_16_14_Z;
-    if (ABS(ex) < WM_NOCACHE_CELL_16_14_R && ABS(ez) < WM_NOCACHE_CELL_16_14_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_RIVER_GORGE_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_RIVER_GORGE_Z;
+    if (ABS(ex) < WM_NOCACHE_RIVER_GORGE_R && ABS(ez) < WM_NOCACHE_RIVER_GORGE_R) {
         g_worldUsePolyCache = 0;
     }
     ex = g_worldPlayer->pos.vx - WM_NOCACHE_CONDE_PETIE_X;

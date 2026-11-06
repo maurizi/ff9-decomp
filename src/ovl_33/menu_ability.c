@@ -636,7 +636,7 @@ void menuAbility_updateHelp(void) {
         }
     } else if (s_menuAbility.state == ABILITY_STATE_TARGET) {
         if (menuAbility_getSlot(list) & 1) {
-            bounds.x = 0xC;
+            bounds.x = MENU_HELP_MARGIN_X;
             bounds.y = 0;
             bounds.w = g_gameState->dispEnv->disp.w;
             bounds.h = g_gameState->dispEnv->disp.h;

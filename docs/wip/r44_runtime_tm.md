@@ -1,5 +1,10 @@
 # R44 Tetra Master layout: runtime questions (ovl_0d)
 
+**Status: answered and applied** (docs/runtime-findings.md, "R44 runtime pass: layout and tuning"): Q1
+`TM_SCORE_SLASH_X/Y` (a diagonal slash), Q2 `TM_R1_NAME_LABEL_X/Y` ("-NAME"), Q3 `TM_TITLE_CARD_*` /
+`TM_TITLE_SELECTION_*` / `TM_TITLE_DISCARD_*` / `TM_TITLE_MARK_L/R_X`, `TM_TITLE_MARK_Y` ("!" marks, not arrows),
+Q4 banner comment (second layer = blurred shadow drawn subtractive).
+
 R44 named the card game's screen layout, VRAM/CLUT placement, OT layers, timings and odds tables in
 `include/ovl_0d.h` ("Tetra Master layout and tuning (R44)"). Everything there follows from the code except the sprites
 below, whose define comments say `(runtime: pending R44)`: the code places them, but only a screenshot says what they

@@ -169,15 +169,15 @@ void menuConfig_drawBattleControl(void) {
     RECT *rect = &s_menuConfig.wins[0].rect;
     RECT *r2;
     s32 i;
-    u8 on;
+    u8 port2;
 
     r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + CONFIG_EXIT_TEXT_X, r2->y + CONFIG_EXIT_TEXT_Y, CONFIG_OTZ_SUB_TEXT, text_get(CONFIG_TEXT_PORT_EXIT), TEXT_PAL_WHITE);
     for (i = 0; i < s_menuConfig.charCount; i++) {
-        on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
+        port2 = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
         text_drawBlock(rect->x + CONFIG_PORT_NAME_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, TEXT_PAL_WHITE);
-        menuConfig_drawIcon(rect->x + CONFIG_PORT_ICON0_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, CONFIG_SPRITE_PORT_SET, on);
-        menuConfig_drawIcon(rect->x + CONFIG_PORT_ICON1_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, CONFIG_SPRITE_PORT_CLEAR, on == 0);
+        menuConfig_drawIcon(rect->x + CONFIG_PORT_ICON0_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, CONFIG_SPRITE_PORT1, port2);
+        menuConfig_drawIcon(rect->x + CONFIG_PORT_ICON1_X, rect->y + CONFIG_PORT_ROW_Y + i * CONFIG_SUB_ROW_H, CONFIG_OTZ_SUB_TEXT, CONFIG_SPRITE_PORT2, port2 == 0);
     }
 }
 
@@ -722,10 +722,10 @@ void menuConfig_drawSmallText(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
     s_menuConfig.prim = text_buildSmall(x, y, &g_ot[otz], str, pal, s_menuConfig.prim);
 }
 
-void menuConfig_drawIcon(s32 x, s32 y, s32 otz, s32 spriteId, u8 flag) {
+void menuConfig_drawIcon(s32 x, s32 y, s32 otz, s32 spriteId, u8 dim) {
     s32 spriteW[2];
 
-    s_menuConfig.prim = ui_buildSprite(x, y, &g_ot[otz], spriteId, flag, spriteW, s_menuConfig.prim);
+    s_menuConfig.prim = ui_buildSprite(x, y, &g_ot[otz], spriteId, dim, spriteW, s_menuConfig.prim);
 }
 
 void menuConfig_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {

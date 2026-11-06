@@ -287,9 +287,9 @@ void menuChocograph_restoreVram(void) {
         sel = g_gameState->gameData->chocograph;
         if (sel != 0) {
             menuChocograph_getPictureRects(sel - 1, &r0, &r1);
-            MoveImage(&r0, CHOCO_WM_CLUT_X, CHOCO_WM_CLUT_Y);
+            MoveImage(&r0, WM_CHOCOGRAPH_CLUT_X, WM_CHOCOGRAPH_CLUT_Y);
             DrawSync(0);
-            MoveImage(&r1, CHOCO_WM_PICTURE_X, CHOCO_WM_PICTURE_Y);
+            MoveImage(&r1, WM_CHOCOGRAPH_PICTURE_X, WM_CHOCOGRAPH_PICTURE_Y);
             DrawSync(0);
         }
     }

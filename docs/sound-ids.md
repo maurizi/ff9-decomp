@@ -115,6 +115,18 @@ entries 4 and 5 (0x5F, 0x60, the "Field Song" slots) were not heard and stay num
 it). Per-mode banks are in the overlay headers: ovl_0b `BTL_SOUND_SE_BANK` 0x201, ovl_0c `WM_SOUND_BANK*`, ovl_0d
 `TM_SOUND_BANK_MUSIC` 0xE2 / `TM_SOUND_BANK_SE` 0xFA.
 
+Bank header ids fall in ranges (`AKAO_BANK_*_FIRST` / `_COUNT` in snd_ids.h), which akao_loadBankInSlot uses to place
+a bank loaded into slot n > 0 above its header's SPU address. R44 (load traces at akao_loadBankInSlot, scan of the
+bank files in FF9.IMG dir 11):
+
+| range | name | header instrument / SPU | slot step | observed |
+|---|---|---|---|---|
+| 200-299 | `AKAO_BANK_BATTLE_SE_FIRST` | 192 / 0x4F100 (8 instruments) | 20 KB | only 208, loaded unslotted as the battle's own SE bank (low) |
+| 300-499 | `AKAO_BANK_ENEMY_SE_FIRST` | 224 / 0x43100 (3 instruments) | 16 KB, loaded-bank index slot + 4 | 350 for the Malboro (battle 899), slot 0 (medium) |
+| 500-599 | `AKAO_BANK_FIELD_SE_FIRST` | 200 / 0x6F100 (8 instruments) | 4 KB | 504 (field 2714), 511 (field 2600), slot 0 (medium) |
+
+6xx-7xx banks (instrument 160, SPU 0x63100) have no slot rule.
+
 ## SPU
 SPU registers use psx-spx names. `SPU_VOICE_*` are the per-voice register offsets used with `SPU_VOICE_REG(v, r)`.
 `SPU_MAIN_VOL_MAX` 0x3FFF and `SPU_CD_VOL_MAX` 0x7FFF are the values akao_initState writes.

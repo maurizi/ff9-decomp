@@ -4824,7 +4824,7 @@ emitter, no script request)". The ablation screenshot was not needed.
   slides over the Iifa Tree's crown"), keep `WM_IIFA_CAM_R` / `_Y` with "the camera eye stays outside a dome over the Iifa
   Tree". high.
 
-## R44 runtime pass: layout and tuning  (status: proposed; questions in docs/wip/r44_runtime_{tm,fieldworld,mainbattle,menus}.md)
+## R44 runtime pass: layout and tuning  (status: **applied**: TM_SCORE_SLASH, TM_R1_NAME_LABEL, TM_TITLE_CARD/SELECTION/MARK, banner shadow comment; MENU_MAIN_PORTRAIT_X_FRONT/BACK swapped, UI_SPRITE_PAUSE, WM_NOCACHE_RIVER_GORGE, WM_ACTOR_SHADOW_ONLY; MSG_TAIL_DOWN (local below -> above), AKAO_BANK_*_SE_FIRST, BTL_FORMULA_GRUDGE / EVT_GB_TONBERRY_GRUDGE, CHR_CLASS_ZIDANE / BTL_FORMULA_PHYSICAL_NOT_ZIDANE; CONFIG_SPRITE_PORT1/2, WM_CHOCOGRAPH_* (res_ids.h), MENU_HELP_MARGIN_X. Still pending (low, in the comments): why the poly cache is off in the WM_NOCACHE boxes, the Air Garden guess for WM_ACTOR_SHADOW_ONLY, WM_VEHICLE_REST_ROLL's visible effect, slotted 2xx battle banks; questions in docs/wip/r44_runtime_{tm,fieldworld,mainbattle,menus}.md)
 
 Method: PCSX-Redux, disc 1 (`3ds4_tm_*`, `menu_main`, `menu_items`, `menu_config`, `field_dali_inn`,
 `field_opening_dark`, `field_ice_300` via `tools/rt/wm_enter.py`) and disc 3 (`disc3_pandemonium_lv99_field`,

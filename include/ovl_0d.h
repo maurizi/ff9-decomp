@@ -248,8 +248,9 @@ typedef struct {
 #define TM_FILE_OPPONENTS 3 /* -> g_tmOpponents */
 #define TM_FILE_BG        4 /* background, VRAM 0x280 (tm_drawBackground's first 256 columns) */
 #define TM_FILE_BOARD     5 /* board picture, VRAM 0x340 (tm_drawBoard) */
-#define TM_FILE_RESULT_TEXT  6 /* VRAM 0x280,0x100 (8 bpp 256x256): "WIN" / "LOSE" / "PERFECT" / "DRAW" banners, "Card
-                                * Select", "Discard", "Selection", combo digits and "COMBO" ([runtime] R41b) */
+#define TM_FILE_RESULT_TEXT  6 /* VRAM 0x280,0x100 (8 bpp 256x256): "WIN" / "LOSE" / "PERFECT" / "DRAW" banners (and
+                                * their blurred shadows), "Card", "Selection", "Discard", the "!" mark, an unused
+                                * "Select", combo digits and "COMBO" ([runtime] R41b, R44) */
 #define TM_FILE_SCORE_DIGITS 7 /* VRAM 0x300,0x100 (8 bpp 256x128): the big blue / orange score numerals, card backs,
                                 * small arrows and a stat font ([runtime] R41b) */
 #define TM_FILE_COIN         8 /* VRAM 0x300,0x180 (8 bpp 256x128): the coin-toss coin frames, arrow pointers, "NEW Card",
@@ -787,8 +788,8 @@ enum {
 #define TM_UV_SCORE_ENEMY_V 0x20 /* orange */
 #define TM_UV_SCORE_ZERO_U 0x90
 #define TM_UV_SCORE_TEN_U 0xA0   /* "10", two digits wide */
-#define TM_SCORE_MID_X 0x10      /* the 0x30-wide piece between the two counts (runtime: pending R44) */
-#define TM_SCORE_MID_Y 0xAA
+#define TM_SCORE_SLASH_X 0x10    /* the 0x30-wide ornamented diagonal slash between the two counts */
+#define TM_SCORE_SLASH_Y 0xAA
 
 /* Battle values (tm_drawBattleValues): select-parts digits over each fighting card */
 #define TM_VALUE_DX 8
@@ -805,7 +806,8 @@ enum {
 #define TM_COIN_Y 0x5C
 #define TM_COIN_H 0x28
 
-/* Result banner (tm_drawResult): two layers, additive then subtractive, at y TM_RESULT_Y */
+/* Result banner (tm_drawResult): two layers at y TM_RESULT_Y: the gold word drawn additive, and a blurred dark copy of
+ * it drawn subtractive at the same spot (a soft shadow; both go to one OT slot, so the shadow is drawn first) */
 #define TM_RESULT_Y 0x58
 #define TM_RESULT_H 0x28
 #define TM_RESULT_PERFECT_X 0x4A
@@ -827,8 +829,8 @@ enum {
 #define TM_GET_BOX_DY 9
 #define TM_R1_ICON_X 0x12    /* top left: the R1 button icon (TM_TEXT_ICON_R1) */
 #define TM_R1_ICON_Y 9
-#define TM_R1_LABEL_X 0x1F   /* and the coin-file label beside it (runtime: pending R44) */
-#define TM_R1_LABEL_Y 0xC
+#define TM_R1_NAME_LABEL_X 0x1F /* and the "-NAME" label beside it */
+#define TM_R1_NAME_LABEL_Y 0xC
 
 /* Message windows (win_openFree, centred unless an x is given): text TM_WIN_TEXT_X in, width = text +
  * 2 * TM_WIN_TEXT_X (2 * TM_BOX_PAD_X for the trade window) */
@@ -923,17 +925,17 @@ enum {
 #define TM_COPY_L1_X 0xB5
 #define TM_COPY_R1_X 0xF1
 #define TM_COPY_ICON_Y 0xB6
-/* Stock title sprites (result-text page). Card selection shows two (runtime: pending R44); discarding shows one
- * between two blinking arrows. */
-#define TM_TITLE_SELECT_X 0x58
-#define TM_TITLE_SELECT_Y 0xA
-#define TM_TITLE_SELECT2_X 0x8C
-#define TM_TITLE_SELECT2_Y 0xC
+/* Stock title sprites (result-text page). Card selection shows "Card" + "Selection"; discarding shows "Discard"
+ * between two blinking "!" marks. */
+#define TM_TITLE_CARD_X 0x58
+#define TM_TITLE_CARD_Y 0xA
+#define TM_TITLE_SELECTION_X 0x8C
+#define TM_TITLE_SELECTION_Y 0xC
 #define TM_TITLE_DISCARD_X 0x79
 #define TM_TITLE_DISCARD_Y 0xE
-#define TM_TITLE_ARROW_R_X 0xCA
-#define TM_TITLE_ARROW_L_X 0x66
-#define TM_TITLE_ARROW_Y 0x12
+#define TM_TITLE_MARK_R_X 0xCA
+#define TM_TITLE_MARK_L_X 0x66
+#define TM_TITLE_MARK_Y 0x12
 #define TM_TITLE_TEXT_Y 0x10   /* title window callbacks no C code installs (tm_drawSelectTitle, tm_drawDiscardTitle) */
 #define TM_TITLE_TEXT_SELECT_X 0x8A
 #define TM_TITLE_TEXT_DISCARD_X 0x82

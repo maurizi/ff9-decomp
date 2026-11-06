@@ -513,10 +513,14 @@ typedef struct WmEffect {
 #define WM_FLY_CEILING_SOFT 0x7E8
 /* wm_movePlayer: boxes (centre, half size) where the walkmesh polygon cache is turned off (g_worldUsePolyCache = 0),
  * named for the navi place (g_worldNaviPlaces page 1, name = world text bank 0 entry place + 1, read from the disc)
- * at or nearest their centre. What makes the cache unusable there: runtime pending R44. Evidence: [code], data */
-#define WM_NOCACHE_CELL_16_14_X 0x407F7 /* (264183, -245187), map cell (16, 14): no navi place on it (19 "Chocobo's Forest" is 14400 away) */
-#define WM_NOCACHE_CELL_16_14_Z -0x3BDC3
-#define WM_NOCACHE_CELL_16_14_R 0x800
+ * at or nearest their centre. Why the cache is unusable there is not proven: the cache returns the first cached
+ * polygon containing (x, z) without checking y, so presumably these are places with stacked ground (runtime R44 found
+ * no walking difference with the stores nopped; pending, low). Evidence: [code], data */
+#define WM_NOCACHE_RIVER_GORGE_X 0x407F7 /* (264183, -245187), map cell (16, 14): a narrow river canyon running into the
+                                          * sea ([runtime] R44, medium); no navi place on it (19 "Chocobo's Forest" is
+                                          * 14400 away) */
+#define WM_NOCACHE_RIVER_GORGE_Z -0x3BDC3
+#define WM_NOCACHE_RIVER_GORGE_R 0x800
 #define WM_NOCACHE_CONDE_PETIE_X 0x37FA8 /* place 32 "Conde Petie" (229037, -90135) */
 #define WM_NOCACHE_CONDE_PETIE_Z -0x1606D
 #define WM_NOCACHE_CONDE_PETIE_R 0xC00
@@ -645,12 +649,14 @@ typedef struct {
 #define WM_ACTOR_AIRSHIP 9 /* the Hilda Garde 3 (runtime, disc 3; rideMode WM_MOVE_HILDA_GARDE) */
 #define WM_ACTOR_AIRSHIP2 10 /* the Invincible (from data: flying, rideMode WM_MOVE_INVINCIBLE) */
 #define WM_ACTOR_MOOGLE 11 /* g_worldMoogleActor (model 307), comes when called with Square */
-#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel draws nothing for it; wm_drawActorShadow gives it a fixed shadow */
+#define WM_ACTOR_SHADOW_ONLY 14 /* wm_drawActorModel draws nothing for it; wm_drawActorShadow gives it a fixed shadow.
+                                * [runtime] R44: uid 7, model 452, a round shadow drifting slowly over the sea west
+                                * of the Outer Continent; likely Chocobo's Air Garden seen from below (low) */
 /* wm_drawActorShadow. Evidence: [code] */
 #define WM_SHADOW_FADE_DEPTH 0x8000 /* a model's shadow fades out towards this view depth */
 #define WM_SHADOW_SCALE_X_MUL 14 /* WmShadow.scaleX / scaleZ = the lift-scaled width x these */
 #define WM_SHADOW_SCALE_Z_MUL 12
-#define WM_SHADOW_PLAIN_SIZE 0x7D0 /* WM_ACTOR_NO_MODEL's fixed shadow: strength (x shadowDepth), bigger in fog */
+#define WM_SHADOW_PLAIN_SIZE 0x7D0 /* WM_ACTOR_SHADOW_ONLY's fixed shadow: strength (x shadowDepth), bigger in fog */
 #define WM_SHADOW_PLAIN_SIZE_FOG 0xAF0
 #define WM_SHADOW_PLAIN_FADE_DEPTH 0x7060
 #define WM_SHADOW_PLAIN_SCALE_X 0x302
@@ -659,7 +665,8 @@ typedef struct {
 /* wm_updateActors: tilts settling back each frame. Evidence: [code] */
 #define WM_ROLL_SETTLE_STEP 10 /* the mount's rotZ eases to 0, the camera roll to 0 (turning slowly or not at all), */
                                /* a landed vehicle's rotZ to WM_VEHICLE_REST_ROLL, by this a frame */
-#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest (runtime pending R44) */
+#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest: [runtime] R44 reads 14 parked and flying straight, but
+                                * the drawn Hilda Garde 3 ignores this rotZ (no visible tilt; low) */
 #define WM_VEHICLE_FLY_SETTLE_STEP 16 /* ... flying straight */
 #define WM_ROLL_SETTLE_SPEED 300 /* the camera roll also levels out below this speed */
 

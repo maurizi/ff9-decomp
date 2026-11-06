@@ -2512,8 +2512,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_applyAbilityStatus(&calc);
         }
         break;
-    case BTL_FORMULA_PHYSICAL_CLASS8:
-        if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & 8) {
+    case BTL_FORMULA_PHYSICAL_NOT_ZIDANE:
+        if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & CHR_CLASS_ZIDANE) {
             calc.flags |= BTL_CALC_MISS;
         } else {
             btl_setAbilityPhysParams(&calc);
@@ -2565,12 +2565,12 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_finishMagicDamage(&calc);
         btl_calcEnemySteal(&calc);
         break;
-    case BTL_FORMULA_EVT_POWER_DAMAGE:
+    case BTL_FORMULA_GRUDGE:
         calc.targetResult |= BTL_POPUP_HP;
-        if (g_evtGlobalVars.b[EVT_GB_POWER_DAMAGE_EXP] >= BTL_EVT_POWER_DAMAGE_CAP_EXP) {
+        if (g_evtGlobalVars.b[EVT_GB_TONBERRY_GRUDGE] >= BTL_GRUDGE_CAP_EXP) {
             calc.targetHpChange = DAMAGE_MAX;
         } else {
-            calc.targetHpChange = 1 << (g_evtGlobalVars.b[EVT_GB_POWER_DAMAGE_EXP] - 1);
+            calc.targetHpChange = 1 << (g_evtGlobalVars.b[EVT_GB_TONBERRY_GRUDGE] - 1);
         }
         break;
     case BTL_FORMULA_RANDOM_STATUS:
