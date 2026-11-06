@@ -498,11 +498,11 @@ s32 akao_loadBankInSlot(s32 *data, s32 slot, s32 wait) {
     y = h->spuAddr;
     if (slot != 0) {
         id = h->id;
-        if ((u32)(id - 500) < 100) {
+        if ((u32)(id - AKAO_BANK_FIELD_SE_FIRST) < AKAO_BANK_FIELD_SE_COUNT) {
             y += slot << 12;
-        } else if ((u32)(id - 200) < 100) {
+        } else if ((u32)(id - AKAO_BANK_BATTLE_SE_FIRST) < AKAO_BANK_BATTLE_SE_COUNT) {
             y += (slot * 5) << 12;
-        } else if ((u32)(id - 300) < 200) {
+        } else if ((u32)(id - AKAO_BANK_ENEMY_SE_FIRST) < AKAO_BANK_ENEMY_SE_COUNT) {
             y += slot << 14;
             slot += 4;
         }

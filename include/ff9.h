@@ -180,7 +180,7 @@ typedef union {
  * against the main menu at runtime (docs/runtime-findings.md). */
 typedef struct {
     u8 name[0xA]; /* 0xFF-terminated text, read up to 7 chars */
-    u8 classFlags; /* chr_getClassFlags(row): 0x2 checked by Protect Girls (btl_findCover) and ability 0x61, 0x8 by ability 0x62, 0x10 picks the alternate default set / appearance */
+    u8 classFlags; /* chr_getClassFlags(row): 0x2 checked by Protect Girls (btl_findCover) and ability 0x61, 0x8 (CHR_CLASS_ZIDANE) by ability 0x62, 0x10 picks the alternate default set / appearance */
     u8 level;
     u32 exp;      /* capped at 9999999 */
     u16 hp;
@@ -221,12 +221,13 @@ typedef struct {
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 /* Character.classFlags (chr_getClassFlags: g_chrClassFlags, main data 0x8006CACC = 09 05 06 05 06 05 06 05 15 15 15 16 by
- * stat class (CHR_STATS_*, from the ability row); bits 0x4/0x8 left unnamed: 0x8 only for class 0,
- * ability formula 0x62 misses it, 0x4 on every other class;
- * formula 0x62 is in no ability or enemy record, so neither was observed) */
+ * stat class (CHR_STATS_*, from the ability row); 0x4 (unnamed: no code tests it) is on every class but Zidane's;
+ * formula 0x62 is in no ability or enemy record, so its miss was never observed) */
 #define CHR_CLASS_MALE 0x1 /* data only, medium: set on every class without CHR_CLASS_FEMALE (Quina included); no code
                             * tests it (battle AI scripts can read classFlags through btl_attr 0x43) */
 #define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; classes 2, 4, 6 and 11 (Beatrix) */
+#define CHR_CLASS_ZIDANE 0x8 /* class 0 only: of the 9 characters only Zidane has it ([runtime] R44, medium: no game text
+                             * names it); BTL_FORMULA_PHYSICAL_NOT_ZIDANE misses it */
 #define CHR_CLASS_GUEST 0x10 /* classes 8 and up (CHR_STATS_*): no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
                              * the alternate default set and appearance (chr_getDefaultSet, chr_calcAppearance) */
 
@@ -905,7 +906,7 @@ void win_updateAll(void);
 #define TEXT_CHOICES_MASKED 0x4F /* + lines, cancel line: choices, some hidden by g_msgChoiceMaskReq (EVT_OP_MSG_CHOICE_MASK) */
 #define TEXT_BALLOON_OFS 0x5F /* + 3 x s16: g_evtBalloonOfsX/Y/Z, the speaker point the balloon points at */
 /* window anchors (WinLayout.anchor, evt_getMsgLayout). As a balloon the low 2 bits are its side of the speaker
- * (MSG_TAIL_DIR inverted: 0 = below right); without one, the fixed screen position given */
+ * (MSG_TAIL_DIR inverted: 0 = box above the speaker, tail at its right end); without one, the fixed screen position given */
 #define TEXT_WIN_BOTTOM_RIGHT 0x50
 #define TEXT_WIN_BOTTOM_LEFT 0x51
 #define TEXT_WIN_TOP_RIGHT 0x52
@@ -1902,7 +1903,9 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_TRANCE_ENABLED 0x10      /* Trance gauge shown and filled (menuStatus_drawExp, btl_cmd) */
 #define EVT_GB_DAGGER_FALTERS 0x11      /* Dagger may fail to act after Alexandria (btl_cmd) */
 #define EVT_GB_SUMMON_MP_X4 0x12        /* summons marked flags & 4 cost 4x MP (Ramuh 22 -> 88) */
-#define EVT_GB_POWER_DAMAGE_EXP 0xC0    /* exponent of BTL_FORMULA_EVT_POWER_DAMAGE: 1 << (n - 1) damage, DAMAGE_MAX from 14 */
+#define EVT_GB_TONBERRY_GRUDGE 0xC0     /* Tonberry kills: set to 1 at the Tonberry battles' start (when 0), + 2 per
+                                         * Tonberry killed ([runtime] R44); exponent of BTL_FORMULA_GRUDGE: 1 << (n - 1)
+                                         * damage, DAMAGE_MAX from 14 */
 #define EVT_GB_BATTLE_NO_HUD 0xC1       /* battle runs without the HUD (btl_update) */
 #define EVT_GB_NO_ACTION_ABILITIES 0xE3 /* action abilities unusable from the menu (menu_ability) */
 #define EVT_GB_BATTLE_AI_FLAGS 0xC7     /* battle AI script flags (encounters 337, 891) */
@@ -2044,11 +2047,12 @@ typedef struct MsgWindow {
     u8 pendingChars;
     u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
-/* MsgWindow / WinLayout tailMode: bits 0-1 are win_setTail's mode (evt_placeBalloon: below << 1 | right),
+/* MsgWindow / WinLayout tailMode: bits 0-1 are win_setTail's mode (evt_placeBalloon: above << 1 | right),
  * MSG_FLAG_FRAMELESS / MSG_FLAG_NO_FOLLOW come from the message flags (evt_getMsgLayout); 0x20 has no reader there */
-#define MSG_TAIL_RIGHT 0x1
-#define MSG_TAIL_BELOW 0x2
-#define MSG_TAIL_DIR (MSG_TAIL_RIGHT | MSG_TAIL_BELOW) /* passed to win_setTail */
+#define MSG_TAIL_RIGHT 0x1 /* the tail sits at the box's right end (box shifted left of the anchor) */
+#define MSG_TAIL_DOWN 0x2 /* box above the speaker, tail on its bottom edge pointing down ([runtime] R44); clear:
+                          * box below, tail pointing up */
+#define MSG_TAIL_DIR (MSG_TAIL_RIGHT | MSG_TAIL_DOWN) /* passed to win_setTail */
 #define MSG_TAIL_FRAMELESS 0x10 /* msg_open opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
 /* message flags: the flags argument of EVT_OP_MSG* (evt_getMsgLayout, msg_open, evt_execInstr_window) */
 #define MSG_FLAG_NO_TAIL 0x04 /* balloon frame without its tail (also without a tail position), at least 0x1D wide */
@@ -4306,8 +4310,10 @@ typedef struct {
 #define BALLOON_RIGHT        312
 #define BALLOON_TOP          8
 #define BALLOON_BOTTOM       212
-#define BALLOON_GAP_ABOVE    16  /* box above the anchor: its bottom edge 16 px over it */
-#define BALLOON_GAP_BELOW    32  /* box below the anchor: its top edge 32 px under it */
+#define BALLOON_GAP_ABOVE    16  /* box above the anchor (the head top): its bottom edge 16 px over it, room for the
+                                  * down tail */
+#define BALLOON_GAP_BELOW    32  /* box below the head-top anchor: its top edge 32 px under it, clearing the head plus
+                                  * the up tail ([runtime] R44) */
 s32 msg_overlapsRect(WinLayout *r);
 extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);

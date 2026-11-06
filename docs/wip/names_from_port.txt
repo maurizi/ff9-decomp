@@ -11660,3 +11660,10 @@ WM_NOCACHE_CELL_16_14_X WM_NOCACHE_RIVER_GORGE_X  # [runtime] R44 (medium): a ri
 WM_NOCACHE_CELL_16_14_Z WM_NOCACHE_RIVER_GORGE_Z  # [runtime] R44
 WM_NOCACHE_CELL_16_14_R WM_NOCACHE_RIVER_GORGE_R  # [runtime] R44
 WM_ACTOR_NO_MODEL WM_ACTOR_SHADOW_ONLY  # [runtime] R44: a shadow with nothing drawn above it
+MSG_TAIL_BELOW MSG_TAIL_DOWN  # [runtime] R44: bit 1 set = box above the speaker, tail pointing down (cf. HELP_TAIL_DOWN)
+below above  # local in evt_placeBalloon / _y, evt_followBalloon / _y (main event.c): set when the box goes above the anchor
+BTL_FORMULA_EVT_POWER_DAMAGE BTL_FORMULA_GRUDGE  # [runtime] R44: Tonberry "Everyone's Grudge", encounters 872-874
+EVT_GB_POWER_DAMAGE_EXP EVT_GB_TONBERRY_GRUDGE  # [runtime] R44: 1 at battle start, +2 per Tonberry killed
+BTL_EVT_POWER_DAMAGE_CAP_EXP BTL_GRUDGE_CAP_EXP  # [code] follows the formula rename
+BTL_FORMULA_PHYSICAL_CLASS8 BTL_FORMULA_PHYSICAL_NOT_ZIDANE  # [runtime] R44 (medium): classFlags 0x8 = Zidane only
+# new (R44, main): CHR_CLASS_ZIDANE 0x8 (ff9.h, medium), AKAO_BANK_{BATTLE,ENEMY,FIELD}_SE_FIRST/_COUNT (snd_ids.h; battle low, enemy/field medium)

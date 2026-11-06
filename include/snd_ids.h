@@ -245,6 +245,17 @@
 #define SND_BANK_COMMON 0x84 /* the resident system SE bank (128 instruments, SPU slot 128): main game_loadCommonAkao
                               * uploads it once; the field never re-uploads it. [runtime] R41b: menu cursor and
                               * battle / spell SE key its instruments */
+/* AKAO bank header ids (AkaoBankHeader.id, FF9.IMG dir 11) by range: akao_loadBankInSlot moves a bank loaded into
+ * slot n > 0 up the SPU from its header address by a per-range step. [runtime] R44 (load traces, bank file scan) */
+#define AKAO_BANK_BATTLE_SE_FIRST 200 /* 200-299: battle SE banks (8 instruments at 192, SPU 0x4F100; step 20 KB); only
+                                       * the unslotted 208 (the battle's own) was seen loading (low) */
+#define AKAO_BANK_BATTLE_SE_COUNT 100
+#define AKAO_BANK_ENEMY_SE_FIRST 300  /* 300-499: an enemy type's SE bank, one slot per type (3 instruments at 224, SPU
+                                       * 0x43100; step 16 KB, loaded-bank index slot + 4; e.g. Malboro 350) (medium) */
+#define AKAO_BANK_ENEMY_SE_COUNT 200
+#define AKAO_BANK_FIELD_SE_FIRST 500  /* 500-599: a field's SE bank (8 instruments at 200, SPU 0x6F100; step 4 KB;
+                                       * fld_soundBankReadCallback, e.g. 504, 511) (medium) */
+#define AKAO_BANK_FIELD_SE_COUNT 100
 
 /* SPU registers (psx-spx names) */
 #define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))

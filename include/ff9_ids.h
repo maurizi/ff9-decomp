@@ -393,13 +393,14 @@
 #define BTL_FORMULA_ABSORB_STRENGTH    0x5F /* target strength / 2, caster strength x2 */
 #define BTL_FORMULA_ADD_TRANCE         0x60 /* fills the trance gauge, adds Trance */
 #define BTL_FORMULA_STATUS_NOT_FEMALE  0x61 /* adds the statuses unless CHR_CLASS_FEMALE */
-#define BTL_FORMULA_PHYSICAL_CLASS8    0x62 /* PHYSICAL power, magic finish; misses class flag 0x8 */
+#define BTL_FORMULA_PHYSICAL_NOT_ZIDANE 0x62 /* PHYSICAL power, magic finish; misses CHR_CLASS_ZIDANE (no ability uses it) */
 #define BTL_FORMULA_LEVEL_DAMAGE       0x63 /* status roll: target level * power damage */
 #define BTL_FORMULA_ENEMY_ATTACK       0x64 /* enemy physical attack (Frozen shatters) */
 #define BTL_FORMULA_ENEMY_STEAL        0x65 /* hit roll: steals item `rate` */
 #define BTL_FORMULA_ENEMY_ATTACK_STEAL 0x66 /* enemy physical attack, then steals item `rate` */
 #define BTL_FORMULA_ADD_STATUS_SURE    0x67 /* adds the statuses, no roll (Protect, Shell, Haste, Regen, Carbuncle, Defend) */
-#define BTL_FORMULA_EVT_POWER_DAMAGE   0x68 /* 1 << (event global byte 0xC0 - 1) damage, 9999 from 14 */
+#define BTL_FORMULA_GRUDGE             0x68 /* the Tonberries' "Everyone's Grudge" (encounters 872-874): 1 <<
+                                              * (EVT_GB_TONBERRY_GRUDGE - 1) damage, 9999 from 14 ([runtime] R44) */
 #define BTL_FORMULA_RANDOM_STATUS      0x69 /* each status bit at 1/8 */
 #define BTL_FORMULA_REMOVE_UNIT        0x6A /* the party member leaves the battle (no exp, saved, unlinked) */
 #define BTL_FORMULA_ENEMY_ATTACK_ROW   0x6B /* ENEMY_ATTACK without the shatter check; toggles the row of a target whose BTL_UNIT_ROW is set */

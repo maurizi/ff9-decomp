@@ -1,5 +1,12 @@
 # R44 main / ovl_0b: layout and tuning literals left for a runtime check
 
+**Status: answered and applied** (docs/runtime-findings.md, "R44 runtime pass: layout and tuning"): Q1 tailMode bit 1
+= box above the speaker, tail down (`MSG_TAIL_BELOW` -> `MSG_TAIL_DOWN`, the evt_placeBalloon / evt_followBalloon
+local `below` -> `above`, BALLOON_GAP_* comments), Q2 `AKAO_BANK_FIELD_SE_FIRST` 500 / `AKAO_BANK_ENEMY_SE_FIRST` 300
+(medium) / `AKAO_BANK_BATTLE_SE_FIRST` 200 (low: only the unslotted 208 seen), Q3 `BTL_FORMULA_GRUDGE` /
+`EVT_GB_TONBERRY_GRUDGE` / `BTL_GRUDGE_CAP_EXP`, Q4 `CHR_CLASS_ZIDANE` (medium) and `BTL_FORMULA_PHYSICAL_NOT_ZIDANE`,
+Q5 tranceKind confirmed.
+
 Round R44 (screen layout, tuning, probability bands) for the boot exe (`main`) and the battle overlay (`ovl_0b`,
 0x800A7000). The names below are in the headers already, named by what the code does; each row says what would
 confirm or correct the part the code can't prove. States and helpers: `docs/emulator.md` (`tools/rt/enter_battle.py`).

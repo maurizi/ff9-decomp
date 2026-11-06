@@ -732,7 +732,8 @@ typedef struct BtlCalc {
 #define BTL_REVIVE_HP_RANGE         10 /* Phoenix Down revives with RAND8() % 10 + 1 HP; on undead/zombie sets 0-9 */
 #define BTL_LOW_HP_RANGE            9  /* BTL_FORMULA_LOW_HP_STATUS, and the Low HP status of BTL_FORMULA_RANDOM_STATUS: hp = RAND8() % 9 + 1 */
 #define BTL_SPEAR_TRANCE_MIN_MULT   4  /* BTL_FORMULA_SPEAR_TRANCE: multiplier raised to at least 4 before the split over the targets */
-#define BTL_EVT_POWER_DAMAGE_CAP_EXP 14 /* BTL_FORMULA_EVT_POWER_DAMAGE: from exponent 14 (1 << 13 = 8192) the damage is DAMAGE_MAX */
+#define BTL_GRUDGE_CAP_EXP 14 /* BTL_FORMULA_GRUDGE: from exponent 14 (1 << 13 = 8192; the 7th Tonberry kill) the damage
+                              * is DAMAGE_MAX */
 
 /* BtlCmd as the sequence interpreter reads it (BtlScript.cmd) */
 typedef struct {
@@ -3027,7 +3028,7 @@ extern Unk80105078 *g_btluiPanel;
 #define BTLUI_PANEL_TRANCE_X 0x10C /* Trance gauge, 4 px under the ATB gauge */
 #define BTLUI_STATUS_ICON_W  12   /* btlui_drawStatusList: icon pitch */
 #define BTLUI_STATUS_ICONS_MAX 9  /* btlui_drawStatusList: icons shown per member */
-/* Unk80105078.tranceKind */
+/* Unk80105078.tranceKind ([runtime] R44: a gauge for every member, 2 for Eiko in Trance) */
 #define BTLUI_TRANCE_NONE    0 /* no Trance gauge: ATB gauge centred in the row */
 #define BTLUI_TRANCE_GAUGE   1 /* Trance gauge under the ATB gauge */
 #define BTLUI_TRANCE_ACTIVE  2 /* in Trance: the Trance gauge drawn first, in gauge style 1 */
