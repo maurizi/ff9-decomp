@@ -2463,7 +2463,7 @@ void btlui_drawTargetList(Window *win) {
     u8 *name;
     s32 pal;
     Window *w = win;
-    ui_drawEtchedLine(win->x + 0x6E, win->y + 4, win->otz, 9 - win->h);
+    ui_drawEtchedLine(win->x + BTLUI_TGT_DIVIDER_X, win->y + 4, win->otz, 9 - win->h);
     color = text_getColor();
     for (; unit != NULL; unit = unit->next) {
         name = btl_getUnitName(unit);
@@ -2475,12 +2475,12 @@ void btlui_drawTargetList(Window *win) {
                 } else {
                     pal = TEXT_PAL_RED;
                 }
-                text_draw(w->x + 0x7A, y2, win->otz, name, pal);
-                y2 += 15;
+                text_draw(w->x + BTLUI_TGT_PARTY_X, y2, win->otz, name, pal);
+                y2 += BTLUI_LIST_ROW_H;
             } else {
                 pal = ((u8)btl_hasStatus(unit, BTL_STATUS_KO) != 0) * TEXT_PAL_GREY;
-                text_drawBlock(w->x + 0xC, y1, win->otz, name, pal);
-                y1 += 15;
+                text_drawBlock(w->x + BTLUI_TGT_ENEMY_X, y1, win->otz, name, pal);
+                y1 += BTLUI_LIST_ROW_H;
             }
         }
     }
@@ -2504,8 +2504,8 @@ void btlui_drawTargetListOverlay(Window *win) {
     if (win->state != WIN_STATE_OPEN) {
         win_setClip(NULL, win->otz, WIN_STYLE_FRAMELESS);
     }
-    ui_drawLabel(w->x + 8, rect->y - 3, win->otz, g_winLabelStrings.labelEnemy, UI_LABEL_NORMAL);
-    ui_drawLabel(w->x + 0x76, rect->y - 3, win->otz, g_winLabelStrings.labelPlayer, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x + BTLUI_TGT_ENEMY_LABEL_X, rect->y - 3, win->otz, g_winLabelStrings.labelEnemy, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x + BTLUI_TGT_PARTY_LABEL_X, rect->y - 3, win->otz, g_winLabelStrings.labelPlayer, UI_LABEL_NORMAL);
     if (win->state != WIN_STATE_OPEN) {
         rc.x = rect->x;
         rc.y = rect->y - 3;
@@ -2520,15 +2520,15 @@ void btlui_drawTargetListOverlay(Window *win) {
             if ((unit->flags >> BTL_UNIT_TARGETABLE_BIT) & 1) {
                 if ((unit->flags >> BTL_UNIT_TARGETED_BIT) & 1) {
                     if (unit->flags & BTL_UNIT_PARTY) {
-                        ui_drawHand(rect->x + 0x62, yr, win->otz - 1);
+                        ui_drawHand(rect->x + BTLUI_TGT_PARTY_HAND_X, yr, win->otz - 1);
                     } else {
-                        ui_drawHand(rect->x - 0xC, yl, win->otz - 1);
+                        ui_drawHand(rect->x + BTLUI_TGT_ENEMY_HAND_X, yl, win->otz - 1);
                     }
                 }
                 if (unit->flags & BTL_UNIT_PARTY) {
-                    yr += 15;
+                    yr += BTLUI_LIST_ROW_H;
                 } else {
-                    yl += 15;
+                    yl += BTLUI_LIST_ROW_H;
                 }
             }
         }

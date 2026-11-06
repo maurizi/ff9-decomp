@@ -3059,6 +3059,15 @@ typedef struct {
 #define BTLUI_CMD_TEXT_Y 6    /* first command name's y inside the window */
 #define BTLUI_SIDE_W     0x3E /* Defend / Change box beside the cursor row */
 #define BTLUI_SIDE_H     0x11
+/* target window (btlui_drawTargetList, btlui_drawTargetListOverlay): enemy column left, party column right of an
+ * etched divider, rows BTLUI_LIST_ROW_H apart, a hand left of each targeted name */
+#define BTLUI_TGT_DIVIDER_X  0x6E /* the etched line between the columns */
+#define BTLUI_TGT_ENEMY_X    0xC  /* enemy names */
+#define BTLUI_TGT_PARTY_X    0x7A /* party names */
+#define BTLUI_TGT_ENEMY_LABEL_X 8    /* "Enemy" label on the top edge */
+#define BTLUI_TGT_PARTY_LABEL_X 0x76 /* "Player" label */
+#define BTLUI_TGT_ENEMY_HAND_X (-0xC) /* hand cursor, from the open rect's x */
+#define BTLUI_TGT_PARTY_HAND_X 0x62
 
 /* battle command menu (runtime: Vivi's menu -> Eiko's, docs/runtime-findings.md) */
 typedef struct {
