@@ -107,10 +107,10 @@ void timer_draw(void) {
     min = timer->remaining / 60;
     hr = min / 60;
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + 1;
-    g_timerRect.x = 4;
+    g_timerRect.x = TIMER_X;
     pkt = g_clock.pktPtr;
     min %= 60;
-    if (elapsed < 8) {
+    if (elapsed < TIMER_SLIDE_FRAMES) {
         g_timerRect.x = elapsed * 8 - 0x3C;
         blink = 1;
     }
@@ -133,17 +133,17 @@ void timer_draw(void) {
     if (shown) {
         dg = hr / 10;
         if (dg != 0) {
-            pkt = ui_buildSprite(g_timerRect.x + 5, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+            pkt = ui_buildSprite(g_timerRect.x + TIMER_HI_TENS_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         }
         dg = hr - dg * 10;
-        pkt = ui_buildSprite(g_timerRect.x + 0xF, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_HI_ONES_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         dg = min / 10;
-        pkt = ui_buildSprite(g_timerRect.x + 0x23, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_LO_TENS_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         dg = min - dg * 10;
-        pkt = ui_buildSprite(g_timerRect.x + 0x2D, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_LO_ONES_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
     }
     if (colon) {
-        pkt = ui_buildSprite(g_timerRect.x + 0x19, 8, ot, UI_SPRITE_TIMER_COLON, timer->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_COLON_X, TIMER_DIGIT_Y, ot, UI_SPRITE_TIMER_COLON, timer->running == 0, &w, pkt);
     }
     pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, CONFIG_WINDOW_COLOR(), pkt);
     setlen(pkt, PRIM_LEN(TILE));
