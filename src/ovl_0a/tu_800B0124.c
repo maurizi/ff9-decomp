@@ -453,9 +453,9 @@ state:
             akao_beginBankUpload();
         }
         g_gameState->gameData->soundLoadDest = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
-        g_gameState->gameData->soundLoadChunk = 0x156F00 - (g_gameState->gameData->soundLoadDest - (s32)g_loadAreaEnd);
+        g_gameState->gameData->soundLoadChunk = FLD_WORK_SIZE - (g_gameState->gameData->soundLoadDest - (s32)g_loadAreaEnd);
         if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
-            g_gameState->gameData->soundLoadChunk -= 0x3000;
+            g_gameState->gameData->soundLoadChunk -= FLD_WORK_SWIRL_SIZE;
         }
         val = g_gameState->gameData->soundLoadChunk;
         g_gameState->gameData->soundLoadChunk = val / 2048 * 2048;
@@ -470,9 +470,9 @@ state:
             preload_discardRange((s32)g_gameState->gameData->cdRead[0].dest, g_gameState->gameData->cdRead[0].chunk);
             if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->soundBankSize) {
                 g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].dest;
-                room = 0x156F00 - ((s32)g_gameState->gameData->cdRead[0].dest - (s32)g_loadAreaEnd);
+                room = FLD_WORK_SIZE - ((s32)g_gameState->gameData->cdRead[0].dest - (s32)g_loadAreaEnd);
                 if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
-                    room -= 0x3000;
+                    room -= FLD_WORK_SWIRL_SIZE;
                 }
                 room = room / 2048 * 2048;
                 cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
@@ -546,20 +546,20 @@ void fld_getSoundPanVolume(s16 posX, s16 posY, s16 posZ, u8 *outPan, u8 *outVolu
     }
     edge = z / 32;
     span = (128 - edge) * 2;
-    if ((u16)sxy.vx < 320) {
-        pan = sxy.vx * span / 320;
+    if ((u16)sxy.vx < SCREEN_W) {
+        pan = sxy.vx * span / SCREEN_W;
         pan += edge;
     } else if (sxy.vx < 0) {
-        if (sxy.vx < -320) {
-            sxy.vx = -320;
+        if (sxy.vx < -SCREEN_W) {
+            sxy.vx = -SCREEN_W;
         }
-        pan = sxy.vx + 320;
-        pan = pan * edge / 320;
+        pan = sxy.vx + SCREEN_W;
+        pan = pan * edge / SCREEN_W;
     } else {
-        if (sxy.vx >= 640) {
-            sxy.vx = 639;
+        if (sxy.vx >= (2 * SCREEN_W)) {
+            sxy.vx = (2 * SCREEN_W - 1);
         }
-        pan = (sxy.vx - 320) * edge / 320;
+        pan = (sxy.vx - SCREEN_W) * edge / SCREEN_W;
         pan += 255;
         pan -= edge;
     }
@@ -1505,8 +1505,8 @@ s32 fld_preloadFile(s32 fileId, s32 kind, s32 sector, s32 chunkSize) {
         return 0;
     }
     top = fld_getModelCacheBottom(NULL);
-    if ((u32)(g_loadAreaEnd + 0x153F00) < top) {
-        top = (u32)(g_loadAreaEnd + 0x153F00);
+    if ((u32)(g_loadAreaEnd + FLD_WORK_SWIRL) < top) {
+        top = (u32)(g_loadAreaEnd + FLD_WORK_SWIRL);
     }
     size = top - g_fieldPreloadCursor;
     size = size / 2048 * 2048;
@@ -1750,8 +1750,8 @@ void fld_showSplashImage(void) {
         pkt += sizeof(SPRT);
         setSprt(spr[i]);
         setRGB0(spr[i], 0x80, 0x80, 0x80);
-        spr[i]->x0 = (0x140 - img->w * 4) >> 1;
-        spr[i]->y0 = (0xE0 - img->h) / 2;
+        spr[i]->x0 = (SCREEN_W - img->w * 4) >> 1;
+        spr[i]->y0 = (SCREEN_H - img->h) / 2;
         spr[i]->u0 = 0;
         spr[i]->v0 = 0;
         spr[i]->w = img->w * 4 - 1;

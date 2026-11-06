@@ -382,6 +382,21 @@ typedef struct {
 #define FLDBG_SCROLL_MODE 0x7 /* scripted scroll state, stepped by fldbg_updateScroll; fldbg_followPlayer only runs at 0 */
 #define FLDBG_SCROLL_START 1 /* fldbg_scrollTo: first frame (becomes FLDBG_SCROLL_RUN) */
 #define FLDBG_SCROLL_RUN 2 /* fldbg_scrollTo's scroll in progress */
+/* the field screen's centre (res_ids.h SCREEN_W x SCREEN_H): the GTE geometry offset, the default encounter swirl
+ * centre, and the scroll position's distance from the background's left / top edge (fldbg_*) */
+#define FLD_SCREEN_CX (SCREEN_W / 2)
+#define FLD_SCREEN_CY (SCREEN_H / 2)
+/* the field's work RAM after the load area (offsets from g_loadAreaEnd). Evidence: [code] */
+#define FLD_WORK_SIZE 0x156F00 /* streamed sound banks and the battle preload may fill up to here */
+#define FLD_WORK_SWIRL 0x153F00 /* the encounter swirl's buffer (g_swirlBuf) fills the last 0x3000; field preloads stop */
+                                /* below it, and outside an active map sound bank loads leave it free */
+#define FLD_WORK_SWIRL_SIZE (FLD_WORK_SIZE - FLD_WORK_SWIRL)
+#define FLD_WORK_SOUND_PARK 0x146F00 /* the field's own sound bank is copied here through VRAM and uploaded from it */
+/* fld_updateEncounter */
+#define FLD_ENCOUNTER_FADE 0xF /* frames: field music and the slot sounds fade out ... */
+#define FLD_ENCOUNTER_MUSIC_WAIT 7 /* ... and the battle music loads this many frames after the encounter starts */
+#define FLD_PAUSE_LIGHT_FADE 200 /* fld_togglePause: with a fade at least this bright in every channel the pause
+                                  * sprite is drawn subtractive (TPAGE_ABR 2), so it shows on a white screen */
 #define FLDBG_SCROLL_TO_PLAYER 3 /* fldbg_scrollToPlayer: scroll back to the player, then 0 (following resumes) */
 #define FLDBG_SCROLL_HELD 4 /* a fldbg_scrollTo scroll ended: the camera stays put (no following) */
 #define FLDBG_SCROLL_SMOOTH 0x8 /* fldbg_updateScroll eases with math_cos instead of moving linearly (scroll argument 8) */
@@ -1333,6 +1348,76 @@ extern u8 s_menuMainText[]; /* text */
 #define MENU_MAIN_TEXT_EQUIP_HELP 4 /* "Select character." + the five equipment lines (string args 0-9) */
 #define MENU_MAIN_TEXT_STATUS_HELP 5 /* "Select character." + Exp / Next lines (string args 2-7) */
 #define MENU_MAIN_TEXT_EMPTY 0xD /* "": an empty equipment slot */
+#define MENU_MAIN_TEXT_MEMBER_HELP 2 /* + cursor: the "Select character." help of each command (menuMain_updateHelp) */
+#define MENU_MAIN_TEXT_ORDER_HELP 0xB /* + orderPicked: "Select character." / the front row / back row explanation */
+#define MENU_MAIN_COMMAND_LAST (MENU_SCREEN_CONFIG - 1) /* command cursor range 0..this; cursor + 1 = MENU_SCREEN_* */
+
+/* Main menu layout (menu_main.c, same in ovl_0a and ovl_0c). s_menuMainPanelRects: party panels at (0xE,
+ * 0xD + 0x30 * slot) 0xF6 x 0x30, the Time/Gil window at (0xE1, 0x9A) 0x53 x 0x27, the location window
+ * 0x1B high at y 0xC1. Offsets below are from the window's top left corner. */
+#define MENU_MAIN_OTZ_PANEL 0x14 /* windows and the party panels' contents */
+#define MENU_MAIN_OTZ_SHADOW 0x15 /* party panel shadows, behind them */
+#define MENU_MAIN_OTZ_TEXT 0x13 /* Time/Gil and location contents, over their windows */
+#define MENU_MAIN_OTZ_COMMAND_HAND 1 /* command list cursor */
+#define MENU_MAIN_OTZ_MEMBER_HAND 0xC /* party member cursor */
+#define MENU_MAIN_OTZ_TARGET_HAND 0xB /* Order: the second (swap target) cursor */
+#define MENU_MAIN_LOCATION_RIGHT 0x134 /* the location window is right-aligned to this x */
+#define MENU_MAIN_LOCATION_PAD_W 0x10 /* width added to the location name's */
+#define MENU_MAIN_LOCATION_MIN_W 0x44
+#define MENU_MAIN_LOCATION_TEXT_X 8 /* "Location" label and the location name */
+#define MENU_MAIN_LOCATION_TEXT_Y 7 /* the location name */
+#define MENU_MAIN_LABEL_Y (-3) /* window title labels (ui_drawLabel), straddling the top edge */
+#define MENU_MAIN_TIMEGIL_ICON_X 6 /* the TIME / GIL sprites and the "Time & Gil" label */
+#define MENU_MAIN_TIMEGIL_DIGITS_X 0x13 /* play time and gil digits */
+#define MENU_MAIN_TIME_ICON_Y 8
+#define MENU_MAIN_TIME_DIGITS_Y 9
+#define MENU_MAIN_GIL_ICON_Y 0x15
+#define MENU_MAIN_GIL_DIGITS_Y 0x16
+#define MENU_MAIN_GIL_WIDTH 7 /* digits (text_formatNumber) */
+#define MENU_MAIN_EXP_WIDTH 7 /* Exp / Next digits in the Status help (menuMain_setExpHelp) */
+#define MENU_MAIN_COMMAND_HAND_X 0xE0 /* command list cursor: x, first row y and row height */
+#define MENU_MAIN_COMMAND_HAND_Y 0x11
+#define MENU_MAIN_COMMAND_ROW_H 0xF
+#define MENU_MAIN_MEMBER_HAND_DX 0xE /* party member cursor: left of panel 0's x, first row y, row step */
+#define MENU_MAIN_MEMBER_HAND_Y 0x20
+#define MENU_MAIN_MEMBER_ROW_H 0x2E
+#define MENU_MAIN_TARGET_HAND_DX 0xA /* Order: the swap target's cursor, offset down-right of the first */
+#define MENU_MAIN_TARGET_HAND_Y 0x24
+#define MENU_MAIN_HELP_X 8 /* help window bounds (help_setBounds): left of the command list */
+#define MENU_MAIN_HELP_Y 8
+#define MENU_MAIN_HELP_W 0xE8
+#define MENU_MAIN_HELP_BOTTOM 0xF /* lines above the display's bottom */
+/* party panel */
+#define MENU_MAIN_PORTRAIT_X_BACK 8 /* portrait x with battleRow set (which row: runtime pending R44) */
+#define MENU_MAIN_PORTRAIT_X_FRONT 0x16 /* portrait x with battleRow clear: shifted right */
+#define MENU_MAIN_PORTRAIT_Y 1
+#define MENU_MAIN_PORTRAIT_H 0x2D
+#define MENU_MAIN_SHADE_X 8 /* the translucent tile behind the portrait (menuMain_drawPortraitShade) */
+#define MENU_MAIN_SHADE_W 0x2E
+#define MENU_MAIN_SHADE_H 0x30
+#define MENU_MAIN_STATS_X 0x3C /* name, LV, HP and MP column */
+#define MENU_MAIN_NAME_Y 3
+#define MENU_MAIN_LV_Y 0x12
+#define MENU_MAIN_HP_Y 0x1B
+#define MENU_MAIN_MP_Y 0x24
+#define MENU_MAIN_LV_DIGITS_X 0x60
+#define MENU_MAIN_HP_DIGITS_X 0x52 /* "hhhh/max" */
+#define MENU_MAIN_MP_DIGITS_X 0x59 /* "mmm/max" */
+#define MENU_MAIN_HP_WIDTH 4 /* digits before the '/' */
+#define MENU_MAIN_MP_WIDTH 3
+#define MENU_MAIN_STATUS_BOX_X 0x82 /* the box framing the status icons, along the panel's top */
+#define MENU_MAIN_STATUS_BOX_W 0x72
+#define MENU_MAIN_STATUS_BOX_H 0x12
+#define MENU_MAIN_STATUS_X 0x86 /* status icons */
+#define MENU_MAIN_STATUS_Y 4
+#define MENU_MAIN_STONES_X 0x9B /* magic stones (ui_drawStones) */
+#define MENU_MAIN_STONES_Y 0x14
+#define MENU_MAIN_LOW_STAT_DIV 6 /* HP / MP at or below max / this are shown in TEXT_PAL_YELLOW */
+/* menuMain_swapPortraits: spare VRAM for the second and third portrait rects (the first goes to
+ * g_portraitSavedVram) while two party slots trade portraits */
+#define MENU_MAIN_SWAP_VRAM_X1 0x3C0
+#define MENU_MAIN_SWAP_VRAM_X2 0x3D0
+#define MENU_MAIN_SWAP_VRAM_Y 0x1B0
 extern RECT g_fieldDiscChangeRect;
 
 extern RECT s_menuMainPanelRects[6];
@@ -1387,6 +1472,7 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
+#define UI_SPRITE_PAUSE 0xEB /* the pause sprite fld_togglePause centres on screen (g_fieldPauseSprite; runtime pending R44) */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */

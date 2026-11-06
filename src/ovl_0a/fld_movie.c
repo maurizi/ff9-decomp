@@ -1300,7 +1300,7 @@ void fld_movieFinish(void) {
     g_fieldMovieFlags &= ~FLD_MVF_PER_MOVIE;
     field->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
     g_gameState->vsyncMode = 2;
-    g_gameState->dispEnv[0].disp.x = 0x140;
+    g_gameState->dispEnv[0].disp.x = SCREEN_W;
     g_gameState->dispEnv[1].disp.x = 0;
     fld_soundCommand(SND_STREAM_VOL, -1, g_gameState->gameData->ctx.field->area->scene->sndVolume, 0, 0);
 }
@@ -1422,7 +1422,7 @@ void fld_updateEncounter(void) {
 
     if (g_gameState->gameData->ctx.field->area->scene->encounterStep == 0) {
         g_swirlFrame = 0;
-        g_swirlBuf = g_loadAreaEnd + 0x153F00;
+        g_swirlBuf = g_loadAreaEnd + FLD_WORK_SWIRL;
         fld_clearModelCache();
         g_gameState->gameData->ctx.field->area->scene->heapTop = g_modeHeap;
         player = evt_getPlayer();
@@ -1436,25 +1436,25 @@ void fld_updateEncounter(void) {
             gte_ldv0(&worldPos);
             gte_rtps();
             gte_stsxy(&g_gameState->gameData->ctx.field->area->scene->encounterScreenX);
-            if ((u16)g_gameState->gameData->ctx.field->area->scene->encounterScreenX >= 320
+            if ((u16)g_gameState->gameData->ctx.field->area->scene->encounterScreenX >= SCREEN_W
                 || g_gameState->gameData->ctx.field->area->scene->encounterScreenY < 0
-                || g_gameState->gameData->ctx.field->area->scene->encounterScreenY >= 224) {
-                g_gameState->gameData->ctx.field->area->scene->encounterScreenX = 160;
-                g_gameState->gameData->ctx.field->area->scene->encounterScreenY = 112;
+                || g_gameState->gameData->ctx.field->area->scene->encounterScreenY >= SCREEN_H) {
+                g_gameState->gameData->ctx.field->area->scene->encounterScreenX = FLD_SCREEN_CX;
+                g_gameState->gameData->ctx.field->area->scene->encounterScreenY = FLD_SCREEN_CY;
             }
             fldbg_resetGeomOffset();
         }
         fld_findBattleMusic();
         if (g_gameState->gameData->musicId[0] != g_gameState->gameData->ctx.field->area->scene->battleMusic
             && (g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
-            akao_fadeMusicVolume(0, 0xF, 0);
-            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = 7;
+            akao_fadeMusicVolume(0, FLD_ENCOUNTER_FADE, 0);
+            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = FLD_ENCOUNTER_MUSIC_WAIT;
         }
         if (g_gameState->gameData->sfxSlotId[0] != SE_NONE && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], SND_SE_GROUP_SLOT(0), 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], SND_SE_GROUP_SLOT(0), FLD_ENCOUNTER_FADE, 0);
         }
         if (g_gameState->gameData->sfxSlotId[1] != SE_NONE && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], SND_SE_GROUP_SLOT(1), 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], SND_SE_GROUP_SLOT(1), FLD_ENCOUNTER_FADE, 0);
         }
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].largeMotor = 0;
@@ -1487,7 +1487,7 @@ void fld_updateEncounter(void) {
                  * RAM here; a port guards it via PSX_NULLABLE (ff9-ds F37). */
                 preload_remove(PSX_NULLABLE(preload_waitCurrent())->fileId);
             }
-            preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
+            preload_discardRange((s32)g_loadAreaEnd, FLD_WORK_SIZE);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_1, 0, SND_PAN_CENTER, SND_VOL_MAX);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
@@ -1520,7 +1520,7 @@ void fld_updateEncounter(void) {
             if (g_gameState->gameData->ctx.field->area->scene->battleMusic != MUSIC_NONE
                 && !(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                 fld_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
-                akao_setMusicVolume(0, 0x7F);
+                akao_setMusicVolume(0, SND_VOL_MAX);
             }
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -3;
         }
@@ -1554,14 +1554,14 @@ void fld_togglePause(void) {
             g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
-        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (224 - g_uiSprites[235].h) / 2, &g_fieldTempOt, 0xEB, 0, &spriteW, &g_fieldPauseSprite);
+        ui_buildSprite((SCREEN_W - g_uiSprites[UI_SPRITE_PAUSE].w) / 2, (SCREEN_H - g_uiSprites[UI_SPRITE_PAUSE].h) / 2, &g_fieldTempOt, UI_SPRITE_PAUSE, 0, &spriteW, &g_fieldPauseSprite);
         bright = 0;
         if (fade_isActive() || fade_isBusy()) {
             bright = 1;
         }
         subtractive = fade_isSubtractive();
         if (bright && subtractive == 0) {
-            if (fade_getType() == 2) {
+            if (fade_getType() == FADE_WIPE) {
                 fade_getWipeColors(wipeRgb);
                 color.b[0] = (wipeRgb[0] + wipeRgb[4]) >> 1;
                 color.b[1] = (wipeRgb[1] + wipeRgb[5]) >> 1;
@@ -1569,12 +1569,12 @@ void fld_togglePause(void) {
             } else {
                 color = fade_getColor();
             }
-            if (color.b[0] >= 200 && color.b[1] >= 200 && color.b[2] >= 200) {
+            if (color.b[0] >= FLD_PAUSE_LIGHT_FADE && color.b[1] >= FLD_PAUSE_LIGHT_FADE && color.b[2] >= FLD_PAUSE_LIGHT_FADE) {
                 setSemiTrans(&g_fieldPauseSprite.sprite, 1);
                 sp = &g_fieldPauseSprite.sprite;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
-                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].tpage), tpage_getY((s16)g_uiSprites[235].tpage)));
+                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[UI_SPRITE_PAUSE].tpage), tpage_getY((s16)g_uiSprites[UI_SPRITE_PAUSE].tpage)));
             }
         }
         setlen(&g_fieldPauseDim, PRIM_LEN(TILE));

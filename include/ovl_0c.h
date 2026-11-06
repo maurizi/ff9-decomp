@@ -435,6 +435,63 @@ typedef struct WmEffect {
 #define WM_CAM_FLY_EYE_LOWEST -0x1194 /* while flying (WM_CTRL_FLY) the eye stays at least this high */
 #define WM_CAM_GROUND_TOP_FLY -0x2134 /* the ground under the eye counts as no higher than this when flying, */
 #define WM_CAM_GROUND_TOP -0x251C /* ... and than this otherwise (the peaks don't push the eye up further) */
+/* the world map's screen: SCREEN_W x WM_SCREEN_H (wm_init game_setScreenHeight); its centre is the default battle
+ * swirl centre (WmMapObj.swirlX/Y). The GTE geometry offset stays at (SCREEN_W / 2, SCREEN_H / 2) (wm_initCamera). */
+#define WM_SCREEN_H 0xDA
+#define WM_SCREEN_CX (SCREEN_W / 2)
+#define WM_SCREEN_CY (WM_SCREEN_H / 2)
+/* wm_cameraFollow tuning. The look-at point (g_worldCameraTarget) and the eye (g_worldCameraEye) chase their wanted
+ * heights once the gap passes a dead zone, in steps divided by g_worldCameraEaseDiv (gap >> 5, clamped) on foot or
+ * by a fixed divisor in the air / on the boat; steps under WM_CAM_MIN_STEP are dropped. Evidence: [code] */
+#define WM_CAM_SMOOTH_SNAP 16 /* an axis being smoothed (g_worldCameraSmoothX/Y/Z) snaps onto the player within this ... */
+#define WM_CAM_SMOOTH_DIV 8 /* ... and closes 1/8 of the gap a frame until then */
+#define WM_CAM_TARGET_DEADZONE 0x80 /* look-at height */
+#define WM_CAM_TARGET_EASE_MIN 0x20 /* g_worldCameraEaseDiv range for the look-at height */
+#define WM_CAM_TARGET_EASE_MAX 0x100
+#define WM_CAM_TARGET_RAISE_DIV 8 /* flying / steering: look-at height steps (gap past the dead zone / this) */
+#define WM_CAM_TARGET_LOWER_DIV 2
+#define WM_CAM_EYE_DEADZONE 0x100 /* eye height */
+#define WM_CAM_EYE_RAISE_DIV 4 /* flying / steering: eye height steps */
+#define WM_CAM_EYE_LOWER_DIV 32
+#define WM_CAM_EYE_STEP_MAX 0x200 /* walking: step size where the eye's speed-up (g_worldCameraEaseBoost) runs out */
+#define WM_CAM_MIN_STEP 5
+#define WM_CAM_PROBE_OFS 0x580 /* g_worldCameraFourProbes: the ground is sampled this far +-x and +-z of the eye */
+#define WM_CAM_RISE_SHIFT_FAST 2 /* walking: the eye rises 4x faster over WM_TOPO_MOUNTAIN, while held / turning, */
+#define WM_CAM_RISE_SHIFT_BLEND 3 /* ... and 8x while the view blends (viewBlend strictly between 0 and 0x1000) */
+/* player control (wm_controlWalk, wm_controlSteer, wm_controlFly). Evidence: [code] */
+#define WM_CAM_TURN_SPEED_WALK 0x20 /* L1 / R1 turn the camera by this a frame on foot and on the boat ... */
+#define WM_CAM_TURN_SPEED_FLY 0x10 /* ... and flying with auto-turn off */
+#define WM_WALK_TURN_DIV 3 /* the walker turns 1/3 of the way to the stick heading a frame */
+#define WM_FX_SCATTER 0x80 /* forest leaves spawn up to this far around the walker's previous position */
+#define WM_STEER_WAKE_SPEED 80 /* the boat leaves a wake above this speed */
+#define WM_STEER_SE_VOL_DIV 8 /* boat engine loop volume: speed / 8 + WM_STEER_SE_VOL_MIN ... */
+#define WM_STEER_SE_VOL_MIN 0x14
+#define WM_STEER_SE_FADE 0x3C /* ... reached in this many frames */
+#define WM_FLY_TURN_INVINCIBLE 600 /* Invincible / Hilda Garde turn rate scale (x / 256, less half the speed) */
+#define WM_FLY_TURN_HILDA_GARDE 580
+#define WM_AUTOPILOT_SPEED_MAX 400 /* autopilot (g_worldAutoPilot): speed = distance / 32 up to this; */
+#define WM_AUTOPILOT_ARRIVE 50 /* it stops once the speed falls under this or starts growing */
+#define WM_AUTOPILOT_TURN 20 /* turn rate while the heading is off by more than this */
+#define WM_FLY_ROLL_DIV 8 /* camera roll follows the stick by 1/8 a frame (to WmMoveMode.maxRoll) ... */
+#define WM_FLY_BANK_DIV 4 /* ... the model banks by 1/4 (to twice that) */
+#define WM_AIRSHIP_SPRAY_SPEED 60 /* low-flight spray needs more speed than this (airships) ... */
+#define WM_CHOCOBO_SPRAY_SPEED 30 /* ... or this (gold chocobo) */
+#define WM_LOW_FX_Y 100 /* WM_FX_AIRSHIP_SAND / WM_FX_CHOCOBO_SAND spawn this far below the flyer */
+/* wm_spawnEffect scale per spawn site (last argument) */
+#define WM_FX_SCALE_WATER_RIPPLE 24000
+#define WM_FX_SCALE_BEACH_SPLASH 0x900
+#define WM_FX_SCALE_SAND_DUST 0x2000
+#define WM_FX_SCALE_FOREST_LEAVES 0x6D80
+#define WM_FX_SCALE_BOAT_WAKE 15000 /* and _SIDE_WAKE */
+#define WM_FX_SCALE_AIRSHIP_SPRAY 32000 /* and WM_FX_AIRSHIP_SAND */
+#define WM_FX_SCALE_CHOCOBO_SPRAY 19200
+#define WM_FX_SCALE_CHOCOBO_SAND 25600
+/* wm_seFadeVolume fade lengths (frames) */
+#define WM_SE_FADE_LOOP_START 0x3C /* a move mode's loop sound fading in to WM_SE_LOOP_VOL (w_movementChange) */
+#define WM_SE_LOOP_VOL 0x3F
+#define WM_SE_FADE_SPRAY_IN 20 /* WM_SE_AIRSHIP_WATER following the spray strength */
+#define WM_SE_FADE_SPRAY_OUT 30 /* ... and fading out away from water */
+#define WM_SE_FADE_STOP 0x7F /* the loop sounds fading out on landing (w_movementChangeSP1) */
 /* Two balls at the Iifa Tree (navi place 36 "Iifa Tree" (200097, -82107); on data set WM_DATASET_DISC4 the
  * WM_BLOCKFX_MEMORIA_ORB sphere, g_worldBlockFx6Pos (196602, -10882, -82002), sits there). Evidence: [code]
  * wm_cameraFollow, wm_movePlayer */
@@ -453,6 +510,45 @@ typedef struct WmEffect {
 /* flight ceiling (wm_movePlayer): climbing slows down within WM_FLY_CEILING_SOFT of y = WM_FLY_CEILING */
 #define WM_FLY_CEILING -0x2A30
 #define WM_FLY_CEILING_SOFT 0x7E8
+/* wm_movePlayer: boxes (centre, half size) where the walkmesh polygon cache is turned off (g_worldUsePolyCache = 0),
+ * named for the navi place (g_worldNaviPlaces page 1, name = world text bank 0 entry place + 1, read from the disc)
+ * at or nearest their centre. What makes the cache unusable there: runtime pending R44. Evidence: [code], data */
+#define WM_NOCACHE_CELL_16_14_X 0x407F7 /* (264183, -245187), map cell (16, 14): no navi place on it (19 "Chocobo's Forest" is 14400 away) */
+#define WM_NOCACHE_CELL_16_14_Z -0x3BDC3
+#define WM_NOCACHE_CELL_16_14_R 0x800
+#define WM_NOCACHE_CONDE_PETIE_X 0x37FA8 /* place 32 "Conde Petie" (229037, -90135) */
+#define WM_NOCACHE_CONDE_PETIE_Z -0x1606D
+#define WM_NOCACHE_CONDE_PETIE_R 0xC00
+#define WM_NOCACHE_ICE_CAVERN_X 0x4AD96 /* place 3 "Ice Cavern" (306501, -204700) */
+#define WM_NOCACHE_ICE_CAVERN_Z -0x32133
+#define WM_NOCACHE_ICE_CAVERN_R 0x400
+#define WM_NOCACHE_ICE_CAVERN_2_X 0x489E4 /* place 11 "Ice Cavern" (297056, -215824), its second entrance */
+#define WM_NOCACHE_ICE_CAVERN_2_Z -0x34BBF
+#define WM_NOCACHE_ICE_CAVERN_2_R 0x400
+#define WM_NOCACHE_CHOCOBOS_LAGOON_X 0x250D4 /* place 37 "Chocobo's Lagoon" (151941, -289631) */
+#define WM_NOCACHE_CHOCOBOS_LAGOON_Z -0x46B95
+#define WM_NOCACHE_CHOCOBOS_LAGOON_R 0x400
+#define WM_NOCACHE_CONDE_PETIE_PATH_X 0x36F54 /* 1.6k from place 34 "Conde Petie Mountain Path" (226757, -59696) */
+#define WM_NOCACHE_CONDE_PETIE_PATH_Z -0xF131
+#define WM_NOCACHE_CONDE_PETIE_PATH_RX 0x60C
+#define WM_NOCACHE_CONDE_PETIE_PATH_RZ 0x800
+#define WM_NOCACHE_GIZAMALUKE_X 0x3D3D2 /* place 20 "Gizamaluke's Grotto" (250721, -224068) */
+#define WM_NOCACHE_GIZAMALUKE_Z -0x36C0F
+#define WM_NOCACHE_GIZAMALUKE_R 0x500
+#define WM_NOCACHE_DESERT_PALACE_X 0x4A02F /* 2.2k from place 27 "Desert Palace" (303345, -71006) */
+#define WM_NOCACHE_DESERT_PALACE_Z -0x11DD8
+#define WM_NOCACHE_DESERT_PALACE_R 0x400
+#define WM_NOCACHE_IPSENS_CASTLE_X 0xC02F /* place 44 "Ipsen's Castle" (49042, -121464) */
+#define WM_NOCACHE_IPSENS_CASTLE_Z -0x1D9EC
+#define WM_NOCACHE_IPSENS_CASTLE_R 0x500
+#define WM_NOCACHE_DAGUERREO_X 0x17A3B /* place 39 "Daguerreo" (97345, -262526) */
+#define WM_NOCACHE_DAGUERREO_Z -0x4014A
+#define WM_NOCACHE_DAGUERREO_R 0x400
+/* wm_movePlayer on the ground: when the step straight ahead is blocked, angles off the heading are tried in steps of
+ * WM_STEP_TRY_ANGLE (both sides) up to WM_STEP_TRY_MAX (90 degrees, exclusive) */
+#define WM_STEP_TRY_ANGLE 0x80
+#define WM_STEP_TRY_MAX 0x400
+#define WM_FAST_WALK_MUL 4 /* g_worldFastWalk: speed x 4 */
 /* Ipsen's Castle: the airships can't land within 1440 of (49120, -121408) (wm_findGetoffPos; navi place 44 "Ipsen's
  * Castle" is at (49042, -121464); R41b saw the upside-down castle in a crater there) */
 #define WM_IPSEN_CASTLE_X 0xBFE0
@@ -548,7 +644,23 @@ typedef struct {
 #define WM_ACTOR_AIRSHIP 9 /* the Hilda Garde 3 (runtime, disc 3; rideMode WM_MOVE_HILDA_GARDE) */
 #define WM_ACTOR_AIRSHIP2 10 /* the Invincible (from data: flying, rideMode WM_MOVE_INVINCIBLE) */
 #define WM_ACTOR_MOOGLE 11 /* g_worldMoogleActor (model 307), comes when called with Square */
-#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel and wm_drawActorShadow draw nothing for it */
+#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel draws nothing for it; wm_drawActorShadow gives it a fixed shadow */
+/* wm_drawActorShadow. Evidence: [code] */
+#define WM_SHADOW_FADE_DEPTH 0x8000 /* a model's shadow fades out towards this view depth */
+#define WM_SHADOW_SCALE_X_MUL 14 /* WmShadow.scaleX / scaleZ = the lift-scaled width x these */
+#define WM_SHADOW_SCALE_Z_MUL 12
+#define WM_SHADOW_PLAIN_SIZE 0x7D0 /* WM_ACTOR_NO_MODEL's fixed shadow: strength (x shadowDepth), bigger in fog */
+#define WM_SHADOW_PLAIN_SIZE_FOG 0xAF0
+#define WM_SHADOW_PLAIN_FADE_DEPTH 0x7060
+#define WM_SHADOW_PLAIN_SCALE_X 0x302
+#define WM_SHADOW_PLAIN_SCALE_Z 0x294
+#define WM_SHADOW_PLAIN_OT_BIAS 0x46 /* drawn this many OT entries nearer */
+/* wm_updateActors: tilts settling back each frame. Evidence: [code] */
+#define WM_ROLL_SETTLE_STEP 10 /* the mount's rotZ eases to 0, the camera roll to 0 (turning slowly or not at all), */
+                               /* a landed vehicle's rotZ to WM_VEHICLE_REST_ROLL, by this a frame */
+#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest (runtime pending R44) */
+#define WM_VEHICLE_FLY_SETTLE_STEP 16 /* ... flying straight */
+#define WM_ROLL_SETTLE_SPEED 300 /* the camera roll also levels out below this speed */
 
 /* camera preset, blended by wm_updateCameraPreset / wm_calcCameraPreset */
 typedef struct {
@@ -1193,6 +1305,76 @@ extern u8 s_menuMainText[]; /* text */
 #define MENU_MAIN_TEXT_EQUIP_HELP 4 /* "Select character." + the five equipment lines (string args 0-9) */
 #define MENU_MAIN_TEXT_STATUS_HELP 5 /* "Select character." + Exp / Next lines (string args 2-7) */
 #define MENU_MAIN_TEXT_EMPTY 0xD /* "": an empty equipment slot */
+#define MENU_MAIN_TEXT_MEMBER_HELP 2 /* + cursor: the "Select character." help of each command (menuMain_updateHelp) */
+#define MENU_MAIN_TEXT_ORDER_HELP 0xB /* + orderPicked: "Select character." / the front row / back row explanation */
+#define MENU_MAIN_COMMAND_LAST (MENU_SCREEN_CONFIG - 1) /* command cursor range 0..this; cursor + 1 = MENU_SCREEN_* */
+
+/* Main menu layout (menu_main.c, same in ovl_0a and ovl_0c). s_menuMainPanelRects: party panels at (0xE,
+ * 0xD + 0x30 * slot) 0xF6 x 0x30, the Time/Gil window at (0xE1, 0x9A) 0x53 x 0x27, the location window
+ * 0x1B high at y 0xC1. Offsets below are from the window's top left corner. */
+#define MENU_MAIN_OTZ_PANEL 0x14 /* windows and the party panels' contents */
+#define MENU_MAIN_OTZ_SHADOW 0x15 /* party panel shadows, behind them */
+#define MENU_MAIN_OTZ_TEXT 0x13 /* Time/Gil and location contents, over their windows */
+#define MENU_MAIN_OTZ_COMMAND_HAND 1 /* command list cursor */
+#define MENU_MAIN_OTZ_MEMBER_HAND 0xC /* party member cursor */
+#define MENU_MAIN_OTZ_TARGET_HAND 0xB /* Order: the second (swap target) cursor */
+#define MENU_MAIN_LOCATION_RIGHT 0x134 /* the location window is right-aligned to this x */
+#define MENU_MAIN_LOCATION_PAD_W 0x10 /* width added to the location name's */
+#define MENU_MAIN_LOCATION_MIN_W 0x44
+#define MENU_MAIN_LOCATION_TEXT_X 8 /* "Location" label and the location name */
+#define MENU_MAIN_LOCATION_TEXT_Y 7 /* the location name */
+#define MENU_MAIN_LABEL_Y (-3) /* window title labels (ui_drawLabel), straddling the top edge */
+#define MENU_MAIN_TIMEGIL_ICON_X 6 /* the TIME / GIL sprites and the "Time & Gil" label */
+#define MENU_MAIN_TIMEGIL_DIGITS_X 0x13 /* play time and gil digits */
+#define MENU_MAIN_TIME_ICON_Y 8
+#define MENU_MAIN_TIME_DIGITS_Y 9
+#define MENU_MAIN_GIL_ICON_Y 0x15
+#define MENU_MAIN_GIL_DIGITS_Y 0x16
+#define MENU_MAIN_GIL_WIDTH 7 /* digits (text_formatNumber) */
+#define MENU_MAIN_EXP_WIDTH 7 /* Exp / Next digits in the Status help (menuMain_setExpHelp) */
+#define MENU_MAIN_COMMAND_HAND_X 0xE0 /* command list cursor: x, first row y and row height */
+#define MENU_MAIN_COMMAND_HAND_Y 0x11
+#define MENU_MAIN_COMMAND_ROW_H 0xF
+#define MENU_MAIN_MEMBER_HAND_DX 0xE /* party member cursor: left of panel 0's x, first row y, row step */
+#define MENU_MAIN_MEMBER_HAND_Y 0x20
+#define MENU_MAIN_MEMBER_ROW_H 0x2E
+#define MENU_MAIN_TARGET_HAND_DX 0xA /* Order: the swap target's cursor, offset down-right of the first */
+#define MENU_MAIN_TARGET_HAND_Y 0x24
+#define MENU_MAIN_HELP_X 8 /* help window bounds (help_setBounds): left of the command list */
+#define MENU_MAIN_HELP_Y 8
+#define MENU_MAIN_HELP_W 0xE8
+#define MENU_MAIN_HELP_BOTTOM 0xF /* lines above the display's bottom */
+/* party panel */
+#define MENU_MAIN_PORTRAIT_X_BACK 8 /* portrait x with battleRow set (which row: runtime pending R44) */
+#define MENU_MAIN_PORTRAIT_X_FRONT 0x16 /* portrait x with battleRow clear: shifted right */
+#define MENU_MAIN_PORTRAIT_Y 1
+#define MENU_MAIN_PORTRAIT_H 0x2D
+#define MENU_MAIN_SHADE_X 8 /* the translucent tile behind the portrait (menuMain_drawPortraitShade) */
+#define MENU_MAIN_SHADE_W 0x2E
+#define MENU_MAIN_SHADE_H 0x30
+#define MENU_MAIN_STATS_X 0x3C /* name, LV, HP and MP column */
+#define MENU_MAIN_NAME_Y 3
+#define MENU_MAIN_LV_Y 0x12
+#define MENU_MAIN_HP_Y 0x1B
+#define MENU_MAIN_MP_Y 0x24
+#define MENU_MAIN_LV_DIGITS_X 0x60
+#define MENU_MAIN_HP_DIGITS_X 0x52 /* "hhhh/max" */
+#define MENU_MAIN_MP_DIGITS_X 0x59 /* "mmm/max" */
+#define MENU_MAIN_HP_WIDTH 4 /* digits before the '/' */
+#define MENU_MAIN_MP_WIDTH 3
+#define MENU_MAIN_STATUS_BOX_X 0x82 /* the box framing the status icons, along the panel's top */
+#define MENU_MAIN_STATUS_BOX_W 0x72
+#define MENU_MAIN_STATUS_BOX_H 0x12
+#define MENU_MAIN_STATUS_X 0x86 /* status icons */
+#define MENU_MAIN_STATUS_Y 4
+#define MENU_MAIN_STONES_X 0x9B /* magic stones (ui_drawStones) */
+#define MENU_MAIN_STONES_Y 0x14
+#define MENU_MAIN_LOW_STAT_DIV 6 /* HP / MP at or below max / this are shown in TEXT_PAL_YELLOW */
+/* menuMain_swapPortraits: spare VRAM for the second and third portrait rects (the first goes to
+ * g_portraitSavedVram) while two party slots trade portraits */
+#define MENU_MAIN_SWAP_VRAM_X1 0x3C0
+#define MENU_MAIN_SWAP_VRAM_X2 0x3D0
+#define MENU_MAIN_SWAP_VRAM_Y 0x1B0
 extern WmActorType g_worldActorTypeInfo[];
 extern EvtObject *g_worldPlayer; /* player actor */
 extern WmMoveMode *g_worldMoveModeInfo;
@@ -1434,6 +1616,8 @@ extern s32 g_worldNaviMode; /* WM_NAVI_* */
 #define WM_NAVI_MINI 1 /* mini map */
 #define WM_NAVI_FULL 2 /* full-screen map */
 #define WM_NAVI_MAP_W 240 /* full map size in pixels (WmNaviPlace.mapX/mapY); the cursor wraps at it (wm_naviUpdate) */
+#define WM_NAVI_ON_PLACE 0x1000 /* wm_naviUpdate: the cursor (20.12 map pixels) is on a place within 1 pixel ... */
+#define WM_NAVI_PULL_SHIFT 3 /* ... and inside g_worldNaviSnapDist it is pulled 1/8 of the way onto it a frame */
 #define WM_NAVI_MAP_H 200
 extern u8 g_worldNaviVisible;
 extern s32 g_worldTitleDelay;
@@ -1652,6 +1836,7 @@ extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
+#define UI_SPRITE_PAUSE 0xEB /* the pause sprite wm_togglePause centres on screen (g_worldPauseSprite); same in ovl_0a (runtime pending R44) */
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void pen_locate(s32, s32);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
