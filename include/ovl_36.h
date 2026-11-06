@@ -9,6 +9,76 @@
 #define CARD_GRID_ROWS 10 /* the CARD window is 10 x 10 cells */
 #define CARD_GRID_COLS 10
 #define CARD_RANK_COUNT 32
+#define CARD_PAD_REPEAT_DELAY 0x10 /* pad repeat for the grid's buttons while the screen is open (restored on exit) */
+#define CARD_PAD_REPEAT_INTERVAL 10
+#define CARD_RECORD_MAX 99999 /* Win / Lose / Draw counts shown capped (5 digits) */
+#define CARD_STACK_DRAWN 5 /* CARD INFO draws at most this many copies of the stack */
+#define CARD_STACK_DIM 0x16 /* each card further back in the stack is this much darker (from 0x80) */
+#define CARD_FADE_FRAMES 4 /* card image change: frames the previous card stays */
+
+/* Card screen layout (screen coordinates unless noted) */
+#define CARD_GRID_WIN_X 8 /* CARD window: the 10 x 10 grid, Stock / Type counts */
+#define CARD_GRID_WIN_Y 0x26
+#define CARD_GRID_WIN_W 0x9E
+#define CARD_GRID_WIN_H 0xB6
+#define CARD_CELL_X 4 /* first cell, relative to the window (grid column-major: x by col, y by row) */
+#define CARD_CELL_Y 10
+#define CARD_CELL_PITCH 15 /* cell spacing (the cursor box is 13 square) */
+#define CARD_GRID_CURSOR_LEFT 20 /* grid cursor: left of the cell column */
+#define CARD_GRID_CURSOR_DY 14
+#define CARD_STOCK_X 8 /* "Stock" (digits CARD_COUNT_GAP after it) */
+#define CARD_COUNT_GAP 8
+#define CARD_TYPE_X 0x80 /* "Type" right-aligned to this x, its digits from it */
+#define CARD_COUNT_TEXT_Y 0xA2
+#define CARD_COUNT_DIGITS_Y 0xA4
+#define CARD_INFO_WIN_X 0xAA /* INFO window: Collectors Lv, rank, Win / Lose / Draw */
+#define CARD_INFO_WIN_Y 0x26
+#define CARD_INFO_WIN_W 0x8A
+#define CARD_INFO_WIN_H 0x4E
+#define CARD_INFO_TEXT_X 0xA
+#define CARD_INFO_LEVEL_Y 5 /* "Collectors Lv" */
+#define CARD_INFO_POINTS_X 0x5A /* collector points (4 digits) */
+#define CARD_INFO_POINTS_Y 9
+#define CARD_INFO_UNIT_X 0x78 /* s_menuCardPointsUnit after them */
+#define CARD_INFO_UNIT_Y 0xB
+#define CARD_INFO_RANK_Y 0x14 /* rank name */
+#define CARD_INFO_DIV_Y 0x24 /* etched divider above the record */
+#define CARD_INFO_RECORD_Y 0x26 /* Win, Lose, Draw rows (counts 4 lower) */
+#define CARD_INFO_RECORD_H 0xA
+#define CARD_INFO_RECORD_GAP 0xB /* counts start this far after the widest label */
+#define CARD_CARDINFO_WIN_X 0xAA /* CARD INFO window: the card stack */
+#define CARD_CARDINFO_WIN_Y 0x76
+#define CARD_CARDINFO_WIN_W 0x8A
+#define CARD_CARDINFO_WIN_H 0x66
+#define CARD_STACK_X 0x2E /* top card; each copy behind is CARD_STACK_STEP_X right and 1 lower */
+#define CARD_STACK_Y 9
+#define CARD_STACK_STEP_X 4
+#define CARD_COPY_TEXT_X 0x2B /* "n/m" copy shown */
+#define CARD_COPY_TEXT_Y 0x43
+#define CARD_PREV_BTN_X 0x1E /* L1 / R1 button icons around it */
+#define CARD_NEXT_BTN_X 0x5E
+#define CARD_FLIP_BTN_Y 0x41
+#define CARD_NAME_ICON_X 0x10
+#define CARD_NAME_X 0x20
+#define CARD_NAME_Y 0x50
+#define CARD_STATS_X 9 /* stat digits on the card face, relative to the card */
+#define CARD_STATS_Y 0x26
+#define CARD_STATS_STEP 6
+#define CARD_DISCARD_TEXT_X 0xE /* discard popup, relative to the window */
+#define CARD_DISCARD_TEXT_Y 0xA
+#define CARD_DISCARD_CHOICE_X 0x30 /* Yes / No */
+#define CARD_DISCARD_CHOICE_Y 0x2E
+#define CARD_DISCARD_ROW_H 15
+#define CARD_DISCARD_CURSOR_X 0x16
+#define CARD_DISCARD_CURSOR_Y 0x32
+#define CARD_DISCARD_HELP_Y 0x8C /* help bounds top while No is selected */
+#define CARD_LABEL_X 8 /* window labels */
+#define CARD_OTZ_DISCARD_CURSOR 9
+#define CARD_OTZ_DISCARD 10 /* discard popup */
+#define CARD_OTZ_CURSOR 0x11
+#define CARD_OTZ_TEXT 0x14 /* window contents */
+#define CARD_OTZ_WIN 0x1E
+#define CARD_OTZ_SHADOW 0x1F /* INFO / CARD INFO shadows */
 #define CARD_VRAM_SAVE_BUF PSX_RAM(u8 *, 0x801F6D30) /* past the overlay: VRAM saved by menuCard_loadImages */
 
 /* CardMenu.state: index into s_menuCardInputFuncs */
@@ -202,6 +272,8 @@ u32 menuCard_getStatsColor(void);
 extern u8 s_menuCardPointsUnit[];
 extern const u8 g_cardMenuText[]; /* text bank for this menu */
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 s32 card_getWins(void); /* collector points */
 s32 card_getLosses(void);
 s32 card_getDraws(void);
