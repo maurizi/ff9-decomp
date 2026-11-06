@@ -12,6 +12,8 @@ void btlui_loadPortraits(void);
 void btl_termBanner(void);
 
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 void timer_enable(u8);
 /* gameover_main steps (it counts them up with state++). Evidence: [code] */
 #define GAMEOVER_ST_START 0 /* one frame */
@@ -41,6 +43,81 @@ void timer_enable(u8);
 #define REWARDS_TEXT_CURRENT_GIL   0xE
 
 /* Battle result (g_btlRewards). */
+/* Rewards screen timings */
+#define REWARDS_EXP_COUNT_FRAMES 16 /* EXP counts up over this many frames (1 per frame below it) */
+#define REWARDS_EXP_STEP 32 /* from REWARDS_EXP_COUNT_FRAMES * this on: this much per frame ... */
+#define REWARDS_EXP_MAX_FRAMES 192 /* ... but never longer than this */
+#define REWARDS_POPUP_RISE_FRAMES 10 /* "LEVEL UP" popup: rises (s_rewardsPopupRise) */
+#define REWARDS_POPUP_HOLD_FRAMES 0x40 /* stays */
+#define REWARDS_POPUP_GAP_FRAMES 4 /* hidden before the next one */
+#define REWARDS_POPUP_RISEN_Y (-0x11) /* its y after the rise (rewards_showLevelUp skips straight to it) */
+#define REWARDS_LEARN_FRAMES 0x40 /* ability learned window shown this long */
+#define REWARDS_GIL_END_FRAMES 24 /* after the gil count: wait, then close */
+#define REWARDS_CLOSE_FADE_FRAMES 0x10
+#define REWARDS_ITEMS_FADE_FRAMES 4 /* EXP / AP screen out */
+#define REWARDS_ITEMS_FADE_IN_FRAMES 0xC /* gil / items screen in */
+#define REWARDS_ITEMS_OPEN_FRAMES 0x10 /* items window open animation */
+#define REWARDS_GIL_SHOWN_MAX 999999 /* Received gil shown capped (6 digits) */
+
+/* Rewards screen layout (s_rewards.wins: 0 INFO title, 2-5 member panels, 6 EXP, 7 AP, 8 received gil,
+ * 9 current gil). Offsets are from the window. */
+#define REWARDS_OTZ_POPUP 6 /* ability learned / items full popups */
+#define REWARDS_OTZ_TEXT 10
+#define REWARDS_OTZ_WIN 0xB /* INFO, member, EXP, AP windows and their contents */
+#define REWARDS_OTZ_SHADOW 0xC
+#define REWARDS_FADE_OTZ 0xC /* fade_setOtz between the two screens */
+#define REWARDS_OTZ_GIL_TEXT 13
+#define REWARDS_OTZ_GIL_WIN 0xE /* gil windows, items window */
+#define REWARDS_OTZ_GIL_SHADOW 0xF
+#define REWARDS_TITLE_X 0x13 /* INFO / Help window text */
+#define REWARDS_TITLE_Y 6
+#define REWARDS_PORTRAIT_X 4 /* member panel */
+#define REWARDS_PORTRAIT_Y 4
+#define REWARDS_LEVELUP_X 0x24 /* "LEVEL UP" popup over the portrait (+ Popup.y) */
+#define REWARDS_LEVELUP_Y 0x12
+#define REWARDS_MEMBER_TEXT_X 0x29 /* name, "EXP", "Next" */
+#define REWARDS_NAME_Y 4
+#define REWARDS_LV_X 0x72 /* "Lv" sprite */
+#define REWARDS_LV_Y 7
+#define REWARDS_LEVEL_X 0x84
+#define REWARDS_LEVEL_Y 5
+#define REWARDS_STATUS_X 0x28 /* status-ailment icons */
+#define REWARDS_STATUS_Y 0x13
+#define REWARDS_EXP_LABEL_Y 0x1C /* (values 4 lower) */
+#define REWARDS_EXP_X 0x62 /* EXP (7 digits) */
+#define REWARDS_NEXT_LABEL_Y 0x26
+#define REWARDS_NEXT_X 0x69 /* to the next level (6 digits) */
+#define REWARDS_TOTAL_TEXT_X 0xC /* EXP / AP / gil windows: label */
+#define REWARDS_TOTAL_TEXT_Y 5
+#define REWARDS_TOTAL_DIGITS_Y 9
+#define REWARDS_EXP_TOTAL_X 0x5A /* EXP each (6 digits) */
+#define REWARDS_AP_TOTAL_X 0x6F /* AP (3 digits) */
+#define REWARDS_RECEIVED_GIL_X 0x54 /* (6 digits + unit) */
+#define REWARDS_CURRENT_GIL_X 0x4D /* (7 digits + unit) */
+#define REWARDS_LEARN_WIN_X 0x26 /* ability learned window, relative to the member panel */
+#define REWARDS_LEARN_WIN_Y 0x1B
+#define REWARDS_LEARN_WIN_W 0x70
+#define REWARDS_LEARN_WIN_H 0x19
+#define REWARDS_LEARN_ICON_X 6
+#define REWARDS_LEARN_ICON_Y 7
+#define REWARDS_LEARN_NAME_X 0x16
+#define REWARDS_LEARN_NAME_Y 6
+#define REWARDS_ITEM_LABEL_X 8 /* items window */
+#define REWARDS_ITEM_COUNT_LABEL_R 0x97 /* right edge of the count label */
+#define REWARDS_ITEM_Y 7 /* rows (count digits 3 lower) */
+#define REWARDS_ITEM_ROW_H 15
+#define REWARDS_ITEM_ICON_X 7
+#define REWARDS_ITEM_NAME_X 0x16 /* item name; card name */
+#define REWARDS_ITEM_COUNT_X 0x88
+/* "LEVEL UP" image: REWARDS_LEVELUP_W x _H, 8-bit at tpage (0x3C0, 0x100), CLUT row 0x1FF; the glow drawn
+ * additively over it is the same size, REWARDS_LEVELUP_GLOW_V lower in the page */
+#define REWARDS_LEVELUP_W 0x4C
+#define REWARDS_LEVELUP_H 0x14
+#define REWARDS_LEVELUP_V 0xB0
+#define REWARDS_LEVELUP_GLOW_V 0xC4
+#define REWARDS_LEVELUP_VRAM_X 0x3C0
+#define REWARDS_LEVELUP_VRAM_Y 0x100
+#define REWARDS_LEVELUP_CLUT_Y 0x1FF
 #define BTL_DROP_COUNT 0x10
 
 typedef struct {
