@@ -4966,3 +4966,36 @@ scratch scripts in `build/r44rt/`. No breakpoints left. Note: the `disc3_malboro
 
 New states: disc 1 `r44_wm_chocograph5` (world map outside the Ice Cavern, chocograph 5 selected, picture under the
 compass); disc 3 `r44_tonberry_start` (encounter 872, Tonberries, Zidane's command menu, b[0xC0] = 1).
+
+## R44 ending pass: Blackjack  (status: proposed)
+- binary: ovl_15 (blackjack.c: `bj_main`, `bj_drawCard`, `bj_drawResult`); questions from docs/wip/r44_runtime_ending.md.
+- setup: `tools/emu.py start --disc 4 --paused`, `frames 1800`, `load r37b_bj_wager` (wager screen, shoe flags 2,
+  next 0; `ovl` = ovl_15 100%). Cards forced by writing the shoe's next cards (BjShoe.cards at 0x800B0E0C; card =
+  rank * 4 + suit, J/Q/K = 36/40/44), then the pad. Dealing order p, d, p, d, then hits.
+1. **BJ_TIM_JACK / QUEEN / KING mapping: CONFIRMED.** Round A: `write 0x800B0E0C 24282C2D --hex` (player J K, dealer
+   Q K), Cross, 200 frames: `build/r44rt/bj_deal.png` (player J, K; the K's picture in full,
+   `bj_deal_king_zoom.png`). Round B: `write 0x800B0E0C 002C182824 --hex` (player 2 8, dealer K Q, hit J), Cross,
+   Down, Cross: `bj_hit_jack.png` / `bj_jack_zoom.png` (J as last card, picture in full); Stand:
+   `bj_stand_queen.png` / `bj_queen_zoom.png` (dealer's hole Q revealed in full). What the pictures show:
+   - J (0x4F4E): a black-mage figure: dark face with glowing yellow eyes under a wide-brimmed pointed hat, dark
+     purple/navy coat, a gold object (staff / lamp) held low.
+   - Q (0x4F50): a woman in profile with pale blue-violet skin and long pale blue hair swept back, bare shoulders.
+   - K (0x4F4F): a plump cream-white bird with a big yellow beak, eyes shut, wearing a small crown on a brown band.
+   No game text names them and none is unmistakable enough to name (the Q looks like an ice-summon type figure, the
+   K a large chocobo-like bird, the J a black mage; all leads only). Keep the descriptive comments. high (mapping).
+2. **BJ_PANEL_* layout: CONFIRMED, all values exact.** Pixel rows of `bj_deal.png` (action prompt, J+K vs Q+?) and
+   `bj_panel_zoom.png`: text tops at y 88 "BANKROLL" (yellow, 0x58), 100 "1000" (cyan, 0x64 = +BJ_PANEL_VALUE_DY),
+   112 "WAGER" (yellow, 0x70), 124 "10" (white, 0x7C), 144 STAND (0x90), 160 HIT (0xA0), 176 DOUBLE (0xB0), 192
+   SPLIT (0xC0); every line centred at x 267-269 (BJ_PANEL_X 0x10C = 268), in a column right of the table under the
+   shoe. The font draws the labels upper-case. Greying: with two cards (J K, not a pair) Double is white (205) and
+   Split grey (115); after a hit (3 cards, `bj_hit_jack.png`) Double and Split are both grey; on the wager screen
+   (`bj_wager.png`) Double / Split are grey too. Matches g_bjCanDouble / g_bjCanSplit. high.
+3. **Push → DRAW banner: CONFIRMED.** Round A (20 vs 20), `save r44_bj_action_jk_vs_qk`, Cross (Stand):
+   `bj_stand_3.png` shows the hole K revealed (dealer 20, player 20) and "DRAW" right of the player hand.
+   `trace bj_drawResult --frames 60` after the Stand: a0 = 2 (BJ_RESULT_PUSH), a1 brightness ramping 0x40, 0x50, ...
+   (+0x10 a frame), a2 = 0x6C (BJ_RESULT_X), a3 = 0x84 (BJ_PLAYER_Y 0x78 + BJ_RESULT_DY 12), ra bj_main+0x11B4;
+   g_bjBankroll stays 1000 afterwards. Round B (2 8 J = 20 vs K Q = 20) gives DRAW as well (`bj_stand_queen.png`).
+   high.
+- states (disc 4): `r44_bj_action_jk_vs_qk` (action prompt, player J K vs dealer Q + hole K: Stand gives a push),
+  `r44_bj_hit_jack` (player 2 8 J after a hit, dealer K + hole Q: Stand gives a push). Screenshots in build/r44rt/bj_*.
+  No breakpoints left; emulator stopped afterwards.
