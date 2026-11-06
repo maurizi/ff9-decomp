@@ -40,29 +40,29 @@ void discChange_drawBackground(void) {
         sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         sprt->xy = i * DISC_PICTURE_W;
         sprt->uvclut = (i * DISC_PICTURE_W) & 0x3F;
-        sprt->wh = 0xE000A0;
+        sprt->wh = (SCREEN_H << 16) | DISC_PICTURE_W;
         g_primPtr = (u8 *)(sprt + 1);
-        addPrim(&g_ot[6], sprt);
+        addPrim(&g_ot[DISC_OTZ], sprt);
         SetDrawTPage(g_primPtr, 1, 1, (((i * DISC_PICTURE_W) >> 6) + TPAGE_Y_BIT) | TPAGE_15BIT);
-        addPrim(&g_ot[6], g_primPtr);
+        addPrim(&g_ot[DISC_OTZ], g_primPtr);
         g_primPtr += 8;
     }
 }
 
 void discChange_drawPanel(void) {
     SprtWords *sprt;
-    u32 clut = GetClut(0, 0x1FF) << 16;
+    u32 clut = GetClut(0, DISC_PANEL_CLUT_Y) << 16;
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
     sprt = (SprtWords *)g_primPtr;
     sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    sprt->xy = 0x1C004E;
+    sprt->xy = (DISC_PANEL_Y << 16) | DISC_PANEL_X;
     sprt->uvclut = clut;
-    sprt->wh = 0xA800C2;
+    sprt->wh = (DISC_PANEL_H << 16) | DISC_PANEL_W;
     g_primPtr = (u8 *)(sprt + 1);
-    addPrim(&g_ot[6], sprt);
-    SetDrawTPage(g_primPtr, 1, 1, getTPage(1, 0, 0x140, 0x100));
-    addPrim(&g_ot[6], g_primPtr);
+    addPrim(&g_ot[DISC_OTZ], sprt);
+    SetDrawTPage(g_primPtr, 1, 1, getTPage(1, 0, DISC_PANEL_VRAM_X, DISC_PANEL_VRAM_Y));
+    addPrim(&g_ot[DISC_OTZ], g_primPtr);
     g_primPtr += 8;
 }
 
@@ -83,7 +83,7 @@ u8 discChange_checkDisc(void) {
     CdControlB(CdlStandby, NULL, NULL);
     do {
         VSync(0);
-        if (i >= 600) {
+        if (i >= DISC_SPINUP_FRAMES) {
             return DISC_CHECK_NO_DISC;
         }
         CdControlB(CdlNop, NULL, result);
@@ -114,7 +114,7 @@ u8 discChange_checkDisc(void) {
     default:
         return DISC_CHECK_ERROR;
     }
-    CdIntToPos(5, &loc);
+    CdIntToPos(DISC_SEEK_SECTOR, &loc);
     CdControlB(CdlSeekL, (u8 *)&loc, result);
     if (result[0] & CdlStatError) {
         return DISC_CHECK_ERROR;
@@ -124,7 +124,7 @@ u8 discChange_checkDisc(void) {
     }
     CdControlB(CdlSetmode, (u8 *)CdlModeSpeed, result);
     VSync(3);
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < DISC_IMG_INIT_TRIES; i++) {
         file_initImg();
         if (g_gameState->disc != DISC_NONE) {
             break;
@@ -233,7 +233,7 @@ void discChange_inputError(void) {
     if (g_padRepeat & BTN_CROSS) {
         snd_playSe(SE_CURSOR);
         s_discChange.state = DISC_ST_ERROR_CLOSE;
-        fade_out(0x18);
+        fade_out(DISC_FADE_FRAMES);
         fade_setOnDone(discChange_closeError);
     }
 }
@@ -260,7 +260,7 @@ void discChange_updateLidOpen(void) {
 void discChange_updateError(void) {
     if (++s_discChange.timer >= DISC_ERROR_FRAMES) {
         s_discChange.state = DISC_ST_ERROR_CLOSE;
-        fade_out(0x18);
+        fade_out(DISC_FADE_FRAMES);
         fade_setOnDone(discChange_closeError);
     }
 }
@@ -268,7 +268,7 @@ void discChange_updateError(void) {
 void discChange_startCheck(void) {
     s_discChange.unk2 = 0;
     s_discChange.state = DISC_ST_BUSY;
-    fade_out(0x18);
+    fade_out(DISC_FADE_FRAMES);
     fade_setOnDone(discChange_doCheck);
 }
 
@@ -281,7 +281,7 @@ void discChange_doCheck(void) {
     case DISC_CHECK_SHELL_OPEN:
     default:
         s_discChange.state = DISC_ST_ERROR;
-        fade_in(0x18);
+        fade_in(DISC_FADE_FRAMES);
         break;
     case DISC_CHECK_OK:
         menu_setFadeOutOnClose(0);
@@ -293,7 +293,7 @@ void discChange_doCheck(void) {
 
 void discChange_closeError(void) {
     s_discChange.state = DISC_ST_BUSY;
-    fade_in(0x18);
+    fade_in(DISC_FADE_FRAMES);
     fade_setOnDone(discChange_resetState);
 }
 

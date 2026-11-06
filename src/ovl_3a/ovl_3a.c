@@ -11,28 +11,28 @@ void menuName_init(void) {
     s_menuName.menuCursor = 0;
     s_menuName.charSet = 0;
     s_menuName.gridCursor = 0;
-    s_menuName.startDefault = g_menuArg < 12;
-    s_menuName.nameId = menuName_getNameId(s_menuName.startDefault ? g_menuArg : g_menuArg - 12);
+    s_menuName.startDefault = g_menuArg < NAME_ARG_CURRENT;
+    s_menuName.nameId = menuName_getNameId(s_menuName.startDefault ? g_menuArg : g_menuArg - NAME_ARG_CURRENT);
     s_menuName.charIdx = menuName_getCharIdx(s_menuName.nameId);
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuName.gridSize); i++) {
         s_menuName.gridSize[i] = s_menuNameGridSize[i];
     }
     chr_setDefaultName(s_menuName.defaultName, s_menuName.nameId);
-    memset(s_menuName.name, TEXT_END, 10);
+    memset(s_menuName.name, TEXT_END, sizeof(s_menuName.name));
     if (s_menuName.startDefault) {
         chr_setDefaultName(s_menuName.name, s_menuName.nameId);
     } else {
         text_copy(s_menuName.name, g_gameState->gameData->characters[s_menuName.charIdx].name);
     }
     s_menuName.len = text_getLength(s_menuName.name);
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuName.charSets); i++) {
         s_menuName.charSets[i] = text_get(i + NAME_TEXT_CHARSET);
     }
-    setRECT(&s_menuName.windows[0], 0xF0, 8, 0x44, 0x1A);
-    setRECT(&s_menuName.windows[1], 0x16, 0x1A, 0x24, 0x32);
-    setRECT(&s_menuName.windows[2], 0xE, 0x52, 0x44, 0x69);
-    setRECT(&s_menuName.windows[3], 0x1C, 0x26, 0x118, 0x18);
-    setRECT(&s_menuName.windows[4], 0x1C, 0x3E, 0x118, 0xA0);
+    setRECT(&s_menuName.windows[0], NAME_TITLE_WIN_X, NAME_TITLE_WIN_Y, NAME_TITLE_WIN_W, NAME_TITLE_WIN_H);
+    setRECT(&s_menuName.windows[1], NAME_PORTRAIT_WIN_X, NAME_PORTRAIT_WIN_Y, NAME_PORTRAIT_WIN_W, NAME_PORTRAIT_WIN_H);
+    setRECT(&s_menuName.windows[2], NAME_CMD_WIN_X, NAME_CMD_WIN_Y, NAME_CMD_WIN_W, NAME_CMD_WIN_H);
+    setRECT(&s_menuName.windows[3], NAME_HELP_WIN_X, NAME_HELP_WIN_Y, NAME_HELP_WIN_W, NAME_HELP_WIN_H);
+    setRECT(&s_menuName.windows[4], NAME_NAME_WIN_X, NAME_NAME_WIN_Y, NAME_NAME_WIN_W, NAME_NAME_WIN_H);
     menuName_loadPortrait(s_menuName.charIdx);
 }
 
@@ -146,36 +146,36 @@ void menuName_confirm(void) {
 
 void menuName_drawPortrait(void) {
     SprtWords *sprt;
-    u32 clut = (GetClut(0, 0x100) << 16) | 0xB000;
+    u32 clut = (GetClut(0, NAME_PORTRAIT_CLUT_Y) << 16) | (NAME_PORTRAIT_V << 8);
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
     sprt = (SprtWords *)g_primPtr;
     sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    sprt->xy = (s_menuNamePortraitWin->x + 2) | ((s_menuNamePortraitWin->y + 2) << 16);
+    sprt->xy = (s_menuNamePortraitWin->x + NAME_PORTRAIT_INSET) | ((s_menuNamePortraitWin->y + NAME_PORTRAIT_INSET) << 16);
     sprt->uvclut = clut;
-    sprt->wh = 0x2E0020;
-    addPrim(&g_ot[4], sprt);
+    sprt->wh = (NAME_PORTRAIT_H << 16) | NAME_PORTRAIT_W;
+    addPrim(&g_ot[NAME_OTZ_PORTRAIT], sprt);
     g_primPtr = (u8 *)(sprt + 1);
     setlen(g_primPtr, 2);
-    SetDrawTPage(g_primPtr, 0, 1, getTPage(1, 0, 0x3C0, 0x100));
-    addPrim(&g_ot[4], g_primPtr);
+    SetDrawTPage(g_primPtr, 0, 1, getTPage(1, 0, NAME_PORTRAIT_VRAM_X, NAME_PORTRAIT_VRAM_Y));
+    addPrim(&g_ot[NAME_OTZ_PORTRAIT], g_primPtr);
     g_primPtr += 8;
-    win_drawBox(s_menuNamePortraitWin, 6, WIN_STYLE_LINE);
-    win_drawShadow(s_menuNamePortraitWin, 6, WIN_STYLE_LINE);
+    win_drawBox(s_menuNamePortraitWin, NAME_OTZ_BOX, WIN_STYLE_LINE);
+    win_drawShadow(s_menuNamePortraitWin, NAME_OTZ_BOX, WIN_STYLE_LINE);
 }
 
 void menuName_drawCommands(void) {
     s32 i;
 
-    ui_drawEtchedLine(s_menuNameCommandWin->x + 4, s_menuNameCommandWin->y + 0x2A, 5, s_menuNameCommandWin->w - 9);
-    win_drawBox(s_menuNameCommandWin, 5, WIN_STYLE_BEVEL);
-    win_drawShadow(s_menuNameCommandWin, 5, WIN_STYLE_BEVEL);
+    ui_drawEtchedLine(s_menuNameCommandWin->x + 4, s_menuNameCommandWin->y + NAME_CMD_DIV_Y, NAME_OTZ_CMD_BOX, s_menuNameCommandWin->w - 9);
+    win_drawBox(s_menuNameCommandWin, NAME_OTZ_CMD_BOX, WIN_STYLE_BEVEL);
+    win_drawShadow(s_menuNameCommandWin, NAME_OTZ_CMD_BOX, WIN_STYLE_BEVEL);
     for (i = 0; i < 2; i++) {
-        text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 9 + i * 0x10, 4, text_get(i + NAME_TEXT_ALPHABET),
+        text_drawBlock(s_menuNameCommandWin->x + NAME_TEXT_X, s_menuNameCommandWin->y + NAME_CMD_SET_Y + i * NAME_CMD_ROW_H, NAME_OTZ_CMD_TEXT, text_get(i + NAME_TEXT_ALPHABET),
                       s_menuName.charSet == i ? TEXT_PAL_YELLOW : TEXT_PAL_WHITE);
     }
-    for (i = 0; i < 3; i++) {
-        text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 0x31 + i * 0x10, 4, text_get(i + NAME_TEXT_DELETE), TEXT_PAL_WHITE);
+    for (i = 0; i < NAME_MENU_DEFAULT - NAME_MENU_DELETE + 1; i++) {
+        text_drawBlock(s_menuNameCommandWin->x + NAME_TEXT_X, s_menuNameCommandWin->y + NAME_CMD_ACTION_Y + i * NAME_CMD_ROW_H, NAME_OTZ_CMD_TEXT, text_get(i + NAME_TEXT_DELETE), TEXT_PAL_WHITE);
     }
 }
 
@@ -188,15 +188,15 @@ void menuName_drawNameWindow(void) {
     s32 y;
 
     k = 0;
-    cursor = 6;
-    if (s_menuName.len < 6) {
+    cursor = NAME_MAX_LEN - 2;
+    if (s_menuName.len < NAME_MAX_LEN - 2) {
         cursor = s_menuName.len;
     }
-    ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, g_labelName, UI_LABEL_NORMAL);
-    ui_drawEtchedLine(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + 0x1A, 6, s_menuNameNameWin->w - 8);
-    win_drawBox(s_menuNameNameWin, 6, WIN_STYLE_LINE_RULE);
-    win_drawShadow(s_menuNameNameWin, 6, WIN_STYLE_LINE_RULE);
-    for (i = 0; i < 7; i++) {
+    ui_drawLabel(s_menuNameNameWin->x + NAME_RULE_LABEL_X, s_menuNameNameWin->y + NAME_RULE_LABEL_Y, NAME_OTZ_TEXT, g_labelName, UI_LABEL_NORMAL);
+    ui_drawEtchedLine(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + NAME_DIV_Y, NAME_OTZ_BOX, s_menuNameNameWin->w - 8);
+    win_drawBox(s_menuNameNameWin, NAME_OTZ_BOX, WIN_STYLE_LINE_RULE);
+    win_drawShadow(s_menuNameNameWin, NAME_OTZ_BOX, WIN_STYLE_LINE_RULE);
+    for (i = 0; i < NAME_MAX_LEN - 1; i++) {
         if (cursor != i || (g_menu.frame & 4)) {
             for (j = 0; j < 2; j++) {
                 line = (LINE_F2 *)g_primPtr;
@@ -206,26 +206,26 @@ void menuName_drawNameWindow(void) {
                 } else {
                     setRGB0(line, 0x40, 0x40, 0x40);
                 }
-                y = j + 0x15;
-                line->x0 = s_menuNameNameWin->x + (i * 16 + 0x3E) + j;
+                y = j + NAME_SLOT_LINE_Y;
+                line->x0 = s_menuNameNameWin->x + (i * NAME_SLOT_W + NAME_SLOT_X) + j;
                 line->y0 = line->y1 = s_menuNameNameWin->y + y;
-                line->x1 = line->x0 + 0xB;
+                line->x1 = line->x0 + NAME_SLOT_LINE_LEN;
                 g_primPtr += sizeof(LINE_F2);
-                addPrim(&g_ot[5], line);
+                addPrim(&g_ot[NAME_OTZ_TEXT], line);
             }
         }
     }
     for (i = 0; i < s_menuName.len; i++) {
-        text_drawChar(s_menuNameNameWin->x + 0x3F + i * 16, s_menuNameNameWin->y + 7, 5, s_menuName.name[i], TEXT_PAL_WHITE);
+        text_drawChar(s_menuNameNameWin->x + (NAME_SLOT_X + 1) + i * NAME_SLOT_W, s_menuNameNameWin->y + NAME_LETTER_Y, NAME_OTZ_TEXT, s_menuName.name[i], TEXT_PAL_WHITE);
     }
     for (i = 0; i < (u8)(s_menuName.gridSize[s_menuName.charSet] / NAME_GRID_COLS); i++) {
         for (j = 0; j < NAME_GRID_COLS; j++) {
-            text_drawChar(s_menuNameNameWin->x + 0x3E + j * 14, s_menuNameNameWin->y + 0x22 + i * 21, 5,
+            text_drawChar(s_menuNameNameWin->x + NAME_GRID_X + j * NAME_GRID_CELL_W, s_menuNameNameWin->y + NAME_GRID_Y + i * NAME_GRID_ROW_H, NAME_OTZ_TEXT,
                           s_menuName.charSets[s_menuName.charSet][k], TEXT_PAL_WHITE);
             k++;
         }
     }
-    g_primPtr = text_buildFontTpage(&g_ot[5], g_primPtr);
+    g_primPtr = text_buildFontTpage(&g_ot[NAME_OTZ_TEXT], g_primPtr);
 }
 
 void menuName_drawCursor(void) {
@@ -238,27 +238,27 @@ void menuName_drawCursor(void) {
 
     if (s_menuName.focus == NAME_FOCUS_MENU) {
         HelpState *h;
-        g_menuHelp.x = s_menuName.windows[2].x - 0xE;
+        g_menuHelp.x = s_menuName.windows[2].x + NAME_CURSOR_X;
         h = &g_menuHelp;
-        y = s_menuName.windows[2].y + s_menuName.menuCursor * 16;
-        h->y = s_menuName.menuCursor >= 2 ? y + 0x15 : y + 0xD;
+        y = s_menuName.windows[2].y + s_menuName.menuCursor * NAME_CMD_ROW_H;
+        h->y = s_menuName.menuCursor >= NAME_MENU_DELETE ? y + (NAME_CMD_ACTION_Y - 2 * NAME_CMD_ROW_H + NAME_CURSOR_DY) : y + (NAME_CMD_SET_Y + NAME_CURSOR_DY);
     } else {
         gridRect = &s_menuName.windows[4];
         if (s_menuName.charSet != 0) {
             row = s_menuName.gridCursor / NAME_GRID_COLS;
             idx = s_menuName.gridCursor % NAME_GRID_COLS;
-            g_menuHelp.y = gridRect->y + row * 21 + 0x26;
-            col = (u8)(idx / 5);
-            sub = (u8)(idx % 5);
-            g_menuHelp.x = gridRect->x + grp_x(col) + sub * 13 - 0x17;
+            g_menuHelp.y = gridRect->y + row * NAME_GRID_ROW_H + (NAME_GRID_Y + NAME_CURSOR_DY);
+            col = (u8)(idx / NAME_GROUP_COLS);
+            sub = (u8)(idx % NAME_GROUP_COLS);
+            g_menuHelp.x = gridRect->x + grp_x(col) + sub * NAME_GROUP_CELL_W + NAME_GRID_CURSOR_DX;
         } else {
             row = s_menuName.gridCursor / NAME_GRID_COLS;
             col = s_menuName.gridCursor % NAME_GRID_COLS;
-            g_menuHelp.x = gridRect->x + col * 14 + 0x27;
-            g_menuHelp.y = gridRect->y + row * 21 + 0x26;
+            g_menuHelp.x = gridRect->x + col * NAME_GRID_CELL_W + (NAME_GRID_X + NAME_GRID_CURSOR_DX);
+            g_menuHelp.y = gridRect->y + row * NAME_GRID_ROW_H + (NAME_GRID_Y + NAME_CURSOR_DY);
         }
     }
-    g_menuHelp.otz = 3;
+    g_menuHelp.otz = NAME_OTZ_CURSOR;
     help_drawCursor();
 }
 
@@ -301,16 +301,16 @@ void menuName_inputCommands(void) {
 }
 
 void menuName_drawTitle(void) {
-    win_drawBox(s_menuNameTitleWin, 6, WIN_STYLE_BEVEL);
-    win_drawShadow(s_menuNameTitleWin, 6, WIN_STYLE_BEVEL);
-    text_drawBlock(s_menuNameTitleWin->x + 0xA, s_menuNameTitleWin->y + 6, 5, text_get(NAME_TEXT_TITLE), TEXT_PAL_WHITE);
+    win_drawBox(s_menuNameTitleWin, NAME_OTZ_BOX, WIN_STYLE_BEVEL);
+    win_drawShadow(s_menuNameTitleWin, NAME_OTZ_BOX, WIN_STYLE_BEVEL);
+    text_drawBlock(s_menuNameTitleWin->x + NAME_TEXT_X, s_menuNameTitleWin->y + NAME_TEXT_Y, NAME_OTZ_TEXT, text_get(NAME_TEXT_TITLE), TEXT_PAL_WHITE);
 }
 
 void menuName_drawHelp(void) {
-    win_drawBox(s_menuNameHelpWin, 7, WIN_STYLE_LINE_RULE);
-    win_drawShadow(s_menuNameHelpWin, 7, WIN_STYLE_LINE_RULE);
-    text_drawBlock(s_menuNameHelpWin->x + 0x3E, s_menuNameHelpWin->y + 6, 6, text_get(NAME_TEXT_PROMPT), TEXT_PAL_WHITE);
-    ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, g_labelHelp, UI_LABEL_NORMAL);
+    win_drawBox(s_menuNameHelpWin, NAME_OTZ_HELP_BOX, WIN_STYLE_LINE_RULE);
+    win_drawShadow(s_menuNameHelpWin, NAME_OTZ_HELP_BOX, WIN_STYLE_LINE_RULE);
+    text_drawBlock(s_menuNameHelpWin->x + NAME_PROMPT_X, s_menuNameHelpWin->y + NAME_TEXT_Y, NAME_OTZ_HELP_TEXT, text_get(NAME_TEXT_PROMPT), TEXT_PAL_WHITE);
+    ui_drawLabel(s_menuNameHelpWin->x + NAME_RULE_LABEL_X, s_menuNameHelpWin->y + NAME_RULE_LABEL_Y, NAME_OTZ_HELP_TEXT, g_labelHelp, UI_LABEL_NORMAL);
 }
 
 void menuName_loadPortrait(s32 chr) {
