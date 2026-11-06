@@ -1898,6 +1898,7 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_TRANCE_ENABLED 0x10      /* Trance gauge shown and filled (menuStatus_drawExp, btl_cmd) */
 #define EVT_GB_DAGGER_FALTERS 0x11      /* Dagger may fail to act after Alexandria (btl_cmd) */
 #define EVT_GB_SUMMON_MP_X4 0x12        /* summons marked flags & 4 cost 4x MP (Ramuh 22 -> 88) */
+#define EVT_GB_POWER_DAMAGE_EXP 0xC0    /* exponent of BTL_FORMULA_EVT_POWER_DAMAGE: 1 << (n - 1) damage, DAMAGE_MAX from 14 */
 #define EVT_GB_BATTLE_NO_HUD 0xC1       /* battle runs without the HUD (btl_update) */
 #define EVT_GB_NO_ACTION_ABILITIES 0xE3 /* action abilities unusable from the menu (menu_ability) */
 #define EVT_GB_BATTLE_AI_FLAGS 0xC7     /* battle AI script flags (encounters 337, 891) */
@@ -2757,6 +2758,22 @@ typedef struct {
 #define UI_SPRITE_ATE_EVENT_GREY  0x21
 #define UI_SPRITE_ABIL_SUPPORT_OFF 0xF4 /* support ability, not equipped */
 #define UI_SPRITE_EQUIP_SLOTS 0xF9 /* + Character.equip slot: the slot icons (ovl_33 equip, ovl_38 status) */
+/* party member status block (ui_drawCharStatus, ui_drawCharStatuses; the menus' member rows): offsets from the block's
+ * x/y. Name on top, then the Lv / HP / MP rows, each a UI_SPRITE_LV/HP/MP tag at x + 0 and small digits after it */
+#define UI_MEMBER_STATS_X   0x26 /* the block's x right of the party portrait (ui_drawMember, ui_drawMemberSummary, ui_drawMemberHeader) */
+#define UI_CHRSTAT_LV_Y     0x0E /* Lv row */
+#define UI_CHRSTAT_HP_Y     0x17 /* HP row */
+#define UI_CHRSTAT_MP_Y     0x20 /* MP row */
+#define UI_CHRSTAT_LV_X     0x24 /* level digits */
+#define UI_CHRSTAT_LV_X_STATUSES 0x26 /* level digits in ui_drawCharStatuses (the status-icon variant) */
+#define UI_CHRSTAT_STATUS_Y 0x1C /* ui_drawCharStatuses: status icon row, in place of HP/MP */
+#define UI_CHRSTAT_HP_X     0x16 /* "hp/maxHp" digits */
+#define UI_CHRSTAT_MP_X     0x1D /* "mp/maxMp" digits */
+#define UI_LOW_STAT_DIV     6    /* HP / MP numbers turn yellow at or below max / 6 (ui_drawCharStatus, the battle panel) */
+#define UI_GAUGE_W          36   /* ui_drawGauge: bar length in pixels at cur == max */
+/* ui_buildDigits: pen advance of the small digit font */
+#define UI_SMALL_DIGIT_ADV  5 /* digits, '%' and blanks */
+#define UI_SMALL_SLASH_ADV  4 /* '/' */
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows
