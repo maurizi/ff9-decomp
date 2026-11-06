@@ -17,6 +17,70 @@ enum {
 #define STATUS_NO_SLOT      0xFF /* StatusMenu.slot before the first character is shown */
 #define STATUS_PAGE_ROWS    8    /* abilities per page window */
 
+/* Status screen layout (menuStatus_*). Positions are offsets from the main window s_menuStatus.win unless noted. */
+#define STATUS_WIN_X 8 /* main window */
+#define STATUS_WIN_Y 0x26
+#define STATUS_WIN_W 0x12C
+#define STATUS_WIN_H 0xB6
+#define STATUS_OTZ_FRAME   0x1E /* main window frame and its etched dividers */
+#define STATUS_OTZ_CONTENT 0x1D /* header, stats, EXP, equipment */
+#define STATUS_OTZ_CMDS    0x19 /* the command box (in front of the main window) */
+#define STATUS_OTZ_PAGE0   0x14 /* ability page i draws at STATUS_OTZ_PAGE0 - i (later pages in front) */
+#define STATUS_HEADER_X 8 /* member header (portrait, name, level, HP/MP) */
+#define STATUS_HEADER_Y 6
+#define STATUS_ICONBOX_X 0x72 /* status-ailment icon box, top right of the header */
+#define STATUS_ICONBOX_Y 4
+#define STATUS_ICONBOX_W 0x5C
+#define STATUS_ICONBOX_H 0x12
+#define STATUS_STONES_DX 0x19 /* magic stones gauge, relative to the icon box */
+#define STATUS_STONES_DY 0x14
+#define STATUS_CMDBOX_X 0xE4 /* battle command box (labelled "Command") */
+#define STATUS_CMDBOX_Y 8
+#define STATUS_CMDBOX_W 0x42
+#define STATUS_CMDBOX_H 0x48
+#define STATUS_CMD_TEXT_X 0xC /* command names, relative to the command box */
+#define STATUS_CMD_TEXT_Y 6
+#define STATUS_CMD_ROW_H  15
+#define STATUS_STAT_LABEL_X 0xA /* stat labels (s_menuStatusBaseStatText / s_menuStatusBattleStatText) */
+#define STATUS_STAT_LABEL_DY (-4) /* labels sit this far above their value row */
+#define STATUS_STAT_ROW_H 13
+#define STATUS_BASE_STAT_Y 0x3D /* Speed, Strength, Magic, Spirit rows */
+#define STATUS_BASE_STAT_X 0x58 /* their 2-digit values */
+#define STATUS_BATTLE_STAT_Y 0x72 /* Attack, Defence, Evade, Magic Def, Magic Eva rows */
+#define STATUS_BATTLE_STAT_X 0x51 /* their 3-digit values */
+#define STATUS_EXP_LABEL_X 0x74 /* Trance / EXP / Next labels */
+#define STATUS_TRANCE_LABEL_Y 0x39
+#define STATUS_TRANCE_GAUGE_X 0xB4
+#define STATUS_TRANCE_GAUGE_Y 0x3E
+#define STATUS_EXP_LABEL_Y 0x46
+#define STATUS_NEXT_LABEL_Y 0x53
+#define STATUS_EXP_X 0xAC /* EXP value (7 digits) */
+#define STATUS_EXP_Y 0x4A
+#define STATUS_NEXT_X 0xB3 /* EXP to the next level (6 digits) */
+#define STATUS_NEXT_Y 0x57
+#define STATUS_EQUIP_Y 0x68 /* equipment rows (slot icon, colon, item icon, item name) */
+#define STATUS_EQUIP_ROW_H 15
+#define STATUS_EQUIP_SLOT_X 0x74
+#define STATUS_EQUIP_COLON_X 0x84
+#define STATUS_EQUIP_ICON_X 0x8D
+#define STATUS_EQUIP_NAME_X 0x9D
+#define STATUS_PAGE_ROW_X 0xA /* ability page rows, relative to the page window */
+#define STATUS_PAGE_ROW_Y 8
+#define STATUS_PAGE_ROW_H 15
+#define STATUS_PAGE_NO_X 0x90 /* "No." page number label, relative to the page window */
+#define STATUS_PAGE_NUM_X 0x9A
+#define STATUS_ABIL_NAME_DX 0x10 /* ability row: name after the icon */
+#define STATUS_ABIL_GAUGE_DX 0x70 /* ability row: AP gauge */
+#define STATUS_ABIL_GAUGE_DY 3
+#define STATUS_DIV_HEADER_Y 0x36 /* etched divider under the header */
+#define STATUS_DIV_COLUMN_X 0x6B /* vertical divider between the stats and the EXP/equipment column */
+#define STATUS_DIV_COLUMN_Y 0x38
+#define STATUS_DIV_EQUIP_X 0x6D /* divider above the equipment */
+#define STATUS_DIV_EQUIP_Y 0x63
+#define STATUS_HELP_X 0xD8 /* help window anchor (g_menuHelp) */
+#define STATUS_HELP_Y 0x52
+#define STATUS_HELP_OTZ 0xA
+
 /* g_statusMenuText ids */
 #define STATUS_TEXT_HELP   0   /* help: the status ailments */
                                /* 2-10: stat labels (s_menuStatusBaseStatText, s_menuStatusBattleStatText) */
@@ -105,6 +169,8 @@ extern StatusTable s_menuStatusCmdTable;
 extern StatusPool s_menuStatusCmdNames;
 
 /* main exe: candidates for ff9.h */
+#define WIN_TITLE_X 6    /* default Window.titleX / titleY (win_init): a window label's offset from its box */
+#define WIN_TITLE_Y (-3)
 extern s32 g_labelCommand;
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 

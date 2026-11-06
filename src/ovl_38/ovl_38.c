@@ -7,7 +7,7 @@ void menuStatus_init(void) {
     s_menuStatus.slot = STATUS_NO_SLOT;
     s_menuStatus.state = STATUS_STATE_MAIN;
     s_menuStatus.pagesOpen = 0;
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatus.pageOpen); i++) {
         s_menuStatus.pageOnTop[i] = 0;
         s_menuStatus.pageOpen[i] = 0;
     }
@@ -15,10 +15,10 @@ void menuStatus_init(void) {
     ui_initMemberSwitch(&s_menuStatus.header, g_menuScreen.member, menuStatus_onMemberSwitched);
     menuStatus_setMember(g_menuScreen.member, 0);
     winRect = &s_menuStatus.win;
-    winRect->x = 8;
-    winRect->y = 0x26;
-    winRect->w = 0x12C;
-    winRect->h = 0xB6;
+    winRect->x = STATUS_WIN_X;
+    winRect->y = STATUS_WIN_Y;
+    winRect->w = STATUS_WIN_W;
+    winRect->h = STATUS_WIN_H;
     s_menuStatus.savedHelp = help_getFollow();
     help_setFollow(0);
     help_setCallback(menuStatus_updateHelp);
@@ -66,13 +66,13 @@ void menuStatus_drawHeader(void) {
 
     w = &s_menuStatus.win;
     chr = g_gameState->gameData->party[s_menuStatus.slot];
-    x = w->x + 0x72;
-    y = w->y + 4;
-    setRECT(&iconBox, x, y, 0x5C, 0x12);
-    ui_drawStones(x + 0x19, y + 0x14, 0x1E, chr->stones, chr->maxStones);
-    ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (MemberSwitch *)&s_menuStatus.header);
-    ui_drawStatusIcons(iconBox.x + 4, iconBox.y + 4, 0x1D, chr->status, 0);
-    win_drawBox(&iconBox, 0x1D, WIN_STYLE_LINE);
+    x = w->x + STATUS_ICONBOX_X;
+    y = w->y + STATUS_ICONBOX_Y;
+    setRECT(&iconBox, x, y, STATUS_ICONBOX_W, STATUS_ICONBOX_H);
+    ui_drawStones(x + STATUS_STONES_DX, y + STATUS_STONES_DY, STATUS_OTZ_FRAME, chr->stones, chr->maxStones);
+    ui_drawMemberHeader(w->x + STATUS_HEADER_X, w->y + STATUS_HEADER_Y, STATUS_OTZ_CONTENT, (MemberSwitch *)&s_menuStatus.header);
+    ui_drawStatusIcons(iconBox.x + 4, iconBox.y + 4, STATUS_OTZ_CONTENT, chr->status, 0);
+    win_drawBox(&iconBox, STATUS_OTZ_CONTENT, WIN_STYLE_LINE);
 }
 
 void menuStatus_drawCommands(void) {
@@ -91,22 +91,22 @@ void menuStatus_drawCommands(void) {
     chr = g_gameState->gameData->party[s_menuStatus.slot];
     cmdTable = s_menuStatusCmdTable;
     pool = s_menuStatusCmdNames;
-    cmdBox.w = 0x42;
-    cmdBox.h = 0x48;
-    cmdBox.x = w->x + 0xE4;
-    cmdBox.y = w->y + 8;
+    cmdBox.w = STATUS_CMDBOX_W;
+    cmdBox.h = STATUS_CMDBOX_H;
+    cmdBox.x = w->x + STATUS_CMDBOX_X;
+    cmdBox.y = w->y + STATUS_CMDBOX_Y;
     s_menuStatusCmds[1] = s_menuStatusCharCmds[chr->info.b.row][0];
     s_menuStatusCmds[2] = s_menuStatusCharCmds[chr->info.b.row][1];
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatusCmds); i++) {
         tp = cmdTable.v;
-        y = i * 15 + 6;
+        y = i * STATUS_CMD_ROW_H + STATUS_CMD_TEXT_Y;
         off = s_menuStatusCmds[i] * sizeof(StatusEntry);
         k = ((StatusEntry *)((u8 *)tp + off))->nameOffset;
-        s_menuStatus.prim = text_buildBlock(cmdBox.x + 0xC, cmdBox.y + y, g_ot + 25, pool.s + k, TEXT_PAL_WHITE, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildBlock(cmdBox.x + STATUS_CMD_TEXT_X, cmdBox.y + y, g_ot + STATUS_OTZ_CMDS, pool.s + k, TEXT_PAL_WHITE, s_menuStatus.prim);
     }
-    ui_drawLabel(cmdBox.x + 6, cmdBox.y - 3, 0x19, g_labelCommand, UI_LABEL_NORMAL);
-    win_drawBox(&cmdBox, 0x19, WIN_STYLE_BEVEL);
-    win_drawShadow(&cmdBox, 0x19, WIN_STYLE_BEVEL);
+    ui_drawLabel(cmdBox.x + WIN_TITLE_X, cmdBox.y + WIN_TITLE_Y, STATUS_OTZ_CMDS, g_labelCommand, UI_LABEL_NORMAL);
+    win_drawBox(&cmdBox, STATUS_OTZ_CMDS, WIN_STYLE_BEVEL);
+    win_drawShadow(&cmdBox, STATUS_OTZ_CMDS, WIN_STYLE_BEVEL);
 }
 
 void menuStatus_drawStats(void) {
@@ -120,32 +120,32 @@ void menuStatus_drawStats(void) {
     menu = &s_menuStatus;
     winRect = &menu->win;
     chr = g_gameState->gameData->party[menu->slot];
-    y = 0x3D;
-    for (i = 0; i < 4; i++) {
-        s_menuStatus.prim = text_buildBlock(winRect->x + 0xA, winRect->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBaseStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
+    y = STATUS_BASE_STAT_Y;
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatusBaseStatText); i++) {
+        s_menuStatus.prim = text_buildBlock(winRect->x + STATUS_STAT_LABEL_X, winRect->y + (i * STATUS_STAT_ROW_H + y) + STATUS_STAT_LABEL_DY, g_ot + STATUS_OTZ_CONTENT, text_get(s_menuStatusBaseStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
     }
-    y = 0x72;
-    for (i = 0; i < 5; i++) {
-        s_menuStatus.prim = text_buildBlock(winRect->x + 0xA, winRect->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBattleStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
+    y = STATUS_BATTLE_STAT_Y;
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatusBattleStatText); i++) {
+        s_menuStatus.prim = text_buildBlock(winRect->x + STATUS_STAT_LABEL_X, winRect->y + (i * STATUS_STAT_ROW_H + y) + STATUS_STAT_LABEL_DY, g_ot + STATUS_OTZ_CONTENT, text_get(s_menuStatusBattleStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
     }
     text_formatNumber(chr->speed, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x58, winRect->y + 0x3D, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BASE_STAT_X, winRect->y + STATUS_BASE_STAT_Y, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->strength, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x58, winRect->y + 0x4A, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BASE_STAT_X, winRect->y + STATUS_BASE_STAT_Y + STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->magic, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x58, winRect->y + 0x57, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BASE_STAT_X, winRect->y + STATUS_BASE_STAT_Y + 2 * STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->spirit, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x58, winRect->y + 0x64, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BASE_STAT_X, winRect->y + STATUS_BASE_STAT_Y + 3 * STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(g_weaponTable[chr->equip[0]].attack, numText, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x51, winRect->y + 0x72, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BATTLE_STAT_X, winRect->y + STATUS_BATTLE_STAT_Y, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->defense, numText, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x51, winRect->y + 0x7F, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BATTLE_STAT_X, winRect->y + STATUS_BATTLE_STAT_Y + STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->evade, numText, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x51, winRect->y + 0x8C, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BATTLE_STAT_X, winRect->y + STATUS_BATTLE_STAT_Y + 2 * STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->magicDef, numText, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x51, winRect->y + 0x99, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BATTLE_STAT_X, winRect->y + STATUS_BATTLE_STAT_Y + 3 * STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     text_formatNumber(chr->magicEva, numText, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0x51, winRect->y + 0xA6, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_BATTLE_STAT_X, winRect->y + STATUS_BATTLE_STAT_Y + 4 * STATUS_STAT_ROW_H, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
 }
 
 void menuStatus_drawExp(void) {
@@ -166,20 +166,20 @@ void menuStatus_drawExp(void) {
         show = bit == 0;
     }
     if (show) {
-        st->prim = text_buildBlock(winRect->x + 0x74, winRect->y + 0x39, &g_ot[0x1D], text_get(STATUS_TEXT_TRANCE), TEXT_PAL_WHITE, st->prim);
-        ui_drawGauge(winRect->x + 0xB4, winRect->y + 0x3E, 0x1D, chr->trance, 0xFF, 1, 1);
+        st->prim = text_buildBlock(winRect->x + STATUS_EXP_LABEL_X, winRect->y + STATUS_TRANCE_LABEL_Y, &g_ot[STATUS_OTZ_CONTENT], text_get(STATUS_TEXT_TRANCE), TEXT_PAL_WHITE, st->prim);
+        ui_drawGauge(winRect->x + STATUS_TRANCE_GAUGE_X, winRect->y + STATUS_TRANCE_GAUGE_Y, STATUS_OTZ_CONTENT, chr->trance, 0xFF, 1, 1);
     }
-    text_drawBlock(winRect->x + 0x74, winRect->y + 0x46, 0x1D, text_get(STATUS_TEXT_EXP), TEXT_PAL_WHITE);
-    text_drawBlock(winRect->x + 0x74, winRect->y + 0x53, 0x1D, text_get(STATUS_TEXT_NEXT), TEXT_PAL_WHITE);
+    text_drawBlock(winRect->x + STATUS_EXP_LABEL_X, winRect->y + STATUS_EXP_LABEL_Y, STATUS_OTZ_CONTENT, text_get(STATUS_TEXT_EXP), TEXT_PAL_WHITE);
+    text_drawBlock(winRect->x + STATUS_EXP_LABEL_X, winRect->y + STATUS_NEXT_LABEL_Y, STATUS_OTZ_CONTENT, text_get(STATUS_TEXT_NEXT), TEXT_PAL_WHITE);
     text_formatNumber(chr->exp, numText, 7, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0xAC, winRect->y + 0x4A, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_EXP_X, winRect->y + STATUS_EXP_Y, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
     if (chr->level >= LEVEL_MAX) {
         next = chr->exp;
     } else {
         next = g_levelExp[chr->level];
     }
     text_formatNumber(next - chr->exp, numText, 6, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(winRect->x + 0xB3, winRect->y + 0x57, 0x1D, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(winRect->x + STATUS_NEXT_X, winRect->y + STATUS_NEXT_Y, STATUS_OTZ_CONTENT, numText, TEXT_PAL_WHITE);
 }
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", s_menuStatusCmdTable);
@@ -199,12 +199,12 @@ void menuStatus_drawEquipment(void) {
     st = &s_menuStatus;
     chr = g_gameState->gameData->party[st->slot];
     for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
-        s_menuStatus.prim = ui_buildSprite(winRect->x + 0x74, winRect->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + UI_SPRITE_EQUIP_SLOTS, 0, spriteW, s_menuStatus.prim);
-        s_menuStatus.prim = text_buildSmall(winRect->x + 0x84, winRect->y + 0x68 + i * 15 + 3, &g_ot[0x1D], s_menuStatusColon, TEXT_PAL_WHITE, s_menuStatus.prim);
+        s_menuStatus.prim = ui_buildSprite(winRect->x + STATUS_EQUIP_SLOT_X, winRect->y + STATUS_EQUIP_Y + i * STATUS_EQUIP_ROW_H + 1, &g_ot[STATUS_OTZ_CONTENT], i + UI_SPRITE_EQUIP_SLOTS, 0, spriteW, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildSmall(winRect->x + STATUS_EQUIP_COLON_X, winRect->y + STATUS_EQUIP_Y + i * STATUS_EQUIP_ROW_H + 3, &g_ot[STATUS_OTZ_CONTENT], s_menuStatusColon, TEXT_PAL_WHITE, s_menuStatus.prim);
         id = chr->equip[i];
         if (id != ITEM_NONE) {
-            ui_drawItemIcon(winRect->x + 0x8D, winRect->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
-            s_menuStatus.prim = text_buildBlock(winRect->x + 0x9D, winRect->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].name, TEXT_PAL_WHITE, s_menuStatus.prim);
+            ui_drawItemIcon(winRect->x + STATUS_EQUIP_ICON_X, winRect->y + STATUS_EQUIP_Y + i * STATUS_EQUIP_ROW_H - 1, STATUS_OTZ_CONTENT, id, 1);
+            s_menuStatus.prim = text_buildBlock(winRect->x + STATUS_EQUIP_NAME_X, winRect->y + STATUS_EQUIP_Y + i * STATUS_EQUIP_ROW_H - 1, &g_ot[STATUS_OTZ_CONTENT], g_itemNames + g_itemTable[id].name, TEXT_PAL_WHITE, s_menuStatus.prim);
         }
     }
 }
@@ -220,15 +220,15 @@ void menuStatus_drawAbilityPages(void) {
             pageRect = &s_menuStatus.pageWins[i].rect;
             for (j = 0; j < STATUS_PAGE_ROWS; j++) {
                 if (base + j < s_menuStatus.abilityCount) {
-                    menuStatus_drawAbilityRow(pageRect->x + 0xA, pageRect->y + 8 + j * 15, 0x14 - i, base + j, s_menuStatus.pageOnTop[i]);
+                    menuStatus_drawAbilityRow(pageRect->x + STATUS_PAGE_ROW_X, pageRect->y + STATUS_PAGE_ROW_Y + j * STATUS_PAGE_ROW_H, STATUS_OTZ_PAGE0 - i, base + j, s_menuStatus.pageOnTop[i]);
                 }
             }
-            z = 0x14 - i;
-            ui_drawLabel(pageRect->x + 6, pageRect->y - 3, z, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
+            z = STATUS_OTZ_PAGE0 - i;
+            ui_drawLabel(pageRect->x + WIN_TITLE_X, pageRect->y + WIN_TITLE_Y, z, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
             if (s_menuStatus.pageOnTop[i] != 0) {
-                s_menuStatusPageLabel[1] = i + 0x31;
-                ui_drawLabel(pageRect->x + 0x90, pageRect->y - 3, z, g_winLabelStrings.labelNo, UI_LABEL_NORMAL);
-                ui_drawLabel(pageRect->x + 0x9A, pageRect->y - 3, z, (s32)s_menuStatusPageLabel, UI_LABEL_NORMAL);
+                s_menuStatusPageLabel[1] = i + '1';
+                ui_drawLabel(pageRect->x + STATUS_PAGE_NO_X, pageRect->y + WIN_TITLE_Y, z, g_winLabelStrings.labelNo, UI_LABEL_NORMAL);
+                ui_drawLabel(pageRect->x + STATUS_PAGE_NUM_X, pageRect->y + WIN_TITLE_Y, z, (s32)s_menuStatusPageLabel, UI_LABEL_NORMAL);
             }
             win_drawBox(pageRect, z, WIN_STYLE_BEVEL);
             win_drawShadow(pageRect, z, WIN_STYLE_BEVEL);
@@ -277,12 +277,12 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     }
     if (draw) {
         ui_drawSprite(x, y, z, icon, 0);
-        s_menuStatus.prim = text_buildBlock(x + 0x10, y, g_ot + z, name, TEXT_PAL_WHITE, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildBlock(x + STATUS_ABIL_NAME_DX, y, g_ot + z, name, TEXT_PAL_WHITE, s_menuStatus.prim);
     }
     if (ok) {
-        s_menuStatus.prim = ui_buildApGauge(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, s_menuStatus.prim);
+        s_menuStatus.prim = ui_buildApGauge(x + STATUS_ABIL_GAUGE_DX, y + STATUS_ABIL_GAUGE_DY, g_ot + z, cur, max, flag, 0, s_menuStatus.prim);
     } else {
-        s_menuStatus.prim = ui_buildApGauge(x + 0x70, y + 3, g_ot + z, 1, 1, 0, 0, s_menuStatus.prim);
+        s_menuStatus.prim = ui_buildApGauge(x + STATUS_ABIL_GAUGE_DX, y + STATUS_ABIL_GAUGE_DY, g_ot + z, 1, 1, 0, 0, s_menuStatus.prim);
     }
 }
 
@@ -365,7 +365,7 @@ void menuStatus_draw(void) {
 void menuStatus_updateAnims(void) {
     s32 i;
 
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatus.pageOpen); i++) {
         if (s_menuStatus.pageOpen[i] != 0 && s_menuStatus.pageWins[i].anim != 0) {
             tween_step(&s_menuStatus.pageWins[i]);
         }
@@ -388,11 +388,11 @@ void menuStatus_inputAbilities(void) {
 void menuStatus_drawFrame(void) {
     RECT *winRect = &s_menuStatus.win;
 
-    ui_drawEtchedLine(winRect->x + 0x6D, winRect->y + 0x63, 0x1E, winRect->w - 0x71);
-    ui_drawEtchedLine(winRect->x + 0x6B, winRect->y + 0x38, 0x1E, 0x3E - winRect->h);
-    ui_drawEtchedLine(winRect->x + 4, winRect->y + 0x36, 0x1E, winRect->w - 9);
-    win_drawBox(winRect, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(winRect, 0x1E, WIN_STYLE_BEVEL);
+    ui_drawEtchedLine(winRect->x + STATUS_DIV_EQUIP_X, winRect->y + STATUS_DIV_EQUIP_Y, STATUS_OTZ_FRAME, winRect->w - 0x71);
+    ui_drawEtchedLine(winRect->x + STATUS_DIV_COLUMN_X, winRect->y + STATUS_DIV_COLUMN_Y, STATUS_OTZ_FRAME, 0x3E - winRect->h);
+    ui_drawEtchedLine(winRect->x + 4, winRect->y + STATUS_DIV_HEADER_Y, STATUS_OTZ_FRAME, winRect->w - 9);
+    win_drawBox(winRect, STATUS_OTZ_FRAME, WIN_STYLE_BEVEL);
+    win_drawShadow(winRect, STATUS_OTZ_FRAME, WIN_STYLE_BEVEL);
 }
 
 void menuStatus_pollFade(void) {
@@ -426,7 +426,7 @@ void menuStatus_onPagesClosed(void) {
     s32 i;
 
     s_menuStatus.state = STATUS_STATE_MAIN;
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatus.pageOpen); i++) {
         s_menuStatus.pageOnTop[i] = 0;
         s_menuStatus.pageOpen[i] = 0;
     }
@@ -440,11 +440,11 @@ void menuStatus_onMemberSwitched(void) {
 void menuStatus_updateHelp(void) {
     s32 i;
 
-    g_menuHelp.x = 0xD8;
-    g_menuHelp.y = 0x52;
-    g_menuHelp.otz = 0xA;
+    g_menuHelp.x = STATUS_HELP_X;
+    g_menuHelp.y = STATUS_HELP_Y;
+    g_menuHelp.otz = STATUS_HELP_OTZ;
     g_menuHelp.text = text_get(STATUS_TEXT_HELP);
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuStatusHelpArgs); i++) {
         text_setStringArg(i, s_menuStatusHelpArgs[i].str);
         text_setIconArg(i, s_menuStatusHelpArgs[i].val);
     }
