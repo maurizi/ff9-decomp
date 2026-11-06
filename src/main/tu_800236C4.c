@@ -98,18 +98,18 @@ void timer_draw(void) {
     s32 elapsed;
     s32 subSec;
     s32 dg;
-    s32 hr;
-    s32 min;
+    s32 mins;
+    s32 secs;
 
     timer = &g_clock.timer;
     elapsed = g_clock.lastVsync - timer->startVsync;
     blink = 0;
-    min = timer->remaining / 60;
-    hr = min / 60;
+    secs = timer->remaining / 60;
+    mins = secs / 60;
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + 1;
     g_timerRect.x = TIMER_X;
     pkt = g_clock.pktPtr;
-    min %= 60;
+    secs %= 60;
     if (elapsed < TIMER_SLIDE_FRAMES) {
         g_timerRect.x = elapsed * 8 - 0x3C;
         blink = 1;
@@ -121,7 +121,7 @@ void timer_draw(void) {
             colon = 1;
         }
         shown = colon;
-    } else if (hr != 0 || min != 0) {
+    } else if (mins != 0 || secs != 0) {
         subSec = timer->remaining % 60;
         shown = 1;
         colon = subSec >= 30;
@@ -131,16 +131,16 @@ void timer_draw(void) {
         shown = colon;
     }
     if (shown) {
-        dg = hr / 10;
+        dg = mins / 10;
         if (dg != 0) {
-            pkt = ui_buildSprite(g_timerRect.x + TIMER_HI_TENS_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+            pkt = ui_buildSprite(g_timerRect.x + TIMER_MIN_TENS_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         }
-        dg = hr - dg * 10;
-        pkt = ui_buildSprite(g_timerRect.x + TIMER_HI_ONES_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
-        dg = min / 10;
-        pkt = ui_buildSprite(g_timerRect.x + TIMER_LO_TENS_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
-        dg = min - dg * 10;
-        pkt = ui_buildSprite(g_timerRect.x + TIMER_LO_ONES_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+        dg = mins - dg * 10;
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_MIN_ONES_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+        dg = secs / 10;
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_SEC_TENS_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
+        dg = secs - dg * 10;
+        pkt = ui_buildSprite(g_timerRect.x + TIMER_SEC_ONES_X, TIMER_DIGIT_Y, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
     }
     if (colon) {
         pkt = ui_buildSprite(g_timerRect.x + TIMER_COLON_X, TIMER_DIGIT_Y, ot, UI_SPRITE_TIMER_COLON, timer->running == 0, &w, pkt);

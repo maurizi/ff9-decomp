@@ -2756,16 +2756,16 @@ typedef struct {
 #define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
 #define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
 #define UI_SPRITE_TIMER_COLON 0xEA
-/* event countdown timer box (timer_draw): two digit pairs (remaining / 3600, remaining / 60 % 60: minutes:seconds if
- * remaining counts frames, runtime: pending R44) in UI_SPRITE_TIMER_DIGITS; x offsets from g_timerRect.x */
+/* event countdown timer box (timer_draw): "mm:ss" (EvtTimer.remaining counts frames, timer_getSeconds) in
+ * UI_SPRITE_TIMER_DIGITS; x offsets from g_timerRect.x */
 #define TIMER_X             4    /* g_timerRect.x once shown */
 #define TIMER_SLIDE_FRAMES  8    /* slides in from the left (8 px a frame from x -0x3C), blinking, for 8 frames */
 #define TIMER_DIGIT_Y       8
-#define TIMER_HI_TENS_X     5    /* drawn only when non-zero */
-#define TIMER_HI_ONES_X     0xF
+#define TIMER_MIN_TENS_X    5    /* drawn only when non-zero */
+#define TIMER_MIN_ONES_X     0xF
 #define TIMER_COLON_X       0x19
-#define TIMER_LO_TENS_X    0x23
-#define TIMER_LO_ONES_X    0x2D
+#define TIMER_SEC_TENS_X    0x23
+#define TIMER_SEC_ONES_X    0x2D
 /* msg_drawAtePrompt (ATE_PROMPT_*). Evidence [runtime] (R41: each sprite id swapped for a button glyph) */
 #define UI_SPRITE_ATE_ACTIVE 0x80 /* "ACTIVE TIME EVENT" in blue / white, left to right */
 #define UI_SPRITE_ATE_TIME   0x81
