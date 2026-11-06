@@ -4251,6 +4251,38 @@ typedef struct {
 /* WinLayout.anchor: TEXT_WIN_* or */
 #define WINLAYOUT_ANCHOR_NONE 0x00 /* no header code: centred on the screen, or a balloon placed automatically */
 #define WINLAYOUT_ANCHOR_POS 0xFF /* TEXT_WIN_POS */
+/* dialog window placement on the 320x224 screen (evt_getMsgLayout). Evidence: [code] */
+#define MSGWIN_MARGIN       12  /* corner anchors: x / y from the left / top edge */
+#define MSGWIN_RIGHT        308 /* right-anchored windows end here (320 - 12) */
+#define MSGWIN_CENTER_X     160 /* centred windows: x = 160 - w / 2 */
+#define MSGWIN_CENTER_Y     74  /* TEXT_WIN_CENTER: y = 74 - h / 2 */
+#define MSGWIN_DEFAULT_Y    110 /* WINLAYOUT_ANCHOR_NONE: y = 110 - h / 2 */
+#define MSGWIN_BOTTOM_Y     (-48) /* bottom anchors: y = -48 - h, i.e. bottom edge at 208 once the s8 WinLayout.y wraps */
+#define MSGWIN_ATE_MIN_W    0x72 /* MSG_FLAG_ATE windows are at least this wide */
+#define MSGWIN_BALLOON_MIN_W 0x1D /* balloon and MSG_FLAG_NO_TAIL windows: minimum width */
+/* message window text metrics (msg_renderText, msg_getLayout) */
+#define MSG_LINE_H          14 /* line pitch: TEXT_NEWLINE, window height per line, the choice cursor */
+#define MSG_TAB_W           0x12 /* TEXT_TAB advance */
+#define MSG_PAD_W           9  /* window width = the entry's text width + 9 */
+#define MSG_PAD_H           6  /* window height = lines * MSG_LINE_H + 6 */
+#define MSG_TEXT_INSET      2  /* text origin inside the window (msg_drawWindowContent) */
+/* speech balloons (evt_placeBalloon, evt_followBalloon): the tail sits at the speaker's projected anchor point, the
+ * box is centred over the tail's allowed span and clamped to the screen */
+#define EVT_HEAD_ANCHOR_RAISE 50 /* anchor point this far above an object's scaled height (world units): the balloon
+                                  * anchor, and evt_setDrawPosAtObject's ("here" icon, the player's bubble) */
+#define BALLOON_TAIL_OFS     6   /* tail x from the anchor's screen x, towards the box */
+#define BALLOON_TAIL_MIN_R   32  /* tail x range, box to the left of the tail (right = 1) */
+#define BALLOON_TAIL_MAX_R   304
+#define BALLOON_TAIL_MIN_L   16  /* tail x range, box to the right of the tail */
+#define BALLOON_TAIL_MAX_L   288
+#define BALLOON_FLIP_L_X     40  /* auto side: an anchor left of x 40 flips a right-side box, */
+#define BALLOON_FLIP_R_X     280 /* one right of x 280 picks the right side */
+#define BALLOON_LEFT         8   /* box x and y limits */
+#define BALLOON_RIGHT        312
+#define BALLOON_TOP          8
+#define BALLOON_BOTTOM       212
+#define BALLOON_GAP_ABOVE    16  /* box above the anchor: its bottom edge 16 px over it */
+#define BALLOON_GAP_BELOW    32  /* box below the anchor: its top edge 32 px under it */
 s32 msg_overlapsRect(WinLayout *r);
 extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);

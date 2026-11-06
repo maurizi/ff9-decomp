@@ -316,7 +316,7 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
             break;
         case TEXT_NEWLINE:
             pen_popPos();
-            pen_move(0, 14);
+            pen_move(0, MSG_LINE_H);
             pen_pushPos();
             g_msgLine++;
             msg_renderText_skip(w->id, &cur);
@@ -330,7 +330,7 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
             code = *cur++;
             switch (code) {
             case TEXT_TAB:
-                pen_move(0x12, 0);
+                pen_move(MSG_TAB_W, 0);
                 break;
             case TEXT_X_SET:
                 pen_setX(g_penStackPtr[-1].vx);
@@ -373,9 +373,9 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
                 break;
             case TEXT_MSG_ITEM_NAME:
                 last = end - cur == 1;
-                pen_setPalette(4);
+                pen_setPalette(TEXT_PAL_YELLOW);
                 msg_renderText_value(w, g_msgNumbers[*cur++], msg_emitItemName, last);
-                pen_setPalette(0);
+                pen_setPalette(TEXT_PAL_WHITE);
                 break;
             case TEXT_CHAR_NAME + 0:
             case TEXT_CHAR_NAME + 1:
@@ -707,7 +707,7 @@ void msg_drawText(MsgWindow *w) {
             }
         }
         pen_popPos();
-        pen_setPalette(0);
+        pen_setPalette(TEXT_PAL_WHITE);
     }
 }
 
@@ -898,8 +898,8 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
         msgText = (u8 *)g_msgTable->offsets;
         packed = ((u32 *)msgText)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
-            out->w = MSG_ENTRY_W(packed) + 9;
-            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? MSG_ENTRY_LINES(packed) : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
+            out->w = MSG_ENTRY_W(packed) + MSG_PAD_W;
+            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? MSG_ENTRY_LINES(packed) : ((MsgEntry8 *)msgText)[i].lines) * MSG_LINE_H + MSG_PAD_H;
         }
         msgText += MSG_ENTRY_OFS(packed);
     }
@@ -943,7 +943,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     choiceBits >>= 1;
                 }
                 g_msgChoiceCount = choiceVal;
-                g_msgLayout.h -= (*cur++ - choiceVal) * 14;
+                g_msgLayout.h -= (*cur++ - choiceVal) * MSG_LINE_H;
                 choiceVal = -1;
                 choiceBits = g_msgChoiceEnabled;
                 cnt = *cur++;
@@ -1398,7 +1398,7 @@ void msg_drawWindowContent(Window *win) {
     g_penOt = gd->ot[gd->drawBuf] + win->otz;
     pen_begin();
     pen_pushPos();
-    pen_setPos(win->x + 2, win->y + 2);
+    pen_setPos(win->x + MSG_TEXT_INSET, win->y + MSG_TEXT_INSET);
     msg_drawText((MsgWindow *)win->userData);
     pen_popPos();
     pen_endFont();
@@ -1414,7 +1414,7 @@ void msg_drawChoiceCursor(Window *w) {
         pen_begin();
         pen_pushPos();
         ofs = 8;
-        pen_setPos(w->x - 3, w->y + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
+        pen_setPos(w->x - 3, w->y + ((g_msgChoiceLine + g_msgChoice) * MSG_LINE_H + ofs));
         pen_drawSprite(UI_SPRITE_HAND);
         pen_popPos();
         pen_endSmall();
