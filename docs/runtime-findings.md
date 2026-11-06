@@ -4823,3 +4823,146 @@ emitter, no script request)". The ablation screenshot was not needed.
 - Proposed: `WM_IIFA_CROWN_R` / `_Y_DISC1` / `_Y_DISC4` / `_NOCACHE_*` for the WM_IIFA_FLY_* set (comment "the airship
   slides over the Iifa Tree's crown"), keep `WM_IIFA_CAM_R` / `_Y` with "the camera eye stays outside a dome over the Iifa
   Tree". high.
+
+## R44 runtime pass: layout and tuning  (status: proposed; questions in docs/wip/r44_runtime_{tm,fieldworld,mainbattle,menus}.md)
+
+Method: PCSX-Redux, disc 1 (`3ds4_tm_*`, `menu_main`, `menu_items`, `menu_config`, `field_dali_inn`,
+`field_opening_dark`, `field_ice_300` via `tools/rt/wm_enter.py`) and disc 3 (`disc3_pandemonium_lv99_field`,
+`disc3_malboro_lv99_calm`, `disc3_malboro_eiko_trance`, `cpass_wm_hadris`, `cpass_wm_airship9`). Evidence images and
+scratch scripts in `build/r44rt/`. No breakpoints left. Note: the `disc3_malboro_*` states are a **back attack**
+(every party unit's row is the inverse of its Character.battleRow, btl_model's BTL_AMBUSH_BACK flip).
+
+### Tetra Master (ovl_0d)
+- **Q1 `TM_SCORE_MID_X/Y`: a diagonal divider.** `3ds4_tm_player_select` (task 0): between the enemy's orange "1" (top)
+  and the player's blue "0" (bottom) sits an ornamented diagonal slash (bronze hub, red / blue blade ends), spanning
+  y 0xAB-0xC2 at x 0x10-0x40 (`tm_player_select.png`, `tm_score_crop.png`). Proposed `TM_SCORE_SLASH_X/Y`. high.
+- **Q2 `TM_R1_LABEL_X/Y`: "-NAME".** Same shot: the label right of the R1 icon reads "-NAME" (italic blue)
+  (`tm_r1_crop.png`). Proposed `TM_R1_NAME_LABEL_X/Y`. high.
+- **Q3 stock titles: "Card" + "Selection", and "Discard" between two "!" marks.** `3ds4_tm_card_select` (task 18):
+  sprite A at (0x58, 0xA) is the word "Card", sprite B at (0x8C, 0xC) the word "Selection" (rectangles drawn over the
+  shot: `3ds4_tm_card_select_title.png`). `3ds4_tm_over100` (task 22, same draw branch as 23/24): the 0x4E-wide sprite
+  is "Discard", the two 16x16 "arrows" are brown shield-shaped **exclamation marks** ("!") (`3ds4_tm_over100_title.png`).
+  The result-text page dump (`tm_result_page.png`, VRAM 0x280,0x100, CLUT row 0xE9) confirms the uv's: "Card" (0xB8,
+  0x78), "Selection" (0x94, 0xD2), "Discard" (0x98, 0xBC), "!" (0xF0, 0xB8); the page also holds an unused "Select"
+  and a Japanese line. Proposed `TM_TITLE_CARD_X/Y` (was SELECT), `TM_TITLE_SELECTION_X/Y` (was SELECT2),
+  `TM_TITLE_DISCARD_X/Y` (kept), `TM_TITLE_MARK_L_X` / `_R_X` / `_MARK_Y` (were ARROW; comment "blinking '!' marks"). high.
+- **Q4 result banner layers: the second layer is a blurred dark halo (drop shadow).** `3ds4_tm_result_win` /
+  `_lose` (task 3, `3ds4_tm_result_win_crop.png`, `_lose_crop.png`) and the page dump: u 0x68 (WIN/LOSE) and v + 0x28
+  (PERFECT/DRAW) hold the same word as a soft, dilated grey blob; drawn subtractive at the same spot it darkens a
+  blurred halo around the bright gold additive letters. Comment: "second layer: a blurred shadow of the word, drawn
+  subtractive". (Both are added to one OT slot, so the GPU draws the subtractive halo first, then the letters.) high.
+
+### Field / world (ovl_0a, ovl_0c)
+- **Q1 `MENU_MAIN_PORTRAIT_X_*`: the names are swapped. battleRow set = FRONT row, x 8.** `menu_main`: Zidane
+  (Character.info 0xE10, battleRow set) is drawn at x 8 (left), Vivi (0x1821, clear) at 0x16 (right). Order with
+  Zidane twice (help: "Select same character twice to choose front row or back row", `menu_order_sel.png`) cleared the
+  bit (0xC10) and moved his portrait right (`menu_order_cmp.png`). Battle check (`r44_tonberry_start`, a normal
+  encounter): unit row (flags +0x68 >> 8 & 3) = battleRow; row 1 units stand at z -1560, row 0 at z -1960, the
+  enemies at +900, and btl_applyRowMod halves damage for a row difference of 2 (row 0 vs enemy row 2). So battleRow 1
+  = front row, and the back row's portrait is shifted right. Proposed `MENU_MAIN_PORTRAIT_X_FRONT 8`,
+  `MENU_MAIN_PORTRAIT_X_BACK 0x16` (both overlay headers); CharBits.battleRow comment "1 = front row". high.
+- **Q2 `MENU_MAIN_STATUS_BOX_*` / `MENU_MAIN_SHADE_*`: confirmed.** `menu_main` with Zidane's status poked to 0xFE
+  (0x8008B2C4): six status icons appear inside the notched frame along the top right of his panel (x panel + 0x82)
+  (`menu_main_status_crop.png`). The dark tile spans both portrait positions (x panel + 8 .. + 0x36): the strip left of
+  a back-row portrait and right of a front-row one is that tile (`menu_order_cmp.png`). Names fit; SHADE comment
+  "dark backdrop of the portrait slot (both rows)". high.
+- **Q3 `UI_SPRITE_PAUSE` 0xEB: the word "PAUSE".** `field_dali_inn` + Start (`field_pause.png`) and the world map
+  (`r44_wm_chocograph5` + Start, `wm_pause.png`): a white serif "PAUSE" centred on the dimmed screen. Name confirmed. high.
+- **Q4 `FLD_PAUSE_LIGHT_FADE` 200: confirmed, the sprite turns dark.** `field_dali_inn`, g_fade (0x80077C78) poked to
+  type 1 (flat), subtract 0, covered 1, end colour and colour = X (screen white for 0xFFFFFF, `fade_00FFFFFF_before.png`),
+  then Start: with X = 0xC0C0C0 "PAUSE" is white (barely visible on the light grey), with 0xC8C8C8 and 0xFFFFFF it is
+  black (`fade_pause_cmp.png`). Name and comment fit. high.
+- **Q5a `WM_NOCACHE_CELL_16_14`: a river gorge.** Walker (`cpass_wm_hadris`) and airship (`cpass_wm_airship9`)
+  teleported to (264183, -245187): a narrow river canyon with cliff walls, running into the sea (`wm_cell_16_14.png`,
+  `wm_cell_16_14_air.png`); g_worldUsePolyCache reads 0 there. Proposed `WM_NOCACHE_RIVER_GORGE_*`. medium (the gorge is
+  certain; no navi name for it).
+- **Q5b why the cache is off: not reproduced.** The walker can't move after a far teleport (it stays at y 838 at every
+  spot tried around the gorge and Conde Petie, so those spots couldn't be walked). At Ipsen's Castle (next to the
+  `cpass_wm_hadris` start) the same 280-frame walk across the box with the 11 `sb zero, g_worldUsePolyCache` stores in
+  wm_movePlayer nopped (0x800B0918 .. 0x800B0D20) gives the same y profile as unpatched (857 -> 636 down into the
+  crater; `build/r44rt/walkcmp.py`, `wc_ipsen_orig.txt` / `wc_ipsen_patch.txt`). The code reason stays: the cache
+  returns the first cached polygon containing (x, z) without checking y, so the boxes are presumably places with
+  stacked ground (crater rim, gorge walls); no runtime proof. Leave the comment pending. low.
+- **Q6 `WM_ACTOR_NO_MODEL` (type 14): a shadow with nothing above it.** `cpass_wm_airship9`, `actors.lua`: one type-14
+  actor (uid 7, model 452), at y -1200 over the sea west of the Outer Continent, drifting slowly (119978 -> 119866
+  in 90 frames). wm_drawActorShadow is called for it every frame (trace: a0 0x800782CC, obj+17 = 14). Airship parked
+  over it, same run with wm_drawActorShadow patched to `jr ra`: the only differences are the airship's own shadow and
+  a round dark blob on the sea below, with no model (`sh14_over_sheet.png`). So type 14 is a shadow-only object; a
+  moving shadow with nothing drawn fits Chocobo's Air Garden (seen as its shadow from the ground), not proven.
+  Proposed `WM_ACTOR_SHADOW_ONLY` (comment: "a drifting round shadow, likely Chocobo's Air Garden"). high for the
+  shadow, low for the Air Garden.
+- **Q7 `WM_VEHICLE_REST_ROLL` 14: the value is right, nothing visible.** g_worldVehicleActor->rotZ (0x800781FC) reads 14
+  both parked (`cpass_wm_hadris`) and flying straight (`cpass_wm_airship9`), and poked values settle back towards 14
+  (400 -> 384 in 2 frames). But poking 0, -400 or +400 changes no pixel of the parked Hilda Garde 3 on screen
+  (`build/r44rt/roll.py`, `wm_park_roll_*.png`, diff bbox None) nor of the flying one. So this rotZ doesn't reach the
+  drawn ship in these states (the drawn rotation comes from objSlot->actor). Keep the name; comment "rotZ settles to 14
+  (no visible tilt on the Hilda Garde 3)". low.
+
+### main / ovl_0b
+- **Q1 balloon placement: tailMode bit 1 = box ABOVE the speaker; the 32 px gap clears the head.**
+  `field_opening_dark`, Cross, `trace 0x80038FD8`: evt_placeBalloon(obj 0x80077FB0, layout 0x8007B940, dir -1,
+  fixed 0) -> WinLayout x 0x5A w 0xA1 tailOffset 0x4C tailMode 2, y 0x5A h 0x14: box above Zidane, tail pointing down,
+  anchor sy = y + h + 16 = 126 = the top of his hair (`balloon2_crop.png`, red line = anchor). Same call with a2 = 0,
+  a3 = 1 forced at the breakpoint: tailMode 0, y 0x9E = 126 + 32, box under his head, tail pointing up to his chest
+  (`balloon_forced_below_crop.png`). So the anchor is the head top: 16 px above it holds the down tail, 32 px below
+  it clears the head plus the up tail. The C local `below` is set when the box goes above the anchor (speaker higher
+  on screen than the listener); propose renaming it `above` and a `BALLOON_TAIL_DOWN 2` (tailMode bit 1, box above),
+  `BALLOON_TAIL_LEFT`/`RIGHT` for bit 0 as the code says. BALLOON_GAP_ABOVE / _BELOW comments: "below the head-top
+  anchor: clears the head". high.
+- **Q2 akao_loadBankInSlot ranges.** Lua exec bp at 0x80056048 (and 0x80056750 akao_loadBankAt) logging the header id
+  (`build/r44rt/aklog.lua`, `aklog2.lua`, removed after):
+  - battle 899 (Malboro, enter_battle): akao_loadBankInSlot id **350** slot 0 (btl_loadSoundsStep, the enemy type's
+    bank, header slot 224, SPU 0x43100), plus akao_loadBank id **208** (BTL_SOUND_SE_BANK's file, header slot 192, SPU
+    0x4F100). Battle 872 (Tonberries): no slotted bank. A Shiva summon (`run3.py --patch 0x10,0x31,0x10`): none.
+  - field loads (enter_field from Pandemonium): 2714 id **504**, 2600 id **511**, both slot 0 through
+    fld_soundBankReadCallback (header slot 200, SPU 0x6F100).
+  - Bank files in FF9.IMG dir 11 (`banks.py`): 200-2xx = 8 instruments at instrument 192 / SPU 0x4F100 (20 KB per
+    slot step); 300-4xx = 3 instruments at 224 / 0x43100 (16 KB per slot, loaded-bank index slot + 4); 500-5xx = 8
+    instruments at 200 / 0x6F100 (4 KB per slot); 6xx-7xx at 160 / 0x63100 (no slot rule).
+  Proposed (bank-id ranges): `AKAO_BANK_BATTLE_SE_FIRST 200` (battle SE banks, 208 = the battle's own), 
+  `AKAO_BANK_ENEMY_SE_FIRST 300` (an enemy type's SE, one slot per type), `AKAO_BANK_FIELD_SE_FIRST 500` (a field's SE
+  bank). medium for 300-499 and 500-599 (observed), low for 200-299 (only the unslotted 208 observed; its slotted use
+  through g_btlSoundLoadSlot was not reached).
+- **Q3 formula 0x68: Tonberry "Everyone's Grudge"; byte 0xC0 grows by 2 per Tonberry killed.** Static scan of every
+  encounter's enemy abilities (`build/r44rt/formscan.py`, Battle11C020 layout as in round 33; 0x61 finds Lamia's
+  Entice as before): formula 0x68 only in encounters 872, 873, 874 (discs 3/4), ability 3, effect 0x104 =
+  "Everyone's Grudge (Tonberry)" (`effect_labels.py`). Their battle script (`btldis.py 872`, entry 1): init sets
+  b[0xC0] = 1 when it is 0; the Tonberry's death handler (tag 6) adds 2 while it is below 0xFE. Runtime:
+  `r44_tonberry_start` (enc 872, b[0xC0] 0 -> 1 at load), enemies' HP poked to 1, Attack: one write at
+  evt_writeVar+0x14 from evt_runExpr, 1 -> 3 when the Tonberry died. So the global counts Tonberry kills for the whole
+  game (exponent = 1 + 2 x kills, damage 2^(2 x kills), 9999 from the 7th kill). Proposed `BTL_FORMULA_GRUDGE` (0x68),
+  `EVT_GB_TONBERRY_GRUDGE` (0xC0: "1 + 2 per Tonberry killed"), `BTL_GRUDGE_CAP_EXP` 14. high.
+- **Q4 classFlags 0x8: only Zidane.** `disc3_pandemonium_lv99_field`, all 9 Character records (GameData+0x3C, 0x90
+  each): Zidane 0x09, Vivi / Steiner / Quina / Amarant 0x05, Dagger / Freya / Eiko 0x06, Beatrix 0x16. So 0x8 is
+  Zidane's alone and 0x4 everyone else's (as round 31's data scan). No game text names it; proposed
+  `CHR_CLASS_ZIDANE 0x8` (and `CHR_CLASS_NOT_ZIDANE 0x4` if wanted), formula 0x62 -> `BTL_FORMULA_PHYSICAL_NOT_ZIDANE`
+  ("misses Zidane"). Unused data (no ability uses 0x62). medium.
+- **Q5 tranceKind: confirmed 1 = gauge, 2 = in Trance.** g_btluiPanel = *0x80105078 (0x8009993C), tranceKind at +0x88:
+  `disc3_malboro_lv99_calm` 01 01 01 01; `disc3_malboro_eiko_trance` 01 01 01 02 (Eiko, row 3, in Trance)
+  (`btl_trance_cmp.png`). Poking Zidane's BtlUnit.trance (+0x78) to 0xFF alone doesn't start Trance (stays 1 for 300
+  frames; Trance starts from btl_gainTrance). In Trance the gauge uses the same style 1, only drawn before the ATB
+  gauge. Names fit. high.
+
+### Menus (ovl_32, ovl_34, ovl_37)
+- **Q1 `CONFIG_SPRITE_PORT_*`: 0xF8 is the "1" pad, 0x100 the "2" pad; the flag argument means dimmed.**
+  `menu_config` -> Battle Control -> Custom -> Cross: per character a controller icon with "1" at x + 0x60 and one with
+  "2" at x + 0x92. GameState.config (+0x24) 0x19AE0, Zidane's port bit clear: "1" lit, "2" dimmed; Right on Zidane:
+  config 0x119AE0 (bit 20 set): "1" dimmed, "2" lit (`config_bc_cmp.png`). ui_buildSprite's flag is "dim", so the
+  header comments ("lit when set") are inverted. Proposed `CONFIG_SPRITE_PORT1 0xF8`, `CONFIG_SPRITE_PORT2 0x100`;
+  bit set = controller 2 (CFG_SHIFT_CHAR_PORT comment already right). high.
+- **Q2 `CHOCO_WM_*`: the chocograph picture under-the-compass window on the world map.** wm_setupWorldData loads the
+  selected chocograph TIM to (0x318, 0xB0) / CLUT (0x280, 0xF6) itself, and wm_naviDrawChocograph (WM_NAVI_MINI)
+  draws a 42x28 POLY_FT4 at (0xF9, 0x60) from tpage (768, 0) u 0x30 v 0xB0 with that CLUT in a navi frame. Runtime:
+  `tools/rt/wm_enter.py --poke 0x8008BA94=05000000` (GameData.chocograph = 5) from `field_ice_300`: the framed
+  picture (a beach) shows above the mini-map (`wm_chocograph5.png`; state `r44_wm_chocograph5`). The menu's copy
+  restores what the Chocograph menu's own pictures overwrote. Proposed `WM_CHOCOGRAPH_PICTURE_X/Y`,
+  `WM_CHOCOGRAPH_CLUT_X/Y` (owned by the world map's navi; ovl_32 keeps a copy or includes them). high.
+- **Q3 help bounds x 0xC: a left margin keeping the help window off the screen edge.** `menu_items`, Hi-Potion (right
+  column) -> Cross -> Select: the character window opens on the left, the help box is clamped to start at x 12
+  (`items_help_right_crop.png`). Patching the 0xC (addiu at 0x801F1C68, ovl_37) to 0 puts the box at x 0, flush with
+  the screen edge over the pointing hand; 0x40 pushes it right (`items_help_bounds_cmp.png`). From the left column the
+  bounds are the left half (the character window is on the right). Proposed `MENU_HELP_MARGIN_X 0xC` (or
+  `ITEM_HELP_LEFT_MARGIN`; same value in menuAbility_updateHelp). high.
+
+New states: disc 1 `r44_wm_chocograph5` (world map outside the Ice Cavern, chocograph 5 selected, picture under the
+compass); disc 3 `r44_tonberry_start` (encounter 872, Tonberries, Zidane's command menu, b[0xC0] = 1).
