@@ -475,7 +475,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
 s32 evt_rollEncounter(EvtObject *obj) {
     s32 id = 0;
 
-    if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
+    if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > EVT_ENCOUNTER_STEP_DIST) {
         g_evtEncounterDist = 0;
         g_evtEncounterChance += g_evtState->encounterRate;
         if (rand8_inline() < (g_evtEncounterChance >> 3)) {
@@ -2475,7 +2475,7 @@ void evt_movePlayer(EvtObject *obj) {
             }
         } while (0);
     }
-    g_evtPushFrames = g_evtPlayerBlocked != 0 ? (g_evtPushFrames < 25 ? g_evtPushFrames + g_evtPushable : -25)
+    g_evtPushFrames = g_evtPlayerBlocked != 0 ? (g_evtPushFrames < EVT_PUSH_FRAMES ? g_evtPushFrames + g_evtPushable : -EVT_PUSH_FRAMES)
                                  : (g_evtPushFrames < 0 ? g_evtPushFrames + 1 : 0);
 }
 
@@ -2524,7 +2524,7 @@ static inline void evt_updateLookAt_ahead(EvtObject *obj, s32 angle, VECTOR *out
     SetTransMatrix(&mtx);
     ofs.vx = 0;
     ofs.vy = (obj->height * (s8)obj->scale) >> 6;
-    ofs.vz = -500;
+    ofs.vz = -EVT_LOOK_AHEAD;
     gte_ldv0(&ofs);
     gte_rtv0tr();
     gte_stlvnl(out);
@@ -2536,13 +2536,13 @@ void evt_relaxLookAt(EvtObject *obj, Unk8004AFF0 *mdl) {
 
     evt_updateLookAt_ahead(obj, obj->pos.rotY, &out);
     dist = math_length3(out.vx - obj->lookAtX, out.vy - obj->lookAtY, out.vz - obj->lookAtZ);
-    if (dist < 100) {
-        dist = 100;
+    if (dist < EVT_LOOK_STEP) {
+        dist = EVT_LOOK_STEP;
         obj->moveFlags &= ~(EVT_MOVE_LOOK_RELEASED | EVT_MOVE_LOOKED_AT_SPEAKER | EVT_MOVE_LOOKING);
     }
-    obj->lookAtX += (out.vx - obj->lookAtX) * 100 / dist;
-    obj->lookAtY += (out.vy - obj->lookAtY) * 100 / dist;
-    obj->lookAtZ += (out.vz - obj->lookAtZ) * 100 / dist;
+    obj->lookAtX += (out.vx - obj->lookAtX) * EVT_LOOK_STEP / dist;
+    obj->lookAtY += (out.vy - obj->lookAtY) * EVT_LOOK_STEP / dist;
+    obj->lookAtZ += (out.vz - obj->lookAtZ) * EVT_LOOK_STEP / dist;
     mdl->flags |= MDL_LOOK_AT;
     mdl->lookAtX = obj->lookAtX;
     mdl->lookAtY = obj->lookAtY;
@@ -2554,12 +2554,12 @@ static inline void evt_updateLookAt_approach(EvtObject *obj, Unk8004AFF0 *mdl, V
     s32 dist;
 
     dist = math_length3(target->vx - obj->lookAtX, target->vy - obj->lookAtY, target->vz - obj->lookAtZ);
-    if (dist < 100) {
-        dist = 100;
+    if (dist < EVT_LOOK_STEP) {
+        dist = EVT_LOOK_STEP;
     }
-    obj->lookAtX += (target->vx - obj->lookAtX) * 100 / dist;
-    obj->lookAtY += (target->vy - obj->lookAtY) * 100 / dist;
-    obj->lookAtZ += (target->vz - obj->lookAtZ) * 100 / dist;
+    obj->lookAtX += (target->vx - obj->lookAtX) * EVT_LOOK_STEP / dist;
+    obj->lookAtY += (target->vy - obj->lookAtY) * EVT_LOOK_STEP / dist;
+    obj->lookAtZ += (target->vz - obj->lookAtZ) * EVT_LOOK_STEP / dist;
     mdl->flags |= MDL_LOOK_AT;
     mdl->lookAtX = obj->lookAtX;
     mdl->lookAtY = obj->lookAtY;
@@ -2576,7 +2576,7 @@ static inline s32 evt_updateLookAt_infront(EvtObject *obj) {
         if (diff > 0x800) {
             diff -= 0x1000;
         }
-        ok = (u32)(diff + 0x37F) < 0x6FF;
+        ok = (u32)(diff + EVT_LOOK_FRONT - 1) < 2 * EVT_LOOK_FRONT - 1;
         if (!ok) {
             obj->moveFlags &= ~EVT_MOVE_LOOKING;
         }
@@ -2595,7 +2595,7 @@ static inline s32 evt_updateLookAt_infront2(EvtObject *obj, s32 *pa) {
         if (diff > 0x800) {
             diff -= 0x1000;
         }
-        ok = (u32)(diff + 0x37F) < 0x6FF;
+        ok = (u32)(diff + EVT_LOOK_FRONT - 1) < 2 * EVT_LOOK_FRONT - 1;
         if (!ok) {
             obj->moveFlags &= ~EVT_MOVE_LOOKING;
         }
@@ -2625,7 +2625,7 @@ void evt_updateLookAt(EvtObject *obj) {
     mdl = (Unk8004AFF0 *)((ModelSlot *)game_getModel(obj->modelSlot))->model;
     tgt = NULL;
     if ((obj->moveFlags & EVT_MOVE_LOOK_AT_SPEAKER) && g_evtLookTarget != NULL && g_evtLookTarget != obj &&
-        math_dist2(obj->pos.vx - g_evtLookTarget->pos.vx, obj->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
+        math_dist2(obj->pos.vx - g_evtLookTarget->pos.vx, obj->pos.vz - g_evtLookTarget->pos.vz, 0) >= EVT_LOOK_MIN_DIST) {
         tgt = g_evtLookTarget;
         obj->moveFlags |= EVT_MOVE_LOOKED_AT_SPEAKER;
     }
@@ -2643,16 +2643,16 @@ void evt_updateLookAt(EvtObject *obj) {
             bestd = 0;
             for (node = g_evtState->objects; node != NULL; node = node->next) {
                 other = node->obj;
-                if (other != obj && other->kind == EVT_KIND_ACTOR && (u32)(other->pos.vy - y + 399) < 799 && (other->moveFlags & EVT_MOVE_LOOK_TARGET) &&
+                if (other != obj && other->kind == EVT_KIND_ACTOR && (u32)(other->pos.vy - y + EVT_LOOK_MAX_DY) < 2 * EVT_LOOK_MAX_DY + 1 && (other->moveFlags & EVT_MOVE_LOOK_TARGET) &&
                     (lookMask & other->lookParam0)) {
                     score = math_distSq2(other->pos.vx - x, other->pos.vz - z, 0);
-                    if (score >= 1000) {
+                    if (score >= EVT_LOOK_MIN_DIST) {
                         angle = evt_angleToObject(obj, other, obj->pos.rotY);
-                        score -= 4000000;
+                        score -= EVT_LOOK_SCORE_BIAS;
                         if (angle < 0) {
                             angle = -angle;
                         }
-                        angle -= 640;
+                        angle -= EVT_LOOK_CONE;
                         if (angle < 0) {
                             score += angle;
                             if (score < bestd) {
@@ -2685,12 +2685,12 @@ void evt_updateLookAt(EvtObject *obj) {
                     if (relAngle > 0x800) {
                         relAngle -= 0x1000;
                     }
-                    if ((u32)(relAngle + 0x27F) < 0x4FF) {
+                    if ((u32)(relAngle + EVT_LOOK_CONE - 1) < 2 * EVT_LOOK_CONE - 1) {
                         point.vy = (((obj->pos.vy << 6) + obj->height * (s8)obj->scale) * 3 + (point.vy << 6) +
                                 tgt->height * (s8)tgt->scale) >> 8;
                         evt_updateLookAt_approach(obj, mdl, &point);
                     } else if (evt_callTurnScript(obj, ang)) {
-                        angle = relAngle > 0x280 ? 0x280 : -0x280;
+                        angle = relAngle > EVT_LOOK_CONE ? EVT_LOOK_CONE : -EVT_LOOK_CONE;
                         evt_updateLookAt_ahead(obj, angle + obj->pos.rotY, &point);
                         evt_updateLookAt_approach(obj, mdl, &point);
                     }
@@ -3389,7 +3389,7 @@ void evt_init(u8 *data) {
     g_evtHalted = 0;
     g_evtCameraChanged = 0;
     g_evtCamera = 0;
-    g_evtEncounterDist = -0x5A0;
+    g_evtEncounterDist = EVT_ENCOUNTER_GRACE;
     evt = g_evtState;
     evt->encounterRate = 0;
     g_evtEncounterChance = 0;

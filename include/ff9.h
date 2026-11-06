@@ -4402,6 +4402,18 @@ typedef struct {
 #define EVT_PLAYER_WALK_SPEED 30
 #define EVT_PLAYER_RUN_SPEED 60
 #define EVT_DIR_NONE 0x8000
+#define EVT_PUSH_FRAMES 25 /* g_evtPushFrames: frames of walking into a pushable object, then -25 frames of cooldown */
+/* random encounters (evt_rollEncounter): the player's walked distance (g_evtEncounterDist, math_length3 per frame) */
+#define EVT_ENCOUNTER_STEP_DIST 0x3C0 /* walked between two encounter rolls */
+#define EVT_ENCOUNTER_GRACE (-0x5A0)  /* start value when the event system initialises: the first roll comes 0x5A0 later */
+/* actors turning their head to look at others (evt_updateLookAt, evt_relaxLookAt). Evidence: [code] */
+#define EVT_LOOK_STEP      100  /* the look-at point moves at most this far a frame */
+#define EVT_LOOK_AHEAD     500  /* resting look-at point: this far in front, at head height */
+#define EVT_LOOK_MIN_DIST  1000 /* speakers and actors nearer than this (math_dist2 / math_distSq2) are not looked at */
+#define EVT_LOOK_MAX_DY    399  /* only actors within +-399 in height */
+#define EVT_LOOK_SCORE_BIAS 4000000 /* candidate score = distance - this + (angle - EVT_LOOK_CONE); lowest wins */
+#define EVT_LOOK_CONE      0x280 /* head-turn limit (56 degrees): further round, look 0x280 to that side or turn (evt_callTurnScript) */
+#define EVT_LOOK_FRONT     0x380 /* the look-at point is dropped once it is more than 79 degrees off the facing */
 #define EVT_OP_CLEAR_COLOR 0x6B /* r, g, b: game_setClearColor */
 #define EVT_OP_BG_SCROLL_TO 0x6F /* x, y, frames, mode: fldbg_scrollTo */
 #define EVT_OP_BG_SCROLL_TO_PLAYER 0x70 /* fldbg_scrollToPlayer */
