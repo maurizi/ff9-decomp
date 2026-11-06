@@ -2883,6 +2883,8 @@ void party_setChanged(u8);
 u8 chr_hasSupportAbility(s32, s32);
 u8 chr_canLearnAbilities(Character *);
 u8 chr_testSupportBit(u32 *, s32);
+#define MENU_HELP_MARGIN_X 0xC /* help bounds left edge while picking a character from the right list column (item
+                              * and ability menus): keeps the help window off the screen edge ([runtime] R44) */
 void help_setBounds(RECT *);
 void help_drawCursor(); /* unprototyped: the argument is unused and most callers pass none */
 void help_setCursorOnTop(u8);

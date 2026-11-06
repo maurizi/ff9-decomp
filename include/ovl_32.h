@@ -91,12 +91,8 @@ enum { CHOCO_TAB_SELECT, CHOCO_TAB_CANCEL };
 #define CHOCO_PICTURE_CLUT_Y 0x1E8
 #define CHOCO_FRAME_CLUT_X 0x3C0 /* picture frame CLUT (its shadow uses the next row) */
 #define CHOCO_FRAME_CLUT_Y 0x1FE
-/* on the world map, menuChocograph_restoreVram copies the selected chocograph's CLUT and pixels here first
- * (runtime: pending R44, docs/wip/r44_runtime_menus.md #2) */
-#define CHOCO_WM_CLUT_X 0x280
-#define CHOCO_WM_CLUT_Y 0xF6
-#define CHOCO_WM_PICTURE_X 0x318
-#define CHOCO_WM_PICTURE_Y 0xB0
+/* on the world map, menuChocograph_restoreVram copies the selected chocograph's CLUT and pixels back to
+ * WM_CHOCOGRAPH_CLUT_X/Y and WM_CHOCOGRAPH_PICTURE_X/Y (res_ids.h) */
 #define CHOCO_LAST_PAGE  (CHOCOGRAPH_COUNT - CHOCO_LIST_ROWS) /* highest list scroll top */
 
 /* Event variable bytes (g_evtGlobalVars.b) */

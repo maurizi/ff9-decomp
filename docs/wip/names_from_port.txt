@@ -11667,3 +11667,12 @@ EVT_GB_POWER_DAMAGE_EXP EVT_GB_TONBERRY_GRUDGE  # [runtime] R44: 1 at battle sta
 BTL_EVT_POWER_DAMAGE_CAP_EXP BTL_GRUDGE_CAP_EXP  # [code] follows the formula rename
 BTL_FORMULA_PHYSICAL_CLASS8 BTL_FORMULA_PHYSICAL_NOT_ZIDANE  # [runtime] R44 (medium): classFlags 0x8 = Zidane only
 # new (R44, main): CHR_CLASS_ZIDANE 0x8 (ff9.h, medium), AKAO_BANK_{BATTLE,ENEMY,FIELD}_SE_FIRST/_COUNT (snd_ids.h; battle low, enemy/field medium)
+CONFIG_SPRITE_PORT_SET CONFIG_SPRITE_PORT1  # [runtime] R44: the controller icon marked "1"
+CONFIG_SPRITE_PORT_CLEAR CONFIG_SPRITE_PORT2  # [runtime] R44: marked "2"; the drawIcon flag dims
+on port2  # local in menuConfig_drawBattleControl (ovl_34): the character's port bit (set = controller 2)
+flag dim  # parameter of menuConfig_drawIcon (ovl_34)
+CHOCO_WM_CLUT_X WM_CHOCOGRAPH_CLUT_X  # [runtime] R44: the world map's chocograph picture above the mini-map; moved to res_ids.h, also used in ovl_0c
+CHOCO_WM_CLUT_Y WM_CHOCOGRAPH_CLUT_Y  # [runtime] R44
+CHOCO_WM_PICTURE_X WM_CHOCOGRAPH_PICTURE_X  # [runtime] R44
+CHOCO_WM_PICTURE_Y WM_CHOCOGRAPH_PICTURE_Y  # [runtime] R44
+# new (R44, ff9.h): MENU_HELP_MARGIN_X 0xC (ovl_33 menuAbility_updateHelp, ovl_37 menuItem_updateHelp)

@@ -1,5 +1,10 @@
 # R44: runtime questions from the menu / minigame layout pass
 
+**Status: answered and applied** (docs/runtime-findings.md, "R44 runtime pass: layout and tuning"): #1
+`CONFIG_SPRITE_PORT1` 0xF8 / `CONFIG_SPRITE_PORT2` 0x100 (bit set = controller 2; the flag argument dims, comments
+fixed), #2 `WM_CHOCOGRAPH_PICTURE_X/Y`, `WM_CHOCOGRAPH_CLUT_X/Y` (res_ids.h, used by ovl_0c wm_setupWorldData and
+ovl_32), #3 `MENU_HELP_MARGIN_X` 0xC (ff9.h, ovl_37 item and ovl_33 ability menus).
+
 Round R44 named the screen layout (window rects, OT slots, rows and columns, cursor positions), timings and sprite
 sheet coordinates of the menu and minigame overlays (ovl_14, 15, 32, 33, 34, 36, 37, 38, 39, 3a, 3b, 3c, 3e, 64, 65).
 Nearly every name follows from the code together with the screen's own text and labels (`g_label*`, the menu text

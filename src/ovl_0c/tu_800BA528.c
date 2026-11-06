@@ -83,7 +83,8 @@ void wm_setupWorldData(void) {
     wm_loadTimPack((s32 *)files[4], 0, 0, 0, 0);
     wm_loadTimPack((s32 *)files[1], 0, 0, 0, 0);
     if (g_gameState->gameData->chocograph != 0) {
-        wm_loadTim((u32 *)files[3], g_gameState->gameData->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
+        wm_loadTim((u32 *)files[3], g_gameState->gameData->chocograph - 1, WM_CHOCOGRAPH_PICTURE_X, WM_CHOCOGRAPH_PICTURE_Y,
+                   WM_CHOCOGRAPH_CLUT_X, WM_CHOCOGRAPH_CLUT_Y, 2);
     }
     if (*g_worldStoryCounterPtr >= WM_STORY_MIST_GONE) {
         g_worldNaviPage = 1;

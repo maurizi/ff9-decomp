@@ -130,6 +130,13 @@
  * Leviathan (fx_0b3) scrolls its file texture rows into 0x1C0, which is no capture. */
 #define VRAM_BTLFX_SCRATCH_X 0x1C0
 #define VRAM_BTLFX_SCRATCH_Y 0x100
+/* World map chocograph picture: the selected chocograph's picture, drawn in a navi frame above the mini-map
+ * (wm_naviDrawChocograph, WM_NAVI_MINI). wm_setupWorldData (ovl_0c) loads its TIM here, and the Chocograph menu
+ * (ovl_32 menuChocograph_restoreVram) copies it back here after its own pictures overwrote it. [runtime] R44 */
+#define WM_CHOCOGRAPH_PICTURE_X 0x318
+#define WM_CHOCOGRAPH_PICTURE_Y 0xB0
+#define WM_CHOCOGRAPH_CLUT_X 0x280
+#define WM_CHOCOGRAPH_CLUT_Y 0xF6
 
 /* Ordering tables (docs/r29/battle-render.md). Each mode's scene OT GameData.ot[drawBuf] has OT_LEN entries, is
  * cleared with ClearOTagR (entry i links to i - 1) and drawn from OT_LAST, so higher entries are farther away.

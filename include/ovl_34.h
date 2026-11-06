@@ -69,10 +69,10 @@ enum { CONFIG_SLIDE_NONE, CONFIG_SLIDE_RIGHT, CONFIG_SLIDE_LEFT }; /* ConfigMenu
 #define CONFIG_PAD_TEXT_X 0x54 /* the action (y + 1) */
 #define CONFIG_PORT_ROW_Y 0xA /* controller port rows */
 #define CONFIG_PORT_NAME_X 0xE /* character name */
-#define CONFIG_PORT_ICON0_X 0x60 /* CONFIG_SPRITE_PORT_SET: lit when the character's port bit is set */
-#define CONFIG_PORT_ICON1_X 0x92 /* CONFIG_SPRITE_PORT_CLEAR: lit when it is clear */
-#define CONFIG_SPRITE_PORT_SET 0xF8 /* (runtime: pending R44, docs/wip/r44_runtime_menus.md #1) */
-#define CONFIG_SPRITE_PORT_CLEAR 0x100 /* (runtime: pending R44, #1) */
+#define CONFIG_PORT_ICON0_X 0x60 /* CONFIG_SPRITE_PORT1: dimmed when the character's port bit is set (controller 2) */
+#define CONFIG_PORT_ICON1_X 0x92 /* CONFIG_SPRITE_PORT2: dimmed when it is clear (controller 1) */
+#define CONFIG_SPRITE_PORT1 0xF8 /* the controller icon marked "1" ([runtime] R44) */
+#define CONFIG_SPRITE_PORT2 0x100 /* the controller icon marked "2" ([runtime] R44) */
 #define CONFIG_OTZ_SUB_CURSOR 0x10
 #define CONFIG_OTZ_SUB_TEXT 0x11 /* custom window contents */
 #define CONFIG_OTZ_SUB_WIN 0x12 /* custom windows */

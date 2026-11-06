@@ -374,7 +374,7 @@ void menuItem_updateHelp(void) {
         list = &s_menuItem.itemList;
     } else if (s_menuItem.state == ITEM_STATE_TARGET) {
         if (menuItem_getSlot(&s_menuItem.itemList) & 1) {
-            bounds.x = 0xC;
+            bounds.x = MENU_HELP_MARGIN_X;
             bounds.y = 0;
             bounds.w = g_gameState->dispEnv->disp.w;
             bounds.h = g_gameState->dispEnv->disp.h;
