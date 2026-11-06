@@ -232,14 +232,14 @@ void menuMain_drawTimeGil(void) {
     text_formatNumber(g_gameState->gameData->gil, numText, MENU_MAIN_GIL_WIDTH, TEXT_NUM_ASCII);
     strcat(numText, s_menuMainGilSuffix);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + MENU_MAIN_TIMEGIL_DIGITS_X, s_menuMainTimeGilRect->y + MENU_MAIN_GIL_DIGITS_Y, MENU_MAIN_OTZ_TEXT, numText, TEXT_PAL_WHITE);
-    ui_drawLabel(s_menuMainTimeGilRect->x + MENU_MAIN_TIMEGIL_ICON_X, s_menuMainTimeGilRect->y + MENU_MAIN_LABEL_Y, MENU_MAIN_OTZ_TEXT, g_labelTimeAndGil, UI_LABEL_NORMAL);
+    ui_drawLabel(s_menuMainTimeGilRect->x + MENU_MAIN_TIMEGIL_ICON_X, s_menuMainTimeGilRect->y + WIN_TITLE_Y, MENU_MAIN_OTZ_TEXT, g_labelTimeAndGil, UI_LABEL_NORMAL);
     win_drawBox(s_menuMainTimeGilRect, MENU_MAIN_OTZ_PANEL, WIN_STYLE_BEVEL);
 }
 
 void menuMain_drawLocation(void) {
     GameData *gd;
 
-    ui_drawLabel(s_menuMainLocationRect->x + MENU_MAIN_LOCATION_TEXT_X, s_menuMainLocationRect->y + MENU_MAIN_LABEL_Y, MENU_MAIN_OTZ_TEXT, g_labelLocation, UI_LABEL_NORMAL);
+    ui_drawLabel(s_menuMainLocationRect->x + MENU_MAIN_LOCATION_TEXT_X, s_menuMainLocationRect->y + WIN_TITLE_Y, MENU_MAIN_OTZ_TEXT, g_labelLocation, UI_LABEL_NORMAL);
     win_drawBox(s_menuMainLocationRect, MENU_MAIN_OTZ_PANEL, WIN_STYLE_BEVEL);
     win_drawShadow(s_menuMainLocationRect, MENU_MAIN_OTZ_PANEL, WIN_STYLE_BEVEL);
     gd = g_gameState->gameData;

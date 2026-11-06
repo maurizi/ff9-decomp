@@ -5,6 +5,7 @@
  * Overlay addresses mean different things in different overlays, so they
  * live here, not in ff9.h. */
 #include "ff9.h"
+#include "menu_main.h" /* menu_main.c (the same copy as in ovl_0a) */
 
 /* w_frameSetParameter request ids (event opcode 0xC4). Names follow Square's debug strings
  * "*[ Request from script:... ]" printed for each id (spelling corrected), [code] where silent. */
@@ -931,20 +932,6 @@ typedef struct {
     WmPackEntry *entries[1];
 } WmPack;
 
-/* text windows (menuMain_setCursor .. menuMain_updatePanels) */
-typedef struct {
-    u8 cursor;
-    u8 state; /* index into s_menuMainInput */
-    u8 orderCursor; /* party slots being swapped */
-    u8 orderTarget;
-    u8 orderPicked;
-    u8 pad5[3];
-    WinDef panels[6];
-} MenuMain;
-/* MenuMain.state (menuMain_selectCommand) */
-#define MENUMAIN_COMMAND 0 /* picking a command */
-#define MENUMAIN_MEMBER 1 /* picking the party member for it (menuScreen_needsMember) */
-#define MENUMAIN_ORDER 2 /* Order: swapping party members */
 
 /* map cell (4 bytes) */
 typedef struct {
@@ -1143,7 +1130,6 @@ s32 wm_depFindBackground(s32, s32 *, s32 *);
 s32 wm_depFindField(s16, s32 *, s32 *);
 s32 wm_depFindArea(s32, s32 *, s32 *);
 void w_frameMapDestructor(void);
-void menuMain_swapPortraits(s32, s32);
 void wm_blockVertsFog(void *);
 s32 wm_blockFacesFog(void *, s32, s32);
 void wm_blockVertsFar(void *);
@@ -1156,7 +1142,6 @@ void w_musicRequestSend(u32);
 void wm_seFadeVolume(s32, u16, u8);
 void wm_blendCameraPreset(s16, s16);
 void wm_autoPilotOff(void);
-void menuMain_selectCommand(void);
 void wm_seStop(s32);
 void wm_sePlay(s32, u8);
 void wm_seSetVolume(s32, u8);
@@ -1169,13 +1154,9 @@ void wm_modelVerts(s32);
 void wm_modelVertsFlat(s32);
 s32 wm_modelFaces(s32, s32, s32);
 s32 wm_modelFacesFog(s32, s32, s32);
-void menuMain_drawMember(s32);
-void menuMain_drawPortraitShade(RECT *, s32);
 void wm_controlWalk(void);
 void wm_controlSteer(void);
 void wm_controlFly(void);
-void menuMain_initPanels(void);
-void menuMain_updateHelp(void);
 void wm_frameTerm(void);
 void w_memorymanDestructor(void);
 void wm_mapSystemTerm(void);
@@ -1197,8 +1178,6 @@ typedef struct {
 } WmTim;
 
 void wm_loadTim(u32 *, s32, s32, s32, s32, s32, s8);
-void menuMain_setExpHelp(s32);
-void menuMain_setEquipHelp(u8);
 s32 wm_getPadHeld(void);
 s32 wm_getPadPressed(void);
 s32 w_musicGetID(s32, WmSeIds *);
@@ -1255,24 +1234,13 @@ void wm_readtxUpdate(void);
 void wm_frmbufInit(void);
 void wm_frmbufUpdate(void);
 s32 wm_getSongMusicId(u16);
-void menuMain_drawTimeGil(void);
-void menuMain_drawLocation(void);
-void menuMain_drawCursor(void);
-void menuMain_input(void);
-void menuMain_draw(void);
-void menuMain_updatePanels(void);
-void menuMain_drawParty(void);
 
 /* ---- overlay data ---- */
-extern RECT *s_menuMainTimeGilRect;
-extern u8 s_menuMainGilSuffix[];
 extern u8 g_worldFog;
 extern u8 g_worldCellTriggersOn;
 extern WmTexArea *g_worldCurTexArea;
-extern u8 *s_menuMainEquipLabels[5];
 extern char s_wmStrFrameExtructExtract[];
 extern char s_wmStrFrameExtructAlready[];
-extern RECT *s_menuMainLocationRect;
 extern s16 g_worldCameraBlendSpeed;
 extern s16 g_worldCameraBlend;
 extern s16 g_worldCameraBlendRow;
@@ -1299,82 +1267,6 @@ extern MATRIX g_worldBlockFxLightMatrix;
 extern MATRIX g_worldBackdropLightMatrix;
 extern MATRIX g_worldMapLightMatrix;
 extern u8 g_worldMapLoaded;
-extern u8 s_menuMainText[]; /* text */
-/* s_menuMainText entries (text_get; decoded with tools/ff9text.py text_table) */
-#define MENU_MAIN_TEXT_NO_LOCATION 1 /* "Honolulu conversion code": a leftover placeholder, shown when GameData.locationName is empty */
-#define MENU_MAIN_TEXT_EQUIP_HELP 4 /* "Select character." + the five equipment lines (string args 0-9) */
-#define MENU_MAIN_TEXT_STATUS_HELP 5 /* "Select character." + Exp / Next lines (string args 2-7) */
-#define MENU_MAIN_TEXT_EMPTY 0xD /* "": an empty equipment slot */
-#define MENU_MAIN_TEXT_MEMBER_HELP 2 /* + cursor: the "Select character." help of each command (menuMain_updateHelp) */
-#define MENU_MAIN_TEXT_ORDER_HELP 0xB /* + orderPicked: "Select character." / the front row / back row explanation */
-#define MENU_MAIN_COMMAND_LAST (MENU_SCREEN_CONFIG - 1) /* command cursor range 0..this; cursor + 1 = MENU_SCREEN_* */
-
-/* Main menu layout (menu_main.c, same in ovl_0a and ovl_0c). s_menuMainPanelRects: party panels at (0xE,
- * 0xD + 0x30 * slot) 0xF6 x 0x30, the Time/Gil window at (0xE1, 0x9A) 0x53 x 0x27, the location window
- * 0x1B high at y 0xC1. Offsets below are from the window's top left corner. */
-#define MENU_MAIN_OTZ_PANEL 0x14 /* windows and the party panels' contents */
-#define MENU_MAIN_OTZ_SHADOW 0x15 /* party panel shadows, behind them */
-#define MENU_MAIN_OTZ_TEXT 0x13 /* Time/Gil and location contents, over their windows */
-#define MENU_MAIN_OTZ_COMMAND_HAND 1 /* command list cursor */
-#define MENU_MAIN_OTZ_MEMBER_HAND 0xC /* party member cursor */
-#define MENU_MAIN_OTZ_TARGET_HAND 0xB /* Order: the second (swap target) cursor */
-#define MENU_MAIN_LOCATION_RIGHT 0x134 /* the location window is right-aligned to this x */
-#define MENU_MAIN_LOCATION_PAD_W 0x10 /* width added to the location name's */
-#define MENU_MAIN_LOCATION_MIN_W 0x44
-#define MENU_MAIN_LOCATION_TEXT_X 8 /* "Location" label and the location name */
-#define MENU_MAIN_LOCATION_TEXT_Y 7 /* the location name */
-#define MENU_MAIN_LABEL_Y (-3) /* window title labels (ui_drawLabel), straddling the top edge */
-#define MENU_MAIN_TIMEGIL_ICON_X 6 /* the TIME / GIL sprites and the "Time & Gil" label */
-#define MENU_MAIN_TIMEGIL_DIGITS_X 0x13 /* play time and gil digits */
-#define MENU_MAIN_TIME_ICON_Y 8
-#define MENU_MAIN_TIME_DIGITS_Y 9
-#define MENU_MAIN_GIL_ICON_Y 0x15
-#define MENU_MAIN_GIL_DIGITS_Y 0x16
-#define MENU_MAIN_GIL_WIDTH 7 /* digits (text_formatNumber) */
-#define MENU_MAIN_EXP_WIDTH 7 /* Exp / Next digits in the Status help (menuMain_setExpHelp) */
-#define MENU_MAIN_COMMAND_HAND_X 0xE0 /* command list cursor: x, first row y and row height */
-#define MENU_MAIN_COMMAND_HAND_Y 0x11
-#define MENU_MAIN_COMMAND_ROW_H 0xF
-#define MENU_MAIN_MEMBER_HAND_DX 0xE /* party member cursor: left of panel 0's x, first row y, row step */
-#define MENU_MAIN_MEMBER_HAND_Y 0x20
-#define MENU_MAIN_MEMBER_ROW_H 0x2E
-#define MENU_MAIN_TARGET_HAND_DX 0xA /* Order: the swap target's cursor, offset down-right of the first */
-#define MENU_MAIN_TARGET_HAND_Y 0x24
-#define MENU_MAIN_HELP_X 8 /* help window bounds (help_setBounds): left of the command list */
-#define MENU_MAIN_HELP_Y 8
-#define MENU_MAIN_HELP_W 0xE8
-#define MENU_MAIN_HELP_BOTTOM 0xF /* lines above the display's bottom */
-/* party panel */
-#define MENU_MAIN_PORTRAIT_X_BACK 8 /* portrait x with battleRow set (which row: runtime pending R44) */
-#define MENU_MAIN_PORTRAIT_X_FRONT 0x16 /* portrait x with battleRow clear: shifted right */
-#define MENU_MAIN_PORTRAIT_Y 1
-#define MENU_MAIN_PORTRAIT_H 0x2D
-#define MENU_MAIN_SHADE_X 8 /* the translucent tile behind the portrait (menuMain_drawPortraitShade) */
-#define MENU_MAIN_SHADE_W 0x2E
-#define MENU_MAIN_SHADE_H 0x30
-#define MENU_MAIN_STATS_X 0x3C /* name, LV, HP and MP column */
-#define MENU_MAIN_NAME_Y 3
-#define MENU_MAIN_LV_Y 0x12
-#define MENU_MAIN_HP_Y 0x1B
-#define MENU_MAIN_MP_Y 0x24
-#define MENU_MAIN_LV_DIGITS_X 0x60
-#define MENU_MAIN_HP_DIGITS_X 0x52 /* "hhhh/max" */
-#define MENU_MAIN_MP_DIGITS_X 0x59 /* "mmm/max" */
-#define MENU_MAIN_HP_WIDTH 4 /* digits before the '/' */
-#define MENU_MAIN_MP_WIDTH 3
-#define MENU_MAIN_STATUS_BOX_X 0x82 /* the box framing the status icons, along the panel's top */
-#define MENU_MAIN_STATUS_BOX_W 0x72
-#define MENU_MAIN_STATUS_BOX_H 0x12
-#define MENU_MAIN_STATUS_X 0x86 /* status icons */
-#define MENU_MAIN_STATUS_Y 4
-#define MENU_MAIN_STONES_X 0x9B /* magic stones (ui_drawStones) */
-#define MENU_MAIN_STONES_Y 0x14
-#define MENU_MAIN_LOW_STAT_DIV 6 /* HP / MP at or below max / this are shown in TEXT_PAL_YELLOW */
-/* menuMain_swapPortraits: spare VRAM for the second and third portrait rects (the first goes to
- * g_portraitSavedVram) while two party slots trade portraits */
-#define MENU_MAIN_SWAP_VRAM_X1 0x3C0
-#define MENU_MAIN_SWAP_VRAM_X2 0x3D0
-#define MENU_MAIN_SWAP_VRAM_Y 0x1B0
 extern WmActorType g_worldActorTypeInfo[];
 extern EvtObject *g_worldPlayer; /* player actor */
 extern WmMoveMode *g_worldMoveModeInfo;
@@ -1443,7 +1335,6 @@ extern s32 g_worldChunkListDirty;
 extern WmWeatherData g_worldWeatherData;
 extern char s_wmStrFrameMapDestructor[]; /* "w_frameMapDestructor:\n" */
 extern char s_wmStrFramePackGetPtrRange[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
-extern void (*s_menuMainInput[])(void);
 extern u8 g_worldSongMusicIds[]; /* [WM_SONG_*] -> music id: MUSIC_WORLD_MAP, MUSIC_CHOCOBO, MUSIC_AIRSHIP,
                                    * MUSIC_WORLD_DISC4, 0x5F, 0x60 (the two field songs, not heard). Data, the same on
                                    * every disc ([runtime] R41b) */
@@ -1602,7 +1493,6 @@ extern s32 g_worldMusicSong;
 extern s32 g_worldMusicStarted;
 extern s32 g_worldMusicId;
 extern s32 g_worldMusicRequest;
-extern MenuMain s_menuMain;
 extern u8 g_worldState;
 extern char s_wmStrMemorymanDone[];
 extern s16 g_worldTerrainHeightOffsets[][9];
@@ -1700,7 +1590,6 @@ extern u8 g_worldCdUser;
 void wm_stepClutAnims(s32, s32, s32);
 void wm_initTextureLists(void);
 void wm_blockListInit(void);
-void menuMain_reorder(s32, s32);
 void wm_musicPlay(u16);
 void wm_musicStop(u16);
 
@@ -1717,16 +1606,6 @@ typedef struct {
     RECT rects[1];
 } WmImagePackClut;
 
-extern RECT s_menuMainPanelRects[6];
-extern TweenDef s_menuMainSlideIn[4];
-extern u8 s_menuMainExpText[16];
-extern u8 s_menuMainNextText[16];
-extern u8 s_menuMainExpLabel[];
-extern u8 s_menuMainNextLabel[];
-extern u8 s_menuMainUntilLabel[];
-extern u8 s_menuMainStatusLabel[];
-extern u8 s_menuMainStatusNormal[];
-extern u8 s_menuMainStatusAbnormal[];
 
 /* wm_initMovement init state */
 typedef struct {
