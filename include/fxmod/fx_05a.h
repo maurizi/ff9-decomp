@@ -11,6 +11,23 @@
 #define FX_MIGHT_SWIRL       0x9 /* emitter: blue-white swirl particles + fan */
 #define FX_MIGHT_STAR        0xA /* model: four-pointed star, plain white texture */
 
+/* fx_05a choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, flash and length, the star's size and texture. */
+#define FX_MIGHT_STAR_FRAME      0x19 /* op80: FX_MIGHT_SWIRL starts, the spinning star and FX_MIGHT_AURA_TEXTURE are drawn from here */
+#define FX_MIGHT_FLASH_FRAMES    8    /* from STAR_FRAME: additive white flash fading from FLASH_LEVEL for this many frames */
+#define FX_MIGHT_FLASH_LEVEL     0xFF
+#define FX_MIGHT_FADE_FRAME      0x2D /* op80: the star darkens from here */
+#define FX_MIGHT_FRAMES          0x3C /* op80: the task ends at this frame */
+#define FX_MIGHT_MODEL_COUNT     1    /* btlfx_initEffModels slots: STAR */
+#define FX_MIGHT_STAR_SCALE      0x155 /* FX_MIGHT_STAR's scale (0x1000 = 1); for enemies it grows with */
+#define FX_MIGHT_BIG_HEIGHT      0x190 /* the target's height above this, */
+#define FX_MIGHT_BIG_RADIUS      0x320 /* and its radius above this (a quarter of each excess), the swirl rising with it, */
+#define FX_MIGHT_STAR_MAX_SCALE  0x400 /* up to this */
+/* FX_MIGHT_STAR: 15-bit page (0x1C0, 0x100), v 0xC0 = VRAM (0x1C0, 0x1C0), where FX_MIGHT_AURA_TEXTURE renders. */
+#define FX_MIGHT_STAR_TPAGE      0x117
+#define FX_MIGHT_STAR_V          0xC0
+#define FX_MIGHT_LIGHT_TRAIL_TRAIL_SLOTS  0xA /* FX_MIGHT_LIGHT_TRAIL's trail buffer fx_05a_trails: slots of */
+#define FX_MIGHT_LIGHT_TRAIL_TRAIL_STRIDE 0xB0 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

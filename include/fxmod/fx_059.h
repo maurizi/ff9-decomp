@@ -11,6 +11,17 @@
 #define FX_HASTE_ORANGE_RINGS     0x14 /* emitter: white-grey-violet-orange gouraud rings */
 #define FX_HASTE_CLOCK_FACE       0x18 /* emitter: clock face with Roman numerals + blue glow */
 
+/* fx_059 choreography (docs/fxdata.md, "Choreography literals"): op80's spiral (states, radius, trail pool); op81's and op82's lengths. */
+#define FX_HASTE_STATE_SPIRAL   0    /* op80: the head particle spirals into the screen, dropping a trail point each frame, */
+#define FX_HASTE_SPIRAL_FRAMES  6    /* for this many frames, */
+#define FX_HASTE_SPIRAL_RADIUS  0xA0 /* its radius shrinking from this to 0 */
+#define FX_HASTE_STATE_END      1    /* op80: the trail fades, the op ends after END_FRAMES */
+#define FX_HASTE_END_FRAMES     7
+#define FX_HASTE_TRAIL_POINTS   12   /* the op's own pool of trail points (btlfx_poolInit count, SVECTOR items) */
+#define FX_HASTE_TRAIL_FRAMES   8    /* a trail point is drawn (fading) for this many frames */
+#define FX_HASTE_RINGS_FRAMES   0x20 /* op81: the task ends at this frame */
+#define FX_HASTE_VIOLET_FRAMES  0x18 /* op82: the task ends at this frame */
+
 typedef struct {
     s32 state0; /* state */
     s32 depthZ4; /* spiral head's distance into the screen in the view-rotation frame, grows 0xC8 per frame */

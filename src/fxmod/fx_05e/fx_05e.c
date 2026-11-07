@@ -16,8 +16,8 @@ static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *co
     if (fade < 0) {
         fade = 0x1000;
     }
-    if (n >= 1000) {
-        n -= 999;
+    if (n >= FX_DEATH_RIBBON_CLEAR) {
+        n -= FX_DEATH_RIBBON_CLEAR - 1;
         for (i = 0; i < n; i++) {
             buf[i].edge0.pad = 0;
         }
@@ -55,8 +55,8 @@ static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *co
     }
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    colA.cd = abr != 0xFF ? 0x3A : 0x38;
-    colB.cd = abr != 0xFF ? 0x3A : 0x38;
+    colA.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_G4 | GPU_ABE : GPU_POLY_G4;
+    colB.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_G4 | GPU_ABE : GPU_POLY_G4;
     for (i = 0; i < n; i++, buf++, prim++) {
         gte_ldv3c(buf);
         fadeNear = 0x1000 - (i << 12) / n;
@@ -69,7 +69,7 @@ static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *co
             gte_stszotz(&otz);
             gte_ldv0(&buf[1].edge8);
             gte_rtps();
-            ex->btlfx_addPrimAbr(0x8000000, otz, prim, abr);
+            ex->btlfx_addPrimAbr(PRIM_TAG(POLY_G4), otz, prim, abr);
             gte_stsxy(&prim->x3);
             gte_DpqColorFar_nst(&colA, fadeNear);
             gte_strgb(&prim->r0);
@@ -120,9 +120,9 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR *ribbonA;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx05eWork);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_DEATH_STATE_RISE;
         work->frame4 = 0;
         fx_05e_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -164,15 +164,15 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot2C.vx = 0;
         work->rot2C.vz = 0;
         work->rot2C.vy = work->rot10.vy;
-        ex->btlfx_initEffModels(fx_05e_effModels, 1);
+        ex->btlfx_initEffModels(fx_05e_effModels, FX_DEATH_MODEL_COUNT);
         work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_DEATH_REAPER_2), 0);
     } else {
         state = work->state0;
         frame = entry->frame;
         amp = 0;
         switch (state) {
-        case 0:
-            ratio = (frame << 12) / 24;
+        case FX_DEATH_STATE_RISE:
+            ratio = (frame << 12) / FX_DEATH_RISE_FRAMES;
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SOUL_ORBS), (s32)&work->pos18);
                 if (emitter != NULL) {
@@ -181,8 +181,8 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_BLUE_TRAIL_2), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_05e_trails;
-                    emitter->trailSlots = 0x18;
-                    emitter->trailStride = 0x3C;
+                    emitter->trailSlots = FX_DEATH_BLUE_TRAIL_2_TRAIL_SLOTS;
+                    emitter->trailStride = FX_DEATH_BLUE_TRAIL_2_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
             }
@@ -199,25 +199,25 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->model28, (((ratio >> 1) + 0x800) >> 5) - 0x80, (((ratio >> 1) + 0x800) >> 5) - 0x80,
                                          (((ratio >> 1) + 0x800) >> 5) - 0x80);
             }
-            if (frame >= 0x18) {
-                work->state0 = 1;
+            if (frame >= FX_DEATH_RISE_FRAMES) {
+                work->state0 = FX_DEATH_STATE_POSE;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_DEATH_STATE_POSE:
             pos.vx = work->pos18.vx;
             pos.vy = work->pos18.vy;
             pos.vz = work->pos18.vz;
             ratio = ((Fx05eSummon *)env->loader)->model60;
             ex->Hi_SetSummonMotFrame(ratio, 0);
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx05eSummon *)env->loader)->model60, 1);
-            if (frame >= 8) {
-                work->state0 = 2;
+            if (frame >= FX_DEATH_POSE_FRAMES) {
+                work->state0 = FX_DEATH_STATE_SWING;
                 entry->frame = -1;
                 ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->model60, 0);
             }
             break;
-        case 2:
+        case FX_DEATH_STATE_SWING:
             t = frame << 12;
             /* Dead store: only its sign word survives. */
             amp = t / 30;
@@ -227,15 +227,15 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx05eSummon *)env->loader)->model60, 1);
             if (frame == 0) {
                 amp = -1;
-            } else if (frame < 0x18) {
-                amp = t / 24;
+            } else if (frame < FX_DEATH_RIBBON_FRAMES) {
+                amp = t / FX_DEATH_RIBBON_FRAMES;
             } else {
                 amp = 0x1000;
             }
-            if (frame == 0x20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
+            if (frame == FX_DEATH_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, FX_DEATH_DARKEN_RGB);
             }
-            if (frame == 0x1F) {
+            if (frame == FX_DEATH_SLASH_FRAME) {
                 s32 ang;
 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file,
@@ -246,8 +246,8 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame == 0x21) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
+            if (frame == FX_DEATH_HIT_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_DEATH_HIT_TINT_RGB);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_GREEN_ORB), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
@@ -257,36 +257,36 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame == 0x26) {
+            if (frame == FX_DEATH_TRAIL_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_BLUE_TRAIL), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_05e_trails2;
-                    emitter->trailSlots = 0x18;
-                    emitter->trailStride = 0x44;
+                    emitter->trailSlots = FX_DEATH_BLUE_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_DEATH_BLUE_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SMOKE), (s32)&work->pos18);
             }
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEATH_SMOKE_TEXTURE), frame);
-            if (frame >= 0x29) {
-                work->state0 = 3;
+            if (frame >= FX_DEATH_SWING_FRAMES) {
+                work->state0 = FX_DEATH_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 3:
+        case FX_DEATH_STATE_FADE:
             ratio = frame << 9;
             fadeAng = ratio >> 2;
             work->scale34[0] = work->scale34[2] = ((0x1000 - ex->math_sin(fadeAng)) * 0x1000) >> 12;
             pos.vx = work->pos18.vx;
             pos.vy = work->pos18.vy;
             pos.vz = work->pos18.vz;
-            ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->model60, 0x29 - frame);
+            ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->model60, FX_DEATH_SWING_FRAMES - frame);
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx05eSummon *)env->loader)->model60, 1);
             amp = ex->math_cos(fadeAng);
             ex->Hi_ModifySummonModelRGB(((Fx05eSummon *)env->loader)->model60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
                                         (amp >> 5) - 0x80);
-            if (frame >= 8) {
-                work->state0 = 3;
+            if (frame >= FX_DEATH_FADE_FRAMES) {
+                work->state0 = FX_DEATH_STATE_FADE;
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -297,11 +297,11 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt1, &bonePt1);
             fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt2, &bonePt2);
             if (amp < 0) {
-                fxm_drawRibbonTrail(&bonePt0, &bonePt1, 0x3F8, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, 0, fx_05e_ribbonA, 1);
-                fxm_drawRibbonTrail(&bonePt1, &bonePt2, 0x3F8, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, 0, fx_05e_ribbonB, 1);
+                fxm_drawRibbonTrail(&bonePt0, &bonePt1, FX_DEATH_RIBBON_CLEAR + FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, 0, fx_05e_ribbonA, 1);
+                fxm_drawRibbonTrail(&bonePt1, &bonePt2, FX_DEATH_RIBBON_CLEAR + FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, 0, fx_05e_ribbonB, 1);
             } else {
-                fxm_drawRibbonTrail(&bonePt0, &bonePt1, 0x10, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, amp, fx_05e_ribbonA, 1);
-                fxm_drawRibbonTrail(&bonePt1, &bonePt2, 0x10, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, amp, fx_05e_ribbonB, 1);
+                fxm_drawRibbonTrail(&bonePt0, &bonePt1, FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, amp, fx_05e_ribbonA, 1);
+                fxm_drawRibbonTrail(&bonePt1, &bonePt2, FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, amp, fx_05e_ribbonB, 1);
                 BTLFX_COPY_SVEC(&work->pos20, &bonePt0);
                 {
                     s32 offA;
@@ -309,14 +309,14 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     SVECTOR *ribbonB;
 
                     ribbonA = (SVECTOR *)fx_05e_ribbonA;
-                    for (i = 0, offA = 8; i < 17; offA += 16, i++) {
+                    for (i = 0, offA = 8; i < FX_DEATH_RIBBON_SEGMENTS + 1; offA += 16, i++) {
                         ribbonA[i * 2].vy -= ribbonA[i * 2].vy >> 6;
                         ((SVECTOR *)(offA + (s32)ribbonA))->vy -= ((SVECTOR *)(offA + (s32)ribbonA))->vy >> 4;
                     }
                     ribbonB = (SVECTOR *)fx_05e_ribbonB;
                     i = 0;
                     offB = 8;
-                    for (; i < 17; offB += 16, i++) {
+                    for (; i < FX_DEATH_RIBBON_SEGMENTS + 1; offB += 16, i++) {
                         ribbonB[i * 2].vy -= ribbonB[i * 2].vy >> 4;
                         ((SVECTOR *)(offB + (s32)ribbonB))->vy -= ((SVECTOR *)(offB + (s32)ribbonB))->vy >> 3;
                     }

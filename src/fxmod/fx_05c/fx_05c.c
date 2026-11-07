@@ -5,7 +5,7 @@ s32 fx_05c_op80(s32 mode, Fx05cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx05cWork);
     } else if (mode == 1) {
         fx_05c_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
@@ -20,13 +20,13 @@ s32 fx_05c_op80(s32 mode, Fx05cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x24) {
+        if (frame == FX_ARMOR_BREAK_TRIANGLE_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARMOR_BREAK_BLUE_TRIANGLE), (s32)&work->pos14);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame >= 0x5A) {
+        if (frame >= FX_ARMOR_BREAK_FRAMES) {
             ex->btlfx_stopEmitter(work->emit8);
             return 1;
         }

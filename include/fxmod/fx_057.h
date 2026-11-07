@@ -36,6 +36,51 @@
 #define FX_HOLY_FLASH_RINGS        0x2A /* emitter: small textured rings + yellow / grey gouraud rings */
 #define FX_HOLY_LIGHT_LINES_2      0x2B /* emitter: thin blue light lines */
 
+/* fx_057 choreography (docs/fxdata.md, "Choreography literals"): op80's states (the gathering light, its fade, the rays), the trail
+ * callback's camera; op81's states (charge, blast, burst), orb / glow counts, tints and the models' textures. */
+#define FX_HOLY_STATE_GATHER   0 /* op80: FX_HOLY_BLUE_SPARKLES (trail callback), SPARKLES_2 and LENS_FLARE; the rings at the head shrink */
+#define FX_HOLY_GATHER_FRAMES  22
+#define FX_HOLY_FLASH_LEVEL    0xFF /* additive cyan-white flash level (red = half) at the start of op80 and of op81's burst, */
+#define FX_HOLY_FLASH_FRAMES   4    /* op80's fades over this many frames */
+#define FX_HOLY_STATE_FADE     1 /* op80: the head rings and sparkles fade, the light sphere / glow band fade in */
+#define FX_HOLY_FADE_FRAMES    20
+#define FX_HOLY_STATE_RAYS     2 /* op80: FX_HOLY_VIOLET_RAYS start on RAYS_FRAME with a blue tint; the op ends at RAYS_FRAMES */
+#define FX_HOLY_RAYS_FRAME     19
+#define FX_HOLY_RAYS_FRAMES    22
+#define FX_HOLY_RAYS_TINT_RGB  0, 0x80, 0xFF /* additive screen tint (blue) */
+#define FX_HOLY_MODEL_COUNT    3 /* btlfx_initEffModels slots */
+#define FX_HOLY_TRAIL_FADE_FRAMES 4    /* trail callback: FX_HOLY_TRAIL fades over a particle's last this many frames */
+#define FX_HOLY_CAM_FOLLOW_FRAMES 0x1D /* trail callback: camera point 3 follows particle 1's head for this many frames, */
+#define FX_HOLY_CAM_RETURN_FRAMES 0x20 /* then eases back to fx_057_camRest over this many */
+#define FX_HOLY_BLUE_SPARKLES_TRAIL_SLOTS  0x10  /* FX_HOLY_BLUE_SPARKLES' trail buffer fx_057_trails: slots of */
+#define FX_HOLY_BLUE_SPARKLES_TRAIL_STRIDE 0x184 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* FX_HOLY_LIGHT_SPHERE: 15-bit page (0x1C0, 0x100), abr 1, no clut, v 0x80 (VRAM y 0x180; FX_HOLY_SWIRL_TEXTURE
+ * renders (0x1C0, 0x1C0)). */
+#define FX_HOLY_LIGHT_SPHERE_TPAGE 0x137
+#define FX_HOLY_LIGHT_SPHERE_CLUT  0xFFFF
+#define FX_HOLY_LIGHT_SPHERE_V     0x80
+#define FX_HOLY_STATE_CHARGE   0 /* op81: the lilac / sky rings and FX_HOLY_LENS_FLARE_LINE swell in */
+#define FX_HOLY_CHARGE_FRAMES  7    /* then FX_HOLY_CLOUD_ARCH is registered, blue flash (FX_HOLY_BLAST_TINT_RGB) */
+#define FX_HOLY_STATE_BLAST    1 /* op81: the rings at full, a steady blue glow */
+#define FX_HOLY_BLAST_FRAMES   7    /* then darken, and the burst emitters start at the target */
+#define FX_HOLY_STATE_BURST    2 /* op81: the light orbs spiral out, two rings of white glows orbit */
+#define FX_HOLY_BURST_FRAMES   0x20
+#define FX_HOLY_STATE_END      3 /* op81: waits END_FRAMES, the op ends */
+#define FX_HOLY_END_FRAMES     0xF
+#define FX_HOLY_BLAST_TINT_RGB   0, 0, 0xFF    /* additive screen tint (blue) */
+#define FX_HOLY_BLAST_GLOW_RGB   0, 0, 0x80    /* additive screen tint (blue), every FX_HOLY_STATE_BLAST frame */
+#define FX_HOLY_BLAST_DARKEN_RGB 0xFF, 0xFF, 0 /* subtractive screen tint as the burst starts */
+#define FX_HOLY_BURST_FLASH_FRAMES 6  /* FX_HOLY_STATE_BURST: the flash from FX_HOLY_FLASH_LEVEL fades over this many frames */
+#define FX_HOLY_LIGHT_LINES_2_FRAME 7 /* FX_HOLY_STATE_BURST: FX_HOLY_LIGHT_LINES_2 start */
+#define FX_HOLY_ORB_COUNT      0x2E /* FX_HOLY_LIGHT_ORB particles spiralling out from the target */
+#define FX_HOLY_GLOW_RINGS     2    /* rings of FX_HOLY_WHITE_GLOW, spinning opposite ways, */
+#define FX_HOLY_GLOW_COUNT     0x10 /* of this many glows each (0x100 apart) */
+#define FX_HOLY_BLUE_RAYS_HEIGHT 0xC00 /* FX_HOLY_BLUE_RAYS' position (pos14) above the target */
+/* FX_HOLY_CLOUD_ARCH: 8-bit page (0x240, 0x100), abr 1, clut (0, 0xF6), u 0x80. */
+#define FX_HOLY_CLOUD_ARCH_TPAGE 0xB9
+#define FX_HOLY_CLOUD_ARCH_CLUT  0x3D80
+#define FX_HOLY_CLOUD_ARCH_U     0x80
+
 typedef struct {
     s32 vx;
     s32 vy;

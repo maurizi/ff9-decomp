@@ -7,7 +7,7 @@ static s32 fx_059_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
     if (mode != 1) {
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_tailBlocks[work->kindC]), pos, 0, 0x1000, frame, 1,
                           0x1000 - (frame << 12) / 12, 0, 0);
-        if (frame >= 8) {
+        if (frame >= FX_HASTE_TRAIL_FRAMES) {
             return 1;
         }
     }
@@ -24,18 +24,18 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     void (*fn)(SVECTOR *);
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx059Work80);
     } else if (mode == 1) {
         s32 kind = *args;
-        work->state0 = 0;
+        work->state0 = FX_HASTE_STATE_SPIRAL;
         work->depthZ4 = -0x20;
         work->kindC = kind - 1;
         work->angle8 = (kind << 10) - 0x400;
         fx_059_env = env;
         work->angleStep10 = (ex->btlfx_rand() & 0x1F) + 0x100;
         work->viewRot18 = 0;
-        work->pool14 = (Unk800DA1B8 *)ex->btlfx_allocTaskMem(entry, ex->btlfx_poolSize(8, 12));
-        ex->btlfx_poolInit(work->pool14, entry, 8, 12, (s32)fx_059_op80PoolTask);
+        work->pool14 = (Unk800DA1B8 *)ex->btlfx_allocTaskMem(entry, ex->btlfx_poolSize(sizeof(SVECTOR), FX_HASTE_TRAIL_POINTS));
+        ex->btlfx_poolInit(work->pool14, entry, sizeof(SVECTOR), FX_HASTE_TRAIL_POINTS, (s32)fx_059_op80PoolTask);
         return 0;
     } else {
         frame = entry->frame;
@@ -45,8 +45,8 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.rotXY0 = 0;
         fn((SVECTOR *)&rot);
         switch (work->state0) {
-        case 0:
-            radius = 0xA0 - frame * 0xA0 / 6;
+        case FX_HASTE_STATE_SPIRAL:
+            radius = FX_HASTE_SPIRAL_RADIUS - frame * FX_HASTE_SPIRAL_RADIUS / FX_HASTE_SPIRAL_FRAMES;
             pos.vx = (ex->math_cos(work->angle8) * radius) >> 12;
             pos.vy = (ex->math_sin(work->angle8) * radius) >> 12;
             pos.vz = work->depthZ4;
@@ -59,13 +59,13 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_headBlocks[work->kindC]), &pos, 0, 0x1000, 0,
                               1, -1, 0, 0);
-            if (frame >= 6) {
-                work->state0 = 1;
+            if (frame >= FX_HASTE_SPIRAL_FRAMES) {
+                work->state0 = FX_HASTE_STATE_END;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            if (frame >= 7) {
+        case FX_HASTE_STATE_END:
+            if (frame >= FX_HASTE_END_FRAMES) {
                 ex->btlfx_popViewMatrix();
                 return 1;
             }
@@ -84,7 +84,7 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx059Work81);
     } else if (mode == 1) {
         fx_059_env = env;
         work->hold0 = 0;
@@ -103,7 +103,7 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         s32 frame = entry->frame;
-        if (work->hold0 == 0 && frame >= 0x20) {
+        if (work->hold0 == 0 && frame >= FX_HASTE_RINGS_FRAMES) {
             return 1;
         }
     }
@@ -115,7 +115,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx059Work81);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_059_env = env;
@@ -126,7 +126,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         s32 frame = entry->frame;
-        if (work->hold0 == 0 && frame >= 0x18) {
+        if (work->hold0 == 0 && frame >= FX_HASTE_VIOLET_FRAMES) {
             return 1;
         }
     }

@@ -13,10 +13,10 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR trackPos;
 
     if (mode == 0) {
-        *args = 0x68;
+        *args = sizeof(Fx05dWork);
     } else if (mode == 1) {
         fx_05d_env = env;
-        ex->btlfx_initEffModels(fx_05d_effModels, 6);
+        ex->btlfx_initEffModels(fx_05d_effModels, FX_BIO_MORPH_MODELS);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->rot18.vx = 0;
         work->rot18.vy = 0;
@@ -27,9 +27,9 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale30.vx = 0x1000;
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
-        for (i = 0; i < 6; i++) {
+        for (i = 0; i < FX_BIO_MORPH_MODELS; i++) {
             work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_05d_morphBlocks[i]),
-                                                        0x97, 0x3D40, 0, 0);
+                                                        FX_BIO_SPIKE_TPAGE, FX_BIO_SPIKE_CLUT, 0, 0);
         }
         fxm_rotPosTrackInit(&fx_05d_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_PATH));
         fxm_rotPosTrackInit(&fx_05d_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_PATH_2));
@@ -43,8 +43,8 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_RED_ORB), (s32)&fx_05d_emitPos);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_TEAL_RING), (s32)&work->pos10);
             break;
-        case 0x23:
-            fxm_rotPosTrackGet(&fx_05d_rotPosKeys, 0x23, NULL, &work->pos4C);
+        case FX_BIO_BUBBLE_FRAME:
+            fxm_rotPosTrackGet(&fx_05d_rotPosKeys, FX_BIO_BUBBLE_FRAME, NULL, &work->pos4C);
             work->pos4C.vx += work->pos10.vx;
             work->pos4C.vy += work->pos10.vy;
             work->pos4C.vz += work->pos10.vz;
@@ -52,8 +52,8 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_TOXIC_CLOUD), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_05d_trails;
-                work->emit8->trailSlots = 0x35;
-                work->emit8->trailStride = 0x28;
+                work->emit8->trailSlots = FX_BIO_BUBBLE_TRAIL_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_BIO_BUBBLE_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -63,7 +63,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (frame >= 0 && frame < 0x26) {
+        if (frame >= 0 && frame < FX_BIO_SPIKE_FRAMES) {
             switch (frame) {
             case 0:
             case 2:
@@ -122,7 +122,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
             ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[morphFrom], work->model5C[morphTo], morph);
-            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], 1);
+            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], BTLFX_ABR_ADD);
             fxm_rotPosTrackGet(&fx_05d_rotPosKeys2, frame, &work->rot18, &trackPos);
             work->pos20.vx = trackPos.vx;
             work->pos20.vy = trackPos.vy;
@@ -136,7 +136,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
             ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[morphFrom], work->model5C[morphTo], morph);
-            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], 1);
+            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], BTLFX_ABR_ADD);
             work->pos44.vx = work->pos20.vx;
             work->pos44.vy = work->pos20.vy;
             work->pos44.vz = work->pos20.vz;
@@ -148,7 +148,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->morphFrame54++;
         }
-        if (frame >= 0x3C) {
+        if (frame >= FX_BIO_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

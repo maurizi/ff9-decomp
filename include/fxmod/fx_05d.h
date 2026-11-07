@@ -15,6 +15,17 @@
 #define FX_BIO_TOXIC_CLOUD   0x13 /* emitter: green toxic cloud + grey glow */
 #define FX_BIO_RED_ORB       0x14 /* emitter: red-veined orbs + crimson glow */
 
+/* fx_05d choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, the two morphing spikes and the length, their texture. */
+#define FX_BIO_MORPH_MODELS  6    /* morph-stage models (fx_05d_morphBlocks, btlfx_initEffModels slots) */
+#define FX_BIO_SPIKE_FRAMES  0x26 /* op80: the two spikes follow FX_BIO_PATH / PATH_2, morphing through the stages, for this many frames */
+#define FX_BIO_BUBBLE_FRAME  0x23 /* op80: FX_BIO_BUBBLE_TRAIL and TOXIC_CLOUD start at FX_BIO_PATH's point of this frame */
+#define FX_BIO_FRAMES        0x3C /* op80: the task ends at this frame */
+/* the spike models: 8-bit page (0x1C0, 0x100), clut (0, 0xF5) */
+#define FX_BIO_SPIKE_TPAGE   0x97
+#define FX_BIO_SPIKE_CLUT    0x3D40
+#define FX_BIO_BUBBLE_TRAIL_TRAIL_SLOTS  0x35 /* FX_BIO_BUBBLE_TRAIL's trail buffer fx_05d_trails: slots of */
+#define FX_BIO_BUBBLE_TRAIL_TRAIL_STRIDE 0x28 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 /* keyframe tracks read from the effect file: count, then the keys */
 typedef struct {
     s16 px0, py2, pz4; /* position */
@@ -49,10 +60,10 @@ typedef struct {
     SVECTOR pos4C;
     s32 morphFrame54; /* frames into the current morph */
     s32 unk58; /* unused (runtime watch, round 33) */
-    u16 model5C[6]; /* morph models */
+    u16 model5C[FX_BIO_MORPH_MODELS]; /* morph models */
 } Fx05dWork; /* 0x68 */
 
-extern u8 fx_05d_morphBlocks[6];
+extern u8 fx_05d_morphBlocks[FX_BIO_MORPH_MODELS];
 extern Unk800F78A4 *fx_05d_env;
 extern BtlModelBuf fx_05d_effModels[];
 extern s32 fx_05d_trails[];
