@@ -661,10 +661,10 @@ void ui_drawMemberSummary(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
     Character *chr = g_gameState->gameData->party[slot];
     if (chr != NULL && mode >= 0) {
         if (mode < 3) {
-            ui_drawPortrait(x, y, otz, slot, 0x29, chr->hp == 0);
+            ui_drawPortrait(x, y, otz, slot, UI_PORTRAIT_SUMMARY_H, chr->hp == 0);
             ui_drawMemberStats(x + UI_MEMBER_STATS_X, y, otz, slot);
         } else if (mode < 5) {
-            ui_drawPortrait(x, y, otz, slot, 0x29, chr->hp == 0);
+            ui_drawPortrait(x, y, otz, slot, UI_PORTRAIT_SUMMARY_H, chr->hp == 0);
             ui_drawCharStatuses(x + UI_MEMBER_STATS_X, y, otz, slot);
         }
     }
@@ -1088,8 +1088,8 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     SprtWords *topSprt;
     SprtWords *lowSprt;
 
-    h0 = 0x20;
-    if (h < 0x20) {
+    h0 = UI_PORTRAIT_TOP_H;
+    if (h < UI_PORTRAIT_TOP_H) {
         h0 = h;
     }
     if (g_gameState->mode == GS_MODE_WORLD) {
@@ -1108,12 +1108,12 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     g_primPtr += sizeof(SprtWords);
     topSprt->xy = (x & 0xFFFF) | (y << 16);
     topSprt->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
-    topSprt->wh = (h0 << 16) | 0x20;
+    topSprt->wh = (h0 << 16) | UI_PORTRAIT_W;
     addPrim(&g_ot[otz], topSprt);
     SetDrawTPage(g_primPtr, 1, 1, 0x88);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
-    if (h > 0x20) {
+    if (h > UI_PORTRAIT_TOP_H) {
         u = ((slot & 1) << 5) + 0x20;
         v = (slot >> 1) * 14 - 0x20;
         h -= h0;
@@ -1121,9 +1121,9 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
         ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
         lowSprt = (SprtWords *)g_primPtr;
         g_primPtr += sizeof(SprtWords);
-        lowSprt->xy = (x & 0xFFFF) | ((y + 0x20) << 16);
+        lowSprt->xy = (x & 0xFFFF) | ((y + UI_PORTRAIT_TOP_H) << 16);
         lowSprt->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
-        lowSprt->wh = (h << 16) | 0x20;
+        lowSprt->wh = (h << 16) | UI_PORTRAIT_W;
         addPrim(&g_ot[otz], lowSprt);
         SetDrawTPage(g_primPtr, 1, 1, 0x89);
         addPrim(&g_ot[otz], g_primPtr);
@@ -1233,15 +1233,15 @@ void ui_getPartyPortraitRects(s32 slot, RECT *clutRect, RECT *topRect, RECT *low
     topRect->x = slot * 16 + 0x200;
     topRect->y = 0xE0;
     topRect->w = 0x10;
-    topRect->h = 0x20;
+    topRect->h = UI_PORTRAIT_TOP_H;
     lowRect->x = (slot & 1) * 16 + 0x250;
     lowRect->y = (slot >> 1) * 14 + 0xE0;
     lowRect->w = 0x10;
-    lowRect->h = 0xE;
+    lowRect->h = UI_PORTRAIT_LOW_H;
 }
 
 void ui_drawPartyPortrait(s32 x, s32 y, s32 otz, s32 slot, u8 flag) {
-    ui_drawPortrait(x, y, otz, slot, 0x2E, flag);
+    ui_drawPortrait(x, y, otz, slot, UI_PORTRAIT_H, flag);
 }
 
 void ui_loadPartyPortraits(u8 *portraitData) {

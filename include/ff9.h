@@ -2807,6 +2807,12 @@ typedef struct {
 /* ui_buildDigits: pen advance of the small digit font */
 #define UI_SMALL_DIGIT_ADV  5 /* digits, '%' and blanks */
 #define UI_SMALL_SLASH_ADV  4 /* '/' */
+/* party portraits (ui_drawPortrait h): a 0x20-line top sprite and a 0xE-line lower sprite (ui_getPartyPortraitRects) */
+#define UI_PORTRAIT_W 0x20
+#define UI_PORTRAIT_TOP_H 0x20
+#define UI_PORTRAIT_LOW_H 0xE
+#define UI_PORTRAIT_H (UI_PORTRAIT_TOP_H + UI_PORTRAIT_LOW_H) /* whole (ui_drawPartyPortrait) */
+#define UI_PORTRAIT_SUMMARY_H 0x29 /* cropped, in ui_drawMemberSummary rows */
 /* UI colours (GPU_RGBC rgb, 0xBBGGRR) */
 #define UI_RGB_DIM        0x606060 /* dimmed sprites and digits, drawn semi-transparent (ui_buildSprite flag, DIGITS_DIM,
                                     * the AP gauge's numbers) */
