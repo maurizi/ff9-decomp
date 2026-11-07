@@ -110,6 +110,9 @@ typedef struct {
                                                                 * (mbg_streamSetRing) */
 #define MBG_AUDIO_SECTORS 0xC /* mbg_streamSetAudioBuffer: audio sectors buffered */
 #define MBG_AUDIO_BUF_SIZE (MBG_AUDIO_SECTORS * 0x800)
+#define MBG_NO_LAST_FRAME 99999 /* mbg_streamStart lastFrame from mbg_play: none, play to the stream's end */
+#define MBG_SHORT_FRAME_PERIOD 50 /* mbg_update: every 50th movie frame waits one vblank less (g_mbgPlayer.shortFrame) */
+#define MBG_DECODE_TIMEOUT 0x800000 /* busy-wait polls for the MDEC frame before mbg_update gives up and resets it */
 #define MBG_VOLUME_DELAY 3 /* g_mbgPlayer.volumeDelay default (mbg_setVolume with < 0) */
 #define MBG_VOLUME_FADE 4 /* g_mbgPlayer.volumeFade default */
 #define MBG_SWITCH_NONE 0
@@ -162,7 +165,11 @@ typedef struct {
     u16 height; /* frame height */
     u8 pad14[0x20 - 0x14];
 } Ovl64RingHdr; /* 0x20 */
-/* Ovl64RingHdr.status (mbg_streamPeekFrame reports free 0, ready 1, filling 2, busy 3) */
+/* Ovl64RingHdr.status (mbg_streamPeekFrame reports it as MBG_PEEK_*) */
+#define MBG_PEEK_FREE 0
+#define MBG_PEEK_READY 1
+#define MBG_PEEK_FILLING 2
+#define MBG_PEEK_BUSY 3
 #define MBG_RING_FREE 0x1000 /* mbg_streamSetRing / mbg_streamClearRing / mbg_streamFreeFrame */
 #define MBG_RING_FILLING 0x2000 /* with MBG_RING_BUSY: the reader started writing sectors into the slot */
 #define MBG_RING_BUSY 0x4000 /* in use (filling or ready) */

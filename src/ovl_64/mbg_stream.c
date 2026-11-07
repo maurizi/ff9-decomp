@@ -468,13 +468,13 @@ s32 mbg_streamPeekFrame(u8 **data, Ovl64RingHdr **hdr, s32 *kind) {
 
     h = &g_mbgStream.ringHdrs[g_mbgStream.readSlot];
     if (h->status & MBG_RING_FREE) {
-        *kind = 0;
+        *kind = MBG_PEEK_FREE;
     } else if (h->status & MBG_RING_READY) {
-        *kind = 1;
+        *kind = MBG_PEEK_READY;
     } else if (h->status & MBG_RING_FILLING) {
-        *kind = 2;
+        *kind = MBG_PEEK_FILLING;
     } else if (h->status & MBG_RING_BUSY) {
-        *kind = 3;
+        *kind = MBG_PEEK_BUSY;
     }
     *hdr = h;
     *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * MBG_SECTOR_DATA;

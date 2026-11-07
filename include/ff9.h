@@ -2375,8 +2375,9 @@ extern s32 g_padPortMask[];
 #define GS_MODE_BATTLE 2 /* ovl_0b btl_entry */
 #define GS_MODE_WORLD 3 /* ovl_0c wm_entry */
 #define GS_MODE_ENDING 4 /* ovl_15 ending_main */
-/* 5: no overlay and no case in game_main; vib_update and ovl_64/ovl_0a treat it like the field. 6: no overlay either;
- * msg_beginDraw treats it like the battle (docs/wip/constants_runtime_main.md) */
+/* 5 and 6 have no overlay and no case in game_main (docs/wip/constants_runtime_main.md); named by how code treats them */
+#define GS_MODE_FIELD_LIKE 5 /* vib_update and ovl_64/ovl_0a treat it like the field */
+#define GS_MODE_BATTLE_LIKE 6 /* msg_beginDraw treats it like the battle */
 #define GS_MODE_GAME_OVER 7 /* ovl_65 fld_gameOver (field exit FLD_EXIT_GAME_OVER) */
 #define GS_MODE_BATTLE_END 8 /* ovl_65 battleEnd_main, set by ovl_0b when a battle ends */
 #define GS_MODE_TETRA_MASTER 9 /* ovl_0d tm_main; as prevMode it makes evt_init/evt_createModels rebuild the field models */

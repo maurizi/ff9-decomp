@@ -61,7 +61,7 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
             g_gameState->gameData->projDist = info->id;
         }
     }
-    if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->config)->vibrationOff || g_gameState->mode == 5)) {
+    if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->config)->vibrationOff || g_gameState->mode == GS_MODE_FIELD_LIKE)) {
         g_padActuator[0].smallMotor = rumble->on;
         g_padActuator[0].largeMotor = rumble->level;
     }
@@ -134,7 +134,7 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.frameRect[0].w = MBG_VRAM_W_16;
                 g_mbgDecode.frameRect[1].w = MBG_VRAM_W_16;
                 g_mbgDecode.slice.w = MBG_SLICE_W_16;
-                if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
+                if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == GS_MODE_FIELD_LIKE) {
                     g_fieldFlagQueue.mapFlags[1][0] = FLD_MAP_NO_BGI_ANIM | FLD_MAP_NO_WINDOWS;
                     g_fieldFlagQueue.gameFlags[1][0] |= GD_HIDE_SPRITES | GD_HIDE_MODELS;
                 }
@@ -148,7 +148,7 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.slice.w = MBG_SLICE_W_24;
                 g_gameState->gameData->flags |= GD_HIDE_MODELS | GD_HIDE_SPRITES;
                 g_mbgRgb24 = 1;
-                if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
+                if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == GS_MODE_FIELD_LIKE) {
                     g_gameState->gameData->ctx.ovl65->flags |= FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM;
                 }
                 g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
@@ -282,7 +282,7 @@ s32 mbg_play(u32 movie, s32 idx) {
     s32 ok;
     Ovl64State *st;
 
-    if (movie >= 5 || idx < 0 || idx >= g_mbgMovieLists[movie].count) {
+    if (movie >= (s32)ARRAY_COUNT(g_mbgMovieLists) || idx < 0 || idx >= g_mbgMovieLists[movie].count) {
         return 0;
     }
     g_mbgMovie = &g_mbgMovieLists[movie].entries[idx];
@@ -335,10 +335,10 @@ s32 mbg_play(u32 movie, s32 idx) {
     if (mbg_streamReset() != 0) {
         ok = 0;
     } else {
-        if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
+        if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == GS_MODE_FIELD_LIKE) {
             mbg_streamSetBaseSector(((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->movieFile);
         }
-        ok = mbg_streamStart(file, g_mbgMovie->startFrame, 99999, NULL, 0) == 0;
+        ok = mbg_streamStart(file, g_mbgMovie->startFrame, MBG_NO_LAST_FRAME, NULL, 0) == 0;
     }
     if (!ok) {
         return 0;
@@ -368,7 +368,7 @@ s32 mbg_play(u32 movie, s32 idx) {
 static inline void func_8019_wait_frame(Ovl64Dec *dec) {
     volatile s32 timeout;
 
-    timeout = 0x800000;
+    timeout = MBG_DECODE_TIMEOUT;
     while (dec->frameDone == 0) {
         if (--timeout == 0) {
             dec->frameDone = 1;
@@ -410,7 +410,7 @@ s32 mbg_update(s32 putDisp) {
     }
     st->streamPos = st->startPos;
     mode = g_gameState->mode;
-    if (mode == GS_MODE_FIELD || mode == 5) {
+    if (mode == GS_MODE_FIELD || mode == GS_MODE_FIELD_LIKE) {
         fldbg_getCamera(&st->savedCameraId);
         st->savedOtBias = ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias;
         ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias = 0;
@@ -468,7 +468,7 @@ s32 mbg_update(s32 putDisp) {
         if ((s8)g_mbgPlayer.ended != 0) {
             func_8019_wait_frame(&g_mbgDecode);
             mode = g_gameState->mode;
-            if (mode == GS_MODE_FIELD || mode == 5) {
+            if (mode == GS_MODE_FIELD || mode == GS_MODE_FIELD_LIKE) {
                 ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias = g_mbgPlayer.savedOtBias;
                 fldbg_setCamera((s8)g_mbgPlayer.savedCameraId);
             }
@@ -479,7 +479,7 @@ s32 mbg_update(s32 putDisp) {
     }
     func_8019_wait_frame(&g_mbgDecode);
     g_gameState->vsyncMode = 4;
-    if (g_mbgFrame != 0 && g_mbgFrame % 50 == 0) {
+    if (g_mbgFrame != 0 && g_mbgFrame % MBG_SHORT_FRAME_PERIOD == 0) {
         g_mbgPlayer.shortFrame = 1;
     }
     if (g_mbgPlayer.shortFrame != 0 && g_gameState->vsyncMode >= 4) {
