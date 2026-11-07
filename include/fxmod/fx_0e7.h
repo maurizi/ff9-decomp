@@ -16,13 +16,35 @@
 #define FX_THIEVERY_GOLD_RINGS   0xC /* emitter: fans + white-yellow-orange gouraud rings */
 #define FX_THIEVERY_GOLD_BURST   0xD /* emitter: golden puffs + yellow-orange / cyan-blue rings */
 
+/* fx_0e7 choreography (docs/fxdata.md, "Choreography literals"): op80's lens flares; op81's chest drop, lid tilt,
+ * keyframes and fade. */
+#define FX_THIEVERY_FLARES_HEIGHT     0x9C4 /* op80: the LENS_FLARES sprite line hangs at this height over the target */
+#define FX_THIEVERY_FLARES_FRAME      0x23  /* op80: the sprite line draws from this frame */
+#define FX_THIEVERY_FLARES_END_FRAME  0x30  /* to this one */
+#define FX_THIEVERY_FLARES_FADE_FRAME 5     /* and fades from this frame of it on */
+#define FX_THIEVERY_FLARES_ANIM_FRAMES 6    /* sprite-line frames (lineFrame14 stops on the last) */
+#define FX_THIEVERY_FLARES_FRAMES     0x32  /* op80's length (the op ends) */
+#define FX_THIEVERY_DISTANCE    0x190 /* op81: the chest lands this far beyond the target's radius, in front of it */
+#define FX_THIEVERY_DROP_HEIGHT 0xBB8 /* op81: the chest falls from this height */
+#define FX_THIEVERY_REST_HEIGHT 0x96  /* to this one */
+#define FX_THIEVERY_DROP_FRAMES 6     /* over this many frames from frame 0 (dropTimer70) */
+#define FX_THIEVERY_PUFF_FRAME  4     /* op81: FX_THIEVERY_WHITE_PUFF on the ground */
+#define FX_THIEVERY_TILT_FRAME  8     /* op81: the box stands tilted until this frame (GOLD_RINGS start), then */
+#define FX_THIEVERY_TILT_FRAMES 8     /* turns upright over this many (tiltTimer74) */
+#define FX_THIEVERY_RINGS_HEIGHT 0xC8 /* GOLD_RINGS start at this height over the chest */
+#define FX_THIEVERY_FADE_FRAME  0x10  /* op81: the chest fades from this frame */
+#define FX_THIEVERY_FADE_FRAMES 0x10  /* over this many (fadeTimer6C) */
+#define FX_THIEVERY_DRAW_FRAMES 0x20  /* op81: the chest draws while frame < this */
+#define FX_THIEVERY_BURST_FRAME 0x32  /* op81: FX_THIEVERY_GOLD_BURST at the target */
+#define FX_THIEVERY_FRAMES      0x5A  /* op81's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* target body position */
     SVECTOR linePosC;
     u16 lineFrame14;
     u16 lineAlpha16;
-} Fx0e7Work80;
+} Fx0e7Work80; /* 0x18 */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -44,7 +66,7 @@ typedef struct {
     s32 tiltTimer74; /* tilt countdown */
     u16 model78; /* models */
     u16 model7A;
-} Fx0e7Work81;
+} Fx0e7Work81; /* 0x7C */
 
 extern s16 fx_0e7_texPages[4];
 extern s16 fx_0e7_texPos[4];

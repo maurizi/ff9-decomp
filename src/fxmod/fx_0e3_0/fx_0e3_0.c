@@ -66,7 +66,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
             gte_stszotz(&otz);
             gte_ldv0(&buf[1].b8);
             gte_rtps();
-            ex->btlfx_addPrim(0x0C000000, otz, prim);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, prim);
             gte_stsxy(&prim->x3);
             prim->clut = clut;
             prim->tpage = tpage;
@@ -91,22 +91,22 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 0xC;
-    bolt->lastSlot0 = 0xC;
+    bolt->count2 = FX_BAHAMUT_ARC_POINTS - 1;
+    bolt->lastSlot0 = FX_BAHAMUT_ARC_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 13; i++) {
-        t = 0x1000 - (i << 12) / 12;
+    for (i = 0; i < FX_BAHAMUT_ARC_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_BAHAMUT_ARC_POINTS - 1);
         t += ex->btlfx_randCentered(fx_0e3_0_alongJitter);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = ex->btlfx_randCentered(fx_0e3_0_ampJitter);
         offset = (ex->math_sin(t >> 1) * offset) >> 12;
         offset += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
-        pt->pad = 0x19;
+        pt->pad = FX_BAHAMUT_ARC_WIDTH;
         pt++;
         ang += dang + ex->btlfx_randCentered(fx_0e3_0_angleJitter);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT), 0, 0, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 anchor, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
@@ -121,22 +121,22 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 anchor, Fx0e30Bolt
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 0x30;
-    bolt->lastSlot0 = 0x30;
+    bolt->count2 = FX_BAHAMUT_BOLT_POINTS - 1;
+    bolt->lastSlot0 = FX_BAHAMUT_BOLT_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 0x31; i++) {
-        t = 0x1000 - (i << 12) / 48;
+    for (i = 0; i < FX_BAHAMUT_BOLT_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_BAHAMUT_BOLT_POINTS - 1);
         t += ex->btlfx_randCentered(0x97);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = ex->btlfx_randCentered(0x73);
         offset = (ex->math_sin(t >> 1) * offset) >> 12;
         offset += (ex->math_sin(t >> 1) * amp) >> 12;
         ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
-        pt->pad = 0x33;
+        pt->pad = FX_BAHAMUT_BOLT_WIDTH;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_BOLT), 0, (s32 *)anchor, frame, 0x1000, fade, 1, (u8 *)bolt, 1);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_BOLT), 0, (s32 *)anchor, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)bolt, 1);
 }
 
 static s32 fx_0e3_0_op80PoolTask(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry) {
@@ -165,7 +165,7 @@ static s32 fx_0e3_0_op80PoolTask(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk8
         pos.vx = p->pos0.vx;
         pos.vy = p->pos0.vy - (0x1000 - ex->math_cos(ang)) * 3;
         pos.vz = p->pos0.vz;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_TEAL_PUFF), &pos, &rot, size * 2, 0, 1, fade, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_TEAL_PUFF), &pos, &rot, size * 2, 0, BTLFX_ABR_ADD, fade, 0, 0);
         if (p->phase8 > 0x1000) {
             return 1;
         }
@@ -231,15 +231,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Fx0e30Puff *puff;
 
     if (mode == 0) {
-        init->workSize = 0xA8;
-        init->elemSize = 0x10;
+        init->workSize = sizeof(Fx0e30Work80);
+        init->elemSize = sizeof(Fx0e30Puff);
         init->elemFn = (s32)fx_0e3_0_op80PoolTask;
-        init->poolCount = 0xC;
+        init->poolCount = FX_BAHAMUT_PUFF_SLOTS;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
         fx_0e3_0_env = env;
-        ex->btlfx_initEffModels(fx_0e3_0_effModels, 0x10);
+        ex->btlfx_initEffModels(fx_0e3_0_effModels, FX_BAHAMUT_MODEL_COUNT);
         work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_TERRAIN), 0);
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CLOUD_RING), 1);
         work->basePos8.vx = 0;
@@ -277,7 +277,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame < 0xC) {
             s32 flash = (ex->math_cos((frame << 10) / 12) * 0xFF) >> 12;
 
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, flash, flash, flash);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);
         }
         if (frame >= 0x18) {
             if (frame == 0x18) {
@@ -381,12 +381,12 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             {
                 s32 tint = 0x96 - (frame * 0x96) / 46;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x200), 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x200), BTLFX_ABR_ADD, tint, tint, tint);
             }
             BTLFX_COPY_SVEC(&vec, &work->basePos8);
             vec.vy -= 0x800;
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_RINGS), &vec, NULL, 0x1800, 0, 1, ex->math_cos(t >> 2));
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_RINGS), &vec, NULL, 0x1800, 0, BTLFX_ABR_ADD, ex->math_cos(t >> 2));
             env->otZ = 0;
         }
         if (frame >= 0x45) {
@@ -486,7 +486,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vx = work->pos30.vx;
             env->camera->points[2].vy = work->pos30.vy;
             env->camera->points[2].vz = work->pos30.vz;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             work->trailReset50 = 1;
             work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_STRIP), 1);
             work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_ARC), 1);
@@ -786,14 +786,14 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             fx_0e3_0_ampJitter = 0x80;
             fx_0e3_0_angleJitter = 0xA0;
             for (spark = 0; spark < cnt; spark++) {
-                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % 92, (u16 *)&ca);
-                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % 92, (u16 *)&cb);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % FX_BAHAMUT_SUMMON_BONES, (u16 *)&ca);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % FX_BAHAMUT_SUMMON_BONES, (u16 *)&cb);
                 fxm_drawOffsetTrail0(entry, (Fx0e30Bolt *)&fx_0e3_0_arcs[spark], &ca, &cb, amp, amp, ang, 0x100, 0,
                               ex->btlfx_randCentered(0x400) + 0xC00);
             }
         }
         if (frame == 0x16) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x5C, 0x5C, 0x5C);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x5C, 0x5C, 0x5C);
         }
         if (frame >= 0x14) {
             coneAng = (((frame - 0x14) << 12) / 45) >> 2;
@@ -872,29 +872,29 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         trail >>= 1;
         if (work->trailReset50 != 0) {
             work->trailReset50 = 0;
-            for (j = 0; j < 4; j++) {
+            for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (u16 *)&vec);
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (u16 *)&ahead);
                 fxm_drawTexRibbonTrail(&vec, &ahead, 0x3F6, 0, 0, 0, 0, 0, 0, 0, fx_0e3_0_ribbons[j], 1, 0);
             }
-            for (j = 0; j < 4; j++) {
+            for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[j], (u16 *)&vec);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WING_TRAIL), (s32)&vec, 0, -1, 0x1000, trail, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WING_TRAIL), (s32)&vec, 0, -1, 0x1000, trail, BTLFX_ABR_ADD,
                                     fx_0e3_0_strips[j], 0);
             }
         }
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (BtlBone *)&boneMat);
             ex->btlfx_matrixPointAhead(&boneMat, (fx_0e3_0_ribbonBones[j + 4].edgeA0 * work->summonScale1C.vy) >> 12, (s32)&vec);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (BtlBone *)&boneMatB);
             ex->btlfx_matrixPointAhead(&boneMatB, (fx_0e3_0_ribbonBones[j + 4].edgeB2 * work->summonScale1C.vy) >> 12, (s32)&ahead);
-            fxm_drawTexRibbonTrail(&vec, &ahead, 0xE, 0x9D, 0x3D40, 0, 0x80, 0x40, 0x80, trail >> 5, fx_0e3_0_ribbons[j], 1,
+            fxm_drawTexRibbonTrail(&vec, &ahead, 0xE, FX_BAHAMUT_RIBBON_TPAGE, FX_BAHAMUT_RIBBON_CLUT, FX_BAHAMUT_RIBBON_U, FX_BAHAMUT_RIBBON_V, 0x40, 0x80, trail >> 5, fx_0e3_0_ribbons[j], 1,
                           10000 - work->frame4);
         }
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[j], (BtlBone *)&trailMat);
             ex->btlfx_matrixPointAhead(&trailMat, (fx_0e3_0_trailBones[j + 4] * work->summonScale1C.vy) >> 12, (s32)&vec);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WING_TRAIL), (s32)&vec, 0, 0, 0x2000, trail, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WING_TRAIL), (s32)&vec, 0, 0, 0x2000, trail, BTLFX_ABR_ADD,
                                 fx_0e3_0_strips[j], 0);
         }
         env->otZ = 0;
@@ -910,8 +910,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fx_0e3_0_angleJitter = 0xA0;
         dang2 = work->frame4 << 8;
         for (i = 0; i < nbolt; i++) {
-            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % 92, (u16 *)&ba);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % 92, (u16 *)&bb);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % FX_BAHAMUT_SUMMON_BONES, (u16 *)&ba);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % FX_BAHAMUT_SUMMON_BONES, (u16 *)&bb);
             fxm_drawOffsetTrail0(entry, (Fx0e30Bolt *)&fx_0e3_0_arcs[i], &ba, &bb, 0x20, 0x40, dang2, 0x100, 0,
                           ex->btlfx_randCentered(0x400) + 0x800);
         }

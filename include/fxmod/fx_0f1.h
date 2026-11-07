@@ -10,10 +10,13 @@
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_FREE_ENERGY_RUNE_BURST 0x2 /* emitter: white rune glyphs with blue-white rings, then a fire burst */
 
+/* fx_0f1 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_FREE_ENERGY_FRAMES 0x1E /* op80's length (the op ends; RUNE_BURST starts at init) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx0f1Work;
+} Fx0f1Work; /* 0xC */
 
 extern Unk800F78A4 *fx_0f1_env;
 

@@ -13,21 +13,22 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 fadeAng;
 
     if (mode == 0) {
-        *args = 0x38;
+        *args = sizeof(Fx0deWork80);
     } else if (mode == 1) {
         fx_0de_env = env;
         work->hold0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos4.vx);
         ex->btlfx_getUnitPos(0, &work->posC.vx);
-        ex->btlfx_initEffModels(fx_0de_effModels, 8);
-        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_0), 0x39, 0x3D00, 0, 0x80);
-        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_1), 0x39, 0x3D00, 0, 0x80);
-        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_2), 0x39, 0x3D00, 0, 0x80);
-        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_3), 0x39, 0x3D00, 0, 0x80);
-        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE), 0x39, 0x3D00, 0, 0x80);
-        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_COLUMN), 0x3B, 0x3D01, 0, 0x80);
-        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_FUNNEL), 0x3B, 0x3D01, 0, 0x80);
-        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_BASE_DISC), 0x39, 0x3D00, 0, 0x80);
+        ex->btlfx_initEffModels(fx_0de_effModels, FX_SWDMAG_WATER_MODEL_COUNT);
+        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_0), FX_SWDMAG_WATER_GLOBE_0_TPAGE, FX_SWDMAG_WATER_GLOBE_0_CLUT, FX_SWDMAG_WATER_GLOBE_0_U, FX_SWDMAG_WATER_GLOBE_0_V);
+        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_1), FX_SWDMAG_WATER_GLOBE_0_TPAGE, FX_SWDMAG_WATER_GLOBE_0_CLUT, FX_SWDMAG_WATER_GLOBE_0_U, FX_SWDMAG_WATER_GLOBE_0_V);
+        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_2), FX_SWDMAG_WATER_GLOBE_0_TPAGE, FX_SWDMAG_WATER_GLOBE_0_CLUT, FX_SWDMAG_WATER_GLOBE_0_U, FX_SWDMAG_WATER_GLOBE_0_V);
+        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE_3), FX_SWDMAG_WATER_GLOBE_0_TPAGE, FX_SWDMAG_WATER_GLOBE_0_CLUT, FX_SWDMAG_WATER_GLOBE_0_U, FX_SWDMAG_WATER_GLOBE_0_V);
+        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_GLOBE), FX_SWDMAG_WATER_GLOBE_0_TPAGE, FX_SWDMAG_WATER_GLOBE_0_CLUT, FX_SWDMAG_WATER_GLOBE_0_U, FX_SWDMAG_WATER_GLOBE_0_V);
+        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_COLUMN), FX_SWDMAG_WATER_SPLASH_COLUMN_TPAGE, FX_SWDMAG_WATER_SPLASH_COLUMN_CLUT, FX_SWDMAG_WATER_SPLASH_COLUMN_U, FX_SWDMAG_WATER_SPLASH_COLUMN_V);
+        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_FUNNEL), FX_SWDMAG_WATER_SPLASH_COLUMN_TPAGE, FX_SWDMAG_WATER_SPLASH_COLUMN_CLUT,
+                                                      FX_SWDMAG_WATER_SPLASH_COLUMN_U, FX_SWDMAG_WATER_SPLASH_COLUMN_V);
+        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_BASE_DISC), FX_SWDMAG_WATER_GLOBE_0_TPAGE, FX_SWDMAG_WATER_GLOBE_0_CLUT, FX_SWDMAG_WATER_GLOBE_0_U, FX_SWDMAG_WATER_GLOBE_0_V);
         size = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (size < 0x400) {
             size = 0x6A4;
@@ -42,8 +43,8 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->hold0 != 0) {
             return 0;
         }
-        if (frame < 0x18) {
-            t = (frame << 12) / 24;
+        if (frame < FX_SWDMAG_WATER_GLOBE_FRAMES) {
+            t = (frame << 12) / FX_SWDMAG_WATER_GLOBE_FRAMES;
             pos.vx = work->posC.vx;
             pos.vy = work->posC.vy;
             pos.vz = work->posC.vz;
@@ -72,7 +73,7 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 size = 0;
             }
         } else {
-            morphT = ((frame - 0x18) << 12) / 26;
+            morphT = ((frame - FX_SWDMAG_WATER_GLOBE_FRAMES) << 12) / FX_SWDMAG_WATER_SPRAY_FRAMES;
             fadeAng = morphT >> 2;
             pos.vx = work->posC.vx;
             pos.vy = work->posC.vy;
@@ -87,9 +88,11 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14[7]);
             ex->Hi_ModifyEffModelRGB(work->model14[7], (ex->math_cos(fadeAng) >> 5) - 0x80, (ex->math_cos(fadeAng) >> 5) - 0x80, (ex->math_cos(fadeAng) >> 5) - 0x80);
         }
-        ex->btlfx_drawScrollMove(frame, 0x240, 0x180, 0x10, 0x40, fx_0de_scrollSrc[frame % 23 + 1].srcX0, fx_0de_scrollSrc[frame % 23 + 1].srcY2);
-        if (frame >= 0x18) {
-            t = ((frame - 0x18) << 12) / 26;
+        ex->btlfx_drawScrollMove(frame, FX_SWDMAG_WATER_WATER_VRAM_X, FX_SWDMAG_WATER_WATER_VRAM_Y, FX_SWDMAG_WATER_WATER_VRAM_W, FX_SWDMAG_WATER_WATER_VRAM_H,
+                                 fx_0de_scrollSrc[frame % FX_SWDMAG_WATER_SCROLL_FRAMES + 1].srcX0,
+                                 fx_0de_scrollSrc[frame % FX_SWDMAG_WATER_SCROLL_FRAMES + 1].srcY2);
+        if (frame >= FX_SWDMAG_WATER_GLOBE_FRAMES) {
+            t = ((frame - FX_SWDMAG_WATER_GLOBE_FRAMES) << 12) / FX_SWDMAG_WATER_SPRAY_FRAMES;
             pos.vx = work->posC.vx;
             pos.vy = work->posC.vy;
             pos.vz = work->posC.vz;
@@ -105,7 +108,7 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t >>= 1;
             ex->Hi_ModifyEffModelRGB(work->model14[5], (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80);
         }
-        if (frame == 0x10) {
+        if (frame == FX_SWDMAG_WATER_SPLASH_DROPS_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SPLASH_DROPS), (s32)&work->pos4);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
@@ -117,7 +120,7 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
             }
         }
-        if (frame >= 0x32) {
+        if (frame >= FX_SWDMAG_WATER_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -133,7 +136,7 @@ s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 phase;
 
     if (mode == 0) {
-        *args = 0x68;
+        *args = sizeof(Fx0deWork81);
     } else if (mode == 1) {
         fx_0de_env = env;
         work->unitCount40 = env->targets->targetCount;
@@ -145,7 +148,7 @@ s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (frame < 0x20) {
+        if (frame < FX_SWDMAG_WATER_LIFT_FRAMES) {
             phase = frame << 7;
             for (i = 0; i < work->unitCount40; i++) {
                 BTLFX_COPY_SVEC(&pos, &work->homePos0[i]);
@@ -153,7 +156,7 @@ s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitPos(i, (s16 *)&pos);
             }
         } else {
-            phase = (frame - 0x20) << 10;
+            phase = (frame - FX_SWDMAG_WATER_LIFT_FRAMES) << 10;
             for (i = 0; i < work->unitCount40; i++) {
                 BTLFX_COPY_SVEC(&pos, &work->homePos0[i]);
                 pos.vy += (work->height48[i] * phase) >> 12;
@@ -161,7 +164,7 @@ s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitPos(i, (s16 *)&pos);
             }
         }
-        if (frame >= 0x24) {
+        if (frame >= FX_SWDMAG_WATER_LIFT_FRAMES + FX_SWDMAG_WATER_DROP_FRAMES) {
             for (i = 0; i < work->unitCount40; i++) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&pos);
                 ex->btlfx_setUnitPos(i, (s16 *)&pos);
@@ -186,10 +189,10 @@ s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0deWork84);
     } else if (mode == 1) {
         fx_0de_env = env;
-        work->state0 = 0;
+        work->state0 = FX_SWDMAG_WATER_SWORD_STATE_APPEAR;
         work->frame4 = 0;
     } else {
         alpha = 0;
@@ -199,38 +202,38 @@ s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
-        case 0:
+        case FX_SWDMAG_WATER_SWORD_STATE_APPEAR:
             ry = 0x200;
-            alpha = (frame << 12) / 3;
+            alpha = (frame << 12) / FX_SWDMAG_WATER_SWORD_APPEAR_FRAMES;
             t = ex->math_sin(alpha >> 2);
             scale0 = t >> 1;
             scale1 = ((0x1000 - alpha) >> 1) + 0x800;
-            if (frame >= 3) {
-                work->state0 = 1;
+            if (frame >= FX_SWDMAG_WATER_SWORD_APPEAR_FRAMES) {
+                work->state0 = FX_SWDMAG_WATER_SWORD_STATE_FLICKER;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_WATER_SWORD_STATE_FLICKER:
+            t = (frame << 12) / FX_SWDMAG_WATER_SWORD_FLICKER_FRAMES;
             flicker = (frame & 1) << 8;
             scale1 = flicker + 0x1000;
             grow = (t >> 1) + 0x800;
             alpha = flicker + grow;
             ry = (t >> 3) + 0x200;
             scale0 = scale1;
-            if (frame >= 9) {
-                work->state0 = 2;
+            if (frame >= FX_SWDMAG_WATER_SWORD_FLICKER_FRAMES) {
+                work->state0 = FX_SWDMAG_WATER_SWORD_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 2:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_WATER_SWORD_STATE_FADE:
+            t = (frame << 12) / FX_SWDMAG_WATER_SWORD_FADE_FRAMES;
             ang = t >> 2;
             ry = 0x400 - ang;
             alpha = ex->math_cos(ang);
             scale0 = ex->math_sin(ang) + 0x1000;
             scale1 = ex->math_sin(ang) * 3 / 2 + 0x1000;
-            if (frame >= 9) {
+            if (frame >= FX_SWDMAG_WATER_SWORD_FADE_FRAMES) {
                 return 1;
             }
             break;
@@ -240,8 +243,8 @@ s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SWORD_FLASH), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, BTLFX_ABR_ADD, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_WATER_SWORD_FLASH), &work->pos8, &rot, scale1 / 2, 0, BTLFX_ABR_ADD, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

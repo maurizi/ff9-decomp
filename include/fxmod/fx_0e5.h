@@ -12,6 +12,14 @@
 #define FX_SOUL_BLADE_SPIRIT_WISPS 0x8 /* emitter: blue rings, white sparkles, golden smoke wisps */
 #define FX_SOUL_BLADE_LENS_FLARES  0x9 /* sprite line: lens-flare circles and rings */
 
+/* fx_0e5 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_SOUL_BLADE_FLASH_DISTANCE    0xC8 /* FX_SOUL_BLADE_LIGHT_FLASH starts this far in front of the caster (aimed at the target) */
+#define FX_SOUL_BLADE_WISPS_FRAME       0xF  /* FX_SOUL_BLADE_SPIRIT_WISPS and the LENS_FLARES sprite line start at the target */
+#define FX_SOUL_BLADE_FLARES_END_FRAME  0x1C /* the sprite line draws until this frame */
+#define FX_SOUL_BLADE_FLARES_FADE_FRAME 5    /* and fades from this frame of it on */
+#define FX_SOUL_BLADE_FLARES_ANIM_FRAMES 6   /* sprite-line frames (lineFrame40 stops on the last) */
+#define FX_SOUL_BLADE_FRAMES            0x3C /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -24,7 +32,7 @@ typedef struct {
     SVECTOR linePos38;
     u16 lineFrame40;
     u16 lineAlpha42;
-} Fx0e5Work;
+} Fx0e5Work; /* 0x44 */
 
 extern Unk800F78A4 *fx_0e5_env;
 

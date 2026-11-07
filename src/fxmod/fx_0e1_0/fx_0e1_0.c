@@ -52,9 +52,9 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         }
         gte_stlvnl(m.t);
         gte_rtps();
-        code = 0x38;
-        if (abr != 0xFF) {
-            code = 0x3A;
+        code = GPU_POLY_G4;
+        if (abr != BTLFX_ABR_OPAQUE) {
+            code = GPU_POLY_G4 | GPU_ABE;
         }
         gte_stszotz(&otz);
         if (rot->pad != 0) {
@@ -114,11 +114,11 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
                 *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
-                    ex->btlfx_addPrim(0x8000000, otz, prim);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_G4), otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, otz, tpage);
+        ex->btlfx_addPrim(PRIM_TAG(DR_TPAGE), otz, tpage);
     }
     w--;
     h--;
@@ -172,7 +172,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
     n = i;
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + n);
-    col.cd = abr == 0xFF ? 0x3C : 0x3E;
+    col.cd = abr == BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 : GPU_POLY_GT4 | GPU_ABE;
     w--;
     h--;
     tpage |= TPAGE_ABR(abr);
@@ -198,7 +198,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
             gte_stszotz(&otz);
             gte_ldv0(&buf[1].b8);
             gte_rtps();
-            ex->btlfx_addPrim(0x0C000000, otz, prim);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, prim);
             gte_stsxy(&prim->x3);
             prim->clut = clut;
             prim->tpage = tpage;
@@ -275,9 +275,9 @@ void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32
                 ft4->u1 = ft4->u3 = u1;
                 ft4->v0 = ft4->v1 = v0;
                 ft4->v2 = ft4->v3 = v1;
-                col.cd = abr == 0xFF ? 0x2C : 0x2E;
+                col.cd = abr == BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 : GPU_POLY_FT4 | GPU_ABE;
                 *(s32 *)&ft4->r0 = *(s32 *)&col;
-                ex->btlfx_addPrim(0x09000000, ot, ft4);
+                ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), ot, ft4);
                 ft4++;
             } else {
                 gt4->x0 = px + ((ex->math_sin(phase) * amp) >> 12);
@@ -301,10 +301,10 @@ void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32
                 gt4->u1 = gt4->u3 = u1;
                 gt4->v0 = gt4->v1 = v0;
                 gt4->v2 = gt4->v3 = v1;
-                col.cd = abr == 0xFF ? 0x3C : 0x3E;
+                col.cd = abr == BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 : GPU_POLY_GT4 | GPU_ABE;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = 0;
-                ex->btlfx_addPrim(0x0C000000, ot, gt4);
+                ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), ot, gt4);
                 gt4++;
             }
         }
@@ -320,7 +320,7 @@ static s32 fx_0e1_0_op80SpawnPoint(SVECTOR *out) {
         out->pad = 1;
         boneIdx = fx_0e1_0_spawnIndex;
         ex->Hi_GetSummonBonePos(((Fx0e10EnvB *)env->loader)->summonModel60, fx_0e1_0_spawnBones[boneIdx++], (u16 *)out);
-        if (boneIdx >= 5) {
+        if (boneIdx >= FX_REBIRTH_FLAME_SPAWN_BONES) {
             boneIdx = 0;
         }
         fx_0e1_0_spawnIndex = boneIdx;
@@ -364,12 +364,12 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 t;
 
     if (mode == 0) {
-        *args = 0xA4;
+        *args = sizeof(Fx0e10Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_REBIRTH_FLAME_STATE_SCENE;
         work->frame4 = 0;
         fx_0e1_0_env = env;
-        ex->btlfx_initEffModels(fx_0e1_0_effModels, 5);
+        ex->btlfx_initEffModels(fx_0e1_0_effModels, FX_REBIRTH_FLAME_MODEL_COUNT);
         work->model50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SCREEN_PLANE), 0);
         work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SCREEN_BULGE), 0);
         work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SCREEN_SPHERE), 0);
@@ -421,22 +421,22 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         frame = entry->frame;
         wave2 = 0;
         switch (work->state0) {
-        case 0:
+        case FX_REBIRTH_FLAME_STATE_SCENE:
             bright = 0x1000;
-            if (frame < 0x10) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF - ((frame * 0xFF) >> 4),
+            if (frame < FX_REBIRTH_FLAME_UNWHITE_FRAMES) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0xFF - ((frame * 0xFF) >> 4),
                                          0xFF - ((frame * 0xFF) >> 4), 0xFF - ((frame * 0xFF) >> 4));
             }
-            if (frame < 0x2E) {
+            if (frame < FX_REBIRTH_FLAME_SPIN_FRAMES) {
                 work->morphScale78.vx = work->morphScale78.vy = work->morphScale78.vz = bright;
-                radius = ex->math_cos((frame << 10) / 46);
+                radius = ex->math_cos((frame << 10) / FX_REBIRTH_FLAME_SPIN_FRAMES);
                 work->morphPos6C.vx = fx_0e1_0_origin.vx + ((ex->math_cos(work->frame4 << 8) * radius) >> 17);
                 work->morphPos6C.vy = fx_0e1_0_origin.vx + ((ex->math_sin(work->frame4 << 8) * radius) >> 17);
                 /* i doubles as the morph blend: r must stay single-set (sched1 then births its copy from v0 after
                    the second math_cos pointer load, as in the original) */
                 i = 0x2000;
             } else {
-                s32 ease = ex->math_cos(((frame - 0x2E) << 10) / 18);
+                s32 ease = ex->math_cos(((frame - FX_REBIRTH_FLAME_SPIN_FRAMES) << 10) / FX_REBIRTH_FLAME_SETTLE_FRAMES);
 
                 i = ease * 2;
                 work->morphScale78.vx = work->morphScale78.vy = work->morphScale78.vz = bright - (((bright - ease) * 0xF00) >> 12);
@@ -454,8 +454,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vx = 0;
             rot.vy = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x6E, 0xA0, 0x6E, 2, 2, 1, 1, &rot, &sc, &col, 0, 0);
-            if (frame >= 0x40) {
-                work->state0 = 1;
+            if (frame >= FX_REBIRTH_FLAME_SCENE_FRAMES) {
+                work->state0 = FX_REBIRTH_FLAME_STATE_PHOENIX;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
@@ -469,7 +469,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (emitter != NULL) {
                     emitter->otZ = 0xC;
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF, 0x80, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_REBIRTH_FLAME_ORANGE_TINT_RGB);
                 work->emit44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_ORBS), (s32)&work->pos8);
                 if (work->emit44 != NULL) {
                     work->emit44->otZ = 0xC;
@@ -477,24 +477,24 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MIST_TRAIL), (s32)&work->pos8);
                 if (work->emit48 != NULL) {
                     work->emit48->trails = (s32)fx_0e1_0_op80Trails0;
-                    work->emit48->trailSlots = 0xC;
-                    work->emit48->trailStride = 0x8C;
+                    work->emit48->trailSlots = FX_REBIRTH_FLAME_MIST_TRAIL_TRAIL_SLOTS;
+                    work->emit48->trailStride = FX_REBIRTH_FLAME_MIST_TRAIL_TRAIL_STRIDE;
                     if (work->emit48 != NULL) {
                         work->emit48->otZ = 0xC;
                     }
                 }
             }
             break;
-        case 1:
+        case FX_REBIRTH_FLAME_STATE_PHOENIX:
             t = frame << 7;
             bright = 0x1000;
             glow = 0x1000;
             ex->Hi_DrawEffModel(&work->rot64, (VECTOR *)&work->morphPos6C, (s32)&work->morphScale78, work->model58);
-            ex->Hi_ModifyEffModelAbr(work->model58, 1);
+            ex->Hi_ModifyEffModelAbr(work->model58, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model58, ((0x1000 - t) >> 5) - 0x80, ((0x1000 - t) >> 5) - 0x80,
                                      ((0x1000 - t) >> 5) - 0x80);
-            if (frame >= 0x20) {
-                work->state0 = 2;
+            if (frame >= FX_REBIRTH_FLAME_PHOENIX_FRAMES) {
+                work->state0 = FX_REBIRTH_FLAME_STATE_FLIGHT;
                 entry->frame = -1;
                 ex->Hi_SetSummonMotion(((Fx0e10Summon *)env->loader)->summon54->motion180,
                                        ((Fx0e10Summon *)env->loader)->summonModel60);
@@ -507,23 +507,23 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             break;
-        case 2:
-            if (frame < 0x10) {
+        case FX_REBIRTH_FLAME_STATE_FLIGHT:
+            if (frame < FX_REBIRTH_FLAME_RISE_FRAMES) {
                 work->summonPos10.vy -= 0x80;
             }
             bright = 0x1000;
-            if (frame == 0x50) {
+            if (frame == FX_REBIRTH_FLAME_HIDE_FRAME + FX_REBIRTH_FLAME_HIDE_FRAMES) {
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->summonModel60, 0x5A);
                 fx_0e1_0_boneSpawnOn = 1;
             }
-            if ((u32)(frame - 0x36) >= 0x1A) {
+            if ((u32)(frame - FX_REBIRTH_FLAME_HIDE_FRAME) >= FX_REBIRTH_FLAME_HIDE_FRAMES) {
                 ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C,
                                        ((Fx0e10Summon *)env->loader)->summonModel60, 1);
                 if (frame < 0x20) {
                     ex->Hi_ModifySummonModelRGB(((Fx0e10Summon *)env->loader)->summonModel60,
                                                 (ex->math_sin((frame << 10) >> 5) >> 5) - 0x80,
                                                 ((frame << 7) >> 5) - 0x80, ((frame << 7) >> 5) - 0x80);
-                    ex->Hi_ModifySummonModelAbr(((Fx0e10Summon *)env->loader)->summonModel60, 1);
+                    ex->Hi_ModifySummonModelAbr(((Fx0e10Summon *)env->loader)->summonModel60, BTLFX_ABR_ADD);
                 }
                 rib = 0x1000;
             } else {
@@ -534,7 +534,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 env->otZ = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, 0, (u16 *)&work->pos34);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_RINGS), &work->pos34, NULL, 0x1000, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_RINGS), &work->pos34, NULL, 0x1000, 0, BTLFX_ABR_ADD,
                                   ringAlpha);
                 env->otZ = 0;
             }
@@ -546,15 +546,15 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MIST_TRAIL), (s32)&work->pos8);
                 if (work->emit48 != NULL) {
                     work->emit48->trails = (s32)fx_0e1_0_op80Trails1;
-                    work->emit48->trailSlots = 0xC;
-                    work->emit48->trailStride = 0x8C;
+                    work->emit48->trailSlots = FX_REBIRTH_FLAME_MIST_TRAIL_TRAIL_SLOTS;
+                    work->emit48->trailStride = FX_REBIRTH_FLAME_MIST_TRAIL_TRAIL_STRIDE;
                     if (work->emit48 != NULL) {
                         work->emit48->otZ = 0xC;
                     }
                 }
             }
-            if ((u32)(frame - 0x7F) <= 0x10) {
-                s32 fadeT = (frame - 0x7F) << 12;
+            if ((u32)(frame - FX_REBIRTH_FLAME_FADE_FRAME) <= FX_REBIRTH_FLAME_FADE_FRAMES) {
+                s32 fadeT = (frame - FX_REBIRTH_FLAME_FADE_FRAME) << 12;
                 s32 fadeAlpha = fadeT >> 4;
 
                 if (work->emit44 != NULL) {
@@ -566,25 +566,25 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit48 != NULL) {
                     work->emit48->alpha = 0x1000 - fadeAlpha;
                 }
-                if (frame - 0x7F == 0x10) {
+                if (frame - FX_REBIRTH_FLAME_FADE_FRAME == FX_REBIRTH_FLAME_FADE_FRAMES) {
                     ex->btlfx_stopEmitter(work->emit44);
                     ex->btlfx_stopEmitter(work->emit48);
                 }
             }
-            if (frame < 0x87) {
+            if (frame < FX_REBIRTH_FLAME_GLOW_FADE_FRAME) {
                 glow = 0x1000;
             } else {
-                s32 fadeT = frame - 0x87;
+                s32 fadeT = frame - FX_REBIRTH_FLAME_GLOW_FADE_FRAME;
 
-                fadeT = (fadeT << 12) / 24;
+                fadeT = (fadeT << 12) / FX_REBIRTH_FLAME_GLOW_FADE_FRAMES;
 
                 bright = 0x1000 - fadeT;
                 wave2 = fadeT;
                 wave = wave2;
                 glow = bright;
             }
-            if (frame >= 0x9F) {
-                work->state0 = 3;
+            if (frame >= FX_REBIRTH_FLAME_GLOW_FADE_FRAME + FX_REBIRTH_FLAME_GLOW_FADE_FRAMES) {
+                work->state0 = FX_REBIRTH_FLAME_STATE_DIVE;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_WHITE_STREAK), (s32)&work->pos8);
                 if (emitter != NULL) {
@@ -596,49 +596,50 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             break;
-        case 3:
+        case FX_REBIRTH_FLAME_STATE_DIVE:
             wave = 0x1000;
             wave2 = 0x1000;
             ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->summonModel60, 0xA9);
             ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, ((Fx0e10Summon *)env->loader)->summonModel60,
                                    1);
-            if (frame == 0xF) {
+            if (frame == FX_REBIRTH_FLAME_STARS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_STAR_FLARES), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame >= 0x33) {
-                work->state0 = 4;
+            if (frame >= FX_REBIRTH_FLAME_DIVE_FRAMES) {
+                work->state0 = FX_REBIRTH_FLAME_STATE_FIRE;
                 entry->frame = -1;
             }
             break;
-        case 4:
-            t = (frame << 12) / 49;
-            if (frame < 0x20) {
+        case FX_REBIRTH_FLAME_STATE_FIRE:
+            t = (frame << 12) / FX_REBIRTH_FLAME_FIRE_FRAMES;
+            if (frame < FX_REBIRTH_FLAME_WAVE_FRAMES) {
                 wave = ex->math_cos(frame << 5);
             }
             wave2 = t + 0x1000;
-            if (frame < 0x2C) {
+            if (frame < FX_REBIRTH_FLAME_MODEL_FRAMES) {
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->summonModel60, 0xA9);
                 ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C,
                                        ((Fx0e10Summon *)env->loader)->summonModel60, 1);
             }
-            if (frame >= 0x31) {
+            if (frame >= FX_REBIRTH_FLAME_FIRE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
             break;
         }
         if (wave != 0) {
-            fx_0e1_0_drawWaveQuadGrid(0xFFE, -0x31, 0xDC, 0xC, 5, 0x28, 0x32, 1, 0x1000, 0x99, 0x3E00, 0x80, 0, 0x40, 0x80,
+            fx_0e1_0_drawWaveQuadGrid(0xFFE, -0x31, 0xDC, 0xC, 5, 0x28, 0x32, 1, 0x1000, FX_REBIRTH_FLAME_WAVE_TPAGE, FX_REBIRTH_FLAME_WAVE_CLUT, FX_REBIRTH_FLAME_WAVE_U, FX_REBIRTH_FLAME_WAVE_V, 0x40, 0x80,
                           wave >> 6, 0x20, (work->frame4 << 5) + 0x400, 0x140, 0x200);
-            ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, FX_REBIRTH_FLAME_WAVE_VRAM_X, FX_REBIRTH_FLAME_WAVE_VRAM_Y, FX_REBIRTH_FLAME_WAVE_VRAM_W, FX_REBIRTH_FLAME_WAVE_VRAM_H, FX_REBIRTH_FLAME_WAVE_SRC_X, FX_REBIRTH_FLAME_WAVE_SRC_Y);
         }
         if (wave2 != 0) {
-            fx_0e1_0_drawWaveQuadGrid(2, -0x20, 0xDC, 6, 5, 0x42, 0x32, 1, 0x1000, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80,
+            fx_0e1_0_drawWaveQuadGrid(2, -0x20, 0xDC, 6, 5, 0x42, 0x32, 1, 0x1000, FX_REBIRTH_FLAME_WAVE_2_TPAGE, FX_REBIRTH_FLAME_WAVE_2_CLUT, FX_REBIRTH_FLAME_WAVE_2_U, FX_REBIRTH_FLAME_WAVE_2_V, 0x40, 0x80,
                           wave2 >> 7, 0x16, work->frame4 << 6, 0x200, 0x302);
-            ex->btlfx_drawScrollMove(10000 - work->frame4 * 4, 0x2F0, 0x100, 0x10, 0x80, 0x2E0, 0x100);
+            ex->btlfx_drawScrollMove(10000 - work->frame4 * 4, FX_REBIRTH_FLAME_WAVE_2_VRAM_X, FX_REBIRTH_FLAME_WAVE_2_VRAM_Y, FX_REBIRTH_FLAME_WAVE_2_VRAM_W,
+                                     FX_REBIRTH_FLAME_WAVE_2_VRAM_H, FX_REBIRTH_FLAME_WAVE_2_SRC_X, FX_REBIRTH_FLAME_WAVE_2_SRC_Y);
         }
         if (bright != 0) {
             ex->btlfx_sampleGradient(fx_0e1_0_gradient, &col, work->frame4 & 0x1F);
@@ -676,26 +677,28 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vz = frame * 0x10;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc2, work->model5C);
             ex->Hi_ModifyEffModelRGB(work->model5C, (glow >> 5) - 0x80, (glow >> 5) - 0x80, (glow >> 5) - 0x80);
-            ex->btlfx_drawScrollMove(work->frame4 * 4, 0x2A0, 0x180, 0x10, 0x40, 0x2B0, 0x180);
+            ex->btlfx_drawScrollMove(work->frame4 * 4, FX_REBIRTH_FLAME_BAND_VRAM_X, FX_REBIRTH_FLAME_BAND_VRAM_Y, FX_REBIRTH_FLAME_BAND_VRAM_W, FX_REBIRTH_FLAME_BAND_VRAM_H,
+                                     FX_REBIRTH_FLAME_BAND_SRC_X, FX_REBIRTH_FLAME_BAND_SRC_Y);
         }
         if (rib != 0) {
             env->otZ = -0x80;
             if (work->ribbonReset4C != 0) {
                 work->ribbonReset4C = 0;
-                for (i = 0; i < 4; i++) {
+                for (i = 0; i < FX_REBIRTH_FLAME_RIBBONS; i++) {
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneA0, (u16 *)&sc);
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&boneB);
                     fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x3FC, 0, 0, 0, 0, 0, 0, 0, fx_0e1_0_ribbons[i], 1, 0);
                 }
             }
-            for (i = 0; i < 4; i++) {
+            for (i = 0; i < FX_REBIRTH_FLAME_RIBBONS; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneA0, (u16 *)&sc);
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&boneB);
-                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, fx_0e1_0_ribbons[i], 1,
+                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x14, FX_REBIRTH_FLAME_WAVE_2_TPAGE, FX_REBIRTH_FLAME_WAVE_2_CLUT, FX_REBIRTH_FLAME_WAVE_2_U, FX_REBIRTH_FLAME_WAVE_2_V, 0x40, 0x80, ((rib >> 5) * 2) / 3, fx_0e1_0_ribbons[i], 1,
                               10000 - work->frame4);
             }
             env->otZ = 0;
-            ex->btlfx_drawScrollMove(10000 - work->frame4 * 4, 0x2F0, 0x100, 0x10, 0x80, 0x2E0, 0x100);
+            ex->btlfx_drawScrollMove(10000 - work->frame4 * 4, FX_REBIRTH_FLAME_WAVE_2_VRAM_X, FX_REBIRTH_FLAME_WAVE_2_VRAM_Y, FX_REBIRTH_FLAME_WAVE_2_VRAM_W,
+                                     FX_REBIRTH_FLAME_WAVE_2_VRAM_H, FX_REBIRTH_FLAME_WAVE_2_SRC_X, FX_REBIRTH_FLAME_WAVE_2_SRC_Y);
         }
         col2.r = col2.g = col2.b = 0x89;
         sc3.vy = sc3.vx = 0x1073;

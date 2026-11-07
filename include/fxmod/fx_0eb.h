@@ -14,6 +14,16 @@
 #define FX_PSYCHOKINESIS_GREY_RINGS 0x7 /* emitter: white-to-grey gouraud rings, 8 frames */
 #define FX_PSYCHOKINESIS_DARK_BUBBLES 0x8 /* emitter: dark bubble screen trails */
 
+/* fx_0eb choreography (docs/fxdata.md, "Choreography literals"): op80's lift, hold and drop of the target, the
+ * trail buffer and the op's length. */
+#define FX_PSYCHOKINESIS_LIFT_HEIGHT 0x3E8 /* the target is lifted to this height (PSYCHIC_ORBS home on it there) */
+#define FX_PSYCHOKINESIS_LIFT_FRAMES 0xC   /* over this many frames from frame 0 (liftTimer34), then held */
+#define FX_PSYCHOKINESIS_DROP_FRAME  0x1C  /* the target drops (WHITE_RINGS_2), */
+#define FX_PSYCHOKINESIS_DROP_FRAMES 3     /* over this many frames (dropTimer36); on landing GREY_RINGS and DARK_BUBBLES */
+#define FX_PSYCHOKINESIS_FRAMES      0x50  /* op80's length (the op ends) */
+#define FX_PSYCHOKINESIS_DARK_BUBBLES_TRAIL_SLOTS  0x3C /* FX_PSYCHOKINESIS_DARK_BUBBLES' trail buffer fx_0eb_op80Trails: slots of */
+#define FX_PSYCHOKINESIS_DARK_BUBBLES_TRAIL_STRIDE 0x18 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -27,7 +37,7 @@ typedef struct {
     s16 liftTimer34; /* lift countdown */
     s16 dropTimer36; /* drop countdown */
     s16 hold38; /* hold up */
-} Fx0ebWork;
+} Fx0ebWork; /* 0x3C */
 
 extern Unk800F78A4 *fx_0eb_env;
 extern s32 fx_0eb_op80Trails[];

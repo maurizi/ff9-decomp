@@ -12,22 +12,22 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 0xC;
-    bolt->lastSlot0 = 0xC;
+    bolt->count2 = FX_BAHAMUT_ARC_POINTS - 1;
+    bolt->lastSlot0 = FX_BAHAMUT_ARC_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 13; i++) {
-        t = 0x1000 - (i << 12) / 12;
+    for (i = 0; i < FX_BAHAMUT_ARC_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_BAHAMUT_ARC_POINTS - 1);
         t += ex->btlfx_randCentered(0x180);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = ex->btlfx_randCentered(0x80);
         offset = (ex->math_sin(t >> 1) * offset) >> 12;
         offset += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
-        pt->pad = 0x1C;
+        pt->pad = FX_BAHAMUT_ARC_WIDTH;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT), 0, 0, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
@@ -42,10 +42,10 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 4;
-    bolt->lastSlot0 = 4;
+    bolt->count2 = FX_BAHAMUT_SPARK_POINTS - 1;
+    bolt->lastSlot0 = FX_BAHAMUT_SPARK_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < FX_BAHAMUT_SPARK_POINTS; i++) {
         t = 0x1000 - (i << 10);
         t += ex->btlfx_randCentered(0x80);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
@@ -53,11 +53,11 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         offset = (ex->math_sin(t >> 1) * offset) >> 12;
         offset += (ex->math_sin(t >> 1) * amp) >> 12;
         ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
-        pt->pad = 0x1A;
+        pt->pad = FX_BAHAMUT_SPARK_WIDTH;
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT_2), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_BOLT_2), 0, 0, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
@@ -72,11 +72,11 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 56;
-    bolt->lastSlot0 = 56;
+    bolt->count2 = FX_BAHAMUT_BOLT_POINTS - 1;
+    bolt->lastSlot0 = FX_BAHAMUT_BOLT_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 56 + 1; i++) {
-        t = 0x1000 - (i << 12) / 56;
+    for (i = 0; i < FX_BAHAMUT_BOLT_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_BAHAMUT_BOLT_POINTS - 1);
         t += ex->btlfx_randCentered(0x100);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = ex->btlfx_randCentered(0xA0);
@@ -87,7 +87,7 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_BOLT), 0, 0, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)bolt, 0);
 }
 
 void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 fade) {
@@ -113,11 +113,11 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 12;
-    bolt->lastSlot0 = 12;
+    bolt->count2 = FX_BAHAMUT_LIGHTNING_POINTS - 1;
+    bolt->lastSlot0 = FX_BAHAMUT_LIGHTNING_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 12 + 1; i++) {
-        t = 0x1000 - (i << 12) / 12;
+    for (i = 0; i < FX_BAHAMUT_LIGHTNING_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_BAHAMUT_LIGHTNING_POINTS - 1);
         t += ex->btlfx_randCentered(0x100);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = ex->btlfx_randCentered(0xA0);
@@ -128,7 +128,7 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LIGHTNING_BOLT), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LIGHTNING_BOLT), 0, 0, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)bolt, 0);
 }
 
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 bright, s32 tpage,
@@ -173,8 +173,8 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     fx_0e3_1_env->prim = (u8 *)(ft4 + 46);
     colFlat.r = colFlat.g = colFlat.b = bright;
     colLit.r = colLit.g = colLit.b = bright;
-    colFlat.code = abr != 0xFF ? 0x2E : 0x2C;
-    colDark.code = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
+    colDark.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     tpage |= TPAGE_ABR(abr);
     colLit.code = colDark.code;
     gte_rtv0tr_b();
@@ -258,11 +258,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -426,7 +426,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0xE4;
+        *args = sizeof(Fx0e31Work80);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -544,16 +544,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t_s2 = ((frame << 12) / 48) >> 2;
             chargeRingScale = (ex->math_sin(t_s2) >> 1) + 0x800;
             chargeRingFade = ex->math_sin(t_s2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CHARGE_RINGS), &work->pos30, NULL, chargeRingScale >> 1, 0, 1, chargeRingFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CHARGE_RINGS), &work->pos30, NULL, chargeRingScale >> 1, 0, BTLFX_ABR_ADD, chargeRingFade);
             if (frame >= 0x2B) {
                 tB = (((frame - 0x2B) << 12) / 5) >> 2;
                 flashRingScale = ex->math_sin(tB) / 3;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flashRingScale, 0, 1, 0x1000);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flashRingScale, 0, BTLFX_ABR_ADD, 0x1000);
                 ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LENS_FLARE), &work->pos30, 0xB, ex->math_sin(tB));
             }
             if (frame >= 0x10) {
                 sparkRing = ex->math_sin(((frame - 0x10) << 7) >> 2);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, sparkRing, 0, 1, sparkRing);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, sparkRing, 0, BTLFX_ABR_ADD, sparkRing);
             }
             if (frame == 0x26) {
                 Pool6CEntry *sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_GLOW), (s32)&work->pos30);
@@ -569,14 +569,14 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0x2F) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 0xFF, 0x80, 0, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_OPAQUE, 0x80, 0, 0);
             }
             if (frame >= 0x28) {
                 tC = ((frame - 0x28) << 12) >> 5;
                 { s32 q4b;
                 spinRingScale = (ex->math_cos(tC) * 3) >> 1;
                 q4b = ex->math_sin(tC);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPIN_RING), &work->pos30, &work->rotBC, spinRingScale, 0, 1, q4b); }
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPIN_RING), &work->pos30, &work->rotBC, spinRingScale, 0, BTLFX_ABR_ADD, q4b); }
             }
             if (frame >= 0x30) {
                 work->state0 = 2;
@@ -584,7 +584,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_initParticleSystem();
                 ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion19C, SUMMON(env)->summonModel60);
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0, 0xFF, 0xFF);
             }
             break;
         case 2:
@@ -680,10 +680,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x10 && frame != 1) {
                 flareScale = (ex->math_cos(t >> 2) >> 2) + 0x555;
                 flareFade = ex->math_cos((frame << 8) >> 2);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flareScale, 0, 1, flareFade);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flareScale, 0, BTLFX_ABR_ADD, flareFade);
                 work->rotBC.pad = 1;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), &work->pos30, &work->rotBC, 0x1000,
-                                  frame, 1, flareFade);
+                                  frame, BTLFX_ABR_ADD, flareFade);
                 ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPARKLE_RING), &work->pos30, &work->rotBC, 0x2000,
                                       frame, 1, flareFade);
                 ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LENS_FLARE), &work->pos30, frame - 1, flareFade);
@@ -693,7 +693,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             } else {
                 haloScale = 0x800;
             }
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, (haloScale * 3) >> 1, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, (haloScale * 3) >> 1, 0, BTLFX_ABR_ADD,
                               0x1000);
             shake = t;
             haloAng = t >> 2;
@@ -701,7 +701,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             {
                 s32 qa;
                 qa = ex->math_cos(haloAng);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, glowScale, 0, 1, qa);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, glowScale, 0, BTLFX_ABR_ADD, qa);
             }
             env->otZ = 0;
             if (frame >= 0x1C) {
@@ -788,7 +788,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vz = work->camTarget40.vz;
             }
             if (frame == 4) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x20, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x20, 0x80, 0xFF);
             } else if ((u32)(frame - 5) < 7) {
                 quake = 0x1000 - (((frame - 5) << 12) / 7);
                 quakeAmp = quake >> 5;
@@ -847,12 +847,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             burstAng = t >> 2;
             burstRingScale = (ex->math_sin(burstAng) * 2) + 0x1000;
             burstRingFade = (ex->math_cos(burstAng) >> 1) + 0x800;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, burstRingScale, 0, 1, burstRingFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, burstRingScale, 0, BTLFX_ABR_ADD, burstRingFade);
             burstGlowScale = (ex->math_sin(burstAng) * 3) + 0x1000;
             {
                 s32 qb;
                 qb = ex->math_cos(burstAng);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, burstGlowScale, 0, 1, qb);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, burstGlowScale, 0, BTLFX_ABR_ADD, qb);
             }
             if (frame >= 4) {
                 ringFrame = frame - 4;
@@ -861,7 +861,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ringRot.vy = 0;
                     ringRot.vz = 0;
                     ringRot.pad = 1;
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), &work->pos30, &ringRot, 0x4000, ringFrame, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), &work->pos30, &ringRot, 0x4000, ringFrame, BTLFX_ABR_ADD,
                                       0x1000);
                 }
             }
@@ -871,7 +871,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit70);
                 ex->btlfx_stopEmitter(work->emit74);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, 0x80, 0xFF);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_BURST), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x300;
@@ -917,22 +917,22 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vy = work->camTarget40.vy;
             env->camera->points[3].vz = work->camTarget40.vz;
             if (frame < 2) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF - (frame << 7), 0xFF - (frame << 7), 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0xFF - (frame << 7), 0xFF - (frame << 7), 0xFF);
             } else if (frame == 2) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             } else if (frame < 0x13) {
                 fadeLevel = 0x1000 - (((frame - 3) << 12) >> 4);
                 fadeLevel = (fadeLevel * 0xA0) >> 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, fadeLevel, fadeLevel, fadeLevel);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, fadeLevel, fadeLevel, fadeLevel);
             }
             if (frame == 0x14) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xD7, 0x64, 0x64);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xD7, 0x64, 0x64);
             }
             if (frame == 0x1D) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x97, 0x4D, 0x4D);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x97, 0x4D, 0x4D);
             }
             if (frame == 0x20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x40, 0x40);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x80, 0x40, 0x40);
             }
             if (frame < 0x49) {
                 if (frame < 7) {
@@ -942,7 +942,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
                 if ((u32)(frame - 5) < 7) {
                     flashTint = ex->math_sin(((frame - 5) << 11) >> 12) * 0xF5;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x400), 1, 0, flashTint >> 14, flashTint >> 12);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x400), BTLFX_ABR_ADD, 0, flashTint >> 14, flashTint >> 12);
                 }
                 work->scaleB0.vx = work->scaleB0.vy = coreScale;
                 fxm_rollTowardEye((VECTOR *)&work->posA4, &work->rotBC);
@@ -1083,10 +1083,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ringAng = t >> 2;
             ringScale = ex->math_cos(ringAng) + 0x1800;
             ringFade = ((ex->math_cos(ringAng) * 3) >> 2) + 0x400;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, ringScale, 0, 1, ringFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_HALO_RINGS), &work->pos30, NULL, ringScale, 0, BTLFX_ABR_ADD, ringFade);
             ringScale = 0x5000 - t * 2;
             ringFade = ex->math_cos(ringAng);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PINK_FLAT_RING), &work->pos30, &flatRingRot, ringScale, 0, 1, ringFade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PINK_FLAT_RING), &work->pos30, &flatRingRot, ringScale, 0, BTLFX_ABR_ADD, ringFade);
             env->otZ = 0;
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BACKDROP), frame);
             ex->btlfx_drawScrollMove(work->frame4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
@@ -1098,8 +1098,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (arcAmp != 0) {
             arcAng = work->frame4 << 8;
-            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % 92, (u16 *)&boneMat);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % 92, (u16 *)((SVECTOR *)&boneMat + 1));
+            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % FX_BAHAMUT_SUMMON_BONES, (u16 *)&boneMat);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, ex->btlfx_rand() % FX_BAHAMUT_SUMMON_BONES, (u16 *)((SVECTOR *)&boneMat + 1));
             fxm_drawOffsetTrail0(entry, (Fx0e31Bolt *)fx_0e3_1_arcs, (SVECTOR *)&boneMat, (SVECTOR *)&boneMat + 1, arcAmp, arcAmp, arcAng, 0x100, 0,
                           ex->btlfx_randCentered(0x400) + 0xC00);
         }
@@ -1108,16 +1108,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelRGB(work->model7C, (fade >> 5) - 0x80, (fade >> 5) - 0x80, (fade >> 5) - 0x80);
         }
         if (tint != 0) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 0xFFE), 0xFF, 0, 0, (tint * 0x4D) >> 12);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 0xFFE), BTLFX_ABR_OPAQUE, 0, 0, (tint * 0x4D) >> 12);
         }
         if (shake != 0) {
             shakeLevel = shake << 7;
             shakeTint = shakeLevel >> 12;
             if (work->frame4 == work->frame4 / 6 * 6) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0, shakeTint * 2 / 3, shakeTint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0, shakeTint * 2 / 3, shakeTint);
             }
             if (!((work->frame4 - 3) & 7)) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, shakeLevel >> 13, shakeLevel >> 13, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, shakeLevel >> 13, shakeLevel >> 13, 0);
             }
         }
         work->frame4++;

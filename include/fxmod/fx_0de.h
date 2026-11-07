@@ -21,6 +21,37 @@
 #define FX_SWDMAG_WATER_SWORD_GLINT   0xE /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_WATER_SWORD_FLASH   0xF /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 
+/* fx_0de choreography (docs/fxdata.md, "Choreography literals"): op80's globe / spray phases, the model textures
+ * and the animated water texture rect; op81's lift of the targets; op84's sword flash. */
+#define FX_SWDMAG_WATER_GLOBE_FRAMES  0x18 /* op80: the globe morphs GLOBE_0 -> GLOBE_1 -> 2 -> 3 -> GLOBE over this many frames */
+#define FX_SWDMAG_WATER_SPRAY_FRAMES  26   /* then the globe fades and SPLASH_COLUMN morphs to SPLASH_FUNNEL over this many */
+#define FX_SWDMAG_WATER_SPLASH_DROPS_FRAME 0x10 /* op80: FX_SWDMAG_WATER_SPLASH_DROPS starts */
+#define FX_SWDMAG_WATER_FRAMES        0x32 /* op80's length (the op ends) */
+#define FX_SWDMAG_WATER_MODEL_COUNT   8    /* btlfx_initEffModels slots: model14[] (GLOBE_0..3, GLOBE, SPLASH_COLUMN, SPLASH_FUNNEL, BASE_DISC) */
+#define FX_SWDMAG_WATER_GLOBE_0_TPAGE 0x39 /* Hi_RegisterTexEffModel texture: 4-bit page (0x240, 0x100), abr 1, water texture (the rect below) */
+#define FX_SWDMAG_WATER_GLOBE_0_CLUT  0x3D00 /* CLUT at (0x0, 0xF4) */
+#define FX_SWDMAG_WATER_GLOBE_0_U     0x0 /* texture origin (u, v) in the page */
+#define FX_SWDMAG_WATER_GLOBE_0_V     0x80
+#define FX_SWDMAG_WATER_SPLASH_COLUMN_TPAGE 0x3B /* Hi_RegisterTexEffModel texture: 4-bit page (0x2C0, 0x100), abr 1, mist texture */
+#define FX_SWDMAG_WATER_SPLASH_COLUMN_CLUT  0x3D01 /* CLUT at (0x10, 0xF4) */
+#define FX_SWDMAG_WATER_SPLASH_COLUMN_U     0x0 /* texture origin (u, v) in the page */
+#define FX_SWDMAG_WATER_SPLASH_COLUMN_V     0x80
+/* The globe models sample (WATER_TPAGE 4-bit page (0x240, 0x100), v 0x80) the rect below; each frame
+ * btlfx_drawScrollMove copies the next of the SCROLL_FRAMES water frames from fx_0de_scrollSrc into it. */
+#define FX_SWDMAG_WATER_WATER_VRAM_X  0x240
+#define FX_SWDMAG_WATER_WATER_VRAM_Y  0x180
+#define FX_SWDMAG_WATER_WATER_VRAM_W  0x10
+#define FX_SWDMAG_WATER_WATER_VRAM_H  0x40
+#define FX_SWDMAG_WATER_SCROLL_FRAMES 23   /* fx_0de_scrollSrc entries 1..23 (frame % 23 + 1) */
+#define FX_SWDMAG_WATER_LIFT_FRAMES   0x20 /* op81: the targets rise and fall back over this many frames, */
+#define FX_SWDMAG_WATER_DROP_FRAMES   4    /* then drop to their home positions over this many (the op ends) */
+#define FX_SWDMAG_WATER_SWORD_STATE_APPEAR  0 /* op84: SWORD_GLINT / SWORD_FLASH grow in at the weapon */
+#define FX_SWDMAG_WATER_SWORD_STATE_FLICKER 1 /* op84: they flicker and turn */
+#define FX_SWDMAG_WATER_SWORD_STATE_FADE    2 /* op84: they spread and fade (the op ends) */
+#define FX_SWDMAG_WATER_SWORD_APPEAR_FRAMES  3 /* SWORD_STATE_APPEAR's length */
+#define FX_SWDMAG_WATER_SWORD_FLICKER_FRAMES 9 /* SWORD_STATE_FLICKER's length */
+#define FX_SWDMAG_WATER_SWORD_FADE_FRAMES    9 /* SWORD_STATE_FADE's length */
+
 typedef struct {
     SVECTOR homePos0[8]; /* unit home positions */
     s32 unitCount40; /* unit count */

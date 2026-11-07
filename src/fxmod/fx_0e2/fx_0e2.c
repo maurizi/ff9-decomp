@@ -195,7 +195,7 @@ void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLen
     ends[1].vx = 0;
     ends[1].vy = width / 2;
     ends[1].vz = 0;
-    for (i = 0; i < 60; i++, edge++) {
+    for (i = 0; i < FX_FENRIR_EDGES; i++, edge++) {
         fxm_posPathGet(trackA, i, &posA);
         fxm_posPathGet(trackB, i, &posB);
         ex->btlfx_lerpVec((s16 *)&posA, (s16 *)&posB, t, (s16 *)&pos);
@@ -270,7 +270,7 @@ void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale,
     ends[1].vx = 0;
     ends[1].vy = width / 2;
     ends[1].vz = 0;
-    for (i = 0; i < 60; i++, edge++) {
+    for (i = 0; i < FX_FENRIR_EDGES; i++, edge++) {
         fxm_posPathGet(track, i, &pos);
         pos.vx = pos.vx * scale->vx / 4096;
         pos.vy = pos.vy * scale->vy / 4096;
@@ -382,9 +382,9 @@ void fxm_drawEdgeQuads(s32 n, s32 bright, s32 tpage, s32 clut, u16 v0, u16 v1) {
             setRGB3(poly, bright, bright, bright);
         }
         if (edge[0].xy0.vx < edge[1].xy0.vx) {
-            ex->btlfx_addPrim(0x0C000000, 0, poly);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), 0, poly);
         } else {
-            ex->btlfx_addPrim(0x0C000000, (edge[0].otz8 + edge[1].otz8) >> 1, poly);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), (edge[0].otz8 + edge[1].otz8) >> 1, poly);
         }
     }
 }
@@ -415,10 +415,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 stripFrame;
 
     if (mode == 0) {
-        *args = 0x16C;
+        *args = sizeof(Fx0e2Work80);
     } else if (mode == 1) {
         fx_0e2_env = env;
-        ex->btlfx_initEffModels(fx_0e2_effModels, 0x20);
+        ex->btlfx_initEffModels(fx_0e2_effModels, FX_FENRIR_MODEL_COUNT);
         fx_0e2_aimPos.vx = env->targets->centerX;
         fx_0e2_aimPos.vy = env->targets->centerY;
         fx_0e2_aimPos.vz = env->targets->centerZ;
@@ -571,8 +571,8 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit1C = trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_TRAIL), (s32)&fx_0e2_emitPos2);
             if (trailEmitter != NULL) {
                 trailEmitter->trails = (s32)fx_0e2_op80Trails1;
-                work->emit1C->trailSlots = 0xC;
-                work->emit1C->trailStride = 0x50;
+                work->emit1C->trailSlots = FX_FENRIR_WIND_TRAIL_TRAIL_SLOTS;
+                work->emit1C->trailStride = FX_FENRIR_WIND_TRAIL_TRAIL_STRIDE;
                 if (work->emit1C != NULL) {
                     work->emit1C->otZ = 0x100;
                 }
@@ -583,22 +583,22 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_RING_BURST), (s32)&fx_0e2_emitPos1);
             break;
         case 0xB5:
-            for (slot = 0; slot < 5; slot++) {
+            for (slot = 0; slot < FX_FENRIR_HEADS; slot++) {
                 work->emit28[slot] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_0e2_emitBlocks1[slot]), (s32)&fx_0e2_emitPos4[slot]);
             }
             break;
         case 0xF0:
-            for (slot = 0; slot < 5; slot++) {
+            for (slot = 0; slot < FX_FENRIR_HEADS; slot++) {
                 ex->btlfx_stopEmitter(work->emit28[slot]);
             }
             break;
         case 0xF8:
-            for (slot = 0; slot < 5; slot++) {
+            for (slot = 0; slot < FX_FENRIR_HEADS; slot++) {
                 work->emit8[slot] = headEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_0e2_emitBlocks0[slot]), (s32)&fx_0e2_emitPos3[slot]);
                 if (headEmitter != NULL) {
                     headEmitter->trails = (s32)&fx_0e2_op80Trails0[slot];
-                    work->emit8[slot]->trailSlots = 6;
-                    work->emit8[slot]->trailStride = 0x50;
+                    work->emit8[slot]->trailSlots = FX_FENRIR_HEAD_TRAIL_SLOTS;
+                    work->emit8[slot]->trailStride = FX_FENRIR_HEAD_TRAIL_STRIDE;
                 }
             }
             break;
@@ -652,7 +652,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifySummonModelRGB(((Fx0e2Summon *)env->loader)->summonModel60, -0x20, -0x20, -0x20);
             }
             if (summonFrame >= 0x69) {
-                ex->Hi_ModifySummonModelAbr(((Fx0e2Summon *)env->loader)->summonModel60, 1);
+                ex->Hi_ModifySummonModelAbr(((Fx0e2Summon *)env->loader)->summonModel60, BTLFX_ABR_ADD);
             }
             if (work->fadeTimer140 >= 0) {
                 work->summonRgb74 = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer140, 0x10);
@@ -678,7 +678,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawMorphEffModel(&work->rot3C, (VECTOR *)&work->pos54, (s32)&work->scale64, work->model150[0],
                                      work->model150[1], t);
-            ex->Hi_ModifyEffModelAbr(work->model150[0], 1);
+            ex->Hi_ModifyEffModelAbr(work->model150[0], BTLFX_ABR_ADD);
             if (work->fadeOutTimer148 >= 0 || work->fadeInTimer144 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model150[0], work->rgb78, work->rgb78, work->rgb78);
             }
@@ -693,7 +693,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawMorphEffModel(&work->rot3C, (VECTOR *)&work->pos54, (s32)&work->scale64, work->model150[2],
                                      work->model150[3], t);
-            ex->Hi_ModifyEffModelAbr(work->model150[2], 1);
+            ex->Hi_ModifyEffModelAbr(work->model150[2], BTLFX_ABR_ADD);
             if (work->fadeOutTimer148 >= 0 || work->fadeInTimer144 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model150[2], work->rgb78, work->rgb78, work->rgb78);
             }
@@ -733,7 +733,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, fx_0e2_stripTrackBlocks[keyB]), (u16)blendStrip));
                 fx_0e2_stripFromTrackBlend(&fx_0e2_stripBlend.pathA0, &fx_0e2_stripBlendPathB, blend, (Fx0e2Trail *)&fx_0e2_strips[blendStrip], 0x98, fx_0e2_stripBlend.width16);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_WIND_STRIP), 0, NULL, 0, fx_0e2_stripBlend.scale14,
-                                    fx_0e2_stripBlend.fade12, 1, (u8 *)&fx_0e2_strips[blendStrip], 0);
+                                    fx_0e2_stripBlend.fade12, BTLFX_ABR_ADD, (u8 *)&fx_0e2_strips[blendStrip], 0);
                 fx_0e2_headRot.vx = 0x113;
                 fx_0e2_headRot.vy = 0x800;
                 fx_0e2_headRot.vz = 0;
@@ -952,7 +952,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 block;
 
     if (mode == 0) {
-        *args = 0x13C;
+        *args = sizeof(Fx0e2Work81);
     } else if (mode == 1) {
         fx_0e2_env = env;
         work->pos1C.vx = -0x18D;
@@ -1099,7 +1099,7 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s16 len;
 
     if (mode == 0) {
-        *args = 0x6C;
+        *args = sizeof(Fx0e2Work82);
     } else if (mode == 1) {
         work->center50.vx = env->targets->centerX;
         fx_0e2_env = env;
@@ -1400,7 +1400,7 @@ s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0e2Orbit *orbit;
 
     if (mode == 0) {
-        *args = 0xD0;
+        *args = sizeof(Fx0e2Work84);
     } else if (mode == 1) {
         orbit = fx_0e2_orbits;
         fx_0e2_env = env;
@@ -1425,8 +1425,8 @@ s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit20[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SAND_RINGS), (s32)&work->emitPos80[j]);
                 if (work->emit0[j] != NULL) {
                     work->emit0[j]->trails = (s32)fx_0e2_op84Trails[j];
-                    work->emit0[j]->trailSlots = 0xC;
-                    work->emit0[j]->trailStride = 0x30;
+                    work->emit0[j]->trailSlots = FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_SLOTS;
+                    work->emit0[j]->trailStride = FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit20[j] != NULL) {
                     work->emit20[j]->otZ = ex->btlfx_addRadiusSixth(j, 0x80);

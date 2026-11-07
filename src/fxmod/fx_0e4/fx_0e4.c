@@ -12,10 +12,10 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 morph;
 
     if (mode == 0) {
-        *args = 0x70;
+        *args = sizeof(Fx0e4Work);
     } else if (mode == 1) {
         fx_0e4_env = env;
-        ex->btlfx_initEffModels(fx_0e4_effModels, 3);
+        ex->btlfx_initEffModels(fx_0e4_effModels, FX_FROG_DROP_MODELS);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos34);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot3C);
         work->rot8.vx = work->rot3C.vx;
@@ -24,20 +24,20 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vx = work->pos34.vx;
         work->pos10.vy = work->pos34.vy;
         work->pos10.vz = work->pos34.vz;
-        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->rot3C, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
+        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->rot3C, ex->btlfx_getUnitRadius(0) + FX_FROG_DROP_DISTANCE, (s16 *)&pos);
         work->pos10.vx = pos.vx;
         work->pos10.vy = pos.vy;
         work->pos10.vz = pos.vz;
-        work->state64 = 0;
+        work->state64 = FX_FROG_DROP_STATE_DROP;
         work->scale20.vx = 0x5000;
         work->scale20.vy = 0x6000;
         work->scale20.vz = 0x5000;
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < FX_FROG_DROP_MODELS; i++) {
             work->model68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_0e4_modelBlocks[i]), 1);
         }
         work->ringRot54.vx = 0x400;
         work->ringAlpha5E = 0x1000;
-        work->dropTimer60 = 8;
+        work->dropTimer60 = FX_FROG_DROP_FALL_FRAMES;
         work->ringRot54.vy = 0;
         work->ringRot54.vz = 0;
         work->ringScale5C = 0;
@@ -47,13 +47,13 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->ringPos4C.vz = work->pos10.vz;
     } else {
         frame = entry->frame;
-        if (frame == 0xC) {
-            work->fadeTimer62 = 0x10;
+        if (frame == FX_FROG_DROP_FADE_FRAME) {
+            work->fadeTimer62 = FX_FROG_DROP_FADE_FRAMES;
         }
-        if (frame >= 0 && frame < 0x1C) {
+        if (frame >= 0 && frame < FX_FROG_DROP_DRAW_FRAMES) {
             tick = frame;
             if (work->dropTimer60 >= 0) {
-                work->pos10.vy = fxm_lerpRatio(-0xFA0, 0, 8 - work->dropTimer60, 8);
+                work->pos10.vy = fxm_lerpRatio(-FX_FROG_DROP_HEIGHT, 0, FX_FROG_DROP_FALL_FRAMES - work->dropTimer60, FX_FROG_DROP_FALL_FRAMES);
                 if (--work->dropTimer60 == 0) {
                     work->pos44.vx = work->pos10.vx;
                     work->pos44.vy = work->pos10.vy;
@@ -70,14 +70,14 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->ringScale5C = ringScale;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_FROG_DROP_DUST_RING), &work->ringPos4C, &work->ringRot54, work->ringScale5C,
-                              tick, 2, work->ringAlpha5E);
+                              tick, BTLFX_ABR_SUB, work->ringAlpha5E);
             switch (work->state64) {
-            case 0:
-                if (tick < 6) {
+            case FX_FROG_DROP_STATE_DROP:
+                if (tick < FX_FROG_DROP_MORPH_FRAME) {
                     model = 0;
                     ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, model);
-                } else if (tick >= 6 && tick < 9) {
-                    morph = 0x1000 - ((tick - 6) << 12) / 3;
+                } else if (tick >= FX_FROG_DROP_MORPH_FRAME && tick < FX_FROG_DROP_MORPH_FRAME + FX_FROG_DROP_MORPH_FRAMES) {
+                    morph = 0x1000 - ((tick - FX_FROG_DROP_MORPH_FRAME) << 12) / FX_FROG_DROP_MORPH_FRAMES;
                     t = morph > 0x1000 ? 0x1000 : morph;
                     ex->Hi_DrawMorphEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model68[0],
                                              work->model68[1], t);
@@ -89,7 +89,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 env->camera->points[0].vx = work->pos10.vx;
                 env->camera->points[0].vy = work->pos10.vy;
                 env->camera->points[0].vz = work->pos10.vz;
-                if (tick >= 4 && frame < 0xC) {
+                if (tick >= FX_FROG_DROP_SQUASH_FRAME && frame < FX_FROG_DROP_FADE_FRAME) {
                     work->scale20.vy -= 0x400;
                 }
                 break;
@@ -100,16 +100,16 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 break;
             }
             if (work->fadeTimer62 >= 0) {
-                work->rgb30 = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer62, 0x10);
+                work->rgb30 = fxm_lerpRatio(0, -0x80, FX_FROG_DROP_FADE_FRAMES - work->fadeTimer62, FX_FROG_DROP_FADE_FRAMES);
                 work->fadeTimer62--;
-                ex->Hi_ModifyEffModelAbr(model, 1);
+                ex->Hi_ModifyEffModelAbr(model, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(model, work->rgb30, work->rgb30, work->rgb30);
                 work->pos10.vy += 0xA;
                 work->scale20.vy -= 0x100;
                 work->ringAlpha5E -= 0x100;
             }
         }
-        if (frame >= 0x41) {
+        if (frame >= FX_FROG_DROP_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

@@ -40,7 +40,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
     if (src == NULL) {
         level = 1;
     }
-    colIn.cd = level != 0xFF ? 0x3E : 0x3C;
+    colIn.cd = level != 0xFF ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     if (src != NULL) {
         tpLo = getTPage(2, 0, src->x, src->y);
         tpHi = getTPage(2, 0, src->x + 0x80, src->y);
@@ -49,7 +49,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
         src->x = env->drawEnv->clip.x + (x - (src->w >> 1));
         src->y = env->drawEnv->clip.y + (y - (src->h >> 1));
         move = (u32 *)env->prim;
-        env->prim = (u8 *)move + 0x18;
+        env->prim = (u8 *)move + sizeof(DR_MOVE);
         ex->SetDrawMove(move, src, sx, sy);
         cx = (src->w >> 1) + (sx & 0x3F);
         cy = (src->h >> 1) + (sy & 0xFF);
@@ -93,14 +93,14 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
             if (outUv.vx < 0) {
                 outUv.vx = 0;
             }
-            if (outUv.vx >= 0x140) {
-                outUv.vx = 0x13F;
+            if (outUv.vx >= SCREEN_W) {
+                outUv.vx = SCREEN_W - 1;
             }
             if (outUv.vy < 0) {
                 outUv.vy = 0;
             }
-            if (outUv.vy >= 0xF0) {
-                outUv.vy = 0xEF;
+            if (outUv.vy >= SCREEN_H_NTSC) {
+                outUv.vy = SCREEN_H_NTSC - 1;
             }
             *(s32 *)&pts[1][i] = *(s32 *)&outUv;
             if (i != 0) {
@@ -138,7 +138,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
                 *(s32 *)&prim->x2 = *(s32 *)&inPrev;
                 *(s32 *)&prim->x3 = *(s32 *)&outPrev;
                 if (ot < 0x1000) {
-                    addPrimLenIn(&env->ot[ot], prim, 0xC000000);
+                    addPrimLenIn(&env->ot[ot], prim, PRIM_TAG(POLY_GT4));
                 }
                 prim++;
             }
@@ -155,16 +155,16 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
         }
     }
     if (src != NULL && ot < 0x1000) {
-        addPrimLenIn(&env->ot[ot], move, 0x5000000);
+        addPrimLenIn(&env->ot[ot], move, PRIM_TAG(DR_MOVE));
     }
 }
 
 void fx_0df_recordElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0df_env);
 
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, FX_SWDMAG_FLARE_ORANGE_GLOW), pos, rot, *scale / 2, frame, 1, *alpha, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, FX_SWDMAG_FLARE_ORANGE_GLOW), pos, rot, *scale / 2, frame, BTLFX_ABR_ADD, *alpha, 0, 0);
     BTLFX_COPY_SVEC(&fx_0df_recentPos[fx_0df_recentNext], pos);
-    fx_0df_recentNext = (fx_0df_recentNext + 1) % 24;
+    fx_0df_recentNext = (fx_0df_recentNext + 1) % FX_SWDMAG_FLARE_RECENT_POSITIONS;
 }
 
 static void fxm_twistVertex(s32 radius, s32 unused1, s32 ang, s32 unused2, s16 *out) {
@@ -208,7 +208,7 @@ static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk8010
         p->roll14 = ex->btlfx_rand();
         p->rollSpeed16 = (ex->btlfx_rand() & 7) + 8;
     } else {
-    t = (frame << 12) / 12;
+    t = (frame << 12) / FX_SWDMAG_FLARE_CLOUD_FRAMES;
     p->roll14 += p->rollSpeed16;
     fxm_anglesFromEye(&p->pos4, &rot);
     rot.vz = p->roll14;
@@ -219,17 +219,17 @@ static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk8010
     half = p->size2 >> 1;
     pulse *= 3;
     scale.vx = scale.vy = scale.vz = ((p->size2 * pulse) >> 13) + half;
-    if (frame < 3) {
-        bright = ((frame + 1) << 12) / 3;
+    if (frame < FX_SWDMAG_FLARE_CLOUD_GROW_FRAMES) {
+        bright = ((frame + 1) << 12) / FX_SWDMAG_FLARE_CLOUD_GROW_FRAMES;
     } else {
-        bright = ex->math_cos(((frame - 3) << 10) / 9);
+        bright = ex->math_cos(((frame - FX_SWDMAG_FLARE_CLOUD_GROW_FRAMES) << 10) / (FX_SWDMAG_FLARE_CLOUD_FRAMES - FX_SWDMAG_FLARE_CLOUD_GROW_FRAMES));
     }
     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
     ex->Hi_ModifyEffModelRGB(work->model28, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model2C);
     ex->Hi_ModifyEffModelRGB(work->model2C, ((bright * 2 - 0x1000) >> 5) - 0x80, ((bright * 2 - 0x1000) >> 5) - 0x80,
                              ((bright * 2 - 0x1000) >> 5) - 0x80);
-    if (frame < 8) {
+    if (frame < FX_SWDMAG_FLARE_CLOUD_ARCH_FRAMES) {
         p->rotC.vz += 0xFF;
         scale.vx = scale.vy = scale.vx / 5;
         scale.vz = scale.vx / 7;
@@ -241,9 +241,9 @@ static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk8010
         ex->Hi_ModifyEffModelRGB(work->model20, r, g, (ex->math_cos(fadeAng) >> 5) - 0x80);
     }
     env->otZ = 0x200;
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ORANGE_GLOW), &p->pos4, 0, (p->size2 * 3) >> 1, 0, 1, bright >> 1, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ORANGE_GLOW), &p->pos4, 0, (p->size2 * 3) >> 1, 0, BTLFX_ABR_ADD, bright >> 1, 0, 0);
     env->otZ = 0;
-    if (frame >= 0xC) {
+    if (frame >= FX_SWDMAG_FLARE_CLOUD_FRAMES) {
         return 1;
     }
     }
@@ -264,13 +264,13 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 grow;
 
     if (mode == 0) {
-        init->workSize = 0x40;
-        init->elemSize = 0x18;
+        init->workSize = sizeof(Fx0dfWork80);
+        init->elemSize = sizeof(Fx0dfPart);
         init->elemFn = (s32)fx_0df_op80PoolTask;
-        init->poolCount = 6;
+        init->poolCount = FX_SWDMAG_FLARE_CLOUD_SLOTS;
     } else if (mode == 1) {
         fx_0df_env = env;
-        work->state0 = 1;
+        work->state0 = FX_SWDMAG_FLARE_STATE_TWIST;
         work->frame4 = 0;
         fx_0df_task = entry;
         work->otZ8 = ex->btlfx_addRadiusSixth(0, 0);
@@ -280,27 +280,27 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk14 = work->posC.vx;
         work->unk18 = work->posC.vy;
         work->unk1C = work->posC.vz;
-        ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0xFF, 0xFF);
-        ex->btlfx_initEffModels(fx_0df_effModels, 6);
-        work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ARCH), 0x139, 0xFFFF,
-                                                 0, 0x80);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_FIRE_DOME), 0x38, 0x3E83, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_CLOUD_SPHERE), 0x13C, 0xFFFF,
-                                                 0x10, 0x80);
+        ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SWDMAG_FLARE_START_DARKEN_RGB);
+        ex->btlfx_initEffModels(fx_0df_effModels, FX_SWDMAG_FLARE_MODEL_COUNT);
+        work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ARCH), FX_SWDMAG_FLARE_ARCH_TPAGE, FX_SWDMAG_FLARE_ARCH_CLUT,
+                                                 FX_SWDMAG_FLARE_ARCH_U, FX_SWDMAG_FLARE_ARCH_V);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_FIRE_DOME), FX_SWDMAG_FLARE_FIRE_DOME_TPAGE, FX_SWDMAG_FLARE_FIRE_DOME_CLUT, FX_SWDMAG_FLARE_FIRE_DOME_U, FX_SWDMAG_FLARE_FIRE_DOME_V);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_CLOUD_SPHERE), FX_SWDMAG_FLARE_CLOUD_SPHERE_TPAGE, FX_SWDMAG_FLARE_CLOUD_SPHERE_CLUT,
+                                                 FX_SWDMAG_FLARE_CLOUD_SPHERE_U, FX_SWDMAG_FLARE_CLOUD_SPHERE_V);
         work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_HALO));
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 1:
+        case FX_SWDMAG_FLARE_STATE_TWIST:
             switch (frame) {
             default: {
                 SVECTOR sxy;
                 SVECTOR rot;
 
-                t = (frame << 12) / 10;
-                if (frame < 6) {
-                    s32 tint = 0xFF - frame * 0xFF / 6;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 2);
+                t = (frame << 12) / FX_SWDMAG_FLARE_TWIST_FRAMES;
+                if (frame < FX_SWDMAG_FLARE_TWIST_FLASH_FRAMES) {
+                    s32 tint = 0xFF - frame * 0xFF / FX_SWDMAG_FLARE_TWIST_FLASH_FRAMES;
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint >> 2);
                 }
                 fx_0df_twist = 0x800;
                 twistAmp = (t * 0x58) >> 12;
@@ -309,7 +309,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 gte_ldv0(&work->posC);
                 gte_rtps();
                 gte_stsxy(&sxy);
-                fxm_drawRadialScreenGrid(1, sxy.vx, sxy.vy, 0x10, 7, 0x12, twistAmp, 0, NULL,
+                fxm_drawRadialScreenGrid(1, sxy.vx, sxy.vy, FX_SWDMAG_FLARE_GRID_SEGMENTS, FX_SWDMAG_FLARE_GRID_RINGS, FX_SWDMAG_FLARE_GRID_RING_WIDTH, twistAmp, 0, NULL,
                               (void (*)(s32, s32, s32, s32, DVECTOR *))fxm_twistVertex);
                 rot.vy = 0;
                 rot.vx = 0;
@@ -317,24 +317,24 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.pad = 0;
                 alpha = ex->math_sin(t >> 2);
                 env->otZ = work->otZ8 + 0x46;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot, 0x1400 - t, 0, 1, alpha);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_WHITE_RINGS), &work->posC, &rot, (0x1000 - t) * 6, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot, 0x1400 - t, 0, BTLFX_ABR_ADD, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_WHITE_RINGS), &work->posC, &rot, (0x1000 - t) * 6, 0, BTLFX_ABR_ADD,
                                   alpha >> 1);
                 rot.vx = 0x200;
                 rot.vy = 0x200;
                 rot.vz = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_WHITE_RINGS), &work->posC, &rot, t * 4, 0, 1, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_WHITE_RINGS), &work->posC, &rot, t * 4, 0, BTLFX_ABR_ADD, alpha);
                 rot.vx = 0x200;
                 rot.vy = 0x600;
                 rot.vz = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_WHITE_RINGS), &work->posC, &rot, t * 4, 0, 1, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_WHITE_RINGS), &work->posC, &rot, t * 4, 0, BTLFX_ABR_ADD, alpha);
                 env->otZ = 0;
-                if (frame >= 10) {
-                    work->state0 = 2;
+                if (frame >= FX_SWDMAG_FLARE_TWIST_FRAMES) {
+                    work->state0 = FX_SWDMAG_FLARE_STATE_DOME;
                     entry->frame = -1;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SWDMAG_FLARE_TWIST_DARKEN_RGB);
                     work->emit3C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_VIOLET_RINGS), (s32)&work->posC);
                     if (emitter != NULL) {
                         emitter->otZ = work->otZ8 + 0x46;
@@ -349,7 +349,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             }
             break;
-        case 2:
+        case FX_SWDMAG_FLARE_STATE_DOME:
             switch (frame) {
             default: {
                 VECTOR scale;
@@ -358,12 +358,13 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 SVECTOR rot;
                 SVECTOR rot3;
 
-                t = (frame << 12) / 14;
-                if (frame < 4) {
+                t = (frame << 12) / FX_SWDMAG_FLARE_DOME_FRAMES;
+                if (frame < FX_SWDMAG_FLARE_DOME_FLASH_FRAMES) {
                     s32 tint = 0xFF - frame * 0xFF / 6;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint >> 2, tint >> 2);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint >> 2, tint >> 2);
                 }
-                ex->btlfx_drawScrollMove(work->scroll34, 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
+                ex->btlfx_drawScrollMove(work->scroll34, FX_SWDMAG_FLARE_FIRE_VRAM_X, FX_SWDMAG_FLARE_FIRE_VRAM_Y, FX_SWDMAG_FLARE_FIRE_VRAM_W, FX_SWDMAG_FLARE_FIRE_VRAM_H,
+                                         FX_SWDMAG_FLARE_FIRE_SRC_X, FX_SWDMAG_FLARE_FIRE_SRC_Y);
                 work->scroll34 += 8;
                 pos.vx = work->posC.vx;
                 pos.vy = work->posC.vy;
@@ -376,8 +377,8 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot2.vx = work->yaw38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
                 ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->model24);
-                if (frame == 10) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x64, 0x40, 0);
+                if (frame == FX_SWDMAG_FLARE_DOME_TINT_FRAME) {
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_SWDMAG_FLARE_DOME_TINT_RGB);
                 }
                 rot.vy = 0;
                 rot.vx = 0;
@@ -386,18 +387,18 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 alpha = ex->math_sin(t >> 2);
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
                 env->otZ = work->otZ8 + 0x46;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot, 0x1400 - t, 0, 1, alpha);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING), &work->posC, &rot, t * 2 + 0x400, 0, 1, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot, 0x1400 - t, 0, BTLFX_ABR_ADD, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING), &work->posC, &rot, t * 2 + 0x400, 0, BTLFX_ABR_ADD, alpha);
                 env->otZ = 0;
-                if (frame >= 14) {
-                    work->state0 = 3;
+                if (frame >= FX_SWDMAG_FLARE_DOME_FRAMES) {
+                    work->state0 = FX_SWDMAG_FLARE_STATE_FLASH;
                     entry->frame = -1;
                 }
                 break;
             }
             }
             break;
-        case 3:
+        case FX_SWDMAG_FLARE_STATE_FLASH:
             switch (frame) {
             default: {
                 VECTOR scale;
@@ -408,9 +409,10 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 t = frame << 9;
                 if (frame == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x80, 0x80, 0x80);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SWDMAG_FLARE_FLASH_TINT_RGB);
                 }
-                ex->btlfx_drawScrollMove(work->scroll34, 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
+                ex->btlfx_drawScrollMove(work->scroll34, FX_SWDMAG_FLARE_FIRE_VRAM_X, FX_SWDMAG_FLARE_FIRE_VRAM_Y, FX_SWDMAG_FLARE_FIRE_VRAM_W, FX_SWDMAG_FLARE_FIRE_VRAM_H,
+                                         FX_SWDMAG_FLARE_FIRE_SRC_X, FX_SWDMAG_FLARE_FIRE_SRC_Y);
                 work->scroll34 -= 14;
                 pos.vx = work->posC.vx;
                 pos.vy = work->posC.vy;
@@ -431,15 +433,15 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
                 env->otZ = work->otZ8 + 0x46;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_RINGS), &work->posC, &rot3, ((frame << 11) + t) / 2 + 0x200, 0,
-                                  1, alpha);
+                                  BTLFX_ABR_ADD, alpha);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING), &work->posC, &rot3, (frame << 11) + 0x2400, 0,
-                                  1, (alpha >> 1) + 0x800);
+                                  BTLFX_ABR_ADD, (alpha >> 1) + 0x800);
                 env->otZ = 0;
-                if (frame >= 8) {
-                    work->state0 = 4;
+                if (frame >= FX_SWDMAG_FLARE_FLASH_FRAMES) {
+                    work->state0 = FX_SWDMAG_FLARE_STATE_BLAST;
                     entry->frame = -1;
                     ex->btlfx_stopEmitter(work->emit3C);
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xAA, 0xAA, 0xAA);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SWDMAG_FLARE_FLASH_DARKEN_RGB);
                     emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SPARK_GLOW), (s32)&work->posC);
                     if (emitter != NULL) {
                         emitter->otZ = work->otZ8 + 0x46;
@@ -453,22 +455,22 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             }
             break;
-        case 4:
+        case FX_SWDMAG_FLARE_STATE_BLAST:
             switch (frame) {
             default: {
                 SVECTOR rot;
                 SVECTOR rot2;
 
-                t = (frame << 12) / 50;
+                t = (frame << 12) / FX_SWDMAG_FLARE_BLAST_FRAMES;
                 if (frame == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0xFF, 0xFF);
-                } else if (frame < 7) {
-                    s32 tint = 0xFF - (frame - 1) * 0xFF / 6;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SWDMAG_FLARE_BLAST_DARKEN_RGB);
+                } else if (frame < FX_SWDMAG_FLARE_BLAST_FLASH_FRAMES) {
+                    s32 tint = 0xFF - (frame - 1) * 0xFF / (FX_SWDMAG_FLARE_BLAST_FLASH_FRAMES - 1);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint >> 1);
                 }
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP), work->frame4);
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_2), work->frame4);
-                if (frame < 0x20 && !(frame & 1)) {
+                if (frame < FX_SWDMAG_FLARE_CLOUDS_FRAMES && !(frame & 1)) {
                     grow = frame << 7;
                     spawnRadius = (grow >> 3) + 0x200;
                     partSize = 0x1800 - grow * 3 / 4;
@@ -496,21 +498,21 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 alpha = ex->math_cos(t >> 2);
                 env->otZ = work->otZ8 + 0x46;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BLAST_RINGS), &work->posC, &rot,
-                                  ex->math_cos(t >> 2) / 2 + 0x400, 0, 1, alpha >> 1);
+                                  ex->math_cos(t >> 2) / 2 + 0x400, 0, BTLFX_ABR_ADD, alpha >> 1);
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BACKDROP_3), work->frame4);
                 rot.vx = 0x200;
                 rot.vy = 0x590;
                 rot.vz = 0x80;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING_2), &work->posC, &rot, ringScale = t * 3 + 0x800, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING_2), &work->posC, &rot, ringScale = t * 3 + 0x800, 0, BTLFX_ABR_ADD,
                                   alpha);
                 rot.vx = 0x600;
                 rot.vy = 0x990;
                 rot.vz = 0x80;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING_2), &work->posC, &rot, ringScale, 0, 1, alpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_TEX_RING_2), &work->posC, &rot, ringScale, 0, BTLFX_ABR_ADD, alpha);
                 env->otZ = 0;
-                if (frame >= 50) {
+                if (frame >= FX_SWDMAG_FLARE_BLAST_FRAMES) {
                     ex->btlfx_clearEffModels();
                     return 1;
                 }
@@ -537,11 +539,11 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
-    bolt->count2 = 0xE;
-    bolt->lastSlot0 = 0xE;
+    bolt->count2 = FX_SWDMAG_FLARE_STRIP_POINTS - 1;
+    bolt->lastSlot0 = FX_SWDMAG_FLARE_STRIP_POINTS - 1;
     bolt->head1 = 0;
-    for (i = 0; i < 15; i++) {
-        t = 0x1000 - (i << 12) / 14;
+    for (i = 0; i < FX_SWDMAG_FLARE_STRIP_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_SWDMAG_FLARE_STRIP_POINTS - 1);
         t += *jitter++;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *jitter++;
@@ -553,15 +555,15 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
         pt++;
     }
     env->otZ = 0x200;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BLUE_LIGHTNING), 0, 0, frame, 0x1000, fade * 2 / 3, 2, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_BLUE_LIGHTNING), 0, 0, frame, 0x1000, fade * 2 / 3, BTLFX_ABR_SUB, (u8 *)bolt, 0);
     env->otZ = 0;
 }
 
 static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     if (mode != 1) {
         fxm_drawOffsetTrail(entry, &fx_0df_arcStrips[arc->strip10], arc->jitter14, &arc->pos0, &arc->pos8, 0, 0x200, frame * 0x9B, 0x186,
-                      2, 0x1000, ((0x1000 - (frame << 12) / 5) << 6) >> 12);
-        if (frame >= 5) {
+                      2, 0x1000, ((0x1000 - (frame << 12) / FX_SWDMAG_FLARE_ARC_FRAMES) << 6) >> 12);
+        if (frame >= FX_SWDMAG_FLARE_ARC_FRAMES) {
             return 1;
         }
     }
@@ -583,14 +585,14 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)args)->workSize = sizeof(Fx0dfWork83);
         ((EffInit *)args)->elemSize = sizeof(Fx0dfArc);
         ((EffInit *)args)->elemFn = (s32)fx_0df_op83PoolTask;
-        ((EffInit *)args)->poolCount = 7;
+        ((EffInit *)args)->poolCount = FX_SWDMAG_FLARE_ARC_SLOTS;
     } else if (mode == 1) {
         fx_0df_env = env;
         t = *args;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->jitter8 = fx_0df_arcJitter[0];
         jit = work->jitter8;
-        for (i = 0; i < 64; i++) {
+        for (i = 0; i < FX_SWDMAG_FLARE_ARC_JITTER_ROWS; i++) {
             *jit++ = ex->btlfx_randCentered(0x100);
             *jit++ = ex->btlfx_randCentered(0x180);
             *jit++ = ex->btlfx_randCentered(0xC0);
@@ -599,22 +601,22 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->arcCountC = 0;
     } else {
         frame = entry->frame;
-        if (work->kind10 == 0) {
-            if (frame >= 0x29) {
+        if (work->kind10 == FX_SWDMAG_FLARE_ARCS_RECENT) {
+            if (frame >= FX_SWDMAG_FLARE_ARCS_RECENT_FRAMES) {
                 return 1;
             }
             work->arcCountC++;
             arc = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (arc != NULL) {
-                ((s32 *)&arc->pos0)[0] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % 24])[0];
-                ((s32 *)&arc->pos0)[1] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % 24])[1];
-                ((s32 *)&arc->pos8)[0] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % 24])[0];
-                ((s32 *)&arc->pos8)[1] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % 24])[1];
+                ((s32 *)&arc->pos0)[0] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % FX_SWDMAG_FLARE_RECENT_POSITIONS])[0];
+                ((s32 *)&arc->pos0)[1] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % FX_SWDMAG_FLARE_RECENT_POSITIONS])[1];
+                ((s32 *)&arc->pos8)[0] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % FX_SWDMAG_FLARE_RECENT_POSITIONS])[0];
+                ((s32 *)&arc->pos8)[1] = ((s32 *)&fx_0df_recentPos[ex->btlfx_rand() % FX_SWDMAG_FLARE_RECENT_POSITIONS])[1];
                 arc->jitter14 = work->jitter8 + (ex->btlfx_rand() & 0x1F);
-                arc->strip10 = work->arcCountC % 7;
+                arc->strip10 = work->arcCountC % FX_SWDMAG_FLARE_ARC_SLOTS;
             }
         } else {
-            if (frame < 0x10) {
+            if (frame < FX_SWDMAG_FLARE_ARCS_RING_FRAMES) {
                 t = ex->btlfx_randCentered(0x300);
                 work->arcCountC++;
                 t += frame * 0x334;
@@ -626,10 +628,10 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     pos.vy += ex->math_sin(t) / 2;
                     BTLFX_COPY_SVEC(&arc2->pos8, &pos);
                     arc2->jitter14 = work->jitter8 + (ex->btlfx_rand() & 0x1F);
-                    arc2->strip10 = work->arcCountC % 7;
+                    arc2->strip10 = work->arcCountC % FX_SWDMAG_FLARE_ARC_SLOTS;
                 }
             }
-            if (frame >= 0x10) {
+            if (frame >= FX_SWDMAG_FLARE_ARCS_RING_FRAMES) {
                 return 1;
             }
         }
@@ -650,47 +652,47 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0dfWork84);
     } else {
         if (mode == 1) {
             fx_0df_env = env;
-            work->state0 = 0;
+            work->state0 = FX_SWDMAG_FLARE_SWORD_STATE_APPEAR;
             work->frame4 = 0;
         } else {
             ry = scale1 = scale0 = alpha = 0;
             frame = entry->frame;
             ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
             switch (work->state0) {
-            case 0:
+            case FX_SWDMAG_FLARE_SWORD_STATE_APPEAR:
                 ry = 0x200;
-                alpha = (frame << 12) / 3;
+                alpha = (frame << 12) / FX_SWDMAG_FLARE_SWORD_APPEAR_FRAMES;
                 scale0 = ex->math_sin(alpha >> 2) >> 1;
                 scale1 = ((0x1000 - alpha) >> 1) + 0x800;
-                if (frame >= 3) {
-                    work->state0 = 1;
+                if (frame >= FX_SWDMAG_FLARE_SWORD_APPEAR_FRAMES) {
+                    work->state0 = FX_SWDMAG_FLARE_SWORD_STATE_FLICKER;
                     entry->frame = -1;
                 }
                 break;
-            case 1:
+            case FX_SWDMAG_FLARE_SWORD_STATE_FLICKER:
                 flicker = (frame & 1) << 8;
                 scale1 = flicker + 0x1000;
-                t = (frame << 12) / 9;
+                t = (frame << 12) / FX_SWDMAG_FLARE_SWORD_FLICKER_FRAMES;
                 alpha = (flicker + 0x800) + (t >> 1);
                 ry = (t >> 3) + 0x200;
                 scale0 = scale1;
-                if (frame >= 9) {
-                    work->state0 = 2;
+                if (frame >= FX_SWDMAG_FLARE_SWORD_FLICKER_FRAMES) {
+                    work->state0 = FX_SWDMAG_FLARE_SWORD_STATE_FADE;
                     entry->frame = -1;
                 }
                 break;
-            case 2:
-                t = (frame << 12) / 9;
+            case FX_SWDMAG_FLARE_SWORD_STATE_FADE:
+                t = (frame << 12) / FX_SWDMAG_FLARE_SWORD_FADE_FRAMES;
                 ang = t >> 2;
                 ry = 0x400 - ang;
                 alpha = ex->math_cos(ang);
                 scale0 = ex->math_sin(ang) + 0x1000;
                 scale1 = ex->math_sin(ang) * 2 + 0x1000;
-                if (frame >= 9) {
+                if (frame >= FX_SWDMAG_FLARE_SWORD_FADE_FRAMES) {
                     return 1;
                 }
                 break;
@@ -700,8 +702,8 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = ry;
             rot.pad = 0;
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SWORD_GLINT), &work->pos8, NULL, scale0, 0, 1, alpha / 2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SWORD_FLASH), &work->pos8, &rot, scale1 * 3 / 2, 0, 1, alpha * 2 / 3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SWORD_GLINT), &work->pos8, NULL, scale0, 0, BTLFX_ABR_ADD, alpha / 2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SWORD_FLASH), &work->pos8, &rot, scale1 * 3 / 2, 0, BTLFX_ABR_ADD, alpha * 2 / 3);
             env->otZ = 0;
             work->frame4++;
         }

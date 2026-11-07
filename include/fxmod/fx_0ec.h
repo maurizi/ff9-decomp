@@ -22,6 +22,59 @@
 #define FX_DOOM_BACKDROP         0x11 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DOOM_GOURAUD_SHELL    0x13 /* model: gouraud capsule; the render draws it black (colours set by the C at run time?); runtime (docs/runtime-findings.md effect-data pass): still black with the run-time page (look pending) */
 
+/* fx_0ec choreography (docs/fxdata.md, "Choreography literals"): op80's states, their lengths, keyframes and screen
+ * tints, the halo pool items, the shatter / split shard buffers, the model textures. */
+#define FX_DOOM_STATE_RISE    0 /* op80: the gold frame and panel rise sliced around the caster */
+#define FX_DOOM_STATE_GLOW    1 /* they turn, GLOW_SHELL flickers */
+#define FX_DOOM_STATE_PICTURE 2 /* REAPER_PICTURE fades in, the shell fades, RED_RING at both ends */
+#define FX_DOOM_STATE_SHATTER 3 /* the frame and panel split into shards (fxm_split*), the picture shatters (the op ends) */
+#define FX_DOOM_RISE_FRAMES         22 /* STATE_RISE's length */
+#define FX_DOOM_GLOW_FRAMES         20 /* STATE_GLOW's length */
+#define FX_DOOM_PICTURE_FRAMES      30 /* STATE_PICTURE's length */
+#define FX_DOOM_PICTURE_FADE_FRAMES 8  /* STATE_PICTURE: REAPER_PICTURE brightens over this many frames */
+#define FX_DOOM_SHELL_FADE_FRAMES   16 /* STATE_PICTURE: GLOW_SHELL fades over this many */
+#define FX_DOOM_RED_RING_FRAME      20 /* STATE_PICTURE: FX_DOOM_RED_RING at both emitPos28 points */
+#define FX_DOOM_FLASH_FRAME         8  /* STATE_SHATTER: RED_FLASH and CYAN_SPARKLES; REAPER_PICTURE_2 brightens until then */
+#define FX_DOOM_RELEASE_FRAMES      47 /* STATE_SHATTER: the split shards are released over this many frames */
+#define FX_DOOM_SHATTER_FRAMES      71 /* STATE_SHATTER's length (the op ends) */
+#define FX_DOOM_DARKEN_RGB    100, 100, 0 /* STATE_PICTURE's end: subtractive screen tint (the screen turns blue) */
+#define FX_DOOM_RED_FLASH_RGB 0xC8, 0, 0  /* STATE_SHATTER: additive (red) */
+#define FX_DOOM_HALO_SLOTS    0x80 /* op80 pool items: a VIOLET_HALO (SVECTOR position each) */
+#define FX_DOOM_HALO_FRAMES   6    /* pool item: a halo spreads and fades over this many frames */
+#define FX_DOOM_SHATTER_TRIS  0x70 /* fxm_shatterModel: triangles / shards of the shattered picture */
+#define FX_DOOM_SHATTER_FLY_AGE 8  /* a shatter shard moves (btlfx_stepModuleParticle) from this age */
+#define FX_DOOM_SHATTER_LIFE  0x47 /* and is freed at this one */
+#define FX_DOOM_SPLIT_SHARDS  300  /* fxm_split*: shards of the split frame and panel */
+#define FX_DOOM_SPLIT_LIFE    0x20 /* a split shard is freed at this age */
+#define FX_DOOM_MODEL_COUNT   9    /* btlfx_initEffModels slots */
+#define FX_DOOM_GOLD_FRAME_TPAGE 0x97 /* Hi_RegisterTexEffModel texture: 8-bit page (0x1C0, 0x100), abr 0, gold */
+#define FX_DOOM_GOLD_FRAME_CLUT  0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_DOOM_GOLD_FRAME_U     0x80 /* texture origin (u, v) in the page */
+#define FX_DOOM_GOLD_FRAME_V     0x80
+#define FX_DOOM_GOLD_PANEL_TPAGE 0x97 /* Hi_RegisterTexEffModel texture: 8-bit page (0x1C0, 0x100), abr 0, gold */
+#define FX_DOOM_GOLD_PANEL_CLUT  0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_DOOM_GOLD_PANEL_U     0x80 /* texture origin (u, v) in the page */
+#define FX_DOOM_GOLD_PANEL_V     0x80
+#define FX_DOOM_REAPER_PICTURE_TPAGE 0xB7 /* Hi_RegisterTexEffModel texture: 8-bit page (0x1C0, 0x100), abr 1 */
+#define FX_DOOM_REAPER_PICTURE_CLUT  0x3DC0 /* CLUT at (0x0, 0xF7) */
+#define FX_DOOM_REAPER_PICTURE_U     0x0 /* texture origin (u, v) in the page */
+#define FX_DOOM_REAPER_PICTURE_V     0x80
+#define FX_DOOM_REAPER_PICTURE_2_TPAGE 0x97 /* Hi_RegisterTexEffModel texture: 8-bit page (0x1C0, 0x100), abr 0 */
+#define FX_DOOM_REAPER_PICTURE_2_CLUT  0x3DC0 /* CLUT at (0x0, 0xF7) */
+#define FX_DOOM_REAPER_PICTURE_2_U     0x0 /* texture origin (u, v) in the page */
+#define FX_DOOM_REAPER_PICTURE_2_V     0x80
+#define FX_DOOM_GOLD_LATTICE_TPAGE 0x39 /* Hi_RegisterTexEffModel texture: 4-bit page (0x240, 0x100), abr 1 */
+#define FX_DOOM_GOLD_LATTICE_CLUT  0x3D01 /* CLUT at (0x10, 0xF4) */
+#define FX_DOOM_GOLD_LATTICE_U     0x0 /* texture origin (u, v) in the page */
+#define FX_DOOM_GOLD_LATTICE_V     0x0
+#define FX_DOOM_SWIRL_SHELL_TPAGE 0x119 /* Hi_RegisterTexEffModel texture: 15-bit page (0x240, 0x100), abr 0, run-time swirl page */
+#define FX_DOOM_SWIRL_SHELL_CLUT  0xFFFF /* no CLUT (15-bit page) */
+#define FX_DOOM_SWIRL_SHELL_U     0x0 /* texture origin (u, v) in the page */
+#define FX_DOOM_SWIRL_SHELL_V     0x90
+#define FX_DOOM_GLOW_SHELL_CLUT 0xFFFF /* GLOW_SHELL samples the two display buffers (tpage from env->dispEnv, 15-bit, additive): no CLUT, */
+#define FX_DOOM_GLOW_SHELL_U    0x40   /* texture origin (u, v) */
+#define FX_DOOM_GLOW_SHELL_V    0
+
 typedef struct {
     s16 modelCount0; /* split models */
     s16 triCount2; /* vertices */
@@ -54,8 +107,8 @@ typedef struct {
     SVECTOR verts0[3]; /* vertices; verts0[0].pad: split off */
 } Fx0ecTri;
 
-extern Fx0ecTri fx_0ec_shatterTris[0x70];
-extern Fx0ecShard fx_0ec_shatterShards[0x70];
+extern Fx0ecTri fx_0ec_shatterTris[FX_DOOM_SHATTER_TRIS];
+extern Fx0ecShard fx_0ec_shatterShards[FX_DOOM_SHATTER_TRIS];
 
 typedef struct {
     u8 pad0[0x10];
@@ -68,7 +121,7 @@ extern SVECTOR fx_0ec_modelRot; /* model transform of fx_0ec_spawnImpact */
 extern SVECTOR fx_0ec_modelPos;
 extern VECTOR fx_0ec_modelScale;
 extern Fx0ecSplit fx_0ec_split;
-extern Fx0ecShard fx_0ec_splitShards[300];
+extern Fx0ecShard fx_0ec_splitShards[FX_DOOM_SPLIT_SHARDS];
 
 static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void fx_0ec_spawnImpact(SVECTOR *pos);

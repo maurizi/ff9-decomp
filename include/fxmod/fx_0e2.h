@@ -49,6 +49,18 @@
 #define FX_FENRIR_RED_MOON           0xA5 /* summon data: emitter, one big red moon sprite */
 #define FX_FENRIR_RED_MOON_GLOW      0xA6 /* summon data: emitter, red moon particle */
 
+/* fx_0e2 choreography (docs/fxdata.md, "Choreography literals"; partial: the work sizes, trail buffers, counts and
+ * primitive words; the ops' frame keys are still numeric). */
+#define FX_FENRIR_MODEL_COUNT 0x20 /* btlfx_initEffModels slots */
+#define FX_FENRIR_EDGES       60   /* fx_0e2_edges: the screen-edge strip's points */
+#define FX_FENRIR_HEADS       5    /* op80's five wind heads: fx_0e2_emitBlocks0 / 1, emit8 / emit28 slots */
+#define FX_FENRIR_WIND_TRAIL_TRAIL_SLOTS   0xC  /* FX_FENRIR_WIND_TRAIL's trail buffer fx_0e2_op80Trails1: slots of */
+#define FX_FENRIR_WIND_TRAIL_TRAIL_STRIDE  0x50 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_FENRIR_HEAD_TRAIL_SLOTS         6    /* the heads' trail buffers fx_0e2_op80Trails0[slot] (Fx0e2Tex1E0): slots of */
+#define FX_FENRIR_HEAD_TRAIL_STRIDE        0x50 /* this many bytes */
+#define FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_SLOTS  0xC  /* op84: FX_FENRIR_GREEN_WIND_TRAIL's trail buffer per unit (fx_0e2_op84Trails): slots of */
+#define FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_STRIDE 0x30 /* this many bytes */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
@@ -72,7 +84,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_0e2_env;
 extern Fx0e2Orbit fx_0e2_orbits[];
-extern u8 fx_0e2_op84Trails[][0x240]; /* per unit */
+extern u8 fx_0e2_op84Trails[][FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_SLOTS * FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_STRIDE]; /* per unit */
 
 typedef struct {
     Pool6CEntry *emit0[8];
@@ -81,7 +93,7 @@ typedef struct {
     SVECTOR emitPos80[8]; /* effect positions */
     s16 landedC0[8]; /* unit landed */
 } Fx0e2Work84; /* 0xD0 */
-extern Fx0e2Edge fx_0e2_edges[60];
+extern Fx0e2Edge fx_0e2_edges[FX_FENRIR_EDGES];
 extern SVECTOR fx_0e2_stripOrigin; /* trail origin */
 extern SVECTOR fx_0e2_headPos; /* trail head position */
 extern SVECTOR fx_0e2_headRot; /* trail head rotation */
@@ -151,11 +163,11 @@ typedef s32 (*Fx0e2RegTexList)(BtlModelHeader *, BtlTexInfo *, s16 *);
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    Pool6CEntry *emit8[5];
+    Pool6CEntry *emit8[FX_FENRIR_HEADS];
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
-    Pool6CEntry *emit28[5];
+    Pool6CEntry *emit28[FX_FENRIR_HEADS];
     SVECTOR rot3C; /* summon rotation */
     VECTOR pos44; /* summon position */
     VECTOR pos54; /* model position */
@@ -230,8 +242,8 @@ static s32 fxm_posPathGet(Fx0e2Path *path, s32 t, SVECTOR *out);
 extern Fx0e2Drop fx_0e2_drops[3];
 extern u16 fx_0e2_dropBlocks[3];
 extern u16 fx_0e2_stripTrackBlocks[4];
-extern u16 fx_0e2_emitBlocks0[5];
-extern u16 fx_0e2_emitBlocks1[5];
+extern u16 fx_0e2_emitBlocks0[FX_FENRIR_HEADS];
+extern u16 fx_0e2_emitBlocks1[FX_FENRIR_HEADS];
 extern BtlTexInfo fx_0e2_texPages[];
 extern s16 fx_0e2_texPos[];
 extern BtlModelBuf fx_0e2_effModels[];

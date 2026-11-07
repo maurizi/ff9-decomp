@@ -7,14 +7,14 @@ s32 fx_0ef_op80(s32 mode, Fx0efWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x68;
+        *args = sizeof(Fx0efWork80);
     } else if (mode == 1) {
         fx_0ef_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos38);
     } else {
         spawn = fx_0ef_spawns;
         frame = entry->frame;
-        for (i = 0; i < 5; i++, spawn++) {
+        for (i = 0; i < FX_RED_CLIPPER_SPAWNS; i++, spawn++) {
             if (spawn->frame2 == frame) {
                 (work->emitPos40 + i)->vx = work->pos38.vx;
                 (work->emitPos40 + i)->vy = work->pos38.vy;
@@ -32,7 +32,7 @@ s32 fx_0ef_op80(s32 mode, Fx0efWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_RED_CLIPPER_FRAMES;
     }
     return 0;
 }
@@ -41,18 +41,18 @@ s32 fx_0ef_op81(s32 mode, Fx0efWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0efWork81);
     } else if (mode == 1) {
         fx_0ef_env = env;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos8);
-        work->pos8.vy += 0x64;
+        work->pos8.vy += FX_RED_CLIPPER_SLASH_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RED_CLIPPER_RED_SLASH), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RED_CLIPPER_RED_SMOKE), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_RED_CLIPPER_FRAMES;
     }
     return 0;
 }
