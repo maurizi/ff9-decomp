@@ -13,6 +13,13 @@
 #define FX_GNOLL_ATTACK_SPARKLE_RINGS  0x7 /* emitter: fans + white-cream-red rings and sparkles */
 #define FX_GNOLL_ATTACK_GREY_RING      0x8 /* emitter: grey gouraud rings */
 
+/* fx_09c choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_GNOLL_ATTACK_IMPACT_FRAME   4    /* FX_GNOLL_ATTACK_IMPACT_RINGS start */
+#define FX_GNOLL_ATTACK_SPARKLE_FRAME  0xA  /* SPARKLE_RINGS and GREY_RING start at the unit's claw, aimed along it */
+#define FX_GNOLL_ATTACK_IMPACT_2_FRAME 0x12 /* FX_GNOLL_ATTACK_IMPACT_RINGS_2 start */
+#define FX_GNOLL_ATTACK_FRAMES         0x2D /* op80's length (the op ends) */
+#define FX_GNOLL_ATTACK_SPARKLE_BACK   0x1E0 /* SPARKLE_RINGS / GREY_RING start this far back from bone 0x17 along the aim */
+
 typedef struct {
     SVECTOR unk0; /* write-only: pos10 + random */
     SVECTOR unk8; /* write-only: pos10 + random */

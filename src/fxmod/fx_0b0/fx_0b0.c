@@ -9,25 +9,25 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
 
     if (mode == 0) {
-        *args = 0x4C;
+        *args = sizeof(Fx0b0Work);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_LEAF_SWIRL_STATE_SWIRL;
         fx_0b0_env = env;
         BTLFX_COPY_SVEC(&work->posC, &env->targets->centerX);
         BTLFX_COPY_SVEC(&work->pos14, &work->posC);
-        work->posC.vy -= 0xF0;
+        work->posC.vy -= FX_LEAF_SWIRL_HEIGHT;
         BTLFX_COPY_SVEC(&work->pos2C, &work->posC);
         BTLFX_COPY_SVEC(&work->pos34, &work->posC);
-        work->pos2C.vx -= 0x300;
-        work->pos34.vx += 0x300;
+        work->pos2C.vx -= FX_LEAF_SWIRL_SIDE;
+        work->pos34.vx += FX_LEAF_SWIRL_SIDE;
         ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[0], (u16 *)&work->pos1C);
         ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[1], (u16 *)&work->pos24);
         work->emit4 = work->emit8 = NULL;
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            if (frame < 0x10) {
+        case FX_LEAF_SWIRL_STATE_SWIRL:
+            if (frame < FX_LEAF_SWIRL_GATHER_FRAMES) {
                 t = ex->math_cos(frame << 7);
                 t = (0x1000 - t) >> 1;
             } else {
@@ -42,8 +42,8 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES), (s32)&work->pos3C);
                 if (work->emit4 != NULL) {
                     work->emit4->trails = (s32)fx_0b0_trails;
-                    work->emit4->trailSlots = 0x96;
-                    work->emit4->trailStride = 0x14;
+                    work->emit4->trailSlots = FX_LEAF_SWIRL_HELIX_TRAIL_SLOTS;
+                    work->emit4->trailStride = FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE;
                 }
                 if (work->emit4 != NULL) {
                     work->emit4->otZ = 0x18;
@@ -52,8 +52,8 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_2), (s32)&work->pos44);
                 if (work->emit8 != NULL) {
                     work->emit8->trails = (s32)fx_0b0_trails2;
-                    work->emit8->trailSlots = 0x96;
-                    work->emit8->trailStride = 0x14;
+                    work->emit8->trailSlots = FX_LEAF_SWIRL_HELIX_TRAIL_SLOTS;
+                    work->emit8->trailStride = FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE;
                 }
                 if (work->emit8 != NULL) {
                     work->emit8->otZ = 0x18;
@@ -61,15 +61,15 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_3), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails4;
-                    emitter->trailSlots = 0x12;
-                    emitter->trailStride = 0x14;
+                    emitter->trailSlots = FX_LEAF_SWIRL_SPIRAL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE;
                     emitter->otZ = 0x18;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_4), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails5;
-                    emitter->trailSlots = 0x12;
-                    emitter->trailStride = 0x14;
+                    emitter->trailSlots = FX_LEAF_SWIRL_SPIRAL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE;
                     emitter->otZ = 0x18;
                 }
             } else {
@@ -82,7 +82,7 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 ex->btlfx_moveEmitterTo((s32)work->emit8, (s32)&pos1);
             }
-            if (frame == 0xE) {
+            if (frame == FX_LEAF_SWIRL_BURST_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_DUST_SPECKS), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
@@ -91,26 +91,26 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_WIND_TRAIL), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails3;
-                    emitter->trailSlots = 0x10;
-                    emitter->trailStride = 0x6C;
+                    emitter->trailSlots = FX_LEAF_SWIRL_WIND_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEAF_SWIRL_WIND_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x80;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_3), (s32)&work->pos2C);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails6;
-                    emitter->trailSlots = 0x12;
-                    emitter->trailStride = 0x14;
+                    emitter->trailSlots = FX_LEAF_SWIRL_SPIRAL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE;
                     emitter->otZ = 0x18;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEAF_SWIRL_YELLOW_LEAVES_4), (s32)&work->pos34);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b0_trails7;
-                    emitter->trailSlots = 0x12;
-                    emitter->trailStride = 0x14;
+                    emitter->trailSlots = FX_LEAF_SWIRL_SPIRAL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE;
                     emitter->otZ = 0x18;
                 }
             }
-            if (frame >= 0x37) {
+            if (frame >= FX_LEAF_SWIRL_FRAMES) {
                 return 1;
             }
             break;

@@ -8,9 +8,9 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx0a1Work);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_BLASTER_STATE_BEAM;
         work->unk4 = 0;
         fx_0a1_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -20,8 +20,8 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 10;
+        case FX_BLASTER_STATE_BEAM:
+            t = (frame << 12) / FX_BLASTER_BEAM_FRAMES;
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos20);
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_VIOLET_RING), (s32)&work->pos20);
@@ -36,8 +36,8 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLASTER_TRAIL_2), (s32)&pos, NULL, 0, 0x1000, 0x1000, BTLFX_ABR_ADD,
                               fx_0a1_trail, 0);
-            if (frame >= 0xA) {
-                work->state0 = 1;
+            if (frame >= FX_BLASTER_BEAM_FRAMES) {
+                work->state0 = FX_BLASTER_STATE_BURST;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_PINK_HALO), (s32)&work->pos8);
                 if (emitter != NULL) {
@@ -53,37 +53,37 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             break;
-        case 1:
-            if (frame == 7) {
+        case FX_BLASTER_STATE_BURST:
+            if (frame == FX_BLASTER_STARBURST_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_PINK_STARBURST), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     emitter->trails = (s32)fx_0a1_trails;
-                    emitter->trailSlots = 0x2D;
-                    emitter->trailStride = 0x4C;
+                    emitter->trailSlots = FX_BLASTER_PINK_STARBURST_TRAIL_SLOTS;
+                    emitter->trailStride = FX_BLASTER_PINK_STARBURST_TRAIL_STRIDE;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_VIOLET_PETALS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame == 0xC) {
+            if (frame == FX_BLASTER_TEX_RING_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_TEX_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame == 0x11) {
+            if (frame == FX_BLASTER_HAZE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_WHITE_HAZE), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     emitter->trails = (s32)fx_0a1_trails2;
-                    emitter->trailSlots = 0x1E;
-                    emitter->trailStride = 0x4C;
+                    emitter->trailSlots = FX_BLASTER_WHITE_HAZE_TRAIL_SLOTS;
+                    emitter->trailStride = FX_BLASTER_WHITE_HAZE_TRAIL_STRIDE;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_GREY_RING), (s32)&work->pos10);
             }
-            if (frame >= 0x20) {
+            if (frame >= FX_BLASTER_BURST_FRAMES) {
                 return 1;
             }
             break;

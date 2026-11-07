@@ -19,6 +19,19 @@
 #define FX_BLASTER_VIOLET_RING    0xF /* emitter: white-violet gouraud rings */
 #define FX_BLASTER_TRAIL_2        0x10 /* trail: small strip, mostly black with magenta texels; runtime (docs/runtime-findings.md effect-data pass 2): drawn from the start (12 calls), its strip reads pink-violet stripes at run time; ablating it changes < 250 px (look pending) */
 
+/* fx_0a1 choreography (docs/fxdata.md, "Choreography literals"): op80's states and keyframes. */
+#define FX_BLASTER_STATE_BEAM  0 /* FX_BLASTER_TRAIL_2 runs from the unit's bone to the target (eased), VIOLET_RING at the bone */
+#define FX_BLASTER_STATE_BURST 1 /* the halos, cone, starburst, haze and rings at the target */
+#define FX_BLASTER_BEAM_FRAMES     0xA  /* FX_BLASTER_STATE_BEAM's length (the (frame << 12) / N ramp) */
+#define FX_BLASTER_STARBURST_FRAME 7    /* FX_BLASTER_STATE_BURST: PINK_STARBURST and VIOLET_PETALS start */
+#define FX_BLASTER_TEX_RING_FRAME  0xC  /* FX_BLASTER_TEX_RING starts */
+#define FX_BLASTER_HAZE_FRAME      0x11 /* FX_BLASTER_WHITE_HAZE and FX_BLASTER_GREY_RING start */
+#define FX_BLASTER_BURST_FRAMES    0x20 /* FX_BLASTER_STATE_BURST's length (the op ends) */
+#define FX_BLASTER_PINK_STARBURST_TRAIL_SLOTS  0x2D /* FX_BLASTER_PINK_STARBURST's trail buffer fx_0a1_trails: slots of */
+#define FX_BLASTER_PINK_STARBURST_TRAIL_STRIDE 0x4C /* this many bytes */
+#define FX_BLASTER_WHITE_HAZE_TRAIL_SLOTS      0x1E /* FX_BLASTER_WHITE_HAZE's trail buffer fx_0a1_trails2: slots of */
+#define FX_BLASTER_WHITE_HAZE_TRAIL_STRIDE     0x4C /* this many bytes */
+
 typedef struct {
     s32 state0; /* state */
     s32 unk4; /* write-only (cleared at init) */

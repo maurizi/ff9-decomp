@@ -16,6 +16,19 @@
 #define FX_LEAF_SWIRL_YELLOW_LEAVES_4 0xB /* emitter: spiral trail whose run-time strip texture is a yellow maple leaf (4 frames): swirling yellow leaves (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_LEAF_SWIRL_WIND_TRAIL   0xC /* emitter: grey wind trail */
 
+/* fx_0b0 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_LEAF_SWIRL_STATE_SWIRL    0     /* op80's only state */
+#define FX_LEAF_SWIRL_HEIGHT         0xF0  /* the swirl centre (posC) is this far above the targets' centre */
+#define FX_LEAF_SWIRL_SIDE           0x300 /* the two leaf swirls end this far to either side of it (pos2C, pos34) */
+#define FX_LEAF_SWIRL_GATHER_FRAMES  0x10  /* the leaves move (eased) from the unit's two bones to the sides over this many frames */
+#define FX_LEAF_SWIRL_BURST_FRAME    0xE   /* DUST_SPECKS, OLIVE_RING, WIND_TRAIL and two more leaf spirals start */
+#define FX_LEAF_SWIRL_FRAMES         0x37  /* op80's length (the op ends) */
+#define FX_LEAF_SWIRL_HELIX_TRAIL_SLOTS  0x96 /* YELLOW_LEAVES and _2's trail buffers (fx_0b0_trails, _trails2): slots */
+#define FX_LEAF_SWIRL_SPIRAL_TRAIL_SLOTS 0x12 /* YELLOW_LEAVES_3 and _4's four trail buffers (fx_0b0_trails4 .. 7): slots */
+#define FX_LEAF_SWIRL_LEAF_TRAIL_STRIDE  0x14 /* all leaf trails: bytes per slot */
+#define FX_LEAF_SWIRL_WIND_TRAIL_TRAIL_SLOTS  0x10 /* FX_LEAF_SWIRL_WIND_TRAIL's trail buffer fx_0b0_trails3: slots of */
+#define FX_LEAF_SWIRL_WIND_TRAIL_TRAIL_STRIDE 0x6C /* this many bytes */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;

@@ -9,7 +9,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx09cWork);
     } else if (mode == 1) {
         work->emit20 = NULL;
         work->emit3C = NULL;
@@ -24,26 +24,26 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vz = work->pos10.vz + ex->btlfx_randRange(-0x100, 0x100);
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_GNOLL_ATTACK_IMPACT_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_IMPACT_RINGS), (s32)&work->pos10);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame == 0xA) {
+        if (frame == FX_GNOLL_ATTACK_SPARKLE_FRAME) {
             ex->btlfx_getUnitBoneMatrix(0x10, 0x11, &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x800, (s32)&tip);
             ex->btlfx_getUnitBonePos(0x10, 0x11, (u16 *)&bonePos);
             ex->btlfx_aimAngles((s16 *)&tip, (s16 *)&bonePos, (s16 *)&work->aim34);
             work->aim34.vy -= 0xB4;
             ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&tip);
-            work->pos2C.vx = tip.vx - ((ex->math_sin(work->aim34.vy) * 0x1E0) >> 12);
-            work->pos2C.vz = tip.vz - ((ex->math_cos(work->aim34.vy) * 0x1E0) >> 12);
-            work->pos2C.vy = tip.vy - ((ex->math_sin(work->aim34.vx) * 0x1E0) >> 12);
+            work->pos2C.vx = tip.vx - ((ex->math_sin(work->aim34.vy) * FX_GNOLL_ATTACK_SPARKLE_BACK) >> 12);
+            work->pos2C.vz = tip.vz - ((ex->math_cos(work->aim34.vy) * FX_GNOLL_ATTACK_SPARKLE_BACK) >> 12);
+            work->pos2C.vy = tip.vy - ((ex->math_sin(work->aim34.vx) * FX_GNOLL_ATTACK_SPARKLE_BACK) >> 12);
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_SPARKLE_RINGS), (s32)&work->pos2C);
             work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_GREY_RING), (s32)&work->pos2C);
         }
-        if (frame == 0x12) {
+        if (frame == FX_GNOLL_ATTACK_IMPACT_2_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_IMPACT_RINGS_2), (s32)&work->pos18);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -69,7 +69,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit3C->rot.vz = work->aim34.vz;
             }
         }
-        return frame >= 0x2D;
+        return frame >= FX_GNOLL_ATTACK_FRAMES;
     }
     return 0;
 }

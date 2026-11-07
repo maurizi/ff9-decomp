@@ -39,7 +39,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x74;
+        *args = sizeof(Fx09bWork);
     } else if (mode == 1) {
         s32 shot = *args;
         fx_09b_env = env;
@@ -48,7 +48,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             return 1;
         }
         if (shot == 0) {
-            ex->btlfx_initEffModels(fx_09b_effModels, 5);
+            ex->btlfx_initEffModels(fx_09b_effModels, FX_09B_SHOTS);
         }
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos54);
         work->pos64.vx = work->pos54.vx;
@@ -86,8 +86,8 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                        (s32)&fx_09b_emitStartPos[work->instance6C]);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_09b_trails[work->instance6C];
-            work->emit4->trailSlots = 0xE;
-            work->emit4->trailStride = 0x4C;
+            work->emit4->trailSlots = FX_LAVA_GUN_SHOT_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_LAVA_GUN_SHOT_TRAIL_STRIDE;
         }
         if (work->emit4 != NULL) {
             work->emit4->file->m.module.update = fx_09b_pinParticles[work->instance6C];
@@ -98,15 +98,15 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 2:
+        case FX_LAVA_GUN_FIRE_RING_FRAME:
             ex->btlfx_aimAngles((s16 *)&work->pos3C, (s16 *)&work->pos64, (s16 *)&ang);
-            ex->btlfx_pointAhead((s16 *)&work->pos64, (s16 *)&ang, -0xC8, (s16 *)&work->pos44);
+            ex->btlfx_pointAhead((s16 *)&work->pos64, (s16 *)&ang, FX_LAVA_GUN_FIRE_RING_BACK, (s16 *)&work->pos44);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_FIRE_RING), (s32)&work->pos44);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 4:
+        case FX_LAVA_GUN_EXPLOSION_FRAME:
             work->pos4C.vx = work->pos64.vx;
             work->pos4C.vy = work->pos64.vy;
             work->pos4C.vz = work->pos64.vz;
@@ -117,27 +117,27 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 6:
+        case FX_LAVA_GUN_SOUND_FRAME:
             ex->btlfx_playFileSound(0x13, entry->file, -1);
             ex->btlfx_playFileSound(0x14, entry->file, -1);
             ex->btlfx_playFileSound(0x15, entry->file, -1);
             break;
-        case 8:
+        case FX_LAVA_GUN_TRAIL_STOP_FRAME:
             ex->btlfx_stopEmitter(work->emit4);
             break;
         }
-        if ((u32)frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->fromPos5C, (s16 *)&work->pos64, (frame << 12) / 5,
+        if ((u32)frame <= FX_LAVA_GUN_FLIGHT_FRAMES) {
+            ex->btlfx_lerpVec((s16 *)&work->fromPos5C, (s16 *)&work->pos64, (frame << 12) / FX_LAVA_GUN_FLIGHT_FRAMES,
                               (s16 *)&fx_09b_shotPos[work->instance6C]);
             work->pos1C.vx = fx_09b_shotPos[work->instance6C].vx;
             work->pos1C.vy = fx_09b_shotPos[work->instance6C].vy;
             work->pos1C.vz = fx_09b_shotPos[work->instance6C].vz;
             ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model70);
-            if (frame == 5 && work->instance6C != FX_09B_LAST_SHOT) {
+            if (frame == FX_LAVA_GUN_FLIGHT_FRAMES && work->instance6C != FX_09B_LAST_SHOT) {
                 fxm_startHitMotionIfActive(0);
             }
         }
-        if (frame >= 0x28) {
+        if (frame >= FX_LAVA_GUN_FRAMES) {
             if (work->instance6C == FX_09B_LAST_SHOT) {
                 ex->btlfx_clearEffModels();
                 return 1;
