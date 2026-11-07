@@ -241,7 +241,7 @@ void btl_victory(GameData *gd, Battle *battle) {
                         }
                     }
                 }
-                btlcam_playScene(btl_getSceneData(2));
+                btlcam_playScene(btl_getSceneData(BTL_SCENE_CAM_VICTORY));
             } else if ((battle->scene.flags >> BTL_SCENE_KEEP_MUSIC_BIT) & 1) {
                 gd->battleFlags |= GD_BTL_KEEP_MUSIC;
             }

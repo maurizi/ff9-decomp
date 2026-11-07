@@ -314,7 +314,7 @@ void btl_setupEnemies(void) {
     src = (BtlCmd8 *)&recs[hdr->typeCount];
     for (; i < hdr->typeCount; i++) {
         btl_initEnemyType(rec, en);
-        en->camera = btl_getSceneData(i + 5);
+        en->camera = btl_getSceneData(i + BTL_SCENE_CAM_ENEMY_TYPE);
         en->nameOfs = ofs->text + 4;
         ofs++;
         en->firstAbility = nextAbility;

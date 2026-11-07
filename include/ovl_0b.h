@@ -1313,6 +1313,13 @@ extern s32 g_btlbgScrollCount;
                                  * maps; the field SE banks load at the same SPU address): DIR_SOUND_BANKS file btl_loadSoundsStep
                                  * always reads first and loads with akao_loadBankRetry (no slot), before the slot banks.
                                  * Evidence: [code]; [runtime] R41b (one load per battle; instrument 192 keyed by Zidane's attack SE) */
+/* btl_getSceneData indexes: the encounter's camera scripts. Evidence: [code] */
+#define BTL_SCENE_CAM_INTRO 0 /* battle start (btl_cmd intro, btlcam_playScene) */
+#define BTL_SCENE_CAM_IDLE 1 /* the resting camera (btlcam_init, btlcam_endEffect) */
+#define BTL_SCENE_CAM_VICTORY 2 /* victory pose (btl_update, scene with BTL_SCENE_VICTORY_BIT) */
+#define BTL_SCENE_CAM_CAST_PARTY 3 /* a party member's spell aimed at the party, outside trance (btlfx command camera) */
+#define BTL_SCENE_CAM_CAST_ENEMY 4 /* the same aimed at enemies */
+#define BTL_SCENE_CAM_ENEMY_TYPE 5 /* + enemy type: that type's camera (btl_setupEnemies, BtlEnemyType camera) */
 /* Character.weaponBone per character kind (btl_initWeapon): the bone of the character's battle model the weapon
  * model hangs from (BtlModel.parentBone). Evidence: [code]; which bone it is in each skeleton (a hand?) is
  * runtime: pending R46 (docs/wip/r46_runtime_core.md) */
@@ -1749,7 +1756,7 @@ typedef struct {
     Battle1330 *group; /* enemy group chosen by btl_pickEnemyGroup */
     Battle1334 *enemyTypes; /* the encounter's enemy type records */
     u16 *seqTable; /* enemy battle sequences: counts, offsets, animations (btlseq_init) */
-    s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData) */
+    s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData: BTL_SCENE_CAM_*) */
 } Battle132C;
 
 /* Battle132C (Battle.scene).flags: bits 0-1 the ambush, bits 2 and up the encounter flags (btl_initSceneFlags).

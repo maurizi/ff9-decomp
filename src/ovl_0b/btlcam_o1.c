@@ -66,7 +66,7 @@ void btlcam_focusCaster(void) {
 void btlcam_endEffect(void) {
     if (g_btlCamScript.keepCamera == 0) {
         g_btlCamera.variant = g_btlCamScript.savedVariant;
-        btlcam_loadScript(btl_getSceneData(1));
+        btlcam_loadScript(btl_getSceneData(BTL_SCENE_CAM_IDLE));
         g_btlCamera.projDist = g_btlCamera.baseProjDist;
     }
     g_btlCamera.flags = 1;
@@ -354,7 +354,7 @@ s32 btlcam_step(void) {
                         g_btlCamera.paths[j].wrapModes = 0;
                     }
                     g_btlCamera.variant = g_btlCamScript.savedVariant;
-                    btlcam_loadScript(btl_getSceneData(1));
+                    btlcam_loadScript(btl_getSceneData(BTL_SCENE_CAM_IDLE));
                     g_btlCamera.projDist = g_btlCamera.baseProjDist;
                     return 1;
                 }

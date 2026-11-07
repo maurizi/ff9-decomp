@@ -2031,9 +2031,9 @@ void btlfx_playCmdCamera(s32 flags) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[3]);
                 }
             } else if (target->flags & BTL_UNIT_PARTY) {
-                msg = btl_getSceneData(3);
+                msg = btl_getSceneData(BTL_SCENE_CAM_CAST_PARTY);
             } else {
-                msg = btl_getSceneData(4);
+                msg = btl_getSceneData(BTL_SCENE_CAM_CAST_ENEMY);
             }
         } else if (target->flags & BTL_UNIT_PARTY) {
             msg = btlfx_getCommonData(g_btlfxCmdCameras[0]);
