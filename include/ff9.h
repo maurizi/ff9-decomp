@@ -2381,7 +2381,11 @@ extern s32 g_padPortMask[];
 #define GS_MODE_WORLD 3 /* ovl_0c wm_entry */
 #define GS_MODE_ENDING 4 /* ovl_15 ending_main */
 /* 5 and 6 are never set in retail: no case in game_main's dispatcher, 0xFF in game_loadModeOverlay's overlay table,
- * every store to GameState.mode writes another value, and R46 watched GameState.mode at runtime without a 5 or 6 */
+ * every store to GameState.mode writes another value, and R46 watched GameState.mode at runtime without a 5 or 6.
+ * Same in the earlier JP build [jp]: game_main (0x80012878) matches instruction for instruction, its jump table sends
+ * 5 and 6 to the loop end like the US one, the mode->overlay table holds 0xFF for both, and no JP code stores 5 or 6
+ * into GameState.mode. Setting either would spin the dispatcher with no overlay. The tests for them below are
+ * leftovers from earlier development: a field-like mode 5 and a battle-like mode 6. */
 #define GS_MODE_UNUSED_5 5 /* vib_update, bgi_move and ovl_64 mbg treat it like the field */
 #define GS_MODE_UNUSED_6 6 /* msg_beginDraw treats it like the battle */
 #define GS_MODE_GAME_OVER 7 /* ovl_65 fld_gameOver (field exit FLD_EXIT_GAME_OVER) */
