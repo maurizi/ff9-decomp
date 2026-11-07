@@ -29,6 +29,51 @@
 #define FX_CARBUNCLE_LENS_FLARE       0x3B /* emitter: orbiting white glow trail with a blue lens streak (same call site as fx_0b1 entry 0x9, same kind) */
 #define FX_CARBUNCLE_WHITE_LIGHT_STREAK 0x3C /* emitter: one fan, white glow streak (same call site as fx_0b1 entry 0xD, same kind) */
 
+/* fx_1ee choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes (the summon sequence), its
+ * timers (fx_1ee_timers indices), the light beam, the camera key tracks; op81's spark spiral. Same
+ * sequence and values as Carbuncle's fx_0b1 (twin names; the emitters differ: orbit glows for the motes, GLOW_RING for
+ * the red ring). */
+#define FX_CARBUNCLE_CAM_TRACKS     16   /* fx_1ee_camKeys: camera key tracks (fxm_camKeyAdd / fxm_camKeyUpdate) */
+#define FX_CARBUNCLE_TIMERS         8    /* fx_1ee_timers: */
+#define FX_CARBUNCLE_TIMER_SUMMON   0    /*   the summon model is drawn at camera point 2 while set */
+#define FX_CARBUNCLE_TIMER_DARKEN   1    /*   frames the summon model is drawn darkened */
+#define FX_CARBUNCLE_TIMER_BEAM_RISE 2   /*   frames left of the light beam's rise */
+#define FX_CARBUNCLE_TIMER_BEAM     3    /*   the light beam is drawn while set */
+#define FX_CARBUNCLE_TIMER_BEAM_FADE 4   /*   frames left of the light beam's fade */
+#define FX_CARBUNCLE_TIMER_FLASH    5    /*   frames left of the additive screen flash (btlfx_drawScreenGrid) */
+#define FX_CARBUNCLE_START_FRAME    1    /* op80: RING_BURST, CRYSTAL_SPARKLES, WHITE_LIGHT_STREAK and the flash start */
+#define FX_CARBUNCLE_FLASH_FRAMES   0x10 /* the flash brightens, then fades, over this many frames */
+#define FX_CARBUNCLE_SUMMON_FRAME   9    /* op80: the summon motion starts, the model shows, FX_CARBUNCLE_ORBIT_GLOW starts */
+#define FX_CARBUNCLE_ORBIT_GLOW_AGAIN_FRAME  0x18 /* op80: a second FX_CARBUNCLE_ORBIT_GLOW starts */
+#define FX_CARBUNCLE_LENS_FLARE_FRAME 0x40 /* op80: FX_CARBUNCLE_LENS_FLARE starts at FX_CARBUNCLE_BEAM_BONE */
+#define FX_CARBUNCLE_GLOW_RING_FRAME 0x48 /* op80: FX_CARBUNCLE_GLOW_RING starts there (and follows the bone) */
+#define FX_CARBUNCLE_GLOW_RING_STOP_FRAME 0x67 /* op80: FX_CARBUNCLE_GLOW_RING stops */
+#define FX_CARBUNCLE_BEAM_FRAME     0x6C /* op80: LENS_FLARE stops; RING_BURST_2, LENS_STREAK and the light beam start */
+#define FX_CARBUNCLE_DARKEN_FRAMES  0x10 /*   the summon model is drawn darkened this long */
+#define FX_CARBUNCLE_BEAM_RISE_FRAMES 8  /*   the beam rises (eased) to its height over this many frames */
+#define FX_CARBUNCLE_GLINT_FRAME    0x77 /* op80: the summon and the motes go; FX_CARBUNCLE_FLAME_GLINT starts at the beam's top */
+#define FX_CARBUNCLE_BURST_FRAME    0x97 /* op80: emitters stop; additive grey screen tint, FX_CARBUNCLE_RING_BURST_3 */
+#define FX_CARBUNCLE_BURST_TINT_RGB 0xB0, 0xB0, 0xB0 /* its colour */
+#define FX_CARBUNCLE_LENS_STREAK_2_FRAME 0x99 /* op80: FX_CARBUNCLE_LENS_STREAK_2 starts and the beam fades */
+#define FX_CARBUNCLE_BEAM_FADE_FRAMES 4  /*   over this many frames */
+#define FX_CARBUNCLE_ORBIT_GLOW_3_FRAME 0x9F /* op80: FX_CARBUNCLE_ORBIT_GLOW_3 starts */
+#define FX_CARBUNCLE_ORBIT_GLOW_2_FRAME 0xAE /* op80: FX_CARBUNCLE_ORBIT_GLOW_2 starts */
+#define FX_CARBUNCLE_ORBIT_GLOW_3_STOP_FRAME 0xCA /* op80: FX_CARBUNCLE_ORBIT_GLOW_3 stops */
+#define FX_CARBUNCLE_FRAMES         0x10A /* op80: the task ends at this frame */
+#define FX_CARBUNCLE_BEAM_BONE      0x11 /* summon model bone LENS_FLARE, GLOW_RING, LENS_STREAK and the beam start from */
+#define FX_CARBUNCLE_BEAM_POINTS    0x15 /* points of each FX_CARBUNCLE_LIGHT_BEAM strip (fx_1ee_trails) */
+#define FX_CARBUNCLE_BEAM_HEIGHT    0x1800 /* the beam's height above the bone (FLAME_GLINT starts at its top) */
+#define FX_CARBUNCLE_BEAM_WIDTH     0x40 /* line width of the inner strip (the outer one twice that) */
+#define FX_CARBUNCLE_LENS_FLARE_TRAIL_SLOTS  0x28 /* FX_CARBUNCLE_LENS_FLARE's trail buffer fx_1ee_trails: slots of */
+#define FX_CARBUNCLE_LENS_FLARE_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_CARBUNCLE_SPARK_ROWS     12   /* op81: fx_1ee_sparks: rows of sparks (each row's angle -0x2A9 further on) */
+#define FX_CARBUNCLE_SPARK_COLS     4    /*   sparks per row (the first uses the row's own texture, the others a shared one) */
+#define FX_CARBUNCLE_SPARK_FRAMES   8    /*   each spark spirals in (and fades, timer4 << 9) over this many frames */
+#define FX_CARBUNCLE_SPARKS_FRAMES  0x20 /* op81: the sparks are drawn (fx_1ee_op81Timer) this many frames from frame 0 */
+#define FX_CARBUNCLE_VIOLET_RINGS_FRAME 8 /* op81: FX_CARBUNCLE_VIOLET_RINGS start at camera point 3 */
+#define FX_CARBUNCLE_TARGET_RINGS_FRAME 0x18 /* op81: GREEN_RING, YELLOW_RED_RINGS and CLOCK_FACE start at each target */
+#define FX_CARBUNCLE_OP81_FRAMES    0x40 /* op81: the task ends at this frame */
+
 typedef struct {
     u8 pad0[0x180];
     BtlMotion *motion180;
@@ -46,7 +91,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pos4[21];
+    SVECTOR pos4[FX_CARBUNCLE_BEAM_POINTS];
 } Fx1eeTrail; /* 0xAC */
 
 extern Unk800F78A4 *fx_1ee_env;
@@ -54,7 +99,7 @@ extern SVECTOR fx_1ee_modelRot; /* summon rotation */
 extern VECTOR fx_1ee_modelPos; /* summon position */
 extern VECTOR fx_1ee_modelScale; /* summon scale */
 extern SVECTOR fx_1ee_emitPos0;
-extern s32 fx_1ee_timers[8]; /* timers */
+extern s32 fx_1ee_timers[FX_CARBUNCLE_TIMERS]; /* timers */
 extern Pool6CEntry *fx_1ee_emitter0;
 extern SVECTOR fx_1ee_emitter0Pos;
 extern Pool6CEntry *fx_1ee_emitter1;
@@ -94,7 +139,7 @@ typedef struct {
 extern s32 fx_1ee_op81Timer[]; /* spark timer; array so it may alias entry (store order) */
 extern SVECTOR fx_1ee_sparkOrigin;
 extern SVECTOR fx_1ee_op81TargetPos[];
-extern Fx1eeSpark fx_1ee_sparks[12][4];
+extern Fx1eeSpark fx_1ee_sparks[FX_CARBUNCLE_SPARK_ROWS][FX_CARBUNCLE_SPARK_COLS];
 
 #define SUMMON(env) ((Fx1eeSummon *)(env)->loader)
 

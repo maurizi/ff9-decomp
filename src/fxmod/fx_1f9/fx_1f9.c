@@ -12,7 +12,7 @@ s32 fx_1f9_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1f9_env = env;
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW_2), (s32)&fx_1f9_emitPos0);
     } else {
-        return entry->frame >= 0x40;
+        return entry->frame >= FX_CARBUNCLE_GLOW_FRAMES;
     }
     return 0;
 }
@@ -30,7 +30,7 @@ s32 fx_1f9_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_BLUE_RINGS), (s32)&fx_1f9_emitPos1[i]);
         }
     } else {
-        return entry->frame >= 0x30;
+        return entry->frame >= FX_CARBUNCLE_RINGS_FRAMES;
     }
     return 0;
 }
