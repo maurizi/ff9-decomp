@@ -831,6 +831,10 @@ typedef struct {
 #define BTLFX_SPRCLUT_SLOT  0xE0 /* 0-1: the sprite's first clut word, 2-3: the second */
 #define BTLFX_SPRCLUT_SLOT_SHIFT 5
 #define BTLFX_ABR_OPAQUE 0xFF /* abr / tpage argument of the btlfx draw helpers: no semi-transparency (code byte without GPU_ABE, no DR_TPAGE) */
+#define BTLFX_ABR_HALF     0    /* abr argument of the btlfx draw helpers: semi-transparency rate 0 (back/2 + front/2) */
+#define BTLFX_ABR_ADD      1    /* rate 1: back + front (additive glow) */
+#define BTLFX_ABR_SUB      2    /* rate 2: back - front (subtractive, darkens) */
+#define BTLFX_ABR_QUARTER  3    /* rate 3: back + front/4 */
 /* effect ids (BtlfxState.effectId) tested by ovl_0b, identities from docs/effect-modules.md */
 #define BTLFX_EFFECT_ROULETTE  0x0ED /* fx_0ed Roulette: btlfx_op does not turn the caster towards its target */
 #define BTLFX_EFFECT_ARK_SHORT 0x1BF /* fx_1bf Ark (short) / Eternal Darkness: the caster returns to its idle motion afterwards */
