@@ -67,7 +67,7 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 
         ex->Hi_DrawEffModel(&rock->rot14, &pos, (s32)&scale, rock->model20);
         if (alpha < 0x1000) {
             if (alpha < 0x800) {
-                ex->Hi_ModifyEffModelAbr(rock->model20, 1);
+                ex->Hi_ModifyEffModelAbr(rock->model20, BTLFX_ABR_ADD);
             }
             rgb = (alpha >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(rock->model20, rgb, rgb, rgb);
@@ -188,7 +188,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     pos.vx = 0;
                     pos.vy = 0x5AE;
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model48);
-                    ex->Hi_ModifyEffModelAbr(work->model48, 1);
+                    ex->Hi_ModifyEffModelAbr(work->model48, BTLFX_ABR_ADD);
                     ex->Hi_ModifyEffModelRGB(work->model48, (ex->math_sin(pulseAng) >> 5) - 0x80, (ex->math_sin(pulseAng) >> 5) - 0x80,
                                              (ex->math_sin(pulseAng) >> 5) - 0x80);
                     ex->btlfx_drawScrollMove(frame * 16, 0x2C0, 0x180, 0x20, 0x80, 0x2E0, 0x180);
@@ -201,14 +201,14 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ang = (frame - 8) << 9;
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_LILAC_RING), &work->pos8, &rot2,
                                       ex->math_sin(ang >> 2), 0,
-                                      1, ex->math_sin(ang >> 2));
+                                      BTLFX_ABR_ADD, ex->math_sin(ang >> 2));
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_CYAN_RING), &work->pos8, &rot2,
-                                      ex->math_sin(ang >> 2) >> 1, 0, 1, ex->math_sin(ang >> 2));
+                                      ex->math_sin(ang >> 2) >> 1, 0, BTLFX_ABR_ADD, ex->math_sin(ang >> 2));
                 }
                 if (frame >= 0x10) {
                     work->state0 = 1;
                     entry->frame = -1;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
                     for (blankCount = 0, pixel = fx_186_vramSample, k = 0; k < 0x60; k++, pixel++) {
                         if (*pixel == 0) {
                             blankCount++;
@@ -268,7 +268,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 if (frame < 4) {
                     flash = 0xFF - ((frame * 0xFF) >> 2);
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, flash, flash, flash);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);
                 }
                 if (frame < 0x18) {
                     t = (frame << 12) / 24;
@@ -298,7 +298,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vz = 0;
                     env->otZ = 0x100;
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_CYAN_RING), &work->pos8, &rot2,
-                                      (ex->math_sin((frame << 8) >> 2) >> 1) + 0x800, 0, 1,
+                                      (ex->math_sin((frame << 8) >> 2) >> 1) + 0x800, 0, BTLFX_ABR_ADD,
                                       ex->math_cos((frame << 8) >> 2));
                     env->otZ = 0;
                 }
@@ -328,10 +328,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vy =
                 (s16)(env->camera->points[3].vy - 0x100) - ((0x1000 - t) >> 7) * ((frame & 1) * 2 - 1);
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0x80, 0x80, 0x80);
             } else if (frame < 9) {
                 flash = 0x80 - (((frame - 1) << 7) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, flash, flash, flash);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);
             }
             if (frame >= 0x28) {
                 work->state0 = 3;
@@ -447,7 +447,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 1;
             t = (frame << 12) / 7;
             for (i = 0; i < work->count104; i++) {
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_GREY_RING), &work->pos4[i], &rot, 0x1000, frame, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_GREY_RING), &work->pos4[i], &rot, 0x1000, frame, BTLFX_ABR_ADD,
                                   ex->math_cos(t >> 2));
             }
             if (frame >= 7) {

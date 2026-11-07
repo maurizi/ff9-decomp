@@ -185,10 +185,10 @@ static s32 fx_17d_0_op80PoolTask(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk8
         p->pos8.vz += p->speed2 + 0x186;
         env->otZ = -0x80;
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_TRAIL), (s32)&p->pos8, 0, -1, 0x800, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_TRAIL), (s32)&p->pos8, 0, -1, 0x800, 0x1000, BTLFX_ABR_ADD,
                               fx_17d_0_partTrails[p->index4], 0);
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_TRAIL), (s32)&p->pos8, 0, 0, 0x800, 0x1000, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_TRAIL), (s32)&p->pos8, 0, 0, 0x800, 0x1000, BTLFX_ABR_ADD,
                           fx_17d_0_partTrails[p->index4], 0);
         env->otZ = 0;
         if (frame >= 0x10) {
@@ -492,7 +492,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0xA3) {
                 s32 tint = ((frame - 0xA3) * 0xFF) / 6;
 
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, BTLFX_ABR_ADD, tint, tint, tint);
             }
             if (frame >= 0xA9) {
                 ex->btlfx_poolClear((Unk800DA1B8 *)entry->pool);

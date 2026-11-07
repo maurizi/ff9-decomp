@@ -107,7 +107,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->fade4C++;
             }
             work->color50 = -(work->fade4C * 16);
-            ex->Hi_ModifyEffModelAbr(work->model0, 1);
+            ex->Hi_ModifyEffModelAbr(work->model0, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model0, work->color50, work->color50, work->color50);
         }
         return frame >= 0x40;

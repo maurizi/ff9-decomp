@@ -73,11 +73,11 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 0:
             t = (frame << 12) / 66;
             if (frame < 0x10) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF - ((frame * 0xFF) >> 4),
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF - ((frame * 0xFF) >> 4),
                                          (0xFF - ((frame * 0xFF) >> 4)) * 2 / 3, (0xFF - ((frame * 0xFF) >> 4)) / 2);
             }
             if (frame < 4) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF - ((frame * 0xFF) >> 2),
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF - ((frame * 0xFF) >> 2),
                                          0xFF - ((frame * 0xFF) >> 2), 0xFF - ((frame * 0xFF) >> 2));
             }
             if (frame < 0x1D) {
@@ -107,7 +107,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos30);
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &work->pos30, NULL, ex->math_sin(t >> 2) >> 3,
-                              0, 1, ex->math_sin(t >> 2));
+                              0, BTLFX_ABR_ADD, ex->math_sin(t >> 2));
             env->otZ = 0;
             gridBright = (((0x1000 - t) << 5) >> 12) + 0x89;
             col.r = col.g = col.b = gridBright;
@@ -149,11 +149,11 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                               (s16 *)&work->pos8);
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &work->pos30, NULL,
-                              (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0xAAA);
+                              (ex->math_sin(t >> 2) >> 1) + 0x400, 0, BTLFX_ABR_ADD, 0xAAA);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &work->pos30, NULL,
-                              (ex->math_sin(t >> 2) >> 2) + 0x80, 0, 1, 0x1000);
+                              (ex->math_sin(t >> 2) >> 2) + 0x80, 0, BTLFX_ABR_ADD, 0x1000);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &work->pos30, NULL,
-                              ex->math_cos(t >> 2) / 3 + 0x5DC, 0, 1, t);
+                              ex->math_cos(t >> 2) / 3 + 0x5DC, 0, BTLFX_ABR_ADD, t);
             env->otZ = 0;
             BTLFX_COPY_SVEC(&work->pos18, &work->pos8);
             env->camera->points[2].vx = work->pos18.vx;
@@ -205,7 +205,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case 2:
             t = (frame << 12) / 18;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0, (0x40 - (frame << 6) / 18) >> 2,
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0, (0x40 - (frame << 6) / 18) >> 2,
                                      0x40 - (frame << 6) / 18);
             work->rot44.vy += 6;
             for (i = 0; i < 4; i++) {
@@ -223,7 +223,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             env->otZ = 0x9B;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos10, NULL, ex->math_sin(t >> 2) * 4,
-                              0, 1, ex->math_sin(t >> 2));
+                              0, BTLFX_ABR_ADD, ex->math_sin(t >> 2));
             env->otZ = 0;
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_SPRITE_LINE), &work->pos10, (t >> 6) + 8, t / 2);
             ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
@@ -261,7 +261,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos28, NULL,
-                              ex->math_sin(t >> 2) + 0x555, 0, 1, ex->math_sin(t >> 2) / 2 + 0x800);
+                              ex->math_sin(t >> 2) + 0x555, 0, BTLFX_ABR_ADD, ex->math_sin(t >> 2) / 2 + 0x800);
             env->otZ = 0;
             col.r = col.g = col.b = ((t << 7) >> 12) + 0x20;
             gridScale.vy = gridScale.vx = (t >> 3) + 0x1000;
@@ -326,7 +326,7 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d6
         ang += dang + *noise++;
     }
     env->otZ = 0x80;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)trail, mode);
     env->otZ = 0;
 }
 

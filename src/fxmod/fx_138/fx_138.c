@@ -126,7 +126,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->active90 != 0 && work->timer92 >= 0) {
             ex->Hi_DrawEffModel(&work->rot48, &work->pos50, (s32)&work->scale60, work->model9C);
-            ex->Hi_ModifyEffModelAbr(work->model9C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model9C, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model9C, -0x60, -0x60, -0x60);
             if (--work->timer92 == 0) {
                 work->unk8E = 0x1A;

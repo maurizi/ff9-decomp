@@ -77,7 +77,7 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->rot28, &work->pos18, (s32)&work->scale8, work->model0);
             if (work->fade4 != 0x80) {
                 fade = work->fade4 - 0x80;
-                ex->Hi_ModifyEffModelAbr(work->model0, 1);
+                ex->Hi_ModifyEffModelAbr(work->model0, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(work->model0, fade, fade, fade);
             }
         }

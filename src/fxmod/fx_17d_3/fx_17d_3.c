@@ -49,7 +49,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             t = (frame << 12) / 24;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 0xFF, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_OPAQUE, 0xFF, 0xFF, 0xFF);
             }
             ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             shakeRot.vx = work->pos48[0];
@@ -92,10 +92,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 morph = 0x1000 - (t - 0x800) * 3 / 2;
             }
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model70, work->model74, morph);
-            ex->Hi_ModifyEffModelAbr(work->model70, 1);
+            ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model70, work->model74, morph);
-            ex->Hi_ModifyEffModelAbr(work->model70, 2);
+            ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)work->scale3C, work->model68);
             ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
@@ -164,10 +164,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 morph = 0x1000 - (t - 0x800) * 3 / 2;
             }
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model70, work->model74, morph);
-            ex->Hi_ModifyEffModelAbr(work->model70, 1);
+            ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model70, work->model74, morph);
-            ex->Hi_ModifyEffModelAbr(work->model70, 2);
+            ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)work->scale3C, work->model68);
             ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);

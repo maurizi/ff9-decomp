@@ -116,7 +116,7 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             bright = fx_12c_intensity / 15;
             col.r = col.g = col.b = bright;
             ex->btlfx_drawScreenGrid(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
-            ex->btlfx_drawScreenTint((u32 *)&env->ot[4], 2, bright, bright, bright);
+            ex->btlfx_drawScreenTint((u32 *)&env->ot[4], BTLFX_ABR_SUB, bright, bright, bright);
         }
         return frame >= 0x80;
     }

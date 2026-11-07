@@ -332,10 +332,10 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 1:
         if (frame == 0) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 100, 100, 100);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 100, 100, 100);
         }
         if (frame == 1) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 70, 70, 70);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 70, 70, 70);
         }
         rot.vx = 0;
         rot.vy = 0;

@@ -190,10 +190,10 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(frame * 8, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
             if (frame < 12) {
                 tint = (ex->math_cos((frame << 10) / 12) << 7) >> 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x800), 0xFF, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x800), BTLFX_ABR_OPAQUE, tint, tint, tint);
             }
             if (frame >= 13) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((frame - 12) << 7) / 12, 0, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, ((frame - 12) << 7) / 12, 0, 0);
             }
             if (frame == 8) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SPARKLE_TRAIL), (s32)&work->pos10);
@@ -226,7 +226,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_rangeProgress(frame, 4, 0x14, 0, 0x1000, &ringAlpha);
                 env->otZ = 0x100;
                 work->pos10.vz += 0x258;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0x1000, 0, 1, ringAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0x1000, 0, BTLFX_ABR_ADD, ringAlpha);
                 work->pos10.vz -= 0x258;
                 env->otZ = 0;
             }
@@ -275,7 +275,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos10.vy = work->pos28.vy;
             work->pos10.vz = work->pos28.vz;
             env->otZ = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0x1000, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0x1000, 0, BTLFX_ABR_ADD, -1);
             env->otZ = 0;
             if (work->emit70 != NULL) {
                 if (work->emit70->state == BTLFX_EMIT_DONE) {

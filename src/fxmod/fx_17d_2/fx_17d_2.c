@@ -124,7 +124,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             coreScale.vx = coreScale.vy = coreScale.vz = t / 5 + 0x333;
             ex->Hi_DrawEffModel(&work->rot40, (VECTOR *)work->pos28, (s32)&coreScale, work->model70);
             env->otZ = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0xAAA, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0xAAA, 0, BTLFX_ABR_ADD, -1);
             env->otZ = 0;
             ex->btlfx_drawScrollMove(frame * 10, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             ex->btlfx_drawScrollMove(frame * 7, 0x240, 0x100, 0x40, 0x80, 0x280, 0x100);
