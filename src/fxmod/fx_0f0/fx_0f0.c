@@ -5,7 +5,7 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x2C;
+        *args = sizeof(Fx0f0Work80);
     } else if (mode == 1) {
         fx_0f0_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
@@ -16,7 +16,7 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos1C);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_BLUE_SPECKS), (s32)&work->pos1C);
             break;
-        case 0x26:
+        case FX_ZOMBIE_POWDER_SPRAY_FRAME:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos24);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_MIST_TRAIL), (s32)&work->pos24);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_MIST_TRAIL_2), (s32)&work->pos24);
@@ -36,22 +36,22 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_0f0_op80Trails0;
-                work->emit4->trailSlots = 0x1C;
-                work->emit4->trailStride = 0x9C;
+                work->emit4->trailSlots = FX_ZOMBIE_POWDER_MIST_TRAIL_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_ZOMBIE_POWDER_MIST_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_0f0_op80Trails1;
-                work->emit8->trailSlots = 0x1C;
-                work->emit8->trailStride = 0x9C;
+                work->emit8->trailSlots = FX_ZOMBIE_POWDER_MIST_TRAIL_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_ZOMBIE_POWDER_MIST_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit10 != NULL) {
                 work->emit10->trails = (s32)fx_0f0_op80Trails2;
-                work->emit10->trailSlots = 0x3A;
-                work->emit10->trailStride = 0x70;
+                work->emit10->trailSlots = FX_ZOMBIE_POWDER_SPORE_TRAIL_TRAIL_SLOTS;
+                work->emit10->trailStride = FX_ZOMBIE_POWDER_SPORE_TRAIL_TRAIL_STRIDE;
             }
             break;
         }
-        if (frame >= 0x26) {
+        if (frame >= FX_ZOMBIE_POWDER_SPRAY_FRAME) {
             if (work->emit10 != NULL) {
                 if (work->emit10->state == BTLFX_EMIT_DONE) {
                     work->emit10 = NULL;
@@ -61,7 +61,7 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_ZOMBIE_POWDER_FRAMES;
     }
     return 0;
 }
@@ -71,7 +71,7 @@ s32 fx_0f0_op81(s32 mode, Fx0f0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx0f0Work81);
     } else if (mode == 1) {
         fx_0f0_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -85,10 +85,10 @@ s32 fx_0f0_op81(s32 mode, Fx0f0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_ZOMBIE_POWDER_WAVE_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_DUST_WAVE), (s32)&work->posC);
         }
-        return frame >= 0x3C;
+        return frame >= FX_ZOMBIE_POWDER_HIT_FRAMES;
     }
     return 0;
 }

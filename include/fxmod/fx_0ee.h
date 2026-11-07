@@ -13,10 +13,15 @@
 #define FX_MIRROR_GREEN_SWIRL   0x3 /* emitter: white rings + green swirl particle */
 #define FX_MIRROR_LIGHT_SPIKES  0x5 /* emitter: two fans, white-violet light spikes */
 
+/* fx_0ee choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_MIRROR_SPIKES_FRAME 8    /* FX_MIRROR_LIGHT_SPIKES start (the white rings on frame 0) */
+#define FX_MIRROR_SWIRL_FRAME  0x10 /* FX_MIRROR_GREEN_SWIRL starts */
+#define FX_MIRROR_FRAMES       0x44 /* op80's length (the op ends) */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR rot8;
-} Fx0eeWork;
+} Fx0eeWork; /* 0x10 */
 
 extern Unk800F78A4 *fx_0ee_env;
 

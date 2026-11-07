@@ -13,6 +13,20 @@
 #define FX_TIDAL_FLAME_RUNE_BURST  0x8 /* emitter: white rune glyphs with cyan-blue rings, embers, blue light streak */
 #define FX_TIDAL_FLAME_FLAME_CLOUD 0x9 /* emitter: embers + orange flame cloud */
 
+/* fx_0f2 choreography (docs/fxdata.md, "Choreography literals"): op80's sweep of the fire dome, its fades, the
+ * model texture and the op's length. */
+#define FX_TIDAL_FLAME_SPEED           0xC8 /* the dome sweeps along z this fast (towards the party when an enemy casts, else away) */
+#define FX_TIDAL_FLAME_SWEEP_FRAME     0x11 /* FLAME_CLOUD starts, the dome and BACKDROP draw from this frame */
+#define FX_TIDAL_FLAME_SWEEP_FRAMES    0x14 /* for this many frames */
+#define FX_TIDAL_FLAME_FADE_IN_FRAMES  3    /* the dome fades in over this many frames (fadeInTimer54) */
+#define FX_TIDAL_FLAME_FADE_OUT_FRAME  0x15 /* and out from this frame */
+#define FX_TIDAL_FLAME_FADE_OUT_FRAMES 0x10 /* over this many (fadeOutTimer56) */
+#define FX_TIDAL_FLAME_FRAMES          0x3C /* op80's length (the op ends) */
+#define FX_TIDAL_FLAME_FIRE_DOME_TPAGE 0x11A /* Hi_RegisterTexEffModel texture: 15-bit page (0x280, 0x100), abr 0, flames at run time (runtime pass 2) */
+#define FX_TIDAL_FLAME_FIRE_DOME_CLUT  0x0 /* CLUT at (0x0, 0x0) */
+#define FX_TIDAL_FLAME_FIRE_DOME_U     0x0 /* texture origin (u, v) in the page */
+#define FX_TIDAL_FLAME_FIRE_DOME_V     0x80
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -28,7 +42,7 @@ typedef struct {
     s16 fadeInTimer54; /* fade-in countdown */
     s16 fadeOutTimer56; /* fade-out countdown */
     u16 model58; /* model */
-} Fx0f2Work;
+} Fx0f2Work; /* 0x5C */
 
 extern Unk800F78A4 *fx_0f2_env;
 extern BtlModelBuf fx_0f2_effModels[];
