@@ -10,6 +10,16 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SILENT_VOICE_SWIRLS 0x1 /* emitter: violet and blue spiral swirl particles + white-blue-violet gouraud rings */
 
+/* fx_18b choreography (docs/fxdata.md, "Choreography literals"): the rippling radial screen grid (a copy of the
+ * screen through the scratch VRAM rect) swelling and ebbing, the swirls' keyframe; the states and lengths. */
+#define FX_SILENT_VOICE_STATE_SWELL 0    /* work->state0: the ripple grows (wave amplitude up, phase turning one way) */
+#define FX_SILENT_VOICE_STATE_EBB   1    /* it dies down (phase turning back); the op ends after it */
+#define FX_SILENT_VOICE_SWELL_FRAMES 0x28 /* STATE_SWELL's length (and its amplitude ramp) */
+#define FX_SILENT_VOICE_EBB_FRAMES  0x28 /* STATE_EBB's length (and its amplitude ramp) */
+#define FX_SILENT_VOICE_SWIRLS_FRAME 1   /* STATE_EBB: SWIRLS at the target */
+#define FX_SILENT_VOICE_GRID_W      0x100 /* the screen copy's rect at (VRAM_BTLFX_SCRATCH_X, _Y) */
+#define FX_SILENT_VOICE_GRID_H      0x100
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* counter */

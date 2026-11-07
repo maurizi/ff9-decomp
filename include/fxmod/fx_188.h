@@ -18,6 +18,21 @@
 #define FX_LV3_DEF_LESS_RING           0x14 /* rings: one textured ring (texture not resolved); runtime (docs/runtime-findings.md effect-data pass): noise with the run-time page (look pending) */
 #define FX_LV3_DEF_LESS_CRYSTAL_SHARDS 0x15 /* emitter: orbiting pink / blue / orange crystal shards, 16 frames */
 
+/* fx_188 choreography (docs/fxdata.md, "Choreography literals"): op80's homing violet orbs (pool items spawned every
+ * other frame from the caster in a 4 x 3 fan), the ring over the target that grows and shrinks while the orbs fade,
+ * the closing emitters; the states and lengths. */
+#define FX_LV3_DEF_LESS_ORBS          0xC   /* pool items (init->poolCount), one orb each */
+#define FX_LV3_DEF_LESS_HEIGHT        0x200 /* the orbs home on (and the ring sits at) this height over the targets' centre */
+#define FX_LV3_DEF_LESS_STATE_ORBS    0     /* work->state0: spawn the orbs */
+#define FX_LV3_DEF_LESS_STATE_RING    1     /* the ring; the orbs fade */
+#define FX_LV3_DEF_LESS_STATE_END     2     /* wait for the closing emitters */
+#define FX_LV3_DEF_LESS_ORBS_FRAMES   0x3E  /* STATE_ORBS' length */
+#define FX_LV3_DEF_LESS_RING_GROW_FRAMES 8  /* STATE_RING: the ring fades in at full size while the orbs shrink away, then shrinks */
+#define FX_LV3_DEF_LESS_RING_FRAMES   0x10  /* STATE_RING's length; SMOKE_RINGS, SMOKE_RINGS_2, BLUE_RINGS, ORANGE_TRAILS, CRYSTAL_SHARDS start */
+#define FX_LV3_DEF_LESS_ORANGE_TRAILS_TRAIL_SLOTS  0x19 /* ORANGE_TRAILS' trail buffer fx_188_op80Trails: slots of */
+#define FX_LV3_DEF_LESS_ORANGE_TRAILS_TRAIL_STRIDE 0x54 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_LV3_DEF_LESS_END_FRAMES    0x20  /* STATE_END's length (the op ends) */
+
 typedef struct {
     s32 state0; /* state */
     s32 speed4; /* speed */

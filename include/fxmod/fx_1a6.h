@@ -12,10 +12,25 @@
 #define FX_WATER_GUN_SPLASH    0x5 /* emitter: blue water-splash crescents + white splash */
 #define FX_WATER_GUN_WATER_JET 0x6 /* emitter: screen trail with a water strip + white splash particles (sprites render black) */
 
+/* fx_1a6 choreography (docs/fxdata.md, "Choreography literals"): per shot a spray at the caster's mouth bone and a
+ * stream lerped to a random point near the target, the jet and splash there, trail buffers and lengths. */
+#define FX_WATER_GUN_SPRAY_AHEAD  0x12C /* SPRAY starts this far ahead of unit 0x10's argument bone, towards the target */
+#define FX_WATER_GUN_STREAM_AHEAD 0xC8  /* the stream (fx_1a6_emitFileIds[shot]) leaves from this far ahead */
+#define FX_WATER_GUN_SPRAY_TRAIL_SLOTS   0xF  /* SPRAY's trail buffer fx_1a6_op80Trails0[shot]: slots of */
+#define FX_WATER_GUN_SPRAY_TRAIL_STRIDE  0x18 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_WATER_GUN_STREAM_TRAIL_SLOTS  0x1D /* the stream's trail buffer fx_1a6_op80Trails1[shot]: slots of */
+#define FX_WATER_GUN_STREAM_TRAIL_STRIDE 0x40 /* this many bytes */
+#define FX_WATER_GUN_HIT_FRAME    6    /* WATER_JET and SPLASH at the target, its hit motion (not for the last shot) */
+#define FX_WATER_GUN_WATER_JET_TRAIL_SLOTS  0x56 /* WATER_JET's trail buffer fx_1a6_op80Trails2[shot]: slots of */
+#define FX_WATER_GUN_WATER_JET_TRAIL_STRIDE 0x40 /* this many bytes */
+#define FX_WATER_GUN_SOUND_FRAME  8    /* three more file sounds */
+#define FX_WATER_GUN_FRAMES       0x28 /* op80's length (the op ends) */
+#define FX_WATER_GUN_BUBBLES_FRAMES 0x28 /* op81 (BUBBLES at the target): its length */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* target position */
-} Fx1a6Work;
+} Fx1a6Work; /* 0xC */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -34,15 +49,15 @@ typedef struct {
 #define FX_1A6_SHOTS 3 /* instances, one per shot */
 #define FX_1A6_LAST_SHOT (FX_1A6_SHOTS - 1) /* starts no hit motion */
 
-extern u16 fx_1a6_emitFileIds[3]; /* files */
-extern s32 (*fx_1a6_op80ParticleMotions[3])();
+extern u16 fx_1a6_emitFileIds[FX_1A6_SHOTS]; /* files */
+extern s32 (*fx_1a6_op80ParticleMotions[FX_1A6_SHOTS])();
 extern Unk800F78A4 *fx_1a6_env;
-extern s32 fx_1a6_op80Trails0[3][0x5A];
-extern s32 fx_1a6_op80Trails1[3][0x1D0];
-extern s32 fx_1a6_op80Trails2[3][0x560];
-extern SVECTOR fx_1a6_motionFrom[3]; /* from */
-extern SVECTOR fx_1a6_motionTo[3]; /* to */
-extern SVECTOR fx_1a6_emitPos0[3];
+extern s32 fx_1a6_op80Trails0[FX_1A6_SHOTS][FX_WATER_GUN_SPRAY_TRAIL_SLOTS * FX_WATER_GUN_SPRAY_TRAIL_STRIDE / 4];
+extern s32 fx_1a6_op80Trails1[FX_1A6_SHOTS][FX_WATER_GUN_STREAM_TRAIL_SLOTS * FX_WATER_GUN_STREAM_TRAIL_STRIDE / 4];
+extern s32 fx_1a6_op80Trails2[FX_1A6_SHOTS][FX_WATER_GUN_WATER_JET_TRAIL_SLOTS * FX_WATER_GUN_WATER_JET_TRAIL_STRIDE / 4];
+extern SVECTOR fx_1a6_motionFrom[FX_1A6_SHOTS]; /* from */
+extern SVECTOR fx_1a6_motionTo[FX_1A6_SHOTS]; /* to */
+extern SVECTOR fx_1a6_emitPos0[FX_1A6_SHOTS];
 
 static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
