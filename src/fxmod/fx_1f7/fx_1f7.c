@@ -22,32 +22,32 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx1f7Trail *tc;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx1f7Work);
     } else if (mode == 1) {
         work->active0 = 0;
         work->active4 = 0;
         work->timer8 = 0;
         fx_1f7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        for (i = 0; i < 6; i++) {
+        for (i = 0; i < FX_BLUE_SHOCKWAVE_TRAILS; i++) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_1f7_trails[i], 0);
-            fx_1f7_trails[i].count10C = 4;
-            fx_1f7_trails[i].index110 = 0x20;
+            fx_1f7_trails[i].count10C = FX_BLUE_SHOCKWAVE_TRAIL_PASSES;
+            fx_1f7_trails[i].index110 = FX_BLUE_SHOCKWAVE_TRAIL_START;
             fx_1f7_trails[i].delay114 = i * 2;
         }
-        for (i = 0; i < 12; i++) {
-            fx_1f7_sparks[i].index0 = ex->btlfx_randRange(0, 0x2F);
+        for (i = 0; i < FX_BLUE_SHOCKWAVE_SPARKS; i++) {
+            fx_1f7_sparks[i].index0 = ex->btlfx_randRange(0, FX_BLUE_SHOCKWAVE_SPARK_CHAINS * FX_BLUE_SHOCKWAVE_SPARK_LINKS * FX_BLUE_SHOCKWAVE_LINK_STEPS - 1);
             fx_1f7_sparks[i].offsetX4 = ex->btlfx_randRange(-0x10, 0x10);
             fx_1f7_sparks[i].delay10 = i * 3;
-            fx_1f7_sparks[i].count8 = 2;
+            fx_1f7_sparks[i].count8 = FX_BLUE_SHOCKWAVE_SPARK_REPEATS;
             fx_1f7_sparks[i].frameC = 0;
         }
         work->active0 = 1;
         work->active4 = 1;
     } else {
         frame = entry->frame;
-        if (frame == 0x18) {
+        if (frame == FX_BLUE_SHOCKWAVE_FLASH_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_FLASH), (s32)&work->posC);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
@@ -57,32 +57,32 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }
         }
-        if (frame == 0x19) {
-            work->timer8 = 4;
+        if (frame == FX_BLUE_SHOCKWAVE_PULSE_FRAME) {
+            work->timer8 = FX_BLUE_SHOCKWAVE_PULSE_FRAMES;
         }
         if (work->active0 != 0) {
-            for (i = 0; i < 6; i++) {
+            for (i = 0; i < FX_BLUE_SHOCKWAVE_TRAILS; i++) {
                 tr = &fx_1f7_trails[i];
                 if (tr->count10C != 0) {
                     if (--tr->delay114 < 0) {
-                        for (link = 0; link < 16; link++) {
+                        for (link = 0; link < FX_BLUE_SHOCKWAVE_TRAIL_LINKS; link++) {
                             if (link != 0) {
-                                ex->btlfx_getUnitBonePos(0x10, fx_1f7_trailBones[i][link], (u16 *)&from);
+                                ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1f7_trailBones[i][link], (u16 *)&from);
                             } else {
-                                ex->btlfx_getUnitBoneMatrix(0x10, fx_1f7_trailBones[i][0], (BtlBone *)&m);
+                                ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, fx_1f7_trailBones[i][0], (BtlBone *)&m);
                                 ex->btlfx_matrixPointAhead(&m, 0x400, (s32)&from);
                             }
-                            ex->btlfx_getUnitBonePos(0x10, fx_1f7_trailBones[i][link + 1], (u16 *)&to);
-                            for (j = 0; j < 4; j++) {
-                                ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, j << 10, (s16 *)&fx_1f7_trailPoints[link * 4 + j]);
+                            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1f7_trailBones[i][link + 1], (u16 *)&to);
+                            for (j = 0; j < FX_BLUE_SHOCKWAVE_LINK_STEPS; j++) {
+                                ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, j << 10, (s16 *)&fx_1f7_trailPoints[link * FX_BLUE_SHOCKWAVE_LINK_STEPS + j]);
                             }
                         }
                         dst = tr->points4;
                         alpha = 0x1000;
-                        n = 0x21;
+                        n = FX_BLUE_SHOCKWAVE_TRAIL_POINTS;
                         tr->lastSlot0 = tr->count2 = n - 1;
                         tr->head1 = 0;
-                        if (tr->index110 < 0x10) {
+                        if (tr->index110 < FX_BLUE_SHOCKWAVE_TRAIL_FADE) {
                             alpha = tr->index110 << 8;
                         }
                         /* Own counter, base pointer and trail copy (the original's a0, t0 and a2); pad after vz so
@@ -108,7 +108,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         env->otZ = 0;
                         tr->index110 -= 4;
                         if (tr->index110 < 0) {
-                            tr->index110 = 0x20;
+                            tr->index110 = FX_BLUE_SHOCKWAVE_TRAIL_START;
                             tr->count10C--;
                         }
                     }
@@ -116,17 +116,17 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->active4 != 0) {
-            for (i = 0; i < 2; i++) {
-                for (sparkLink = 0; sparkLink < 6; sparkLink++) {
-                    ex->btlfx_getUnitBonePos(0x10, fx_1f7_sparkBones[i][sparkLink], (u16 *)&m);
-                    ex->btlfx_getUnitBonePos(0x10, fx_1f7_sparkBones[i][sparkLink + 1], (u16 *)&((SVECTOR *)&m)[1]);
-                    for (j = 0; j < 4; j++) {
+            for (i = 0; i < FX_BLUE_SHOCKWAVE_SPARK_CHAINS; i++) {
+                for (sparkLink = 0; sparkLink < FX_BLUE_SHOCKWAVE_SPARK_LINKS; sparkLink++) {
+                    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1f7_sparkBones[i][sparkLink], (u16 *)&m);
+                    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1f7_sparkBones[i][sparkLink + 1], (u16 *)&((SVECTOR *)&m)[1]);
+                    for (j = 0; j < FX_BLUE_SHOCKWAVE_LINK_STEPS; j++) {
                         ex->btlfx_lerpVec((s16 *)&m, (s16 *)&((SVECTOR *)&m)[1], j << 10,
-                                          (s16 *)&fx_1f7_sparkPoints[i * 24 + sparkLink * 4 + j]);
+                                          (s16 *)&fx_1f7_sparkPoints[i * (FX_BLUE_SHOCKWAVE_SPARK_LINKS * FX_BLUE_SHOCKWAVE_LINK_STEPS) + sparkLink * FX_BLUE_SHOCKWAVE_LINK_STEPS + j]);
                     }
                 }
             }
-            for (i = 0; i < 12; i++) {
+            for (i = 0; i < FX_BLUE_SHOCKWAVE_SPARKS; i++) {
                 sp = &fx_1f7_sparks[i];
                 if (sp->count8 != 0) {
                     if (--sp->delay10 < 0) {
@@ -134,8 +134,8 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW), &fx_1f7_sparkPoints[sp->index0], NULL, 0x4000,
                                                 sp->frameC, BTLFX_ABR_ADD, 0x1000, sp->offsetX4, 0);
                         env->otZ = 0;
-                        if (++sp->frameC >= 6) {
-                            sp->index0 = ex->btlfx_randRange(0, 0x2F);
+                        if (++sp->frameC >= FX_BLUE_SHOCKWAVE_SPARK_FRAMES) {
+                            sp->index0 = ex->btlfx_randRange(0, FX_BLUE_SHOCKWAVE_SPARK_CHAINS * FX_BLUE_SHOCKWAVE_SPARK_LINKS * FX_BLUE_SHOCKWAVE_LINK_STEPS - 1);
                             sp->offsetX4 = ex->btlfx_randRange(-0x10, 0x10);
                             sp->frameC = 0;
                             sp->count8--;
@@ -148,7 +148,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer8--;
             ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0, 0, work->timer8 << 6);
         }
-        return frame >= 0x40;
+        return frame >= FX_BLUE_SHOCKWAVE_FRAMES;
     }
     return 0;
 }

@@ -36,7 +36,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *args = 0x40;
     } else if (mode == 1) {
         fx_1f1_env = env;
-        ex->btlfx_clearUnitStatus(0x10);
+        ex->btlfx_clearUnitStatus(BTLFX_UNIT_CASTER);
         ex->btlfx_initEffModels(fx_1f1_effModels, 8);
         for (i = 15; i >= 0; i--) {
             work[i] = 0;

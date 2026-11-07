@@ -120,9 +120,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotF0.vy = 0;
         work->rotF0.vz = 0;
         work->scaleF8.vz = work->scaleF8.vy = work->scaleF8.vx = 0x400;
-        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos108);
-        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos110);
-        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos118);
+        ex->btlfx_getUnitHomePos(BTLFX_UNIT_CASTER, (s16 *)&work->pos108);
+        ex->btlfx_getUnitHomePos(BTLFX_UNIT_CASTER, (s16 *)&work->pos110);
+        ex->btlfx_getUnitHomePos(BTLFX_UNIT_CASTER, (s16 *)&work->pos118);
         work->pos110.vy -= 0x400;
         work->pos118.vy -= 0x800;
     } else {
@@ -133,7 +133,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer0[9] = 0x20;
             break;
         case 0x22:
-            ex->btlfx_getUnitBonePos(0x10, 0x2E, (u16 *)&work->pos64);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x2E, (u16 *)&work->pos64);
             work->emit40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_LIGHT_STREAKS_2), (s32)&work->pos64);
             if (work->emit40[0] != NULL) {
                 work->emit40[0]->otZ = 0x200;
@@ -312,14 +312,14 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer0[7] >= 9) {
                 for (i = 0; i < 8; i++) {
                     if (fx_1f3_rings[i].timer12C == 0) {
-                        ex->btlfx_getUnitBoneMatrix(0x10, fx_1f3_rings[i].bone130, (BtlBone *)&fx_1f3_rings[i]);
+                        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, fx_1f3_rings[i].bone130, (BtlBone *)&fx_1f3_rings[i]);
                         fx_1f3_rings[i].timer12C = 8;
                         break;
                     }
                 }
                 for (i = 8; i < 16; i++) {
                     if (fx_1f3_rings[i].timer12C == 0) {
-                        ex->btlfx_getUnitBoneMatrix(0x10, fx_1f3_rings[i].bone130, (BtlBone *)&fx_1f3_rings[i]);
+                        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, fx_1f3_rings[i].bone130, (BtlBone *)&fx_1f3_rings[i]);
                         fx_1f3_rings[i].timer12C = 8;
                         break;
                     }
@@ -328,7 +328,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 16; i++) {
                 if (fx_1f3_rings[i].timer12C != 0) {
                     fx_1f3_rings[i].timer12C--;
-                    ex->btlfx_getUnitBonePos(0x10, fx_1f3_rings[i].bone130, (u16 *)&vert);
+                    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1f3_rings[i].bone130, (u16 *)&vert);
                     fx_1f3_rings[i].matrix0.t[0] = vert.vx;
                     fx_1f3_rings[i].matrix0.t[1] = vert.vy;
                     fx_1f3_rings[i].matrix0.t[2] = vert.vz;
@@ -377,7 +377,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             cam.vx = work->pos108.vx;
             cam.vz = work->pos108.vz;
             cam.vy = fxm_easeLerp(1, 0x20, work->timer0[9], work->pos108.vy, work->pos118.vy);
-            ex->btlfx_setUnitPos(0x10, (s16 *)&cam);
+            ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)&cam);
         }
         if (work->timer0[10] != 0) {
             work->timer0[10]--;
@@ -386,9 +386,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 cam2.vz = work->pos108.vz;
                 cam2.vy = fxm_easeLerp(2, 0x20, work->timer0[10], work->pos118.vy, work->pos108.vy);
             } else {
-                ex->btlfx_getUnitHomePos(0x10, (s16 *)&cam2);
+                ex->btlfx_getUnitHomePos(BTLFX_UNIT_CASTER, (s16 *)&cam2);
             }
-            ex->btlfx_setUnitPos(0x10, (s16 *)&cam2);
+            ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)&cam2);
         }
         return frame >= 0xFE;
     }

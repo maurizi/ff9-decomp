@@ -15,6 +15,17 @@
 #define FX_WRONG_PATH_KEYS     0x13 /* table: position path keys for fxm_posPathInit (fx_1e7_posPath0) */
 #define FX_WRONG_PATH_KEYS_2   0x14 /* table: position path keys for fxm_posPathInit (fx_1e7_posPath) */
 
+/* fx_1e7 choreography (docs/fxdata.md, "Choreography literals"): op80's two path-following white trails, op81's
+ * five red streams and the target's knockback. */
+#define FX_WRONG_TRAIL_SLOTS    1    /* op80: WHITE_TRAIL / WHITE_TRAIL_2 trail buffers (fx_1e7_op80Trails0/1): slots of */
+#define FX_WRONG_TRAIL_STRIDE   0xD0 /*   this many bytes */
+#define FX_WRONG_TRAIL_FRAME    3    /* op80: WHITE_TRAIL starts (WHITE_TRAIL_2 at frame 0) */
+#define FX_WRONG_TRAILS_STOP_FRAME 0xC /* op80: both trails stop */
+#define FX_WRONG_TRAILS_FRAMES  0x3C /* op80: the task ends at this frame */
+#define FX_WRONG_STREAMS        5    /* op81: emitters spawning along their own position path (fx_1e7_op81EmitFileIds / PathFileIds) */
+#define FX_WRONG_KNOCKBACK_STEP 0x64 /* op81: the target is pushed back (z) this far every frame */
+#define FX_WRONG_KNOCKBACK_FRAMES 0x1E /* op81: the task ends at this frame */
+
 typedef struct {
     s16 x, y, z;
 } Fx1e7Point;
@@ -34,7 +45,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    Pool6CEntry *emit4[5];
+    Pool6CEntry *emit4[FX_WRONG_STREAMS];
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
     SVECTOR pos20; /* target body position */
@@ -43,20 +54,20 @@ typedef struct {
     s32 flag34; /* waiting for the motion to end */
 } Fx1e7Work81; /* 0x38 */
 
-extern u16 fx_1e7_op81EmitFileIds[5]; /* files */
-extern u16 fx_1e7_op81PathFileIds[5]; /* path files */
-extern s32 (*fx_1e7_op81SpawnPoints[5])(SVECTOR *, SVECTOR *, s32, s32);
+extern u16 fx_1e7_op81EmitFileIds[FX_WRONG_STREAMS]; /* files */
+extern u16 fx_1e7_op81PathFileIds[FX_WRONG_STREAMS]; /* path files */
+extern s32 (*fx_1e7_op81SpawnPoints[FX_WRONG_STREAMS])(SVECTOR *, SVECTOR *, s32, s32);
 extern Unk800F78A4 *fx_1e7_env;
 extern s32 fx_1e7_op81Frame; /* op81 frame */
 extern Fx1e7Path fx_1e7_posPath;
-extern Fx1e7Path fx_1e7_op81Paths[5];
+extern Fx1e7Path fx_1e7_op81Paths[FX_WRONG_STREAMS];
 extern s32 fx_1e7_op80Trails0[];
 extern s32 fx_1e7_op80Trails1[];
 extern SVECTOR fx_1e7_op80Origin;
 extern SVECTOR fx_1e7_op81Origin;
 extern SVECTOR fx_1e7_op80PathRot; /* angles */
 extern SVECTOR fx_1e7_emitPos0;
-extern SVECTOR fx_1e7_emitPos1[5];
+extern SVECTOR fx_1e7_emitPos1[FX_WRONG_STREAMS];
 
 static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
 void fx_1e7_getSpawnPos(SVECTOR *out, Fx1e7Path *path, s32 t);

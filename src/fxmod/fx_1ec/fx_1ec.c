@@ -43,7 +43,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = 0x64;
     } else if (mode == 1) {
         fx_1ec_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos24);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos24);
         work->pos2C.vx = env->targets->centerX;
         work->pos2C.vy = env->targets->centerY;
         work->pos2C.vz = env->targets->centerZ;
@@ -95,7 +95,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[3]->trailStride = 0x50;
             }
             if (work->emit0[0] != NULL) {
-                work->emit0[0]->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit0[0]->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case 0x12:

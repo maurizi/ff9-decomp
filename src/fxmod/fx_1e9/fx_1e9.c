@@ -22,8 +22,8 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->state0 = 0;
         fx_1e9_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos14);
         work->unk20 = 0;
         work->frame4 = 0;
         fx_1e9_stopBolts = 0;
@@ -52,10 +52,10 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->state0 = 1;
             entry->frame = -1;
             env->state->signals[0] = 0;
-            ex->btlfx_fadeUnitById(0x10, 0);
+            ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_THIN_STREAKS), (s32)&work->pos14);
             if (work->emit8 != NULL) {
-                work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             work->frame1C = 0;
         }
@@ -83,15 +83,15 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->state0 = 2;
             entry->frame = -1;
             env->camera->paused = 0;
-            ex->btlfx_fadeUnitById(0x10, 0x80);
+            ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0x80);
             ex->btlfx_stopEmitter(work->emit8);
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_PINK_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
         }
         break;
@@ -226,7 +226,7 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
     } else if (mode == 1) {
         fx_1e9_env = env;
         fx_1e9_resetBolts();
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos0);
         work->angle8.vx = 0;
         work->angle8.vy = 0;
         work->angle8.vz = 0;

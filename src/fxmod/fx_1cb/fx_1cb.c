@@ -4,7 +4,7 @@ s32 fx_1cb_op80(s32 mode, Fx1cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx1cbWork);
     } else if (mode == 1) {
         work->pos4.vx = env->targets->centerX;
         work->pos4.vy = env->targets->centerY;
@@ -15,7 +15,7 @@ s32 fx_1cb_op80(s32 mode, Fx1cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit0->otZ = 0x80;
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_STOCK_BREAK_FRAMES;
     }
     return 0;
 }
