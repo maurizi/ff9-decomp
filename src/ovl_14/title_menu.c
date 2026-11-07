@@ -189,7 +189,7 @@ void opening_titleOpenCardEvents(void) {
 
     EnterCriticalSection();
     for (i = 0; i < (s32)ARRAY_COUNT(g_titleMenu.cardEvents); i++) {
-        h = OpenEvent(0xF4000001, g_titleCardEvents[i], 0x2000, 0);
+        h = OpenEvent(SwCARD, g_titleCardEvents[i], EvMdNOINTR, 0);
         g_titleMenu.cardEvents[i] = h;
         EnableEvent(h);
     }

@@ -50,7 +50,7 @@ void opening_bootScreenLoad(void) {
     data = g_loadAreaEnd + 0x10000;
     g_bootScreenData = data;
     db_register((s32)data, 0);
-    g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44FB0, 0);
+    g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, BOOT_SCREEN_TIM, 0);
     file_setTimPos(g_bootScreenImage, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(g_bootScreenImage);
     game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);

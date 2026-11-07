@@ -315,6 +315,7 @@ enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
 #define BJ_SPLIT2_Y  0x60 /* the split hand */
 #define BJ_SHAKE_FRAMES 10 /* BJ_ST_BUST shakes the hand this long */
 #define BJ_RESULT_FRAMES 0x94
+#define BJ_RESULT_FADE 0x10 /* the result word fades in over the first and out over the last this-many of them */
 #define BJ_SHUFFLE_FRAMES (BJ_SHOE_SIZE / 4) /* BJ_ST_SHUFFLE flashes every fourth card of the new shoe, one a frame */
 #define BJ_FADE_FRAMES 0x3C /* fade in after the shuffle starts, fade out (and wait) at the end of the session */
 /* the panel right of the table (bj_main): labels and values centred on BJ_PANEL_X, in g_bjStr* order */

@@ -106,7 +106,8 @@ enum {
 /* db ids (db_lookupRegistered) of the music the title plays through opening_soundCmd, and of its sound bank
  * (opening_loadMusic); opening_soundCmd records the bank's low half (0x122) with the music */
 #define TITLE_MUSIC      0x7003A
-#define TITLE_MUSIC_BANK 0x90122
+#define TITLE_MUSIC_BANK_ID 0x122
+#define TITLE_MUSIC_BANK (DB_SOUND_BANK | TITLE_MUSIC_BANK_ID)
 
 /* Module W ("scene" table, the same source as ovl_15's): one SceneMode per scene id. */
 typedef struct {
@@ -231,6 +232,10 @@ extern u8 g_attractSkipped;
 #define ATTRACT_LEFT_W 0xC0 /* the 16-bit SCREEN_W x SCREEN_H image is drawn as two sprites split here */
 #define BOOT_SCREEN_FRAMES 0xD2 /* boot screen (opening_bootScreen) shown this long, centred */
 #define BOOT_FADE_FRAMES 0x3C /* fading in at the start, out over the last this-many frames */
+#define BOOT_SCREEN_TIM (DB_TIM | 20400) /* the boot screen image in FILE_BOOT_SCREEN (opening_bootScreenLoad) */
+/* New Game (opening_startLeave): the first field, "Opening-For FMV" by its script name (tools/field_maps.py) */
+#define NEW_GAME_FIELD 70
+#define NEW_GAME_AREA 2
 #define TITLE_MUSIC_FADE_IN 0x5A /* title music volume ramp up from 0 when opening_movie starts it */
 s32 opening_attractInit(s32);
 s32 opening_attractFree(s32);

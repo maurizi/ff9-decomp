@@ -985,9 +985,9 @@ s32 bj_main(void) {
             } else if (timer > 0) {
                 s32 bright;
 
-                if (timer < 0x10) {
+                if (timer < BJ_RESULT_FADE) {
                     bright = timer * 16;
-                } else if (timer < 0x85) {
+                } else if (timer <= BJ_RESULT_FRAMES - BJ_RESULT_FADE) {
                     bright = 0xFF;
                 } else {
                     bright = (BJ_RESULT_FRAMES - timer) * 16;
@@ -1017,9 +1017,9 @@ s32 bj_main(void) {
             } else if (timer > 0) {
                 s32 bright;
 
-                if (timer < 0x10) {
+                if (timer < BJ_RESULT_FADE) {
                     bright = timer * 16;
-                } else if (timer < 0x85) {
+                } else if (timer <= BJ_RESULT_FRAMES - BJ_RESULT_FADE) {
                     bright = 0xFF;
                 } else {
                     bright = (BJ_RESULT_FRAMES - timer) * 16;
@@ -1047,9 +1047,9 @@ s32 bj_main(void) {
             } else if (timer > 0) {
                 s32 bright;
 
-                if (timer < 0x10) {
+                if (timer < BJ_RESULT_FADE) {
                     bright = timer * 16;
-                } else if (timer < 0x85) {
+                } else if (timer <= BJ_RESULT_FRAMES - BJ_RESULT_FADE) {
                     bright = 0xFF;
                 } else {
                     bright = (BJ_RESULT_FRAMES - timer) * 16;
@@ -1068,9 +1068,9 @@ s32 bj_main(void) {
             } else if (timer > 0) {
                 s32 bright;
 
-                if (timer < 0x10) {
+                if (timer < BJ_RESULT_FADE) {
                     bright = timer * 16;
-                } else if (timer < 0x85) {
+                } else if (timer <= BJ_RESULT_FRAMES - BJ_RESULT_FADE) {
                     bright = 0xFF;
                 } else {
                     bright = (BJ_RESULT_FRAMES - timer) * 16;
@@ -1091,9 +1091,9 @@ s32 bj_main(void) {
             } else if (timer > 0) {
                 s32 bright;
 
-                if (timer < 0x10) {
+                if (timer < BJ_RESULT_FADE) {
                     bright = timer * 16;
-                } else if (timer < 0x85) {
+                } else if (timer <= BJ_RESULT_FRAMES - BJ_RESULT_FADE) {
                     bright = 0xFF;
                 } else {
                     bright = (BJ_RESULT_FRAMES - timer) * 16;
