@@ -19,6 +19,32 @@
 #define FX_SWDMAG_BIO_SWORD_GLINT    0x15 /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_BIO_SWORD_FLASH    0x16 /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 
+/* fx_0dd choreography (docs/fxdata.md, "Choreography literals"): op80's bubble morph keyframes, its texture, the
+ * trail buffer and the op's length; op84's sword flash. */
+#define FX_SWDMAG_BIO_MORPH_MODELS  6    /* the bubble's morph stages: model5C / fx_0dd_morphBlocks entries (and btlfx_initEffModels slots) */
+#define FX_SWDMAG_BIO_MORPH_1_FRAME 2    /* morph stage 0 -> 1 runs from frame 0, 1 -> 2 from here, */
+#define FX_SWDMAG_BIO_MORPH_2_FRAME 4    /* 2 -> 3 from here, */
+#define FX_SWDMAG_BIO_MORPH_3_FRAME 6    /* 3 -> 4 from here, */
+#define FX_SWDMAG_BIO_MORPH_4_FRAME 8    /* 4 -> 5 from here (morphTime54 restarts on each) */
+#define FX_SWDMAG_BIO_MORPH_END_FRAME 0x1E /* stage 5 holds from here */
+#define FX_SWDMAG_BIO_MORPH_STEP_FRAMES 2  /* morph length of the first four steps */
+#define FX_SWDMAG_BIO_MORPH_LAST_FRAMES 0xC /* morph length of the 4 -> 5 step */
+#define FX_SWDMAG_BIO_BUBBLE_FRAMES 0x26 /* the two bubble passes (PATH / PATH_2 tracks) draw while frame < this */
+#define FX_SWDMAG_BIO_BURST_FRAME   0x23 /* BUBBLE_TRAIL and TOXIC_CLOUD start at the PATH key of this frame */
+#define FX_SWDMAG_BIO_FRAMES        0x3C /* op80's length (the op ends) */
+#define FX_SWDMAG_BIO_BUBBLE_TRAIL_TRAIL_SLOTS  0x35 /* FX_SWDMAG_BIO_BUBBLE_TRAIL's trail buffer fx_0dd_trails: slots of */
+#define FX_SWDMAG_BIO_BUBBLE_TRAIL_TRAIL_STRIDE 0x28 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_SWDMAG_BIO_BUBBLE_TPAGE 0x97   /* Hi_RegisterTexEffModel texture of the morph models: 8-bit page (0x1C0, 0x100), abr 0 */
+#define FX_SWDMAG_BIO_BUBBLE_CLUT  0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_SWDMAG_BIO_BUBBLE_U     0      /* texture origin (u, v) in the page */
+#define FX_SWDMAG_BIO_BUBBLE_V     0
+#define FX_SWDMAG_BIO_SWORD_STATE_APPEAR  0 /* op84: SWORD_GLINT / SWORD_FLASH grow in at the weapon */
+#define FX_SWDMAG_BIO_SWORD_STATE_FLICKER 1 /* op84: they flicker and turn */
+#define FX_SWDMAG_BIO_SWORD_STATE_FADE    2 /* op84: they spread and fade (the op ends) */
+#define FX_SWDMAG_BIO_SWORD_APPEAR_FRAMES  3 /* SWORD_STATE_APPEAR's length */
+#define FX_SWDMAG_BIO_SWORD_FLICKER_FRAMES 9 /* SWORD_STATE_FLICKER's length */
+#define FX_SWDMAG_BIO_SWORD_FADE_FRAMES    9 /* SWORD_STATE_FADE's length */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* time */
@@ -50,7 +76,7 @@ typedef struct {
     SVECTOR pos4C; /* effect position */
     s32 morphTime54; /* morph time */
     s32 unk58; /* write-only (-1 at init) */
-    u16 model5C[6]; /* models */
+    u16 model5C[FX_SWDMAG_BIO_MORPH_MODELS]; /* models */
 } Fx0ddWork80; /* 0x68 */
 
 static void fxm_rotPosTrackInit(Fx0ddTrack12 *track, u16 *data);
@@ -67,7 +93,7 @@ typedef struct {
 static void fxm_vecTrackInit(Fx0ddTrack6 *track, u16 *data);
 static s32 fxm_vecTrackGet(Fx0ddTrack6 *track, s32 t, VECTOR *out);
 
-extern u8 fx_0dd_morphBlocks[6];
+extern u8 fx_0dd_morphBlocks[FX_SWDMAG_BIO_MORPH_MODELS];
 extern BtlModelBuf fx_0dd_effModels[];
 extern s32 fx_0dd_trails[];
 extern Fx0ddTrack12 fx_0dd_rotPosKeys;

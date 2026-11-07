@@ -32,6 +32,69 @@
 #define FX_SWDMAG_BLIZZAGA_ICE_SPARKLES_2  0x2A /* emitter: small blue ice sparkles while the crystal grows (byte-identical to fx_097 entry 0x29) */
 #define FX_SWDMAG_BLIZZAGA_ICE_SPARKLES    0x2B /* emitter: small blue ice sparkles at the shatter (byte-identical to fx_097 entry 0x28) */
 
+/* fx_0dc choreography (docs/fxdata.md, "Choreography literals"; as fx_097 Blizzaga without its ground bulge):
+ * op80's states, their lengths and keyframes, the crystal / shard / piece counts and sizes, the screen tints, the
+ * model textures and the VRAM rect of the reflection map; op84's sword flash. */
+#define FX_SWDMAG_BLIZZAGA_STATE_CRYSTAL 2 /* op80 (starts here): ICE_CRYSTAL + CRYSTAL_SHEEN appear with a white-blue flash */
+#define FX_SWDMAG_BLIZZAGA_STATE_SHARDS  3 /* a shard pool item every other frame around the crystal */
+#define FX_SWDMAG_BLIZZAGA_STATE_SPIKES  4 /* FX_SWDMAG_BLIZZAGA_ICE_SPIKES */
+#define FX_SWDMAG_BLIZZAGA_STATE_HOLD    5 /* the crystal stands; at the end it shatters */
+#define FX_SWDMAG_BLIZZAGA_STATE_SHATTER 6 /* the pieces fly, FX_SWDMAG_BLIZZAGA_SHATTER_WAVE */
+#define FX_SWDMAG_BLIZZAGA_CRYSTAL_FRAMES       4    /* CRYSTAL's length */
+#define FX_SWDMAG_BLIZZAGA_CRYSTAL_FLASH_FRAMES 6    /* CRYSTAL: additive white-blue flash fading over this many frames */
+#define FX_SWDMAG_BLIZZAGA_SPIKES_FRAMES        8    /* SPIKES's length */
+#define FX_SWDMAG_BLIZZAGA_HOLD_FRAMES          10   /* HOLD's length; at its end the flares, bursts and pieces start */
+#define FX_SWDMAG_BLIZZAGA_SHATTER_WAVE_FRAME   8    /* SHATTER: FX_SWDMAG_BLIZZAGA_SHATTER_WAVE starts */
+#define FX_SWDMAG_BLIZZAGA_SHATTER_FLASH_FRAMES 8    /* SHATTER: additive white-blue flash (fades by >> 3) */
+#define FX_SWDMAG_BLIZZAGA_RING_FADE_FRAMES     18   /* SHATTER: the snow / frost rings fade out */
+#define FX_SWDMAG_BLIZZAGA_SHATTER_FRAMES       24   /* SHATTER's length (the op ends) */
+#define FX_SWDMAG_BLIZZAGA_SHARD_COUNT          6    /* shards spawned in SHARDS (fx_0dc_shardAngles entries) */
+#define FX_SWDMAG_BLIZZAGA_WIDE_SHARDS          3    /* shards 0..2 are ICE_CRYSTAL_3 / CRYSTAL_SHEEN_3 and break into the second piece set */
+#define FX_SWDMAG_BLIZZAGA_CRYSTAL_PIECES       6    /* the main crystal's pieces: model20[0..5] */
+#define FX_SWDMAG_BLIZZAGA_SHARD_PIECES         4    /* a shard's pieces: model20[6..9], the wide shards' model20[10..13] */
+#define FX_SWDMAG_BLIZZAGA_PIECE_MODELS         14   /* model20 / fx_0dc_shardModelBlocks entries */
+#define FX_SWDMAG_BLIZZAGA_SHARD_STATE_START 0 /* pool item: FX_SWDMAG_BLIZZAGA_SHARD_MIST starts */
+#define FX_SWDMAG_BLIZZAGA_SHARD_STATE_GROW  1 /* pool item: the shard grows */
+#define FX_SWDMAG_BLIZZAGA_SHARD_STATE_HOLD  2 /* pool item: it stands until split78, then breaks into its pieces */
+#define FX_SWDMAG_BLIZZAGA_SHARD_GROW_FRAMES    4    /* pool item: SHARD_STATE_GROW's length */
+#define FX_SWDMAG_BLIZZAGA_SHARD_RING_FRAMES    12   /* pool item: FX_SWDMAG_BLIZZAGA_SNOW_RING_2 at the shard's tip */
+#define FX_SWDMAG_BLIZZAGA_PIECE_FRAMES         22   /* pool item: a piece flies and fades */
+#define FX_SWDMAG_BLIZZAGA_SHARD_SCALE          0x8AA /* a shard's full scale */
+#define FX_SWDMAG_BLIZZAGA_CRYSTAL_SCALE        0x1DFE /* the main crystal's x / y scale */
+#define FX_SWDMAG_BLIZZAGA_CRYSTAL_SCALE_Z      0x1354
+#define FX_SWDMAG_BLIZZAGA_BURST_HEIGHT         0x22A /* pos60 (SNOW_BURST, FREEZE_BURST, SHATTER_WAVE ...) is this far above pos58 */
+#define FX_SWDMAG_BLIZZAGA_MIST_HEIGHT          0x5C6 /* pos68 (FX_SWDMAG_BLIZZAGA_MIST_HIGH) is this far above pos58 */
+#define FX_SWDMAG_BLIZZAGA_POOL_COUNT           0x20 /* shard and piece pool items */
+#define FX_SWDMAG_BLIZZAGA_MODEL_COUNT          0x19 /* btlfx_initEffModels slots (20 registered: 3 crystals, 3 sheens, 14 pieces) */
+#define FX_SWDMAG_BLIZZAGA_DARKEN_RGB           0xFF, 0xFF, 0    /* subtractive screen tint (the screen turns blue): init, HOLD's end */
+#define FX_SWDMAG_BLIZZAGA_BLUE_TINT_RGB        0, 0, 0x80       /* additive, with the init darken */
+#define FX_SWDMAG_BLIZZAGA_WHITE_FLASH_RGB      0xFF, 0xFF, 0xFF /* additive, the first frame of CRYSTAL and SHATTER */
+/* Hi_RegisterTexEffModel textures: the ICE_CRYSTAL models and the 14 pieces (ice texture), the CRYSTAL_SHEEN models
+ * (the reflection rect below) */
+#define FX_SWDMAG_BLIZZAGA_ICE_TPAGE   0x9A   /* 8-bit page (0x280, 0x100), abr 0 */
+#define FX_SWDMAG_BLIZZAGA_ICE_CLUT    0x3DC0 /* CLUT at (0x0, 0xF7) */
+#define FX_SWDMAG_BLIZZAGA_ICE_U       0x80
+#define FX_SWDMAG_BLIZZAGA_ICE_V       0
+#define FX_SWDMAG_BLIZZAGA_SHEEN_TPAGE 0xBA   /* 8-bit page (0x280, 0x100), abr 1 */
+#define FX_SWDMAG_BLIZZAGA_SHEEN_CLUT  0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_SWDMAG_BLIZZAGA_SHEEN_U     0
+#define FX_SWDMAG_BLIZZAGA_SHEEN_V     0x80
+/* the CRYSTAL_SHEEN models sample the rect the file fills with a "dummy" placeholder; btlfx_drawScrollMove copies the
+ * file's reflection texture from (SRC_X, SRC_Y) into it (scroll80 slows over the first SCROLL_SLOW_FRAMES). */
+#define FX_SWDMAG_BLIZZAGA_REFLECTION_VRAM_X 0x280
+#define FX_SWDMAG_BLIZZAGA_REFLECTION_VRAM_Y 0x180
+#define FX_SWDMAG_BLIZZAGA_REFLECTION_VRAM_W 0x40
+#define FX_SWDMAG_BLIZZAGA_REFLECTION_VRAM_H 0x80
+#define FX_SWDMAG_BLIZZAGA_REFLECTION_SRC_X  0x280
+#define FX_SWDMAG_BLIZZAGA_REFLECTION_SRC_Y  0x100
+#define FX_SWDMAG_BLIZZAGA_SCROLL_SLOW_FRAMES 11
+#define FX_SWDMAG_BLIZZAGA_SWORD_STATE_APPEAR  0 /* op84: SWORD_GLINT / SWORD_FLASH grow in at the weapon */
+#define FX_SWDMAG_BLIZZAGA_SWORD_STATE_FLICKER 1 /* op84: they flicker and turn */
+#define FX_SWDMAG_BLIZZAGA_SWORD_STATE_FADE    2 /* op84: they spread and fade (the op ends) */
+#define FX_SWDMAG_BLIZZAGA_SWORD_APPEAR_FRAMES  3 /* SWORD_STATE_APPEAR's length */
+#define FX_SWDMAG_BLIZZAGA_SWORD_FLICKER_FRAMES 9 /* SWORD_STATE_FLICKER's length */
+#define FX_SWDMAG_BLIZZAGA_SWORD_FADE_FRAMES    9 /* SWORD_STATE_FADE's length */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* time */

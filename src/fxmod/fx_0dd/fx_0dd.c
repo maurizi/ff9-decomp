@@ -13,10 +13,10 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x68;
+        *args = sizeof(Fx0ddWork80);
     } else if (mode == 1) {
         fx_0dd_env = env;
-        ex->btlfx_initEffModels(fx_0dd_effModels, 6);
+        ex->btlfx_initEffModels(fx_0dd_effModels, FX_SWDMAG_BIO_MORPH_MODELS);
         ex->btlfx_getUnitPos(0, &work->pos10.vx);
         work->rot18.vx = 0;
         work->rot18.vy = 0;
@@ -27,8 +27,9 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale30.vx = 0x1000;
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
-        for (i = 0; i < 6; i++) {
-            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0dd_morphBlocks[i]), 0x97, 0x3D40, 0, 0);
+        for (i = 0; i < FX_SWDMAG_BIO_MORPH_MODELS; i++) {
+            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0dd_morphBlocks[i]), FX_SWDMAG_BIO_BUBBLE_TPAGE,
+                                                          FX_SWDMAG_BIO_BUBBLE_CLUT, FX_SWDMAG_BIO_BUBBLE_U, FX_SWDMAG_BIO_BUBBLE_V);
         }
         fxm_rotPosTrackInit(&fx_0dd_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_PATH));
         fxm_rotPosTrackInit(&fx_0dd_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_PATH_2));
@@ -42,8 +43,8 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_RED_ORB), (s32)&fx_0dd_emitPos);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_TEAL_RING), (s32)&work->pos10);
             break;
-        case 0x23:
-            fxm_rotPosTrackGet(&fx_0dd_rotPosKeys, 0x23, NULL, &work->pos4C);
+        case FX_SWDMAG_BIO_BURST_FRAME:
+            fxm_rotPosTrackGet(&fx_0dd_rotPosKeys, FX_SWDMAG_BIO_BURST_FRAME, NULL, &work->pos4C);
             work->pos4C.vx += work->pos10.vx;
             work->pos4C.vy += work->pos10.vy;
             work->pos4C.vz += work->pos10.vz;
@@ -51,8 +52,8 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_TOXIC_CLOUD), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_0dd_trails;
-                work->emit8->trailSlots = 0x35;
-                work->emit8->trailStride = 0x28;
+                work->emit8->trailSlots = FX_SWDMAG_BIO_BUBBLE_TRAIL_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_SWDMAG_BIO_BUBBLE_TRAIL_TRAIL_STRIDE;
                 if (work->emit8 != NULL) {
                     work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
@@ -62,38 +63,38 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        if ((u32)frame < 0x26) {
+        if ((u32)frame < FX_SWDMAG_BIO_BUBBLE_FRAMES) {
             switch (frame) {
             case 0:
-            case 2:
-            case 4:
-            case 6:
-            case 8:
+            case FX_SWDMAG_BIO_MORPH_1_FRAME:
+            case FX_SWDMAG_BIO_MORPH_2_FRAME:
+            case FX_SWDMAG_BIO_MORPH_3_FRAME:
+            case FX_SWDMAG_BIO_MORPH_4_FRAME:
                 work->morphTime54 = 0;
                 break;
-            case 30:
+            case FX_SWDMAG_BIO_MORPH_END_FRAME:
                 break;
             }
-            if (frame < 2) {
+            if (frame < FX_SWDMAG_BIO_MORPH_1_FRAME) {
                 morphFrom = 0;
                 morphTo = 1;
-                morphLen = 2;
-            } else if (frame < 4) {
+                morphLen = FX_SWDMAG_BIO_MORPH_STEP_FRAMES;
+            } else if (frame < FX_SWDMAG_BIO_MORPH_2_FRAME) {
                 morphFrom = 1;
                 morphTo = 2;
-                morphLen = 2;
-            } else if (frame < 6) {
+                morphLen = FX_SWDMAG_BIO_MORPH_STEP_FRAMES;
+            } else if (frame < FX_SWDMAG_BIO_MORPH_3_FRAME) {
                 morphFrom = 2;
                 morphTo = 3;
-                morphLen = 2;
-            } else if (frame < 8) {
+                morphLen = FX_SWDMAG_BIO_MORPH_STEP_FRAMES;
+            } else if (frame < FX_SWDMAG_BIO_MORPH_4_FRAME) {
                 morphFrom = 3;
                 morphTo = 4;
-                morphLen = 2;
-            } else if (frame < 0x1E) {
+                morphLen = FX_SWDMAG_BIO_MORPH_STEP_FRAMES;
+            } else if (frame < FX_SWDMAG_BIO_MORPH_END_FRAME) {
                 morphFrom = 4;
                 morphTo = 5;
-                morphLen = 0xC;
+                morphLen = FX_SWDMAG_BIO_MORPH_LAST_FRAMES;
             } else {
                 morphFrom = 5;
                 morphTo = 5;
@@ -118,7 +119,7 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
             ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[morphFrom], work->model5C[morphTo], t);
-            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], 1);
+            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], BTLFX_ABR_ADD);
             fxm_rotPosTrackGet(&fx_0dd_rotPosKeys2, frame, &work->rot18, &keyPos);
             work->pos20.vx = keyPos.vx;
             work->pos20.vy = keyPos.vy;
@@ -132,7 +133,7 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
             ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[morphFrom], work->model5C[morphTo], t);
-            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], 1);
+            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], BTLFX_ABR_ADD);
             work->pos44.vx = work->pos20.vx;
             work->pos44.vy = work->pos20.vy;
             work->pos44.vz = work->pos20.vz;
@@ -144,7 +145,7 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             work->morphTime54++;
         }
-        if (frame >= 0x3C) {
+        if (frame >= FX_SWDMAG_BIO_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -165,47 +166,47 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0ddWork84);
     } else {
         if (mode == 1) {
             fx_0dd_env = env;
-            work->state0 = 0;
+            work->state0 = FX_SWDMAG_BIO_SWORD_STATE_APPEAR;
             work->frame4 = 0;
         } else {
             ry = scale1 = scale0 = alpha = 0;
             frame = entry->frame;
             ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
             switch (work->state0) {
-            case 0:
+            case FX_SWDMAG_BIO_SWORD_STATE_APPEAR:
                 ry = 0x200;
-                alpha = (frame << 12) / 3;
+                alpha = (frame << 12) / FX_SWDMAG_BIO_SWORD_APPEAR_FRAMES;
                 scale0 = ex->math_sin(alpha >> 2) >> 1;
                 scale1 = ((0x1000 - alpha) >> 1) + 0x800;
-                if (frame >= 3) {
-                    work->state0 = 1;
+                if (frame >= FX_SWDMAG_BIO_SWORD_APPEAR_FRAMES) {
+                    work->state0 = FX_SWDMAG_BIO_SWORD_STATE_FLICKER;
                     entry->frame = -1;
                 }
                 break;
-            case 1:
+            case FX_SWDMAG_BIO_SWORD_STATE_FLICKER:
                 flicker = (frame & 1) << 8;
                 scale1 = flicker + 0x1000;
-                t = (frame << 12) / 9;
+                t = (frame << 12) / FX_SWDMAG_BIO_SWORD_FLICKER_FRAMES;
                 alpha = (flicker + 0x800) + (t >> 1);
                 ry = (t >> 3) + 0x200;
                 scale0 = scale1;
-                if (frame >= 9) {
-                    work->state0 = 2;
+                if (frame >= FX_SWDMAG_BIO_SWORD_FLICKER_FRAMES) {
+                    work->state0 = FX_SWDMAG_BIO_SWORD_STATE_FADE;
                     entry->frame = -1;
                 }
                 break;
-            case 2:
-                t = (frame << 12) / 9;
+            case FX_SWDMAG_BIO_SWORD_STATE_FADE:
+                t = (frame << 12) / FX_SWDMAG_BIO_SWORD_FADE_FRAMES;
                 ang = t >> 2;
                 ry = 0x400 - ang;
                 alpha = ex->math_cos(ang);
                 scale0 = ex->math_sin(ang) + 0x1000;
                 scale1 = ex->math_sin(ang) * 3 / 2 + 0x1000;
-                if (frame >= 9) {
+                if (frame >= FX_SWDMAG_BIO_SWORD_FADE_FRAMES) {
                     return 1;
                 }
                 break;
@@ -215,8 +216,8 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = ry;
             rot.pad = 0;
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_SWORD_FLASH), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, BTLFX_ABR_ADD, alpha / 2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_BIO_SWORD_FLASH), &work->pos8, &rot, scale1 / 2, 0, BTLFX_ABR_ADD, alpha * 2 / 3);
             env->otZ = 0;
             work->frame4++;
         }

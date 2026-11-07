@@ -27,12 +27,12 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0d9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        ex->btlfx_initEffModels(fx_0d9_effModels, 2);
-        work->model14 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_GLOW_DOME), 0xB8, 0x3E40, 0,
-                                                 0x80);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_DISC), 0x119, 0xFFFF,
-                                                 0, 0x80);
-        work->state10 = 1;
+        ex->btlfx_initEffModels(fx_0d9_effModels, FX_SWDMAG_THUNDAGA_MODEL_COUNT);
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_GLOW_DOME), FX_SWDMAG_THUNDAGA_GLOW_DOME_TPAGE, FX_SWDMAG_THUNDAGA_GLOW_DOME_CLUT, FX_SWDMAG_THUNDAGA_GLOW_DOME_U,
+                                                 FX_SWDMAG_THUNDAGA_GLOW_DOME_V);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_DISC), FX_SWDMAG_THUNDAGA_DISC_TPAGE, FX_SWDMAG_THUNDAGA_DISC_CLUT,
+                                                 FX_SWDMAG_THUNDAGA_DISC_U, FX_SWDMAG_THUNDAGA_DISC_V);
+        work->state10 = FX_SWDMAG_THUNDAGA_STATE_STRIKE;
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x20;
@@ -40,24 +40,24 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state10) {
-        case 1:
+        case FX_SWDMAG_THUNDAGA_STATE_STRIKE:
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x40, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SWDMAG_THUNDAGA_STRIKE_TINT_RGB);
             }
             if (frame == 1) {
                 env->otZ = 0x200;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_THIN_BOLT), &work->pos8, NULL, 0x2800, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_THIN_BOLT), &work->pos8, NULL, 0x2800, 0, BTLFX_ABR_ADD,
                                         0x1000, 0, 0);
                 env->otZ = 0;
             }
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_VIOLET_RING), &work->pos8, NULL, 0x800, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_VIOLET_RING), &work->pos8, NULL, 0x800, 0, BTLFX_ABR_ADD, -1);
             env->otZ = 0;
-            if (frame == 2) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0xFF);
+            if (frame == FX_SWDMAG_THUNDAGA_STRIKE_FRAMES) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SWDMAG_THUNDAGA_STRIKE_DARKEN_RGB);
             }
-            if (frame >= 2) {
-                work->state10 = 2;
+            if (frame >= FX_SWDMAG_THUNDAGA_STRIKE_FRAMES) {
+                work->state10 = FX_SWDMAG_THUNDAGA_STATE_BLAST;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
@@ -69,31 +69,31 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 2:
-            phaseT = (frame << 12) / 50;
-            if (frame < 6) {
+        case FX_SWDMAG_THUNDAGA_STATE_BLAST:
+            phaseT = (frame << 12) / FX_SWDMAG_THUNDAGA_BLAST_FRAMES;
+            if (frame < FX_SWDMAG_THUNDAGA_FLASH_FRAMES) {
                 s32 tint;
 
-                tint = ex->math_cos((frame << 10) / 6) * 0xFF;
+                tint = ex->math_cos((frame << 10) / FX_SWDMAG_THUNDAGA_FLASH_FRAMES) * 0xFF;
                 fade = tint >> 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 14, tint >> 13, fade);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint >> 14, tint >> 13, fade);
             }
-            if (frame < 20) {
-                fade = ex->math_cos((frame << 10) / 20);
+            if (frame < FX_SWDMAG_THUNDAGA_LIGHTNING_BOLT_FRAMES) {
+                fade = ex->math_cos((frame << 10) / FX_SWDMAG_THUNDAGA_LIGHTNING_BOLT_FRAMES);
                 env->otZ = 0x200;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_LIGHTNING_BOLT), &work->pos8, NULL, 0x2800, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_LIGHTNING_BOLT), &work->pos8, NULL, 0x2800, 0, BTLFX_ABR_ADD,
                                         fade, 0, 0);
-                if (frame < 10) {
+                if (frame < FX_SWDMAG_THUNDAGA_THIN_BOLT_FRAMES) {
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_THIN_BOLT), &work->pos8, NULL, 0x2800,
-                                            0, 1, 0x1000 - (frame << 12) / 10, 0, 0);
+                                            0, BTLFX_ABR_ADD, 0x1000 - (frame << 12) / FX_SWDMAG_THUNDAGA_THIN_BOLT_FRAMES, 0, 0);
                 }
                 env->otZ = 0;
             }
-            if (frame < 24) {
+            if (frame < FX_SWDMAG_THUNDAGA_VIOLET_RING_FRAMES) {
                 env->otZ = 0x200;
-                ringT = (frame << 12) / 24;
+                ringT = (frame << 12) / FX_SWDMAG_THUNDAGA_VIOLET_RING_FRAMES;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_VIOLET_RING), &work->pos8, NULL,
-                                  ex->math_cos(ringT >> 2) * 3 / 2 + 0x1000, 0, 1, ex->math_cos(ringT >> 2));
+                                  ex->math_cos(ringT >> 2) * 3 / 2 + 0x1000, 0, BTLFX_ABR_ADD, ex->math_cos(ringT >> 2));
                 env->otZ = 0;
             }
             rot.vx = 0x400;
@@ -109,46 +109,46 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit1C->rot.vz = rot.vz;
                 }
             }
-            if (frame < 16) {
+            if (frame < FX_SWDMAG_THUNDAGA_WHITE_RING_FRAMES) {
                 rot.vx = 0x400;
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
                 waveT = frame << 8;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_WHITE_RING), &work->pos8, &rot,
-                                  ex->math_sin(waveT >> 2) * 4, 0, 1, 0x1000 - waveT);
+                                  ex->math_sin(waveT >> 2) * 4, 0, BTLFX_ABR_ADD, 0x1000 - waveT);
             }
             rot2.vx = 0x400;
             rot2.vz = 0;
             rot2.vy = 0;
             rot2.pad = 1;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_BLUE_RING), &work->pos8, &rot2,
-                              ex->math_sin(phaseT >> 2) * 4, 0, 1, ex->math_cos(phaseT >> 2));
+                              ex->math_sin(phaseT >> 2) * 4, 0, BTLFX_ABR_ADD, ex->math_cos(phaseT >> 2));
             if (frame == 1) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_SPARK_DOTS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame < 24) {
+            if (frame < FX_SWDMAG_THUNDAGA_GLOW_DOME_FRAMES) {
                 pos.vx = work->pos8.vx;
                 pos.vy = work->pos8.vy;
                 pos.vz = work->pos8.vz;
                 ang.vx = 0;
                 ang.vy = frame * 0x18;
                 ang.vz = 0;
-                pulseAng = (frame << 12) / 24;
+                pulseAng = (frame << 12) / FX_SWDMAG_THUNDAGA_GLOW_DOME_FRAMES;
                 pulseAng >>= 2;
                 ringScale = ((ex->math_sin(pulseAng) * 0x5DC) >> 12) + 0x140;
                 scale.vx = scale.vy = scale.vz = ringScale;
                 fx_0d9_ringRadius = (ringScale * 0x708) >> 12;
                 ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, work->model14);
-                ex->Hi_ModifyEffModelAbr(work->model14, 1);
+                ex->Hi_ModifyEffModelAbr(work->model14, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(work->model14, (ex->math_cos(pulseAng) * 2 / 3 >> 5) - 0x80,
                                          (ex->math_cos(pulseAng) * 2 / 3 >> 5) - 0x80, (ex->math_cos(pulseAng) * 2 / 3 >> 5) - 0x80);
                 env->otZ = 0x20;
                 sparkAlpha = ex->math_cos(pulseAng);
-                for (sparkFrame = frame, sparkAng = frame * 0x18, i = 0; i < 16; i++, sparkFrame += 3) {
+                for (sparkFrame = frame, sparkAng = frame * 0x18, i = 0; i < FX_SWDMAG_THUNDAGA_SPARK_BALLS; i++, sparkFrame += 3) {
                     BTLFX_COPY_SVEC(&sparkPos, &work->pos8);
                     sparkPos.vx += (ex->math_cos(sparkAng) * fx_0d9_ringRadius) >> 12;
                     sparkPos.vz += (ex->math_sin(sparkAng) * fx_0d9_ringRadius) >> 12;
@@ -158,13 +158,13 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         s32 r0_ = ex->btlfx_randCentered(5); /* the PS1 draws them in this order */
                         s32 r1_ = ex->btlfx_randCentered(5);
                         ex->btlfx_drawParticles((u8 *)fd_, &sparkPos, NULL,
-                                            0x1800 - ((i & 1) << 12), sparkFrame & 7, 1, sparkAlpha, r0_, r1_);
+                                            0x1800 - ((i & 1) << 12), sparkFrame & FX_SWDMAG_THUNDAGA_SPARK_BALL_FRAME_MASK, BTLFX_ABR_ADD, sparkAlpha, r0_, r1_);
                     }
                 }
                 env->otZ = 0;
             }
-            if (frame >= 50) {
-                work->state10 = 2;
+            if (frame >= FX_SWDMAG_THUNDAGA_BLAST_FRAMES) {
+                work->state10 = FX_SWDMAG_THUNDAGA_STATE_BLAST;
                 return 1;
             }
             break;
@@ -185,11 +185,11 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s3
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
-    strip->count2 = 0xE;
-    strip->lastSlot0 = 0xE;
+    strip->count2 = FX_SWDMAG_THUNDAGA_STRIP_POINTS - 1;
+    strip->lastSlot0 = FX_SWDMAG_THUNDAGA_STRIP_POINTS - 1;
     strip->head1 = 0;
-    for (i = 0; i < 15; i++) {
-        t = 0x1000 - (i << 12) / 14;
+    for (i = 0; i < FX_SWDMAG_THUNDAGA_STRIP_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_SWDMAG_THUNDAGA_STRIP_POINTS - 1);
         t += *tbl++;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *tbl++;
@@ -201,10 +201,10 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s3
         pt++;
     }
     if (kind < FX_0D9_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 2);
     }
 }
@@ -221,10 +221,10 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
-    strip->count2 = 2;
-    strip->lastSlot0 = 2;
+    strip->count2 = FX_SWDMAG_THUNDAGA_BRANCH_POINTS - 1;
+    strip->lastSlot0 = FX_SWDMAG_THUNDAGA_BRANCH_POINTS - 1;
     strip->head1 = 0;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < FX_SWDMAG_THUNDAGA_BRANCH_POINTS; i++) {
         t = 0x1000 - (i << 11);
         t += *tbl++ / 3;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
@@ -238,10 +238,10 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
         pt++;
     }
     if (kind < FX_0D9_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 2);
     }
 }
@@ -271,35 +271,35 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk801
         it->state11 = 0;
     } else if (it->state11 == 0) {
         if (it->kind14 < FX_0D9_STRIP_FLAT) {
-            n = 8;
+            n = FX_SWDMAG_THUNDAGA_BOLT_FRAMES;
             if (fx_0d9_fastBolts != 0) {
-                n = 6;
+                n = FX_SWDMAG_THUNDAGA_FAST_BOLT_FRAMES;
             }
             t = (frame << 12) / n;
             fade = ex->math_cos(t >> 2);
             strip = &fx_0d9_strips[it->strip10];
             branch = (Fx0d9Strip *)&fx_0d9_branches[it->strip10];
             fxm_drawJaggedStrip15(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame * 0x97, 0x186, frame, fade,
-                          ((0x1000 - t) * (it->width15 * 2 + 0x97)) >> 12, it->kind14);
-            fxm_drawJaggedBranch3(entry, strip, branch, it->jitter18, it->branchAt12, fade, ((0x1000 - t) * (it->width15 * 2 + 0x97)) >> 13,
+                          ((0x1000 - t) * (it->width15 * 2 + FX_SWDMAG_THUNDAGA_BOLT_WIDTH)) >> 12, it->kind14);
+            fxm_drawJaggedBranch3(entry, strip, branch, it->jitter18, it->branchAt12, fade, ((0x1000 - t) * (it->width15 * 2 + FX_SWDMAG_THUNDAGA_BOLT_WIDTH)) >> 13,
                           it->kind14);
             fxm_drawJaggedBranch3(entry, strip, branch, it->jitter18 + 3, it->branchAt13, fade,
-                          ((0x1000 - t) * (it->width15 * 2 + 0x97)) >> 13, it->kind14);
+                          ((0x1000 - t) * (it->width15 * 2 + FX_SWDMAG_THUNDAGA_BOLT_WIDTH)) >> 13, it->kind14);
             if (frame >= n) {
                 it->state11 = 1;
                 return 1;
             }
         } else {
-            n = 6;
+            n = FX_SWDMAG_THUNDAGA_FLAT_BOLT_FRAMES;
             if (fx_0d9_fastBolts != 0) {
-                n = 4;
+                n = FX_SWDMAG_THUNDAGA_FAST_FLAT_BOLT_FRAMES;
             }
             t = (frame << 12) / n;
             fade = ex->math_cos(t >> 2);
             strip = &fx_0d9_strips[it->strip10];
             branch = (Fx0d9Strip *)&fx_0d9_branches[it->strip10];
             fxm_drawJaggedStrip15(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame << 6, 0x186, frame, fade,
-                          ((0x1000 - t) * 0xAA) >> 12, it->kind14);
+                          ((0x1000 - t) * FX_SWDMAG_THUNDAGA_FLAT_BOLT_WIDTH) >> 12, it->kind14);
             fxm_drawJaggedBranch3(entry, strip, branch, it->jitter18, it->branchAt12, fade, (0x1000 - t) >> 6, it->kind14);
             fxm_drawJaggedBranch3(entry, strip, branch, it->jitter18 + 3, it->branchAt13, fade, (0x1000 - t) >> 6, it->kind14);
             if (frame >= n) {
@@ -313,9 +313,9 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk801
 
 static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d9_env);
-    SVECTOR *src = FX_0D9_STRIPS[ex->btlfx_rand() % 16].pts4;
+    SVECTOR *src = FX_0D9_STRIPS[ex->btlfx_rand() % FX_SWDMAG_THUNDAGA_BOLT_SLOTS].pts4;
 
-    src += ex->btlfx_rand() % 15;
+    src += ex->btlfx_rand() % FX_SWDMAG_THUNDAGA_STRIP_POINTS;
 
     out->vx = src->vx;
     out->vy = src->vy;
@@ -357,10 +357,10 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 reach;
 
     if (mode == 0) {
-        init->workSize = 0x1C;
-        init->elemSize = 0x24;
+        init->workSize = sizeof(Fx0d9Work83);
+        init->elemSize = sizeof(Fx0d9Bolt);
         init->elemFn = (s32)fxm_jaggedStripTask;
-        init->poolCount = 0x10;
+        init->poolCount = FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
     } else if (mode == 1) {
         fx_0d9_env = env;
         kind = init->workSize;
@@ -368,7 +368,7 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         i = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         jit = work->jitter10 = fx_0d9_jitter;
-        for (; i < 0x40; i++) {
+        for (; i < FX_SWDMAG_THUNDAGA_JITTER_ROWS; i++) {
             *jit++ = ex->btlfx_randCentered(0x100);
             *jit++ = ex->btlfx_randCentered(0x200);
             *jit++ = ex->btlfx_randCentered(0xF5);
@@ -379,9 +379,9 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->kind18) {
-        case 0:
+        case FX_SWDMAG_THUNDAGA_BOLTS_CHARGE:
             fx_0d9_fastBolts = 0;
-            if (frame < 29) {
+            if (frame < FX_SWDMAG_THUNDAGA_CHARGE_BOLTS_FRAMES) {
                 if (frame & 1) {
                     work->boltCount14++;
                     BTLFX_COPY_SVEC(&root, &work->pos0);
@@ -390,29 +390,29 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (it0 != NULL) {
                         BTLFX_COPY_SVEC(&it0->pos0, &root);
                         BTLFX_COPY_SVEC(&tip, &root);
-                        tip.vy -= 0xC00;
+                        tip.vy -= FX_SWDMAG_THUNDAGA_BOLT_HEIGHT;
                         radius0 = ex->btlfx_randCentered(0x100) + 0x384;
                         ang0 = (work->boltCount14 << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                         tip.vx += (ex->math_cos(ang0) * radius0) >> 12;
                         tip.vz += (ex->math_sin(ang0) * radius0) >> 12;
                         BTLFX_COPY_SVEC(&it0->pos8, &tip);
-                        it0->strip10 = work->boltCount14 % 16;
+                        it0->strip10 = work->boltCount14 % FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
                         it0->jitter18 = work->jitter10 + (ex->btlfx_rand() & 0x1F);
                         it0->branchAt12 = ex->btlfx_rand() % 13;
                         it0->branchAt13 = ex->btlfx_rand() % 13;
                         it0->width15 = 0;
-                        it0->kind14 = 2;
+                        it0->kind14 = FX_0D9_STRIP_FLAT;
                     }
                 }
             }
-            if (frame >= 29) {
+            if (frame >= FX_SWDMAG_THUNDAGA_CHARGE_BOLTS_FRAMES) {
                 return 1;
             }
             break;
-        case 1:
+        case FX_SWDMAG_THUNDAGA_BOLTS_BURST:
             fx_0d9_fastBolts = 0;
             if (frame == 0) {
-                for (j = 0; j < 6; j++) {
+                for (j = 0; j < FX_SWDMAG_THUNDAGA_BURST_RING_BOLTS; j++) {
                     work->boltCount14++;
                     BTLFX_COPY_SVEC(&root, &work->pos0);
                     root.vy = 0;
@@ -420,13 +420,13 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (it1 != NULL) {
                         BTLFX_COPY_SVEC(&it1->pos0, &root);
                         BTLFX_COPY_SVEC(&tip, &root);
-                        tip.vy -= 0xC00;
+                        tip.vy -= FX_SWDMAG_THUNDAGA_BOLT_HEIGHT;
                         radius1 = ex->btlfx_randCentered(0x80) + 0x3E8;
                         ang1 = (work->boltCount14 << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                         tip.vx += (ex->math_cos(ang1) * radius1) >> 12;
                         tip.vz += (ex->math_sin(ang1) * radius1) >> 12;
                         BTLFX_COPY_SVEC(&it1->pos8, &tip);
-                        it1->strip10 = work->boltCount14 % 16;
+                        it1->strip10 = work->boltCount14 % FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
                         it1->jitter18 = work->jitter10 + (ex->btlfx_rand() & 0x1F);
                         it1->branchAt12 = ex->btlfx_rand() % 13;
                         it1->branchAt13 = ex->btlfx_rand() % 13;
@@ -435,7 +435,7 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
             }
-            if (frame >= 6 && frame < 16) {
+            if (frame >= FX_SWDMAG_THUNDAGA_BURST_OUTER_FRAME && frame < FX_SWDMAG_THUNDAGA_BURST_OUTER_END) {
                 work->boltCount14++;
                 BTLFX_COPY_SVEC(&vec, &work->pos0);
                 vec.vy = 0;
@@ -443,16 +443,16 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (it2 != NULL) {
                     BTLFX_COPY_SVEC(&it2->pos0, &vec);
                     BTLFX_COPY_SVEC(&tip2, &vec);
-                    tip2.vy -= 0xC00;
+                    tip2.vy -= FX_SWDMAG_THUNDAGA_BOLT_HEIGHT;
                     rnd2 = ex->btlfx_randCentered(0x100);
-                    base2 = (frame - 6) << 8;
+                    base2 = (frame - FX_SWDMAG_THUNDAGA_BURST_OUTER_FRAME) << 8;
                     rnd2 += 0x5DC;
                     radius2 = base2 + rnd2;
                     ang2 = ((work->boltCount14 / 2) << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                     tip2.vx += (ex->math_cos(ang2) * radius2) >> 12;
                     tip2.vz += (ex->math_sin(ang2) * radius2) >> 12;
                     BTLFX_COPY_SVEC(&it2->pos8, &tip2);
-                    it2->strip10 = work->boltCount14 % 16;
+                    it2->strip10 = work->boltCount14 % FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
                     it2->jitter18 = work->jitter10 + (ex->btlfx_rand() & 0x1F);
                     it2->branchAt12 = ex->btlfx_rand() % 13;
                     it2->branchAt13 = ex->btlfx_rand() % 13;
@@ -466,34 +466,34 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (it3 != NULL) {
                     BTLFX_COPY_SVEC(&it3->pos0, &vec);
                     BTLFX_COPY_SVEC(&tip2, &vec);
-                    tip2.vy -= 0xC00;
+                    tip2.vy -= FX_SWDMAG_THUNDAGA_BOLT_HEIGHT;
                     rnd3 = ex->btlfx_randCentered(0x100);
-                    base3 = (frame - 6) << 8;
+                    base3 = (frame - FX_SWDMAG_THUNDAGA_BURST_OUTER_FRAME) << 8;
                     rnd3 += 0x7D0;
                     radius2 = base3 + rnd3;
                     ang2 = ((work->boltCount14 / 2) << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                     tip2.vx += (ex->math_cos(ang2) * radius2) >> 12;
                     tip2.vz += (ex->math_sin(ang2) * radius2) >> 12;
                     BTLFX_COPY_SVEC(&it3->pos8, &tip2);
-                    it3->strip10 = work->boltCount14 % 16;
+                    it3->strip10 = work->boltCount14 % FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
                     it3->jitter18 = work->jitter10 + (ex->btlfx_rand() & 0x1F);
                     it3->branchAt12 = ex->btlfx_rand() % 13;
                     it3->branchAt13 = ex->btlfx_rand() % 13;
                     it3->width15 = 0;
-                    it3->kind14 = 2;
+                    it3->kind14 = FX_0D9_STRIP_FLAT;
                 }
             }
-            if (frame == 8 || frame == 10 || frame == 13) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x40, 0x80);
+            if (frame == FX_SWDMAG_THUNDAGA_BURST_FLASH_FRAME_1 || frame == FX_SWDMAG_THUNDAGA_BURST_FLASH_FRAME_2 || frame == FX_SWDMAG_THUNDAGA_BURST_FLASH_FRAME_3) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SWDMAG_THUNDAGA_BURST_TINT_RGB);
             }
-            if (frame == 9) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
+            if (frame == FX_SWDMAG_THUNDAGA_BURST_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SWDMAG_THUNDAGA_BURST_DARKEN_RGB);
             }
-            if (frame >= 20) {
+            if (frame >= FX_SWDMAG_THUNDAGA_BURST_BOLTS_FRAMES) {
                 return 1;
             }
             break;
-        case 2:
+        case FX_SWDMAG_THUNDAGA_BOLTS_CHAIN:
             fx_0d9_fastBolts = 1;
             if (frame == 0) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_IMPACT_FLASH), (s32)&work->pos0);
@@ -503,11 +503,11 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x20;
                 }
             }
-            if (frame < 31) {
+            if (frame < FX_SWDMAG_THUNDAGA_CHAIN_BOLTS_FRAMES) {
                 if (frame == 0) {
                     BTLFX_COPY_SVEC(&fx_0d9_prevBoltEnd, &work->pos0);
                 }
-                reach = frame * 250 / 31 + 0x333;
+                reach = frame * 250 / FX_SWDMAG_THUNDAGA_CHAIN_BOLTS_FRAMES + 0x333;
                 work->boltCount14++;
                 BTLFX_COPY_SVEC(&root, &work->pos0);
                 root.vy = 0;
@@ -524,15 +524,15 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (it4 != NULL) {
                     BTLFX_COPY_SVEC(&it4->pos0, &tip);
                     BTLFX_COPY_SVEC(&it4->pos8, &fx_0d9_prevBoltEnd);
-                    it4->strip10 = work->boltCount14 % 16;
+                    it4->strip10 = work->boltCount14 % FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
                     it4->jitter18 = work->jitter10 + (ex->btlfx_rand() & 0x1F);
                     it4->branchAt12 = ex->btlfx_rand() % 13;
                     it4->branchAt13 = ex->btlfx_rand() % 13;
-                    it4->width15 = -(frame * 50 / 31);
+                    it4->width15 = -(frame * 50 / FX_SWDMAG_THUNDAGA_CHAIN_BOLTS_FRAMES);
                     it4->kind14 = ex->btlfx_rand() & 1;
                 }
                 BTLFX_COPY_SVEC(&fx_0d9_prevBoltEnd, &tip);
-                if (frame < 19) {
+                if (frame < FX_SWDMAG_THUNDAGA_CHAIN_SPOKES_FRAMES) {
                     work->boltCount14++;
                     BTLFX_COPY_SVEC(&root, &work->pos0);
                     root.vy = 0;
@@ -547,21 +547,21 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         vec.vx = (ex->btlfx_rand() & 0xFF) + 0x80;
                         ex->btlfx_pointAhead((s16 *)&tip, (s16 *)&vec, radius4, (s16 *)&tip);
                         BTLFX_COPY_SVEC(&it5->pos0, &tip);
-                        it5->strip10 = work->boltCount14 % 16;
+                        it5->strip10 = work->boltCount14 % FX_SWDMAG_THUNDAGA_BOLT_SLOTS;
                         it5->jitter18 = work->jitter10 + (ex->btlfx_rand() & 0x1F);
                         it5->branchAt12 = ex->btlfx_rand() % 13;
                         it5->branchAt13 = ex->btlfx_rand() % 13;
                         it5->width15 = 0;
-                        it5->kind14 = 2;
+                        it5->kind14 = FX_0D9_STRIP_FLAT;
                     }
                 }
             }
             if (frame & 1) {
                 if (ex->btlfx_rand() & 1) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x20, 0x46);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SWDMAG_THUNDAGA_CHAIN_TINT_RGB);
                 }
             }
-            if (frame >= 31) {
+            if (frame >= FX_SWDMAG_THUNDAGA_CHAIN_BOLTS_FRAMES) {
                 return 1;
             }
             break;
@@ -584,10 +584,10 @@ s32 fx_0d9_op84(s32 mode, Fx0d9Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0d9Work84);
     } else if (mode == 1) {
         fx_0d9_env = env;
-        work->state0 = 0;
+        work->state0 = FX_SWDMAG_THUNDAGA_SWORD_STATE_APPEAR;
         work->frame4 = 0;
     } else {
         alpha = 0;
@@ -597,38 +597,38 @@ s32 fx_0d9_op84(s32 mode, Fx0d9Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
-        case 0:
+        case FX_SWDMAG_THUNDAGA_SWORD_STATE_APPEAR:
             ry = 0x200;
-            alpha = (frame << 12) / 3;
+            alpha = (frame << 12) / FX_SWDMAG_THUNDAGA_SWORD_APPEAR_FRAMES;
             t = ex->math_sin(alpha >> 2);
             scale0 = t >> 1;
             scale1 = ((0x1000 - alpha) >> 1) + 0x800;
-            if (frame >= 3) {
-                work->state0 = 1;
+            if (frame >= FX_SWDMAG_THUNDAGA_SWORD_APPEAR_FRAMES) {
+                work->state0 = FX_SWDMAG_THUNDAGA_SWORD_STATE_FLICKER;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_THUNDAGA_SWORD_STATE_FLICKER:
+            t = (frame << 12) / FX_SWDMAG_THUNDAGA_SWORD_FLICKER_FRAMES;
             flicker = (frame & 1) << 8;
             scale1 = flicker + 0x1000;
             grow = (t >> 1) + 0x800;
             alpha = flicker + grow;
             ry = (t >> 3) + 0x200;
             scale0 = scale1;
-            if (frame >= 9) {
-                work->state0 = 2;
+            if (frame >= FX_SWDMAG_THUNDAGA_SWORD_FLICKER_FRAMES) {
+                work->state0 = FX_SWDMAG_THUNDAGA_SWORD_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 2:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_THUNDAGA_SWORD_STATE_FADE:
+            t = (frame << 12) / FX_SWDMAG_THUNDAGA_SWORD_FADE_FRAMES;
             ang = t >> 2;
             ry = 0x400 - ang;
             alpha = ex->math_cos(ang);
             scale0 = ex->math_sin(ang) + 0x1000;
             scale1 = (ex->math_sin(ang) << 1) + 0x1000;
-            if (frame >= 9) {
+            if (frame >= FX_SWDMAG_THUNDAGA_SWORD_FADE_FRAMES) {
                 return 1;
             }
             break;
@@ -638,8 +638,8 @@ s32 fx_0d9_op84(s32 mode, Fx0d9Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_SWORD_FLASH), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, BTLFX_ABR_ADD, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_SWORD_FLASH), &work->pos8, &rot, scale1, 0, BTLFX_ABR_ADD, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }
