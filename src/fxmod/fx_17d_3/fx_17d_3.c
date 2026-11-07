@@ -14,13 +14,13 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 unused;
 
     if (mode == 0) {
-        *args = 0x80;
+        *args = sizeof(Fx17d3Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_ARK_STATE_CLOUDS;
         work->frame4 = 0;
         fx_17d_3_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(fx_17d_3_effModels, 5);
+        ex->btlfx_initEffModels(fx_17d_3_effModels, FX_ARK_MODEL_COUNT);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_TEAL_CYLINDER), 0);
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_CYLINDER), 1);
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_WING_PLATE_2), 0);
@@ -44,12 +44,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0: {
+        case FX_ARK_STATE_CLOUDS: {
             VECTOR shakeRot;
 
             t = (frame << 12) / 24;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_OPAQUE, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_OPAQUE, FX_ARK_WHITE_RGB);
             }
             ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             shakeRot.vx = work->pos48[0];
@@ -70,8 +70,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_CLOUD_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_3_op80Trails0;
-                    emitter->trailSlots = 0x10;
-                    emitter->trailStride = 0xCC;
+                    emitter->trailSlots = FX_ARK_CLOUD_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_ARK_CLOUD_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
             }
@@ -98,8 +98,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)work->scale3C, work->model68);
-            ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(frame * 0x18, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
             {
             CVECTOR col;
             SVECTOR gridRot;
@@ -112,14 +112,14 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             gridRot.vz = 0;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot, &gridScale, &col, 1, 0);
             }
-            if (frame >= 0x18) {
-                work->state0 = 1;
+            if (frame >= FX_ARK_CLOUDS_FRAMES) {
+                work->state0 = FX_ARK_STATE_CLOUDS_2;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
             }
             break;
         }
-        case 1: {
+        case FX_ARK_STATE_CLOUDS_2: {
             VECTOR shakeRot;
 
             t = (frame << 12) / 24;
@@ -142,8 +142,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_CLOUD_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_3_op80Trails0;
-                    emitter->trailSlots = 0x10;
-                    emitter->trailStride = 0xCC;
+                    emitter->trailSlots = FX_ARK_CLOUD_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_ARK_CLOUD_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
             }
@@ -170,8 +170,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)work->scale3C, work->model68);
-            ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(frame * 0x18, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
             {
             CVECTOR col;
             SVECTOR gridRot;
@@ -184,8 +184,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             gridRot.vz = 0;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot, &gridScale, &col, 1, 0);
             }
-            if (frame >= 0x18) {
-                work->state0 = 2;
+            if (frame >= FX_ARK_CLOUDS_FRAMES) {
+                work->state0 = FX_ARK_STATE_VOLLEY;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->emit78 = work->emit7C = NULL;
@@ -193,7 +193,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        case 2: {
+        case FX_ARK_STATE_VOLLEY: {
             VECTOR shakeRot;
             SVECTOR emitRot;
             VECTOR haloScale;
@@ -225,12 +225,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 4;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            if (frame == 0xC) {
+            if (frame == FX_ARK_SMOKE_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
-                    work->emit78->trailSlots = 0x32;
-                    work->emit78->trailStride = 0x1C;
+                    work->emit78->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit78->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
@@ -238,8 +238,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
-                    work->emit7C->trailSlots = 0x32;
-                    work->emit7C->trailStride = 0x1C;
+                    work->emit7C->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit7C->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit7C != NULL) {
                     work->emit7C->otZ = 0x20;
@@ -268,10 +268,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = emitRot.vz;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
-            if (frame >= 0x15) {
-                work->state0 = 3;
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            if (frame >= FX_ARK_VOLLEY_FRAMES) {
+                work->state0 = FX_ARK_STATE_VOLLEY_2;
                 entry->frame = -1;
                 work->emit78 = work->emit7C = NULL;
                 work->pos28[1] -= 0x64;
@@ -279,7 +279,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        case 3: {
+        case FX_ARK_STATE_VOLLEY_2: {
             VECTOR shakeRot;
             VECTOR haloScale;
             SVECTOR emitRot;
@@ -309,12 +309,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 2;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            if (frame == 0xC) {
+            if (frame == FX_ARK_SMOKE_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
-                    work->emit78->trailSlots = 0x32;
-                    work->emit78->trailStride = 0x1C;
+                    work->emit78->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit78->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
@@ -322,8 +322,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
-                    work->emit7C->trailSlots = 0x32;
-                    work->emit7C->trailStride = 0x1C;
+                    work->emit7C->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit7C->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit7C != NULL) {
                     work->emit7C->otZ = 0x20;
@@ -352,10 +352,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = emitRot.vz;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
-            if (frame >= 0x15) {
-                work->state0 = 4;
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            if (frame >= FX_ARK_VOLLEY_FRAMES) {
+                work->state0 = FX_ARK_STATE_VOLLEY_3;
                 entry->frame = -1;
                 work->emit78 = work->emit7C = NULL;
                 ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180[5], SUMMON(env)->model60);
@@ -368,7 +368,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        case 4: {
+        case FX_ARK_STATE_VOLLEY_3: {
             VECTOR shakeRot;
             VECTOR haloScale;
             SVECTOR emitRot;
@@ -385,12 +385,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel((SVECTOR *)&shakeRot, (VECTOR *)work->pos48, (s32)work->scale54, SUMMON(env)->model60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones2[0], (u16 *)&work->pos10);
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones2[1], (u16 *)&work->pos18);
-            if (frame == 6) {
+            if (frame == FX_ARK_VOLLEY_3_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
-                    work->emit78->trailSlots = 0x32;
-                    work->emit78->trailStride = 0x1C;
+                    work->emit78->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit78->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
@@ -398,8 +398,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
-                    work->emit7C->trailSlots = 0x32;
-                    work->emit7C->trailStride = 0x1C;
+                    work->emit7C->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit7C->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit7C != NULL) {
                     work->emit7C->otZ = 0x20;
@@ -432,10 +432,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 2;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
-            if (frame >= 0x18) {
-                work->state0 = 5;
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            if (frame >= FX_ARK_VOLLEY_3_FRAMES) {
+                work->state0 = FX_ARK_STATE_VOLLEY_4;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->emit78 = work->emit7C = NULL;
@@ -444,7 +444,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        case 5: {
+        case FX_ARK_STATE_VOLLEY_4: {
             VECTOR shakeRot;
             VECTOR haloScale;
             SVECTOR emitRot;
@@ -465,12 +465,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->pos18, &work->pos10);
             work->pos18.vy -= 0x46;
             work->pos18.vz -= 0x80;
-            if (frame == 0xB) {
+            if (frame == FX_ARK_SMOKE_2_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_2), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
-                    work->emit78->trailSlots = 0x32;
-                    work->emit78->trailStride = 0x1C;
+                    work->emit78->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit78->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
@@ -497,8 +497,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
-                    work->emit7C->trailSlots = 0x32;
-                    work->emit7C->trailStride = 0x1C;
+                    work->emit7C->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit7C->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit7C != NULL) {
                     work->emit7C->otZ = 0x20;
@@ -521,10 +521,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 3;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
-            if (frame >= 0x15) {
-                work->state0 = 6;
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            if (frame >= FX_ARK_VOLLEY_FRAMES) {
+                work->state0 = FX_ARK_STATE_VOLLEY_5;
                 entry->frame = -1;
                 work->emit78 = work->emit7C = NULL;
                 ex->btlfx_initParticleSystem();
@@ -537,7 +537,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        case 6: {
+        case FX_ARK_STATE_VOLLEY_5: {
             VECTOR shakeRot;
             VECTOR haloScale;
             SVECTOR emitRot;
@@ -558,12 +558,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->pos18, &work->pos10);
             work->pos18.vy -= 0x46;
             work->pos18.vz -= 0x80;
-            if (frame == 0xB) {
+            if (frame == FX_ARK_SMOKE_2_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_2), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
-                    work->emit78->trailSlots = 0x32;
-                    work->emit78->trailStride = 0x1C;
+                    work->emit78->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit78->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
@@ -590,8 +590,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
-                    work->emit7C->trailSlots = 0x32;
-                    work->emit7C->trailStride = 0x1C;
+                    work->emit7C->trailSlots = FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS;
+                    work->emit7C->trailStride = FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit7C != NULL) {
                     work->emit7C->otZ = 0x20;
@@ -614,10 +614,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 3;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
-            if (frame >= 0x15) {
-                work->state0 = 7;
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            if (frame >= FX_ARK_VOLLEY_FRAMES) {
+                work->state0 = FX_ARK_STATE_DUST;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->emit78 = work->emit7C = NULL;
@@ -630,7 +630,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        case 7: {
+        case FX_ARK_STATE_DUST: {
             VECTOR shakeRot;
             VECTOR haloScale;
             SVECTOR emitRot;
@@ -654,7 +654,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vz = work->pos20.vz;
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 4, (u16 *)&work->pos10);
             work->pos10.vz += 0x226;
-            if (frame == 0xA) {
+            if (frame == FX_ARK_DUST_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_DUST_CLOUD), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x80;
@@ -677,9 +677,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 3;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
-            if (frame >= 0x20) {
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            if (frame >= FX_ARK_DUST_FRAMES) {
                 ex->btlfx_initParticleSystem();
                 ex->btlfx_clearEffModels();
                 return 1;

@@ -18,6 +18,33 @@
 #define FX_ARK_SWIRL_DOME 0x86 /* summon data: 'so' model, dome with a grey swirl texture */
 #define FX_ARK_STRAND_POINTS 0x8A /* summon data: offset table of the strand point lists per layer, read by fx_17d_4_drawStrands (byte-identical to fx_1bf_0 entry 0x1D) */
 
+/* fx_17d_4 choreography (docs/fxdata.md, "Choreography literals"): op80's states (work->state0; the frame restarts at
+ * each, named by what they draw) and their lengths, the trail buffer and the scrolling texture. */
+#define FX_ARK_STATE_CHARGE  0    /* SMOKE_CYLINDER and FLAME_BOWL; then the summon's next motion */
+#define FX_ARK_CHARGE_FRAMES 0x14
+#define FX_ARK_STATE_HOLD    1    /* SMOKE_CYLINDER; then GREEN_TRAIL */
+#define FX_ARK_HOLD_FRAMES   0xA
+#define FX_ARK_STATE_SWIRL   2    /* SMOKE_CYLINDER and SWIRL_DOME, a growing white flash; then the next motion */
+#define FX_ARK_SWIRL_FRAMES  0x14
+#define FX_ARK_STATE_BOWL    3    /* STREAK_BOWL, FLAME_BOWL, SMOKE_TORUS, SWIRL_DOME; the flash fades over its first 0xC frames */
+#define FX_ARK_BOWL_FRAMES   0x40
+#define FX_ARK_STATE_BEAM    4    /* MAGENTA_RING, RED_RING and the BEAM_LINE come down */
+#define FX_ARK_BEAM_FRAMES   0x14
+#define FX_ARK_STATE_BEAM_2  5    /* the ring and beam move */
+#define FX_ARK_BEAM_2_FRAMES 0x18
+#define FX_ARK_STATE_BLAST   6    /* RED_FLASH_RING, the strands and particles (the op ends) */
+#define FX_ARK_BLAST_FRAMES  0x33
+#define FX_ARK_MODEL_COUNT   5    /* btlfx_initEffModels slots */
+#define FX_ARK_GREEN_TRAIL_TRAIL_SLOTS  0x30 /* GREEN_TRAIL's trail buffer: slots of */
+#define FX_ARK_GREEN_TRAIL_TRAIL_STRIDE 0x8C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* scrolling texture (fx_17d_2's SCROLL rect; not checked against the models) */
+#define FX_ARK_SCROLL_VRAM_X 0x180
+#define FX_ARK_SCROLL_VRAM_Y 0x100
+#define FX_ARK_SCROLL_VRAM_W 0x40
+#define FX_ARK_SCROLL_VRAM_H 0x80
+#define FX_ARK_SCROLL_SRC_X  0x180
+#define FX_ARK_SCROLL_SRC_Y  0x180
+
 extern Unk800F78A4 *fx_17d_4_env;
 extern s16 fx_17d_4_particleFileIds[16];
 extern SVECTOR fx_17d_4_particleOffsets[3];
