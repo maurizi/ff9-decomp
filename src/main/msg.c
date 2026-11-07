@@ -149,14 +149,14 @@ void msg_measureLine(u8 **pp, s32 *pw) {
         code = *text++;
         while (code != TEXT_END) {
             switch (code) {
-            case TEXT_CHAR_NAME + 0:
-            case TEXT_CHAR_NAME + 1:
-            case TEXT_CHAR_NAME + 2:
-            case TEXT_CHAR_NAME + 3:
-            case TEXT_CHAR_NAME + 4:
-            case TEXT_CHAR_NAME + 5:
-            case TEXT_CHAR_NAME + 6:
-            case TEXT_CHAR_NAME + 7:
+            case TEXT_CHAR_NAME + CHR_ZIDANE:
+            case TEXT_CHAR_NAME + CHR_VIVI:
+            case TEXT_CHAR_NAME + CHR_DAGGER:
+            case TEXT_CHAR_NAME + CHR_STEINER:
+            case TEXT_CHAR_NAME + CHR_FREYA:
+            case TEXT_CHAR_NAME + CHR_QUINA:
+            case TEXT_CHAR_NAME + CHR_EIKO:
+            case TEXT_CHAR_NAME + CHR_AMARANT:
                 w += msg_measureLine_width(g_gameState->gameData->characters[code - TEXT_CHAR_NAME].name);
                 break;
             case TEXT_PARTY_NAME + 0:
@@ -165,14 +165,14 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case TEXT_PARTY_NAME + 3:
                 w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(code - TEXT_PARTY_NAME)].name);
                 break;
-            case TEXT_CHAR_NAME_CAPS + 0:
-            case TEXT_CHAR_NAME_CAPS + 1:
-            case TEXT_CHAR_NAME_CAPS + 2:
-            case TEXT_CHAR_NAME_CAPS + 3:
-            case TEXT_CHAR_NAME_CAPS + 4:
-            case TEXT_CHAR_NAME_CAPS + 5:
-            case TEXT_CHAR_NAME_CAPS + 6:
-            case TEXT_CHAR_NAME_CAPS + 7:
+            case TEXT_CHAR_NAME_CAPS + CHR_ZIDANE:
+            case TEXT_CHAR_NAME_CAPS + CHR_VIVI:
+            case TEXT_CHAR_NAME_CAPS + CHR_DAGGER:
+            case TEXT_CHAR_NAME_CAPS + CHR_STEINER:
+            case TEXT_CHAR_NAME_CAPS + CHR_FREYA:
+            case TEXT_CHAR_NAME_CAPS + CHR_QUINA:
+            case TEXT_CHAR_NAME_CAPS + CHR_EIKO:
+            case TEXT_CHAR_NAME_CAPS + CHR_AMARANT:
                 msg_measureLine_name(code - TEXT_CHAR_NAME_CAPS);
                 w += msg_measureLine_width(g_msgNameBuf);
                 break;
@@ -349,15 +349,15 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
                 msg_measureLine(&cur, &code);
                 pen_move((w->w - code) >> 1, 0);
                 break;
-            case TEXT_COLOR + 0:
-            case TEXT_COLOR + 1:
-            case TEXT_COLOR + 2:
-            case TEXT_COLOR + 3:
-            case TEXT_COLOR + 4:
-            case TEXT_COLOR + 5:
-            case TEXT_COLOR + 6:
-            case TEXT_COLOR + 7:
-            case TEXT_COLOR + 8:
+            case TEXT_COLOR + TEXT_PAL_WHITE:
+            case TEXT_COLOR + TEXT_PAL_PLAIN:
+            case TEXT_COLOR + TEXT_PAL_GREY:
+            case TEXT_COLOR + TEXT_PAL_RED:
+            case TEXT_COLOR + TEXT_PAL_YELLOW:
+            case TEXT_COLOR + TEXT_PAL_CYAN:
+            case TEXT_COLOR + TEXT_PAL_PURPLE:
+            case TEXT_COLOR + TEXT_PAL_GREEN:
+            case TEXT_COLOR + TEXT_PAL_HELP:
                 pen_setPalette(code - TEXT_COLOR);
                 break;
             case TEXT_MSG_NUMBER:
@@ -377,14 +377,14 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
                 msg_renderText_value(w, g_msgNumbers[*cur++], msg_emitItemName, last);
                 pen_setPalette(TEXT_PAL_WHITE);
                 break;
-            case TEXT_CHAR_NAME + 0:
-            case TEXT_CHAR_NAME + 1:
-            case TEXT_CHAR_NAME + 2:
-            case TEXT_CHAR_NAME + 3:
-            case TEXT_CHAR_NAME + 4:
-            case TEXT_CHAR_NAME + 5:
-            case TEXT_CHAR_NAME + 6:
-            case TEXT_CHAR_NAME + 7:
+            case TEXT_CHAR_NAME + CHR_ZIDANE:
+            case TEXT_CHAR_NAME + CHR_VIVI:
+            case TEXT_CHAR_NAME + CHR_DAGGER:
+            case TEXT_CHAR_NAME + CHR_STEINER:
+            case TEXT_CHAR_NAME + CHR_FREYA:
+            case TEXT_CHAR_NAME + CHR_QUINA:
+            case TEXT_CHAR_NAME + CHR_EIKO:
+            case TEXT_CHAR_NAME + CHR_AMARANT:
                 msg_renderText_value(w, code - TEXT_CHAR_NAME, msg_emitCharName, end == cur);
                 break;
             case TEXT_PARTY_NAME + 0:
@@ -394,14 +394,14 @@ void msg_renderText(MsgWindow *w, u8 *msgText) {
                 last = end - cur == 0;
                 msg_renderText_value(w, evt_getPartyChrIndex(code - TEXT_PARTY_NAME), msg_emitCharName, last);
                 break;
-            case TEXT_CHAR_NAME_CAPS + 0:
-            case TEXT_CHAR_NAME_CAPS + 1:
-            case TEXT_CHAR_NAME_CAPS + 2:
-            case TEXT_CHAR_NAME_CAPS + 3:
-            case TEXT_CHAR_NAME_CAPS + 4:
-            case TEXT_CHAR_NAME_CAPS + 5:
-            case TEXT_CHAR_NAME_CAPS + 6:
-            case TEXT_CHAR_NAME_CAPS + 7:
+            case TEXT_CHAR_NAME_CAPS + CHR_ZIDANE:
+            case TEXT_CHAR_NAME_CAPS + CHR_VIVI:
+            case TEXT_CHAR_NAME_CAPS + CHR_DAGGER:
+            case TEXT_CHAR_NAME_CAPS + CHR_STEINER:
+            case TEXT_CHAR_NAME_CAPS + CHR_FREYA:
+            case TEXT_CHAR_NAME_CAPS + CHR_QUINA:
+            case TEXT_CHAR_NAME_CAPS + CHR_EIKO:
+            case TEXT_CHAR_NAME_CAPS + CHR_AMARANT:
                 msg_renderText_value(w, code - TEXT_CHAR_NAME_CAPS, msg_emitCharNameCaps, end == cur);
                 break;
             case TEXT_BTN_CIRCLE:
@@ -581,26 +581,26 @@ void msg_advanceText(MsgWindow *w, u8 *msgText) {
             case TEXT_MSG_ITEM_NAME:
             case TEXT_MSG_NUMBER:
                 cur++;
-            case TEXT_CHAR_NAME + 0:
-            case TEXT_CHAR_NAME + 1:
-            case TEXT_CHAR_NAME + 2:
-            case TEXT_CHAR_NAME + 3:
-            case TEXT_CHAR_NAME + 4:
-            case TEXT_CHAR_NAME + 5:
-            case TEXT_CHAR_NAME + 6:
-            case TEXT_CHAR_NAME + 7:
+            case TEXT_CHAR_NAME + CHR_ZIDANE:
+            case TEXT_CHAR_NAME + CHR_VIVI:
+            case TEXT_CHAR_NAME + CHR_DAGGER:
+            case TEXT_CHAR_NAME + CHR_STEINER:
+            case TEXT_CHAR_NAME + CHR_FREYA:
+            case TEXT_CHAR_NAME + CHR_QUINA:
+            case TEXT_CHAR_NAME + CHR_EIKO:
+            case TEXT_CHAR_NAME + CHR_AMARANT:
             case TEXT_PARTY_NAME + 0:
             case TEXT_PARTY_NAME + 1:
             case TEXT_PARTY_NAME + 2:
             case TEXT_PARTY_NAME + 3:
-            case TEXT_CHAR_NAME_CAPS + 0:
-            case TEXT_CHAR_NAME_CAPS + 1:
-            case TEXT_CHAR_NAME_CAPS + 2:
-            case TEXT_CHAR_NAME_CAPS + 3:
-            case TEXT_CHAR_NAME_CAPS + 4:
-            case TEXT_CHAR_NAME_CAPS + 5:
-            case TEXT_CHAR_NAME_CAPS + 6:
-            case TEXT_CHAR_NAME_CAPS + 7:
+            case TEXT_CHAR_NAME_CAPS + CHR_ZIDANE:
+            case TEXT_CHAR_NAME_CAPS + CHR_VIVI:
+            case TEXT_CHAR_NAME_CAPS + CHR_DAGGER:
+            case TEXT_CHAR_NAME_CAPS + CHR_STEINER:
+            case TEXT_CHAR_NAME_CAPS + CHR_FREYA:
+            case TEXT_CHAR_NAME_CAPS + CHR_QUINA:
+            case TEXT_CHAR_NAME_CAPS + CHR_EIKO:
+            case TEXT_CHAR_NAME_CAPS + CHR_AMARANT:
                 if (!(w->flags & MSGW_SKIP)) {
                     w->pendingChars = 1;
                     w->typeAccum = 0;
