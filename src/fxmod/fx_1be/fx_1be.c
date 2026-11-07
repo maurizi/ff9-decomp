@@ -6,13 +6,13 @@ static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to,
     s32 ratio = 0;
 
     switch (curve) {
-    case 0:
+    case FX_ATOMOS_EASE_LINEAR:
         ratio = ((0x10000000 / n) * t) >> 16;
         break;
-    case 1:
+    case FX_ATOMOS_EASE_SQUARED:
         ratio = 0x1000 - ((invSq * (n - t) * (n - t)) >> 17);
         break;
-    case 2:
+    case FX_ATOMOS_EASE_INV_SQUARED:
         ratio = (invSq * t * t) >> 17;
         break;
     }
@@ -25,13 +25,13 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     s32 ratio = 0;
 
     switch (curve) {
-    case 0:
+    case FX_ATOMOS_EASE_LINEAR:
         ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
-    case 1:
+    case FX_ATOMOS_EASE_SQUARED:
         ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
-    case 2:
+    case FX_ATOMOS_EASE_INV_SQUARED:
         ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
@@ -60,14 +60,14 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         *args = sizeof(Fx1beWork80);
     } else if (mode == 1) {
         fx_1be_env = env;
-        ex->btlfx_initEffModels(fx_1be_effModels, 5);
+        ex->btlfx_initEffModels(fx_1be_effModels, FX_ATOMOS_MODEL_COUNT);
         {
-            u8 *counter = &w->counters0[31];
-            for (i = 31; i >= 0; i--, counter--) {
+            u8 *counter = &w->counters0[FX_ATOMOS_COUNTERS - 1];
+            for (i = FX_ATOMOS_COUNTERS - 1; i >= 0; i--, counter--) {
                 *counter = 0;
             }
         }
-        for (i = 15; i >= 0; i--) {
+        for (i = FX_ATOMOS_EMITTERS - 1; i >= 0; i--) {
             w->emit20[i] = NULL;
         }
         fx_1be_scrollPos = 8;
@@ -75,7 +75,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         fx_1be_scrollInitWord = 2;
         for (i = 0; i < env->targets->targetCount; i++) {
             fx_1be_units[i].timer34 = ex->btlfx_rand() & 7;
-            fx_1be_units[i].timer30 = 0x28;
+            fx_1be_units[i].timer30 = FX_ATOMOS_UNIT_PULL_FRAMES;
             fx_1be_units[i].spin28.vx = ex->btlfx_randRange(-0x20, 0x20);
             fx_1be_units[i].spin28.vy = ex->btlfx_randRange(-0x40, 0x40);
             fx_1be_units[i].spin28.vz = ex->btlfx_randRange(-0x20, 0x20);
@@ -84,19 +84,19 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ex->btlfx_getUnitRot(i, (s16 *)&fx_1be_units[i].rot20);
             ex->btlfx_getUnitHomePos(i, (s16 *)&fx_1be_units[i].pos18);
         }
-        for (i = 0; i < 0x40; i++) {
+        for (i = 0; i < FX_ATOMOS_DEBRIS_ENDS; i++) {
             radius = ex->btlfx_rand() & 0xFFF;
             dirAng = (ex->btlfx_rand() & 0xDFF) + 0xB00;
             fx_1be_op80ParticleEnds[i].vx = (ex->math_sin(dirAng) * radius) >> 12;
-            fx_1be_op80ParticleEnds[i].vz = ((ex->math_cos(dirAng) * radius) >> 12) + 0x418;
+            fx_1be_op80ParticleEnds[i].vz = ((ex->math_cos(dirAng) * radius) >> 12) + FX_ATOMOS_HOLE_Z;
             fx_1be_op80ParticleEnds[i].vy = 0;
         }
         w->posD4.vx = 0;
         w->posD4.vy = 0;
-        w->posD4.vz = 0x418;
+        w->posD4.vz = FX_ATOMOS_HOLE_Z;
         w->unkCC.vx = 0;
-        w->unkCC.vy = -0x2000;
-        w->unkCC.vz = 0x418;
+        w->unkCC.vy = FX_ATOMOS_GATE_START_Y;
+        w->unkCC.vz = FX_ATOMOS_HOLE_Z;
         w->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_RED_CLOUD_SPHERE), 0xFF);
         w->scale74.vx = 0x1800;
         w->scale74.vy = 0x1800;
@@ -105,11 +105,11 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->rot84.vy = 0;
         w->rot84.vz = 0;
         w->pos64.vx = 0;
-        w->pos64.vy = -0x2000;
-        w->pos64.vz = 0x418;
-        w->pos8C.vz = 0x418;
+        w->pos64.vy = FX_ATOMOS_GATE_START_Y;
+        w->pos64.vz = FX_ATOMOS_HOLE_Z;
+        w->pos8C.vz = FX_ATOMOS_HOLE_Z;
         w->pos8C.vx = 0;
-        w->pos8C.vy = -0x2000;
+        w->pos8C.vy = FX_ATOMOS_GATE_START_Y;
         w->scaleAC.vx = 0x1A80;
         w->scaleAC.vy = 0x1A80;
         w->scaleAC.vz = 0x1A80;
@@ -120,20 +120,20 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     } else {
         frame = entry->frame;
         env->camera->points[1].vx = 0;
-        env->camera->points[1].vy = -0x800;
-        env->camera->points[1].vz = 0x418;
+        env->camera->points[1].vy = FX_ATOMOS_HOLE_Y;
+        env->camera->points[1].vz = FX_ATOMOS_HOLE_Z;
         env->camera->points[3].vx = w->pos64.vx;
         env->camera->points[3].vy = w->pos64.vy;
         env->camera->points[3].vz = w->pos64.vz;
         switch (frame) {
         case 0:
-            w->counters0[1] = 0x28;
-            w->counters0[0xD] = 0x20;
-            w->counters0[0] = 1;
-            w->counters0[0x14] = 1;
-            w->counters0[4] = 0x10;
+            w->counters0[FX_ATOMOS_T_GATE_DROP] = FX_ATOMOS_GATE_DROP_FRAMES;
+            w->counters0[FX_ATOMOS_T_DOME] = FX_ATOMOS_DOME_FRAMES;
+            w->counters0[FX_ATOMOS_T_GATE] = 1;
+            w->counters0[FX_ATOMOS_T_DOME_SCROLL] = 1;
+            w->counters0[FX_ATOMOS_T_ZOOM] = FX_ATOMOS_ZOOM_FRAMES;
             break;
-        case 0x18:
+        case FX_ATOMOS_STREAKS_FRAME:
             w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_STREAKS), (s32)&w->posBC);
             w->emit20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_VIOLET_RING), (s32)&w->posC4);
             if (w->emit20[0] != NULL) {
@@ -142,40 +142,40 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (w->emit20[1] != NULL) {
                 w->emit20[1]->otZ = 0x200;
             }
-            w->counters0[0xF] = 0x20;
-            w->counters0[7] = 0x10;
-            w->counters0[5] = 1;
-            w->counters0[0x14] = 1;
-            w->counters0[0xC] = 0x30;
+            w->counters0[FX_ATOMOS_T_STREAKS_MOVE] = FX_ATOMOS_STREAKS_MOVE_FRAMES;
+            w->counters0[FX_ATOMOS_T_VORTEX_IN] = FX_ATOMOS_VORTEX_IN_FRAMES;
+            w->counters0[FX_ATOMOS_T_VORTEX] = 1;
+            w->counters0[FX_ATOMOS_T_DOME_SCROLL] = 1;
+            w->counters0[FX_ATOMOS_T_PULL] = FX_ATOMOS_PULL_FRAMES;
             emitter = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ROCK_DEBRIS), (s32)&w->posD4);
             if (emitter != NULL) {
                 emitter->file->m.module.update = fx_1be_op80ParticleMotion;
             }
             break;
-        case 0x30:
-            w->counters0[0xE] = 0x10;
+        case FX_ATOMOS_STREAKS_OUT_FRAME:
+            w->counters0[FX_ATOMOS_T_STREAKS_OUT] = FX_ATOMOS_STREAKS_OUT_FRAMES;
             break;
-        case 0x40:
-            w->counters0[9] = 0x3C;
-            w->counters0[0xA] = 0x10;
-            w->counters0[0x12] = frame;
-            w->counters0[6] = 1;
+        case FX_ATOMOS_FUNNEL_FRAME:
+            w->counters0[FX_ATOMOS_T_GRIDS] = FX_ATOMOS_GRID_FRAMES;
+            w->counters0[FX_ATOMOS_T_GRID_IN] = FX_ATOMOS_GRID_FADE_FRAMES;
+            w->counters0[FX_ATOMOS_T_SPEED_UP] = frame; /* FUNNEL_FRAME frames */
+            w->counters0[FX_ATOMOS_T_FUNNEL] = 1;
             ex->btlfx_stopEmitter(w->emit20[2]);
-            w->scale74.vx = 0x555;
-            w->scale74.vy = 0x555;
-            w->scale74.vz = 0x555;
+            w->scale74.vx = FX_ATOMOS_VORTEX_SCALE;
+            w->scale74.vy = FX_ATOMOS_VORTEX_SCALE;
+            w->scale74.vz = FX_ATOMOS_VORTEX_SCALE;
             w->pos64.vx = 0;
-            w->pos64.vy = -0x800;
-            w->pos64.vz = 0x418;
+            w->pos64.vy = FX_ATOMOS_HOLE_Y;
+            w->pos64.vz = FX_ATOMOS_HOLE_Z;
             w->pos8C.vx = 0;
-            w->pos8C.vy = -0x800;
-            w->pos8C.vz = 0x418;
+            w->pos8C.vy = FX_ATOMOS_HOLE_Y;
+            w->pos8C.vz = FX_ATOMOS_HOLE_Z;
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_NAVY_RINGS), (s32)&w->pos8C);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
             break;
-        case 0x50:
+        case FX_ATOMOS_RINGS_FRAME:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_FIRE_RINGS), (s32)&w->pos8C);
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_PURPLE_RINGS), (s32)&w->pos8C);
             if (emitter != NULL) {
@@ -186,97 +186,99 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 emitter->otZ = 0x100;
             }
             break;
-        case 0x54:
-            w->counters0[3] = 8;
+        case FX_ATOMOS_SHRINK_FRAME:
+            w->counters0[FX_ATOMOS_T_SHRINK] = FX_ATOMOS_SHRINK_FRAMES;
             break;
-        case 0x5C:
-            w->counters0[0] = 0;
-            w->counters0[5] = 0;
-            w->counters0[0x14] = 0;
+        case FX_ATOMOS_CLOSE_FRAME:
+            w->counters0[FX_ATOMOS_T_GATE] = 0;
+            w->counters0[FX_ATOMOS_T_VORTEX] = 0;
+            w->counters0[FX_ATOMOS_T_DOME_SCROLL] = 0;
             break;
-        case 0x2C:
-            w->counters0[0xB] = 0x10;
+        case FX_ATOMOS_GRID_OUT_FRAME:
+            w->counters0[FX_ATOMOS_T_GRID_OUT] = FX_ATOMOS_GRID_FADE_FRAMES;
             break;
-        case 0x7C:
+        case FX_ATOMOS_LAND_FRAME:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_setUnitScale(i, (s32 *)&fx_1be_units[i].scale8);
                 ex->btlfx_setUnitRot(i, (s16 *)&fx_1be_units[i].rot0);
             }
-            w->counters0[0x10] = 8;
+            w->counters0[FX_ATOMOS_T_LAND] = FX_ATOMOS_LAND_FRAMES;
             break;
-        case 0xAC:
+        case FX_ATOMOS_FRAMES:
             return 1;
         }
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < FX_ATOMOS_EMITTERS; i++) {
             if (w->emit20[i] != NULL && w->emit20[i]->state == BTLFX_EMIT_DONE) {
                 w->emit20[i] = NULL;
             }
         }
-        if (w->counters0[1] != 0) {
-            w->counters0[1]--;
-            w->pos64.vy = fxm_easeLerp(2, 0x28, w->counters0[1], -0x2000, -0x1000);
+        if (w->counters0[FX_ATOMOS_T_GATE_DROP] != 0) {
+            w->counters0[FX_ATOMOS_T_GATE_DROP]--;
+            w->pos64.vy = fxm_easeLerp(FX_ATOMOS_EASE_INV_SQUARED, FX_ATOMOS_GATE_DROP_FRAMES, w->counters0[FX_ATOMOS_T_GATE_DROP], FX_ATOMOS_GATE_START_Y,
+                                       FX_ATOMOS_GATE_END_Y);
             w->pos8C.vy = w->pos64.vy;
         }
-        if (w->counters0[3] != 0) {
-            w->counters0[3]--;
-            w->scale74.vx = w->scale74.vz = w->scale74.vy = fxm_easeLerp(1, 8, w->counters0[3], 0x555, 0);
+        if (w->counters0[FX_ATOMOS_T_SHRINK] != 0) {
+            w->counters0[FX_ATOMOS_T_SHRINK]--;
+            w->scale74.vx = w->scale74.vz = w->scale74.vy =
+                fxm_easeLerp(FX_ATOMOS_EASE_SQUARED, FX_ATOMOS_SHRINK_FRAMES, w->counters0[FX_ATOMOS_T_SHRINK], FX_ATOMOS_VORTEX_SCALE, 0);
         }
-        if (w->counters0[0] != 0) {
+        if (w->counters0[FX_ATOMOS_T_GATE] != 0) {
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
             ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scale74, w->model60);
         }
-        if (w->counters0[0xD] != 0) {
-            w->counters0[0xD]--;
+        if (w->counters0[FX_ATOMOS_T_DOME] != 0) {
+            w->counters0[FX_ATOMOS_T_DOME]--;
             ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scaleAC, w->modelA8);
-            if (w->counters0[0xD] < 0x10) {
-                bright = (w->counters0[0xD] - 0x10) * 0x10;
+            if (w->counters0[FX_ATOMOS_T_DOME] < FX_ATOMOS_DOME_FADE_FRAMES) {
+                bright = (w->counters0[FX_ATOMOS_T_DOME] - FX_ATOMOS_DOME_FADE_FRAMES) * 0x10;
                 ex->Hi_ModifyEffModelRGB(w->modelA8, bright, bright, bright);
             }
         }
-        if (w->counters0[0xF] != 0) {
-            w->counters0[0xF]--;
+        if (w->counters0[FX_ATOMOS_T_STREAKS_MOVE] != 0) {
+            w->counters0[FX_ATOMOS_T_STREAKS_MOVE]--;
             ex->btlfx_moveEmitterTo((s32)w->emit20[0], (s32)&w->pos8C);
             ex->btlfx_moveEmitterTo((s32)w->emit20[1], (s32)&w->pos8C);
         }
-        if (w->counters0[0xE] != 0) {
-            if (--w->counters0[0xE] != 0) {
+        if (w->counters0[FX_ATOMOS_T_STREAKS_OUT] != 0) {
+            if (--w->counters0[FX_ATOMOS_T_STREAKS_OUT] != 0) {
                 if (w->emit20[0] != NULL) {
-                    w->emit20[0]->alpha = w->counters0[0xE] << 8;
+                    w->emit20[0]->alpha = w->counters0[FX_ATOMOS_T_STREAKS_OUT] << 8;
                 }
                 if (w->emit20[1] != NULL) {
-                    w->emit20[1]->alpha = w->counters0[0xE] << 8;
+                    w->emit20[1]->alpha = w->counters0[FX_ATOMOS_T_STREAKS_OUT] << 8;
                 }
             } else {
                 ex->btlfx_stopEmitter(w->emit20[0]);
                 ex->btlfx_stopEmitter(w->emit20[1]);
             }
         }
-        if (w->counters0[5] != 0) {
+        if (w->counters0[FX_ATOMOS_T_VORTEX] != 0) {
             aim.vx = w->pos64.vx;
             aim.vy = w->pos64.vy;
             aim.vz = w->pos64.vz;
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&aim, (s16 *)&w->rot9C);
             ex->Hi_DrawEffModel(&w->rot9C, &w->pos64, (s32)&w->scale74, w->model94);
-            if (w->counters0[6] != 0) {
+            if (w->counters0[FX_ATOMOS_T_FUNNEL] != 0) {
                 ex->Hi_DrawEffModel(&w->rot9C, &w->pos64, (s32)&w->scale74, w->model98);
                 ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scale74, w->modelA4);
             }
         }
-        if (w->counters0[7] != 0) {
-            w->counters0[7]--;
-            bright = -(w->counters0[7] * 0x10);
+        if (w->counters0[FX_ATOMOS_T_VORTEX_IN] != 0) {
+            w->counters0[FX_ATOMOS_T_VORTEX_IN]--;
+            bright = -(w->counters0[FX_ATOMOS_T_VORTEX_IN] * 0x10);
             ex->Hi_ModifyEffModelRGB(w->model94, bright, bright, bright);
         }
-        if (w->counters0[0xC] != 0) {
-            w->counters0[0xC]--;
+        if (w->counters0[FX_ATOMOS_T_PULL] != 0) {
+            w->counters0[FX_ATOMOS_T_PULL]--;
             for (i = 0; i < env->targets->targetCount; i++) {
                 unit = &fx_1be_units[i];
                 if (unit->timer34 == 0) {
                     if (unit->timer30 != 0) {
                         unit->timer30--;
-                        fxm_easeLerpSvec(1, 0x28, unit->timer30, &fx_1be_units[i].pos18, &w->pos8C, &ang);
+                        fxm_easeLerpSvec(FX_ATOMOS_EASE_SQUARED, FX_ATOMOS_UNIT_PULL_FRAMES, unit->timer30, &fx_1be_units[i].pos18, &w->pos8C, &ang);
                         ex->btlfx_setUnitPos(i, (s16 *)&ang);
-                        sc.vx = sc.vy = sc.vz = fxm_easeLerp(1, 0x28, unit->timer30, unit->scale8.vy, 0);
+                        sc.vx = sc.vy = sc.vz = fxm_easeLerp(FX_ATOMOS_EASE_SQUARED, FX_ATOMOS_UNIT_PULL_FRAMES, unit->timer30, unit->scale8.vy, 0);
                         ex->btlfx_setUnitScale(i, (s32 *)&sc);
                         unit->rot20.vx += unit->spin28.vx;
                         unit->rot20.vy += unit->spin28.vy;
@@ -288,36 +290,36 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 }
             }
         }
-        if (w->counters0[9] != 0) {
+        if (w->counters0[FX_ATOMOS_T_GRIDS] != 0) {
             bright = 0xFFF;
-            w->counters0[9]--;
-            if (w->counters0[0xA] != 0) {
-                w->counters0[0xA]--;
-                bright = (0x10 - w->counters0[0xA]) << 8;
+            w->counters0[FX_ATOMOS_T_GRIDS]--;
+            if (w->counters0[FX_ATOMOS_T_GRID_IN] != 0) {
+                w->counters0[FX_ATOMOS_T_GRID_IN]--;
+                bright = (FX_ATOMOS_GRID_FADE_FRAMES - w->counters0[FX_ATOMOS_T_GRID_IN]) << 8;
             }
-            if (w->counters0[0xB] != 0) {
-                w->counters0[0xB]--;
-                bright = w->counters0[0xB] << 8;
+            if (w->counters0[FX_ATOMOS_T_GRID_OUT] != 0) {
+                w->counters0[FX_ATOMOS_T_GRID_OUT]--;
+                bright = w->counters0[FX_ATOMOS_T_GRID_OUT] << 8;
             }
             ex->btlfx_aimAngles((s16 *)&w->pos8C, (s16 *)&env->camera->eye, (s16 *)&rot2);
-            pos.vz = 0xC18;
+            pos.vz = FX_ATOMOS_HOLE_Z + 0x800;
             pos.vx = 0;
             pos.vy = -0x1200;
             rot2.vz = 0;
             rot2.vx += 0xA0;
-            fx_1be_drawGradientGrid(&pos, &rot2, bright, 0x19, 0x3D03, 1);
+            fx_1be_drawGradientGrid(&pos, &rot2, bright, FX_ATOMOS_GRID_TPAGE, FX_ATOMOS_GRID_CLUT, BTLFX_ABR_ADD);
             pos.vy = 0x200;
             rot2.vz = 0x800;
             rot2.vx -= 0x140;
-            fx_1be_drawGradientGrid(&pos, &rot2, bright, 0x19, 0x3D03, 1);
+            fx_1be_drawGradientGrid(&pos, &rot2, bright, FX_ATOMOS_GRID_TPAGE, FX_ATOMOS_GRID_CLUT, BTLFX_ABR_ADD);
         }
-        if (w->counters0[0x10] != 0) {
-            w->counters0[0x10]--;
+        if (w->counters0[FX_ATOMOS_T_LAND] != 0) {
+            w->counters0[FX_ATOMOS_T_LAND]--;
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&fx_1be_units[i].pos18);
-                fx_1be_units[i].pos18.vy -= ex->math_sin(w->counters0[0x10] << 7) >> 1;
+                fx_1be_units[i].pos18.vy -= ex->math_sin(w->counters0[FX_ATOMOS_T_LAND] << 7) >> 1;
                 ex->btlfx_setUnitPos(i, (s16 *)&fx_1be_units[i].pos18);
-                if (w->counters0[0x10] == 0) {
+                if (w->counters0[FX_ATOMOS_T_LAND] == 0) {
                     fx_1be_units[i].pos18.vy = 0;
                     emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_GREY_RINGS), (s32)&fx_1be_units[i].pos18);
                     if (emitter != NULL) {
@@ -326,24 +328,27 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 }
             }
         }
-        if (w->counters0[0x12] != 0) {
-            w->counters0[0x12]--;
-            fx_1be_scrollSpeed = fxm_easeLerp(1, 0x40, w->counters0[0x12], 4, 0x14);
+        if (w->counters0[FX_ATOMOS_T_SPEED_UP] != 0) {
+            w->counters0[FX_ATOMOS_T_SPEED_UP]--;
+            fx_1be_scrollSpeed = fxm_easeLerp(FX_ATOMOS_EASE_SQUARED, FX_ATOMOS_FUNNEL_FRAME, w->counters0[FX_ATOMOS_T_SPEED_UP], 4, 0x14);
         }
         fx_1be_scrollPos += fx_1be_scrollSpeed;
-        if (w->counters0[5] != 0) {
-            ex->btlfx_drawScrollMove(fx_1be_scrollPos, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
+        if (w->counters0[FX_ATOMOS_T_VORTEX] != 0) {
+            ex->btlfx_drawScrollMove(fx_1be_scrollPos, FX_ATOMOS_RING_VRAM_X, FX_ATOMOS_RING_VRAM_Y, FX_ATOMOS_RING_VRAM_W, FX_ATOMOS_RING_VRAM_H,
+                                     FX_ATOMOS_RING_SRC_X, FX_ATOMOS_RING_SRC_Y);
         }
-        if (w->counters0[0x14] != 0) {
-            ex->btlfx_drawScrollMove(0x2710 - fx_1be_scrollPos, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+        if (w->counters0[FX_ATOMOS_T_DOME_SCROLL] != 0) {
+            ex->btlfx_drawScrollMove(0x2710 - fx_1be_scrollPos, FX_ATOMOS_DOME_VRAM_X, FX_ATOMOS_DOME_VRAM_Y, FX_ATOMOS_DOME_VRAM_W, FX_ATOMOS_DOME_VRAM_H,
+                                     FX_ATOMOS_DOME_SRC_X, FX_ATOMOS_DOME_SRC_Y);
         }
-        if (w->counters0[9] != 0) {
-            ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x140, 0x18, 0x60, 0x240, 0x1A0);
+        if (w->counters0[FX_ATOMOS_T_GRIDS] != 0) {
+            ex->btlfx_drawScrollMove(frame * 8, FX_ATOMOS_GRID_VRAM_X, FX_ATOMOS_GRID_VRAM_Y, FX_ATOMOS_GRID_VRAM_W, FX_ATOMOS_GRID_VRAM_H,
+                                     FX_ATOMOS_GRID_SRC_X, FX_ATOMOS_GRID_SRC_Y);
         }
-        if (w->counters0[4] != 0) {
-            w->counters0[4]--;
-            col.r = col.g = col.b = w->counters0[4] * 8;
-            scale.vz = scale.vy = scale.vx = w->counters0[4] * 0x10 + 0x1000;
+        if (w->counters0[FX_ATOMOS_T_ZOOM] != 0) {
+            w->counters0[FX_ATOMOS_T_ZOOM]--;
+            col.r = col.g = col.b = w->counters0[FX_ATOMOS_T_ZOOM] * 8;
+            scale.vz = scale.vy = scale.vx = w->counters0[FX_ATOMOS_T_ZOOM] * 0x10 + 0x1000;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -383,7 +388,7 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 bright, s32 tpage, 
     gte_ldv0(pos);
     poly = (POLY_GT4 *)env->prim;
     tpage |= TPAGE_ABR(abr);
-    env->prim = (u8 *)(poly + 32);
+    env->prim = (u8 *)(poly + FX_ATOMOS_GRID_ROWS * FX_ATOMOS_GRID_COLS);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     gte_stlvnl(m.t);
@@ -393,7 +398,7 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 bright, s32 tpage, 
     bright /= 8;
     bright0 = 0;
     bright1 = bright;
-    for (j = 0; j < 8; j++) {
+    for (j = 0; j < FX_ATOMOS_GRID_ROWS; j++) {
         gridCol.vx = fx_1be_gridColors[j].vx;
         gridCol.vy = fx_1be_gridColors[j].vy;
         gridCol.vz = fx_1be_gridColors[j].vz;
@@ -408,14 +413,14 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 bright, s32 tpage, 
         col1.b = (gridCol.vz * bright1) >> 12;
         bright0 += bright;
         bright1 += bright;
-        corner[0].vz = corner[1].vz = j * 0xA00 - 0x2800;
-        corner[2].vz = corner[3].vz = j * 0xA00 - 0x1E00;
-        for (i = 0; i < 4; i++) {
-            corner[0].vx = corner[2].vx = i * 0x1400 - 0x2800;
-            corner[1].vx = corner[3].vx = i * 0x1400 - 0x1400;
+        corner[0].vz = corner[1].vz = j * FX_ATOMOS_GRID_CELL_Z - FX_ATOMOS_GRID_HALF;
+        corner[2].vz = corner[3].vz = j * FX_ATOMOS_GRID_CELL_Z - (FX_ATOMOS_GRID_HALF - FX_ATOMOS_GRID_CELL_Z);
+        for (i = 0; i < FX_ATOMOS_GRID_COLS; i++) {
+            corner[0].vx = corner[2].vx = i * FX_ATOMOS_GRID_CELL_X - FX_ATOMOS_GRID_HALF;
+            corner[1].vx = corner[3].vx = i * FX_ATOMOS_GRID_CELL_X - (FX_ATOMOS_GRID_HALF - FX_ATOMOS_GRID_CELL_X);
             gte_ldv3c(corner);
             gte_rtpt();
-            poly->code = (abr != 0xFF) ? 0x3E : 0x3C;
+            poly->code = (abr != BTLFX_ABR_OPAQUE) ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
             poly->r0 = poly->r1 = col0.r;
             poly->g0 = poly->g1 = col0.g;
             poly->b0 = poly->b1 = col0.b;
@@ -432,7 +437,7 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 bright, s32 tpage, 
             poly->clut = clut;
             poly->tpage = tpage;
             gte_stsxy(&poly->x3);
-            ex->btlfx_addPrim(0x0C000000, 0, poly);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), 0, poly);
             poly++;
         }
     }
@@ -443,11 +448,11 @@ static s32 fx_1be_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTO
     SVECTOR from;
     SVECTOR *key;
 
-    key = &fx_1be_op80ParticleEnds[(pt->slot - 1) & 0x3F];
+    key = &fx_1be_op80ParticleEnds[(pt->slot - 1) & (FX_ATOMOS_DEBRIS_ENDS - 1)];
     from.vx = 0;
-    from.vy = -0x800;
-    from.vz = 0x418;
-    fxm_easeLerpSvec(1, 0x1000, ((0x1000000 / n) * frame) >> 12, &from, key, &lerpPos);
+    from.vy = FX_ATOMOS_HOLE_Y;
+    from.vz = FX_ATOMOS_HOLE_Z;
+    fxm_easeLerpSvec(FX_ATOMOS_EASE_SQUARED, 0x1000, ((0x1000000 / n) * frame) >> 12, &from, key, &lerpPos);
     pos->vx = lerpPos.vx;
     pos->vy = lerpPos.vy;
     pos->vz = lerpPos.vz;

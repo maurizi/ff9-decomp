@@ -49,6 +49,56 @@
 #define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2_TRAIL_SLOTS  8 /* FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2's trail buffer fx_1a2_op80Trails1: slots of */
 #define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2_TRAIL_STRIDE 0x4C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
 
+/* fx_1a2 choreography (deep pass) */
+#define FX_MOONLIGHT_SLASH_MODEL_COUNT    10   /* btlfx_initEffModels slots */
+#define FX_MOONLIGHT_SLASH_RIBBON_CLEAR   999  /* fxm_drawRibbonTrail: n > this clears n - this points */
+#define FX_MOONLIGHT_SLASH_RIBBON_POINTS  0x20 /* points per ribbon (fx_1a2_ribbonEdges0..2), cleared at frame 0, n - 1 drawn */
+#define FX_MOONLIGHT_SLASH_SHATTER_PIECES 130  /* fxm_shatterModel: triangles of the split model (fx_1a2_shatterTris / Pieces) */
+#define FX_MOONLIGHT_SLASH_SHATTER_HOLD_FRAMES 3 /* a piece stays in place this long, then flies (btlfx_stepModuleParticle) */
+#define FX_MOONLIGHT_SLASH_SHATTER_FRAMES 0x40 /* then it is removed */
+#define FX_MOONLIGHT_SLASH_ROCK_STATE_HOP  0   /* op80 pool task (Fx1a2Rock.state8): a hop forward, */
+#define FX_MOONLIGHT_SLASH_ROCK_STATE_REST 1   /* a short rest on the ground */
+#define FX_MOONLIGHT_SLASH_ROCK_HOPS       10  /* the task ends after this many hops */
+#define FX_MOONLIGHT_SLASH_ROCK_HOP_FRAMES 8   /* a hop (its sine arc is frame << 9) */
+#define FX_MOONLIGHT_SLASH_BIG_ROCK_SCALE  0x1800 /* the one big rock (spawned at SHATTER_FRAME, resting first); smaller rocks turn between hops */
+#define FX_MOONLIGHT_SLASH_STATE_CHARGE  0 /* op80 state: ribbons trail from the blade (bone 0x10), WHITE_RINGS and CYAN_SPARKLES at its tip */
+#define FX_MOONLIGHT_SLASH_STATE_SLASH   1 /* the BLADE crescents sweep round the target (6 afterimages), MOON and BLUE_GLOWS */
+#define FX_MOONLIGHT_SLASH_STATE_PAUSE   2
+#define FX_MOONLIGHT_SLASH_STATE_PILLAR  3 /* the light pillar (LIGHT_RING morphing into LIGHT_BAND_2, LIGHT_BAND), crescent trails; the ARMOR shatters */
+#define FX_MOONLIGHT_SLASH_STATE_DEBRIS  4 /* the pieces fall, ARMOR_2 bounces and fades (op80 ends) */
+#define FX_MOONLIGHT_SLASH_CHARGE_FRAMES 93
+#define FX_MOONLIGHT_SLASH_SLASH_FRAMES  0xB
+#define FX_MOONLIGHT_SLASH_MOON_FRAME    4    /* SLASH: MOON and BLUE_GLOWS start */
+#define FX_MOONLIGHT_SLASH_SLASH_FADE_FRAME 7 /* SLASH: the crescents fade from here to the end */
+#define FX_MOONLIGHT_SLASH_BLADE_MODELS  3    /* SLASH: BLADE_3, BLADE_2, BLADE (model30), one per frame, then the last */
+#define FX_MOONLIGHT_SLASH_AFTERIMAGES   6    /* SLASH: crescent copies, the rotation keys of the last frames */
+#define FX_MOONLIGHT_SLASH_PAUSE_FRAMES  0xC
+#define FX_MOONLIGHT_SLASH_PILLAR_FRAMES 29
+#define FX_MOONLIGHT_SLASH_BAND_GROW_FRAMES 4 /* PILLAR: LIGHT_BAND grows, then shrinks with the pillar's cosine */
+#define FX_MOONLIGHT_SLASH_SHATTER_FRAME 10   /* PILLAR: tint, ARMOR split into pieces, ARMOR_2 thrown, the target hidden; rocks from here */
+#define FX_MOONLIGHT_SLASH_SHATTER_TINT_RGB 0x10, 0x3C, 0x46
+#define FX_MOONLIGHT_SLASH_ROCK_SPAWN_FRAMES 4 /* PILLAR: rocks spawned for this many frames, */
+#define FX_MOONLIGHT_SLASH_ROCKS_PER_FRAME   6 /* this many a frame */
+#define FX_MOONLIGHT_SLASH_DEBRIS_FRAMES 0x64
+#define FX_MOONLIGHT_SLASH_PLATE_FRAMES  0x30 /* DEBRIS: ARMOR_2 drawn until this frame, */
+#define FX_MOONLIGHT_SLASH_PLATE_FADE_FRAME  0x20 /* fading (additive) from here */
+#define FX_MOONLIGHT_SLASH_PLATE_FADE_FRAMES 0x10
+#define FX_MOONLIGHT_SLASH_CUE_FRAME     0x4B /* DEBRIS: btlfx_signalScriptCue */
+#define FX_MOONLIGHT_SLASH_OP81_FADE_FRAME 0x24 /* op81: unit 0x10 drifts back, fading out from here */
+#define FX_MOONLIGHT_SLASH_OP81_FRAMES   0x2C
+#define FX_MOONLIGHT_SLASH_BLADE_VRAM_X  0x280 /* btlfx_drawScrollMove rect: the BLADEs' 0x80 x 0x20 8-bit texels (BLADE_TPAGE, v 0xE0) */
+#define FX_MOONLIGHT_SLASH_BLADE_VRAM_Y  0x1E0
+#define FX_MOONLIGHT_SLASH_BLADE_VRAM_W  0x40
+#define FX_MOONLIGHT_SLASH_BLADE_VRAM_H  0x20
+#define FX_MOONLIGHT_SLASH_BLADE_SRC_X   0x2C0 /* from a strip of 8 frames, one a frame ((frame & 7) * H) */
+#define FX_MOONLIGHT_SLASH_BLADE_SRC_Y   0x100
+#define FX_MOONLIGHT_SLASH_BAND_VRAM_X   0x240 /* the bands' 0x60 x 0x80 8-bit texels (BAND_TPAGE, u 0x80) */
+#define FX_MOONLIGHT_SLASH_BAND_VRAM_Y   0x100
+#define FX_MOONLIGHT_SLASH_BAND_VRAM_W   0x30
+#define FX_MOONLIGHT_SLASH_BAND_VRAM_H   0x80
+#define FX_MOONLIGHT_SLASH_BAND_SRC_X    0x240
+#define FX_MOONLIGHT_SLASH_BAND_SRC_Y    0x180
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;
@@ -72,8 +122,8 @@ typedef struct {
     s16 delay1A;
 } Fx1a2Piece; /* 0x1C */
 
-extern Fx1a2Tri fx_1a2_shatterTris[130];
-extern Fx1a2Piece fx_1a2_shatterPieces[130];
+extern Fx1a2Tri fx_1a2_shatterTris[FX_MOONLIGHT_SLASH_SHATTER_PIECES];
+extern Fx1a2Piece fx_1a2_shatterPieces[FX_MOONLIGHT_SLASH_SHATTER_PIECES];
 typedef struct {
     s16 count0; /* bounce count */
     s16 height2; /* sink speed */
