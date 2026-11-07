@@ -1319,6 +1319,10 @@ extern s32 g_btlbgScrollCount;
 #define VRAM_BTLFX_COMMON_Y 0x100
 #define VRAM_BTLFX_COMMON_W 0x80
 #define VRAM_BTLFX_COMMON_H 0x100
+#define BTLFX_COMMON_PAGES 4 /* FILE_BTLFX_COMMON as staged at RAM_BTLFX_MODULE: four 64x128 16-bit pages */
+#define BTLFX_COMMON_PAGE_WORDS 0x1000 /* one page in u32 words */
+#define BTLFX_COMMON_CLUTS(type) ((type)(RAM_BTLFX_MODULE(u32 *) + BTLFX_COMMON_PAGES * BTLFX_COMMON_PAGE_WORDS)) /* then
+                                  * two 256-entry CLUT rows (btlfx_initCommonData loads them to y 0xF0) */
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle

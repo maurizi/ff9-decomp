@@ -4052,6 +4052,16 @@ typedef struct DirInfo {
     s32 firstSector; /* first sector of the directory's files (dir 13: the battle data base, btl_initMode) */
 } DirInfo;
 
+#define IMG_NUM_DIRS 15 /* FF9.IMG directories (GameState.dirs, dirTables) */
+/* the block game_allocState lays out at RAM_GAME_STATE: the allocator (g_allocTop) starts after it */
+typedef struct {
+    GameState state; /* g_gameState */
+    DISPENV dispEnv[2]; /* GameState.dispEnv */
+    DRAWENV drawEnv[2]; /* GameState.drawEnv */
+    DirInfo dirs[IMG_NUM_DIRS]; /* GameState.dirs */
+    void *dirTables[IMG_NUM_DIRS]; /* GameState.dirTables */
+} GameStateBlock; /* 0x250 */
+
 /* file_loadDirTables: 8-byte entries of directory lists 8 and 11 */
 typedef struct {
     u16 id; /*  */

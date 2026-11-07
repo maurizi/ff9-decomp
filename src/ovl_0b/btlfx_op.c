@@ -13,7 +13,7 @@ void btlfx_initCommonData(void) {
     rect.y = 0xF0;
     rect.w = 0x100;
     rect.h = 2;
-    LoadImage(&rect, PSX_RAM(u32 *, 0x801F7700));
+    LoadImage(&rect, BTLFX_COMMON_CLUTS(u32 *));
     DrawSync(0);
     g_btlfxEnv->prim = 0;
 }
@@ -30,11 +30,11 @@ s32 btlfx_reloadCommonData(s32 poll) {
         btlfx_resetMaskBit();
         rect.w = 0x40;
         rect.h = 0x80;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < BTLFX_COMMON_PAGES; i++) {
             rect.x = (i >> 1) * 64 + VRAM_BTLFX_COMMON_X;
             rect.y = (i & 1) * 128 + VRAM_BTLFX_COMMON_Y;
             LoadImage(&rect, p);
-            p += 0x1000;
+            p += BTLFX_COMMON_PAGE_WORDS;
         }
         ret = 1;
     }

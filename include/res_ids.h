@@ -148,6 +148,7 @@
 
 /* Fixed RAM regions, as PSX_RAM(type, addr) pointers (ports remap them). docs/ff9img.md,
  * docs/r29/battle-arena-memory.md */
+#define RAM_GAME_STATE(type) PSX_RAM(type, 0x8008B000) /* GameStateBlock (game_allocState), then the allocator */
 #define RAM_SUB_OVL(type) PSX_RAM(type, 0x801EDF00) /* load address of the menu overlays (0x32-0x3E) and ovl_65; ends
                                                      * below the stack. Also where menu_readPortraits reads, and
                                                      * the top of the field / world model cache */
