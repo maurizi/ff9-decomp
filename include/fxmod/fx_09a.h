@@ -16,6 +16,32 @@
 #define FX_LV5_DEATH_RED_RINGS 0x9 /* emitter: pink-red sprites + white-red rings */
 #define FX_LV5_DEATH_SMOKE 0xE /* emitter: grey smoke blobs */
 
+/* fx_09a choreography (docs/fxdata.md, "Choreography literals"): op80's states (one swing per target), keyframes,
+ * the scythe ribbons and the screen tints. */
+#define FX_LV5_DEATH_STATE_NEXT   1 /* op80: pick the next target and place the reaper beside it (or end) */
+#define FX_LV5_DEATH_STATE_SWING  2 /* the reaper fades in and swings, its scythe ribbons trailing */
+#define FX_LV5_DEATH_STATE_VANISH 3 /* it shrinks away, blue trail and smoke */
+#define FX_LV5_DEATH_STATE_END    4 /* wait, then signal 0 and end */
+#define FX_LV5_DEATH_FADE_IN_FRAMES 6  /* FX_LV5_DEATH_STATE_SWING: the reaper brightens in over this many frames */
+#define FX_LV5_DEATH_RIBBON_FRAMES 22  /* the ribbons fade in over this many */
+#define FX_LV5_DEATH_SOUND_FRAME  24   /* the swing sounds play */
+#define FX_LV5_DEATH_DARKEN_FRAME 26   /* subtractive screen tint */
+#define FX_LV5_DEATH_HIT_FRAME    27   /* the hit emitter (fx_09a_hitBlocks, by facing), GREEN_ORB and RED_RINGS start */
+#define FX_LV5_DEATH_FLASH_FRAME  28   /* red screen flash */
+#define FX_LV5_DEATH_RESULT_FRAME 29   /* btlfx_execCmd: the target's result */
+#define FX_LV5_DEATH_SWING_FRAMES 30   /* FX_LV5_DEATH_STATE_SWING's length */
+#define FX_LV5_DEATH_VANISH_FRAMES 6   /* FX_LV5_DEATH_STATE_VANISH's length (the (frame << 12) / N ramp) */
+#define FX_LV5_DEATH_BLUE_TRAIL_FRAME 2 /* FX_LV5_DEATH_STATE_VANISH: BLUE_TRAIL and SMOKE start */
+#define FX_LV5_DEATH_END_FRAMES   8    /* FX_LV5_DEATH_STATE_END's length */
+#define FX_LV5_DEATH_REAPER_GAP   0x78  /* the reaper stands this far beyond the target's radius */
+#define FX_LV5_DEATH_CAM_HEIGHT   0x140 /* the camera points are this far above the reaper / target */
+#define FX_LV5_DEATH_RIBBON_SEGMENTS 0x10 /* scythe ribbon segments (fx_09a_ribbon0 / 1 hold one more point) */
+#define FX_LV5_DEATH_RIBBON_RESET 0x3F8 /* fxm_drawRibbonTrail n >= 1000: refill the ribbon with the current points */
+#define FX_LV5_DEATH_BLUE_TRAIL_TRAIL_SLOTS  0x18 /* FX_LV5_DEATH_BLUE_TRAIL's trail buffer fx_09a_trails: slots of */
+#define FX_LV5_DEATH_BLUE_TRAIL_TRAIL_STRIDE 0x44 /* this many bytes */
+#define FX_LV5_DEATH_DARKEN_RGB    0xFF, 0xFF, 0  /* subtractive tint on FX_LV5_DEATH_DARKEN_FRAME */
+#define FX_LV5_DEATH_RED_FLASH_RGB 0xDC, 0, 0x20  /* additive tint on FX_LV5_DEATH_FLASH_FRAME */
+
 typedef struct {
     SVECTOR a0;
     SVECTOR b8;
