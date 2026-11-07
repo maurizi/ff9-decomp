@@ -29,14 +29,14 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->pos48[1] = 0;
         work->pos48[0] = 0;
         work->pos48[2] = 0;
-        work->scale54[0] = work->scale54[1] = work->scale54[2] = 0x1800;
+        work->scale54[0] = work->scale54[1] = work->scale54[2] = FX_ARK_SUMMON_SCALE;
         work->unk60.vx = 0;
         work->unk60.vy = 0;
         work->unk60.vz = 0;
         work->rot34.vx = 0;
         work->rot34.vy = 0;
         work->rot34.vz = 0;
-        work->scale3C[0] = work->scale3C[1] = work->scale3C[2] = 0x800;
+        work->scale3C[0] = work->scale3C[1] = work->scale3C[2] = FX_ARK_CYLINDER_SCALE;
         work->pos28[0] = work->pos48[0];
         work->pos28[1] = work->pos48[1];
         work->pos28[2] = work->pos48[2];
@@ -47,7 +47,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case FX_ARK_STATE_CLOUDS: {
             VECTOR shakeRot;
 
-            t = (frame << 12) / 24;
+            t = (frame << 12) / FX_ARK_CLOUDS_FRAMES;
             if (frame == 0) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_OPAQUE, FX_ARK_WHITE_RGB);
             }
@@ -75,8 +75,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     emitter->otZ = 0x40;
                 }
             }
-            sc.vx = sc.vz = 0x555;
-            sc.vy = 0xAAA;
+            sc.vx = sc.vz = FX_ARK_WING_PLATE_SCALE_XZ;
+            sc.vy = FX_ARK_WING_PLATE_SCALE_Y;
             pos.vx = work->pos20.vx;
             pos.vy = work->pos20.vy;
             pos.vz = work->pos20.vz;
@@ -98,15 +98,15 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)work->scale3C, work->model68);
-            ex->btlfx_drawScrollMove(frame * 0x18, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
             {
             CVECTOR col;
             SVECTOR gridRot;
             VECTOR gridScale;
 
             col.r = col.g = col.b = ((0x1000 - t) * 100) >> 12;
-            gridScale.vx = gridScale.vy = gridScale.vz = 0x1040;
+            gridScale.vx = gridScale.vy = gridScale.vz = FX_ARK_GRID_SCALE;
             gridRot.vx = 0;
             gridRot.vy = 0;
             gridRot.vz = 0;
@@ -122,7 +122,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case FX_ARK_STATE_CLOUDS_2: {
             VECTOR shakeRot;
 
-            t = (frame << 12) / 24;
+            t = (frame << 12) / FX_ARK_CLOUDS_FRAMES;
             ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             shakeRot.vx = work->pos48[0];
             shakeRot.vy = work->pos48[1];
@@ -147,8 +147,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     emitter->otZ = 0x40;
                 }
             }
-            sc.vx = sc.vz = 0x555;
-            sc.vy = 0xAAA;
+            sc.vx = sc.vz = FX_ARK_WING_PLATE_SCALE_XZ;
+            sc.vy = FX_ARK_WING_PLATE_SCALE_Y;
             pos.vx = work->pos20.vx;
             pos.vy = work->pos20.vy;
             pos.vz = work->pos20.vz;
@@ -170,15 +170,15 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)work->scale3C, work->model68);
-            ex->btlfx_drawScrollMove(frame * 0x18, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
             {
             CVECTOR col;
             SVECTOR gridRot;
             VECTOR gridScale;
 
             col.r = col.g = col.b = ((0x1000 - t) * 100) >> 12;
-            gridScale.vx = gridScale.vy = gridScale.vz = 0x1040;
+            gridScale.vx = gridScale.vy = gridScale.vz = FX_ARK_GRID_SCALE;
             gridRot.vx = 0;
             gridRot.vy = 0;
             gridRot.vz = 0;
@@ -198,11 +198,11 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             SVECTOR emitRot;
             VECTOR haloScale;
 
-            if (frame < 10) {
+            if (frame < FX_ARK_VOLLEY_MOTION_FRAME) {
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             }
-            if (frame >= 20) {
-                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 10);
+            if (frame >= FX_ARK_VOLLEY_MOTION_END) {
+                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, FX_ARK_VOLLEY_MOTION_END - FX_ARK_VOLLEY_MOTION_FRAME);
             }
             shakeRot.vx = work->pos48[0];
             shakeRot.vy = work->pos48[1];
@@ -268,8 +268,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = emitRot.vz;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_3_SPEED, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
             if (frame >= FX_ARK_VOLLEY_FRAMES) {
                 work->state0 = FX_ARK_STATE_VOLLEY_2;
                 entry->frame = -1;
@@ -284,11 +284,11 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             VECTOR haloScale;
             SVECTOR emitRot;
 
-            if (frame < 10) {
+            if (frame < FX_ARK_VOLLEY_MOTION_FRAME) {
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             }
-            if (frame >= 17) {
-                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 7);
+            if (frame >= FX_ARK_VOLLEY_2_MOTION_END) {
+                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, FX_ARK_VOLLEY_2_MOTION_END - FX_ARK_VOLLEY_MOTION_FRAME);
             }
             shakeRot.vx = work->pos48[0];
             shakeRot.vy = work->pos48[1];
@@ -299,8 +299,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel((SVECTOR *)&shakeRot, (VECTOR *)work->pos48, (s32)work->scale54, SUMMON(env)->model60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones0[0], (u16 *)&work->pos10);
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones0[1], (u16 *)&work->pos18);
-            if (frame < 18) {
-                work->pos20.vy += (ex->math_cos((frame << 10) / 18) * 0x29) >> 12;
+            if (frame < FX_ARK_CAMERA_DIP_FRAMES) {
+                work->pos20.vy += (ex->math_cos((frame << 10) / FX_ARK_CAMERA_DIP_FRAMES) * 0x29) >> 12;
                 env->camera->points[3].vx = work->pos20.vx;
                 env->camera->points[3].vy = work->pos20.vy;
                 env->camera->points[3].vz = work->pos20.vz;
@@ -352,8 +352,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = emitRot.vz;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_3_SPEED, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
             if (frame >= FX_ARK_VOLLEY_FRAMES) {
                 work->state0 = FX_ARK_STATE_VOLLEY_3;
                 entry->frame = -1;
@@ -432,15 +432,15 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 2;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_3_SPEED, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
             if (frame >= FX_ARK_VOLLEY_3_FRAMES) {
                 work->state0 = FX_ARK_STATE_VOLLEY_4;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->emit78 = work->emit7C = NULL;
                 work->pos28[1] -= 0x384;
-                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0x18);
+                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, FX_ARK_VOLLEY_3_FRAMES);
             }
             break;
         }
@@ -521,14 +521,14 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 3;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_3_SPEED, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
             if (frame >= FX_ARK_VOLLEY_FRAMES) {
                 work->state0 = FX_ARK_STATE_VOLLEY_5;
                 entry->frame = -1;
                 work->emit78 = work->emit7C = NULL;
                 ex->btlfx_initParticleSystem();
-                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0x18);
+                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, FX_ARK_VOLLEY_3_FRAMES);
                 ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones3[1], (u16 *)&work->pos20);
                 work->pos20.vy -= 0xAA;
                 env->camera->points[3].vx = work->pos20.vx;
@@ -614,15 +614,15 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 3;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_3_SPEED, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
             if (frame >= FX_ARK_VOLLEY_FRAMES) {
                 work->state0 = FX_ARK_STATE_DUST;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->emit78 = work->emit7C = NULL;
                 ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180[6], SUMMON(env)->model60);
-                ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 4, (u16 *)&work->pos20);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->model60, FX_ARK_DUST_BONE, (u16 *)&work->pos20);
                 work->pos20.vy -= 0x380;
                 env->camera->points[3].vx = work->pos20.vx;
                 env->camera->points[3].vy = work->pos20.vy;
@@ -636,14 +636,14 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             SVECTOR emitRot;
 
             t = frame << 7;
-            if (frame >= 0x17) {
-                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0x17);
+            if (frame >= FX_ARK_DUST_MOTION_END) {
+                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, FX_ARK_DUST_MOTION_END);
             }
             shakeRot.vx = work->pos48[0];
             shakeRot.vy = work->pos48[1];
             shakeRot.vz = work->pos48[2];
             ex->Hi_DrawSummonModel((SVECTOR *)&shakeRot, (VECTOR *)work->pos48, (s32)work->scale54, SUMMON(env)->model60, 0);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 4, (u16 *)&work->pos20);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, FX_ARK_DUST_BONE, (u16 *)&work->pos20);
             if (t < 0x800) {
                 work->pos20.vy -= ((0x1000 - ex->math_sin(t >> 1)) >> 2) - 0x80;
             } else {
@@ -652,7 +652,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->pos20.vx;
             env->camera->points[3].vy = work->pos20.vy;
             env->camera->points[3].vz = work->pos20.vz;
-            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 4, (u16 *)&work->pos10);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, FX_ARK_DUST_BONE, (u16 *)&work->pos10);
             work->pos10.vz += 0x226;
             if (frame == FX_ARK_DUST_FRAME) {
                 work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_DUST_CLOUD), (s32)&work->pos10);
@@ -677,8 +677,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vx = haloScale.vz = work->scale3C[0] / 3;
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
-            ex->btlfx_drawScrollMove(frame * 0x10, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
-            ex->btlfx_drawScrollMove(work->frame4 * 0x10, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_2_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_3_SPEED, FX_ARK_SCROLL_3_VRAM_X, FX_ARK_SCROLL_3_VRAM_Y, FX_ARK_SCROLL_3_VRAM_W, FX_ARK_SCROLL_3_VRAM_H, FX_ARK_SCROLL_3_SRC_X, FX_ARK_SCROLL_3_SRC_Y);
             if (frame >= FX_ARK_DUST_FRAMES) {
                 ex->btlfx_initParticleSystem();
                 ex->btlfx_clearEffModels();

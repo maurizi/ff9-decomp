@@ -29,7 +29,7 @@
 #define FX_ARK_STATE_VOLLEY_4 5    /* SMOKE_TRAIL_2, SMOKE_CLOUDS and a SMOKE_TRAIL_3 */
 #define FX_ARK_STATE_VOLLEY_5 6    /* the same; then motion 6 */
 #define FX_ARK_VOLLEY_FRAMES  0x15 /* VOLLEY, VOLLEY_2, VOLLEY_4 and VOLLEY_5's length */
-#define FX_ARK_VOLLEY_3_FRAMES 0x18
+#define FX_ARK_VOLLEY_3_FRAMES 0x18 /* also the motion 5 frame it ends on, held through VOLLEY_4 / VOLLEY_5 */
 #define FX_ARK_STATE_DUST     7    /* DUST_CLOUD; the op ends */
 #define FX_ARK_DUST_FRAMES    0x20
 #define FX_ARK_SMOKE_FRAME    0xC  /* VOLLEY / VOLLEY_2: the second trail of the pair starts */
@@ -61,6 +61,23 @@
 #define FX_ARK_SCROLL_3_VRAM_H 0x80
 #define FX_ARK_SCROLL_3_SRC_X  0x360
 #define FX_ARK_SCROLL_3_SRC_Y  0x100
+
+/* fx_17d_3 choreography, deep pass (docs/fxchoreo_deep_c.md): scroll speeds, model scales, the summon motion
+ * holds inside the shots, the camera keys */
+#define FX_ARK_SCROLL_SPEED    0x18 /* texels a frame (btlfx_drawScrollMove's offset = frame * SPEED) */
+#define FX_ARK_SCROLL_2_SPEED  0x10
+#define FX_ARK_SCROLL_3_SPEED  0x10 /* (counted on work->frame4, not the shot frame) */
+#define FX_ARK_SUMMON_SCALE    0x1800 /* the Ark summon model's scale (scale54) */
+#define FX_ARK_CYLINDER_SCALE  0x800  /* TEAL_CYLINDER's scale (scale3C); GREY_CYLINDER is drawn at a fraction of it */
+#define FX_ARK_WING_PLATE_SCALE_XZ 0x555 /* CLOUDS / CLOUDS_2: the WING_PLATE_2 -> WING_PLATE morph's scale */
+#define FX_ARK_WING_PLATE_SCALE_Y  0xAAA
+#define FX_ARK_GRID_SCALE      0x1040 /* CLOUDS / CLOUDS_2: the fading screen grid's scale */
+#define FX_ARK_VOLLEY_MOTION_FRAME 10 /* VOLLEY / VOLLEY_2: the summon motion is held at frame 0 until here, */
+#define FX_ARK_VOLLEY_MOTION_END   20 /* VOLLEY: and frozen from here (at motion frame END - MOTION_FRAME) */
+#define FX_ARK_VOLLEY_2_MOTION_END 17 /* VOLLEY_2: the same */
+#define FX_ARK_CAMERA_DIP_FRAMES   18 /* VOLLEY_2: camera point 3 sinks over these frames (a cosine quarter) */
+#define FX_ARK_DUST_MOTION_END     0x17 /* STATE_DUST: motion 6 is frozen at this frame from this frame */
+#define FX_ARK_DUST_BONE       4    /* STATE_DUST (and VOLLEY_5's end): the summon bone camera point 3 and DUST_CLOUD follow */
 
 typedef struct {
     u8 pad0[0x54];
