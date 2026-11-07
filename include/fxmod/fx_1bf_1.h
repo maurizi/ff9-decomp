@@ -29,6 +29,56 @@
 #define FX_ARK_ROCK_3          0x93 /* summon data: 'so' model, rock chunk */
 #define FX_ARK_FIRE_ARC        0x94 /* summon data: 'so' model, curved band with an orange flame texture */
 
+/* fx_1bf_1 choreography (docs/fxdata.md, "Choreography literals"; fx_17d_7's names, its values but a 5-frame bolt ring): op80's states (work->state0; the frame restarts at
+ * each) and lengths, the rock pool, the scrolling textures; op83's bolt kinds, pool and lengths. */
+#define FX_ARK_STATE_SMOKE   0    /* SMOKE_BOWL and TEAL_RING */
+#define FX_ARK_SMOKE_FRAMES  16
+#define FX_ARK_STATE_RINGS   1    /* PALE_RING (at frame 6); VIOLET_RING at its end */
+#define FX_ARK_RINGS_FRAMES  16
+#define FX_ARK_STATE_BLAST   2    /* ORANGE_BEAM, FIRE_CONE, ROCK_DEBRIS_2, LIGHT_STREAKS, GOLD_GLOW, PEACH_RING, ORANGE_RING */
+#define FX_ARK_BLAST_FRAMES  70
+#define FX_ARK_STATE_ROCKS   3    /* rocks, rubble and boulders (pool) fly; the op ends */
+#define FX_ARK_ROCKS_FRAMES  49
+#define FX_ARK_MODEL_COUNT   0xE  /* btlfx_initEffModels slots */
+#define FX_ARK_ROCK_POOL     0x28 /* op80 pool items (Fx17d7Rock) */
+#define FX_ARK_ROCK_RISE     0    /* Fx17d7Rock.state0: rises (phase2 0, 1), */
+#define FX_ARK_ROCK_RISE_FRAMES 0x18
+#define FX_ARK_ROCK_FLY      1    /* flies out */
+#define FX_ARK_ROCK_FLY_FRAMES  0x10
+/* scrolling textures (not checked against the models) */
+#define FX_ARK_SCROLL_VRAM_X   0x340
+#define FX_ARK_SCROLL_VRAM_Y   0x100
+#define FX_ARK_SCROLL_VRAM_W   0x10
+#define FX_ARK_SCROLL_VRAM_H   0x40
+#define FX_ARK_SCROLL_SRC_X    0x350
+#define FX_ARK_SCROLL_SRC_Y    0x100
+#define FX_ARK_SCROLL_2_VRAM_X 0x360
+#define FX_ARK_SCROLL_2_VRAM_Y 0x100
+#define FX_ARK_SCROLL_2_VRAM_W 0x20
+#define FX_ARK_SCROLL_2_VRAM_H 0x80
+#define FX_ARK_SCROLL_2_SRC_X  0x360
+#define FX_ARK_SCROLL_2_SRC_Y  0x180
+#define FX_ARK_SCROLL_3_VRAM_X 0x200
+#define FX_ARK_SCROLL_3_VRAM_Y 0x180
+#define FX_ARK_SCROLL_3_VRAM_W 0x20
+#define FX_ARK_SCROLL_3_VRAM_H 0x80
+#define FX_ARK_SCROLL_3_SRC_X  0x220
+#define FX_ARK_SCROLL_3_SRC_Y  0x180
+#define FX_ARK_SCROLL_4_VRAM_X 0x200
+#define FX_ARK_SCROLL_4_VRAM_Y 0x100
+#define FX_ARK_SCROLL_4_VRAM_W 0x20
+#define FX_ARK_SCROLL_4_VRAM_H 0x80
+#define FX_ARK_SCROLL_4_SRC_X  0x220
+#define FX_ARK_SCROLL_4_SRC_Y  0x100
+#define FX_ARK_BOLT_POOL     5    /* op83 pool items (Fx17d7Bolt) */
+#define FX_ARK_BOLT_STRIKE   0    /* op83 kind (init arg): bolts strike for STRIKE_OP_FRAMES, each lives STRIKE_FRAMES */
+#define FX_ARK_BOLT_STRIKE_OP_FRAMES 5
+#define FX_ARK_BOLT_STRIKE_FRAMES    0x10
+#define FX_ARK_BOLT_RING     1    /* bolts on a shrinking ring for RING_OP_FRAMES, each lives RING_FRAMES */
+#define FX_ARK_BOLT_RING_OP_FRAMES   0x1E
+#define FX_ARK_BOLT_RING_FRAMES      5
+#define FX_ARK_NOISE_ROWS    64   /* fx_1bf_1_noise rows (three random offsets each) */
+
 typedef struct {
     s16 state0; /* state */
     s16 phase2; /* sub-state */

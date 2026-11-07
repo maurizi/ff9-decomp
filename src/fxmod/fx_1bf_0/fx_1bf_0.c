@@ -175,13 +175,13 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
     s16 baseY;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx1bf0Work);
     } else if (mode == 1) {
-        work->state0 = 5;
+        work->state0 = FX_ARK_STATE_BEAM_2;
         work->unk4 = 0;
         fx_1bf_0_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(fx_1bf_0_effModels, 5);
+        ex->btlfx_initEffModels(fx_1bf_0_effModels, FX_ARK_MODEL_COUNT);
         work->pos8.vx = fx_1bf_0_origin.vx;
         work->pos8.vy = fx_1bf_0_origin.vy;
         work->pos8.vz = fx_1bf_0_origin.vz;
@@ -195,10 +195,10 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 5:
+        case FX_ARK_STATE_BEAM_2:
             env->otZ = 0x10;
-            if (frame >= 0x26) {
-                t = ((frame - 0x26) << 12) / 24;
+            if (frame >= FX_ARK_RING_FRAME) {
+                t = ((frame - FX_ARK_RING_FRAME) << 12) / (FX_ARK_BEAM_2_FRAMES - FX_ARK_RING_FRAME);
                 orbitAng = ex->math_cos(t >> 1) >> 1;
                 orbitRadius = ex->math_cos(t >> 2) >> 1;
                 offX = (ex->math_cos(orbitAng) * orbitRadius) >> 12;
@@ -213,12 +213,12 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &ringTop, frame, t, BTLFX_ABR_ADD, 0x20);
             }
             env->otZ = 0;
-            if (frame >= 0x3E) {
-                work->state0 = 6;
+            if (frame >= FX_ARK_BEAM_2_FRAMES) {
+                work->state0 = FX_ARK_STATE_BLAST;
                 entry->frame = -1;
             }
             break;
-        case 6:
+        case FX_ARK_STATE_BLAST:
             centerPos.vx = work->pos8.vx;
             centerPos.vy = work->pos8.vy;
             centerPos.vz = work->pos8.vz;
@@ -227,7 +227,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             centerTop.vz = centerPos.vz;
             centerTop.vy = baseY - 0x1000;
             env->otZ = 0x10;
-            t = (frame << 12) / 51;
+            t = (frame << 12) / FX_ARK_BLAST_FRAMES;
             bright = 0x1000 - t;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &centerPos, NULL, 0xAAA, 0, BTLFX_ABR_ADD, bright);
             fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &centerPos, &centerTop, frame, bright, BTLFX_ABR_ADD, (t >> 7) + 0x20);
@@ -236,22 +236,22 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            if (frame < 0x10) {
+            if (frame < FX_ARK_FLASH_RING_FRAMES) {
                 s32 ang = (frame << 12) >> 6;
                 s32 ringSize = ex->math_sin(ang) * 5;
                 s32 ringAlpha = ex->math_cos(ang);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, ringSize, 0, BTLFX_ABR_ADD, ringAlpha);
             }
-            if (frame >= 0x1E) {
-                offsetAlpha = (frame - 0x1E) << 9;
+            if (frame >= FX_ARK_STRANDS_FRAMES) {
+                offsetAlpha = (frame - FX_ARK_STRANDS_FRAMES) << 9;
                 if (offsetAlpha > 0x1000) {
                     offsetAlpha = 0x1000;
                 }
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, 0x5000, 0, BTLFX_ABR_ADD, offsetAlpha);
             }
             flag = 0;
-            if (frame < 0x26) {
-                if (frame < 0x1E) {
+            if (frame < FX_ARK_STRANDS_FADE_FRAME) {
+                if (frame < FX_ARK_STRANDS_FRAMES) {
                     reach = frame;
                     lineWidth = 0x20;
                     alpha = 0x1000;
@@ -261,9 +261,9 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                     patternAlpha = fade;
                     offsetAlpha = fade;
                 } else {
-                    s32 elapsed = frame - 0x1E;
+                    s32 elapsed = frame - FX_ARK_STRANDS_FRAMES;
                     prog = elapsed << 9;
-                    reach = 0x1D;
+                    reach = FX_ARK_STRANDS_FRAMES - 1;
                     lineWidth = 0x27;
                     alpha = 0x1000;
                     fade = 0;
@@ -277,9 +277,9 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, ((0x1000 - prog) * 100) >> 12, 0, 0);
                 }
             } else {
-                prog = ((frame - 0x26) << 12) / 13;
+                prog = ((frame - FX_ARK_STRANDS_FADE_FRAME) << 12) / (FX_ARK_BLAST_FRAMES - FX_ARK_STRANDS_FADE_FRAME);
                 fade = 1;
-                reach = 0x1D;
+                reach = FX_ARK_STRANDS_FRAMES - 1;
                 shown = 0x15;
                 alpha = 0x1000 - prog * 2 / 3;
                 lineWidth = (prog >> 3) + 0x40;
@@ -291,7 +291,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 fxm_drawPatternParticles(entry, &fx_1bf_0_origin, shown, patternAlpha);
                 fxm_drawOffsetParticles3(entry, &fx_1bf_0_origin, offsetAlpha);
             }
-            if (frame >= 0x33) {
+            if (frame >= FX_ARK_BLAST_FRAMES) {
                 rot.vx = fx_1bf_0_origin.vx;
                 rot.vy = fx_1bf_0_origin.vy;
                 rot.vz = fx_1bf_0_origin.vz;

@@ -20,7 +20,7 @@ static s32 fx_1bf_2_op80PoolTask(s32 mode, Fx1bf2Obj *obj, Unk800F78A4 *env, s32
         ex->Hi_DrawEffModel(&obj->rotC, &pos, (s32)&scale, inst->model78);
         ex->Hi_ModifyEffModelRGB(inst->model78, (ex->math_sin(ang) >> 5) - 0x80, (ex->math_sin(ang) >> 5) - 0x80,
                                  (ex->math_sin(ang) >> 5) - 0x80);
-        if (frame >= 0x20) {
+        if (frame >= FX_ARK_PUFF_FRAMES) {
             return 1;
         }
     }
@@ -58,16 +58,16 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 slideX;
 
     if (mode == 0) {
-        init->workSize = 0xBC;
-        init->elemSize = 0x14;
+        init->workSize = sizeof(Fx1bf2Work80);
+        init->elemSize = sizeof(Fx1bf2Obj);
         init->elemFn = (s32)fx_1bf_2_op80PoolTask;
-        init->poolCount = 0x10;
+        init->poolCount = FX_ARK_PUFF_POOL;
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_ARK_STATE_STARS;
         work->frame4 = 0;
         fx_1bf_2_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(fx_1bf_2_effModels, 7);
+        ex->btlfx_initEffModels(fx_1bf_2_effModels, FX_ARK_MODEL_COUNT);
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_PLANET), 0);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_GLOW_DOME), 1);
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREY_STAR_DISC), 1);
@@ -94,7 +94,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_ARK_STATE_STARS:
             t = frame << 7;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelRGB(work->model64, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
@@ -104,8 +104,8 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vx = work->camPos20.vx;
             env->camera->points[2].vy = work->camPos20.vy;
             env->camera->points[2].vz = work->camPos20.vz;
-            if (frame >= 0x20) {
-                work->state0 = 1;
+            if (frame >= FX_ARK_STARS_FRAMES) {
+                work->state0 = FX_ARK_STATE_PLANET;
                 entry->frame = -1;
                 ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot5C, -0x968, (s16 *)&work->pos54);
                 work->pos48.vx = work->pos54.vx;
@@ -113,7 +113,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos48.vz = work->pos54.vz;
             }
             break;
-        case 1:
+        case FX_ARK_STATE_PLANET:
             t = frame << 7;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
             ex->Hi_ModifyEffModelRGB(work->model68, ((t - 0x800) >> 5) - 0x80, ((t - 0x800) >> 5) - 0x80,
@@ -143,12 +143,12 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->otZ = 0;
             slideX = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), slideX, 0x78, 0, 0xFF, 0x1000);
-            if (frame >= 0x20) {
-                work->state0 = 2;
+            if (frame >= FX_ARK_PLANET_FRAMES) {
+                work->state0 = FX_ARK_STATE_GLOW;
                 entry->frame = -1;
             }
             break;
-        case 2:
+        case FX_ARK_STATE_GLOW:
             t = (frame << 12) / 24;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
             fade2 = t / 2;
@@ -201,13 +201,13 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                               ex->math_cos(t >> 2));
             env->otZ = 0;
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 0xFF, 0x1000);
-            if (frame >= 0x18) {
-                work->state0 = 3;
+            if (frame >= FX_ARK_GLOW_FRAMES) {
+                work->state0 = FX_ARK_STATE_BEAM;
                 entry->frame = -1;
             }
             break;
-        case 3:
-            t = (frame << 12) / 24;
+        case FX_ARK_STATE_BEAM:
+            t = (frame << 12) / FX_ARK_BEAM_FRAMES;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
             fade3 = t / 2;
             ex->Hi_ModifyEffModelRGB(work->model68, (-fade3 >> 5) - 0x80, (-fade3 >> 5) - 0x80, (-fade3 >> 5) - 0x80);
@@ -221,7 +221,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model70);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
             fx_1bf_2_particleDrift = ang + 0xC00;
-            if (!(frame & 3) && frame < 0x18) {
+            if (!(frame & 3) && frame < FX_ARK_BEAM_FRAMES) {
                 obj = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (obj != NULL) {
                     obj->rotC.vx = 0x400;
@@ -265,8 +265,8 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             vv2.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv2, &cv2, 0, NULL);
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 0xFF, 0x1000);
-            if (frame >= 0x18) {
-                work->state0 = 4;
+            if (frame >= FX_ARK_BEAM_FRAMES) {
+                work->state0 = FX_ARK_STATE_END;
                 entry->frame = -1;
                 work->camPos20.vx = work->pos8.vx;
                 work->camPos20.vy = work->pos8.vy;
@@ -277,7 +277,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vz = work->camPos20.vz;
             }
             break;
-        case 4:
+        case FX_ARK_STATE_END:
             {
                 s32 q0, q1, q2, q3;
                 q0 = ((s32 *)env->viewMatrix)[0];
@@ -345,15 +345,15 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             vv3.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv3, &cv2, 0, NULL);
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 1, bright);
-            if (frame >= 0x14) {
+            if (frame >= FX_ARK_END_FRAMES) {
                 ex->btlfx_poolClear(entry->pool);
                 ex->btlfx_clearEffModels();
                 return 1;
             }
             break;
         }
-        ex->btlfx_drawScrollMove(work->frame4 * 4, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
-        ex->btlfx_drawScrollMove(0x2710 - work->frame4 * 4, 0x300, 0x100, 0x20, 0x80, 0x320, 0x100);
+        ex->btlfx_drawScrollMove(work->frame4 * 4, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+        ex->btlfx_drawScrollMove(0x2710 - work->frame4 * 4, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
         work->frame4++;
     }
