@@ -58,7 +58,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx1e6Work80);
     } else if (mode == 1) {
         fx_1e6_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
@@ -71,14 +71,14 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos4, (s16 *)&fx_1e6_trailRot);
-        if (frame < 0x20) {
-            if ((s32)frame >= 0x18) {
+        if (frame < FX_CORRECT_TRAIL_FRAMES) {
+            if ((s32)frame >= FX_CORRECT_TRAIL_FADE_FRAME) {
                 work->alphaC -= 0x400;
             }
-            fx_1e6_buildTrail(&fx_1e6_op80Trail, 0x10C, frame * 4);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_RED_TRAIL), 0, NULL, 0, 0x1000, work->alphaC, 1, (u8 *)&fx_1e6_op80Trail, 0);
+            fx_1e6_buildTrail(&fx_1e6_op80Trail, 4 + FX_CORRECT_TRAIL_POINTS * 8, frame * 4);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_RED_TRAIL), 0, NULL, 0, 0x1000, work->alphaC, BTLFX_ABR_ADD, (u8 *)&fx_1e6_op80Trail, 0);
         }
-        return (s32)frame >= 0x3C;
+        return (s32)frame >= FX_CORRECT_OP80_FRAMES;
     }
     return 0;
 }
@@ -95,10 +95,10 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 shakeStep;
 
     if (mode == 0) {
-        *args = 0x68;
+        *args = sizeof(Fx1e6Work81);
     } else if (mode == 1) {
         fx_1e6_env = env;
-        ex->btlfx_initEffModels(fx_1e6_effModels, 2);
+        ex->btlfx_initEffModels(fx_1e6_effModels, FX_CORRECT_MODEL_SLOTS);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos48);
         work->scale34.vx = 0x1000;
         work->scale34.vy = 0x1000;
@@ -118,7 +118,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 8:
+        case FX_CORRECT_STREAMERS_FRAME:
             work->pos50.vx = work->pos48.vx;
             work->pos50.vy = work->pos48.vy;
             work->pos50.vz = work->pos48.vz;
@@ -132,49 +132,49 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CORRECT_YELLOW_STARS), (s32)&work->pos50);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->trails = (s32)fx_1e6_op81Trails0;
-                work->emit0[0]->trailSlots = 5;
-                work->emit0[0]->trailStride = 0x90;
+                work->emit0[0]->trailSlots = FX_CORRECT_STREAMER_TRAIL_SLOTS;
+                work->emit0[0]->trailStride = FX_CORRECT_STREAMER_TRAIL_STRIDE;
             }
             if (work->emit0[1] != NULL) {
                 work->emit0[1]->trails = (s32)fx_1e6_op81Trails1;
-                work->emit0[1]->trailSlots = 5;
-                work->emit0[1]->trailStride = 0x90;
+                work->emit0[1]->trailSlots = FX_CORRECT_STREAMER_TRAIL_SLOTS;
+                work->emit0[1]->trailStride = FX_CORRECT_STREAMER_TRAIL_STRIDE;
             }
             if (work->emit0[2] != NULL) {
                 work->emit0[2]->trails = (s32)fx_1e6_op81Trails2;
-                work->emit0[2]->trailSlots = 5;
-                work->emit0[2]->trailStride = 0x90;
+                work->emit0[2]->trailSlots = FX_CORRECT_STREAMER_TRAIL_SLOTS;
+                work->emit0[2]->trailStride = FX_CORRECT_STREAMER_TRAIL_STRIDE;
             }
             if (work->emit0[3] != NULL) {
                 work->emit0[3]->trails = (s32)fx_1e6_op81Trails3;
-                work->emit0[3]->trailSlots = 0x10;
-                work->emit0[3]->trailStride = 0x18;
+                work->emit0[3]->trailSlots = FX_CORRECT_SPIRAL_TRAIL_SLOTS;
+                work->emit0[3]->trailStride = FX_CORRECT_SPIRAL_TRAIL_STRIDE;
             }
             if (work->emit0[4] != NULL) {
                 work->emit0[4]->trails = (s32)fx_1e6_op81Trails4;
-                work->emit0[4]->trailSlots = 0x10;
-                work->emit0[4]->trailStride = 0x18;
+                work->emit0[4]->trailSlots = FX_CORRECT_SPIRAL_TRAIL_SLOTS;
+                work->emit0[4]->trailStride = FX_CORRECT_SPIRAL_TRAIL_STRIDE;
             }
             if (work->emit0[5] != NULL) {
                 work->emit0[5]->trails = (s32)fx_1e6_op81Trails5;
-                work->emit0[5]->trailSlots = 0x10;
-                work->emit0[5]->trailStride = 0x18;
+                work->emit0[5]->trailSlots = FX_CORRECT_SPIRAL_TRAIL_SLOTS;
+                work->emit0[5]->trailStride = FX_CORRECT_SPIRAL_TRAIL_STRIDE;
             }
             break;
         case 0:
-            work->timer5C = 4;
+            work->timer5C = FX_CORRECT_FADE_IN_FRAMES;
             break;
-        case 0x13:
-            work->timer60 = 0x10;
+        case FX_CORRECT_FADE_OUT_FRAME:
+            work->timer60 = FX_CORRECT_FADE_OUT_FRAMES;
             break;
         }
-        if ((u32)frame < 0x23) {
+        if ((u32)frame < FX_CORRECT_BALL_FRAMES) {
             shakeFrame = frame;
-            if (frame >= 9) {
-                if (work->frame58 >= 4) {
+            if (frame >= FX_CORRECT_OPEN_FRAME) {
+                if (work->frame58 >= FX_CORRECT_OPEN_FRAMES + 1) {
                     morph = 0;
                 } else {
-                    morph = 0x1000 - (work->frame58 << 12) / 3;
+                    morph = 0x1000 - (work->frame58 << 12) / FX_CORRECT_OPEN_FRAMES;
                 }
                 work->frame58++;
             } else {
@@ -186,10 +186,10 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vx = work->pos24.vx;
             pos.vy = work->pos24.vy;
             pos.vz = work->pos24.vz;
-            if ((u32)shakeFrame < 8) {
+            if ((u32)shakeFrame < FX_CORRECT_SHAKE_FRAMES) {
                 pos.vy += frame * 4;
                 work->pos24.vy = pos.vy;
-                shakeStep = shakeFrame % 8; switch (shakeStep) {
+                shakeStep = shakeFrame % FX_CORRECT_SHAKE_FRAMES; switch (shakeStep) {
                 case 0:
                 case 4:
                     break;
@@ -216,18 +216,18 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&work->scale34, work->model64, work->model66, morph);
             if (work->timer5C >= 0 || work->timer60 >= 0) {
                 if (work->timer5C >= 0) {
-                    work->rgb44 = fxm_lerpRatio(-0x80, 0, 4 - work->timer5C, 4);
+                    work->rgb44 = fxm_lerpRatio(-0x80, 0, FX_CORRECT_FADE_IN_FRAMES - work->timer5C, FX_CORRECT_FADE_IN_FRAMES);
                     work->timer5C--;
                 }
                 if (work->timer60 >= 0) {
-                    work->rgb44 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer60, 0x10);
+                    work->rgb44 = fxm_lerpRatio(0, -0x80, FX_CORRECT_FADE_OUT_FRAMES - work->timer60, FX_CORRECT_FADE_OUT_FRAMES);
                     work->timer60--;
                 }
-                ex->Hi_ModifyEffModelAbr(work->model64, 1);
+                ex->Hi_ModifyEffModelAbr(work->model64, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(work->model64, work->rgb44, work->rgb44, work->rgb44);
             }
         }
-        if (frame >= 0x3C) {
+        if (frame >= FX_CORRECT_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

@@ -12,7 +12,7 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1fa_env = env;
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW_2), (s32)&fx_1fa_emitPos0);
     } else {
-        return entry->frame >= 0x40;
+        return entry->frame >= FX_CARBUNCLE_GLOW_FRAMES;
     }
     return 0;
 }
@@ -51,12 +51,12 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         LOAD(9, 1, 6)
         LOAD(10, 4, 7)
         LOAD(11, 0x11, 5)
-        for (i = 0; i < 12; i++) {
-            for (j = 0; j < 4; j++) {
+        for (i = 0; i < FX_CARBUNCLE_SPARK_ROWS; i++) {
+            for (j = 0; j < FX_CARBUNCLE_SPARK_COLS; j++) {
                 fx_1fa_spiralSprites[i][j].angleC = i * -0x2A9 + j * 0xC0;
                 fx_1fa_spiralSprites[i][j].radius10 = j * 16 + 16;
                 fx_1fa_spiralSprites[i][j].delay0 = i + 4 - j;
-                fx_1fa_spiralSprites[i][j].timer4 = 8;
+                fx_1fa_spiralSprites[i][j].timer4 = FX_CARBUNCLE_SPARK_FRAMES;
             }
         }
         fx_1fa_emitPos1.vx = env->camera->points[3].vx;
@@ -66,15 +66,15 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         frame = entry->frame;
         switch (frame) {
         case 0:
-            fx_1fa_timer[0] = 0x20;
+            fx_1fa_timer[0] = FX_CARBUNCLE_SPARKS_FRAMES;
             break;
-        case 8:
+        case FX_CARBUNCLE_VIOLET_RINGS_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_VIOLET_RINGS), (s32)&fx_1fa_emitPos1);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
             break;
-        case 0x18:
+        case FX_CARBUNCLE_TARGET_RINGS_FRAME:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1fa_emitPos2[i]);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_GREEN_RING), (s32)&fx_1fa_emitPos2[i]);
@@ -95,8 +95,8 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         if (fx_1fa_timer[0] != 0) {
             fx_1fa_timer[0]--;
             env->otZ = 0x200;
-            for (i = 0; i < 12; i++) {
-                for (j = 0; j < 4; j++) {
+            for (i = 0; i < FX_CARBUNCLE_SPARK_ROWS; i++) {
+                for (j = 0; j < FX_CARBUNCLE_SPARK_COLS; j++) {
                     sprite = (Fx1faRing *)(i * 0x50 + j * 0x14 + (s32)fx_1fa_spiralSprites);
                     if (sprite->delay0 != 0) {
                         sprite->delay0--;
@@ -107,14 +107,14 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                         scale = (sprite->radius10 << 8) + 0x4000;
                         fade = sprite->timer4 << 9;
                         offX = (ex->math_sin(sprite->angleC) * sprite->radius10) >> 12;
-                        ex->btlfx_drawParticles(sprite->sprite8, &fx_1fa_emitPos1, NULL, scale, 0, 1, fade, offX,
+                        ex->btlfx_drawParticles(sprite->sprite8, &fx_1fa_emitPos1, NULL, scale, 0, BTLFX_ABR_ADD, fade, offX,
                                                 (ex->math_cos(sprite->angleC) * sprite->radius10) >> 12);
                     }
                 }
             }
             env->otZ = 0;
         }
-        return frame >= 0x60;
+        return frame >= FX_CARBUNCLE_OP81_FRAMES;
     }
     return 0;
 }

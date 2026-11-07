@@ -10,6 +10,12 @@
 #define FX_THUNDER_SLASH_SPARKS    0x1 /* emitter: cone of blue-green electric wisps, orange sparks and white glints (byte-identical to fx_0bf entry 0x1) */
 #define FX_THUNDER_SLASH_LIGHTNING 0x2 /* sprite: blue / red lightning streak, 12 frames (drawn directly) (byte-identical to fx_0bf entry 0x2) */
 
+/* fx_1c9 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length (fx_0bf's op80). */
+#define FX_THUNDER_SLASH_SPARKS_FRAME  3    /* op80: FX_THUNDER_SLASH_SPARKS start */
+#define FX_THUNDER_SLASH_FLASH_FRAME   7    /* op80: one-frame additive grey screen flash */
+#define FX_THUNDER_SLASH_FLASH_GREY    0x80 /* op80: its level (work->colorC, r = g = b) */
+#define FX_THUNDER_SLASH_FRAMES        0x32 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

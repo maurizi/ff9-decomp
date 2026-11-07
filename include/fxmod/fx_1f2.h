@@ -39,6 +39,23 @@
 #define FX_GRAND_CROSS_BLUE_HALO        0x8E /* summon data: 'so' model, gouraud blue ring halo */
 
 /* copied */
+/* fx_1f2 choreography (docs/fxdata.md, "Choreography literals"; partial: the work size and counts, the white trails,
+ * the timeline keys that start emitters or a phase, the task length; the model countdowns' keys and fades stay
+ * numeric). */
+#define FX_GRAND_CROSS_TIMER_WORDS 0x20 /* op80 init clears the work's first 0x20 words (the countdowns) */
+#define FX_GRAND_CROSS_MODEL_SLOTS 0x20 /* btlfx_initEffModels slots */
+#define FX_GRAND_CROSS_TRAILS      0x10 /* WHITE_TRAIL strips (fx_1f2_trails; fx_1f2_unitTrails in the second phase) */
+#define FX_GRAND_CROSS_TRAIL_POINTS 9   /*   points per strip */
+#define FX_GRAND_CROSS_ORBITS      4    /* orbiting model triples (fx_1f2_orbitModels) */
+#define FX_GRAND_CROSS_RINGS_FRAME 0x2D /* PINK_RINGS, BLUE_RINGS, LILAC_RINGS start (PALE_STREAKS at frame 0) */
+#define FX_GRAND_CROSS_TRAILS_FRAMES 0x5F /* the trails swirl (timer4C) from frame 0 until this frame, then restart */
+#define FX_GRAND_CROSS_TWINKLE_FRAME 0x9F /* TWINKLE and TWINKLE_2 start */
+#define FX_GRAND_CROSS_COLOR_RINGS_FRAME 0xFF /* COLOR_RINGS start */
+#define FX_GRAND_CROSS_BEIGE_RINGS_FRAME 0x11F /* BEIGE_RINGS and SMOKE_RINGS start */
+#define FX_GRAND_CROSS_PHASE_2_FRAME 0x14F /* the rings move up, the first models stop and the cross model (timer50) starts */
+#define FX_GRAND_CROSS_UNIT_TRAILS_FRAME 0x18F /* the trails restart at the units (fx_1f2_unitTrails) */
+#define FX_GRAND_CROSS_FRAMES      0x1BF /* the task ends at this frame */
+
 extern Unk800F78A4 *fx_1f2_env;
 /* end copied */
 
@@ -101,7 +118,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR points4[9];
+    SVECTOR points4[FX_GRAND_CROSS_TRAIL_POINTS];
     s32 timer4C; /* timer */
     SVECTOR pos50[16]; /* points (pad = next) */
     SVECTOR velD0[16]; /* velocities */
@@ -110,7 +127,7 @@ typedef struct {
 extern Fx1f2Model fx_1f2_model0;
 extern Fx1f2Model fx_1f2_model1;
 extern Fx1f2Model fx_1f2_model2;
-extern Fx1f2Ring fx_1f2_orbitModels[4];
+extern Fx1f2Ring fx_1f2_orbitModels[FX_GRAND_CROSS_ORBITS];
 extern Fx1f2Model fx_1f2_model3;
 extern Fx1f2Model fx_1f2_model4[2];
 extern Fx1f2Model fx_1f2_model5;
@@ -125,8 +142,8 @@ extern SVECTOR fx_1f2_emitPos0; /* target */
 extern SVECTOR fx_1f2_faceAngles; /* angles to the target */
 extern SVECTOR fx_1f2_emitPos1;
 extern SVECTOR fx_1f2_unitPos[4]; /* unit positions */
-extern Fx1f2Trail fx_1f2_trails[16];
-extern Fx1f2Trail fx_1f2_unitTrails[16]; /* 0x1500 bytes up to fx_1f2_effModels, cleared as 16; only entries below
+extern Fx1f2Trail fx_1f2_trails[FX_GRAND_CROSS_TRAILS];
+extern Fx1f2Trail fx_1f2_unitTrails[FX_GRAND_CROSS_TRAILS]; /* 0x1500 bytes up to fx_1f2_effModels, cleared as 16; only entries below
                                          * targetCount are drawn */
 extern BtlModelBuf fx_1f2_effModels[];
 

@@ -24,6 +24,39 @@
 #define FX_DRAGONS_CREST_ROCK_DEBRIS_3  0x22 /* emitter: spiral of grey rock chunks and a grey glow */
 #define FX_DRAGONS_CREST_ROCK_DEBRIS_4  0x23 /* emitter: spiral of grey rock chunks, two elements */
 
+/* fx_1ea choreography (docs/fxdata.md, "Choreography literals"): op80's length (Six Dragons' op80), op81's timeline
+ * (the dragon trails, then the morphing dragon with its five slices, the emblems and the rock debris), the dragon's
+ * morph keys, op82's white screen. */
+#define FX_DRAGONS_CREST_STREAK_FRAMES 0x28 /* op80 (LIGHT_STREAK, SPARKLE_CIRCLE at the caster): the task ends at this frame */
+#define FX_DRAGONS_CREST_MORPH_MODELS  5    /* op81: morph stages of the dragon (fx_1ea_morphModelFileIds, modelA4[0..4]) */
+#define FX_DRAGONS_CREST_SLICES        5    /* op81: sliced models on their own paths (fx_1ea_slice*FileIds, modelA4[5..9]) */
+#define FX_DRAGONS_CREST_RIBBONS       2    /* op81: DRAGON_TRAIL strips (fx_1ea_trailPathFileIds0) */
+#define FX_DRAGONS_CREST_STRANDS       6    /* op81: DRAGON_TRAIL_2 strips (fx_1ea_trailPathFileIds1), turned 0x555 per pair */
+#define FX_DRAGONS_CREST_TRAIL_WIDTH   0x40 /* op81: both trails' line width */
+#define FX_DRAGONS_CREST_TRAILS_FRAMES 0x1E /* op81: the trails grow one path key a frame, drawn until this frame */
+#define FX_DRAGONS_CREST_STRAND_POINTS 0xF  /*   (the strands at most this many points) */
+#define FX_DRAGONS_CREST_EMBLEM_FRAME  0xF  /* op81: GREEN_RINGS and GREEN_EMBLEM start; the trails fade out (and the emblem in)
+                                             * until TRAILS_FRAMES */
+#define FX_DRAGONS_CREST_DRAGON_FRAME  0x1E /* op81: WHITE_RINGS; the dragon follows ROT_PATH_KEYS from here, */
+#define FX_DRAGONS_CREST_DRAGON_END_FRAME 0x45 /* until this frame */
+#define FX_DRAGONS_CREST_MORPH_1_FRAME 9    /* path frame: morph stage 0 -> 1 until here, */
+#define FX_DRAGONS_CREST_MORPH_2_FRAME 0x18 /*   1 -> 2 until here, */
+#define FX_DRAGONS_CREST_MORPH_3_FRAME 0x1B /*   2 -> 3 until here, */
+#define FX_DRAGONS_CREST_MORPH_4_FRAME 0x27 /*   3 -> 4 until here (each morph spans its interval), then stage 4 */
+#define FX_DRAGONS_CREST_DEBRIS_FRAME  0x37 /* op81: DUST_RINGS, ROCK_DEBRIS, WHITE_GREEN_STREAKS start */
+#define FX_DRAGONS_CREST_DEBRIS_3_FRAME 0x3C /* op81: ROCK_DEBRIS_3 starts */
+#define FX_DRAGONS_CREST_DARKEN_FRAME  0x3D /* op81: the dragon and slices darken (timer98, 0 -> -0x80), */
+#define FX_DRAGONS_CREST_DARKEN_FRAMES 8    /*   over this many frames */
+#define FX_DRAGONS_CREST_WHITE_EMBLEM_FRAME 0x46 /* op81: VIOLET_ENERGY, WHITE_EMBLEM, ROCK_DEBRIS_4 start, the first emitters stop; */
+#define FX_DRAGONS_CREST_EMBLEM_IN_FRAMES 8    /*   WHITE_EMBLEM fades in (timer9C) over this many frames */
+#define FX_DRAGONS_CREST_DEBRIS_2_FRAME 0x4B /* op81: ROCK_DEBRIS_2 starts */
+#define FX_DRAGONS_CREST_EMBLEM_OUT_FRAME 0x4E /* op81: WHITE_EMBLEM fades out (timerA0), */
+#define FX_DRAGONS_CREST_EMBLEM_OUT_FRAMES 0xF /*   over this many frames */
+#define FX_DRAGONS_CREST_FRAMES        0x64 /* op81: the models are cleared and the task ends at this frame */
+#define FX_DRAGONS_CREST_WHITE_FADE_FRAMES 0x10 /* op82: the additive white screen fades in from frame 0 over this many frames, */
+#define FX_DRAGONS_CREST_WHITE_OUT_FRAME 0x33 /*   is held, and fades out from this frame */
+#define FX_DRAGONS_CREST_WHITE_FRAMES  0x43 /* op82: the task ends at this frame */
+
 typedef struct {
     s16 x, y, z;
 } Fx1eaPoint;

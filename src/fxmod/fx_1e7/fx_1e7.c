@@ -81,7 +81,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx1e7Work80);
     } else if (mode == 1) {
         fx_1e7_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -95,12 +95,12 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame != 0) {
-            if (frame == 3) {
+            if (frame == FX_WRONG_TRAIL_FRAME) {
                 work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_WHITE_TRAIL), (s32)&fx_1e7_emitPos0);
                 if (work->emit0 != NULL) {
                     work->emit0->trails = (s32)fx_1e7_op80Trails0;
-                    work->emit0->trailSlots = 1;
-                    work->emit0->trailStride = 0xD0;
+                    work->emit0->trailSlots = FX_WRONG_TRAIL_SLOTS;
+                    work->emit0->trailStride = FX_WRONG_TRAIL_STRIDE;
                 }
                 if (work->emit0 != NULL) {
                     work->emit0->file->m.module.update = fx_1e7_op80ParticleMotion0;
@@ -113,8 +113,8 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WRONG_WHITE_TRAIL_2), (s32)&fx_1e7_emitPos0);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_1e7_op80Trails1;
-                work->emit4->trailSlots = 1;
-                work->emit4->trailStride = 0xD0;
+                work->emit4->trailSlots = FX_WRONG_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_WRONG_TRAIL_STRIDE;
             }
             if (work->emit4 != NULL) {
                 work->emit4->file->m.module.update = fx_1e7_op80ParticleMotion1;
@@ -123,12 +123,12 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame == 0xC) {
+        if (frame == FX_WRONG_TRAILS_STOP_FRAME) {
             ex->btlfx_stopEmitter(work->emit0);
             ex->btlfx_stopEmitter(work->emit4);
         }
         ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos8, (s16 *)&fx_1e7_op80PathRot);
-        return frame >= 0x3C;
+        return frame >= FX_WRONG_TRAILS_FRAMES;
     }
     return 0;
 }
@@ -139,7 +139,7 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x38;
+        *args = sizeof(Fx1e7Work81);
     } else if (mode == 1) {
         fx_1e7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
@@ -156,7 +156,7 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit1C != NULL) {
             work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < FX_WRONG_STREAMS; i++) {
             fxm_posPathInit(&fx_1e7_op81Paths[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1e7_op81PathFileIds[i]));
             work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1e7_op81EmitFileIds[i]), (s32)&fx_1e7_emitPos1[i]);
             if (work->emit4[i] != NULL) {
@@ -173,13 +173,13 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         fx_1e7_op81Frame = frame;
         if (work->flag34 != 0 && ex->btlfx_isUnitActive(0) != 0 && fxm_isMotionDone(0) != 0) {
-            fxm_startUnitMotion(0, 4);
+            fxm_startUnitMotion(0, BTL_MOTION_KO);
             work->flag34 = 0;
         }
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
-        work->pos28.vz -= 0x64;
+        work->pos28.vz -= FX_WRONG_KNOCKBACK_STEP;
         ex->btlfx_setUnitPos(0, (s16 *)&work->pos28);
-        return frame >= 0x1E;
+        return frame >= FX_WRONG_KNOCKBACK_FRAMES;
     }
     return 0;
 }

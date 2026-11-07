@@ -18,6 +18,35 @@
 #define FX_ARK_DARK_BLUE_RING 0x10 /* 'so' model: flat ring with a dark blue texture (byte-identical to fx_17d_8 entry 0x4; type 10 data below the group's slot) */
 #define FX_ARK_FIRE_RING 0x11 /* rings: white-yellow-red gouraud rings (byte-identical to fx_17d_8 entry 0x5; type 10 data below the group's slot) */
 
+/* fx_1bf_2 choreography (docs/fxdata.md, "Choreography literals"; fx_17d_8's names and values): op80's states (work->state0; the frame restarts at
+ * each) and lengths, the puff pool, the scrolling textures. */
+#define FX_ARK_STATE_STARS   0    /* STARFIELD fades in */
+#define FX_ARK_STARS_FRAMES  0x20
+#define FX_ARK_STATE_PLANET  1    /* PLANET, FIRE_RING, the starfield slides */
+#define FX_ARK_PLANET_FRAMES 0x20
+#define FX_ARK_STATE_GLOW    2    /* RED_GLOW_DOME, GOLD_SPARKS (frame 1) */
+#define FX_ARK_GLOW_FRAMES   0x18
+#define FX_ARK_STATE_BEAM    3    /* ORANGE_BEAM and BEAM_HAZE, a puff every 4 frames */
+#define FX_ARK_BEAM_FRAMES   0x18
+#define FX_ARK_STATE_END     4    /* the starfield fades (the op ends) */
+#define FX_ARK_END_FRAMES    0x14
+#define FX_ARK_MODEL_COUNT   7    /* btlfx_initEffModels slots */
+#define FX_ARK_PUFF_POOL     0x10 /* op80 pool items (Fx17d8Obj) */
+#define FX_ARK_PUFF_FRAMES   0x20 /* a puff's life */
+/* scrolling textures (not checked against the models): SCROLL forward, SCROLL_2 back, 4 texels a frame */
+#define FX_ARK_SCROLL_VRAM_X   0x2C0
+#define FX_ARK_SCROLL_VRAM_Y   0x100
+#define FX_ARK_SCROLL_VRAM_W   0x20
+#define FX_ARK_SCROLL_VRAM_H   0x80
+#define FX_ARK_SCROLL_SRC_X    0x2E0
+#define FX_ARK_SCROLL_SRC_Y    0x100
+#define FX_ARK_SCROLL_2_VRAM_X 0x300
+#define FX_ARK_SCROLL_2_VRAM_Y 0x100
+#define FX_ARK_SCROLL_2_VRAM_W 0x20
+#define FX_ARK_SCROLL_2_VRAM_H 0x80
+#define FX_ARK_SCROLL_2_SRC_X  0x320
+#define FX_ARK_SCROLL_2_SRC_Y  0x100
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */

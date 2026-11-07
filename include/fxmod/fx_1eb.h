@@ -19,6 +19,24 @@
 #define FX_SIX_DRAGONS_WHITE_RINGS_2  0x1D /* emitter: white gouraud rings, 45 frames */
 #define FX_SIX_DRAGONS_SMOKE          0x1E /* emitter: green-to-pink smoke puffs */
 
+/* fx_1eb choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths, op82's dragon sequence (three
+ * dragons follow their rot/pos paths, the first turns to stone) and its emitter keys. */
+#define FX_SIX_DRAGONS_STREAK_FRAMES  0x28 /* op80 (LIGHT_STREAK, SPARKLE_CIRCLE at the caster): the task ends at this frame */
+#define FX_SIX_DRAGONS_WAIT_FRAMES    0xA  /* op81 (draws nothing): the task ends at this frame */
+#define FX_SIX_DRAGONS_MODEL_SLOTS    6    /* op82: btlfx_initEffModels slots */
+#define FX_SIX_DRAGONS_DRAGONS        3    /* op82: dragon models (fx_1eb_modelFileIds), each on its path (fx_1eb_pathFileIds) */
+#define FX_SIX_DRAGONS_BUBBLES_FRAME  10   /* op82: BLUE_BUBBLES and WHITE_RINGS start (WHITE_RINGS_2, SMOKE at frame 0) */
+#define FX_SIX_DRAGONS_AURA_FRAME     20   /* op82: GREEN_AURA starts */
+#define FX_SIX_DRAGONS_STONE_FRAME    22   /* op82: STONE_TRAIL starts; dragon 0 morphs into STONE_DRAGON (FX_SIX_DRAGONS_VALUE_PATH) */
+#define FX_SIX_DRAGONS_STONE_TRAIL_SLOTS  6    /* op82: STONE_TRAIL's trail buffer (fx_1eb_op82Trails): slots of */
+#define FX_SIX_DRAGONS_STONE_TRAIL_STRIDE 0x60 /*   this many bytes */
+#define FX_SIX_DRAGONS_RINGS_FADE_FRAME 0x18 /* op82: WHITE_RINGS_2 fades (alpha -0x200 a frame) and stops */
+#define FX_SIX_DRAGONS_FADE_FRAME     30   /* op82: the dragons turn additive and darken (timer4C) */
+#define FX_SIX_DRAGONS_FADE_FRAMES    0xA  /*   over this many frames */
+#define FX_SIX_DRAGONS_DRAGONS_FRAMES 0x28 /* op82: the dragons are drawn until this frame */
+#define FX_SIX_DRAGONS_FRAMES         0x3C /* op82: the models are cleared and the task ends at this frame */
+#define FX_SIX_DRAGONS_ORBS_FRAMES    0x28 /* op83 (DRAGON_ORBS at one target): the task ends at this frame */
+
 typedef struct {
     s16 x, y, z;
 } Fx1ebPoint;
@@ -61,8 +79,9 @@ typedef struct {
     SVECTOR pos44; /* target position */
     s32 timer4C; /* fade countdown */
     u16 alpha50;
-    u16 model52[3]; /* models */
+    u16 model52[FX_SIX_DRAGONS_DRAGONS]; /* models */
     u16 model58; /* morph target */
+    u8 unused5A[0x60 - 0x5A]; /* pad to the 0x60 bytes op82 asks for */
 } Fx1ebWork82; /* 0x60 */
 
 typedef struct {
@@ -71,11 +90,11 @@ typedef struct {
     s32 unitC; /* unit */
 } Fx1ebWork83;
 
-extern u16 fx_1eb_modelFileIds[3]; /* model files */
-extern u16 fx_1eb_pathFileIds[3]; /* path files */
+extern u16 fx_1eb_modelFileIds[FX_SIX_DRAGONS_DRAGONS]; /* model files */
+extern u16 fx_1eb_pathFileIds[FX_SIX_DRAGONS_DRAGONS]; /* path files */
 extern Unk800F78A4 *fx_1eb_env;
 extern BtlModelBuf fx_1eb_effModels[];
-extern Fx1ebKeyPath fx_1eb_rotPosPath[3];
+extern Fx1ebKeyPath fx_1eb_rotPosPath[FX_SIX_DRAGONS_DRAGONS];
 extern Fx1ebPath fx_1eb_valuePath;
 extern s32 fx_1eb_op82Trails[];
 

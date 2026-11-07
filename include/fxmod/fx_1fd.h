@@ -22,6 +22,31 @@
 #define FX_FENRIR_RIBBON_PATHS_D   0x15 /* table: position paths of ribbons 2/3 (other branch) (byte-identical to fx_0e2 entry 0xF) */
 #define FX_FENRIR_CYAN_GLINTS      0x16 /* emitter: spiral of tiny cyan-white glint sprites, the glints round the green whirlwind (byte-identical to fx_0e2 entry 0x12); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
+/* fx_1fd choreography (docs/fxdata.md, "Choreography literals"; Fenrir's second form (fx_0e2) names where the code
+ * matches; partial: the ops' lengths, work sizes, trail buffers, counts, primitive words and the scrolled rects; the
+ * ribbons' path keys in op82 stay numeric). */
+#define FX_FENRIR_MODEL_COUNT 0x20 /* btlfx_initEffModels slots */
+#define FX_FENRIR_EDGES       60   /* fx_1fd_edges: the screen-edge strip's points */
+#define FX_FENRIR_HEADS       5    /* op80's five wind heads (fx_1fd_emitFileIds / posPath / emitPos / op80Trails) */
+#define FX_FENRIR_HEAD_TRAIL_SLOTS         6    /* the heads' trail buffers fx_1fd_op80Trails[slot]: slots of */
+#define FX_FENRIR_HEAD_TRAIL_STRIDE        0x50 /* this many bytes */
+#define FX_FENRIR_HEADS_FRAMES 0x78 /* op80: the heads follow their paths, the camera its tracks; the task ends at this frame */
+#define FX_FENRIR_RIBBONS_FRAMES 0x78 /* op82 (the four edge-quad ribbons, the scrolled wind textures): the task ends here */
+#define FX_FENRIR_RIBBON_FRAMES  60  /* op82: ribbons 0 / 1 grow one point a frame up to this many (and end at this frame) */
+#define FX_FENRIR_LIFT_FRAMES 0x40 /* op83: the units orbit and rise 120 a frame until this frame */
+#define FX_FENRIR_ORBIT_FRAMES 0x46 /* op83: the task ends at this frame */
+#define FX_FENRIR_UNIT_SLOTS  8    /* op84: per-unit emitters, positions and landed flags (Fx1fdWork84) */
+#define FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_SLOTS  0xC  /* op84: FX_FENRIR_GREEN_WIND_TRAIL's trail buffer per unit (fx_1fd_op84Trails): slots of */
+#define FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_STRIDE 0x30 /* this many bytes */
+#define FX_FENRIR_LAND_FRAMES 0x3C /* op84 (the units come home): the task ends at this frame */
+#define FX_FENRIR_CAM_KEY_SLOTS 64 /* fx_1fd_camKeys: camera key tracks (fxm_camChanAdd / fxm_camChanUpdate) */
+#define FX_FENRIR_CAM_CHANNELS  4  /* fx_1fd_camChanFrames: frame counters per channel set */
+#define FX_FENRIR_WIND_VRAM_Y   0x180 /* op82: fxm_drawScrollMoveX scrolls two 8-bit wind textures (rows 0x80 .. 0xBF of */
+#define FX_FENRIR_WIND_VRAM_W   0x80  /*   the 0x97 and 0x99 pages, the ribbons' fxm_drawEdgeQuads textures) */
+#define FX_FENRIR_WIND_VRAM_H   0x40
+#define FX_FENRIR_WIND_VRAM_X   0x1C0 /*   page 0x97 (0x1C0, 0x100), from (0x1C0, 0x1C0) */
+#define FX_FENRIR_WIND_2_VRAM_X 0x240 /*   page 0x99 (0x240, 0x100), from (0x240, 0x100) */
+
 typedef struct {
     s16 x, y, z;
 } Fx1fdPoint;
@@ -33,22 +58,22 @@ typedef struct {
 } Fx1fdPath;
 
 typedef struct {
-    Pool6CEntry *emit0[5];
-    SVECTOR pos14[5];
+    Pool6CEntry *emit0[FX_FENRIR_HEADS];
+    SVECTOR pos14[FX_FENRIR_HEADS];
 } Fx1fdWork80; /* 0x3C */
 
-extern u16 fx_1fd_emitFileIds[5]; /* files */
+extern u16 fx_1fd_emitFileIds[FX_FENRIR_HEADS]; /* files */
 extern BtlModelBuf fx_1fd_effModels[];
-extern Fx1fdPath fx_1fd_posPath[5];
-extern s32 fx_1fd_op80Trails[5][0x78];
-extern SVECTOR fx_1fd_emitPos[5];
+extern Fx1fdPath fx_1fd_posPath[FX_FENRIR_HEADS];
+extern s32 fx_1fd_op80Trails[FX_FENRIR_HEADS][0x78];
+extern SVECTOR fx_1fd_emitPos[FX_FENRIR_HEADS];
 
 typedef struct {
-    Pool6CEntry *emit0[8];
-    Pool6CEntry *emit20[8];
-    SVECTOR pos40[8]; /* unit positions */
-    SVECTOR emitPos80[8];
-    s16 doneC0[8]; /* landed */
+    Pool6CEntry *emit0[FX_FENRIR_UNIT_SLOTS];
+    Pool6CEntry *emit20[FX_FENRIR_UNIT_SLOTS];
+    SVECTOR pos40[FX_FENRIR_UNIT_SLOTS]; /* unit positions */
+    SVECTOR emitPos80[FX_FENRIR_UNIT_SLOTS];
+    s16 doneC0[FX_FENRIR_UNIT_SLOTS]; /* landed */
 } Fx1fdWork84; /* 0xD0 */
 
 typedef struct {
@@ -57,7 +82,7 @@ typedef struct {
     s16 radius10; /* distance from the centre */
     s16 angle12; /* angle around it */
 } Fx1fdOrbit; /* 0x14 */
-extern s32 fx_1fd_op84Trails[8][0x90];
+extern s32 fx_1fd_op84Trails[FX_FENRIR_UNIT_SLOTS][0x90];
 
 static void fxm_posPathInit(Fx1fdPath *path, u16 *data);
 static s32 fxm_posPathGet(Fx1fdPath *path, s32 t, SVECTOR *out);

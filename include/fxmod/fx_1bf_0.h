@@ -13,6 +13,19 @@
 #define FX_ARK_STRAND_POINTS  0x1D /* table: offset table of the 18 strand point lists per layer (drawStrands) */
 
 /* copied */
+/* fx_1bf_0 choreography (docs/fxdata.md, "Choreography literals"): op80's two states, the last two of the long form's
+ * (fx_17d_4: same names; the short form waits in BEAM_2 before the ring moves), and the keys inside BLAST. */
+#define FX_ARK_STATE_BEAM_2  5    /* (the first state) after RING_FRAME, RED_RING and the BEAM_LINE orbit in to the centre */
+#define FX_ARK_RING_FRAME    0x26
+#define FX_ARK_BEAM_2_FRAMES 0x3E /*   (the orbit's (frame - RING_FRAME) << 12 / N ramp spans the rest) */
+#define FX_ARK_STATE_BLAST   6    /* RED_FLASH_RING, the strands and particles (the op ends) */
+#define FX_ARK_FLASH_RING_FRAMES 0x10 /*   the flat flash ring grows and fades over this many frames */
+#define FX_ARK_STRANDS_FRAMES    0x1E /*   the strands grow one point a frame until this frame; then the outer flash ring, the
+                                        *   pattern particles and a red tint come in */
+#define FX_ARK_STRANDS_FADE_FRAME 0x26 /*   the strands widen and fade until the end */
+#define FX_ARK_BLAST_FRAMES  0x33
+#define FX_ARK_MODEL_COUNT   5    /* btlfx_initEffModels slots */
+
 extern SVECTOR fx_1bf_0_particleOffsets[3];
 extern s16 fx_1bf_0_particleFileIds[16];
 extern Unk800F78A4 *fx_1bf_0_env;

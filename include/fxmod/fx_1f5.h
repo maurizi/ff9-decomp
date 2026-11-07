@@ -11,6 +11,13 @@
 #define FX_NIGHT_PINK_GLOW_SWIRL 0x5 /* emitter: helix of white screen trails with pink glows */
 #define FX_NIGHT_PINK_WISPS      0x6 /* emitter: pink wisp sprites */
 
+/* fx_1f5 choreography (docs/fxdata.md, "Choreography literals"): the three ops' lengths and the swirl's trails. */
+#define FX_NIGHT_MOON_FRAMES        0x32 /* op80 (MOON_CLOUDS above the field, also camera point 0): the task ends at this frame */
+#define FX_NIGHT_SWIRL_TRAIL_SLOTS  0x1E /* op81: PINK_GLOW_SWIRL's trail buffer (fx_1f5_op81Trails): slots of */
+#define FX_NIGHT_SWIRL_TRAIL_STRIDE 0x68 /*   this many bytes */
+#define FX_NIGHT_SWIRL_FRAMES       0x28 /* op81: the task ends at this frame */
+#define FX_NIGHT_WISPS_FRAMES       0x28 /* op82 (PINK_WISPS at one target): the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

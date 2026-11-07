@@ -9,12 +9,12 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 0;
     } else if (mode == 1) {
         fx_1fc_env = env;
-        ex->btlfx_initEffModels(fx_1fc_effModels, 0x20);
+        ex->btlfx_initEffModels(fx_1fc_effModels, FX_FENRIR_MODEL_COUNT);
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&fx_1fc_unitPos[i]);
             ex->btlfx_getUnitScale(i, (s32 *)&fx_1fc_unitScale[i]);
         }
-        ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, fx_1fc_bgOt, 0, 0x200, 0x2BC);
+        ex->btlfx_drawBgOffscreen(FX_FENRIR_BG_VRAM_X, FX_FENRIR_BG_VRAM_Y, FX_FENRIR_BG_VRAM_W, FX_FENRIR_BG_VRAM_H, fx_1fc_bgOt, 0, 0x200, 0x2BC);
         fxm_camChanReset();
         fxm_camChanAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAMERA_KEYS_1));
         fxm_camChanAdd(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAMERA_KEYS_2));
@@ -23,7 +23,7 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         frame = entry->frame;
         env->camera->pointRots[1].vz = env->camera->points[2].vz;
         fxm_camChanUpdate(0);
-        return frame >= 0x78;
+        return frame >= FX_FENRIR_CAMERA_FRAMES;
     }
     return 0;
 }
@@ -97,7 +97,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale20.vy = 0x1000;
         work->scale20.vz = 0x1000;
         fxm_rotPosPathInit((Fx1fcPath *)&fx_1fc_rotPosPath1, (u16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_PATH));
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < FX_FENRIR_MORPH_MODELS; i++) {
             model = ex->Hi_RegisterTexPtrModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_1fc_modelFileIds[i]),
                                                fx_1fc_texPages, fx_1fc_texUv);
             work->model136[i + 1] = model;
@@ -111,10 +111,10 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale48.vx = 0x1000;
         work->scale48.vy = 0x1000;
         work->scale48.vz = 0x1000;
-        for (i = 0; i < 5; i++) {
-            work->model136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)fxm_offsetTableEntry(fx_1fc_effModelTable, i), 1);
+        for (i = 0; i < FX_FENRIR_PIECE_MODELS; i++) {
+            work->model136[i + 1 + FX_FENRIR_MORPH_MODELS] = ex->btlfx_registerEffectModel((Unk800E8F50 *)fxm_offsetTableEntry(fx_1fc_effModelTable, i), 1);
         }
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < FX_FENRIR_PIECES; i++) {
             fxm_rotPosPathInit((Fx1fcPath *)&fx_1fc_rotPosPath2[i],
                           (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_UNIT_PATHS), i));
         }
@@ -126,7 +126,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 3:
+        case FX_FENRIR_DEBRIS_FRAME:
             work->pos118.vx = -0x1C;
             work->pos118.vy = -0x267;
             work->pos118.vz = 0x342;
@@ -138,7 +138,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->otZ = 0x118;
             }
             break;
-        case 12:
+        case FX_FENRIR_BLUE_RINGS_FRAME:
             sum.vx = 0;
             sum.vy = 0;
             sum.vz = 0;
@@ -152,14 +152,14 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos120.vz = sum.vz / env->targets->targetCount;
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_BLUE_RINGS), (s32)&work->pos120);
             break;
-        case 38:
+        case FX_FENRIR_DEBRIS_STOP_FRAME:
             ex->btlfx_stopEmitter(work->emit0);
             break;
-        case 22:
-            work->timer130 = 0x10;
+        case FX_FENRIR_WHITE_IN_FRAME:
+            work->timer130 = FX_FENRIR_WHITE_FADE_FRAMES;
             break;
-        case 42:
-            work->timer132 = 0x10;
+        case FX_FENRIR_WHITE_OUT_FRAME:
+            work->timer132 = FX_FENRIR_WHITE_FADE_FRAMES;
             work->active134 = 0;
             for (unit = 0; unit < env->targets->targetCount; unit++) {
                 ex->btlfx_setUnitScale(unit, (s32 *)&fx_1fc_unitScale[unit]);
@@ -170,7 +170,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         pathFrame = frame - 1;
-        if ((u32)pathFrame < 0x18) {
+        if ((u32)pathFrame < FX_FENRIR_GROUND_SLICE_FRAMES) {
             fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath0, pathFrame, &work->rot8, &slicePos);
             work->pos10.vx = slicePos.vx;
             work->pos10.vy = slicePos.vy;
@@ -179,16 +179,16 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetEffModelSlice(work->model136[0], work->pos10.vy);
             ex->Hi_DrawSliceEffModel(&work->rot8, (VECTOR *)&work->pos10, (s32)&work->scale20, work->model136[0]);
         }
-        if ((u32)pathFrame < 0x28) {
+        if ((u32)pathFrame < FX_FENRIR_MORPH_FRAMES) {
             switch (pathFrame) {
             case 0:
                 fxm_valuePathInit((Fx1fcPath *)&fx_1fc_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_CURVE));
                 break;
-            case 4:
+            case FX_FENRIR_MORPH_2_FRAME:
                 fxm_valuePathInit((Fx1fcPath *)&fx_1fc_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_CURVE_2));
                 break;
             }
-            if (pathFrame < 4) {
+            if (pathFrame < FX_FENRIR_MORPH_2_FRAME) {
                 fromModel = 1;
                 toModel = 2;
             } else {
@@ -204,22 +204,22 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawMorphEffModel(&work->rot8, (VECTOR *)&work->pos10, (s32)&work->scale20, work->model136[fromModel],
                                      work->model136[toModel], morph);
         }
-        if ((u32)(frame - 1) < 0x18) {
-            pieceFrame = frame - 1;
-            modelIdx = 4;
-            for (i = 0; i < 10; i++) {
+        if ((u32)(frame - FX_FENRIR_PIECES_FRAME) < FX_FENRIR_PIECES_FRAMES) {
+            pieceFrame = frame - FX_FENRIR_PIECES_FRAME;
+            modelIdx = 1 + FX_FENRIR_MORPH_MODELS;
+            for (i = 0; i < FX_FENRIR_PIECES; i++) {
                 fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath2[i], pieceFrame, &work->rot30, &piecePos);
                 work->pos38.vx = piecePos.vx;
                 work->pos38.vy = piecePos.vy;
                 work->pos38.vz = piecePos.vz;
                 ex->Hi_DrawEffModel(&work->rot30, (VECTOR *)&work->pos38, (s32)&work->scale48, work->model136[modelIdx]);
                 modelIdx++;
-                if (modelIdx >= 9) {
-                    modelIdx = 4;
+                if (modelIdx >= 1 + FX_FENRIR_MORPH_MODELS + FX_FENRIR_PIECE_MODELS) {
+                    modelIdx = 1 + FX_FENRIR_MORPH_MODELS;
                 }
             }
         }
-        if ((u32)frame < 0x1C) {
+        if ((u32)frame < FX_FENRIR_UNIT_PATH_FRAMES) {
             fxm_posPathGet((Fx1fcPath *)&fx_1fc_posPath, frame, &unitOfs);
             fxm_vecPathGet((Fx1fcTrack6 *)&fx_1fc_vecPath, frame, &scaleMul);
             for (unit = 0; unit < env->targets->targetCount; unit++) {
@@ -233,7 +233,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitScale(unit, (s32 *)&work->scale98[unit]);
             }
         }
-        if ((u32)(frame - 3) < 0x23 && work->emit0 != NULL) {
+        if ((u32)(frame - FX_FENRIR_DEBRIS_FRAME) < FX_FENRIR_DEBRIS_STOP_FRAME - FX_FENRIR_DEBRIS_FRAME && work->emit0 != NULL) {
             if (work->emit0->state == BTLFX_EMIT_DONE) {
                 work->emit0 = NULL;
             }
@@ -244,19 +244,19 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->timer130 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->timer130, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, FX_FENRIR_WHITE_FADE_FRAMES - work->timer130, FX_FENRIR_WHITE_FADE_FRAMES, BTLFX_ABR_ADD, 0);
             if (--work->timer130 == -1) {
                 work->active134 = 1;
             }
         }
         if (work->timer132 >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer132, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, FX_FENRIR_WHITE_FADE_FRAMES - work->timer132, FX_FENRIR_WHITE_FADE_FRAMES, BTLFX_ABR_ADD, 0);
             work->timer132--;
         }
         if (work->active134 != 0) {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, FX_FENRIR_WHITE_RGB);
         }
-        return frame >= 0x3D;
+        return frame >= FX_FENRIR_GROUND_FRAMES;
     }
     return 0;
 }
@@ -270,19 +270,19 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR *emitPos;
 
     if (mode == 0) {
-        *args = 0xB0;
+        *args = sizeof(Fx1fcWork84);
     } else if (mode == 1) {
         fx_1fc_env = env;
         for (j = 0; j < env->targets->targetCount; j++) {
             work->doneA0[j] = 0;
             ex->btlfx_getUnitHomePos(j, (s16 *)&work->pos20[j]);
-            work->pos20[j].vy = -0xBB8;
+            work->pos20[j].vy = -FX_FENRIR_DROP_HEIGHT;
             ex->btlfx_setUnitPos(j, (s16 *)&work->pos20[j]);
         }
     } else {
         frame = entry->frame;
         for (i = 0; i < env->targets->targetCount; i++) {
-            if (work->doneA0[i] == 0 && fxm_moveUnitHome(i, frame, 4, &work->pos20[i]) != 0) {
+            if (work->doneA0[i] == 0 && fxm_moveUnitHome(i, frame, FX_FENRIR_DROP_FRAMES, &work->pos20[i]) != 0) {
                 work->doneA0[i] = 1;
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->pos20[i]);
                 ex->btlfx_setUnitPos(i, (s16 *)&work->pos20[i]);
@@ -297,7 +297,7 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_FENRIR_LAND_FRAMES;
     }
     return 0;
 }
@@ -428,10 +428,10 @@ static void fxm_camChanReset(void) {
     s32 i;
     s32 freeMark = FX_1FC_KEY_FREE;
 
-    for (i = 63; i >= 0; i--) {
+    for (i = FX_FENRIR_CAM_KEY_SLOTS - 1; i >= 0; i--) {
         fx_1fc_camKeys[i].timer6 = freeMark;
     }
-    for (i = 3; i >= 0; i--) {
+    for (i = FX_FENRIR_CAM_CHANNELS - 1; i >= 0; i--) {
         fx_1fc_camChanFrames[i] = 0;
     }
 }
@@ -442,7 +442,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
 
     data++;
     count = *data;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < FX_FENRIR_CAM_KEY_SLOTS; i++) {
         if (fx_1fc_camKeys[i].timer6 == FX_1FC_KEY_FREE) {
             fx_1fc_camKeys[i].timer6 = 0;
             fx_1fc_camKeys[i].keys0 = data;
@@ -462,7 +462,7 @@ static void fxm_camChanUpdate(s32 ch) {
     s32 k;
     s32 dstSlot;
 
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < FX_FENRIR_CAM_KEY_SLOTS; i++) {
         if (fx_1fc_camKeys[i].channel8 == ch) {
             if (fx_1fc_camKeys[i].timer6 == 0 && fx_1fc_camKeys[i].startFrame4 == fx_1fc_camChanFrames[ch]) {
                 fx_1fc_camKeys[i].timer6 = *fx_1fc_camKeys[i].keys0;

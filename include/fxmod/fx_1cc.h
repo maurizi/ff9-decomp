@@ -26,6 +26,26 @@
 #define FX_SEALION_APPEARS_ICE_CRYSTAL_3   0x28 /* model: wide ice crystal spike (byte-identical to fx_097 entry 0x13) */
 #define FX_SEALION_APPEARS_ICE_CRYSTAL     0x29 /* model: main ice crystal spike (byte-identical to fx_097 entry 0x14) */
 
+/* fx_1cc choreography (docs/fxdata.md, "Choreography literals"; partial: op80's state lengths, the pool and work
+ * sizes, the model textures and the primitive words; the effect keys inside the states stay numeric). */
+#define FX_SEALION_APPEARS_BULGE_FRAMES  6    /* op80 state 0: the screen bulge grid (fxm_drawBulgeGrid14) swells */
+#define FX_SEALION_APPEARS_MIST_FRAMES   10   /* state 1: the grid, SNOW_RING_2, MIST, MIST_HIGH, ICE_SPARKLES_2, a tint */
+#define FX_SEALION_APPEARS_FLASH_FRAMES  4    /* state 2: ICE_CRYSTAL / CRYSTAL_SHEEN and a fading blue-white flash (6 frames) */
+#define FX_SEALION_APPEARS_HOLD_FRAMES   8    /* state 4: the crystal models only */
+#define FX_SEALION_APPEARS_BURST_FRAMES  10   /* state 5: ICE_FLARES(_2), FREEZE_BURST, FROST_RING_2, the pieces fly */
+#define FX_SEALION_APPEARS_RINGS_FRAMES  24   /* state 6: SNOW_RING, FROST_RING, a fading flash; then the op ends */
+#define FX_SEALION_APPEARS_POOL          0x20 /* op80: pool of Fx1ccObj (op80PoolTask) */
+#define FX_SEALION_APPEARS_MODEL_SLOTS   0x19 /* op80: btlfx_initEffModels slots */
+#define FX_SEALION_APPEARS_PIECES        14   /* op80: ice piece models (fx_1cc_pieceFileIds, model20) */
+#define FX_SEALION_APPEARS_ICE_TPAGE     0x9A /* ICE_CRYSTAL(_2 / _3) and the pieces (Hi_RegisterTexEffModel): 8-bit page (0x280, 0x100) */
+#define FX_SEALION_APPEARS_ICE_CLUT      0x3DC0 /* CLUT at (0x0, 0xF7) */
+#define FX_SEALION_APPEARS_ICE_U         0x80
+#define FX_SEALION_APPEARS_ICE_V         0
+#define FX_SEALION_APPEARS_SHEEN_TPAGE   0xBA /* CRYSTAL_SHEEN(_2 / _3): 8-bit page (0x280, 0x100), abr 1 */
+#define FX_SEALION_APPEARS_SHEEN_CLUT    0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_SEALION_APPEARS_SHEEN_U       0
+#define FX_SEALION_APPEARS_SHEEN_V       0x80
+
 extern Unk800F78A4 *fx_1cc_env;
 extern s16 fx_1cc_pieceDists[];
 
@@ -51,7 +71,7 @@ typedef struct Fx1ccObj {
 
 typedef struct {
     u8 pad0[0x20];
-    s32 model20[14]; /* models */
+    s32 model20[FX_SEALION_APPEARS_PIECES]; /* models */
     u8 pad58[0x78 - 0x58];
     s16 flag78; /* burst */
 } Fx1ccInst;
@@ -68,7 +88,7 @@ typedef struct {
     s32 model14;
     s32 model18;
     s32 model1C;
-    s32 model20[14]; /* piece models */
+    s32 model20[FX_SEALION_APPEARS_PIECES]; /* piece models */
     SVECTOR pos58; /* position */
     SVECTOR pos60;
     SVECTOR pos68;
@@ -77,7 +97,8 @@ typedef struct {
     s16 index7A; /* spawned directions */
     s32 frame7C;
     s32 scroll80;
-} Fx1ccWork80; /* 0x84 */
+    u8 unused84[0x88 - 0x84]; /* pad to the 0x88 bytes op80 asks for */
+} Fx1ccWork80; /* 0x88 */
 
 extern BtlModelBuf fx_1cc_effModels[];
 extern s32 fx_1cc_pieceFileIds[14];

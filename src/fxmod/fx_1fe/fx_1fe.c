@@ -52,9 +52,9 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         }
         gte_stlvnl(m.t);
         gte_rtps();
-        code = 0x38;
-        if (abr != 0xFF) {
-            code = 0x3A;
+        code = GPU_POLY_G4;
+        if (abr != BTLFX_ABR_OPAQUE) {
+            code = GPU_POLY_G4 | GPU_ABE;
         }
         gte_stszotz(&otz);
         if (rot->pad != 0) {
@@ -114,11 +114,11 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
                 *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
-                    ex->btlfx_addPrim(0x8000000, otz, prim);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_G4), otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, otz, tpage);
+        ex->btlfx_addPrim(PRIM_TAG(DR_TPAGE), otz, tpage);
     }
     w--;
     h--;
@@ -154,12 +154,12 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx1feWork81);
     } else if (mode == 1) {
-        work->state0 = 1;
+        work->state0 = FX_PHOENIX_STATE_FEATHERS;
         work->frame4 = 0;
         fx_1fe_env = env;
-        ex->btlfx_initEffModels(fx_1fe_effModels, 7);
+        ex->btlfx_initEffModels(fx_1fe_effModels, FX_PHOENIX_MODEL_COUNT);
         work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_DISC), 1);
         work->model38 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_DOME), 1);
         work->model3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_SMOKE_ARC), 1);
@@ -176,8 +176,8 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 1:
-            rise = (frame << 12) / 37;
+        case FX_PHOENIX_STATE_FEATHERS:
+            rise = (frame << 12) / FX_PHOENIX_FEATHERS_STATE_FRAMES;
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1fe_basePos0);
                 work->pos10.vy -= 0x1000;
@@ -185,8 +185,8 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FIRE_FEATHERS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = fx_1fe_op81Trails;
-                    emitter->trailSlots = 0x40;
-                    emitter->trailStride = 0x1C;
+                    emitter->trailSlots = FX_PHOENIX_FIRE_FEATHERS_TRAIL_SLOTS;
+                    emitter->trailStride = FX_PHOENIX_FIRE_FEATHERS_TRAIL_STRIDE;
                     emitter->otZ = 0x80;
                 }
             }
@@ -197,8 +197,8 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vx = work->camTarget20.vx;
             env->camera->points[3].vy = work->camTarget20.vy;
             env->camera->points[3].vz = work->camTarget20.vz;
-            if (frame >= 0x25) {
-                work->state0 = 2;
+            if (frame >= FX_PHOENIX_FEATHERS_STATE_FRAMES) {
+                work->state0 = FX_PHOENIX_STATE_BURST;
                 entry->frame = -1;
                 work->camTarget20.vx = fx_1fe_basePos0.vx;
                 work->camTarget20.vy = fx_1fe_basePos0.vy;
@@ -209,7 +209,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = work->camTarget20.vz;
             }
             break;
-        case 2:
+        case FX_PHOENIX_STATE_BURST:
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_PINK_RINGS), (s32)&fx_1fe_basePos0);
                 if (emitter != NULL) {
@@ -224,14 +224,14 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x100;
                 }
             }
-            if (frame == 7) {
+            if (frame == FX_PHOENIX_GOLD_FEATHERS_FRAME) {
                 ex->btlfx_initParticleSystem();
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_GOLD_FEATHERS), (s32)&fx_1fe_basePos0);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
-            if (frame >= 7) {
+            if (frame >= FX_PHOENIX_GOLD_FEATHERS_FRAME) {
                 rot.vy = frame * 4;
                 rot.vx = 0;
                 rot.vz = 0;
@@ -239,7 +239,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vx = fx_1fe_basePos0.vx;
                 pos.vy = fx_1fe_basePos0.vy;
                 pos.vz = fx_1fe_basePos0.vz;
-                grow = ((frame - 7) << 12) / 25;
+                grow = ((frame - FX_PHOENIX_GOLD_FEATHERS_FRAME) << 12) / (FX_PHOENIX_BURST_FRAMES - FX_PHOENIX_GOLD_FEATHERS_FRAME);
                 scale.vx = scale.vz = (grow >> 4) + scale.vy;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model34);
                 spin = frame * 7;
@@ -252,13 +252,15 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vx = scale.vz = 0x400;
                 scale.vy = ((ex->math_sin(grow >> 2) / 2) + 0x800) >> 2;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model38);
-                ex->btlfx_drawScrollMove(1000 - frame * 9, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-                ex->btlfx_drawScrollMove(1000 - spin, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+                ex->btlfx_drawScrollMove(1000 - frame * 9, FX_PHOENIX_DOME_VRAM_X, FX_PHOENIX_DOME_VRAM_Y, FX_PHOENIX_DOME_VRAM_W, FX_PHOENIX_DOME_VRAM_H,
+                                     FX_PHOENIX_DOME_SRC_X, FX_PHOENIX_DOME_SRC_Y);
+                ex->btlfx_drawScrollMove(1000 - spin, FX_PHOENIX_DISC_VRAM_X, FX_PHOENIX_DISC_VRAM_Y, FX_PHOENIX_DISC_VRAM_W, FX_PHOENIX_DISC_VRAM_H,
+                                     FX_PHOENIX_DISC_SRC_X, FX_PHOENIX_DISC_SRC_Y);
                 ex->math_cos(grow);
                 ex->math_cos(grow * 2);
                 ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, &fx_1fe_rippleColor, 0x18, frame * 400, 0x186, 0x100);
             }
-            if ((u32)(frame - 7) < 0x14) {
+            if ((u32)(frame - FX_PHOENIX_GOLD_FEATHERS_FRAME) < FX_PHOENIX_WAVE_FRAMES) {
                 s32 pulse;
                 s32 ang;
                 s32 fade;
@@ -267,7 +269,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vx = fx_1fe_basePos0.vx;
                 pos.vy = fx_1fe_basePos0.vy;
                 pos.vz = fx_1fe_basePos0.vz;
-                pulse = ((frame - 7) << 12) / 20;
+                pulse = ((frame - FX_PHOENIX_GOLD_FEATHERS_FRAME) << 12) / FX_PHOENIX_WAVE_FRAMES;
                 ang = pulse >> 2;
                 fade = 0xC00 - pulse;
                 rot.vy = ex->math_sin(ang) / 3;
@@ -276,7 +278,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vz = 0x555;
                 rise = (ex->math_sin(ang) / 15) + 2;
                 shade = (fade >> 5) - 0x80;
-                for (k = 0; k < 7; k++) {
+                for (k = 0; k < FX_PHOENIX_SMOKE_ARCS; k++) {
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model3C);
                     ex->Hi_ModifyEffModelRGB(work->model3C, shade, shade, shade);
                     pos.vy -= rise;
@@ -284,22 +286,22 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     scale.vx = scale.vy = (scale.vx * 9) >> 3;
                 }
             }
-            if (frame == 5) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x64);
+            if (frame == FX_PHOENIX_BLUE_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_PHOENIX_BLUE_RGB);
             }
-            if (frame == 6) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0x80, 0xFF);
+            if (frame == FX_PHOENIX_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_PHOENIX_DARKEN_RGB);
             }
-            if ((u32)(frame - 7) < 8) {
-                s32 tint = 0xF0 - (((frame - 7) * 0xF0) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
+            if ((u32)(frame - FX_PHOENIX_FLASH_FRAME) < FX_PHOENIX_FLASH_FRAMES) {
+                s32 tint = 0xF0 - (((frame - FX_PHOENIX_FLASH_FRAME) * 0xF0) >> 3);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint >> 1);
             }
-            if (frame >= 0x18) {
-                s32 tint = ((frame - 0x18) * 0xFF) >> 3;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+            if (frame >= FX_PHOENIX_WHITE_IN_FRAME) {
+                s32 tint = ((frame - FX_PHOENIX_WHITE_IN_FRAME) * 0xFF) >> 3;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
             }
-            if (frame >= 0x20) {
-                work->state0 = 6;
+            if (frame >= FX_PHOENIX_BURST_FRAMES) {
+                work->state0 = FX_PHOENIX_STATE_TAIL;
                 entry->frame = -1;
                 work->camTarget20.vx = fx_1fe_basePos1.vx;
                 work->camTarget20.vy = fx_1fe_basePos1.vy;
@@ -310,11 +312,11 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = work->camTarget20.vz;
             }
             break;
-        case 6:
-            t = (frame << 12) / 87;
-            if (frame < 0x18) {
-                s32 tint = 0xFF - (frame * 0xFF) / 24;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+        case FX_PHOENIX_STATE_TAIL:
+            t = (frame << 12) / FX_PHOENIX_TAIL_FRAMES;
+            if (frame < FX_PHOENIX_WHITE_OUT_FRAMES) {
+                s32 tint = 0xFF - (frame * 0xFF) / FX_PHOENIX_WHITE_OUT_FRAMES;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
             }
             work->camTarget20.vx = fx_1fe_basePos1.vx;
             work->camTarget20.vy = fx_1fe_basePos1.vy;
@@ -333,7 +335,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x10;
                 }
             }
-            if (frame == 0x20) {
+            if (frame == FX_PHOENIX_FLAME_FEATHERS_3_FRAME) {
                 work->pos18.vx = fx_1fe_basePos1.vx;
                 work->pos18.vy = fx_1fe_basePos1.vy;
                 work->pos18.vz = fx_1fe_basePos1.vz;
@@ -343,7 +345,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x10;
                 }
             }
-            if (frame >= 0x57) {
+            if (frame >= FX_PHOENIX_TAIL_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
