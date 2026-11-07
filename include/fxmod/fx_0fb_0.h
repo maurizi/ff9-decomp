@@ -33,7 +33,7 @@
 
 /* fx_0fb_0 choreography (docs/fxdata.md, "Choreography literals"): op80's seven states (ground ripple, rocks, the
  * leaf mound, Madeen's appearance, charge, release, finale) and their lengths, the rock pool, the model textures,
- * op81's length. The keys inside the states are still numeric. Shared names with group 1 (fx_0fb_1). */
+ * op81's length (the keys inside the states: deep pass below). Shared names with group 1 (fx_0fb_1). */
 #define FX_MADEEN_STATE_RIPPLE      0     /* op80 state: the ground ripple grid and GOLD_LIGHT_BAND; the models register at its end */
 #define FX_MADEEN_STATE_ROCKS       1     /* ripple and flash, ROCKS fly up (pool tasks) */
 #define FX_MADEEN_STATE_MOUND       2     /* LEAF_MOUND rises */
@@ -65,6 +65,52 @@
 #define FX_MADEEN_MODEL_U           0      /* the models' texture origin (u, v) in their pages */
 #define FX_MADEEN_MODEL_V           0
 #define FX_MADEEN_BLESS_FRAMES      0x2E  /* op81's length */
+
+/* fx_0fb_0 deep pass: the keys inside op80's states, the rock tasks, the ribbon / trail / wave helpers. */
+#define FX_MADEEN_SMALL_ROCKS       25    /* rocks of the first wave (fx_0fb_0_rockOrder, model6C[0..24]); the later ones are big (two models) */
+#define FX_MADEEN_ROCK_MODELS       (FX_MADEEN_SMALL_ROCKS + 2) /* model6C: the rock block models (fx_0fb_0_rockBlocks), on LEAF_MOUND's page */
+#define FX_MADEEN_ROCK_STATE_RISE   0     /* rock task: bobs up along a sine for RISE_FRAMES */
+#define FX_MADEEN_ROCK_STATE_FLOAT  1     /* then floats on a slow sine */
+#define FX_MADEEN_ROCK_RISE_FRAMES  40
+#define FX_MADEEN_LIGHT_BAND_FRAME  0x18  /* RIPPLE: GOLD_LIGHT_BAND starts */
+#define FX_MADEEN_SHEET_FADE_FRAMES 8     /* ROCKS: the wave sheet fades over the first frames (cos((frame << 10) >> 3)) */
+#define FX_MADEEN_RING_OUT_FRAMES   0x19  /* ROCKS: the ripple grid widens over this many frames (frame / (N - 1)) */
+#define FX_MADEEN_FLASH_FRAMES      0xC   /* ROCKS: frame 0 flashes green, then the additive tint fades over frames 1 .. N - 1 */
+#define FX_MADEEN_ROCK_SPAWN_FRAMES 0x1E  /* ROCKS: rocks spawn until this frame, */
+#define FX_MADEEN_ROCK_DOUBLE_FRAMES 0xD  /* two a frame before this frame, one after */
+#define FX_MADEEN_ROCKS_SPAWNED     0x2F  /* at most this many rocks */
+#define FX_MADEEN_MOUND_SHOW_FRAME  0x20  /* MOUND: LEAF_MOUND drawn and the cloud strip fades in (over 8 frames) from here */
+#define FX_MADEEN_BOB_FRAMES        4     /* APPEAR: Madeen drops onto the mound, then shakes */
+#define FX_MADEEN_SHAKE_END_FRAME   0xB
+#define FX_MADEEN_DUST_FRAME        3     /* APPEAR: ROCK_DUST at bone 0x5B */
+#define FX_MADEEN_RIBBONS           4     /* CHARGE: ribbons between bone pairs (fx_0fb_0_ribbonBones) */
+#define FX_MADEEN_RIBBON_POINTS     12    /* points per ribbon (Fx0fb0SegBuf) */
+#define FX_MADEEN_RIBBON_CLEAR      999   /* fxm_drawRibbonTrail: n > this clears n - this points instead of drawing */
+#define FX_MADEEN_TRAILS            10    /* VIOLET_TRAIL strips, one per bone of fx_0fb_0_trailBones (the two wings) */
+#define FX_MADEEN_WING_TRAILS       5     /* trails per wing: bones 0 .. 4 and 5 .. 9 */
+#define FX_MADEEN_TRAIL_POINTS      16    /* points per strip (Fx0fb0Trail16) */
+#define FX_MADEEN_TRAIL_REACH       0x46  /* the trail point lies this far ahead along its bone (btlfx_matrixPointAhead) */
+#define FX_MADEEN_GRID_BRIGHT       0x78  /* the screen grid's grey in most states */
+#define FX_MADEEN_STREAKS_FRAME     4     /* RELEASE: LIGHT_STREAKS start at both wings */
+#define FX_MADEEN_RELEASE_POSE_FRAME 5    /* RELEASE: Madeen's motion holds RELEASE_MOT_FRAME from here */
+#define FX_MADEEN_RELEASE_MOT_FRAME 0x31
+#define FX_MADEEN_RING_2_FRAME      7     /* RELEASE: BLUE_RING_2 starts at both wings */
+#define FX_MADEEN_BLUE_FLASH_FRAME  0x11  /* RELEASE: the blue tint starts, then grows */
+#define FX_MADEEN_FINALE_FADE_IN_FRAMES 2 /* FINALE: the screen fades in from white */
+#define FX_MADEEN_FINALE_MOT_FRAMES 0xD   /* FINALE: motion frames played, then the last one held */
+#define FX_MADEEN_RAINBOW_FRAME     4     /* FINALE: the RAINBOW_ARC wings open (darken + flash), BLUE_RING at both wings */
+#define FX_MADEEN_RAINBOW_FLASH_END_FRAME 8 /* the white flash fades out by this frame */
+#define FX_MADEEN_RAINBOW_OPEN_FRAMES 8   /* the arcs unfold, then grow */
+#define FX_MADEEN_BACKDROP_SWAP_FRAME 0x10 /* ROCKS: BACKDROP until this frame, then BACKDROP_2 */
+#define FX_MADEEN_WAVE_TPAGE        0x118  /* wave curtain / sheet texture: 15-bit page (0x200, 0x100), abr 0 */
+#define FX_MADEEN_WAVE_CLUT         0xFFFF /* no CLUT */
+#define FX_MADEEN_WAVE_U            0x10
+#define FX_MADEEN_WAVE_V            0x90
+#define FX_MADEEN_SHEET_ROWS        32    /* fx_0fb_0_drawWaveSheet: quad rows */
+#define FX_MADEEN_SHEET_COLS        16    /* quads per row: gouraud at both edges, flat between */
+#define FX_MADEEN_CURTAIN_SEGMENTS  44    /* fx_0fb_0_drawWaveCurtain: quads */
+#define FX_MADEEN_LIFT_STATE_FLOAT  0     /* op81: the enemies rise and spin for BLESS_FRAMES */
+#define FX_MADEEN_LIFT_STATE_SPIN   1     /* then spin until op80 restores them */
 
 typedef struct {
     s32 state0; /* state */
@@ -121,7 +167,7 @@ typedef struct {
     SVECTOR pos54;
     SVECTOR pos5C; /* summon position */
     SVECTOR camPos64;
-    s32 model6C[27]; /* rock models */
+    s32 model6C[FX_MADEEN_ROCK_MODELS]; /* rock models */
     Fx0fbVec3 posD8;
     Fx0fbVec3 scaleE4;
     SVECTOR rotF0;
@@ -135,11 +181,11 @@ typedef struct {
 } Fx0fb0Work80; /* 0x128 */
 
 typedef struct {
-    u8 data[0x84];
+    u8 data[4 + FX_MADEEN_TRAIL_POINTS * 8];
 } Fx0fb0Trail16; /* 4 + 16 points */
 
 typedef struct {
-    Fx0fb0Seg seg[12];
+    Fx0fb0Seg seg[FX_MADEEN_RIBBON_POINTS];
 } Fx0fb0SegBuf; /* 0xC0 */
 
 typedef struct {
@@ -167,16 +213,16 @@ void fx_0fb_0_drawWaveSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, 
 void fx_0fb_0_drawWaveCurtain(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 ph, s32 step,
                    s32 abr, s32 ph2);
 extern SVECTOR fx_0fb_0_origin;
-extern s16 fx_0fb_0_ribbonBones[4][2];
-extern s16 fx_0fb_0_trailBones[10];
-extern u16 fx_0fb_0_rockBlocks[27];
-extern s16 fx_0fb_0_rockOrder[25];
+extern s16 fx_0fb_0_ribbonBones[FX_MADEEN_RIBBONS][2];
+extern s16 fx_0fb_0_trailBones[FX_MADEEN_TRAILS];
+extern u16 fx_0fb_0_rockBlocks[FX_MADEEN_ROCK_MODELS];
+extern s16 fx_0fb_0_rockOrder[FX_MADEEN_SMALL_ROCKS];
 extern s16 fx_0fb_0_rockOffsets[];
 extern CVECTOR fx_0fb_0_rippleRgb[];
 extern CVECTOR fx_0fb_0_ribbonRgb[];
-extern SVECTOR fx_0fb_0_bonePts[10];
+extern SVECTOR fx_0fb_0_bonePts[FX_MADEEN_TRAILS];
 extern SVECTOR fx_0fb_0_bonePts1[];
-extern Fx0fb0SegBuf fx_0fb_0_ribbons[4];
-extern Fx0fb0Trail16 fx_0fb_0_strips[10];
+extern Fx0fb0SegBuf fx_0fb_0_ribbons[FX_MADEEN_RIBBONS];
+extern Fx0fb0Trail16 fx_0fb_0_strips[FX_MADEEN_TRAILS];
 
 #endif
