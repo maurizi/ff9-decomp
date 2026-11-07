@@ -24,7 +24,7 @@ static s32 fx_17d_2_op80PoolTask(s32 mode, Fx17d2Elem *it, Unk800F78A4 *env, Unk
     ex->Hi_ModifyEffModelRGB(work->model74, (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80,
                              (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80,
                              (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80);
-    if (frame >= 0x40) {
+    if (frame >= FX_ARK_PUFF_FRAMES) {
         return 1;
     }
     }
@@ -46,16 +46,16 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
     s32 drop;
 
     if (mode == 0) {
-        init->workSize = 0x80;
-        init->elemSize = 0x18;
+        init->workSize = sizeof(Fx17d2Work);
+        init->elemSize = sizeof(Fx17d2Elem);
         init->elemFn = (s32)fx_17d_2_op80PoolTask;
-        init->poolCount = 0x14;
+        init->poolCount = FX_ARK_PUFFS;
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_ARK_STATE_SHELL;
         work->frame4 = 0;
         fx_17d_2_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(fx_17d_2_effModels, 5);
+        ex->btlfx_initEffModels(fx_17d_2_effModels, FX_ARK_MODEL_COUNT);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_BLUE_ENERGY_SHELL), 1);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_CONE), 1);
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_FLAME_SPIRAL_CONE), 1);
@@ -89,7 +89,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         if (work->emit7C != NULL) {
             work->emit7C->otZ = 0x80;
         }
-        for (i = 0; i < 0x14; i++) {
+        for (i = 0; i < FX_ARK_PUFFS; i++) {
             drop = i * 0x140 - 0x400;
             elem = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (elem != NULL) {
@@ -105,9 +105,9 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         }
     } else {
         frame = entry->frame;
-        if (work->state0 == 0) {
+        if (work->state0 == FX_ARK_STATE_SHELL) {
             work->rot54.vz += 2;
-            t = (frame << 12) / 60;
+            t = (frame << 12) / FX_ARK_SHELL_FRAMES;
             ex->Hi_DrawEffModel(&work->rot54, (VECTOR *)work->pos48, (s32)work->scale5C, work->model78);
             work->pos28[1] += 0x46;
             ex->Hi_SetEffModelOffset(work->model68, 0x80);
@@ -126,8 +126,8 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             env->otZ = 0x100;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos10, NULL, 0xAAA, 0, BTLFX_ABR_ADD, -1);
             env->otZ = 0;
-            ex->btlfx_drawScrollMove(frame * 10, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
-            ex->btlfx_drawScrollMove(frame * 7, 0x240, 0x100, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(frame * 10, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * 7, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREEN_GLOW_SPRITE), frame / 3 + 0x10E, 0x40 - frame / 3,
                               0, 0xFF, -1);
             ex->btlfx_drawSpriteAtOt(0xE00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STATIC_SPRITE), frame / 3 + 0xA0, 0x70 - frame / 3,
@@ -147,7 +147,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->emit7C->rot.vy = work->rot40.vy;
                 work->emit7C->rot.vz = work->rot40.vz;
             }
-            if (frame >= 0x3C) {
+            if (frame >= FX_ARK_SHELL_FRAMES) {
                 ex->btlfx_poolClear((Unk800DA1B8 *)entry->pool);
                 ex->btlfx_clearEffModels();
                 return 1;

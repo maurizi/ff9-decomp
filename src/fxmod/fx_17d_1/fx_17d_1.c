@@ -46,10 +46,10 @@ void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, 
         cell = poly;
         for (; i < 4;) {
             col[0] = col[1] = col[2] = c;
-            if (abr != 0xFF) {
-                col[3] = 0x2E;
+            if (abr != BTLFX_ABR_OPAQUE) {
+                col[3] = GPU_POLY_FT4 | GPU_ABE;
             } else {
-                col[3] = 0x2C;
+                col[3] = GPU_POLY_FT4;
             }
             cur = poly++;
             xs = dw * i;
@@ -73,7 +73,7 @@ void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, 
             *(u32 *)&cell->r0 = *(u32 *)col;
             cell++;
             i++;
-            ex->btlfx_addPrim(0x09000000, ot, cur);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), ot, cur);
             uu = nu;
         }
         v += dh;
@@ -108,7 +108,7 @@ void fx_17d_1_drawSideFade(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b) {
         poly->y0 = poly->y1 = i * 60;
         poly->y2 = poly->y3 = i * 60 + 60;
         poly++;
-        ex->btlfx_linkPrimAbr(0x08000000, ot, prim, tpage);
+        ex->btlfx_linkPrimAbr(PRIM_TAG(POLY_G4), ot, prim, tpage);
         prim++;
     }
 }
@@ -126,12 +126,12 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x7C;
+        *args = sizeof(Fx17d1Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_ARK_STATE_FLARE;
         work->frame4 = 0;
         fx_17d_1_env = env;
-        ex->btlfx_initEffModels(fx_17d_1_effModels, 2);
+        ex->btlfx_initEffModels(fx_17d_1_effModels, FX_ARK_MODEL_COUNT);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_STREAK_SHELL), 1);
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->loader)->summon54->motion180, ((Fx17d1Summon *)env->loader)->model60);
         work->pos28.vx = 0;
@@ -164,8 +164,8 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         state = work->state0;
         frame = entry->frame;
         switch (state) {
-        case 0:
-            t = (frame << 12) / 24;
+        case FX_ARK_STATE_FLARE:
+            t = (frame << 12) / FX_ARK_FLARE_FRAMES;
             work->pos50.vz -= 0x26C;
             work->pos28.vz -= 0x26C;
             if (frame != 0) {
@@ -187,21 +187,21 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vx = work->pos18.vx;
             env->camera->points[2].vy = work->pos18.vy;
             env->camera->points[2].vz = work->pos18.vz;
-            ex->btlfx_drawScrollMove(frame * 8, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
-            if (frame < 12) {
-                tint = (ex->math_cos((frame << 10) / 12) << 7) >> 12;
+            ex->btlfx_drawScrollMove(frame * 8, FX_ARK_SHELL_VRAM_X, FX_ARK_SHELL_VRAM_Y, FX_ARK_SHELL_VRAM_W, FX_ARK_SHELL_VRAM_H, FX_ARK_SHELL_SRC_X, FX_ARK_SHELL_SRC_Y);
+            if (frame < FX_ARK_UNFADE_FRAMES) {
+                tint = (ex->math_cos((frame << 10) / FX_ARK_UNFADE_FRAMES) << 7) >> 12;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x800), BTLFX_ABR_OPAQUE, tint, tint, tint);
             }
-            if (frame >= 13) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, ((frame - 12) << 7) / 12, 0, 0);
+            if (frame >= FX_ARK_UNFADE_FRAMES + 1) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, ((frame - FX_ARK_UNFADE_FRAMES) << 7) / (FX_ARK_FLARE_FRAMES - FX_ARK_UNFADE_FRAMES), 0, 0);
             }
-            if (frame == 8) {
+            if (frame == FX_ARK_SPARKLE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SPARKLE_TRAIL), (s32)&work->pos10);
                 work->emit74 = emitter;
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_1_op80Trails;
-                    work->emit74->trailSlots = 0xE0;
-                    work->emit74->trailStride = 0x1C;
+                    work->emit74->trailSlots = FX_ARK_SPARKLE_TRAIL_TRAIL_SLOTS;
+                    work->emit74->trailStride = FX_ARK_SPARKLE_TRAIL_TRAIL_STRIDE;
                     if (work->emit74 != NULL) {
                         work->emit74->otZ = 0x80;
                     }
@@ -210,7 +210,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-            } else if (frame >= 9) {
+            } else if (frame >= FX_ARK_SPARKLE_FRAME + 1) {
                 if (work->emit74 != NULL) {
                     if (work->emit74->state == BTLFX_EMIT_DONE) {
                         work->emit74 = NULL;
@@ -230,11 +230,11 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos10.vz -= 0x258;
                 env->otZ = 0;
             }
-            if (frame >= 18) {
+            if (frame >= FX_ARK_SIDE_FADE_FRAME) {
                 fx_17d_1_drawSideFade((u32 *)(env->ot + 0xFFE), 0xFF, 0, 0, 0x18, 0xC8);
             }
-            if (frame >= 24) {
-                work->state0 = 1;
+            if (frame >= FX_ARK_FLARE_FRAMES) {
+                work->state0 = FX_ARK_STATE_RISE;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit74);
                 lo = ((s32 *)&work->unk8)[0];
@@ -263,8 +263,8 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->rot48.vz = 0;
             }
             break;
-        case 1:
-            fx_17d_1_drawTexGrid(0xFFE, frame / 2 + 0x96, 0x70, 0x100, 0xF0, 0x80, 0x9B, 0x3EC0, 0, 0, 1);
+        case FX_ARK_STATE_RISE:
+            fx_17d_1_drawTexGrid(0xFFE, frame / 2 + 0x96, 0x70, 0x100, 0xF0, 0x80, FX_ARK_GRID_TPAGE, FX_ARK_GRID_CLUT, 0, 0, BTLFX_ABR_ADD);
             work->pos28.vy += 0x58;
             sc.vx = sc.vy = work->scale34.vx * 2 / 3;
             sc.vz = work->scale34.vz;
@@ -287,8 +287,8 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit70->rot.vz = work->rot48.vz;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
-            if (frame >= 0x50) {
+            ex->btlfx_drawScrollMove(frame * 12, FX_ARK_SHELL_VRAM_X, FX_ARK_SHELL_VRAM_Y, FX_ARK_SHELL_VRAM_W, FX_ARK_SHELL_VRAM_H, FX_ARK_SHELL_SRC_X, FX_ARK_SHELL_SRC_Y);
+            if (frame >= FX_ARK_RISE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 env->camera->points[3].vx = 0;
                 env->camera->points[3].vy = -0x1000;

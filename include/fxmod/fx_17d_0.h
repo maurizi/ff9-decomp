@@ -20,6 +20,30 @@
 #define FX_ARK_VIOLET_RING      0x23 /* emitter: white-violet-blue and white-cream-purple gouraud rings */
 #define FX_ARK_CAMERA_ROLL_KEYS 0x25 /* table: per-frame keys whose third value is camera point 0 roll (op 0x82) */
 
+/* fx_17d_0 choreography (docs/fxdata.md, "Choreography literals"): op80's states (work->state0; the frame restarts at
+ * each) and their lengths and keyframes, the pieces, the streak field, the pool, the GPU words of the line helper. */
+#define FX_ARK_STATE_STREAKS 0xA  /* op80 starts here: a field of light streaks (fxm_drawStreakField) sways */
+#define FX_ARK_STREAKS_FRAMES 0x20
+#define FX_ARK_STATE_SPACE   0    /* RED_ROCK_LAYER drifts over the streaks; then the pieces are registered */
+#define FX_ARK_SPACE_FRAMES  0x50
+#define FX_ARK_STATE_PIECES  1    /* the pieces gather (VIOLET_RING at frame 0); then the body models are registered */
+#define FX_ARK_PIECES_FRAMES 0x58
+#define FX_ARK_STATE_ARK     2    /* the pieces morph into the Ark (MORPH_PATH / _KEYS tracks), grey trails (pool) */
+#define FX_ARK_MORPH_FRAME   0x79 /* STATE_ARK: the first morph models (MORPH_PATH, MORPH_KEYS / _2) from here, */
+#define FX_ARK_MORPH_2_FRAME 0x8E /* the second (MORPH_PATH_2, MORPH_KEYS_3) from here */
+#define FX_ARK_TRAILS_FRAMES 0x9D /* STATE_ARK: two grey trails a frame until here */
+#define FX_ARK_BAND_FRAME    0xA1 /* STATE_ARK: a white band opens across the screen centre (over 7 frames), */
+#define FX_ARK_WHITE_FRAME   0xA3 /* the screen whitens from here */
+#define FX_ARK_FRAMES        0xA9 /* STATE_ARK's (and op82's camera track) length; the models are cleared */
+#define FX_ARK_STREAKS       0x140 /* fx_17d_0_streakPoints: points scattered on a disc of radius STREAK_RADIUS */
+#define FX_ARK_STREAK_RADIUS 0x200
+#define FX_ARK_PIECES        21   /* fx_17d_0_pieceFiles / model5C / model86 entries */
+#define FX_ARK_BODY_MODELS   5    /* modelB0 (fx_17d_0_texModelFileIds, drawn with the summon's texture list) */
+#define FX_ARK_MODEL_COUNT   0x20 /* btlfx_initEffModels slots */
+#define FX_ARK_PART_POOL     0x20 /* op80 pool items (Fx17d0Part, the grey trails) */
+#define FX_ARK_PART_FRAMES   0x10 /* a trail's life */
+#define FX_ARK_SPHERE_SCALE  0x4000 /* STAR_SPHERE's scale (AAA in STATE_ARK) */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 speed2;
@@ -35,7 +59,7 @@ typedef struct {
     s16 morphKeys6; /* morph key file */
 } Fx17d0Piece;
 
-extern Fx17d0Piece fx_17d_0_pieceFiles[21];
+extern Fx17d0Piece fx_17d_0_pieceFiles[FX_ARK_PIECES];
 extern Unk800F78A4 *fx_17d_0_env;
 extern u8 fx_17d_0_partTrails[][0x24];
 
@@ -72,9 +96,9 @@ typedef struct {
     SVECTOR pos48; /* camera */
     u8 pad50[0x58 - 0x50];
     s32 count58; /* spark count */
-    s16 model5C[21]; /* piece models */
-    s16 model86[21]; /* piece morph models */
-    s16 modelB0[5]; /* body models */
+    s16 model5C[FX_ARK_PIECES]; /* piece models */
+    s16 model86[FX_ARK_PIECES]; /* piece morph models */
+    s16 modelB0[FX_ARK_BODY_MODELS]; /* body models */
     s16 modelBA; /* model */
 } Fx17d0Work80; /* 0xBC */
 

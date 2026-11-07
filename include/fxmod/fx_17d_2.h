@@ -17,6 +17,27 @@
 #define FX_ARK_FLAME_SPIRAL_DISH 0xA /* 'so' model: shallow dish with a spiral fire texture */
 #define FX_ARK_SMOKE_CONE 0xB /* 'so' model: deep closed cone with a grey smoke texture */
 
+/* fx_17d_2 choreography (docs/fxdata.md, "Choreography literals"): op80's one state and its length, the pool, the
+ * scrolling textures. */
+#define FX_ARK_STATE_SHELL   0    /* op80 work->state0 (the only one): BLUE_ENERGY_SHELL, the cones, FIRE_RING, sprites */
+#define FX_ARK_SHELL_FRAMES  0x3C /* its length (ramps over 60 frames); the op ends */
+#define FX_ARK_MODEL_COUNT   5    /* btlfx_initEffModels slots */
+#define FX_ARK_PUFFS         0x14 /* op80 pool items (Fx17d2Elem), all spawned at init */
+#define FX_ARK_PUFF_FRAMES   0x40 /* a pool item's life */
+/* scrolling textures (not checked against the models): SCROLL rect 10 texels a frame, SCROLL_2 rect 7 */
+#define FX_ARK_SCROLL_VRAM_X   0x180
+#define FX_ARK_SCROLL_VRAM_Y   0x100
+#define FX_ARK_SCROLL_VRAM_W   0x40
+#define FX_ARK_SCROLL_VRAM_H   0x80
+#define FX_ARK_SCROLL_SRC_X    0x180
+#define FX_ARK_SCROLL_SRC_Y    0x180
+#define FX_ARK_SCROLL_2_VRAM_X 0x240
+#define FX_ARK_SCROLL_2_VRAM_Y 0x100
+#define FX_ARK_SCROLL_2_VRAM_W 0x40
+#define FX_ARK_SCROLL_2_VRAM_H 0x80
+#define FX_ARK_SCROLL_2_SRC_X  0x280
+#define FX_ARK_SCROLL_2_SRC_Y  0x100
+
 typedef struct {
     s16 unk0; /* write-only: state (cleared at spawn) */
     s16 spin2; /* spin */
