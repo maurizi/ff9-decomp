@@ -15,6 +15,22 @@
 #define FX_FROST_ICE_SHARD   0xB /* 'so' model: flat jagged ice shard (same cracked-ice texture) */
 #define FX_FROST_BACKDROP    0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
+/* fx_096 choreography (docs/fxdata.md, "Choreography literals"): op80's length; op81's keyframes, the crystal's
+ * assembly and the shard's growth. */
+#define FX_FROST_GLINTS_FRAMES   0x50  /* op80 (FX_FROST_ICE_GLINTS)'s length */
+#define FX_FROST_POLY_KINDS      8     /* Hi_GetMdlVertexPtr polygon kinds (even: quads, odd: triangles) */
+#define FX_FROST_CRYSTAL_VERT_WORDS 0xA28 /* u16 words of FX_FROST_ICE_CRYSTAL's split vertices (fx_096_verts, fx_096_restVerts) */
+#define FX_FROST_ASSEMBLE_FRAMES 6     /* op81: the crystal's polygons fly together (explode factor counts down to 0) while it spins */
+#define FX_FROST_SHARD_FRAME     7     /* FX_FROST_SNOW_BURST starts and FX_FROST_ICE_SHARD grows */
+#define FX_FROST_FADE_FRAME      0x18  /* the models start fading out */
+#define FX_FROST_FADE_FRAMES     0x10  /* fade60: over this many frames */
+#define FX_FROST_MODELS_FRAMES   0x28  /* the models are drawn for this many frames */
+#define FX_FROST_FRAMES          0x5A  /* op81's length (the op ends) */
+#define FX_FROST_CRYSTAL_SCALE   0x221 /* FX_FROST_ICE_CRYSTAL's scale (0x1000 = 1) */
+#define FX_FROST_CRYSTAL_Y       (-0x258) /* and height (y, up is negative) over the target */
+#define FX_FROST_SHARD_SCALE     0x200 /* FX_FROST_ICE_SHARD's height scale and its full width */
+#define FX_FROST_MODEL_COUNT     2     /* btlfx_initEffModels slots: ICE_CRYSTAL, ICE_SHARD */
+
 typedef struct {
     Pool6CEntry *emit0;
     s32 unk4; /* unused */
@@ -43,11 +59,11 @@ typedef struct {
 
 extern Unk800F78A4 *fx_096_env;
 extern BtlModelBuf fx_096_effModels[];
-extern u16 fx_096_verts[0xA28]; /* model A vertices */
-extern u16 fx_096_restVerts[0xA28]; /* their rest positions */
+extern u16 fx_096_verts[FX_FROST_CRYSTAL_VERT_WORDS]; /* model A vertices */
+extern u16 fx_096_restVerts[FX_FROST_CRYSTAL_VERT_WORDS]; /* their rest positions */
 extern Fx096Vec3 fx_096_polyCenters[]; /* polygon centers */
-extern s32 fx_096_polyVerts[][8]; /* vertex pointers per polygon kind */
-extern u16 fx_096_polyCounts[][8]; /* polygon counts */
+extern s32 fx_096_polyVerts[][FX_FROST_POLY_KINDS]; /* vertex pointers per polygon kind */
+extern u16 fx_096_polyCounts[][FX_FROST_POLY_KINDS]; /* polygon counts */
 
 void fx_096_explodeModel(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers);
 void fx_096_explodePolys(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *centers);

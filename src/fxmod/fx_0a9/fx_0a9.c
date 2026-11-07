@@ -6,9 +6,9 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx0a9Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_LIGHTNING_STATE_ARCS;
         fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIGHTNING_ELECTRIC_ARCS), (s32)&work->pos4);
@@ -18,8 +18,8 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            if (frame >= 0x20) {
+        case FX_LIGHTNING_STATE_ARCS:
+            if (frame >= FX_LIGHTNING_ARCS_FRAMES) {
                 return 1;
             }
             break;
@@ -40,13 +40,13 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
         part->kind17 = (ex->btlfx_rand() % 3) / 2;
     } else {
         pt = part->point18;
-        pt->pad = 0x18;
+        pt->pad = FX_LIGHTNING_BOLT_WIDTH;
         fade = ex->math_cos(frame << 7);
         ((s32 *)&zero)[0] = 0;
         ((s32 *)&zero)[1] = 0;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)part, 0, &zero, pt);
         if (part->fromEnd16 == 0) {
-            ((Fx0a9Bolt *)(part->point18 - 2))->lastSlot0 = ((Fx0a9Bolt *)(part->point18 - 2))->count2 = 0xA;
+            ((Fx0a9Bolt *)(part->point18 - 2))->lastSlot0 = ((Fx0a9Bolt *)(part->point18 - 2))->count2 = FX_LIGHTNING_BOLT_POINTS - 1;
             ((Fx0a9Bolt *)(part->point18 - 2))->head1 = 0;
             if (part->kind17 == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_BOLT_PILLAR), 0, NULL, 4, 0x1000, fade, BTLFX_ABR_ADD,
@@ -56,7 +56,7 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
                                   (u8 *)part->point18 - 4, 2);
             }
         }
-        if (frame >= 8) {
+        if (frame >= FX_LIGHTNING_BOLT_FRAMES) {
             return 1;
         }
     }
@@ -84,11 +84,11 @@ static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
     i = 0;
     rollBase = ex->btlfx_rand();
     bolt = &fx_0a9_bolts[fx_0a9_nextBolt];
-    pt = &bolt->pts4[10];
-    bolt->lastSlot0 = bolt->count2 = 0xA;
+    pt = &bolt->pts4[FX_LIGHTNING_BOLT_POINTS - 1];
+    bolt->lastSlot0 = bolt->count2 = FX_LIGHTNING_BOLT_POINTS - 1;
     bolt->head1 = 0;
     do {
-        t = 0x1000 - (i << 12) / 10;
+        t = 0x1000 - (i << 12) / (FX_LIGHTNING_BOLT_POINTS - 1);
         sinv = ex->math_sin(t >> 1);
         t += (sinv * ex->btlfx_randCentered(0x100)) >> 12;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
@@ -97,7 +97,7 @@ static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
         part = ex->btlfx_poolSpawn((s16 *)entry->pool);
         if (part != NULL) {
             part->bolt14 = fx_0a9_nextBolt;
-            part->fromEnd16 = 0xA - i;
+            part->fromEnd16 = FX_LIGHTNING_BOLT_POINTS - 1 - i;
             part->point18 = pt;
             part->pos0[0] = pt->vx << 12;
             part->pos0[1] = pt->vy << 12;
@@ -108,9 +108,9 @@ static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
         }
         i++;
         pt--;
-    } while (i < 11);
+    } while (i < FX_LIGHTNING_BOLT_POINTS);
     fx_0a9_nextBolt++;
-    fx_0a9_nextBolt = fx_0a9_nextBolt % 16;
+    fx_0a9_nextBolt = fx_0a9_nextBolt % FX_LIGHTNING_BOLT_SLOTS;
 }
 
 s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
@@ -120,10 +120,10 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        ((EffInit *)args)->workSize = 0x10;
-        ((EffInit *)args)->elemSize = 0x1C;
+        ((EffInit *)args)->workSize = sizeof(Fx0a9Work83);
+        ((EffInit *)args)->elemSize = sizeof(Fx0a9Part);
         ((EffInit *)args)->elemFn = (s32)fx_0a9_op83PoolTask;
-        ((EffInit *)args)->poolCount = 0xB0;
+        ((EffInit *)args)->poolCount = FX_LIGHTNING_BOLT_SLOTS * FX_LIGHTNING_BOLT_POINTS;
     } else if (mode == 1) {
         fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
@@ -133,8 +133,8 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
-        if (frame < 0x18) {
-            for (i = 0; i < 2; i++) {
+        if (frame < FX_LIGHTNING_BOLTS_FRAMES) {
+            for (i = 0; i < FX_LIGHTNING_BOLTS_PER_FRAME; i++) {
                 BTLFX_COPY_SVEC(&target, &work->pos0);
                 target.vx += ex->btlfx_randCentered(0x180);
                 target.vy += ex->btlfx_randCentered(0x180);
@@ -144,9 +144,9 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         env->otZ = 0x40;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_BLUE_RING), &work->pos8, NULL,
-                          ex->math_sin((frame << 11) / 24) * 2 / 3, 0, BTLFX_ABR_ADD, 0x1000 - ((frame & 1) << 11));
+                          ex->math_sin((frame << 11) / FX_LIGHTNING_BOLTS_FRAMES) * 2 / 3, 0, BTLFX_ABR_ADD, 0x1000 - ((frame & 1) << 11));
         env->otZ = 0;
-        if (frame >= 0x18) {
+        if (frame >= FX_LIGHTNING_BOLTS_FRAMES) {
             return 1;
         }
     }

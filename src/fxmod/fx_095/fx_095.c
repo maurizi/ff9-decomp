@@ -15,68 +15,68 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
     s32 y;
 
     if (mode == 1) {
-        part->state4 = 0;
+        part->state4 = FX_STOP_MARK_STATE_ARRIVE;
         return 0;
     }
     bright = glow = ang = scale = 0;
     glowFrame = 0;
     abr = scale;
     switch (part->state4) {
-    case 0:
+    case FX_STOP_MARK_STATE_ARRIVE:
         t = frame << 9;
         scale = ((ex->math_cos(t >> 2) * 3) >> 1) + 0x1000;
         ang = part->angle0 + ((0x1000 - t) >> 1);
-        abr = 1;
+        abr = BTLFX_ABR_ADD;
         bright = 0x1000;
-        if (frame >= 8) {
-            part->state4 = 1;
+        if (frame >= FX_STOP_MARK_ARRIVE_FRAMES) {
+            part->state4 = FX_STOP_MARK_STATE_HOLD;
             ((s16 *)part)[-1] = -1;
         }
         break;
-    case 1:
+    case FX_STOP_MARK_STATE_HOLD:
         scale = 0x1000;
         ang = part->angle0;
-        abr = 1;
+        abr = BTLFX_ABR_ADD;
         bright = scale;
-        if (frame < 5) {
+        if (frame < FX_STOP_MARK_GLOW_FRAMES) {
             t = frame << 10;
             glow = ex->math_cos(t >> 2);
             glowFrame = frame;
         }
         if (ctl->releaseC != 0) {
-            part->state4 = 2;
+            part->state4 = FX_STOP_MARK_STATE_FREEZE;
             ((s16 *)part)[-1] = -1;
         }
         break;
-    case 2:
+    case FX_STOP_MARK_STATE_FREEZE:
         t = frame << 8;
         scale = 0x1000;
         ex->math_cos(t >> 2);
-        abr = 0xFF;
+        abr = BTLFX_ABR_OPAQUE;
         bright = scale;
         ang = part->angle0;
-        if (frame >= 16) {
-            part->state4 = 3;
+        if (frame >= FX_STOP_FREEZE_FRAMES) {
+            part->state4 = FX_STOP_MARK_STATE_FADE;
             ((s16 *)part)[-1] = -1;
         }
         break;
-    case 3:
+    case FX_STOP_MARK_STATE_FADE:
         t = frame << 9;
         scale = 0x1000;
         bright = ex->math_cos(t >> 2);
-        abr = 1;
+        abr = BTLFX_ABR_ADD;
         ang = part->angle0;
-        if (frame >= 8) {
+        if (frame >= FX_STOP_FADE_FRAMES) {
             return 1;
         }
         break;
     }
-    t = (scale * 62) >> 12;
+    t = (scale * FX_STOP_MARK_RADIUS) >> 12;
     ang -= 0x400;
     x = ctl->screenX8 + ((ex->math_cos(ang) * t) >> 12);
     y = ctl->screenYA + ((ex->math_sin(ang) * t) >> 12);
     /* One call per table: jump2 cross-jumps the identical tails, leaving only the table address in each arm. */
-    if (part->state4 < 2) {
+    if (part->state4 < FX_STOP_MARK_STATE_FREEZE) {
         ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, fx_095_markBlocks[part->index8]), x, y, 0, abr, bright);
     } else {
         ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, fx_095_markBlocks2[part->index8]), x, y, 0, abr, bright);
@@ -98,12 +98,12 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)args)->workSize = sizeof(Fx095Work80);
         ((EffInit *)args)->elemSize = sizeof(Fx095Part);
         ((EffInit *)args)->elemFn = (s32)fx_095_op80PoolTask;
-        ((EffInit *)args)->poolCount = 0xC;
+        ((EffInit *)args)->poolCount = FX_STOP_MARKS;
     } else if (mode == 1) {
         fx_095_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&fx_095_bodyPos);
         work->spawnCount4 = 0;
-        work->state0 = 0;
+        work->state0 = FX_STOP_STATE_SPAWN;
         work->releaseC = 0;
     } else {
         frame = entry->frame;
@@ -113,35 +113,35 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         gte_rtps();
         gte_stsxy(&work->screenXY8);
         switch (work->state0) {
-        case 0:
-            for (i = 0; i < 2; i++) {
+        case FX_STOP_STATE_SPAWN:
+            for (i = 0; i < FX_STOP_MARKS_PER_FRAME; i++) {
                 part = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (part != NULL) {
                     part->index8 = work->spawnCount4;
-                    part->angle0 = ((work->spawnCount4 + 1) << 12) / 12;
+                    part->angle0 = ((work->spawnCount4 + 1) << 12) / FX_STOP_MARKS;
                 }
                 work->spawnCount4++;
             }
-            if (work->spawnCount4 >= 12) {
-                work->state0 = 1;
+            if (work->spawnCount4 >= FX_STOP_MARKS) {
+                work->state0 = FX_STOP_STATE_HOLD;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            if (frame >= 16) {
-                work->state0 = 2;
+        case FX_STOP_STATE_HOLD:
+            if (frame >= FX_STOP_HOLD_FRAMES) {
+                work->state0 = FX_STOP_STATE_FREEZE;
                 entry->frame = -1;
                 work->releaseC = 1;
             }
             break;
-        case 2:
-            if (frame >= 16) {
-                work->state0 = 3;
+        case FX_STOP_STATE_FREEZE:
+            if (frame >= FX_STOP_FREEZE_FRAMES) {
+                work->state0 = FX_STOP_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 3:
-            if (frame >= 8) {
+        case FX_STOP_STATE_FADE:
+            if (frame >= FX_STOP_FADE_FRAMES) {
                 return 1;
             }
             break;
@@ -182,14 +182,14 @@ void fx_095_greyScreenCopy(s32 step, s32 x, s32 y, u16 *buf, RECT *area) {
         ex->MoveImage(&moveRect, sx, sy);
         break;
     case 1:
-        storeH = (s16)(area->h / 3); /* an s32 holding the truncated quotient */
+        storeH = (s16)(area->h / FX_STOP_GREY_BANDS); /* an s32 holding the truncated quotient */
         storeRect.x = area->x;
         storeRect.y = area->y + band * storeH;
         storeRect.w = area->w;
         storeRect.h = storeH;
         ex->StoreImage(&storeRect, (u32 *)buf);
     case 2:
-        loadH = (s16)(area->h / 3);
+        loadH = (s16)(area->h / FX_STOP_GREY_BANDS);
         loadRect.x = area->x;
         loadRect.y = area->y + band * loadH;
         loadRect.w = area->w;
@@ -232,11 +232,11 @@ void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 outerR, s32 bright, RECT *rect
 
     env = fx_095_env;
     gt4 = (POLY_GT4 *)env->prim;
-    ft3 = (POLY_FT3 *)(gt4 + 16);
-    g4 = (POLY_G4 *)(ft3 + 16);
-    f3 = (POLY_F3 *)(g4 + 16);
+    ft3 = (POLY_FT3 *)(gt4 + FX_STOP_DISC_SEGMENTS);
+    g4 = (POLY_G4 *)(ft3 + FX_STOP_DISC_SEGMENTS);
+    f3 = (POLY_F3 *)(g4 + FX_STOP_DISC_SEGMENTS);
     ex = BTLFX_EXPORTS(env);
-    env->prim = (u8 *)(f3 + 16);
+    env->prim = (u8 *)(f3 + FX_STOP_DISC_SEGMENTS);
     col.r = col.g = col.b = bright;
     bright *= 2;
     if (bright >= 0x100) {
@@ -244,13 +244,13 @@ void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 outerR, s32 bright, RECT *rect
     }
     ang = 0;
     col2.r = col2.g = col2.b = bright;
-    innerR = outerR - 0x18;
+    innerR = outerR - FX_STOP_DISC_RING_WIDTH;
     tpage = getTPage(2, 1, rect->x, rect->y) << 16;
     cu = (rect->w >> 1) + (rect->x & 0x3F);
     cv = (rect->h >> 1) + (rect->y & 0xFF);
     verts[4].vx = x;
     verts[4].vy = y;
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < FX_STOP_DISC_SEGMENTS; i++) {
         /* Dead tests, removed after reload: their loop-weighted references rank ang above the prim pointers in
          * global-alloc, so it gets $s0 as in the original. */
         if (ang != 0) {
@@ -275,7 +275,7 @@ void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 outerR, s32 bright, RECT *rect
         verts[0].vy = (ex->math_sin(ang) * innerR) >> 12;
         verts[2].vx = (ex->math_cos(ang) * outerR) >> 12;
         verts[2].vy = (ex->math_sin(ang) * outerR) >> 12;
-        ang += 0x100;
+        ang += 0x1000 / FX_STOP_DISC_SEGMENTS;
         verts[1].vx = (ex->math_cos(ang) * innerR) >> 12;
         verts[1].vy = (ex->math_sin(ang) * innerR) >> 12;
         verts[3].vx = (ex->math_cos(ang) * outerR) >> 12;
@@ -323,10 +323,10 @@ void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 outerR, s32 bright, RECT *rect
         gt4->code = GPU_POLY_GT4 | GPU_ABE;
         g4->code = GPU_POLY_G4 | GPU_ABE;
         if ((u32)ot < 0x1000) {
-            addPrimLenIn(&env->ot[ot], gt4, 0x0C000000);
-            addPrimLenIn(&env->ot[ot], ft3, 0x07000000);
-            ex->btlfx_linkPrimAbr(0x08000000, (u32 *)&env->ot[ot], g4, 2);
-            ex->btlfx_linkPrimAbr(0x04000000, (u32 *)&env->ot[ot], f3, 2);
+            addPrimLenIn(&env->ot[ot], gt4, PRIM_TAG(POLY_GT4));
+            addPrimLenIn(&env->ot[ot], ft3, PRIM_TAG(POLY_FT3));
+            ex->btlfx_linkPrimAbr(PRIM_TAG(POLY_G4), (u32 *)&env->ot[ot], g4, BTLFX_ABR_SUB);
+            ex->btlfx_linkPrimAbr(PRIM_TAG(POLY_F3), (u32 *)&env->ot[ot], f3, BTLFX_ABR_SUB);
         }
         ft3++;
         gt4++;
@@ -346,44 +346,44 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx095Work81);
     } else if (mode == 1) {
         fx_095_env = env;
-        work->state0 = 0;
+        work->state0 = FX_STOP_OP81_STATE_GREY;
         work->unk4 = 0;
     } else {
         frame = entry->frame;
         rect.x = VRAM_BTLFX_SCRATCH_X;
         rect.y = VRAM_BTLFX_SCRATCH_Y;
-        rect.w = 0xC0;
-        rect.h = 0xC0;
+        rect.w = FX_STOP_DISC_VRAM_W;
+        rect.h = FX_STOP_DISC_VRAM_H;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(&fx_095_bodyPos);
         gte_rtps();
         gte_stsxy(&xy);
         switch (work->state0) {
-        case 0:
+        case FX_STOP_OP81_STATE_GREY:
             fx_095_greyScreenCopy(frame, xy.vx, xy.vy, work->pixels8, &rect);
-            if (frame >= 6) {
-                work->state0 = 1;
+            if (frame >= FX_STOP_GREY_FRAMES) {
+                work->state0 = FX_STOP_OP81_STATE_DISC;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0x9B, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, FX_STOP_DARKEN_RGB);
             }
             break;
-        case 1:
+        case FX_STOP_OP81_STATE_DISC:
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x80, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_STOP_FLASH_RGB);
             }
-            fx_095_drawTexDisc(8, xy.vx, xy.vy, 0x60, 0x80, &rect);
+            fx_095_drawTexDisc(8, xy.vx, xy.vy, FX_STOP_DISC_RADIUS, 0x80, &rect);
             ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, FX_STOP_CLOCK_RING), xy.vx, xy.vy, 0, BTLFX_ABR_ADD, 0x1000);
-            if (frame >= 16) {
-                work->state0 = 2;
+            if (frame >= FX_STOP_DISC_FRAMES) {
+                work->state0 = FX_STOP_OP81_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 2:
+        case FX_STOP_OP81_STATE_FADE:
             fade = 0x1000 - (frame << 9);
-            fx_095_drawTexDisc(8, xy.vx, xy.vy, 0x60, fade >> 5, &rect);
+            fx_095_drawTexDisc(8, xy.vx, xy.vy, FX_STOP_DISC_RADIUS, fade >> 5, &rect);
             ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, FX_STOP_CLOCK_RING), xy.vx, xy.vy, 0, BTLFX_ABR_ADD, fade);
-            if (frame >= 8) {
+            if (frame >= FX_STOP_DISC_FADE_FRAMES) {
                 return 1;
             }
             break;
