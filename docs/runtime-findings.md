@@ -5108,3 +5108,147 @@ Method: PCSX-Redux, disc 1 (`field_worldmap_ice_exit`), disc 3 (`cpass_wm_hadris
   (low). Confidence: high that the branch is unused in retail.
 
 New state: disc 3 `r45_wm_gorge_bridge` (walker next to the natural bridge, cell 16,14).
+
+## R46 runtime pass  (status: proposed)
+
+Questions: docs/wip/r46_runtime_core.md (core 1-7) and docs/wip/r46_runtime_overlays.md (ovl 1-5). PCSX-Redux on 8080,
+2026-11-06, disc 3 (battle, world) and disc 1 (menus, field). Scripts and screenshots in `build/r46rt/`. No breakpoints
+left; the emulator was left on disc 3, `cpass_wm_hadris` loaded (as found). New states: disc 3
+`r46_malboro_steiner_freya_quina_amarant` (enter_battle 899, party 3,4,5,7, back attack, Malboro acting),
+`r46_malboro_sfqa_calm` (the same, calm, Steiner's command menu), `r46_tmp_fxstart` (scratch, deletable); disc 1
+`r46_field52` (field 52 "Prima Vista/Meeting" via enter_field.py, Baku's meeting).
+
+### Core 1: BTL_WEAPON_BONE_* (btl_initWeapon): every value is the character's right hand. CONFIRMED (high; Cinna, Marcus, Blank not run)
+- Method (`wbone.py`, `skel.py`, `wclose.py`): read each party unit's weapon model (BtlUnit+0xA8, parentBone at
+  model+4) and skeleton (BtlModelHeader.bones parents/lengths, BtlModel.bones translations). Each unit was then moved
+  near the camera and lifted (pos at BtlUnit+0x8C/+0x90/+0x94) so it is large on screen, and its weapon's parentBone poked
+  to bone - 1, bone + 1 and the end bone of the other arm; screenshot after 24 frames.
+- Skeletons: the weapon bone is always the **last bone of an arm chain** (Zidane 9-10-11-12-13, Vivi 12-..-16, Garnet
+  11-..-15, Eiko 11-..-15, Steiner 12-..-16, Quina 11-..-14, Amarant 13-..-16, Freya 2-3-4-5-6: Freya's skeleton lists
+  the arms first, hence 6). Bone - 1 is the forearm (the weapon then sticks out of the elbow), bone + 1 starts another
+  chain (head/neck: Garnet's and Eiko's racket/flute then hang from the head). The weapon arm's shoulder is on the
+  same side of the body (local -x) in all eight skeletons.
+- Visual side: Vivi, Garnet, Eiko face the camera in their shots and hold the weapon on screen left = their right
+  hand; Steiner, Quina, Amarant are seen from behind and hold it on screen right = right hand; Zidane in profile holds it
+  in the near hand, in front of his body (`wc_zidane_zoom.png`: orig 13 / 12 / 6); moving the weapon to the other arm's
+  end bone puts it in the left hand every time. Shots: `wc_{zidane,vivi,garnet,eiko,steiner,freya,quina,amarant}_zoom.png`
+  (first panel = original bone).
+- Proposed: keep the per-character macros, comment "the right hand of each skeleton (end of its arm chain)"; e.g.
+  `BTL_WEAPON_BONE_ZIDANE /* right hand */`. Optional rename to `BTL_RIGHT_HAND_BONE_*`. high (6 of 9 values seen; the
+  Cinna 0x19 / Marcus 6 / Blank 0xE values are inferred).
+
+### Core 2: btlfx_stepUnitSound 0x456 / 0xAC0: Jump and Spear sounds. CONFIRMED (sound itself not listened to)
+- Static: unit op 0x57 occurs in one dir-13 effect script on any disc, fx 0x184 "Spear" (`57 10 01`: caster, choice 1),
+  and in one common (resident) script, effect 0x189 "Jump; Jump (2nd)" (`5b 10 1a, 01 01 04, 50 00 00, 5c 10 1b,
+  57 10 00, ...`: choice 0 right after the caster's two motions) (`fxscan.py 57`, `build/rtf2/common_fxscripts.bin`
+  walked with btlfx_findScript's entry format).
+- Runtime (`run3.py r46_snd_0x189 / 0x184`, Zidane's Attack rewritten to the effect id): 0x189 -> one call,
+  btl_playUnitSound(Zidane, 0x456, 0x7F) 53 frames after the effect start, while Zidane stands in the take-off pose just
+  before leaping off screen (`r46_jump_01/02.png`). 0x184 -> one call, btl_playUnitSound(Zidane, 0xAC0, 0x7F) 205 frames
+  in, after the "3050" damage when he comes back down from the top of the screen (`r46_spear_00.png`).
+- Proposed: `SE_BTL_JUMP_LEAP 0x456` (Jump's take-off) and `SE_BTL_SPEAR_RETURN 0xAC0` (Freya's trance Jump "Spear",
+  coming back down / landing). medium (timing from screenshots; no audio capture).
+
+### Core 3: UI_RGB_AP_BAR / UI_RGB_AP_BAR_FULL. CONFIRMED (high)
+`menu_ability`, Cross (cursor on Flee, mastered): the INFO "AP:" gauge is the three-star mastered sprite over a **red**
+bar (0x2838A8). Rewriting ui_buildApGauge's cur to 20 (`run3.py r46_apbar --fn 'ui_buildApGauge=r.a3=20'`, max 40):
+"20/40" over a half-filled **green** bar (0x70A838). `ab_bar_cmp.png`. Proposed: keep `UI_RGB_AP_BAR` (green, learning);
+rename `UI_RGB_AP_BAR_FULL` -> `UI_RGB_AP_BAR_MASTERED` (red, under the stars). high.
+
+### Core 4: BTLFX_CAST_MODE_* (btlfx_opCast summon tint). CONFIRMED for 0, 1, 3; 2 not used by any summon
+- Log of the work byte castMode (work+4) at btlfx_opCast mode 2 for 12 summon effects (Zidane's Attack rewritten,
+  `summon_cast.txt`): 0 Ifrit (0x114), Atomos (0xB8), Bahamut (0xE3); 1 Ramuh (0xBA), Odin (0x105), Fenrir (0xD2),
+  Phoenix (0xD3); 3 Shiva (0x26), Leviathan (0xB3), Ark (0x17D), Carbuncle (0xB1), Madeen (0xFB). work+0 kind = 1
+  (BTLFX_CASTK_SUMMON) in all.
+- Screenshots at cast-loop step 4 and 20 (`castshot.py`; `cast_ifrit_cmp.png` (s20 left, s4 right),
+  `cast_rs_cmp.png` Ramuh s4/s20, Shiva s4/s20): step 4 normal; step 20 Ifrit = screen washed out white, Ramuh = screen
+  almost black, Shiva = background unchanged and the party member faded to half (translucent).
+- Proposed: `BTLFX_CAST_MODE_WHITE_OUT` (0), `BTLFX_CAST_MODE_BLACK_OUT` (1), `_DIM_ALL` (2, comment "no summon uses
+  it"), `_DIM_PARTY` (3). high.
+
+### Core 5: UI_RGB_HELP_FILL. CONFIRMED (high)
+`menu_ability`, Cross, Select: the "HELP" window ("Escape from battle with high probability.") and its speech tail are
+teal. win_drawHelpFill (from win_drawHelpFrame+0x108) and win_drawHelpTailFill (+0x98) run every frame; patching both
+to `jr ra` leaves only the frame and text over the menu background (`help_cmp.png`). Keep `UI_RGB_HELP_FILL`, comment
+"the help window's teal background and its tail". high.
+
+### Core 6: GameState.mode 5 / 6 are never set. CONFIRMED (high)
+- [code] game_main's dispatcher has no case for 5 or 6 (a mode 5/6 would loop forever doing nothing) and
+  game_loadModeOverlay's file table holds 0xFF for both. Every store to GameState.mode in src/ writes a constant 0-4,
+  7, 8, 9, battleEnd's returnMode (= prevMode: field/world), wm_main's exit reason (WM_EXIT_BATTLE / _FIELD) or, in
+  ovl_39's load, the mode saved with the game.
+- Runtime: `watch 0x8008B008 --size 1` from `title_screen` through New Game (2400 frames, into the opening FMV field):
+  one store, ovl_14 opening_startLeave (pc 0x800A8414) `sb $v0, 8($v1)` (mode 0 -> 1; emu.py symbolised the pc with ovl_0a's
+  names); mode stays 1 through the FMV ("Real-Time Graphics Akira Fujii" credits). 900-frame watches from
+  `field_burmecia_btl47` (mode 2), `field_burmecia_rewards` (8, then 1 after the rewards), `r36_disc1_end_fmv` (1),
+  `r36_disc1_discchange_op` (1): no store of 5 or 6.
+- Proposed: `GS_MODE_UNUSED_5` / `GS_MODE_UNUSED_6` (comment: "never set in retail; no dispatcher case; vib_update /
+  bgi_move / mbg treat 5 like the field and msg_beginDraw treats 6 like the battle"). high.
+
+### Core 7: btlfx_getCommonSprite's 0x801E9700. CONFIRMED (high)
+`run3.py r46_attack --trace StoreImage,btlfx_getCommonSprite` (Zidane Attack, `disc3_malboro_lv99_calm`): btlfx_runScript
+StoreImages RECT (0x300, 0x140, 64, 16) to 0x801E7700 (BTLFX_PHASE_SAVE_VRAM: the effect header table) and then, for the
+resident Attack, RECT (0x300, 0x150, 64, 0xB0) to 0x801E7700 (+0x184); btlfx_getCommonSprite(0x12/0x16/0x0F/0x26/...)
+follows 35-70 frames later from btlfx_opDrawOnUnit. So 0x801E9700 = 0x801E7700 + 0x2000 = VRAM row 0x150 + 0x40 = row
+0x190, x 0x300: the common VRAM page (0x300, 0x180) at its row 16. FILE_BTLFX_COMMON is loaded as four 64x128 pages
+(i = 0..3 at (0x300,0x100), (0x300,0x180), (0x340,0x100), (0x340,0x180), 0x4000 bytes each), so this is file offset
+0x4000 + 16 * 128 = **0x4800 of FILE_BTLFX_COMMON** (sector 9; matches the earlier finding that the table bytes occur in
+file 0x2BF sector 9). The "texture pages" of the common file carry the resident scripts and sprite tables in their
+lower rows. Proposed: `#define BTLFX_COMMON_SPRITES RAM_BTLFX_MODULE_OFS(0x2000)` or a comment: "the resident effect
+data read back from VRAM (0x300, 0x150) by btlfx_runScript; +0x2000 = FILE_BTLFX_COMMON offset 0x4800, the common
+sprite table". high.
+
+### Overlays 1: FLD_SPLASH_TIM is the "Conceived & Produced by Hironobu Sakaguchi" credit. CONFIRMED (high)
+`r46_field52`, fld_needsSplashImage patched to return 1, field exit forced (GameState flags | 2, `splash.py`):
+fld_showSplashImage ran once (from 0x800A806C) and drew, centred on black, "CONCEIVED & PRODUCED BY / HIRONOBU
+SAKAGUCHI", fading in (f30) and held (f90-f270) (`splash_cmp.png`). Proposed: `FLD_SAKAGUCHI_CREDIT_TIM` (and
+`FLD_CREDIT_FROM_FIELD` / `_TO_FIELD` for the 52 -> 100 pair, or keep FLD_SPLASH_*). high.
+
+### Overlays 2: weather circles: Treno and Oeilvert. CONFIRMED (high)
+- Navi place names (`navinames.py`, world text bank 0 entry place + 1; `navinames.txt`): page 0 place 5 = **Treno**,
+  page 1 place 41 = **Oeilvert** (place 38 = Wind Shrine).
+- `wx.py` (walker teleported in `cpass_wm_hadris`, 300 frames, g_worldWeatherMode): (336000, -237568) inside DARK ->
+  mode 2, dark green-blue night; (310000, -245000) and (345000, -245000) in SUNSET_A outside DARK -> mode 1, brown dusk
+  light; (128000, -202240) SUNSET_B -> mode 1, orange-lit canyon; (110000, -204000) next to Oeilvert -> 1; controls
+  (365000, -265000), (160000, -150000) -> 0 clear (`wx_cmp.png`: dark, sunsetA2, clear, sunsetB, clearB). Treno is the
+  city of perpetual night: the DARK circle is over it and SUNSET_A rings it.
+- Proposed: `WM_WEATHER_TRENO_DUSK_*` (SUNSET_A), `WM_WEATHER_TRENO_NIGHT_*` (DARK), `WM_WEATHER_OEILVERT_DUSK_*`
+  (SUNSET_B; comment "covers Oeilvert and the Wind Shrine"). high (places), high (weather).
+
+### Overlays 3: page 1 places 6-9 and 15 are duplicates (South Gate, North Gate). CONFIRMED (high)
+Same dump: page 0 places 6-10 are all "South Gate" (world target (300090, -230918), five map points along the gate's
+wall: (149,104), (148,109), (142,105), (138,111), (135,119)); 14 and 15 are "North Gate" ((113,71), (96,70), same world
+target). On page 1 (the world map without the Mist) all five South Gate entries sit on one pixel (183,141) and 14/15 on
+(163,118). wm_naviUpdate skips 6-9 and 15 on page 1 so the cursor snaps to one entry (10, 14) per gate. Proposed comment
+/ names: `WM_NAVI_SOUTH_GATE_FIRST 6` .. `_LAST 10`, `WM_NAVI_NORTH_GATE_2 15`, "page 1 shows each gate once (the extra
+entries are on the same pixel)". high.
+
+### Overlays 4: WM_TOPO_BEACH_2 0x1E / _3 0x23. CONFIRMED (medium)
+`build/r41b/tp.py` teleports (`cpass_wm_hadris`, 300 frames; cells from R41b `topo_d3.json`): (228103, -249400) area 4 and
+(288784, -170001) area 25 -> topography 0x1E: grey-sand beach between **grassland** and the sea, Zidane in the surf.
+(130208, -51902), (131491, -54737) area 51 -> 0x23: dark brown pebble shore in the **snowfields** of the northern
+continent. Reference 0x22 (331345, -82379) area 37: grey beach under sandy/desert ground (`topo_beach_cmp.png`: 0x22,
+0x1E, 0x23). Proposed `WM_TOPO_BEACH_GRASS 0x1E`, `WM_TOPO_SHORE_SNOW 0x23` (and optionally `WM_TOPO_BEACH` comment
+"next to sand/desert"). medium (the three differ by the land texture behind them; code treats them alike).
+
+### Overlays 5: wm_spawnEffect types: partial
+Script requests (`build/r43/spawnscan.txt` contexts + `wdis.py 9000 4 14,15,16,19`) and `spawn.py` (log of wm_spawnEffect
+a0-a3 / ra while playing actions, screenshots `sp_*`):
+- **28: glowing ground under the chocobo during a Dead Pepper.** `r37b_wm_chocobo_choice`, Down, Cross: 8 spawns from
+  w_frameSetParameter (ra 0x800B74E0) from f139; a pink-white glow patch around the chocobo's feet (`sp_pep_cmp.png`
+  middle). Chocobo entry 4 tag 15 (and moogle-call entry 5 tag 15). Proposed `WM_FX_GROUND_GLOW`. high.
+- **9: chocobo step / dig puff.** Entry 4 tag 14 spawns it with each chocobo step sound (40 on land, 35 at y -1 in
+  water); `r37b_wm_chocograph1_spot` Square: one spawn at f22 (the dig). Proposed `WM_FX_CHOCOBO_STEP`. medium.
+- **8: treasure chest landing.** Same state, Cross on "Found a treasure chest!": spawned at f385, when the risen chest
+  lands beside the chocobo (entry 7 tag 21, twice) (`sp_dig2_cmp.png`, `sp_dig3_cmp.png`; the effect itself is not
+  visible at this zoom). Proposed `WM_FX_CHEST_LAND`. low-medium.
+- **0 and 1: moogle (and chocobo) fly-in.** `cpass_wm_hadris` teleported to (52000, -118000), Square (moogle call): type
+  0 spawned 26 times from f105, one every ~4 frames along a line from (51416, -960, -125916) to (51848, 758, -119820),
+  i.e. behind the moogle while it flies in from 8000 units away and comes down; then type 1 eight times from f204 at
+  ~(51900, 710, -119000), where it arrives next to the player (52000, -118000); the moogle reaches the screen at ~f250.
+  Chocobo entry 4 tags 30-32 and entry 7 tag 39 use the same 0/1 code. Proposed `WM_FX_FLY_TRAIL` (0) and
+  `WM_FX_ARRIVE_PUFF` (1; also a WM_BLOCKFX_WINDMILL emitter type). low (path and timing; the sprites were too small
+  to see).
+- Not reached: 13 (chocobo entry 4 tag 16: after SE 30, at y -350 with SE 35, twice: another Dead Pepper outcome), 5
+  (entry 4 tag 19: a 30-step loop 500 above the chocobo, after SE 30/34; R43 could not reach it), 2 (world 9001 fleet
+  cutscene), emitter types 4 (Kiera Desert), 24 / 29 (Memoria orb, disc 4). Still numbers.
