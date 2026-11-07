@@ -1322,6 +1322,8 @@ extern s32 g_btlbgScrollCount;
                                  * maps; the field SE banks load at the same SPU address): DIR_SOUND_BANKS file btl_loadSoundsStep
                                  * always reads first and loads with akao_loadBankRetry (no slot), before the slot banks.
                                  * Evidence: [code]; [runtime] R41b (one load per battle; instrument 192 keyed by Zidane's attack SE) */
+#define BTLUI_ESCAPE_HOLD_FRAMES 0x3D /* btlui_pollEscape: L1+R1 held (ATB running) calls btl_tryEscape(1) once per this many
+                                       * frames + 1, btl_tryEscape(0) on the others */
 /* btl_getSceneData indexes: the encounter's camera scripts. Evidence: [code] */
 #define BTL_SCENE_CAM_INTRO 0 /* battle start (btl_cmd intro, btlcam_playScene) */
 #define BTL_SCENE_CAM_IDLE 1 /* the resting camera, back after an effect camera (btlcam_endEffect, btlcam_step) */

@@ -803,9 +803,9 @@ void btlui_applyTargetable(void) {
 void btlui_pollEscape(void) {
     Unk80104E68 *state = (Unk80104E68 *)&g_btluiState;
     if (state->atbOn != 0) {
-        if ((g_padHeld & (BTN_L1 | BTN_R1)) == 0x300000) {
+        if ((g_padHeld & (BTN_L1 | BTN_R1)) == (BTN_L1 | BTN_R1)) {
             g_gameState->gameData->ctx.battle->escapeHeld = 1;
-            if (state->escapeFrames++ >= 0x3D) {
+            if (state->escapeFrames++ >= BTLUI_ESCAPE_HOLD_FRAMES) {
                 state->escapeFrames = 0;
                 btl_tryEscape(1);
             } else {
