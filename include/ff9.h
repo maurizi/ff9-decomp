@@ -176,10 +176,11 @@ typedef union {
 #define CHR_INFO_ROW_SHIFT 12
 #define CHR_INFO_ROW 0x1F000
 
+#define CHR_NAME_SIZE 0xA /* Character.name buffer (chr_setDefaultName fills it with 0xFF first) */
 /* Character record: GameData.characters[9]; GameData.party[] points at the party members. Field names checked
  * against the main menu at runtime (docs/runtime-findings.md). */
 typedef struct {
-    u8 name[0xA]; /* 0xFF-terminated text, read up to 7 chars */
+    u8 name[CHR_NAME_SIZE]; /* 0xFF-terminated text, read up to 7 chars */
     u8 classFlags; /* chr_getClassFlags(row): 0x2 checked by Protect Girls (btl_findCover) and ability 0x61, 0x8 (CHR_CLASS_ZIDANE) by ability 0x62, 0x10 picks the alternate default set / appearance */
     u8 level;
     u32 exp;      /* capped at 9999999 */

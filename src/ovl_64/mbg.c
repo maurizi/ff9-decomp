@@ -102,7 +102,7 @@ void mbg_mdecOutCallback(void) {
     u8 readyArgs[8];
     s32 cur;
 
-    memset(readyArgs, 0, 8);
+    memset(readyArgs, 0, sizeof(readyArgs));
     if (g_mbgStreamDeferred != 0) {
         mbg_streamReadyCallback(2, readyArgs);
         g_mbgStreamDeferred = 0;

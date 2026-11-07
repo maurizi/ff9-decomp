@@ -32,7 +32,7 @@ void btl_playCmdEffect(BtlCmd *cmd, s32 effectId, s16 *fxArgs) {
     s32 bounceMask;
     u8 cmdNo;
 
-    memset(sum, 0, 0x10);
+    memset(sum, 0, sizeof(sum));
     bounceMask = 0;
     battle->fxTargets.caster = cmd->caster;
     list = &battle->fxTargets;

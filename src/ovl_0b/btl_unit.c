@@ -54,14 +54,14 @@ void btl_updateUnitModel(BtlUnit *unit, s32 *ot) {
         return;
     }
     if ((unit->flags & BTL_UNIT_PARTY) && (s32)model->motion == unit->motions[BTL_MOTION_FLEE]) {
-        memset(&rot, 0, 8);
+        memset(&rot, 0, sizeof(rot));
         rot.vx = unit->rot[0];
         rot.vy = 0x800;
         rot.vz = unit->rot[2];
         rotCopy = rot;
         math_rotMatrixZYX(&rotCopy, &model->matrix);
     } else {
-        memset(&rot, 0, 8);
+        memset(&rot, 0, sizeof(rot));
         rot.vx = unit->rot[0];
         rot.vy = unit->rot[1];
         rot.vz = unit->rot[2];

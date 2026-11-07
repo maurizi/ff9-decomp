@@ -2356,7 +2356,7 @@ void evt_movePlayer(EvtObject *obj) {
     speed = EVT_PLAYER_WALK_SPEED;
     dir = EVT_DIR_NONE;
     analog = 0;
-    memset(&step, 0, 8);
+    memset(&step, 0, sizeof(step));
     pad = msg_getPadHeld();
     if (PAD_TYPE(g_padBuf[0].hdr) == PAD_ID_ANALOG) {
         x = g_padAnalog[0].b[2];

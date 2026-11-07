@@ -118,7 +118,7 @@ void cd_resetState(void) {
     CdReset(1);
     CdSyncCallback(0);
     CdReadyCallback(NULL);
-    memset(&g_cdLoad, 0, 0x98C);
+    memset(&g_cdLoad, 0, sizeof(g_cdLoad));
 }
 
 s32 cd_findFile(char *name) {

@@ -526,7 +526,7 @@ void btlui_pruneMenuQueue(void) {
     s32 cnt = g_btlUi->queueCount;
     BtlUnit *unit;
     s32 i;
-    memset(seen, 0, 4);
+    memset(seen, 0, sizeof(seen));
     while (cnt != 0) {
         unit = g_btlUi->queue[head];
         if (BtlUnitCanAct(unit) && unit->cmdIssued != 1) {
@@ -748,7 +748,7 @@ void btlui_addEquipAbilities(Unk80104F88Entry *entry) {
     Character *chr = entry->chr;
     s32 i;
     s32 j;
-    memset((s32)entry->fromEquip, 0, 0xC0);
+    memset((s32)entry->fromEquip, 0, sizeof(entry->fromEquip));
     for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         u8 item = chr->equip[i];
         if (item != ITEM_NONE) {
@@ -970,7 +970,7 @@ void btlui_removeItem(s32 itemId) {
 void btlui_initItemLists(void) {
     Unk80104FA8 *lists = btlui_alloc(0x2E0);
     g_btluiItems = lists;
-    memset((s32)lists->reserved, 0, 0x100);
+    memset((s32)lists->reserved, 0, sizeof(lists->reserved));
     btlui_buildItemLists();
 }
 
@@ -2192,7 +2192,7 @@ s32 btlui_cycleTarget(s32 forward) {
     if (target == NULL) {
         return 0;
     }
-    memset((s32)list, 0, 0x10);
+    memset((s32)list, 0, sizeof(list));
     count = 0;
     for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
         if (((unit->flags >> BTL_UNIT_TARGETABLE_BIT) & 1) && (unit->flags & BTL_UNIT_PARTY) == g_btlTarget.side && (!(unit->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {

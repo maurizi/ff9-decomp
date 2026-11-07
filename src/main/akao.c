@@ -313,8 +313,8 @@ s32 akao_tick(void) {
             if (g_akaoSubSeq->activeMask == 0) {
                 g_akaoSubSeq = NULL;
             } else if ((g_akaoSeq->activeMask | g_akaoSeq->pausedMask) == 0) {
-                akao_copy(g_akaoSubSeq, g_akaoSeq, 0x7C);
-                akao_copy(g_akaoSubChannels, g_akaoChannels, 0x2680);
+                akao_copy(g_akaoSubSeq, g_akaoSeq, sizeof(AkaoSeq));
+                akao_copy(g_akaoSubChannels, g_akaoChannels, AKAO_NUM_CHANNELS * sizeof(AkaoChannel));
                 sub = g_akaoSubSeq;
                 g_akaoSubSeq = NULL;
                 sub->musicId = 0;

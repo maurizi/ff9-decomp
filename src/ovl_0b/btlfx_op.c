@@ -1145,7 +1145,7 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
 void btlfx_pushViewRotation(SVECTOR *rot) {
     MATRIX mat;
     SVECTOR zeroRot;
-    memset((s32)&zeroRot, 0, 8);
+    memset((s32)&zeroRot, 0, sizeof(zeroRot));
     if (rot == 0) {
         rot = &zeroRot;
     }

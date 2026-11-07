@@ -1798,7 +1798,7 @@ s32 evt_modelOpWorld(EvtObject *obj, s32 op) {
 }
 
 void evt_clearGlobalVars(void) {
-    bzero(&g_evtGlobalVars, 0x800);
+    bzero(&g_evtGlobalVars, sizeof(g_evtGlobalVars));
 }
 
 s32 rain_draw(void) {

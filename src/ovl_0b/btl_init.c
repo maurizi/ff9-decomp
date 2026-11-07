@@ -190,7 +190,7 @@ u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
             if ((unit->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
                 unit->atb = 0;
                 unit->atbSpeed = 0;
-                memset(&rot, 0, 8);
+                memset(&rot, 0, sizeof(rot));
                 rot.vx = unit->rot[0];
                 rot.vy = unit->rot[1];
                 rot.vz = unit->rot[2];

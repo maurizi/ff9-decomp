@@ -21,7 +21,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 ch) {
     start = w >> 4;
     width = (w & 0xF) + 1;
     src = (u8 *)g_nameGlyphs + (ch << 6);
-    memset(rowPixels, 0, 0x10);
+    memset(rowPixels, 0, sizeof(rowPixels));
     for (row = 0; row < 12; row++) {
         for (i = 0; i < 4; i++) {
             bits = src[row * 4 + i];
@@ -834,7 +834,7 @@ TextSize text_measure(u8 *str) {
     s32 idx;
     Font *tbl;
 
-    memset(&size, 0, 4);
+    memset(&size, 0, sizeof(size));
     w = 0;
     maxw = 0;
     font = g_gameState->gameData->font;

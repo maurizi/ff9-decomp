@@ -6,13 +6,13 @@ void chr_init(s32 ch) {
     u32 *tbl;
     s32 defSet;
 
-    memset(chr, 0, 0x90);
+    memset(chr, 0, sizeof(*chr));
     tbl = g_chrInitInfo;
     init = tbl + ch;
     chr->info.w = *init;
     chr->status = 0;
     chr->classFlags = chr_getClassFlags(chr->info.b.row);
-    memset(chr->equipBonus, 0, 10);
+    memset(chr->equipBonus, 0, sizeof(chr->equipBonus));
     chr_clearAbilities(ch);
     defSet = chr_getDefaultSet(chr);
     chr_setDefaultName(chr->name, defSet);
@@ -464,7 +464,7 @@ u8 party_hasChanged(void) {
 INCLUDE_RODATA("asm/us/main/nonmatchings/chr", g_chrDefaultNames);
 
 void chr_setDefaultName(u8 *dst, s32 id) {
-    memset(dst, 0xFF, 10);
+    memset(dst, 0xFF, CHR_NAME_SIZE);
     text_copy(dst, (u8 *)text_getFrom((u8 *)g_chrDefaultNames, id));
 }
 
