@@ -15,6 +15,18 @@
 #define FX_ABSORB_RED_GLOW_2   0xC /* emitter: red glow orb with a white / cyan core, 11 frames (byte-identical to entry 0xB) */
 #define FX_ABSORB_LENS_FLARE   0xD /* emitter: rainbow-rimmed lens flare sprites spiralling + a 3D trail (renders black) */
 
+/* fx_11d choreography (docs/fxdata.md, "Choreography literals"): the orb waves along the caster's bone keys, the
+ * trail buffers and op80's keys. */
+#define FX_ABSORB_PATH_KEYS          4    /* fx_11d_boneKeys0 / 1: one bone-pair key per particle frame (the last held) */
+#define FX_ABSORB_ORB_INTERVAL       12   /* a RED_GLOW pair and a PINK_ORBS pair start every this many frames */
+#define FX_ABSORB_ORBS_FRAMES        0x18 /* while frame < this */
+#define FX_ABSORB_ORB_TRAIL_SLOTS    4    /* PINK_ORBS / PINK_ORBS_2 trail buffers (fx_11d_op80Trails0 / 1): slots */
+#define FX_ABSORB_ORB_TRAIL_STRIDE   0x70 /* bytes per slot */
+#define FX_ABSORB_LENS_FLARE_FRAME   0x1E /* LENS_FLARE starts above the caster */
+#define FX_ABSORB_FLARE_TRAIL_SLOTS  8    /* its trail buffer (fx_11d_op80Trails2): slots */
+#define FX_ABSORB_FLARE_TRAIL_STRIDE 0x204 /* bytes per slot */
+#define FX_ABSORB_FRAMES             0x50 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -26,7 +38,7 @@ typedef struct {
     SVECTOR pos1C; /* caster position */
     SVECTOR pos24;
     SVECTOR pos2C;
-} Fx11dWork;
+} Fx11dWork; /* 0x34 */
 
 typedef struct {
     u16 bone0; /* bone from */
@@ -40,8 +52,8 @@ typedef struct {
     s32 (*motion8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
 } Fx11dEffHdr;
 
-extern Fx11dPathKey fx_11d_boneKeys0[4];
-extern Fx11dPathKey fx_11d_boneKeys1[4];
+extern Fx11dPathKey fx_11d_boneKeys0[FX_ABSORB_PATH_KEYS];
+extern Fx11dPathKey fx_11d_boneKeys1[FX_ABSORB_PATH_KEYS];
 extern Unk800F78A4 *fx_11d_env;
 extern s32 fx_11d_op80Trails0[];
 extern s32 fx_11d_op80Trails1[];

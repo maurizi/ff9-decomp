@@ -12,13 +12,20 @@
 #define FX_DARK_MATTER_BOLT_TRAIL   0x3 /* emitter: 3D trail with a violet lightning strip (+ a sprite, render black) */
 #define FX_DARK_MATTER_BOLT_RINGS   0x4 /* emitter: yellow-white gouraud rings, rings textured with violet lightning, pink rings */
 
+/* fx_11f choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_DARK_MATTER_VIOLET_RINGS_FRAME 0xC  /* VIOLET_RINGS start (YELLOW_RINGS at init) */
+#define FX_DARK_MATTER_BOLT_FRAME         0x12 /* BOLT_TRAIL and BOLT_RINGS start */
+#define FX_DARK_MATTER_BOLT_TRAIL_SLOTS   0x14 /* BOLT_TRAIL's trail buffer (fx_11f_op80Trails): slots */
+#define FX_DARK_MATTER_BOLT_TRAIL_STRIDE  0x90 /* bytes per slot */
+#define FX_DARK_MATTER_FRAMES             0x32 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     SVECTOR pos10;
-} Fx11fWork;
+} Fx11fWork; /* 0x18 */
 
 extern Unk800F78A4 *fx_11f_env;
 extern s32 fx_11f_op80Trails[];

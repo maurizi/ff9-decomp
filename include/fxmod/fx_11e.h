@@ -11,6 +11,15 @@
 #define FX_VIRUS_FLY_2       0x2 /* 'so' model: brown fly (insect), wings in another pose (same size as entry 0x1) */
 #define FX_VIRUS_FLY_FLIES   0x3 /* emitter: homing animated fly sprites flapping their wings, 64 frames */
 
+/* fx_11e choreography (docs/fxdata.md, "Choreography literals"): the fly model's buzz round the target and op80's
+ * keys. */
+#define FX_VIRUS_FLY_MODEL_SLOTS   8    /* btlfx_initEffModels slots (once for all targets, fx_11e_modelsReady) */
+#define FX_VIRUS_FLY_RELEASE_FRAME 3    /* sets BTLFX_SIG_WAIT again (the script goes on to the next target) */
+#define FX_VIRUS_FLY_BUZZ_FRAME    0x1E /* the fly model (FLY / FLY_2 alternating) buzzes round the target from this frame */
+#define FX_VIRUS_FLY_BUZZ_FRAMES   0x28 /* for this many frames */
+#define FX_VIRUS_FLY_LEAVE_FRAME   0x19 /* from this frame of the buzz it flies up and away (it turns round the frame before) */
+#define FX_VIRUS_FLY_FRAMES        0x50 /* op80's length (the op ends) */
+
 static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);
 
 

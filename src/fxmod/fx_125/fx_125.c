@@ -14,7 +14,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 size;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx125Work);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_125_env = env;
@@ -28,14 +28,14 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos1C.vz = work->pos4.vz;
         work->posC.vy -= 0x100;
         work->pos1C.vy -= 0x400;
-        ex->btlfx_initEffModels(fx_125_effModels, 3);
-        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_POLY_GREEN_CRYSTAL), 0xB3,
-                                                      0x3D40, 0, 0);
+        ex->btlfx_initEffModels(fx_125_effModels, FX_POLY_MODEL_SLOTS);
+        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_POLY_GREEN_CRYSTAL), FX_POLY_GREEN_CRYSTAL_TPAGE,
+                                                      FX_POLY_GREEN_CRYSTAL_CLUT, FX_POLY_GREEN_CRYSTAL_U, FX_POLY_GREEN_CRYSTAL_V);
         dispX = env->dispEnv->disp.x;
         if (dispX < 0x100) {
-            otherX = dispX + 0x140;
+            otherX = dispX + SCREEN_W;
         } else {
-            otherX = dispX - 0x140;
+            otherX = dispX - SCREEN_W;
         }
         tp1 = getTPage(2, 3, dispX, env->dispEnv->disp.y);
         tp2 = getTPage(2, 3, otherX, env->dispEnv->disp.y);
@@ -50,15 +50,15 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-        if (frame >= 0x14) {
+        if (frame >= FX_POLY_CRYSTAL_FRAME) {
             pos.vx = work->pos1C.vx;
             pos.vy = work->pos1C.vy;
             pos.vz = work->pos1C.vz;
             rot.vy = frame << 5;
             rot.vx = 0;
             rot.vz = 0;
-            if (frame >= 0x3C) {
-                size = (((frame - 0x3C) << 12) / 10);
+            if (frame >= FX_POLY_SHRINK_FRAME) {
+                size = (((frame - FX_POLY_SHRINK_FRAME) << 12) / FX_POLY_SHRINK_FRAMES);
                 size = ex->math_cos(size >> 2) / 3;
             } else {
                 size = 0x555;
@@ -73,7 +73,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->model28[frame & 1], BTLFX_ABR_OPAQUE);
             ex->Hi_ModifyEffModelRGB(work->model28[frame & 1], 0x40, 0x40, 0x40);
         }
-        if (frame == 0x10) {
+        if (frame == FX_POLY_CYAN_RINGS_FRAME) {
             Pool6CEntry *burst;
 
             burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_CYAN_RINGS), (s32)&work->pos4);
@@ -85,7 +85,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        if (frame == 0x13) {
+        if (frame == FX_POLY_SPIKES_FRAME) {
             Pool6CEntry *burst;
 
             burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_DOTS_2), (s32)&work->pos4);
@@ -97,7 +97,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        if (frame == 0x1A) {
+        if (frame == FX_POLY_STAR_GLOWS_FRAME) {
             Pool6CEntry *burst;
 
             burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_STAR_GLOWS), (s32)&work->pos14);
@@ -105,7 +105,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        if (frame == 0x28) {
+        if (frame == FX_POLY_STAR_BURST_FRAME) {
             Pool6CEntry *burst;
 
             burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLY_STAR_BURST), (s32)&work->pos14);
@@ -117,7 +117,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 burst->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
             }
         }
-        if (frame >= 0x46) {
+        if (frame >= FX_POLY_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

@@ -4,14 +4,14 @@ s32 fx_11a_op80(s32 mode, Fx11aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx11aWork);
     } else if (mode == 1) {
         fx_11a_env = env;
         env->camera->paused = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VACCINE_GLOW), (s32)&work->pos4);
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_VACCINE_FRAMES;
     }
     return 0;
 }

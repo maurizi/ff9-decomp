@@ -17,20 +17,34 @@
 #define FX_HIGH_WIND_CLOUD_2      0xD /* emitter: teal-white cloud puffs spiralling, 22 animated frames */
 #define FX_HIGH_WIND_GREY_SWIRL   0xE /* emitter: grey swirl particle */
 
+/* fx_11c choreography (docs/fxdata.md, "Choreography literals"): the three ops' keys, trail buffers and op81's
+ * burst table. */
+#define FX_HIGH_WIND_WIND_TRAIL_SLOTS   0xD  /* op80: WIND_TRAIL_2's and WIND_TRAIL's trail buffers (fx_11c_op80Trails0 / 1): slots */
+#define FX_HIGH_WIND_WIND_TRAIL_STRIDE  0x90 /* bytes per slot (also WIND_TRAIL_3's) */
+#define FX_HIGH_WIND_GUST_FRAMES        0x28 /* op80's length */
+#define FX_HIGH_WIND_BURST_COUNT        5    /* op81: fx_11c_op81Bursts, emitters round the target */
+#define FX_HIGH_WIND_BURST_INTERVAL     2    /* burst i starts on frame i * this */
+#define FX_HIGH_WIND_BURSTS_FRAMES      0x32 /* op81's length */
+#define FX_HIGH_WIND_WIND_TRAIL_3_SLOTS 8    /* op82: WIND_TRAIL_3's trail buffer (fx_11c_op82Trails): slots */
+#define FX_HIGH_WIND_STREAKS_FRAME      5    /* WIND_STREAKS and CLOUD_2 start at the target */
+#define FX_HIGH_WIND_SIDE_CLOUDS_FRAME  0xD  /* two more CLOUD_2s start, left and right */
+#define FX_HIGH_WIND_SIDE_CLOUD_OFFSET  0x190 /* this far from the target */
+#define FX_HIGH_WIND_STORM_FRAMES       0x32 /* op82's length */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* caster body position */
     SVECTOR pos10;
-} Fx11cWork80;
+} Fx11cWork80; /* 0x18 */
 
 typedef struct {
     Pool6CEntry *emit0;
-    Pool6CEntry *emit4[5];
+    Pool6CEntry *emit4[FX_HIGH_WIND_BURST_COUNT];
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
     SVECTOR pos20; /* target position */
-} Fx11cWork81;
+} Fx11cWork81; /* 0x28 */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -42,7 +56,7 @@ typedef struct {
     SVECTOR pos18;
     SVECTOR pos20;
     SVECTOR pos28;
-} Fx11cWork82;
+} Fx11cWork82; /* 0x30 */
 
 typedef struct {
     SVECTOR pos0; /* spawn position */
@@ -53,7 +67,7 @@ typedef struct {
     u16 fileId16; /* file */
 } Fx11cBurst;
 
-extern Fx11cBurst fx_11c_op81Bursts[5];
+extern Fx11cBurst fx_11c_op81Bursts[FX_HIGH_WIND_BURST_COUNT];
 extern Unk800F78A4 *fx_11c_env;
 extern s32 fx_11c_op80Trails0[];
 extern s32 fx_11c_op80Trails1[];

@@ -9,10 +9,13 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_VACCINE_GLOW 0x1 /* emitter: white-lilac gouraud ring, green glow sprite + a fan element */
 
+/* fx_11a choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_VACCINE_FRAMES 0x28 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx11aWork;
+} Fx11aWork; /* 0xC */
 
 extern Unk800F78A4 *fx_11a_env;
 

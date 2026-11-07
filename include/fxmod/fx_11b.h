@@ -9,10 +9,13 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ANNOYNTMENT_SPARKLES 0x1 /* emitter: blue-white puff, pale sparkles, white-cyan gouraud ring, green glow */
 
+/* fx_11b choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_ANNOYNTMENT_FRAMES 0x32 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx11bWork;
+} Fx11bWork; /* 0xC */
 
 extern Unk800F78A4 *fx_11b_env;
 

@@ -9,10 +9,13 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_AMETHYST_YELLOW_RINGS 0x1 /* emitter: white-yellow to navy gouraud rings spiralling + sprites (render black); the same file plays every gem item */
 
+/* fx_124 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_AMETHYST_FRAMES 0x14 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx124Work;
+} Fx124Work; /* 0xC */
 
 extern Unk800F78A4 *fx_124_env;
 
