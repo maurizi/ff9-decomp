@@ -89,15 +89,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     gt4 = (POLY_GT4 *)env->prim;
     *(s32 *)&colDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    env->prim = (u8 *)(ft4 + 14);
+    env->prim = (u8 *)(ft4 + (FX_ODIN_SHEATH_SEGMENTS - 2));
     colFlat.r = colFlat.g = colFlat.b = bright;
     colLit.r = colLit.g = colLit.b = bright;
-    if (abr != 0xFF) {
-        colFlat.cd = 0x2E;
+    if (abr != BTLFX_ABR_OPAQUE) {
+        colFlat.cd = GPU_POLY_FT4 | GPU_ABE;
     } else {
-        colFlat.cd = 0x2C;
+        colFlat.cd = GPU_POLY_FT4;
     }
-    colDark.cd = abr != 0xFF ? 0x3E : 0x3C;
+    colDark.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     tpage |= TPAGE_ABR(abr);
     colLit.cd = colDark.cd;
     gte_rtv0tr_b();
@@ -111,12 +111,12 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     w1 >>= 1;
     span = dy;
     u0 = u;
-    u1 = u + 0x7F;
+    u1 = u + FX_ODIN_SHEATH_TEX_W - 1;
     v0 = v;
-    v1 = v + 0x3F;
+    v1 = v + FX_ODIN_SHEATH_TEX_H - 1;
     seg = 0;
     for (rowY = 0, row = 0; row < 1; row++, rowY += dy) {
-        for (j = 0; j < 16; j++, seg++, ang += dang << 8) {
+        for (j = 0; j < FX_ODIN_SHEATH_SEGMENTS; j++, seg++, ang += dang << 8) {
             nextJ = (j + 1) << 8;
             y0 = rowY + (((j << 8) * dy) >> 12);
             y1 = rowY + ((nextJ * dy) >> 12);
@@ -142,7 +142,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
                 ft = 0;
-            } else if (seg >= 15) {
+            } else if (seg >= FX_ODIN_SHEATH_SEGMENTS - 1) {
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
                 ft = 0;
@@ -174,11 +174,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -197,10 +197,10 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = sizeof(Fx1a8Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_ODIN_STATE_DESCEND;
         work->frame4 = 0;
         fx_1a8_env = env;
-        ex->btlfx_initEffModels(fx_1a8_effModels, 0xC);
+        ex->btlfx_initEffModels(fx_1a8_effModels, FX_ODIN_MODEL_SLOTS);
         work->model28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_ZANTETSUKEN), 0);
         work->model4C[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_RIBBON_4), 0);
         work->model4C[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_RIBBON), 0);
@@ -213,8 +213,8 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_VORTEX_CONE), 3);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ODIN_CLOUD_TORUS), 1);
         work->pos8.vx = fx_1a8_targetPos.vx;
-        work->pos8.vy = fx_1a8_targetPos.vy - 0x2000;
-        work->pos8.vz = fx_1a8_targetPos.vz - 0x2000;
+        work->pos8.vy = fx_1a8_targetPos.vy - FX_ODIN_DROP_HEIGHT;
+        work->pos8.vz = fx_1a8_targetPos.vz - FX_ODIN_DROP_HEIGHT;
         env->camera->points[3].vx = work->pos8.vx;
         env->camera->points[3].vy = work->pos8.vy;
         env->camera->points[3].vz = work->pos8.vz;
@@ -223,12 +223,13 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         size = 0;
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 10;
+        case FX_ODIN_STATE_DESCEND:
+            t = (frame << 12) / FX_ODIN_DESCEND_FRAMES;
             if (frame == 0) {
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_BLUE_RINGS), (s32)&work->pos8);
             }
-            if (frame < 0x10) {
+            /* fades on cos(frame / FLAME_TRAIL_FRAMES) ((frame << 8) >> 2); DESCEND ends before the fade completes */
+            if (frame < FX_ODIN_FLAME_TRAIL_FRAMES) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_TRAIL), (s32)&work->pos8, NULL, 0, 0x555,
                                     ex->math_cos((frame << 8) >> 2), BTLFX_ABR_ADD, fx_1a8_trailPoints, 0);
             }
@@ -254,13 +255,13 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos20.vx = work->pos40.vx;
             work->pos20.vy = work->pos40.vy;
             work->pos20.vz = work->pos40.vz;
-            if (frame >= 10) {
-                work->state0 = 1;
+            if (frame >= FX_ODIN_DESCEND_FRAMES) {
+                work->state0 = FX_ODIN_STATE_STRIKE;
                 entry->frame = -1;
-                ex->btlfx_drawBgOffscreen(0x240, 0x1C0, 0x40, 0x40, fx_1a8_bgOt, fx_1a8_targetPos.vx, fx_1a8_targetPos.vz, 0x800);
+                ex->btlfx_drawBgOffscreen(FX_ODIN_BG_VRAM_X, FX_ODIN_BG_VRAM_Y, FX_ODIN_BG_VRAM_W, FX_ODIN_BG_VRAM_H, fx_1a8_bgOt, fx_1a8_targetPos.vx, fx_1a8_targetPos.vz, 0x800);
             }
             break;
-        case 1: {
+        case FX_ODIN_STATE_STRIKE: {
             SVECTOR startPos;
 
             size = work->scale34.vx;
@@ -268,7 +269,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos40.vy = fx_1a8_targetPos.vy;
             alpha = 0x1000;
             work->pos40.vz = fx_1a8_targetPos.vz;
-            t = ((frame + 1) << 12) / 5;
+            t = ((frame + 1) << 12) / FX_ODIN_STRIKE_FRAMES;
             work->pos40.vy = work->pos40.vy + (t - 0x1000);
             work->pos40.vz = work->pos40.vz + (t - 0x1000);
             work->rot2C.vz += 0x80;
@@ -280,23 +281,23 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 startPos.vy = work->pos40.vy;
                 startPos.vz = work->pos40.vz;
                 ex->btlfx_aimAngles((s16 *)&startPos, (s16 *)&fx_1a8_targetPos, (s16 *)&work->rot2C);
-                work->scale34.vx = work->scale34.vy = work->scale34.vz = 0x5000;
+                work->scale34.vx = work->scale34.vy = work->scale34.vz = FX_ODIN_BLADE_SCALE;
                 work->rot2C.vx += 0x800;
                 env->camera->points[3].vx = fx_1a8_targetPos.vx;
                 env->camera->points[3].vy = fx_1a8_targetPos.vy;
                 env->camera->points[3].vz = fx_1a8_targetPos.vz;
-                env->camera->points[3].vy -= 0x140;
+                env->camera->points[3].vy -= FX_ODIN_CAMERA_HEIGHT;
             }
             ex->Hi_DrawEffModel(&work->rot2C, (VECTOR *)&work->pos40, (s32)&work->scale34, work->model28);
             work->scale34.vx = work->scale34.vy = work->scale34.vz = work->scale34.vx / 2;
             ex->Hi_DrawEffModel(&work->rot2C, (VECTOR *)&work->pos40, (s32)&work->scale34, work->model60);
             work->scale34.vx = work->scale34.vy = work->scale34.vz = work->scale34.vx * 2;
-            if (frame >= 4) {
+            if (frame >= FX_ODIN_STRIKE_FRAMES - 1) {
                 Pool6CEntry *emitter;
 
-                work->state0 = 2;
+                work->state0 = FX_ODIN_STATE_BLAST;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], BTLFX_ABR_SUB, 0x46, 0x46, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], BTLFX_ABR_SUB, FX_ODIN_STRIKE_DARKEN_RGB);
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1a8_targetPos);
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_GOLD_RAYS), (s32)&work->pos10);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_CRIMSON_RINGS_2), (s32)&work->pos10);
@@ -319,7 +320,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        case 2: {
+        case FX_ODIN_STATE_BLAST: {
             SVECTOR pillarRot;
             VECTOR pillarScale;
             SVECTOR domeRot;
@@ -346,19 +347,20 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 groundFade;
 
             t = frame << 7;
-            if (frame < 8) {
+            if (frame < FX_ODIN_SHAKE_FRAMES) {
                 env->camera->points[3].vx = fx_1a8_targetPos.vx;
-                shake = ((frame & 1) * 2 - 1) * (0x20 - frame * 4);
+                shake = ((frame & 1) * 2 - 1) * (FX_ODIN_SHAKE_AMPLITUDE - frame * 4);
                 env->camera->points[3].vy = fx_1a8_targetPos.vy;
                 env->camera->points[3].vz = fx_1a8_targetPos.vz;
-                env->camera->points[3].vy = env->camera->points[3].vy - (0x140 + shake);
+                env->camera->points[3].vy = env->camera->points[3].vy - (FX_ODIN_CAMERA_HEIGHT + shake);
                 env->camera->points[3].vx += shake;
             }
             work->pos40.vx = fx_1a8_targetPos.vx;
             work->pos40.vy = fx_1a8_targetPos.vy;
             work->pos40.vz = fx_1a8_targetPos.vz;
-            if (frame < 6) {
-                work->pos40.vy = (((frame & 1) * 2 - 1) * ex->math_cos((frame << 10) / 6)) >> 6;
+            /* sets y outright, not the target's y plus the bounce: the blade bounces round world y 0 (+-0x40) for these frames */
+            if (frame < FX_ODIN_BOUNCE_FRAMES) {
+                work->pos40.vy = (((frame & 1) * 2 - 1) * ex->math_cos((frame << 10) / FX_ODIN_BOUNCE_FRAMES)) >> 6;
             }
             ex->Hi_DrawEffModel(&work->rot2C, (VECTOR *)&work->pos40, (s32)&work->scale34, work->model28);
             if (t > 0xC00) {
@@ -368,18 +370,18 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 modelBright = ((0x1000 - (t - 0xC00) * 4) >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model28, modelBright, modelBright, modelBright);
             }
-            if (frame < 0x10) {
+            if (frame < FX_ODIN_SHEATH_FADE_FRAMES) {
                 alpha = 0x1000 - (frame << 8);
                 work->pos20.vx = work->pos40.vx;
                 work->pos20.vy = work->pos40.vy;
                 size = work->scale34.vx + t;
                 work->pos20.vz = work->pos40.vz;
             }
-            if (frame < 6) {
-                at = 0xFF - (frame * 0xFF) / 6;
+            if (frame < FX_ODIN_BLAST_FLASH_FRAMES) {
+                at = 0xFF - (frame * 0xFF) / FX_ODIN_BLAST_FLASH_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)&env->ot[1], BTLFX_ABR_ADD, at, at >> 1, at >> 1);
             }
-            if (frame < 0x10) {
+            if (frame < FX_ODIN_FLAME_FRAMES) {
                 work->pos40.vx = fx_1a8_targetPos.vx;
                 work->pos40.vy = fx_1a8_targetPos.vy;
                 work->pos40.vz = fx_1a8_targetPos.vz;
@@ -387,20 +389,21 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pillarRot.vx = 0;
                 pillarRot.vy = 0;
                 pillarRot.vz = 0;
-                pillarT = (frame << 12) / 12;
+                pillarT = (frame << 12) / FX_ODIN_FLAME_FADE_FRAMES;
                 pillarScale.vy = pillarT + 0x2000;
                 pillarBright = (ex->math_cos(pillarT >> 2) >> 5) - 0x80;
-                for (i = 0; i < 4; i++) {
+                for (i = 0; i < FX_ODIN_FLAME_RIBBONS; i++) {
                     ex->Hi_DrawEffModel(&pillarRot, (VECTOR *)&work->pos40, (s32)&pillarScale, work->model4C[i]);
                     ex->Hi_ModifyEffModelRGB(work->model4C[i], pillarBright, pillarBright, pillarBright);
                 }
-                ex->btlfx_drawScrollMove(work->frame4 << 4, 0x1C0, 0x100, 0x38, 0x70, 0x1C0, 0x170);
+                ex->btlfx_drawScrollMove(work->frame4 << 4, FX_ODIN_FLAME_VRAM_X, FX_ODIN_FLAME_VRAM_Y, FX_ODIN_FLAME_VRAM_W, FX_ODIN_FLAME_VRAM_H,
+                                         FX_ODIN_FLAME_SRC_X, FX_ODIN_FLAME_SRC_Y);
             }
-            if (frame < 0xC) {
+            if (frame < FX_ODIN_STONE_RING_FRAMES) {
                 work->pos40.vx = fx_1a8_targetPos.vx;
                 work->pos40.vy = fx_1a8_targetPos.vy;
                 work->pos40.vz = fx_1a8_targetPos.vz;
-                domeT = (frame << 12) / 12;
+                domeT = (frame << 12) / FX_ODIN_STONE_RING_FRAMES;
                 domeScale.vx = domeScale.vz = domeT / 8 + 0x555;
                 domeScale.vy = ex->math_sin(domeT >> 2);
                 domeRot.vx = 0;
@@ -415,11 +418,11 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&domeRot, (VECTOR *)&work->pos40, (s32)&domeScale, work->model64);
                 ex->Hi_ModifyEffModelRGB(work->model64, domeBright, domeBright, domeBright);
             }
-            if (frame < 0x14) {
+            if (frame < FX_ODIN_GOLD_RING_FRAMES) {
                 work->pos40.vx = fx_1a8_targetPos.vx;
                 work->pos40.vy = fx_1a8_targetPos.vy;
                 work->pos40.vz = fx_1a8_targetPos.vz;
-                swirlT = (frame << 12) / 20;
+                swirlT = (frame << 12) / FX_ODIN_GOLD_RING_FRAMES;
                 swirlAng = swirlT >> 2;
                 swirlScale.vx = swirlScale.vz = ex->math_sin(swirlAng) / 2;
                 swirlBright = ((0x1000 - swirlT) >> 5) - 0x80;
@@ -429,7 +432,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 swirlRot.vz = 0;
                 swirlRise = frame * 0x18;
                 work->pos40.vy -= swirlRise;
-                for (i = 0; i < 4; i++) {
+                for (i = 0; i < FX_ODIN_GOLD_RING_COPIES; i++) {
                     ex->Hi_DrawEffModel(&swirlRot, (VECTOR *)&work->pos40, (s32)&swirlScale, work->model5C);
                     ex->Hi_ModifyEffModelRGB(work->model5C, swirlBright, swirlBright, swirlBright);
                     swirlScale.vx = swirlScale.vz = (swirlScale.vx * 5) >> 2;
@@ -447,11 +450,12 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             groundRot.vy = frame * 0x18;
             groundRot.vz = 0;
             groundFade = 0x1000 - t;
-            ex->btlfx_drawScrollMove(10000 - (work->frame4 << 3), 0x240, 0x140, 0x20, 0x80, 0x260, 0x140);
+            ex->btlfx_drawScrollMove(10000 - (work->frame4 << 3), FX_ODIN_CLOUD_VRAM_X, FX_ODIN_CLOUD_VRAM_Y, FX_ODIN_CLOUD_VRAM_W,
+                                     FX_ODIN_CLOUD_VRAM_H, FX_ODIN_CLOUD_SRC_X, FX_ODIN_CLOUD_SRC_Y);
             ex->Hi_DrawEffModel(&groundRot, (VECTOR *)&work->pos40, (s32)&groundScale, work->model68);
             groundBright = (groundFade >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model68, groundBright, groundBright, groundBright);
-            if (frame < 0x10) {
+            if (frame < FX_ODIN_CRIMSON_RINGS_FRAMES) {
                 ringRot.vx = 0;
                 ringRot.vy = 0;
                 ringRot.vz = 0;
@@ -461,7 +465,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                   ex->math_sin((frame << 8) >> 2), 0, BTLFX_ABR_ADD, ex->math_cos((frame << 8) >> 2));
                 env->otZ = 0;
             }
-            if (frame == 0xC) {
+            if (frame == FX_ODIN_PINK_SMOKE_FRAME) {
                 Pool6CEntry *emitter;
 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_PINK_SMOKE), (s32)&work->pos10);
@@ -469,7 +473,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x190;
                 }
             }
-            if (frame >= 0x20) {
+            if (frame >= FX_ODIN_BLAST_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -482,15 +486,20 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             sc.vx = sc.vy = sc.vz = size;
             cylAlpha = alpha >> 5;
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, cylAlpha, 0x19, 0x3D02, 0, 0,
-                          work->frame4 << 8, 0xC00, 1, 1);
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, cylAlpha, 0x19, 0x3D02, 0, 0,
-                          (work->frame4 << 8) + 0x800, 0xC00, 1, 1);
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, cylAlpha, 0x19, 0x3D02, 0, 0,
-                          -work->frame4 << 8, 0xC00, 1, -1);
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, cylAlpha, 0x19, 0x3D02, 0, 0,
-                          (-work->frame4 << 8) - 0x800, 0xC00, 1, -1);
-            ex->btlfx_drawScrollMove(10000 - (work->frame4 << 4), 0x240, 0x100, 0x20, 0x40, 0x260, 0x100);
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, FX_ODIN_SHEATH_RADIUS, FX_ODIN_SHEATH_RADIUS_MID, FX_ODIN_SHEATH_WIDTH, FX_ODIN_SHEATH_WIDTH, cylAlpha,
+                          FX_ODIN_SHEATH_TPAGE, FX_ODIN_SHEATH_CLUT, FX_ODIN_SHEATH_U, FX_ODIN_SHEATH_V,
+                          work->frame4 << 8, FX_ODIN_SHEATH_LENGTH, BTLFX_ABR_ADD, 1);
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, FX_ODIN_SHEATH_RADIUS, FX_ODIN_SHEATH_RADIUS_MID, FX_ODIN_SHEATH_NARROW_WIDTH, FX_ODIN_SHEATH_NARROW_WIDTH, cylAlpha,
+                          FX_ODIN_SHEATH_TPAGE, FX_ODIN_SHEATH_CLUT, FX_ODIN_SHEATH_U, FX_ODIN_SHEATH_V,
+                          (work->frame4 << 8) + 0x800, FX_ODIN_SHEATH_LENGTH, BTLFX_ABR_ADD, 1);
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, FX_ODIN_SHEATH_RADIUS, FX_ODIN_SHEATH_RADIUS_MID, FX_ODIN_SHEATH_WIDTH, FX_ODIN_SHEATH_WIDTH, cylAlpha,
+                          FX_ODIN_SHEATH_TPAGE, FX_ODIN_SHEATH_CLUT, FX_ODIN_SHEATH_U, FX_ODIN_SHEATH_V,
+                          -work->frame4 << 8, FX_ODIN_SHEATH_LENGTH, BTLFX_ABR_ADD, -1);
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, FX_ODIN_SHEATH_RADIUS, FX_ODIN_SHEATH_RADIUS_MID, FX_ODIN_SHEATH_NARROW_WIDTH, FX_ODIN_SHEATH_NARROW_WIDTH, cylAlpha,
+                          FX_ODIN_SHEATH_TPAGE, FX_ODIN_SHEATH_CLUT, FX_ODIN_SHEATH_U, FX_ODIN_SHEATH_V,
+                          (-work->frame4 << 8) - 0x800, FX_ODIN_SHEATH_LENGTH, BTLFX_ABR_ADD, -1);
+            ex->btlfx_drawScrollMove(10000 - (work->frame4 << 4), FX_ODIN_SHEATH_VRAM_X, FX_ODIN_SHEATH_VRAM_Y, FX_ODIN_SHEATH_VRAM_W,
+                                 FX_ODIN_SHEATH_VRAM_H, FX_ODIN_SHEATH_SRC_X, FX_ODIN_SHEATH_SRC_Y);
         }
         work->frame4++;
     }
