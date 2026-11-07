@@ -572,8 +572,8 @@ void wm_chunkListInit(void) {
         g_worldChunkSlots[i].chunkId = -1;
         g_worldChunkSlots[i].generation = 0;
     }
-    for (i = 1; i < 16; i++) {
-        g_worldChunkSlots[i].pack = (WmChunkPack *)(g_worldChunkBuffer + i * 0x4800);
+    for (i = 1; i < WM_CHUNK_BUFFERS; i++) {
+        g_worldChunkSlots[i].pack = (WmChunkPack *)(g_worldChunkBuffer + i * WM_CHUNK_PACK_SIZE);
         g_worldChunkSlots[i].generation = 0;
     }
     i = 31;
@@ -585,7 +585,7 @@ void wm_chunkListInit(void) {
     g_worldChunkSlots[i].generation = 0;
     g_worldChunkHead.prev = NULL;
     g_worldChunkHead.next = &g_worldChunkSlots[0];
-    g_worldChunkTail.next = &g_worldChunkSlots[16];
+    g_worldChunkTail.next = &g_worldChunkSlots[WM_CHUNK_BUFFERS];
     g_worldChunksLoadedCount = 0;
     g_worldChunkCenter = -1;
     g_worldChunkTail.prev = NULL;
@@ -644,11 +644,11 @@ void wm_requestChunks(s32 chunk) {
     missCount = 0;
     h = &g_worldChunkHead;
     wm_chunkToPos(chunk, &x, &z);
-    for (j = 0; j < 4; j++) {
-        for (i = 0; i < 4; i++) {
+    for (j = 0; j < WM_CHUNK_GRID; j++) {
+        for (i = 0; i < WM_CHUNK_GRID; i++) {
             wm_posToChunk(x + (i << 14), z - (j << 14), &id);
             slot = h->next;
-            for (k = 0; k < 16; k++, slot = slot->next) {
+            for (k = 0; k < WM_CHUNK_BUFFERS; k++, slot = slot->next) {
                 if (slot->chunkId == id) {
                     chunkFlags = g_worldChunkFlags[slot->chunkId];
                     if (chunkFlags & WM_CELL_TEX_MASK) {
@@ -663,7 +663,7 @@ void wm_requestChunks(s32 chunk) {
                     break;
                 }
             }
-            if (k == 16) {
+            if (k == WM_CHUNK_BUFFERS) {
                 missing[missCount++] = id;
             }
         }
@@ -703,7 +703,7 @@ s32 wm_chunkRequest(s16 chunkId) {
     slot = prev->next;
     do {
         if (slot->chunkId == -1) {
-            if (slotIdx >= 16) {
+            if (slotIdx >= WM_CHUNK_BUFFERS) {
                 slot->chunkId = chunkId;
                 slot->prev->next = slot->next;
                 slot->next->prev = slot->prev;
@@ -924,7 +924,7 @@ void wm_chunksLoaded(void) {
                 wm_readtxDone(g_worldChunkRunTex[i]);
             }
             if (g_worldMapLoaded == 0) {
-                if (++g_worldChunksLoadedCount == 16) {
+                if (++g_worldChunksLoadedCount == WM_CHUNK_BUFFERS) {
                     g_worldLoadedFrames = st;
                     g_worldCameraHold = 0;
                     g_worldMapLoaded = st;
@@ -958,7 +958,7 @@ void wm_chunkListCompact(void) {
         src = g_worldChunkHead.next;
         g_worldChunkListDirty = 0;
         dst = src;
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < WM_CHUNK_BUFFERS; i++) {
             src = src->next;
         }
         while (1) {
@@ -1001,7 +1001,7 @@ void wm_blockListInit(void) {
         g_worldBlockNodes[i].cell = -1;
         g_worldBlockNodes[i].slot = -1;
     }
-    for (i = 1; i < 20; i++) {
+    for (i = 1; i < WM_BLOCK_SLOTS; i++) {
         g_worldBlockNodes[i].pos = &g_worldBlockPositions[i];
         g_worldBlockNodes[i].slot = i;
     }
@@ -1015,7 +1015,7 @@ void wm_blockListInit(void) {
     g_worldBlockNodes[i].slot = -1;
     g_worldBlockHead.prev = NULL;
     g_worldBlockHead.next = &g_worldBlockNodes[0];
-    g_worldBlockTail.next = &g_worldBlockNodes[20];
+    g_worldBlockTail.next = &g_worldBlockNodes[WM_BLOCK_SLOTS];
     g_worldBlockTail.prev = NULL;
 }
 
@@ -1247,7 +1247,7 @@ s32 wm_blockListRequest(s16 cell) {
 
     do {
         if (node->cell == -1) {
-            if (i >= 20) {
+            if (i >= WM_BLOCK_SLOTS) {
                 node->cell = cell;
                 node->prev->next = node->next;
                 node->next->prev = node->prev;
@@ -1287,14 +1287,14 @@ void wm_blockListResolve(void) {
     s32 k;
 
     node = g_worldBlockHead.next;
-    for (i = 0; i < 20; i++, node = node->next) {
+    for (i = 0; i < WM_BLOCK_SLOTS; i++, node = node->next) {
         if (node->cell < 0) {
             return;
         }
         wm_cellToChunk(node->cell, &id);
         node->state = WM_BLOCK_NONE;
         slot = g_worldChunkHead.next;
-        for (j = 0; j < 16; j++, slot = slot->next) {
+        for (j = 0; j < WM_CHUNK_BUFFERS; j++, slot = slot->next) {
             if (id == slot->chunkId) {
                 if (slot->state == WM_CHUNK_READY) {
                     node->state = WM_BLOCK_SET;
@@ -1332,7 +1332,7 @@ s32 wm_getCellBlock(s16 cell, u8 *outMissing) {
 
     slot = g_worldChunkHead.next;
     wm_cellToChunk(cell, &id);
-    for (i = 0; i < 16; i++, slot = slot->next) {
+    for (i = 0; i < WM_CHUNK_BUFFERS; i++, slot = slot->next) {
         if (id == slot->chunkId && slot->state == WM_CHUNK_READY) {
             if (outMissing != NULL) {
                 *outMissing = 0;
@@ -1377,10 +1377,10 @@ void wm_blockListCompact(void) {
         dst = g_worldBlockHead.next;
         g_worldBlockListDirty = 0;
         src = dst;
-        for (i = 0; i < 20; i++) {
+        for (i = 0; i < WM_BLOCK_SLOTS; i++) {
             src = src->next;
         }
-        for (i = 0; i < 20; i++) {
+        for (i = 0; i < WM_BLOCK_SLOTS; i++) {
             if (dst->pos == 0) {
                 dst->block = src->block;
                 dst->pos = src->pos;
@@ -2176,7 +2176,7 @@ void wm_readtxInit(void) {
         g_worldReadtxSlots[i].extracted = 0;
         g_worldReadtxSlots[i].texId = -1;
     }
-    for (i = 1; i < 3; i++) {
+    for (i = 1; i < WM_READTX_BUFFERS; i++) {
         g_worldReadtxSlots[i].pack = g_worldTexBuffers[i];
     }
     i = 5;
@@ -2187,7 +2187,7 @@ void wm_readtxInit(void) {
     g_worldReadtxSlots[i].extracted = 0;
     g_worldReadtxHead.prev = NULL;
     g_worldReadtxHead.next = &g_worldReadtxSlots[0];
-    g_worldReadtxTail.next = &g_worldReadtxSlots[3];
+    g_worldReadtxTail.next = &g_worldReadtxSlots[WM_READTX_BUFFERS];
     g_worldReadtxReqCount = 0;
     g_worldReadtxTail.prev = NULL;
     g_worldReadtxDirty = 0;

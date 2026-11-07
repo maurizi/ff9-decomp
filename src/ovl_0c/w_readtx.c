@@ -62,7 +62,7 @@ void wm_readtxCompact(void) {
         do {
             srcSlot = srcSlot->next;
             i++;
-        } while (i < 3);
+        } while (i < WM_READTX_BUFFERS);
         for (;;) {
             while ((srcSlot != &g_worldReadtxTail) & (srcSlot->pack == NULL)) {
                 if ((srcSlot->pack == NULL) & (srcSlot->texId != -1)) {
@@ -96,7 +96,7 @@ s32 wm_readtxFind(s32 texId, s32 variant) {
     WmReadtxSlot *slot = g_worldReadtxHead.next;
     s32 i;
 
-    for (i = 0; i < 3; i++, slot = slot->next) {
+    for (i = 0; i < WM_READTX_BUFFERS; i++, slot = slot->next) {
         if ((slot->texId & WM_TEXID_MASK) == (texId & WM_TEXID_MASK) && slot->extracted == (variant & 0xFF)) {
             return (s32)slot->pack;
         }
@@ -113,7 +113,7 @@ void wm_readtxDone(s32 *pack) {
     }
     w_frameExtruct(pack);
     slot = g_worldReadtxHead.next;
-    for (i = 0; i < 3;) {
+    for (i = 0; i < WM_READTX_BUFFERS;) {
         if (slot->pack == pack) {
             slot->extracted = 1;
             return;

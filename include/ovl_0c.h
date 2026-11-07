@@ -1094,6 +1094,12 @@ typedef struct WmChunkSlot {
 #define WM_CHUNK_WANTED 0 /* wm_chunkRequest took the slot; wm_findChunkRun picks runs of these */
 #define WM_CHUNK_READING 1 /* in the run wm_readChunks is reading */
 #define WM_CHUNK_READY 2 /* wm_chunksLoaded relocated the pack; blocks can use it */
+/* The map is streamed in a WM_CHUNK_GRID x WM_CHUNK_GRID square of chunks around the camera (wm_requestChunks).
+ * Only the first WM_CHUNK_BUFFERS of the 32 g_worldChunkSlots get a WM_CHUNK_PACK_SIZE pack in g_worldChunkBuffer;
+ * the searches and the loaded count (the map is up once that many chunks loaded) cover those. */
+#define WM_CHUNK_GRID 4
+#define WM_CHUNK_BUFFERS (WM_CHUNK_GRID * WM_CHUNK_GRID)
+#define WM_CHUNK_PACK_SIZE 0x4800
 
 /* colour + 2 values (8 bytes) */
 typedef struct {
@@ -1344,7 +1350,9 @@ extern s32 g_worldDepth; /* map height (wraps) */
 extern RECT g_worldVramParkRect;
 extern char s_wmStrFrameSystemDestructor[]; /* "w_frameSystemDestructor:\n" */
 extern WmNaviPlace g_worldNaviPlaces[][64];
-extern s32 *g_worldTexBuffers[3];
+/* only the first WM_READTX_BUFFERS of the 6 g_worldReadtxSlots get a buffer (wm_readtxInit) */
+#define WM_READTX_BUFFERS 3
+extern s32 *g_worldTexBuffers[WM_READTX_BUFFERS];
 extern s32 g_worldDataArea; /* 0x80100800, end of the world heap: loaded actor meshes, world script, images */
 extern u8 g_worldPointFxBuf[];
 extern u8 *g_worldPointFxBufPtr;
@@ -1388,7 +1396,9 @@ extern s32 g_worldChunksH;
 extern WmBlockNode g_worldBlockHead; /* list head */
 extern s32 g_worldBlockListDirty;
 extern WmBlockNode g_worldBlockNodes[40];
-extern WmBlockPos g_worldBlockPositions[20];
+/* only the first WM_BLOCK_SLOTS of the 40 g_worldBlockNodes get a position (wm_blockListInit); the searches cover those */
+#define WM_BLOCK_SLOTS 20
+extern WmBlockPos g_worldBlockPositions[WM_BLOCK_SLOTS];
 extern WmBlockNode g_worldBlockTail; /* list tail */
 extern WmChunkSlot g_worldChunkTail;
 extern WmChunkSlot g_worldChunkHead;
