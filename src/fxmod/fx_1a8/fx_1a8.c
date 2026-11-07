@@ -195,7 +195,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        *args = 0x74;
+        *args = sizeof(Fx1a8Work80);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;

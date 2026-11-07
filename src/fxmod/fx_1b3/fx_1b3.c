@@ -59,7 +59,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 tint;
 
     if (mode == 0) {
-        *args = 0x264;
+        *args = sizeof(Fx1b3Work80);
     } else if (mode == 1) {
         s32 buf;
 
@@ -256,8 +256,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             emitter = work->emit80[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING_TRAILS), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails0;
-                work->emit80[3]->trailSlots = 0x24;
-                work->emit80[3]->trailStride = 0x6C;
+                work->emit80[3]->trailSlots = FX_DEATH1_LIGHTNING_TRAILS_TRAIL_SLOTS;
+                work->emit80[3]->trailStride = FX_DEATH1_LIGHTNING_TRAILS_TRAIL_STRIDE;
                 emitter = work->emit80[3];
                 if (emitter != NULL) {
                     emitter->otZ = 0x400;
@@ -387,8 +387,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             emitter = work->emit80[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_SCREEN_TRAIL_2), (s32)&work->pos118);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails1;
-                work->emit80[9]->trailSlots = 0x36;
-                work->emit80[9]->trailStride = 0xAC;
+                work->emit80[9]->trailSlots = FX_DEATH1_SCREEN_TRAIL_2_TRAIL_SLOTS;
+                work->emit80[9]->trailStride = FX_DEATH1_SCREEN_TRAIL_2_TRAIL_STRIDE;
             }
             work->rot130.vy = 0x800;
             work->rot128.vx = 0;
@@ -457,8 +457,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             emitter = work->emit80[15] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_SCREEN_TRAIL), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails1;
-                work->emit80[15]->trailSlots = 0x36;
-                work->emit80[15]->trailStride = 0xAC;
+                work->emit80[15]->trailSlots = FX_DEATH1_SCREEN_TRAIL_TRAIL_SLOTS;
+                work->emit80[15]->trailStride = FX_DEATH1_SCREEN_TRAIL_TRAIL_STRIDE;
             }
             work->rot148.vx = -0x600;
             work->rot148.vy = -0x400;
@@ -522,8 +522,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             emitter = work->emit80[24] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING_TRAILS_2), (s32)&work->pos100);
             if (emitter != NULL) {
                 emitter->trails = fx_1b3_op80Trails0;
-                work->emit80[24]->trailSlots = 0x24;
-                work->emit80[24]->trailStride = 0x6C;
+                work->emit80[24]->trailSlots = FX_DEATH1_LIGHTNING_TRAILS_2_TRAIL_SLOTS;
+                work->emit80[24]->trailStride = FX_DEATH1_LIGHTNING_TRAILS_2_TRAIL_STRIDE;
                 emitter = work->emit80[24];
                 if (emitter != NULL) {
                     emitter->otZ = 0x400;

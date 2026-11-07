@@ -29,6 +29,16 @@
 #define FX_DEATH1_SCREEN_TRAIL_2     0x3A /* emitter: orbiting screen trails (strip texture not resolved) + speck sprites; runtime (docs/runtime-findings.md effect-data pass 2): not fetched within 1000 frames of a forced cast (Zidane as the caster) (look pending) */
 #define FX_DEATH1_SCRATCH_BUF        0x93 /* summon data entry 0x13 (0x93 - 0x80): its address is the base of the module's trail and split-piece work buffers */
 
+/* fx_1b3 choreography (docs/fxdata.md, "Choreography literals"; partial: sizes, trails). */
+#define FX_DEATH1_LIGHTNING_TRAILS_TRAIL_SLOTS  0x24 /* FX_DEATH1_LIGHTNING_TRAILS's trail buffer: slots of */
+#define FX_DEATH1_LIGHTNING_TRAILS_TRAIL_STRIDE 0x6C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH1_SCREEN_TRAIL_2_TRAIL_SLOTS  0x36 /* FX_DEATH1_SCREEN_TRAIL_2's trail buffer: slots of */
+#define FX_DEATH1_SCREEN_TRAIL_2_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH1_SCREEN_TRAIL_TRAIL_SLOTS  0x36 /* FX_DEATH1_SCREEN_TRAIL's trail buffer: slots of */
+#define FX_DEATH1_SCREEN_TRAIL_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH1_LIGHTNING_TRAILS_2_TRAIL_SLOTS  0x24 /* FX_DEATH1_LIGHTNING_TRAILS_2's trail buffer: slots of */
+#define FX_DEATH1_LIGHTNING_TRAILS_2_TRAIL_STRIDE 0x6C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s16 velX0; /* velocity */
     s16 velY2;
