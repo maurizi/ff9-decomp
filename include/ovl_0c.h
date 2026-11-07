@@ -1369,6 +1369,8 @@ typedef struct {
     s16 count; /* frame count */
     s16 speed; /* speed */
 } WmClutAnim; /* 0xA */
+#define WM_CLUT_ANIM_COUNT 18 /* palette animations wm_initClutAnims sets up */
+#define WM_CLUT_ANIM_PACK_FIRST 15 /* from here on their colours come from WM_PACK_CLUT_ANIM, not from VRAM */
 extern WmClutAnim g_worldClutAnims[];
 extern s16 g_worldClutAnimAcc[];
 extern u8 g_worldClutAnimFrame[];

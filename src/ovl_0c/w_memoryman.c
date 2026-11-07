@@ -84,7 +84,7 @@ void wm_initClutAnims(void) {
     for (i = 7; i >= 0; i--) {
         g_worldTexScrollAcc[i] = 0;
     }
-    for (i = 0; i < 18; i++) {
+    for (i = 0; i < WM_CLUT_ANIM_COUNT; i++) {
         anim = &g_worldClutAnims[i];
         rect.x = anim->x + anim->start;
         rect.y = anim->y;
@@ -93,8 +93,8 @@ void wm_initClutAnims(void) {
         if (rect.w == 0) {
             rect.w = 1;
         }
-        if (i < 18) {
-            if (i >= 15) {
+        if (i < WM_CLUT_ANIM_COUNT) {
+            if (i >= WM_CLUT_ANIM_PACK_FIRST) {
                 dst = &g_worldClutBuf[0][off];
                 memcpy((u8 *)dst, (u8 *)w_framePackGetPtr(g_worldDataPack, WM_PACK_CLUT_ANIM) + src, (u16)anim->count * 2);
                 src += (u16)anim->count * 2;
