@@ -92,7 +92,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 otz = 0xFFF;
                 gte_ldv0(&quad[3]);
                 gte_rtps();
-                ex->btlfx_addPrim(0x09000000, otz, prim);
+                ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, prim);
                 gte_stsxy(&prim->x3);
                 prim++;
             }
@@ -389,28 +389,28 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     s32 zz9;
 
     if (mode == 0) {
-        init->workSize = 0xE8;
-        init->elemSize = 0x28;
+        init->workSize = sizeof(Fx0fb1Op80Work);
+        init->elemSize = sizeof(Fx0fb1Rock);
         init->elemFn = (s32)fx_0fb_1_op80PoolTask;
-        init->poolCount = 0x30;
+        init->poolCount = FX_MADEEN_ROCK_COUNT;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
         fx_0fb_1_env = env;
-        ex->btlfx_initEffModels(((Fx0fb1Summon *)env->loader)->effModels38, 0x1F);
+        ex->btlfx_initEffModels(((Fx0fb1Summon *)env->loader)->effModels38, FX_MADEEN_MODEL_SLOTS);
         for (i = 0; i < 2; i++) {
             work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0fb_1_modelBlocks[i]),
                                                         0x9A, 0x3E00, 0, 0);
         }
-        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_PINK_CLOUD_BALL), 0x96, 0x3D40, 0, 0);
-        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LEAF_MOUND), 0x9A, 0x3E00, 0, 0);
-        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_BANDS), 0xBD, 0x3E40, 0, 0);
-        work->modelAC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_SPHERE_2), 0xBD, 0x3E40, 0, 0);
-        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_SPHERE), 0xBD, 0x3E40, 0, 0);
-        work->modelB4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_ARCH), 0xBD, 0x3EC0, 0, 0x80);
-        work->modelB8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_Y_FRAME), 0x3D, 0x3E81, 0, 0x80);
-        work->modelBC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LOOP_RIBBON), 0x138, 0xFFFF, 0, 0x80);
-        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_SWIRL_DISC), 0x3A, 0x3D0A, 0, 0x80);
+        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_PINK_CLOUD_BALL), FX_MADEEN_PINK_CLOUD_BALL_TPAGE, FX_MADEEN_PINK_CLOUD_BALL_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V);
+        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LEAF_MOUND), FX_MADEEN_LEAF_MOUND_TPAGE, FX_MADEEN_LEAF_MOUND_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V);
+        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_BANDS), FX_MADEEN_RAINBOW_TPAGE, FX_MADEEN_RAINBOW_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V);
+        work->modelAC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_SPHERE_2), FX_MADEEN_RAINBOW_TPAGE, FX_MADEEN_RAINBOW_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V);
+        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_SPHERE), FX_MADEEN_RAINBOW_TPAGE, FX_MADEEN_RAINBOW_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V);
+        work->modelB4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_RAINBOW_ARCH), FX_MADEEN_RAINBOW_TPAGE, FX_MADEEN_RAINBOW_ARCH_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V2);
+        work->modelB8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_Y_FRAME), FX_MADEEN_Y_FRAME_TPAGE, FX_MADEEN_Y_FRAME_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V2);
+        work->modelBC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_LOOP_RIBBON), FX_MADEEN_LOOP_RIBBON_TPAGE, FX_MADEEN_LOOP_RIBBON_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V2);
+        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MADEEN_BLUE_SWIRL_DISC), FX_MADEEN_BLUE_SWIRL_DISC_TPAGE, FX_MADEEN_BLUE_SWIRL_DISC_CLUT, FX_MADEEN_MODEL_U, FX_MADEEN_MODEL_V2);
         work->centerC.vy = -0x1000;
         work->centerC.vx = 0;
         work->rot8C.vz = 0;
@@ -1039,7 +1039,7 @@ s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 radius;
 
     if (mode == 0) {
-        *args = 0x1A8;
+        *args = sizeof(Fx0fb1Work81);
     } else if (mode == 1) {
         fx_0fb_1_env = env;
         work->unitCount1A0 = env->targets->targetCount;
@@ -1109,7 +1109,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
     BtlUnitList *units;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx0fb1Work82);
     } else if (mode == 1) {
         units = env->targets;
         target = *args;
@@ -1138,7 +1138,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot1C.vy += work->spinY16;
             work->rot1C.vz += work->spinZ18;
             ex->btlfx_setUnitRot(work->unit2C, (s16 *)&work->rot1C);
-            if (frame >= 0x10) {
+            if (frame >= FX_MADEEN_RETURN_FRAMES) {
                 ex->btlfx_setUnitRot(work->unit2C, (s16 *)&work->rotC);
                 ex->btlfx_getUnitHomePos(work->unit2C, (s16 *)&unitPos);
                 ex->btlfx_setUnitPos(work->unit2C, (s16 *)&unitPos);
