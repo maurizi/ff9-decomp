@@ -5,12 +5,12 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx103Work);
     } else if (mode == 1) {
-        work->pos8.vx = env->targets->centerX + 0x1F4;
+        work->pos8.vx = env->targets->centerX + FX_MIST_SPREAD;
         work->pos8.vy = 0;
         work->pos8.vz = env->targets->centerZ;
-        work->pos0.vx = env->targets->centerX - 0x1F4;
+        work->pos0.vx = env->targets->centerX - FX_MIST_SPREAD;
         work->pos0.vy = 0;
         work->pos0.vz = env->targets->centerZ;
         work->pos30.vx = env->targets->centerX;
@@ -49,10 +49,10 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit3C->rot.vy = work->rot28.vy;
             work->emit3C->rot.vz = work->rot28.vz;
         }
-        if (frame == 0x10) {
+        if (frame == FX_MIST_SWIRL_FRAME) {
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIST_SWIRL), (s32)&work->pos30);
         }
-        return frame >= 0x50;
+        return frame >= FX_MIST_FRAMES;
     }
     return 0;
 }

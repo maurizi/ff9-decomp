@@ -9,10 +9,10 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 rgb;
 
     if (mode == 0) {
-        *args = 0xA4;
+        *args = sizeof(Fx110Work80);
     } else if (mode == 1) {
         fx_110_env = env;
-        ex->btlfx_initEffModels(fx_110_effModels, 2);
+        ex->btlfx_initEffModels(fx_110_effModels, FX_THROW_MODEL_SLOTS);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos10);
@@ -25,10 +25,10 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos20.vy = work->pos10.vy;
         work->pos20.vz = work->pos10.vz;
         work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_THROW_DAGGER), 1);
-        work->modelA2 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_THROW_DAGGER_AFTERIMAGE), 0x97, 0x3D40, 0, 0);
+        work->modelA2 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_THROW_DAGGER_AFTERIMAGE), FX_THROW_AFTERIMAGE_TPAGE, FX_THROW_AFTERIMAGE_CLUT, FX_THROW_AFTERIMAGE_U, FX_THROW_AFTERIMAGE_V);
     } else {
         frame = entry->frame;
-        if (frame < 0xA) {
+        if (frame < FX_THROW_PATH_FRAMES) {
             t = frame << 9;
             ex->btlfx_lerpVec((s16 *)&work->pos0, (s16 *)&work->pos8, t, (s16 *)&pos);
             work->pos20.vx = pos.vx;
@@ -37,9 +37,9 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->math_sin(t >> 1);
         }
         ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->modelA0);
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_THROW_AFTERIMAGES; i++) {
             if (frame >= i + 1) {
-                rgb = -(i * 20);
+                rgb = -(i * FX_THROW_AFTERIMAGE_DIM);
                 ex->Hi_DrawEffModel(&work->rot40[i], &work->pos60[i], (s32)&work->scale30, work->modelA2);
                 ex->Hi_ModifyEffModelAbr(work->modelA2, BTLFX_ABR_QUARTER);
                 ex->Hi_ModifyEffModelRGB(work->modelA2, rgb, rgb, rgb);
@@ -69,7 +69,7 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos60[0].vx = work->pos20.vx;
         work->pos60[0].vy = work->pos20.vy;
         work->pos60[0].vz = work->pos20.vz;
-        if (frame >= 8) {
+        if (frame >= FX_THROW_FLIGHT_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -81,7 +81,7 @@ s32 fx_110_op81(s32 mode, Fx110Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx110Work81);
     } else if (mode == 1) {
         fx_110_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
@@ -90,7 +90,7 @@ s32 fx_110_op81(s32 mode, Fx110Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_THROW_IMPACT_FRAMES;
     }
     return 0;
 }

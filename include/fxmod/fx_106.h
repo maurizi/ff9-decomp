@@ -13,6 +13,20 @@
 #define FX_MUCUS_YELLOW_RINGS   0x4 /* emitter: yellow-green gouraud rings */
 #define FX_MUCUS_SPLASH_STREAK  0x5 /* emitter: white streaky splash screen trail */
 
+/* fx_106 choreography (docs/fxdata.md, "Choreography literals"): the slime arc of op80's particle callback, the
+ * trail buffers and the ops' lengths. */
+#define FX_MUCUS_ARC_START_FRAME     4    /* fx_106_op80ParticleMotion: the blobs fly from the caster's mouth to the target from this frame (over 16: << 8) */
+#define FX_MUCUS_ARC_HEIGHT          200  /* the arc's peak height */
+#define FX_MUCUS_SLIME_TRAIL_SLOTS   0x23 /* SLIME_BLOBS' trail buffer (fx_106_op80Trails): slots */
+#define FX_MUCUS_SLIME_TRAIL_STRIDE  0x20 /* bytes per slot */
+#define FX_MUCUS_SPIT_FRAMES         0x28 /* op80's length */
+#define FX_MUCUS_BUBBLE_TRAIL_SLOTS  0x33 /* op81: BUBBLE_TRAIL_2's trail buffer (fx_106_op81Trails0): slots */
+#define FX_MUCUS_BUBBLE_TRAIL_STRIDE 0x20 /* bytes per slot */
+#define FX_MUCUS_SPLASH_FRAME        4    /* SPLASH_STREAK starts at the target */
+#define FX_MUCUS_SPLASH_TRAIL_SLOTS  0x1E /* its trail buffer (fx_106_op81Trails1): slots */
+#define FX_MUCUS_SPLASH_TRAIL_STRIDE 0x70 /* bytes per slot */
+#define FX_MUCUS_HIT_FRAMES          0x28 /* op81's length */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -20,7 +34,7 @@ typedef struct {
     SVECTOR pos10; /* target body position */
     SVECTOR pos18;
     SVECTOR pos20;
-} Fx106Work80;
+} Fx106Work80; /* 0x28 */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -28,7 +42,7 @@ typedef struct {
     Pool6CEntry *emit8;
     SVECTOR posC; /* target position */
     SVECTOR pos14;
-} Fx106Work81;
+} Fx106Work81; /* 0x1C */
 
 /* effect file header as the particle path callback sees it */
 typedef struct {
