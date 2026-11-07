@@ -37,6 +37,41 @@
 #define FX_LV4_HOLY_WHITE_GLOW 0x25 /* particles: soft white round glow, as Holy's; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_LV4_HOLY_FLASH_RINGS     0x27 /* emitter: white-yellow and white-grey gouraud rings */
 
+/* fx_081 choreography (docs/fxdata.md, "Choreography literals"): op80's and op81's states and keyframes, the
+ * lead particle's camera, the model textures. */
+#define FX_LV4_HOLY_STATE_GATHER 0 /* op80: the ring stack round the lead particle shrinks in, after a white flash */
+#define FX_LV4_HOLY_STATE_FADE   1 /* the rings fade as the sphere glow rises */
+#define FX_LV4_HOLY_STATE_RAYS   2 /* FX_LV4_HOLY_VIOLET_RAYS and a blue flash, then the op ends */
+#define FX_LV4_HOLY_GATHER_FRAMES 0x16 /* FX_LV4_HOLY_STATE_GATHER's length (the (frame << 12) / N ramp) */
+#define FX_LV4_HOLY_FLASH_FRAMES  4    /* FX_LV4_HOLY_STATE_GATHER: the white screen flash fades over this many frames */
+#define FX_LV4_HOLY_FADE_FRAMES   0x14 /* FX_LV4_HOLY_STATE_FADE's length (the (frame << 12) / N ramp) */
+#define FX_LV4_HOLY_RAYS_FRAME    0x13 /* FX_LV4_HOLY_STATE_RAYS: the rays and flash start */
+#define FX_LV4_HOLY_RAYS_FRAMES   0x16 /* FX_LV4_HOLY_STATE_RAYS's length (the op ends) */
+#define FX_LV4_HOLY_LEAD_CAM_FRAMES 0x1D /* camera point 3 follows the lead particle (slot 1) this many frames, then */
+#define FX_LV4_HOLY_CAM_PAN_FRAMES  0x20 /* pans to fx_081_camEndPos over this many (the ramp is elapsed << 5) */
+#define FX_LV4_HOLY_TRAIL_FADE_FRAMES 4  /* a particle's trail fades out over its last this many frames */
+#define FX_LV4_HOLY_MODEL_COUNT  3     /* btlfx_initEffModels slots */
+#define FX_LV4_HOLY_STREAKS_TRAIL_SLOTS  0x10  /* emit2C's trail buffer fx_081_trails: slots of */
+#define FX_LV4_HOLY_STREAKS_TRAIL_STRIDE 0x184 /* this many bytes */
+#define FX_LV4_HOLY_SPHERE_TPAGE 0x137  /* FX_LV4_HOLY_LIGHT_SPHERE: 15-bit page (0x1C0, 0x100), abr 1 */
+#define FX_LV4_HOLY_SPHERE_CLUT  0xFFFF /* none (15-bit page) */
+#define FX_LV4_HOLY_SPHERE_V     0x80
+#define FX_LV4_HOLY_ARCH_TPAGE   0xB9   /* FX_LV4_HOLY_RAINBOW_ARCH: 8-bit page (0x240, 0x100), abr 1 */
+#define FX_LV4_HOLY_ARCH_CLUT    0x3E00 /* CLUT (0, 0xF8) */
+#define FX_LV4_HOLY_ARCH_U       0x80
+#define FX_LV4_HOLY_OP81_STATE_FLARE 0 /* op81: lilac rings and the lens flare grow at the target */
+#define FX_LV4_HOLY_OP81_STATE_ARCH  1 /* the rainbow arch, rings and blue tints; a darkening tint at its end */
+#define FX_LV4_HOLY_OP81_STATE_ORBIT 2 /* sparkles orbit above the targets, white glow rings */
+#define FX_LV4_HOLY_OP81_STATE_END   3 /* wait, then the op ends */
+#define FX_LV4_HOLY_FLARE_FRAMES 7    /* FX_LV4_HOLY_OP81_STATE_FLARE's length (the (frame << 12) / N ramp) */
+#define FX_LV4_HOLY_ARCH_FRAMES  7    /* FX_LV4_HOLY_OP81_STATE_ARCH's length (the (frame << 12) / N ramp) */
+#define FX_LV4_HOLY_ORBIT_FRAMES 0x20 /* FX_LV4_HOLY_OP81_STATE_ORBIT's length */
+#define FX_LV4_HOLY_END_FRAMES   15   /* FX_LV4_HOLY_OP81_STATE_END's length */
+#define FX_LV4_HOLY_ORBIT_HEIGHT 0x200 /* the orbit centre is this far above the targets' centre */
+#define FX_LV4_HOLY_ORBIT_SPARKLES 12  /* sparkles per orbit ring */
+#define FX_LV4_HOLY_GLOW_RINGS   10    /* white glow rings (fx_081_ringCounts) */
+#define FX_LV4_HOLY_DARKEN_RGB   0xFF, 0xFF, 0 /* subtractive screen tint as the arch ends */
+
 extern Unk800F78A4 *fx_081_env;
 extern SVECTOR fx_081_camEndPos;
 extern SVECTOR fx_081_leadPos;
@@ -80,7 +115,7 @@ typedef struct {
     s32 model28; /* model */
 } Fx081Work81; /* 0x2C */
 
-extern s16 fx_081_ringCounts[10]; /* ring point counts */
+extern s16 fx_081_ringCounts[FX_LV4_HOLY_GLOW_RINGS]; /* ring point counts */
 s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

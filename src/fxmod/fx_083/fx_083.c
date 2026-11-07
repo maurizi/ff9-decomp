@@ -16,8 +16,8 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx083Work);
     } else if (mode == 1) {
         fx_083_env = env;
-        ex->btlfx_initEffModels(fx_083_effModels, 0x14);
-        for (i = 9; i >= 0; i--) {
+        ex->btlfx_initEffModels(fx_083_effModels, FX_SCAN_MODEL_COUNT);
+        for (i = FX_SCAN_TIMERS - 1; i >= 0; i--) {
             work->timers0[i] = 0;
         }
         tex[0] = tex[2] = 0xF8;
@@ -27,20 +27,20 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         tex[6] = 0;
         tex[5] = 0x80;
         tex[7] = 0;
-        for (i = 0; i < 4; i++) {
-            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SCAN_METAL_SPHERE), 0xFA, 0x3DC0,
-                                                        0x80, 0x80);
+        for (i = 0; i < FX_SCAN_RINGS; i++) {
+            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SCAN_METAL_SPHERE), FX_SCAN_SPHERE_TPAGE, FX_SCAN_SPHERE_CLUT,
+                                                        FX_SCAN_SPHERE_U, FX_SCAN_SPHERE_V);
             work->ringRot38[i].vy = i << 10;
             work->ringRot38[i].vx = 0x100;
             work->ringRot38[i].vz = 0;
             ex->btlfx_getUnitPos(0, (s16 *)&work->emitStartPos180[i]);
         }
-        work->ringScale98.vx = 0x333;
-        work->ringScale98.vy = 0x333;
-        work->ringScale98.vz = 0x333;
-        for (i = 0; i < 5; i++) {
-            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SCAN_RED_BAND), 0xB8, 0x3D40,
-                                                        0xC0, 0);
+        work->ringScale98.vx = FX_SCAN_RING_SCALE;
+        work->ringScale98.vy = FX_SCAN_RING_SCALE;
+        work->ringScale98.vz = FX_SCAN_RING_SCALE;
+        for (i = 0; i < FX_SCAN_PILLARS; i++) {
+            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SCAN_RED_BAND), FX_SCAN_BAND_TPAGE, FX_SCAN_BAND_CLUT,
+                                                        FX_SCAN_BAND_U, 0);
             work->pillarOnC4[i] = 0;
             work->pillarFadeD8[i] = -1;
         }
@@ -70,26 +70,26 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x0:
-            work->timers0[2] = 0x50;
-            work->timers0[0] = 0x10;
+            work->timers0[FX_SCAN_T_RINGS] = FX_SCAN_RINGS_FRAMES;
+            work->timers0[FX_SCAN_T_RINGS_OPEN] = FX_SCAN_RINGS_OPEN_FRAMES;
             break;
-        case 0x8:
-            work->timers0[6] = 0x3C;
-            work->fade13C = 0x10;
+        case FX_SCAN_PILLARS_FRAME:
+            work->timers0[FX_SCAN_T_PILLARS] = FX_SCAN_PILLARS_FRAMES;
+            work->fade13C = FX_SCAN_PILLAR_FADE_IN_FRAMES;
             break;
-        case 0x10:
-            work->timers0[4] = 8;
+        case FX_SCAN_GLYPH_ANIM_FRAME:
+            work->timers0[FX_SCAN_T_GLYPH_ANIM] = FX_SCAN_GLYPH_ANIM_FRAMES;
             break;
-        case 0x14:
-            work->timers0[3] = 0x20;
-            work->timers0[7] = 0x20;
+        case FX_SCAN_DESCEND_FRAME:
+            work->timers0[FX_SCAN_T_DESCEND] = FX_SCAN_DESCEND_FRAMES;
+            work->timers0[FX_SCAN_T_PILLAR_SPAWN] = FX_SCAN_DESCEND_FRAMES;
             work->emit170[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[0]);
             work->emit170[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[1]);
             work->emit170[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[2]);
             work->emit170[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[3]);
-            work->timers0[8] = 0x30;
+            work->timers0[FX_SCAN_T_GLYPHS] = FX_SCAN_GLYPHS_FRAMES;
             break;
-        case 0x30:
+        case FX_SCAN_ORBS_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_ORB_TILES), (s32)&work->pos160);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
@@ -103,44 +103,44 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
             break;
-        case 0x34:
-            work->timers0[1] = 0x10;
+        case FX_SCAN_CLOSE_FRAME:
+            work->timers0[FX_SCAN_T_RINGS_CLOSE] = FX_SCAN_RINGS_OPEN_FRAMES;
             break;
-        case 0x37:
-            work->pillarFadeD8[4] = 8;
+        case FX_SCAN_PILLAR_FADE_FRAME:
+            work->pillarFadeD8[4] = FX_SCAN_PILLAR_FADE_FRAMES;
             break;
-        case 0x38:
-            work->pillarFadeD8[3] = 8;
+        case FX_SCAN_PILLAR_FADE_FRAME + 1:
+            work->pillarFadeD8[3] = FX_SCAN_PILLAR_FADE_FRAMES;
             break;
-        case 0x39:
-            work->pillarFadeD8[2] = 8;
+        case FX_SCAN_PILLAR_FADE_FRAME + 2:
+            work->pillarFadeD8[2] = FX_SCAN_PILLAR_FADE_FRAMES;
             break;
-        case 0x3A:
-            work->pillarFadeD8[1] = 8;
+        case FX_SCAN_PILLAR_FADE_FRAME + 3:
+            work->pillarFadeD8[1] = FX_SCAN_PILLAR_FADE_FRAMES;
             break;
-        case 0x3B:
-            work->pillarFadeD8[0] = 8;
+        case FX_SCAN_PILLAR_FADE_FRAME + 4:
+            work->pillarFadeD8[0] = FX_SCAN_PILLAR_FADE_FRAMES;
             break;
         }
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_SCAN_RINGS; i++) {
             work->ringRot38[i].vy += 0x40;
         }
         work->orbit1C0 += 0x10;
-        if (work->timers0[3] != 0) {
-            work->timers0[3]--;
-            work->ringHeightAC = ex->btlfx_lerp(work->pos160.vy, work->center158.vy, work->timers0[3] << 7);
+        if (work->timers0[FX_SCAN_T_DESCEND] != 0) {
+            work->timers0[FX_SCAN_T_DESCEND]--;
+            work->ringHeightAC = ex->btlfx_lerp(work->pos160.vy, work->center158.vy, work->timers0[FX_SCAN_T_DESCEND] << 7);
         }
-        if (work->timers0[0] != 0) {
-            work->timers0[0]--;
-            work->ringOffsetA8 = 0x1000 - ((ex->math_sin((0x10 - work->timers0[0]) << 6) << 12) >> 12);
+        if (work->timers0[FX_SCAN_T_RINGS_OPEN] != 0) {
+            work->timers0[FX_SCAN_T_RINGS_OPEN]--;
+            work->ringOffsetA8 = 0x1000 - ((ex->math_sin((FX_SCAN_RINGS_OPEN_FRAMES - work->timers0[FX_SCAN_T_RINGS_OPEN]) << 6) << 12) >> 12);
         }
-        if (work->timers0[1] != 0) {
-            work->timers0[1]--;
-            work->ringOffsetA8 = 0x1000 - ((ex->math_sin(work->timers0[1] << 6) << 12) >> 12);
+        if (work->timers0[FX_SCAN_T_RINGS_CLOSE] != 0) {
+            work->timers0[FX_SCAN_T_RINGS_CLOSE]--;
+            work->ringOffsetA8 = 0x1000 - ((ex->math_sin(work->timers0[FX_SCAN_T_RINGS_CLOSE] << 6) << 12) >> 12);
         }
-        if (work->timers0[2] != 0) {
-            work->timers0[2]--;
-            for (i = 0; i < 4; i++) {
+        if (work->timers0[FX_SCAN_T_RINGS] != 0) {
+            work->timers0[FX_SCAN_T_RINGS]--;
+            for (i = 0; i < FX_SCAN_RINGS; i++) {
                 work->ringPos58[i].vx =
                     work->center158.vx + ((ex->math_sin(work->ringRot38[i].vy) * (work->radius168 + work->ringOffsetA8)) >> 12);
                 work->ringPos58[i].vz =
@@ -155,9 +155,9 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->pointRots[0].vy = work->ringRot38[0].vy;
             env->camera->pointRots[0].vz = 0;
         }
-        if (work->timers0[8] != 0) {
-            work->timers0[8]--;
-            for (i = 0; i < 4; i++) {
+        if (work->timers0[FX_SCAN_T_GLYPHS] != 0) {
+            work->timers0[FX_SCAN_T_GLYPHS]--;
+            for (i = 0; i < FX_SCAN_RINGS; i++) {
                 ang = i << 10;
                 work->emitPos1A0[i].vx = work->center158.vx + ((ex->math_sin(ang + work->orbit1C0) *
                                                          (work->radius168 + work->ringOffsetA8 + 0x200)) >> 12);
@@ -170,33 +170,33 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_moveEmitterTo((s32)work->emit170[i], (s32)&work->emitPos1A0[i]);
             }
         }
-        if (work->timers0[4] != 0) {
-            work->timers0[4]--;
-            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, fx_083_texAnimSrc1[work->timers0[4] >> 1].x0,
-                              fx_083_texAnimSrc1[work->timers0[4] >> 1].y4);
+        if (work->timers0[FX_SCAN_T_GLYPH_ANIM] != 0) {
+            work->timers0[FX_SCAN_T_GLYPH_ANIM]--;
+            ex->btlfx_drawScrollMove(0, FX_SCAN_GLYPH_VRAM_X, FX_SCAN_GLYPH_VRAM_Y, FX_SCAN_GLYPH_VRAM_W, FX_SCAN_GLYPH_VRAM_H, fx_083_texAnimSrc1[work->timers0[FX_SCAN_T_GLYPH_ANIM] >> 1].x0,
+                              fx_083_texAnimSrc1[work->timers0[FX_SCAN_T_GLYPH_ANIM] >> 1].y4);
         }
-        if (work->timers0[5] != 0) {
-            work->timers0[5]--;
-            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, fx_083_texAnimSrc2[work->timers0[5]].x0, fx_083_texAnimSrc2[work->timers0[5]].y4);
+        if (work->timers0[FX_SCAN_T_GLYPH_FLICKER] != 0) {
+            work->timers0[FX_SCAN_T_GLYPH_FLICKER]--;
+            ex->btlfx_drawScrollMove(0, FX_SCAN_GLYPH_VRAM_X, FX_SCAN_GLYPH_VRAM_Y, FX_SCAN_GLYPH_VRAM_W, FX_SCAN_GLYPH_VRAM_H, fx_083_texAnimSrc2[work->timers0[FX_SCAN_T_GLYPH_FLICKER]].x0, fx_083_texAnimSrc2[work->timers0[FX_SCAN_T_GLYPH_FLICKER]].y4);
         } else if (frame >= 0x15 && !(ex->btlfx_rand() & 7)) {
-            work->timers0[5] = 4;
+            work->timers0[FX_SCAN_T_GLYPH_FLICKER] = FX_SCAN_FLICKER_FRAMES;
         }
-        if (work->timers0[7] != 0) {
+        if (work->timers0[FX_SCAN_T_PILLAR_SPAWN] != 0) {
             work->pillarPosEC[0].vy = work->ringHeightAC;
-            if (!(work->timers0[7] & 7) && (pillar = work->timers0[7] >> 3) > 0) {
+            if (!(work->timers0[FX_SCAN_T_PILLAR_SPAWN] & 7) && (pillar = work->timers0[FX_SCAN_T_PILLAR_SPAWN] >> 3) > 0) {
                 work->pillarOnC4[pillar] = 1;
                 work->pillarPosEC[pillar].vx = work->pillarPosEC[0].vx;
                 work->pillarPosEC[pillar].vy = work->pillarPosEC[0].vy;
                 work->pillarPosEC[pillar].vz = work->pillarPosEC[0].vz;
             }
-            work->timers0[7]--;
+            work->timers0[FX_SCAN_T_PILLAR_SPAWN]--;
         }
-        if (work->timers0[6] != 0) {
-            work->timers0[6]--;
+        if (work->timers0[FX_SCAN_T_PILLARS] != 0) {
+            work->timers0[FX_SCAN_T_PILLARS]--;
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->center158, (s16 *)&work->rot140);
             work->rot140.vx = 0;
             work->rot140.vz = 0;
-            for (i = 0; i < 5; i++) {
+            for (i = 0; i < FX_SCAN_PILLARS; i++) {
                 if (work->pillarOnC4[i] != 0) {
                     ex->Hi_DrawEffModel(&work->rot140, &work->pillarPosEC[i], (s32)&work->pillarScale148, work->modelB0[i]);
                     if (work->pillarFadeD8[i] > 0) {
@@ -215,10 +215,10 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (frame >= 0x5C) {
+        if (frame >= FX_SCAN_FRAMES) {
             return 1;
         }
-        ex->btlfx_drawScrollMove(0x2710 - frame * 4, 0x260, 0x100, 0x20, 0xF0, 0x240, 0x100);
+        ex->btlfx_drawScrollMove(0x2710 - frame * 4, FX_SCAN_BAND_VRAM_X, FX_SCAN_BAND_VRAM_Y, FX_SCAN_BAND_VRAM_W, FX_SCAN_BAND_VRAM_H, FX_SCAN_BAND_SRC_X, FX_SCAN_BAND_SRC_Y);
     }
     return 0;
 }

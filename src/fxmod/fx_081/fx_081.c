@@ -14,10 +14,10 @@ static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *po
     if (frame == 0) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TRAIL), (s32)pos, NULL, -1, 0, 0, BTLFX_ABR_HALF, (u8 *)trail, 0);
     }
-    if (frame < n - 4) {
+    if (frame < n - FX_LV4_HOLY_TRAIL_FADE_FRAMES) {
         fade = 0x1000;
     } else {
-        fade = 0x1000 - (((frame - (n - 4)) << 12) >> 2);
+        fade = 0x1000 - (((frame - (n - FX_LV4_HOLY_TRAIL_FADE_FRAMES)) << 12) >> 2);
     }
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_TRAIL), (s32)pos, (s32 *)owner->origin, frame,
                       0x1C00 - (frame << 12) / n, fade, BTLFX_ABR_ADD, (u8 *)trail, 1);
@@ -26,14 +26,14 @@ static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *po
             ex->btlfx_moveEmitterTo(fx_081_emitter0, (s32)pos);
         }
         BTLFX_COPY_SVEC(&fx_081_leadPos, pos);
-        if (frame < 0x1D) {
+        if (frame < FX_LV4_HOLY_LEAD_CAM_FRAMES) {
             env->camera->points[3].vx = pos->vx;
             env->camera->points[3].vy = pos->vy;
             env->camera->points[3].vz = pos->vz;
             return;
         }
-        elapsed = frame - 0x1D;
-        if (elapsed < 0x20) {
+        elapsed = frame - FX_LV4_HOLY_LEAD_CAM_FRAMES;
+        if (elapsed < FX_LV4_HOLY_CAM_PAN_FRAMES) {
             ex->btlfx_lerpVec((s16 *)pos, (s16 *)&fx_081_camEndPos, 0x1000 - ex->math_cos(elapsed << 5), (s16 *)&camPos);
         } else {
             BTLFX_COPY_SVEC(&camPos, &fx_081_camEndPos);
@@ -68,7 +68,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos10.vx = 0;
         work->pos10.vy = 0;
         work->pos10.vz = 0;
-        work->state0 = 0;
+        work->state0 = FX_LV4_HOLY_STATE_GATHER;
         work->frame4 = 0;
         BTLFX_COPY_SVEC(&fx_081_camEndPos, &work->pos10);
         work->modelPos18.vx = work->pos10.vx;
@@ -80,8 +80,8 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit2C->otZ = 0x18;
             if (work->emit2C != NULL) {
                 work->emit2C->trails = (s32)fx_081_trails;
-                work->emit2C->trailSlots = 0x10;
-                work->emit2C->trailStride = 0x184;
+                work->emit2C->trailSlots = FX_LV4_HOLY_STREAKS_TRAIL_SLOTS;
+                work->emit2C->trailStride = FX_LV4_HOLY_STREAKS_TRAIL_STRIDE;
                 if (work->emit2C != NULL) {
                     work->emit2C->elems->draw = fx_081_op80ElemDraw;
                 }
@@ -95,18 +95,18 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit34 != NULL) {
             work->emit34->otZ = 0x10;
         }
-        ex->btlfx_initEffModels(fx_081_effModels, 3);
-        work->model8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LIGHT_SPHERE), 0x137,
-                                                0xFFFF, 0,
-                                                0x80);
+        ex->btlfx_initEffModels(fx_081_effModels, FX_LV4_HOLY_MODEL_COUNT);
+        work->model8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LIGHT_SPHERE), FX_LV4_HOLY_SPHERE_TPAGE,
+                                                FX_LV4_HOLY_SPHERE_CLUT, 0,
+                                                FX_LV4_HOLY_SPHERE_V);
         work->modelC = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_GLOW_BAND));
     } else {
         frame = entry->frame;
         sc = alpha = 0;
         switch (work->state0) {
-        case 0:
+        case FX_LV4_HOLY_STATE_GATHER:
             alpha = 0x1000;
-            t = (frame << 12) / 22;
+            t = (frame << 12) / FX_LV4_HOLY_GATHER_FRAMES;
             if (work->emit2C != NULL && work->emit2C->state == BTLFX_EMIT_DONE) {
                 work->emit2C = NULL;
             }
@@ -126,17 +126,17 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit34->alpha = 0x1000;
             }
             sc = (((0x1000 - t) * 3) >> 1) + 0x1000;
-            if (frame < 4) {
-                tint = 0xFF - frame * 0xFF / 4;
+            if (frame < FX_LV4_HOLY_FLASH_FRAMES) {
+                tint = 0xFF - frame * 0xFF / FX_LV4_HOLY_FLASH_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint >> 1, tint, tint);
             }
-            if (frame >= 0x16) {
-                work->state0 = 1;
+            if (frame >= FX_LV4_HOLY_GATHER_FRAMES) {
+                work->state0 = FX_LV4_HOLY_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 20;
+        case FX_LV4_HOLY_STATE_FADE:
+            t = (frame << 12) / FX_LV4_HOLY_FADE_FRAMES;
             alpha = 0x1000 - t;
             sc = 0x1000;
             fx_081_glow = t;
@@ -158,15 +158,15 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emit34 != NULL) {
                 work->emit34->alpha = alpha;
             }
-            if (frame >= 0x14) {
-                work->state0 = 2;
+            if (frame >= FX_LV4_HOLY_FADE_FRAMES) {
+                work->state0 = FX_LV4_HOLY_STATE_RAYS;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit30);
                 ex->btlfx_stopEmitter(work->emit34);
                 fx_081_emitter0 = NULL;
             }
             break;
-        case 2:
+        case FX_LV4_HOLY_STATE_RAYS:
             fx_081_glow = 0x1000;
             if (work->emit2C != NULL) {
                 if (work->emit2C->state == BTLFX_EMIT_DONE) {
@@ -176,14 +176,14 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit2C->alpha = fx_081_glow;
                 }
             }
-            if (frame == 0x13) {
+            if (frame == FX_LV4_HOLY_RAYS_FRAME) {
                 fx_081_emitter1 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_VIOLET_RAYS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, 0x80, 0xFF);
             }
-            if (frame >= 0x16) {
+            if (frame >= FX_LV4_HOLY_RAYS_FRAMES) {
                 ex->btlfx_stopEmitter(work->emit2C);
                 return 1;
             }
@@ -275,7 +275,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = sizeof(Fx081Work81);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_LV4_HOLY_OP81_STATE_FLARE;
         work->frame4 = 0;
         work->otZ8 = 0x46;
         work->posC.vx = 0;
@@ -289,12 +289,12 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_LV4_HOLY_OP81_STATE_FLARE:
             rot.vx = 0;
             rot.vy = 0;
             rot.pad = 0;
             rot.vz = 0x400;
-            t = (frame << 12) / 7;
+            t = (frame << 12) / FX_LV4_HOLY_FLARE_FRAMES;
             fade = ex->math_sin(t >> 2);
             env->otZ = work->otZ8 + 0x40;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LILAC_RING), &work->posC, NULL, 0x13000, frame, BTLFX_ABR_ADD, fade);
@@ -303,21 +303,21 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->otZ = 0;
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LENS_FLARE_LINE), &work->posC, work->frame4,
                               ex->math_sin(t >> 2));
-            if (frame >= 7) {
-                work->state0 = 1;
+            if (frame >= FX_LV4_HOLY_FLARE_FRAMES) {
+                work->state0 = FX_LV4_HOLY_OP81_STATE_ARCH;
                 entry->frame = -1;
-                work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_RAINBOW_ARCH), 0xB9,
-                                                         0x3E00, 0x80, 0);
+                work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_RAINBOW_ARCH), FX_LV4_HOLY_ARCH_TPAGE,
+                                                         FX_LV4_HOLY_ARCH_CLUT, FX_LV4_HOLY_ARCH_U, 0);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, 0, 0xFF);
             }
             break;
-        case 1:
+        case FX_LV4_HOLY_OP81_STATE_ARCH:
             rot.vx = 0;
             rot.vy = 0;
             rot.pad = 0;
             rot.vz = 0x400;
             env->otZ = work->otZ8 + 0x40;
-            t = (frame << 12) / 7;
+            t = (frame << 12) / FX_LV4_HOLY_ARCH_FRAMES;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_WHITE_VIOLET_RINGS), &work->posC, &rot, 0x3000, frame, BTLFX_ABR_ADD,
                               0x1000);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LILAC_RING), &work->posC, NULL, t + 0x13000, frame, BTLFX_ABR_ADD,
@@ -327,13 +327,13 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->otZ = 0;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, 0, 0x80);
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LENS_FLARE_LINE), &work->posC, work->frame4, 0x1000);
-            if (frame >= 7) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0xFF, 0xFF, 0);
-                work->state0 = 2;
+            if (frame >= FX_LV4_HOLY_ARCH_FRAMES) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_LV4_HOLY_DARKEN_RGB);
+                work->state0 = FX_LV4_HOLY_OP81_STATE_ORBIT;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(fx_081_emitter1);
                 BTLFX_COPY_SVEC(&work->posC, &env->targets->centerX);
-                work->posC.vy -= 0x200;
+                work->posC.vy -= FX_LV4_HOLY_ORBIT_HEIGHT;
                 BTLFX_COPY_SVEC(&work->pos14, &work->posC);
                 work->unk1C.vx = work->posC.vx;
                 work->unk1C.vy = work->posC.vy;
@@ -362,7 +362,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 2:
+        case FX_LV4_HOLY_OP81_STATE_ORBIT:
             j = frame << 7;
             env->otZ = 0;
             if (frame < 6) {
@@ -383,7 +383,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ang.vx = -0x200 - work->frame4 * 0x18;
                 }
                 orbitAng = work->frame4 * 41 + (j << 7);
-                for (i = 0; i < 12; i++, orbitAng += 0x155) {
+                for (i = 0; i < FX_LV4_HOLY_ORBIT_SPARKLES; i++, orbitAng += 0x1000 / FX_LV4_HOLY_ORBIT_SPARKLES) {
                     ex->btlfx_offsetPoint(&work->posC, (s32)pp, 0, (XY32 *)&ang, orbitRadius, orbitAng);
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_SPARKLE_DOTS), pp, NULL, 0x1000, frame & 0xF, BTLFX_ABR_ADD,
                                       bright, 0, 0);
@@ -393,8 +393,8 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pp2 = pp;
             /* ring indexes fx_081_ringCounts: loop.c drops it for the reduced giv, whose increment then comes before
              * twist += frame and j++ as in the original */
-            for (j = 0, ring = 0, twist = 0; j < 10; ring++, twist += frame, j++) {
-                vx = 0x400 - (j << 11) / 9;
+            for (j = 0, ring = 0, twist = 0; j < FX_LV4_HOLY_GLOW_RINGS; ring++, twist += frame, j++) {
+                vx = 0x400 - (j << 11) / (FX_LV4_HOLY_GLOW_RINGS - 1);
                 for (i = 0; i < fx_081_ringCounts[ring]; i++) {
                     /* a long enough lifetime for loop.c to hoist it, and the add's operand order */
                     twist16 = twist << 4;
@@ -405,13 +405,13 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                       0);
                 }
             }
-            if (frame >= 0x20) {
-                work->state0 = 3;
+            if (frame >= FX_LV4_HOLY_ORBIT_FRAMES) {
+                work->state0 = FX_LV4_HOLY_OP81_STATE_END;
                 entry->frame = -1;
             }
             break;
-        case 3:
-            if (frame >= 15) {
+        case FX_LV4_HOLY_OP81_STATE_END:
+            if (frame >= FX_LV4_HOLY_END_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
