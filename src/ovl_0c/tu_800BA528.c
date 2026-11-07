@@ -1593,7 +1593,7 @@ void wm_naviUpdate(void) {
                             fx = ((g_worldNaviPlaces[g_worldNaviPage][i].mapX << 12) - g_worldNaviCursorX) >> 12;
                             fz = ((g_worldNaviPlaces[g_worldNaviPage][i].mapY << 12) - g_worldNaviCursorY) >> 12;
                             dist = SquareRoot0(fx * fx + fz * fz);
-                            if ((g_worldNaviPage != 1 || ((u32)(i - 6) >= 4 && i != 15)) && dist < best) {
+                            if ((g_worldNaviPage != 1 || ((u32)(i - WM_NAVI_SOUTH_GATE_FIRST) >= WM_NAVI_SOUTH_GATE_LAST - WM_NAVI_SOUTH_GATE_FIRST && i != WM_NAVI_NORTH_GATE_2)) && dist < best) {
                                 best = dist;
                                 bi = i;
                             }
@@ -1627,7 +1627,7 @@ void wm_naviUpdate(void) {
             for (i = 0; i < (s32)ARRAY_COUNT(g_worldNaviPlaces[0]); i++) {
                 ex = (g_worldNaviPlaces[g_worldNaviPage][i].mapX << 12) - g_worldNaviCursorX;
                 ez = (g_worldNaviPlaces[g_worldNaviPage][i].mapY << 12) - g_worldNaviCursorY;
-                if (g_worldNaviPage != 1 || ((u32)(i - 6) >= 4 && i != 15)) {
+                if (g_worldNaviPage != 1 || ((u32)(i - WM_NAVI_SOUTH_GATE_FIRST) >= WM_NAVI_SOUTH_GATE_LAST - WM_NAVI_SOUTH_GATE_FIRST && i != WM_NAVI_NORTH_GATE_2)) {
                     lim = g_worldNaviSnapDist;
                     best = ex >= 0 ? ex : -ex;
                     if (best < lim) {

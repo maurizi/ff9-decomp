@@ -88,7 +88,7 @@ void wm_drawEffects(void) {
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale = fx->frame * 400 + 6000,
                                                (s16)((s16)(fx->frame / 2) % 23), (u8)fx->abr, -1, tex, 0, 2);
                     break;
-                case 8: {
+                case WM_FX_CHEST_LAND: {
                     SVECTOR rot = g_worldEffectFlatRot;
                     g_worldOtBias = 20;
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, fx->frame, (u8)fx->abr,
@@ -510,8 +510,8 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     case 5:
     case WM_FX_CHOCOBO_SPRAY:
     case WM_FX_BEACH_SPLASH:
-    case 8:
-    case 9:
+    case WM_FX_CHEST_LAND:
+    case WM_FX_CHOCOBO_STEP:
     case WM_FX_BOAT_SIDE_WAKE:
     case 11:
     case 12:
@@ -529,7 +529,7 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     case WM_FX_MEMORIA_STREAM:
     case WM_FX_MEMORIA_STREAM_2:
     case WM_FX_SAND_DUST:
-    case 28:
+    case WM_FX_GROUND_GLOW:
     case 29:
         k = WM_FX_ABR_ADD;
         break;

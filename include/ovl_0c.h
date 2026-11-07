@@ -150,8 +150,9 @@
  * track cells, 0x17, 0x2D/0x2E, 0x30 and 0x33 from R41b (airship sweep of the topography grid, walker teleported onto
  * each). */
 #define WM_TOPO_BEACH        0x22 /* runtime: sand at the water's edge; walking spawns WM_FX_BEACH_SPLASH */
-#define WM_TOPO_BEACH_2      0x1E /* code: walking spawns WM_FX_BEACH_SPLASH too (its ground: runtime: pending R46) */
-#define WM_TOPO_BEACH_3      0x23 /* likewise */
+#define WM_TOPO_BEACH_GRASS  0x1E /* runtime R46 (medium): grey-sand beach between grassland and the sea; walking spawns
+                                   * WM_FX_BEACH_SPLASH too */
+#define WM_TOPO_SHORE_SNOW   0x23 /* runtime R46 (medium): dark pebble shore in the northern snowfields; likewise */
 #define WM_TOPO_FOREST       0x24 /* runtime: the walker sinks into the trees (wm_getTerrainHeightOffset class 0), */
 #define WM_TOPO_FOREST_2     0x25 /* walking spawns WM_FX_FOREST_LEAVES; 0x24-0x26 are always handled together and */
 #define WM_TOPO_FOREST_3     0x26 /* raise WM_PARAM_EVENT_BATTLE */
@@ -267,16 +268,18 @@
 #define WM_WEATHER_AUTO 4 /* WM_REQ_WEATHER: turn auto weather on */
 #define WM_WEATHER_KEEP 5
 /* wm_getWeatherByPos: circles in world units >> 8 (centre x, z and radius), later ones win. Nearest navi places from
- * g_worldNaviPlaces (the place names of 5 and 41: runtime: pending R46) */
-#define WM_WEATHER_SUNSET_A_X 0x508 /* 18 from navi place 5 (328239, -245345) */
-#define WM_WEATHER_SUNSET_A_Z (-0x3AD)
-#define WM_WEATHER_SUNSET_A_R 0x56
-#define WM_WEATHER_DARK_X 0x50B /* inside SUNSET_A, 31 from navi place 5 */
-#define WM_WEATHER_DARK_Z (-0x3A0)
-#define WM_WEATHER_DARK_R 0x3B
-#define WM_WEATHER_SUNSET_B_X 0x1F4 /* 105 from navi place 41 (101014, -204347), 114 from place 38 "Wind Shrine" */
-#define WM_WEATHER_SUNSET_B_Z (-0x316)
-#define WM_WEATHER_SUNSET_B_R 0xB4
+ * g_worldNaviPlaces; place names from the world text bank (runtime R46: place 5 Treno, 41 Oeilvert, 38 Wind Shrine),
+ * weather by teleporting the walker (R46) */
+#define WM_WEATHER_TRENO_DUSK_X 0x508 /* rings Treno: WM_WEATHER_SUNSET, 18 from navi place 5 "Treno" (328239, -245345) */
+#define WM_WEATHER_TRENO_DUSK_Z (-0x3AD)
+#define WM_WEATHER_TRENO_DUSK_R 0x56
+#define WM_WEATHER_TRENO_NIGHT_X 0x50B /* inside TRENO_DUSK, over the city of perpetual night: WM_WEATHER_DARK, 31 from navi place 5 */
+#define WM_WEATHER_TRENO_NIGHT_Z (-0x3A0)
+#define WM_WEATHER_TRENO_NIGHT_R 0x3B
+#define WM_WEATHER_OEILVERT_DUSK_X 0x1F4 /* WM_WEATHER_SUNSET over Oeilvert and the Wind Shrine: 105 from navi place 41
+                                         * "Oeilvert" (101014, -204347), 114 from place 38 "Wind Shrine" */
+#define WM_WEATHER_OEILVERT_DUSK_Z (-0x316)
+#define WM_WEATHER_OEILVERT_DUSK_R 0xB4
 #define WM_WEATHER_IIFA_X 0x2FE /* WM_DATASET_DISC4 only: 15 from navi place 36 "Iifa Tree" (200097, -82107) */
 #define WM_WEATHER_IIFA_Z (-0x140)
 #define WM_WEATHER_IIFA_R 0x65 /* WM_WEATHER_DARK_PURPLE inside */
@@ -394,13 +397,23 @@ typedef struct WmEffect {
 #define WM_FX_AIRSHIP_SPRAY 18 /* airship low over water cells, drawn at g_worldSprayLevel (14 and 19 are drawn the same way) */
 #define WM_FX_WATER_RIPPLE 22 /* under the moving player on a water cell, at the surface; flat, drawn with g_worldEffectSpeed */
 #define WM_FX_CHOCOBO_SPRAY 6 /* code: the flying gold chocobo low over water cells (as WM_FX_AIRSHIP_SPRAY) */
-#define WM_FX_BEACH_SPLASH 7 /* runtime: small light-blue specks at the feet, walking on WM_TOPO_BEACH (and _2, _3) */
+#define WM_FX_BEACH_SPLASH 7 /* runtime: small light-blue specks at the feet, walking on WM_TOPO_BEACH, _GRASS and WM_TOPO_SHORE_SNOW */
 #define WM_FX_BOAT_SIDE_WAKE 10 /* code: spawned in pairs beside WM_FX_BOAT_WAKE on odd frames */
 #define WM_FX_CHOCOBO_SAND 14 /* code: the flying gold chocobo low over WM_TOPO_SAND; drawn like WM_FX_AIRSHIP_SPRAY */
 #define WM_FX_FOREST_LEAVES 16 /* runtime: green leaves around the walker in a forest, two every other frame */
 #define WM_FX_AIRSHIP_SAND 19 /* code: an airship low over WM_TOPO_SAND; drawn like WM_FX_AIRSHIP_SPRAY */
 #define WM_FX_WATERFALL_MIST 20 /* runtime: white spray at the foot of the waterfalls (WM_BLOCKFX_WATERFALLS) */
 #define WM_FX_SAND_DUST 27 /* runtime: faint pale puff behind the walker on WM_TOPO_SAND */
+/* requested by the world script (WM_REQ_SPAWN_EFFECT in w_frameSetParameter: the type is the script value); runtime R46
+ * (docs/runtime-findings.md "R46 runtime pass", Overlays 5), confidence per entry */
+#define WM_FX_GROUND_GLOW 28 /* high: pink-white glow patch around the chocobo's feet during a Dead Pepper (chocobo entry 4 tag 15) */
+#define WM_FX_CHOCOBO_STEP 9 /* medium: with each chocobo step sound (entry 4 tag 14) and the chocobo's dig */
+#define WM_FX_CHEST_LAND 8 /* low, runtime: pending (the effect itself not visible at that zoom): spawned when the dug-up
+                           * chest lands beside the chocobo (entry 7 tag 21); drawn flat */
+#define WM_FX_FLY_TRAIL 0 /* low, runtime: pending (from path and timing; the sprites were too small to see): one every
+                          * ~4 frames along the moogle's (and chocobo's) fly-in path */
+#define WM_FX_ARRIVE_PUFF 1 /* low, runtime: pending (likewise): where the flying moogle arrives next to the player; also
+                            * an emitter type of WM_BLOCKFX_DALI_WINDMILL */
 /* by behaviour (code); runtime: pending R41 */
 #define WM_FX_RISING_PUFF 2 /* rises 60-83 a frame with sideways drift, grows (scale frame * 400 + 6000), */
 #define WM_FX_RISING_PUFF_2 3 /* subtractive blend; 2 lives 77 frames, 3 46 (3 is emitted by WM_BLOCKFX_GULUG_SUMMIT) */
@@ -2243,5 +2256,12 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
 #define WM_NAVI_KNOWN_VAR 0x2E /* g_evtGlobalVars.h index */
 #define WM_NAVI_KNOWN_LATE 0x7C0 /* places 6-10: wm_naviInit marks them known once the story counter is >= WM_STORY_MIST_GONE */
 #define WM_NAVI_KNOWN_PAIR 0xC000 /* places 14 and 15: then knowing either marks both */
+/* navi places with more than one entry (runtime R46, world text bank names and map points): places 6-10 are all
+ * "South Gate" (five points along its wall on page 0) and 14-15 "North Gate". On page 1 (the map without the Mist)
+ * all of a gate's entries sit on one pixel, so wm_naviUpdate skips 6-9 and 15 there and each gate is one entry
+ * (10, 14) */
+#define WM_NAVI_SOUTH_GATE_FIRST 6
+#define WM_NAVI_SOUTH_GATE_LAST 10
+#define WM_NAVI_NORTH_GATE_2 15
 
 #endif

@@ -398,11 +398,11 @@ typedef struct {
 #define FLD_SOUND_BANK (DB_SOUND_BANK | 0x164) /* that bank: fld_readSoundBank finds it among the registered dbs */
 
 /* fld_needsSplashImage: the one field exit that shows the splash TIM (fld_showSplashImage: 60 frames fade in, 120
- * hold, 60 fade out). Field names are the scripts' debug names (tools/field_maps.py list). The image itself:
- * runtime: pending R46 (docs/wip/r46_runtime_overlays.md) */
+ * hold, 60 fade out). Field names are the scripts' debug names (tools/field_maps.py list). */
 #define FLD_SPLASH_FROM_FIELD 52 /* "Prima Vista/Meeting" (disc 1: the opening on the theater ship) */
 #define FLD_SPLASH_TO_FIELD 100 /* "Alexandria/Main Street" */
-#define FLD_SPLASH_TIM (DB_TIM | 20000)
+#define FLD_SAKAGUCHI_CREDIT_TIM (DB_TIM | 20000) /* the "Conceived & Produced by Hironobu Sakaguchi" card, centred on
+                                                   * black (runtime R46) */
 
 /* fld_remapModelId: Garnet's long-haired field model gives way to the short-haired one from the story point where
  * main's chr_calcAppearance switches to CHR_KIND_GARNET_SHORT (docs/field-models.md: both dir-10 models, 76 listed

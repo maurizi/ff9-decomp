@@ -1632,7 +1632,7 @@ void wm_controlWalk(void) {
         }
         if (!(g_worldFrameCount & 3)) {
             k = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
-            if (k == WM_TOPO_BEACH_2 || k == WM_TOPO_BEACH || k == WM_TOPO_BEACH_3) {
+            if (k == WM_TOPO_BEACH_GRASS || k == WM_TOPO_BEACH || k == WM_TOPO_SHORE_SNOW) {
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, WM_FX_BEACH_SPLASH, WM_FX_SCALE_BEACH_SPLASH);
             }
             if (((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == WM_TOPO_SAND) {

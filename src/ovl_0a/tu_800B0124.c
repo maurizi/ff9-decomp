@@ -1729,7 +1729,7 @@ void fld_showSplashImage(void) {
     s32 duration;
     u32 state;
 
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, FLD_SPLASH_TIM, 0);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, FLD_SAKAGUCHI_CREDIT_TIM, 0);
     file_getTimRects((void *)tim, &clut, &img);
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
