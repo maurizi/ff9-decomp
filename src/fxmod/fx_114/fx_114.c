@@ -99,7 +99,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot20.vz = 0;
         work->pos28.vx = 0;
         work->pos28.vy = 0;
-        work->pos28.vz = -0x4B0;
+        work->pos28.vz = FX_IFRIT_STAND_Z;
         work->scale38.vx = 0x1800;
         work->scale38.vy = 0x1800;
         work->scale38.vz = 0x1800;
@@ -109,7 +109,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot4C.vz = 0;
         work->pos54.vx = 0;
         work->pos54.vy = 0;
-        work->pos54.vz = -0x4B0;
+        work->pos54.vz = FX_IFRIT_STAND_Z;
         work->scale5C = 0x1000;
         work->rot60.vx = 0;
         work->rot60.vy = 0;
@@ -127,7 +127,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot88.vz = 0;
         work->pos90.vx = 0;
         work->pos90.vy = 0;
-        work->pos90.vz = -0x4B0;
+        work->pos90.vz = FX_IFRIT_STAND_Z;
         work->scaleA0.vx = 0x1000;
         work->scaleA0.vy = 0x1000;
         work->scaleA0.vz = 0x1000;
@@ -138,7 +138,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotB4.vz = 0;
         work->posBC.vx = 0;
         work->posBC.vy = 0x50;
-        work->posBC.vz = -0x4B0;
+        work->posBC.vz = FX_IFRIT_STAND_Z;
         work->scaleCC.vx = 0x1000;
         work->scaleCC.vy = 0x1000;
         work->scaleCC.vz = 0x1000;
@@ -149,7 +149,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotE0.vz = 0;
         work->posE8.vx = 0;
         work->posE8.vy = -0xC8;
-        work->posE8.vz = -0x4B0;
+        work->posE8.vz = FX_IFRIT_STAND_Z;
         work->scaleF8.vx = 0x1000;
         work->scaleF8.vy = 0x1000;
         work->scaleF8.vz = 0x1000;
@@ -160,7 +160,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot10C.vz = 0;
         work->pos114.vx = 0;
         work->pos114.vy = -0xC8;
-        work->pos114.vz = -0x4B0;
+        work->pos114.vz = FX_IFRIT_STAND_Z;
         work->scale124.vx = 0x1000;
         work->scale124.vy = 0x1000;
         work->scale124.vz = 0x1000;
@@ -181,7 +181,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0:
         work->index160 = 0;
         work->loopMotion164 = 1;
-        work->frame168 = 0x10;
+        work->frame168 = FX_IFRIT_TRACK_LEAD;
         fxm_posPathInit(&fx_114_posPath0, (u16 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_SUMMON_POS_PATH_22));
         fxm_posPathInit(&fx_114_posPath1, (u16 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_SUMMON_POS_PATH_10));
         fxm_posPathInit(&fx_114_posPath4, (u16 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_SUMMON_POS_PATH_20));
@@ -224,7 +224,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                ((Fx114Summon80 *)env->loader)->summonModel60);
         break;
     case FX_IFRIT_SHOT4_FRAME:
-        work->frame168 = 0x10;
+        work->frame168 = FX_IFRIT_TRACK_LEAD;
         fxm_posPathInit(&fx_114_posPath2, (u16 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_POS_PATH));
         fxm_posPathInit(&fx_114_posPath3, (u16 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_POS_PATH_2));
         break;
@@ -233,27 +233,27 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0:
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_EMBERS), (s32)&fx_114_emitPos0);
         break;
-    case 0x28:
+    case FX_IFRIT_BOWL_FRAME:
         work->pos13C.vx = 0;
         work->pos13C.vy = 0;
-        work->pos13C.vz = -0x4B0;
+        work->pos13C.vz = FX_IFRIT_STAND_Z;
         work->unk144.vx = 0;
         work->unk144.vy = 0;
-        work->unk144.vz = -0x4B0;
+        work->unk144.vz = FX_IFRIT_STAND_Z;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_RING), (s32)&work->pos13C);
-        work->timer172 = 6;
+        work->timer172 = FX_IFRIT_BOWL_FADE_FRAMES;
         break;
-    case 0x36:
-        work->timer174 = 0xD;
-        work->timer176 = 0xD;
+    case FX_IFRIT_PILLAR_FADE_FRAME:
+        work->timer174 = FX_IFRIT_PILLAR_FADE_FRAMES;
+        work->timer176 = FX_IFRIT_PILLAR_FADE_FRAMES;
         break;
-    case 0x2A:
-        work->timer16E = 6;
+    case FX_IFRIT_FLASH_FRAME:
+        work->timer16E = FX_IFRIT_FLASH_FRAMES;
         break;
-    case 0x30:
-        work->timer170 = 6;
+    case FX_IFRIT_FLASH_OUT_FRAME:
+        work->timer170 = FX_IFRIT_FLASH_FRAMES;
         break;
-    case 0x7B:
+    case FX_IFRIT_SWIRL_FRAME:
         work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FLAME_SWIRL), (s32)&fx_114_emitPos1[0]);
         work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FLAME_SWIRL_3), (s32)&fx_114_emitPos1[1]);
         work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FLAME_SWIRL_2), (s32)&fx_114_emitPos1[2]);
@@ -291,11 +291,11 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit1C->file->m.module.update = fxm_pinParticle3;
         }
         break;
-    case 0x2C:
+    case FX_IFRIT_FIREBALL_FRAMES:
         ex->btlfx_stopEmitter(work->emit0);
         work->pos14C.vx = 0;
         work->pos14C.vy = 0;
-        work->pos14C.vz = -0x4B0;
+        work->pos14C.vz = FX_IFRIT_STAND_Z;
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_EMBER_TRAIL), (s32)&work->pos14C);
         if (work->emit8 != NULL) {
             work->emit8->trails = (s32)fx_114_op80Trails0;
@@ -303,7 +303,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit8->trailStride = FX_IFRIT_EMBER_TRAIL_STRIDE;
         }
         break;
-    case 0xA8:
+    case FX_IFRIT_BODY_FRAMES:
         ex->btlfx_stopEmitter(work->emit10);
         ex->btlfx_stopEmitter(work->emit14);
         ex->btlfx_stopEmitter(work->emit18);
@@ -311,13 +311,13 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     }
     switch (frame) {
-    case 0x2C:
+    case FX_IFRIT_FIREBALL_FRAMES:
         ex->Hi_FreeEffModel(work->model178);
         break;
-    case 0x2E:
+    case FX_IFRIT_BOWL_END_FRAME:
         ex->Hi_FreeEffModel(work->model17A);
         break;
-    case 0x43:
+    case FX_IFRIT_PILLAR_END_FRAME:
         ex->Hi_FreeEffModel(work->model17C);
         break;
     }
@@ -325,7 +325,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_posPathGet(&fx_114_posPath0, work->frame168, &camPathPos);
         env->camera->points[0].vx = 0;
         env->camera->points[0].vy = camPathPos.vy;
-        env->camera->points[0].vz = -0x4B0;
+        env->camera->points[0].vz = FX_IFRIT_STAND_Z;
         fxm_posPathGet(&fx_114_posPath1, work->frame168, &camPathPos);
         env->camera->points[1].vx = camPathPos.vx;
         env->camera->points[1].vy = camPathPos.vy;
@@ -351,66 +351,67 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[1].vy = camEndPos.vy;
         env->camera->points[1].vz = camEndPos.vz;
     }
-    if (frame >= 0 && frame < 0xA8) {
-        fxm_posPathGet(&fx_114_posPath4, frame + 0x10, &risePos);
+    if (frame >= 0 && frame < FX_IFRIT_BODY_FRAMES) {
+        fxm_posPathGet(&fx_114_posPath4, frame + FX_IFRIT_TRACK_LEAD, &risePos);
         work->pos28.vy = risePos.vy;
         if (work->index160 != 0) {
             ex->Hi_DrawSummonModel(&work->rot20, (VECTOR *)&work->pos28, (s32)&work->scale38,
                                    ((Fx114Summon80 *)env->loader)->summonModel60, work->loopMotion164);
             if (work->index160 > 0) {
-                texRow = frame / 16 % 8;
-                cycle = frame % 16;
+                texRow = frame / FX_IFRIT_GLOW_CYCLE_FRAMES % FX_IFRIT_GLOW_FRAMES;
+                cycle = frame % FX_IFRIT_GLOW_CYCLE_FRAMES;
                 texFade = cycle << 9;
-                if (cycle >= 9) {
-                    texFade = 0x1000 - ((cycle - 8) << 9);
+                if (cycle >= FX_IFRIT_GLOW_CYCLE_FRAMES / 2 + 1) {
+                    texFade = 0x1000 - ((cycle - FX_IFRIT_GLOW_CYCLE_FRAMES / 2) << 9);
                 }
-                fxm_drawTexelQuadsB(&work->pos54, &work->rot4C, 0x11A, 0, 0xC0, 2, texRow, 0x100, 0x10, 0x10, work->scale5C, texFade, 1,
+                fxm_drawTexelQuadsB(&work->pos54, &work->rot4C, FX_IFRIT_GLOW_TPAGE, FX_IFRIT_GLOW_X, FX_IFRIT_GLOW_Y, FX_IFRIT_GLOW_COLS, texRow,
+                              FX_IFRIT_GLOW_CELL, FX_IFRIT_GLOW_GRID, FX_IFRIT_GLOW_GRID, work->scale5C, texFade, BTLFX_ABR_ADD,
                               fx_114_texelColors, 0);
             }
         }
     }
     if (work->timer16E >= 0) {
-        fxm_tintScreenLerp(0, 0xFF, 6 - work->timer16E, 6, 1, 0);
+        fxm_tintScreenLerp(0, 0xFF, FX_IFRIT_FLASH_FRAMES - work->timer16E, FX_IFRIT_FLASH_FRAMES, BTLFX_ABR_ADD, 0);
         work->timer16E--;
     }
     if (work->timer170 >= 0) {
-        fxm_tintScreenLerp(0xFF, 0, 6 - work->timer170, 6, 1, 0);
+        fxm_tintScreenLerp(0xFF, 0, FX_IFRIT_FLASH_FRAMES - work->timer170, FX_IFRIT_FLASH_FRAMES, BTLFX_ABR_ADD, 0);
         work->timer170--;
     }
-    if (frame >= 0x30 && frame < 0xF3) {
-        work->color15C = 0x40;
-        work->color15D = 0x20;
+    if (frame >= FX_IFRIT_HEAT_FRAME && frame < FX_IFRIT_HEAT_END_FRAME) {
+        work->color15C = FX_IFRIT_HEAT_R;
+        work->color15D = FX_IFRIT_HEAT_G;
         work->color15E = 0;
-        if (frame < 0xDE) {
-            if ((frame / 16) & 1) {
-                work->color15C -= (frame % 16) * 2;
-                work->color15D -= frame % 16;
+        if (frame < FX_IFRIT_SHOT4_END_FRAME) {
+            if ((frame / FX_IFRIT_HEAT_PULSE_FRAMES) & 1) {
+                work->color15C -= (frame % FX_IFRIT_HEAT_PULSE_FRAMES) * 2;
+                work->color15D -= frame % FX_IFRIT_HEAT_PULSE_FRAMES;
             } else {
-                work->color15C += (frame % 16) * 2 - 0x1E;
-                work->color15D += frame % 16 - 0xF;
+                work->color15C += (frame % FX_IFRIT_HEAT_PULSE_FRAMES) * 2 - 0x1E;
+                work->color15D += frame % FX_IFRIT_HEAT_PULSE_FRAMES - 0xF;
             }
         }
-        if (frame < 0xA8) {
-            work->color48 = 0x20;
-            ex->Hi_ModifySummonModelRGB(((Fx114Summon80 *)env->loader)->summonModel60, 0x20, 0x20, 0x20);
+        if (frame < FX_IFRIT_BODY_FRAMES) {
+            work->color48 = FX_IFRIT_BODY_SHADE;
+            ex->Hi_ModifySummonModelRGB(((Fx114Summon80 *)env->loader)->summonModel60, FX_IFRIT_BODY_SHADE, FX_IFRIT_BODY_SHADE, FX_IFRIT_BODY_SHADE);
         }
-        if (frame >= 0xE3) {
-            fadeStep = frame - 0xE3;
-            work->color15C -= work->color15C * fadeStep / 16;
-            work->color15D -= work->color15D * fadeStep / 16;
+        if (frame >= FX_IFRIT_HEAT_FADE_FRAME) {
+            fadeStep = frame - FX_IFRIT_HEAT_FADE_FRAME;
+            work->color15C -= work->color15C * fadeStep / FX_IFRIT_HEAT_FADE_FRAMES;
+            work->color15D -= work->color15D * fadeStep / FX_IFRIT_HEAT_FADE_FRAMES;
         }
-        tint = 0x40;
-        if (frame >= 0xE3) {
-            tint = 0x40 - ((frame - 0xE3) << 6) / 16;
+        tint = FX_IFRIT_HEAT_DARKEN;
+        if (frame >= FX_IFRIT_HEAT_FADE_FRAME) {
+            tint = FX_IFRIT_HEAT_DARKEN - ((frame - FX_IFRIT_HEAT_FADE_FRAME) << 6) / FX_IFRIT_HEAT_FADE_FRAMES;
         }
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, tint, tint, tint);
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, work->color15C, work->color15D, work->color15E);
     }
-    if (frame >= 0 && frame < 0x2C) {
+    if (frame >= 0 && frame < FX_IFRIT_FIREBALL_FRAMES) {
         work->pos68.vx = work->pos28.vx;
         work->pos68.vy = work->pos28.vy;
         work->pos68.vz = work->pos28.vz;
-        fxm_vecPathGet(&fx_114_vecPath, frame + 0x10, (VECTOR *)&work->scale78);
+        fxm_vecPathGet(&fx_114_vecPath, frame + FX_IFRIT_TRACK_LEAD, (VECTOR *)&work->scale78);
         ex->Hi_DrawEffModel(&work->rot60, (VECTOR *)&work->pos68, (s32)&work->scale78, work->model178);
         ex->Hi_ModifyEffModelAbr(work->model178, BTLFX_ABR_ADD);
         work->pos134.vx = work->pos68.vx;
@@ -422,37 +423,37 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_moveEmitterTo((s32)work->emit0, (s32)&work->pos134);
         work->rot60.vy += 0x40;
     }
-    if (frame >= 0x28 && frame < 0x2E) {
+    if (frame >= FX_IFRIT_BOWL_FRAME && frame < FX_IFRIT_BOWL_END_FRAME) {
         fxm_vecTrackGet(&fx_114_vecTrack3, frame, (VECTOR *)&work->scaleA0);
         ex->Hi_DrawEffModel(&work->rot88, (VECTOR *)&work->pos90, (s32)&work->scaleA0, work->model17A);
         ex->Hi_ModifyEffModelAbr(work->model17A, BTLFX_ABR_ADD);
         if (work->timer172 >= 0) {
-            work->colorB0 = fxm_lerpRatio(0, -0xFF, 6 - work->timer172, 6);
+            work->colorB0 = fxm_lerpRatio(0, -0xFF, FX_IFRIT_BOWL_FADE_FRAMES - work->timer172, FX_IFRIT_BOWL_FADE_FRAMES);
             ex->Hi_ModifyEffModelRGB(work->model17A, work->colorB0, work->colorB0, work->colorB0);
             work->timer172--;
         }
     }
-    if (frame >= 0x29 && frame < 0x43) {
-        bgFrame = frame - 0x29;
+    if (frame >= FX_IFRIT_PILLAR_FRAME && frame < FX_IFRIT_PILLAR_END_FRAME) {
+        bgFrame = frame - FX_IFRIT_PILLAR_FRAME;
         if (work->colorDC >= -0x7F) {
-            fxm_vecTrackGet(&fx_114_vecTrack0, frame + 0x10, (VECTOR *)&work->scaleCC);
+            fxm_vecTrackGet(&fx_114_vecTrack0, frame + FX_IFRIT_TRACK_LEAD, (VECTOR *)&work->scaleCC);
             ex->Hi_DrawEffModel(&work->rotB4, (VECTOR *)&work->posBC, (s32)&work->scaleCC, work->model17C);
             ex->Hi_ModifyEffModelAbr(work->model17C, BTLFX_ABR_ADD);
             if (work->timer174 >= 0) {
-                work->colorDC = fxm_lerpRatio(0, -0x80, 0xD - work->timer174, 0xD);
+                work->colorDC = fxm_lerpRatio(0, -0x80, FX_IFRIT_PILLAR_FADE_FRAMES - work->timer174, FX_IFRIT_PILLAR_FADE_FRAMES);
                 ex->Hi_ModifyEffModelRGB(work->model17C, work->colorDC, work->colorDC, work->colorDC);
                 work->timer174--;
             }
         }
         if (work->color108 >= -0x7F) {
-            fxm_vecTrackGet(&fx_114_vecTrack1, frame + 0x10, (VECTOR *)&work->scaleF8);
-            fxm_vecTrackGet(&fx_114_vecTrack2, frame + 0x10, (VECTOR *)&work->scale124);
+            fxm_vecTrackGet(&fx_114_vecTrack1, frame + FX_IFRIT_TRACK_LEAD, (VECTOR *)&work->scaleF8);
+            fxm_vecTrackGet(&fx_114_vecTrack2, frame + FX_IFRIT_TRACK_LEAD, (VECTOR *)&work->scale124);
             ex->Hi_DrawEffModel(&work->rotE0, (VECTOR *)&work->posE8, (s32)&work->scaleF8, work->model17E);
             ex->Hi_DrawEffModel(&work->rot10C, (VECTOR *)&work->pos114, (s32)&work->scale124, work->model180);
             ex->Hi_ModifyEffModelAbr(work->model17E, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelAbr(work->model180, BTLFX_ABR_ADD);
             if (work->timer176 >= 0) {
-                work->color108 = fxm_lerpRatio(0, -0x80, 0xD - work->timer176, 0xD);
+                work->color108 = fxm_lerpRatio(0, -0x80, FX_IFRIT_PILLAR_FADE_FRAMES - work->timer176, FX_IFRIT_PILLAR_FADE_FRAMES);
                 ex->Hi_ModifyEffModelRGB(work->model17E, work->color108, work->color108, work->color108);
                 ex->Hi_ModifyEffModelRGB(work->model180, work->color108, work->color108, work->color108);
                 work->timer176--;
@@ -461,17 +462,17 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_IFRIT_BACKDROP), bgFrame);
         ex->btlfx_drawScrollMove(0x1180 - work->frame16C * 16, FX_IFRIT_FLAME_VRAM_X, FX_IFRIT_FLAME_VRAM_Y, FX_IFRIT_FLAME_VRAM_W, FX_IFRIT_FLAME_VRAM_H, FX_IFRIT_FLAME_SRC_X, FX_IFRIT_FLAME_SRC_Y);
     }
-    if (frame >= 0x7B && frame < 0xB7) {
-        for (i = 0; i < 4; i++) {
+    if (frame >= FX_IFRIT_SWIRL_FRAME && frame < FX_IFRIT_SWIRL_PIN_END_FRAME) {
+        for (i = 0; i < FX_IFRIT_SWIRLS; i++) {
             ex->Hi_GetSummonBonePos(((Fx114Summon80 *)env->loader)->summonModel60, fx_114_pinBones[i], (u16 *)&fx_114_pinPoints[i]);
         }
     }
-    if (frame >= 0xA2 && frame < 0xA8) {
-        zoom = frame - 0xA2;
+    if (frame >= FX_IFRIT_ZOOM_FRAME && frame < FX_IFRIT_BODY_FRAMES) {
+        zoom = frame - FX_IFRIT_ZOOM_FRAME;
         dp = (DR_STP *)env->prim;
         env->prim = (u8 *)(dp + 1);
         setlen(dp, 2);
-        dp->code[0] = 0xE6000001;
+        dp->code[0] = GPU_STP(1, 0);
         dp->code[1] = 0;
         addPrim(env->ot + 1, dp);
         gridScale.vz = gridScale.vy = gridScale.vx = (zoom << 7) + 0x1000;
@@ -480,7 +481,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         gridRot.vy = 0;
         gridRot.vz = 0;
         ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &gridRot, &gridScale, &col, 1, 0);
-        env->camera->projDist = 0x208 - zoom * zoom * 6;
+        env->camera->projDist = FX_IFRIT_PROJ_DIST - zoom * zoom * 6;
     }
     work->frame168++;
     work->frame16C++;
@@ -516,7 +517,7 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 1:
+        case FX_IFRIT_OP81_FRAME:
             ex->Hi_GetSummonBonePos(((Fx114Summon *)env->loader)->summonModel60, 0x1B, (u16 *)&work->pos34);
             work->pos10.vx = work->pos34.vx;
             work->pos10.vy = work->pos34.vy;
@@ -526,20 +527,20 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos3C.vz = work->pos34.vz;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_ROCK_RINGS), (s32)&work->pos34);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FLAME_LINE), (s32)&work->pos3C);
-            work->timer44 = 0xC;
+            work->timer44 = FX_IFRIT_OP81_FADE_FRAMES;
             break;
-        case 0xD:
+        case FX_IFRIT_OP81_END_FRAME:
             ex->Hi_FreeEffModel(work->model46);
             ex->btlfx_stopEmitter(work->emit0);
             ex->btlfx_stopEmitter(work->emit4);
             break;
         }
-        if (frame >= 1 && frame < 0xD) {
-            fxm_vecTrackGet(&fx_114_vecTrack3, frame - 1, &work->scale20);
+        if (frame >= FX_IFRIT_OP81_FRAME && frame < FX_IFRIT_OP81_END_FRAME) {
+            fxm_vecTrackGet(&fx_114_vecTrack3, frame - FX_IFRIT_OP81_FRAME, &work->scale20);
             ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model46);
             ex->Hi_ModifyEffModelAbr(work->model46, BTLFX_ABR_ADD);
             if (work->timer44 >= 0) {
-                work->color30 = rgb = fxm_lerpRatio(0, -0xFF, 0xC - work->timer44, 0xC);
+                work->color30 = rgb = fxm_lerpRatio(0, -0xFF, FX_IFRIT_OP81_FADE_FRAMES - work->timer44, FX_IFRIT_OP81_FADE_FRAMES);
                 ex->Hi_ModifyEffModelRGB(work->model46, rgb, rgb, rgb);
                 work->timer44--;
             }
@@ -570,7 +571,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot4.vz = 0;
         work->posC.vx = 0;
         work->posC.vy = 0;
-        work->posC.vz = 0x320;
+        work->posC.vz = FX_IFRIT_TARGET_Z;
         work->scale1C.vx = 0x1000;
         work->scale1C.vy = 0x1000;
         work->scale1C.vz = 0x1000;
@@ -600,62 +601,62 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x80, 0xA0, fx_114_bgOt, 0, 0x168, 0xF6E);
+            ex->btlfx_drawBgOffscreen(FX_IFRIT_HAZE_VRAM_X, FX_IFRIT_HAZE_VRAM_Y, FX_IFRIT_HAZE_VRAM_W, FX_IFRIT_HAZE_VRAM_H, fx_114_bgOt, 0, 0x168, 0xF6E);
             break;
-        case 9:
+        case FX_IFRIT_OP82_RING_FRAME:
             work->pos58.vx = -3;
             work->pos58.vy = 0;
-            work->pos58.vz = 0x320;
+            work->pos58.vz = FX_IFRIT_TARGET_Z;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_ORANGE_RING_2), (s32)&work->pos58);
             break;
-        case 8:
-            work->timer60 = 4;
+        case FX_IFRIT_TRAILS_FRAME:
+            work->timer60 = FX_IFRIT_TRAIL_FADE_IN_FRAMES;
             break;
-        case 2:
-            work->timer62 = 6;
+        case FX_IFRIT_TRAIL_FADE_OUT_FRAME:
+            work->timer62 = FX_IFRIT_TRAIL_FADE_OUT_FRAMES;
             break;
-        case 29:
+        case FX_IFRIT_HAZE_FRAMES:
             ex->Hi_FreeEffModel(work->model66);
             break;
-        case 18:
+        case FX_IFRIT_CLUSTER_FREE_FRAME:
             ex->Hi_FreeEffModel(work->model68);
             break;
         }
-        if ((u32)frame < 0x1D) {
+        if ((u32)frame < FX_IFRIT_HAZE_FRAMES) {
             ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, work->model66);
             ex->Hi_ModifyEffModelRGB(work->model66, 6, 6, 6);
         }
-        if ((u32)(frame - 8) < 10) {
-            fx_114_pathTrail.countA = (frame - 8) * 2;
+        if ((u32)(frame - FX_IFRIT_TRAILS_FRAME) < FX_IFRIT_TRAILS_FRAMES) {
+            fx_114_pathTrail.countA = (frame - FX_IFRIT_TRAILS_FRAME) * 2;
             fx_114_pathTrail.countA = fx_114_pathTrail.countA >= 10 ? 9 : fx_114_pathTrail.countA;
             if (work->timer60 >= 0) {
-                fx_114_pathTrail.fadeC = fxm_lerpRatio(0, 0x1000, 4 - work->timer60, 4);
+                fx_114_pathTrail.fadeC = fxm_lerpRatio(0, 0x1000, FX_IFRIT_TRAIL_FADE_IN_FRAMES - work->timer60, FX_IFRIT_TRAIL_FADE_IN_FRAMES);
                 work->timer60--;
             }
             if (work->timer62 >= 0) {
-                fx_114_pathTrail.fadeC = fxm_lerpRatio(0x1000, 0, 6 - work->timer62, 6);
+                fx_114_pathTrail.fadeC = fxm_lerpRatio(0x1000, 0, FX_IFRIT_TRAIL_FADE_OUT_FRAMES - work->timer62, FX_IFRIT_TRAIL_FADE_OUT_FRAMES);
                 work->timer62--;
             }
-            for (i = 0, buf = fx_114_op82Trails[0]; i < 13; i++) {
+            for (i = 0, buf = fx_114_op82Trails[0]; i < FX_IFRIT_TRAIL_COUNT; i++) {
                 fxm_posPathInit(&fx_114_pathTrail.path0, (u16 *)fxm_offsetTableEntry(ex->btlfx_getFileData(entry->file, FX_IFRIT_TRAIL_PATHS), (u16)i));
-                fxm_buildPathTrail(&fx_114_pathTrail.path0, buf, 0x50, fx_114_pathTrail.start8, fx_114_pathTrail.countA, fx_114_pathTrail.fadeFrom10, fx_114_pathTrail.fadeTo12, 0);
+                fxm_buildPathTrail(&fx_114_pathTrail.path0, buf, FX_IFRIT_TRAIL_BYTES, fx_114_pathTrail.start8, fx_114_pathTrail.countA, fx_114_pathTrail.fadeFrom10, fx_114_pathTrail.fadeTo12, 0);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_TRAIL), 0, NULL, 0, fx_114_pathTrail.scaleE, fx_114_pathTrail.fadeC, BTLFX_ABR_ADD,
                                     buf, 0);
-                buf += 0x50;
+                buf += FX_IFRIT_TRAIL_BYTES;
             }
         }
-        if ((u32)(zoom = frame - 0xE) < 4) {
+        if ((u32)(zoom = frame - FX_IFRIT_OP82_ZOOM_FRAME) < FX_IFRIT_OP82_ZOOM_FRAMES) {
             dr = (DR_MODE *)env->prim;
             env->prim = (u8 *)(dr + 1);
             setlen(dr, 2);
-            dr->code[0] = 0xE6000001;
+            dr->code[0] = GPU_STP(1, 0);
             dr->code[1] = 0;
             addPrim(&env->ot[1], dr);
             sc.vz = sc.vy = sc.vx = (zoom << 7) + 0x1000;
             col.r = col.g = col.b = 0x3C;
             rot.vz = rot.vy = rot.vx = 0;
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
-            env->camera->projDist = 0x208 - zoom * zoom * 4;
+            env->camera->projDist = FX_IFRIT_PROJ_DIST - zoom * zoom * 4;
         }
         work->frame64++;
         return frame >= FX_IFRIT_OP82_FRAMES;
@@ -676,7 +677,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unkC.vx = 0x400;
         work->pos14.vy = -0x78;
-        work->pos14.vz = 0x320;
+        work->pos14.vz = FX_IFRIT_TARGET_Z;
         work->unkC.vy = 0;
         work->unkC.vz = 0;
         work->unkC.pad = 1;
@@ -687,7 +688,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot20.vz = 0;
         work->pos28.vx = 0;
         work->pos28.vy = 0;
-        work->pos28.vz = 0x320;
+        work->pos28.vz = FX_IFRIT_TARGET_Z;
         work->scale38.vx = 0x1000;
         work->scale38.vy = 0x1000;
         work->scale38.vz = 0x1000;
@@ -699,11 +700,11 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot48.vz = 0;
         work->pos50.vx = 0;
         work->pos50.vy = 0;
-        work->pos50.vz = 0x320;
+        work->pos50.vz = FX_IFRIT_TARGET_Z;
         work->scale60.vx = 0x1000;
         work->scale60.vy = 0x1000;
         work->scale60.vz = 0x1000;
-        for (j = 0; j < 23; j++) {
+        for (j = 0; j < FX_IFRIT_ROCK_PIECES; j++) {
             u8 *tex;
             s16 *uv;
             s32 modelData;
@@ -727,7 +728,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot70.vz = 0;
         work->pos78.vx = 0;
         work->pos78.vy = 0;
-        work->pos78.vz = 0x320;
+        work->pos78.vz = FX_IFRIT_TARGET_Z;
         work->scale88.vx = 0x1000;
         work->scale88.vy = 0x1000;
         work->scale88.vz = 0x1000;
@@ -738,7 +739,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot9C.vz = 0;
         work->posA4.vx = 0;
         work->posA4.vy = 0;
-        work->posA4.vz = 0x320;
+        work->posA4.vz = FX_IFRIT_TARGET_Z;
         work->scaleB4.vx = 0x1000;
         work->scaleB4.vy = 0x1000;
         work->scaleB4.vz = 0x1000;
@@ -747,7 +748,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotCC.vz = 0;
         work->posD4.vx = 0;
         work->posD4.vy = 0;
-        work->posD4.vz = 0x320;
+        work->posD4.vz = FX_IFRIT_TARGET_Z;
         work->scaleE4.vx = 0x1000;
         work->scaleE4.vy = 0x1000;
         work->scaleE4.vz = 0x1000;
@@ -776,7 +777,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_RED_GLOW), (s32)&work->posF4);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_BURST), (s32)&work->posF4);
             break;
-        case 3:
+        case FX_IFRIT_RINGS_FRAME:
             work->posD4.vx = work->pos28.vx;
             work->posD4.vy = work->pos28.vy;
             work->posD4.vz = work->pos28.vz;
@@ -788,24 +789,24 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit8->otZ = 0x100;
             }
             break;
-        case 4:
-            work->timer110 = 3;
-            work->timer114 = 6;
+        case FX_IFRIT_DOME_FRAME:
+            work->timer110 = FX_IFRIT_DOME_FADE_IN_FRAMES;
+            work->timer114 = FX_IFRIT_RING_FADE_IN_FRAMES;
             break;
-        case 0x15:
-            work->timer112 = 0x10;
-            work->timer116 = 0x10;
-            work->timer10E = 0x10;
+        case FX_IFRIT_DOME_FADE_FRAME:
+            work->timer112 = FX_IFRIT_DOME_FADE_FRAMES;
+            work->timer116 = FX_IFRIT_DOME_FADE_FRAMES;
+            work->timer10E = FX_IFRIT_DOME_FADE_FRAMES;
             break;
         }
-        if (frame >= 6 && frame < 0x14) {
+        if (frame >= FX_IFRIT_ROCKS_FRAME && frame < FX_IFRIT_ROCKS_END_FRAME) {
             Fx114Rock *rock;
             s32 pieceFrame;
 
             ex->Hi_DrawEffModel(&work->rot20, (VECTOR *)&work->pos28, (s32)&work->scale38, work->model118[0]);
             ex->Hi_ModifyEffModelRGB(work->model118[0], 6, 6, 6);
-            for (i = 0, rock = fx_114_op83Pieces; i < 23; i++, rock++) {
-                pieceFrame = frame - 2;
+            for (i = 0, rock = fx_114_op83Pieces; i < FX_IFRIT_ROCK_PIECES; i++, rock++) {
+                pieceFrame = frame - FX_IFRIT_ROCK_DELAY;
                 if (rock->done2 != 0) {
                     pieceFrame = 0;
                 }
@@ -814,7 +815,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     piecePos.vy = rock->pos18.vy;
                     piecePos.vz = rock->pos18.vz - 0x190;
                     ex->btlfx_aimAngles((s16 *)&work->pos50, (s16 *)&piecePos, (s16 *)&rock->angle8);
-                    rock->speed4 = ex->btlfx_distance(&piecePos, (SVECTOR *)&work->pos50) / 30;
+                    rock->speed4 = ex->btlfx_distance(&piecePos, (SVECTOR *)&work->pos50) / FX_IFRIT_ROCK_FLY_FRAMES;
                     rock->vel6 = 0xC8;
                     rock->vel6 += ex->btlfx_rand() % 100;
                     rock->speed4 += ex->btlfx_rand() % 50;
@@ -843,7 +844,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rock->pos18.vy = piecePos.vy;
                     rock->pos18.vz = piecePos.vz;
                     rock->pos18.vy -= rock->vel6;
-                    if (pieceFrame < rock->frame0 + 2) {
+                    if (pieceFrame < rock->frame0 + FX_IFRIT_ROCK_SPIN_FRAMES) {
                         if (rock->flags1 & FX114_ROCK_SPIN_X_POS) {
                             rock->rot10.vx += 0x40;
                         } else {
@@ -862,7 +863,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (rock->vel6 >= 4) {
                         rock->vel6 -= pieceFrame * 5;
                     }
-                    if (rock->pos18.vy >= 0x32) {
+                    if (rock->pos18.vy >= FX_IFRIT_ROCK_FLOOR_Y) {
                         rock->done2 = 1;
                         continue;
                     }
@@ -871,7 +872,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     piecePos.vx = -piecePos.vx;
                     work->pos50.vx = 0;
                     work->pos50.vy = 0;
-                    work->pos50.vz = 0x320;
+                    work->pos50.vz = FX_IFRIT_TARGET_Z;
                     work->rot48.vz = -work->rot48.vz;
                     work->pos50.vx += piecePos.vx;
                     work->pos50.vy += piecePos.vy;
@@ -881,61 +882,62 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rock->pos18.vz = work->pos50.vz;
                     work->pos50.vx = 0;
                     work->pos50.vy = 0;
-                    work->pos50.vz = 0x320;
+                    work->pos50.vz = FX_IFRIT_TARGET_Z;
                 }
                 ex->Hi_DrawEffModel(&work->rot48, (VECTOR *)&rock->pos18, (s32)&work->scale60, work->model118[i + 1]);
                 ex->Hi_ModifyEffModelRGB(work->model118[i + 1], 6, 6, 6);
             }
         }
-        if (frame >= 4 && frame < 0x25) {
-            fxm_vecTrackGet(&fx_114_vecTrack3, frame - 4, (VECTOR *)&work->scale88);
+        if (frame >= FX_IFRIT_DOME_FRAME && frame < FX_IFRIT_DOME_END_FRAME) {
+            fxm_vecTrackGet(&fx_114_vecTrack3, frame - FX_IFRIT_DOME_FRAME, (VECTOR *)&work->scale88);
             ex->Hi_DrawEffModel(&work->rot70, (VECTOR *)&work->pos78, (s32)&work->scale88, work->model148);
             ex->Hi_ModifyEffModelAbr(work->model148, BTLFX_ABR_ADD);
             if (work->timer10E >= 0) {
-                work->color98 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer10E, 0x10);
+                work->color98 = fxm_lerpRatio(0, -0x80, FX_IFRIT_DOME_FADE_FRAMES - work->timer10E, FX_IFRIT_DOME_FADE_FRAMES);
                 ex->Hi_ModifyEffModelRGB(work->model148, work->color98, work->color98, work->color98);
                 work->timer10E--;
             }
-            fxm_vecTrackGet(&fx_114_vecTrack4, frame - 4, (VECTOR *)&work->scaleB4);
+            fxm_vecTrackGet(&fx_114_vecTrack4, frame - FX_IFRIT_DOME_FRAME, (VECTOR *)&work->scaleB4);
             ex->Hi_DrawEffModel(&work->rot9C, (VECTOR *)&work->posA4, (s32)&work->scaleB4, work->model14A);
             ex->Hi_ModifyEffModelAbr(work->model14A, BTLFX_ABR_ADD);
             if (work->timer110 >= 0 || work->timer112 >= 0) {
                 if (work->timer110 >= 0) {
-                    work->colorC4 = fxm_lerpRatio(-0x80, 0, 3 - work->timer110, 3);
+                    work->colorC4 = fxm_lerpRatio(-0x80, 0, FX_IFRIT_DOME_FADE_IN_FRAMES - work->timer110, FX_IFRIT_DOME_FADE_IN_FRAMES);
                     work->timer110--;
                 }
                 if (work->timer112 >= 0) {
-                    work->colorC4 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer112, 0x10);
+                    work->colorC4 = fxm_lerpRatio(0, -0x80, FX_IFRIT_DOME_FADE_FRAMES - work->timer112, FX_IFRIT_DOME_FADE_FRAMES);
                     work->timer112--;
                 }
                 ex->Hi_ModifyEffModelRGB(work->model14A, work->colorC4, work->colorC4, work->colorC4);
             }
             work->rot9C.vy += 0x40;
-            if (frame >= 4 && frame < 0x25) {
+            if (frame >= FX_IFRIT_DOME_FRAME && frame < FX_IFRIT_DOME_END_FRAME) {
                 work->posD4.vx = 0;
                 work->posD4.vy = 0;
-                work->posD4.vz = 0x320;
-                fxm_posTrackGet((Fx114Track6 *)&fx_114_posTrack2, frame - 4, &ringOfs);
+                work->posD4.vz = FX_IFRIT_TARGET_Z;
+                fxm_posTrackGet((Fx114Track6 *)&fx_114_posTrack2, frame - FX_IFRIT_DOME_FRAME, &ringOfs);
                 work->posD4.vx += ringOfs.vx;
                 work->posD4.vy += ringOfs.vy;
                 work->posD4.vz += ringOfs.vz;
-                fxm_vecTrackGet(&fx_114_vecTrack5, frame - 4, (VECTOR *)&work->scaleE4);
+                fxm_vecTrackGet(&fx_114_vecTrack5, frame - FX_IFRIT_DOME_FRAME, (VECTOR *)&work->scaleE4);
                 ex->Hi_DrawEffModel(&work->rotCC, (VECTOR *)&work->posD4, (s32)&work->scaleE4, work->model14C);
                 ex->Hi_ModifyEffModelAbr(work->model14C, BTLFX_ABR_ADD);
                 if (work->timer114 >= 0 || work->timer116 >= 0) {
                     if (work->timer114 >= 0) {
-                        work->colorC8 = fxm_lerpRatio(-0x80, 0, 6 - work->timer114, 6);
+                        work->colorC8 = fxm_lerpRatio(-0x80, 0, FX_IFRIT_RING_FADE_IN_FRAMES - work->timer114, FX_IFRIT_RING_FADE_IN_FRAMES);
                         work->timer114--;
                     }
                     if (work->timer116 >= 0) {
-                        work->colorC8 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer116, 0x10);
+                        work->colorC8 = fxm_lerpRatio(0, -0x80, FX_IFRIT_DOME_FADE_FRAMES - work->timer116, FX_IFRIT_DOME_FADE_FRAMES);
                         work->timer116--;
                     }
                     ex->Hi_ModifyEffModelRGB(work->model14C, work->colorC8, work->colorC8, work->colorC8);
                 }
             }
         }
-        ex->btlfx_drawScrollMove(0x3C0 - work->frame10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
+        ex->btlfx_drawScrollMove(0x3C0 - work->frame10C * 16, FX_IFRIT_FLAME_VRAM_X, FX_IFRIT_FLAME_VRAM_Y, FX_IFRIT_FLAME_VRAM_W,
+                                 FX_IFRIT_FLAME_VRAM_H, FX_IFRIT_FLAME_SRC_X, FX_IFRIT_FLAME_SRC_Y);
         work->frame10C++;
         return frame >= FX_IFRIT_OP83_FRAMES;
     }
@@ -953,10 +955,10 @@ s32 fx_114_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            *work = 0x10;
+            *work = FX_IFRIT_WHITE_FADE_FRAMES;
         }
         if (*work >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - *work, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, FX_IFRIT_WHITE_FADE_FRAMES - *work, FX_IFRIT_WHITE_FADE_FRAMES, BTLFX_ABR_ADD, 0);
             (*work)--;
         }
         return frame >= FX_IFRIT_OP85_FRAMES;
@@ -1105,10 +1107,10 @@ static void fxm_camChanReset(void) {
     s32 i;
     s32 freeMark = FX_114_KEY_FREE;
 
-    for (i = 63; i >= 0; i--) {
+    for (i = FX_IFRIT_CAM_KEY_SLOTS - 1; i >= 0; i--) {
         fx_114_camKeys[i].timer6 = freeMark;
     }
-    for (i = 3; i >= 0; i--) {
+    for (i = FX_IFRIT_CAM_CHANNELS - 1; i >= 0; i--) {
         fx_114_camChanFrames[i] = 0;
     }
 }
@@ -1119,7 +1121,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
 
     data++;
     count = *data;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < FX_IFRIT_CAM_KEY_SLOTS; i++) {
         if (fx_114_camKeys[i].timer6 == FX_114_KEY_FREE) {
             fx_114_camKeys[i].timer6 = 0;
             fx_114_camKeys[i].keys0 = data;
@@ -1139,7 +1141,7 @@ static void fxm_camChanUpdate(s32 ch) {
     s32 k;
     s32 dstSlot;
 
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < FX_IFRIT_CAM_KEY_SLOTS; i++) {
         if (fx_114_camKeys[i].chan8 == ch) {
             if (fx_114_camKeys[i].timer6 == 0 && fx_114_camKeys[i].frame4 == fx_114_camChanFrames[ch]) {
                 fx_114_camKeys[i].timer6 = *fx_114_camKeys[i].keys0;
@@ -1217,9 +1219,9 @@ static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y
         }
         gte_stlvnl(m.t);
         gte_rtps();
-        code = 0x38;
-        if (abr != 0xFF) {
-            code = 0x3A;
+        code = GPU_POLY_G4;
+        if (abr != BTLFX_ABR_OPAQUE) {
+            code = GPU_POLY_G4 | GPU_ABE;
         }
         gte_stszotz(&otz);
         if (rot->pad != 0) {
