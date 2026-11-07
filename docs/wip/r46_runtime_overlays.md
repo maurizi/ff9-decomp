@@ -1,5 +1,12 @@
 # R46: runtime questions from the last-literals pass over the overlays
 
+**Status: answered and applied (R46 runtime pass, docs/runtime-findings.md).** 1 `FLD_SAKAGUCHI_CREDIT_TIM`; 2
+`WM_WEATHER_TRENO_DUSK_*` / `_TRENO_NIGHT_*` / `_OEILVERT_DUSK_*`; 3 `WM_NAVI_SOUTH_GATE_FIRST` / `_LAST`,
+`WM_NAVI_NORTH_GATE_2`; 4 `WM_TOPO_BEACH_GRASS` / `WM_TOPO_SHORE_SNOW` (medium); 5 partly: `WM_FX_GROUND_GLOW` (28),
+`WM_FX_CHOCOBO_STEP` (9), `WM_FX_CHEST_LAND` (8), `WM_FX_FLY_TRAIL` (0), `WM_FX_ARRIVE_PUFF` (1) applied with their
+confidence in the comment; 2, 4, 5, 13, 24, 29 (and 11, 12, 17, 21, never spawned) still numeric: not reached at
+runtime. The table keeps the names as they were when asked.
+
 Round R46 (overlays: ovl_0a, 0c, 0d, 14, 15, 32-3e, 65) named fixed-point 1.0 as `ONE`, sizes and loop bounds as
 `sizeof` / `ARRAY_COUNT` / `PARTY_SIZE` / `EQUIP_SLOT_COUNT`, the world sounds' SE ids (`SE_WM_*`, ovl_0c.h), the
 world map's streaming counts (`WM_CHUNK_GRID`, `WM_CHUNK_BUFFERS`, `WM_BLOCK_SLOTS`, `WM_READTX_BUFFERS`), the weather

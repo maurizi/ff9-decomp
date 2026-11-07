@@ -1,5 +1,11 @@
 # R46 core (main / ovl_0b / ovl_64): literals left for a runtime check
 
+**Status: answered and applied (R46 runtime pass, docs/runtime-findings.md).** 1 `BTL_RIGHT_HAND_BONE_*` (right hand;
+Cinna, Marcus, Blank, Beatrix inferred); 2 `SE_BTL_JUMP_LEAP` / `SE_BTL_SPEAR_RETURN` (snd_ids.h, medium); 3
+`UI_RGB_AP_BAR_MASTERED`; 4 `BTLFX_CAST_MODE_WHITE_OUT` / `_BLACK_OUT` / `_DIM_ALL` (unused by summons) / `_DIM_PARTY`; 5
+`UI_RGB_HELP_FILL` comment; 6 `GS_MODE_UNUSED_5` / `_6`; 7 `BTLFX_COMMON_SPRITES` (ovl_0b.h). The table keeps the
+names as they were when asked.
+
 Round R46 named the last literals of the core area by what the code does. The rows below say what would confirm or
 correct the part the code can't prove. ovl_0b addresses are valid while a battle runs (`battle_iifa_start`,
 `battle_iifa_command` on disc 1; `tools/rt/enter_battle.py` on disc 3). States: `docs/emulator.md`.

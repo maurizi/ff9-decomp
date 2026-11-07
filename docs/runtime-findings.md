@@ -5109,7 +5109,7 @@ Method: PCSX-Redux, disc 1 (`field_worldmap_ice_exit`), disc 3 (`cpass_wm_hadris
 
 New state: disc 3 `r45_wm_gorge_bridge` (walker next to the natural bridge, cell 16,14).
 
-## R46 runtime pass  (status: proposed)
+## R46 runtime pass  (status: applied; high and medium names applied, the three low wm_spawnEffect names applied but kept "runtime: pending" (sprites not seen); wm_spawnEffect 2, 4, 5, 13, 24, 29 left numeric: not reached)
 
 Questions: docs/wip/r46_runtime_core.md (core 1-7) and docs/wip/r46_runtime_overlays.md (ovl 1-5). PCSX-Redux on 8080,
 2026-11-06, disc 3 (battle, world) and disc 1 (menus, field). Scripts and screenshots in `build/r46rt/`. No breakpoints

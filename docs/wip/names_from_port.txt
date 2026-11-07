@@ -11682,3 +11682,19 @@ TEXANIM_LAST_FRAME_NONE TEXANIM_FORCE_UPLOAD  # [code] R46 integration: ovl_0a's
 # moved (R46 integration): MBG_INIT_ONE_BUF / MBG_INIT_TWO_BUFS ovl_64.h -> ff9.h (MBG_init call sites in ovl_0a, ovl_14, ovl_15)
 # new (R46 integration): UI_PAUSE_DIM 0x60 (ff9.h; pause tiles of field/world/battle), BTL_MESH_PRIM_COUNT 8 (ovl_0b.h; fxmod FX_COLD_BREATH_PRIM_KINDS, FX_FROST_POLY_KINDS, FX_DEATH1_SPLIT_GROUPS alias it)
 # changed (R46 integration): fld/wm sound pan-volume depth clamp ONE/0xFFF -> OT_LEN/OT_LAST (the depth is sz/4 + otBias, an OT index)
+BTL_WEAPON_BONE_ZIDANE BTL_RIGHT_HAND_BONE_ZIDANE  # [runtime] R46 Core 1: every weaponBone is the right hand (end of an arm chain); also _GARNET _QUINA _EIKO _FREYA _CINNA _MARCUS _BLANK _DEFAULT (Cinna, Marcus, Blank, Beatrix inferred)
+UI_RGB_AP_BAR_FULL UI_RGB_AP_BAR_MASTERED  # [runtime] R46 Core 3: red bar under the mastered stars (UI_RGB_AP_BAR: green while learning)
+BTLFX_CAST_MODE_FLASH_ADD BTLFX_CAST_MODE_WHITE_OUT  # [runtime] R46 Core 4: Ifrit, Atomos, Bahamut
+BTLFX_CAST_MODE_FLASH_SUB BTLFX_CAST_MODE_BLACK_OUT  # [runtime] R46 Core 4: Ramuh, Odin, Fenrir, Phoenix (DIM_ALL: no summon; DIM_PARTY: Shiva, Leviathan, Ark, Carbuncle, Madeen)
+GS_MODE_FIELD_LIKE GS_MODE_UNUSED_5  # [code+runtime] R46 Core 6: never set (no dispatcher case, overlay table 0xFF, watched)
+GS_MODE_BATTLE_LIKE GS_MODE_UNUSED_6  # [code+runtime] R46 Core 6
+FLD_SPLASH_TIM FLD_SAKAGUCHI_CREDIT_TIM  # [runtime] R46 Overlays 1: "Conceived & Produced by Hironobu Sakaguchi" card
+WM_WEATHER_SUNSET_A_X WM_WEATHER_TRENO_DUSK_X  # [runtime] R46 Overlays 2: rings Treno (also _Z, _R)
+WM_WEATHER_DARK_X WM_WEATHER_TRENO_NIGHT_X  # [runtime] R46 Overlays 2: over Treno (also _Z, _R)
+WM_WEATHER_SUNSET_B_X WM_WEATHER_OEILVERT_DUSK_X  # [runtime] R46 Overlays 2: Oeilvert and the Wind Shrine (also _Z, _R)
+WM_TOPO_BEACH_2 WM_TOPO_BEACH_GRASS  # [runtime] R46 Overlays 4 (medium): beach between grassland and sea
+WM_TOPO_BEACH_3 WM_TOPO_SHORE_SNOW  # [runtime] R46 Overlays 4 (medium): pebble shore in the snowfields
+# new (R46 runtime): SE_BTL_JUMP_LEAP 0x456, SE_BTL_SPEAR_RETURN 0xAC0 (snd_ids.h, medium; btlfx_stepUnitSound)
+# new (R46 runtime): BTLFX_COMMON_SPRITES(type) 0x801E9700 (ovl_0b.h; btlfx_getCommonSprite: FILE_BTLFX_COMMON +0x4800 read back from VRAM)
+# new (R46 runtime): WM_NAVI_SOUTH_GATE_FIRST 6 / _LAST 10, WM_NAVI_NORTH_GATE_2 15 (ovl_0c.h; wm_naviUpdate page-1 skips)
+# new (R46 runtime): WM_FX_GROUND_GLOW 28 (high), WM_FX_CHOCOBO_STEP 9 (medium), WM_FX_CHEST_LAND 8, WM_FX_FLY_TRAIL 0, WM_FX_ARRIVE_PUFF 1 (low) (ovl_0c.h)
