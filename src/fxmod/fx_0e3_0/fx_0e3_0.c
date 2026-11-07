@@ -15,8 +15,8 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
     if (bright < 0) {
         bright = 0x1000;
     }
-    if (n > 1000) {
-        n -= 999;
+    if (n > FX_BAHAMUT_RIBBON_CLEAR + 1) {
+        n -= FX_BAHAMUT_RIBBON_CLEAR;
         for (i = 0; i < n; i++) {
             buf[i].a0.pad = 0;
         }
@@ -40,7 +40,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
     n = i;
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + n);
-    col.cd = abr == 0xFF ? 0x3C : 0x3E;
+    col.cd = abr == BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 : GPU_POLY_GT4 | GPU_ABE;
     w--;
     h--;
     tpage |= TPAGE_ABR(abr);
@@ -236,7 +236,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         init->elemFn = (s32)fx_0e3_0_op80PoolTask;
         init->poolCount = FX_BAHAMUT_PUFF_SLOTS;
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_BAHAMUT_STATE_SWOOP;
         work->frame4 = 0;
         fx_0e3_0_env = env;
         ex->btlfx_initEffModels(fx_0e3_0_effModels, FX_BAHAMUT_MODEL_COUNT);
@@ -265,7 +265,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     frame = entry->frame;
     {
     switch (work->state0) {
-    case 0: {
+    case FX_BAHAMUT_STATE_SWOOP: {
         SVECTOR rot;
         VECTOR sc;
         VECTOR pos;
@@ -273,19 +273,19 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         VECTOR sc2;
         VECTOR pos2;
 
-        t = (frame << 12) / 69;
-        if (frame < 0xC) {
-            s32 flash = (ex->math_cos((frame << 10) / 12) * 0xFF) >> 12;
+        t = (frame << 12) / FX_BAHAMUT_SWOOP_FRAMES;
+        if (frame < FX_BAHAMUT_INTRO_FLASH_FRAMES) {
+            s32 flash = (ex->math_cos((frame << 10) / FX_BAHAMUT_INTRO_FLASH_FRAMES) * 0xFF) >> 12;
 
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);
         }
-        if (frame >= 0x18) {
-            if (frame == 0x18) {
+        if (frame >= FX_BAHAMUT_SWOOP_FRAME) {
+            if (frame == FX_BAHAMUT_SWOOP_FRAME) {
                 ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180, SUMMON(env)->summonModel60);
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
             }
-            swoopFrame = frame - 0x18;
-            ph = (swoopFrame << 12) / 45;
+            swoopFrame = frame - FX_BAHAMUT_SWOOP_FRAME;
+            ph = (swoopFrame << 12) / (FX_BAHAMUT_SWOOP_FRAMES - FX_BAHAMUT_SWOOP_FRAME);
             bang = (ex->math_sin(((ph >> 1) * 3) / 2) >> 3) + 0x800;
             rad = (((0x1000 - ph) * 0x4B0) >> 12) + 0x18;
             if (ph < 0xC00) {
@@ -306,9 +306,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             nbolt = 1;
             ex->Hi_ModifySummonModelRGB(SUMMON(env)->summonModel60, (ex->math_cos(ph >> 2) >> 5) - 0x80,
                                         (ex->math_cos(ph >> 2) >> 5) - 0x80, (ex->math_cos(ph >> 2) >> 5) - 0x80);
-            if (frame == 0x2C) {
+            if (frame == FX_BAHAMUT_TRAILS_FRAME) {
                 work->trailReset50 = nbolt;
-            } else if (frame >= 0x2D) {
+            } else if (frame >= FX_BAHAMUT_TRAILS_FRAME + 1) {
                 trail = 0x1000;
             }
         }
@@ -318,7 +318,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         pos.vz = work->basePos8.vz;
         rot.vz = 0;
         rot.vx = 0;
-        for (wave = 0; wave < 9; wave++, ringPhase += 0x1C7, ringAng += 0x1FF) {
+        for (wave = 0; wave < FX_BAHAMUT_CLOUD_RINGS; wave++, ringPhase += 0x1C7, ringAng += 0x1FF) {
             ph = ringPhase;
             if (ph >= 0x1000) {
                 wraps = 2;
@@ -343,7 +343,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_ModifyEffModelRGB(work->model64, tmp, tmp, tmp);
             }
         }
-        if (((frame & 1) && frame < 0x23) || frame >= 0x23) {
+        if (((frame & 1) && frame < FX_BAHAMUT_PUFF_EVERY_FRAME) || frame >= FX_BAHAMUT_PUFF_EVERY_FRAME) {
             puff = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (puff != NULL) {
                 puff->pos0.vx = work->basePos8.vx + ex->btlfx_randCentered(0x800);
@@ -376,11 +376,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[2].vx = work->pos30.vx;
         env->camera->points[2].vy = work->pos30.vy;
         env->camera->points[2].vz = work->pos30.vz;
-        if (frame < 0x2E) {
+        if (frame < FX_BAHAMUT_WHITE_FADE_FRAMES) {
             SVECTOR vec;
 
             {
-                s32 tint = 0x96 - (frame * 0x96) / 46;
+                s32 tint = 0x96 - (frame * 0x96) / FX_BAHAMUT_WHITE_FADE_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x200), BTLFX_ABR_ADD, tint, tint, tint);
             }
             BTLFX_COPY_SVEC(&vec, &work->basePos8);
@@ -389,8 +389,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_RINGS), &vec, NULL, 0x1800, 0, BTLFX_ABR_ADD, ex->math_cos(t >> 2));
             env->otZ = 0;
         }
-        if (frame >= 0x45) {
-            work->state0 = 10;
+        if (frame >= FX_BAHAMUT_SWOOP_FRAMES) {
+            work->state0 = FX_BAHAMUT_STATE_RISE;
             entry->frame = -1;
             ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion184, SUMMON(env)->summonModel60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
@@ -411,16 +411,16 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         break;
     }
-    case 10: {
-        t = (frame << 12) / 24;
+    case FX_BAHAMUT_STATE_RISE: {
+        t = (frame << 12) / FX_BAHAMUT_RISE_FRAMES;
         if (frame == 0) {
             ex->btlfx_poolClear(entry->pool);
             work->trailReset50 = 1;
         }
-        if (frame < 0x11) {
+        if (frame < FX_BAHAMUT_RISE_CLIMB_FRAME) {
             rise = (frame << 5) - 0x1800;
         } else {
-            rise = (frame - 0x10) * 0x1DB - 0x1600;
+            rise = (frame - (FX_BAHAMUT_RISE_CLIMB_FRAME - 1)) * 0x1DB - 0x1600;
         }
         work->summonPos10.vy = work->basePos8.vy + rise - 0x400;
         work->summonPos10.vx = work->basePos8.vx;
@@ -441,7 +441,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->pos30.vx = work->summonPos10.vx;
         work->pos30.vy = work->summonPos10.vy;
         work->pos30.vz = work->summonPos10.vz;
-        if (frame < 0x10) {
+        if (frame < FX_BAHAMUT_RISE_TILT_FRAMES) {
             dang = (frame << 10) >> 4;
             work->pos30.vy = -ex->math_sin(dang);
             work->pos30.vx = ex->math_sin(dang) >> 2;
@@ -462,8 +462,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[1].vy = work->pos30.vy;
         trail = 0x1000;
         env->camera->points[1].vz = work->pos30.vz;
-        if (frame >= 0x18) {
-            work->state0 = 1;
+        if (frame >= FX_BAHAMUT_RISE_FRAMES) {
+            work->state0 = FX_BAHAMUT_STATE_DIVE;
             entry->frame = -1;
             ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180, SUMMON(env)->summonModel60);
             work->summonScale1C.vx = -0x3000;
@@ -494,7 +494,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         break;
     }
-    case 1: {
+    case FX_BAHAMUT_STATE_DIVE: {
         fade = 0;
         work->pos30.vz -= 0x10;
         trail = 0x1000;
@@ -505,15 +505,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (work->summonPos10.vz > -0xC000) {
             work->summonPos10.vz -= 0x1300;
         }
-        ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0xA);
+        ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, FX_BAHAMUT_DIVE_MOT_FRAME);
         ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, SUMMON(env)->summonModel60, nbolt);
         ex->Hi_ModifySummonModelRGB(SUMMON(env)->summonModel60, -0x20, -0x20, -0x20);
-        if (frame >= 0xE) {
+        if (frame >= FX_BAHAMUT_PILLAR_FRAME) {
             SVECTOR rot;
             VECTOR sc;
             VECTOR pos;
 
-            tmp = ((frame - 0xE) << 12) / 10;
+            tmp = ((frame - FX_BAHAMUT_PILLAR_FRAME) << 12) / FX_BAHAMUT_PILLAR_FRAMES;
             pillarSin = ex->math_sin(tmp >> 1);
             rot.vx = 0;
             rot.vy = 0;
@@ -534,8 +534,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_ModifyEffModelRGB(work->model54, pillarRgb, pillarRgb, pillarRgb);
             }
         }
-        if (frame >= 0xE) {
-            gridT = frame - 0xE;
+        if (frame >= FX_BAHAMUT_PILLAR_FRAME) {
+            gridT = frame - FX_BAHAMUT_PILLAR_FRAME;
             if (gridT < 0x10) {
                 union { CVECTOR c1; s32 w[2]; } cu;
                 SVECTOR rot3;
@@ -552,8 +552,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot3, &sc3, &cu.c1, 1, 0);
             }
         }
-        if (frame >= 0x18) {
-            work->state0 = 2;
+        if (frame >= FX_BAHAMUT_DIVE_FRAMES) {
+            work->state0 = FX_BAHAMUT_STATE_HOVER;
             entry->frame = -1;
             work->summonPos10.vx = fx_0e3_0_origin.vx;
             work->summonPos10.vy = fx_0e3_0_origin.vy;
@@ -572,9 +572,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         break;
     }
-    case 2: {
+    case FX_BAHAMUT_STATE_HOVER: {
         nbolt = 2;
-        t = (frame << 12) / 26;
+        t = (frame << 12) / FX_BAHAMUT_HOVER_FRAMES;
         if (frame == 0) {
             work->rot88.vx = 0x400;
             work->scale9C.vx = 0x1000;
@@ -604,12 +604,12 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, SUMMON(env)->summonModel60, 0);
         summonRgb = ((((t * 3) >> 2) + 0x400) >> 5) - 0x80;
         ex->Hi_ModifySummonModelRGB(SUMMON(env)->summonModel60, summonRgb, summonRgb, summonRgb);
-        if (frame >= 0x1A) {
-            work->state0 = 4;
+        if (frame >= FX_BAHAMUT_HOVER_FRAMES) {
+            work->state0 = FX_BAHAMUT_STATE_CHARGE;
             entry->frame = -1;
             work->unk48 = 0;
             ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion18C, SUMMON(env)->summonModel60);
-            ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0xA);
+            ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, FX_BAHAMUT_CHARGE_MOT_FRAME);
             work->pos30.vy = -0x4966;
             work->pos30.vx = 0;
             work->pos30.vz = 0x3DAF;
@@ -619,7 +619,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         break;
     }
-    case 4:
+    case FX_BAHAMUT_STATE_CHARGE:
         switch (frame) {
         default: {
         SVECTOR vec;
@@ -628,7 +628,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         s32 ang;
         s32 amp4;
 
-        t = (frame << 12) / 30;
+        t = (frame << 12) / FX_BAHAMUT_CHARGE_FRAMES;
         nbolt = 3;
         fade = 0x1000;
         work->pos90.vx = work->summonPos10.vx;
@@ -653,15 +653,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fx_0e3_0_angleJitter = 0x180;
         ang = work->frame4 * 0x180;
         amp4 = 0x37;
-        for (arc4 = 0; arc4 < 2; arc4++) {
+        for (arc4 = 0; arc4 < FX_BAHAMUT_MOUTH_ARCS; arc4++) {
             ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[arc4], (u16 *)&vec);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[arc4], (BtlBone *)&boneMat);
-            ex->btlfx_matrixPointAhead(&boneMat, 0x398, (s32)&ahead);
+            ex->btlfx_matrixPointAhead(&boneMat, FX_BAHAMUT_ARC_REACH, (s32)&ahead);
             fxm_drawOffsetTrail0(entry, (Fx0e30Bolt *)&fx_0e3_0_arcs[arc4], &vec, &ahead, amp4, amp4, ang, 0x200, 0,
                           ex->btlfx_randCentered(0x400) + 0xC00);
         }
-        if (frame >= 0x1E) {
-            work->state0 = 5;
+        if (frame >= FX_BAHAMUT_CHARGE_FRAMES) {
+            work->state0 = FX_BAHAMUT_STATE_BLAST;
             entry->frame = -1;
             ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion194, SUMMON(env)->summonModel60);
             ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, 0, (u16 *)&work->pos40);
@@ -672,7 +672,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         }
         break;
-    case 5: {
+    case FX_BAHAMUT_STATE_BLAST: {
         SVECTOR vec;
         SVECTOR ba;
         SVECTOR bb;
@@ -690,7 +690,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         SVECTOR rot3;
         VECTOR sc3;
 
-        t = (frame << 12) / 65;
+        t = (frame << 12) / FX_BAHAMUT_BLAST_FRAMES;
         if (frame == 0) {
             work->rot88.vx = 0x400;
             work->scale9C.vx = 0x1000;
@@ -703,22 +703,22 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos90.vz = work->summonPos10.vz;
             work->pos90.vy -= 0x1000;
         }
-        if (frame < 2) {
+        if (frame < FX_BAHAMUT_HOLD_FRAMES) {
             ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
         }
-        if (frame < 0x14) {
+        if (frame < FX_BAHAMUT_CONE_FRAME) {
             fade = 0x1000;
         } else {
-            fade = 0x1000 - ((frame - 0x14) << 11) / 45;
+            fade = 0x1000 - ((frame - FX_BAHAMUT_CONE_FRAME) << 11) / (FX_BAHAMUT_BLAST_FRAMES - FX_BAHAMUT_CONE_FRAME);
         }
         work->rot88.vz += 2;
-        if (frame == 7) {
+        if (frame == FX_BAHAMUT_SPARKS_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SPARKS), (s32)&work->pos40);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
         }
-        if (frame == 0xC) {
+        if (frame == FX_BAHAMUT_FIRE_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), (s32)&work->pos40);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
@@ -728,7 +728,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->btlfx_matrixPointAhead((MATRIX *)&ba, 0x18, (s32)&work->pos38);
         ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&rot2);
         ex->btlfx_matrixAngles((MATRIX *)&rot2, (s16 *)&vec);
-        if (frame == 0xC) {
+        if (frame == FX_BAHAMUT_FIRE_FRAME) {
             work->emit4C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_SPARKS), (s32)&work->pos38);
             if (work->emit4C != NULL) {
                 work->emit4C->otZ = 0x80;
@@ -741,20 +741,20 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, 0, (u16 *)&work->pos30);
         work->pos30.vy -= 0x200;
-        if (frame >= 5) {
-            work->pos30.vy += 0x80 + ((ex->math_sin((((frame - 4) << 12) / 61) >> 2) * 0x180) >> 12);
+        if (frame >= FX_BAHAMUT_CAM_SWAY_FRAME) {
+            work->pos30.vy += 0x80 + ((ex->math_sin((((frame - (FX_BAHAMUT_CAM_SWAY_FRAME - 1)) << 12) / (FX_BAHAMUT_BLAST_FRAMES - (FX_BAHAMUT_CAM_SWAY_FRAME - 1))) >> 2) * 0x180) >> 12);
         } else {
             work->pos30.vy += frame << 5;
         }
         BTLFX_COPY_SVEC(&vec, &work->pos30);
-        if ((u32)(frame - 0x1C) < 7) {
-            vec.vx += (ex->math_cos(((frame - 0x1C) << 12) >> 5) >> 7) * ((frame & 1) * 2 - 1);
+        if ((u32)(frame - FX_BAHAMUT_IMPACT_FRAME) < FX_BAHAMUT_SHAKE_FRAMES) {
+            vec.vx += (ex->math_cos(((frame - FX_BAHAMUT_IMPACT_FRAME) << 12) >> 5) >> 7) * ((frame & 1) * 2 - 1);
         }
         env->camera->points[2].vx = vec.vx;
         env->camera->points[2].vy = vec.vy;
         env->camera->points[2].vz = vec.vz;
         ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, SUMMON(env)->summonModel60, 0);
-        if (frame < 0xC) {
+        if (frame < FX_BAHAMUT_FIRE_FRAME) {
             s32 ang;
             s32 amp5;
 
@@ -763,24 +763,24 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             fx_0e3_0_angleJitter = 0x180;
             ang = work->frame4 * 0x180;
             amp5 = 0x37;
-            for (arc5 = 0; arc5 < 2; arc5++) {
+            for (arc5 = 0; arc5 < FX_BAHAMUT_MOUTH_ARCS; arc5++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[arc5], (u16 *)&ba);
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[arc5], (BtlBone *)&bm);
-                ex->btlfx_matrixPointAhead(&bm, 0x398, (s32)&bb);
+                ex->btlfx_matrixPointAhead(&bm, FX_BAHAMUT_ARC_REACH, (s32)&bb);
                 fxm_drawOffsetTrail0(entry, (Fx0e30Bolt *)&fx_0e3_0_arcs[arc5], &ba, &bb, amp5, amp5, ang, 0x200, 0,
                               ex->btlfx_randCentered(0x400) + 0xC00);
             }
         }
-        if (frame >= 0xC) {
+        if (frame >= FX_BAHAMUT_FIRE_FRAME) {
             s32 ang;
             s32 cnt;
             s32 amp;
 
-            cnt = 4;
+            cnt = FX_BAHAMUT_ARCS_FEW;
             amp = ((t * 0x180) >> 12) + 0x20;
             ang = work->frame4 << 8;
-            if (frame >= 0x19) {
-                cnt = 6;
+            if (frame >= FX_BAHAMUT_ARCS_MANY_FRAME) {
+                cnt = FX_BAHAMUT_ARCS_MANY;
             }
             fx_0e3_0_alongJitter = 0x180;
             fx_0e3_0_ampJitter = 0x80;
@@ -792,11 +792,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                               ex->btlfx_randCentered(0x400) + 0xC00);
             }
         }
-        if (frame == 0x16) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x5C, 0x5C, 0x5C);
+        if (frame == FX_BAHAMUT_FLASH_FRAME) {
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_BAHAMUT_FLASH_RGB);
         }
-        if (frame >= 0x14) {
-            coneAng = (((frame - 0x14) << 12) / 45) >> 2;
+        if (frame >= FX_BAHAMUT_CONE_FRAME) {
+            coneAng = (((frame - FX_BAHAMUT_CONE_FRAME) << 12) / (FX_BAHAMUT_BLAST_FRAMES - FX_BAHAMUT_CONE_FRAME)) >> 2;
             glow = ex->math_cos(coneAng) / 3 + 0x200;
             rot2.vx = 0x800;
             rot2.vy = 0;
@@ -809,7 +809,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sc2.vy = ex->math_cos(coneAng) >> 2;
             coneWidth = ex->math_sin(coneAng) * 4 + 0x800;
             tmp = (glow >> 5) - 0x80;
-            for (ring = 0; ring < 9; ring++) {
+            for (ring = 0; ring < FX_BAHAMUT_CONE_RINGS; ring++) {
                 sc2.vx = sc2.vz = ((ex->math_sin((ring << 11) >> 3) + 0x800) * coneWidth) >> 12;
                 pos2.vy -= 0x11F;
                 ex->Hi_DrawEffModel(&rot2, &pos2, (s32)&sc2, work->model58);
@@ -817,11 +817,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot2.vy += 0x366;
             }
         }
-        if (frame >= 0x18) {
+        if (frame >= FX_BAHAMUT_BOLTS_FRAME) {
             s32 amp;
             s32 boltPhase;
 
-            boltPhase = (((frame - 0x18) << 12) / 41) >> 2;
+            boltPhase = (((frame - FX_BAHAMUT_BOLTS_FRAME) << 12) / (FX_BAHAMUT_BLAST_FRAMES - FX_BAHAMUT_BOLTS_FRAME)) >> 2;
             halfLen = ex->math_sin(boltPhase) * 2;
             from.vx = work->summonPos10.vx;
             from.vy = work->summonPos10.vy;
@@ -833,15 +833,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             to.vy += halfLen;
             amp = (ex->math_sin(boltPhase) >> 1) + 0x180;
             cosAng = boltPhase;
-            for (side = 0, sign = -1, boltAng = work->frame4 * 0x9B - 0x400; side < 2; sign += 2, side++, boltAng += 0x400) {
+            for (side = 0, sign = -1, boltAng = work->frame4 * 0x9B - 0x400; side < FX_BAHAMUT_BOLTS; sign += 2, side++, boltAng += 0x400) {
                 boltFade = ex->math_cos(cosAng) + ex->btlfx_randCentered(0x400);
                 fxm_drawOffsetTrail1(entry, (s32)&mid, &fx_0e3_0_bolts[side], &from, &to, amp, boltAng * sign,
                               ((ex->math_cos(cosAng) >> 5) + 0x100) >> 1, 0, boltFade);
             }
         }
-        if (frame >= 0x1C) {
-            s32 xq = frame - 0x1C;
-            xq = (xq << 12) / 37;
+        if (frame >= FX_BAHAMUT_IMPACT_FRAME) {
+            s32 xq = frame - FX_BAHAMUT_IMPACT_FRAME;
+            xq = (xq << 12) / (FX_BAHAMUT_BLAST_FRAMES - FX_BAHAMUT_IMPACT_FRAME);
             gridBright = (ex->math_cos(xq >> 2) * 0x57) >> 12;
             col.r = col.g = col.b = gridBright;
             sc3.vy = sc3.vx = 0x1200 - (xq >> 3);
@@ -851,7 +851,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot3.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot3, &sc3, &col, 1, 0);
         }
-        if (frame >= 0x41) {
+        if (frame >= FX_BAHAMUT_BLAST_FRAMES) {
             done = 1;
         }
         break;
@@ -875,7 +875,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (u16 *)&vec);
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (u16 *)&ahead);
-                fxm_drawTexRibbonTrail(&vec, &ahead, 0x3F6, 0, 0, 0, 0, 0, 0, 0, fx_0e3_0_ribbons[j], 1, 0);
+                fxm_drawTexRibbonTrail(&vec, &ahead, FX_BAHAMUT_RIBBON_CLEAR + FX_BAHAMUT_RIBBON_SEGMENTS, 0, 0, 0, 0, 0, 0, 0, fx_0e3_0_ribbons[j], 1, 0);
             }
             for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[j], (u16 *)&vec);
@@ -885,15 +885,16 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (BtlBone *)&boneMat);
-            ex->btlfx_matrixPointAhead(&boneMat, (fx_0e3_0_ribbonBones[j + 4].edgeA0 * work->summonScale1C.vy) >> 12, (s32)&vec);
+            ex->btlfx_matrixPointAhead(&boneMat, (fx_0e3_0_ribbonBones[j + FX_BAHAMUT_RIBBONS].edgeA0 * work->summonScale1C.vy) >> 12, (s32)&vec);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (BtlBone *)&boneMatB);
-            ex->btlfx_matrixPointAhead(&boneMatB, (fx_0e3_0_ribbonBones[j + 4].edgeB2 * work->summonScale1C.vy) >> 12, (s32)&ahead);
-            fxm_drawTexRibbonTrail(&vec, &ahead, 0xE, FX_BAHAMUT_RIBBON_TPAGE, FX_BAHAMUT_RIBBON_CLUT, FX_BAHAMUT_RIBBON_U, FX_BAHAMUT_RIBBON_V, 0x40, 0x80, trail >> 5, fx_0e3_0_ribbons[j], 1,
+            ex->btlfx_matrixPointAhead(&boneMatB, (fx_0e3_0_ribbonBones[j + FX_BAHAMUT_RIBBONS].edgeB2 * work->summonScale1C.vy) >> 12, (s32)&ahead);
+            fxm_drawTexRibbonTrail(&vec, &ahead, FX_BAHAMUT_RIBBON_SEGMENTS - 1, FX_BAHAMUT_RIBBON_TPAGE, FX_BAHAMUT_RIBBON_CLUT, FX_BAHAMUT_RIBBON_U,
+                          FX_BAHAMUT_RIBBON_V, FX_BAHAMUT_RIBBON_W, FX_BAHAMUT_RIBBON_H, trail >> 5, fx_0e3_0_ribbons[j], 1,
                           10000 - work->frame4);
         }
         for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[j], (BtlBone *)&trailMat);
-            ex->btlfx_matrixPointAhead(&trailMat, (fx_0e3_0_trailBones[j + 4] * work->summonScale1C.vy) >> 12, (s32)&vec);
+            ex->btlfx_matrixPointAhead(&trailMat, (fx_0e3_0_trailBones[j + FX_BAHAMUT_RIBBONS] * work->summonScale1C.vy) >> 12, (s32)&vec);
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WING_TRAIL), (s32)&vec, 0, 0, 0x2000, trail, BTLFX_ABR_ADD,
                                 fx_0e3_0_strips[j], 0);
         }

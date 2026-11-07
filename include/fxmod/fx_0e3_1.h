@@ -43,7 +43,7 @@
 #define FX_BAHAMUT_CLOUD_SPHERE       0x85 /* summon data: 'so' model, sphere with a blue-white cloud texture, drawn fading at the end (same entry as fx_0e3_0's) */
 
 /* fx_0e3_1 choreography (docs/fxdata.md, "Choreography literals"; partial: the work size, strip shapes, bone count
- * and primitive words; op80's state machine is still numeric). */
+ * and primitive words; op80's state machine: deep pass below). */
 #define FX_BAHAMUT_ARC_POINTS       13   /* points of a WHITE_BOLT arc (Fx0e31Bolt13), */
 #define FX_BAHAMUT_ARC_WIDTH        0x1C /* their width */
 #define FX_BAHAMUT_SPARK_POINTS     5    /* points of a WHITE_BOLT_2 spark (Fx0e31Bolt5), */
@@ -51,6 +51,71 @@
 #define FX_BAHAMUT_BOLT_POINTS      57   /* points of a PURPLE_BOLT strip (Fx0e31Bolt) */
 #define FX_BAHAMUT_LIGHTNING_POINTS 13   /* points of a LIGHTNING_BOLT strip */
 #define FX_BAHAMUT_SUMMON_BONES     92   /* the summon model's bones: random arc ends (Hi_GetSummonBonePos(rand() % this)) */
+
+/* fx_0e3_1 deep pass: op80's six states (Bahamut's charge and the blast at the target), their keys, the bolt / pillar
+ * counts and the cylinder helper. */
+#define FX_BAHAMUT_STATE_RAISE      0    /* op80 state: Bahamut rears up, the camera on its hand bone (0x3D) */
+#define FX_BAHAMUT_STATE_CHARGE     1    /* the charge at the hand: CLOUD_SPHERE, FIRE_RING_BURST, ENERGY_ORBS, arcs, rings, LENS_FLARE */
+#define FX_BAHAMUT_STATE_FIRE       2    /* the shot leaves: BLUE_SLIVER, GREY_CONE, PURPLE_BOLTs with branches, SMOKE_ARC_2 discs */
+#define FX_BAHAMUT_STATE_STRIKE     3    /* the bolts reach the target */
+#define FX_BAHAMUT_STATE_IMPACT     4    /* flash, quake, FIRE_DOME burst, BLUE_SPARKS */
+#define FX_BAHAMUT_STATE_EXPLODE    5    /* the explosion: smoke core, rising cylinders, SMOKE_RING column, FIRE_RING pillars, bolts (op80 ends) */
+#define FX_BAHAMUT_RAISE_FRAMES     35
+#define FX_BAHAMUT_HAND_REACH       0x5C /* the charge point lies this far ahead along the hand bone */
+#define FX_BAHAMUT_CHARGE_FRAMES    0x30 /* CHARGE's length (and CHARGE_RINGS' sine ramp) */
+#define FX_BAHAMUT_SPHERE_IN_FRAMES 6    /* CHARGE: CLOUD_SPHERE fades in, */
+#define FX_BAHAMUT_SPHERE_END_FRAME 0x2C /* then out by this frame */
+#define FX_BAHAMUT_ORBS_FRAME       0x10 /* CHARGE: ENERGY_ORBS start; the charge arcs and VIOLET_RINGS from here */
+#define FX_BAHAMUT_CHARGE_ARCS      6    /* CHARGE: at most this many arcs a frame (a sine of it) */
+#define FX_BAHAMUT_PURPLE_GLOW_FRAME 0x26 /* CHARGE: PURPLE_GLOW starts */
+#define FX_BAHAMUT_SPIN_RING_FRAME  0x28 /* CHARGE: SPIN_RING from here */
+#define FX_BAHAMUT_FLARE_FRAME      0x2B /* CHARGE: WHITE_FLASH_RING and LENS_FLARE grow from here to the end */
+#define FX_BAHAMUT_RED_FLASH_FRAME  0x2F /* CHARGE: an opaque red tint */
+#define FX_BAHAMUT_FIRE_FRAMES      28
+#define FX_BAHAMUT_SWING_FRAME      0xE  /* FIRE: the blue tint grows and the camera target swings back from here to the end, */
+#define FX_BAHAMUT_SWING_BASE_FRAME 0x12 /* about the point fixed at this frame (it follows the hand before) */
+#define FX_BAHAMUT_CONE_FRAMES      0x18 /* FIRE: GREY_CONE drawn (a quarter sine) until this frame */
+#define FX_BAHAMUT_BEAM_BOLTS       3    /* FIRE / STRIKE / IMPACT: PURPLE_BOLTs (fx_0e3_1_bolts), */
+#define FX_BAHAMUT_BOLT_BRANCHES    4    /* each with this many WHITE_BOLT_2 branches */
+#define FX_BAHAMUT_DISC_FRAMES      0x21 /* FIRE: the SMOKE_ARC_2 discs drawn until this frame, */
+#define FX_BAHAMUT_DISC_COPIES      3    /* each frame this many, shrinking */
+#define FX_BAHAMUT_FLASH_RING_FRAMES 0x10 /* FIRE: WHITE_FLASH_RING, BLUE_RINGS, SPARKLE_RING and LENS_FLARE fade over these frames */
+#define FX_BAHAMUT_STRIKE_FRAMES    2
+#define FX_BAHAMUT_IMPACT_FRAMES    0xE
+#define FX_BAHAMUT_IMPACT_FLASH_FRAME 4  /* IMPACT: the blue tint fades before it; flash, BLUE_SLIVER blown up, the FIRE_DOME burst from here */
+#define FX_BAHAMUT_BURST_FRAMES     10   /* IMPACT: the burst and BLUE_RINGS run this long */
+#define FX_BAHAMUT_QUAKE_FRAME      5    /* IMPACT: the explosion sounds, then the quake */
+#define FX_BAHAMUT_QUAKE_FRAMES     7
+#define FX_BAHAMUT_EXPLODE_FRAMES   77
+#define FX_BAHAMUT_WHITE_FRAME      2    /* EXPLODE: darken before it, a white flash on it, */
+#define FX_BAHAMUT_WHITE_FADE_FRAMES 16  /* fading over this many frames after */
+#define FX_BAHAMUT_RED_TINT_1_FRAME 0x14 /* EXPLODE: three additive red flashes */
+#define FX_BAHAMUT_RED_TINT_1_RGB   0xD7, 0x64, 0x64
+#define FX_BAHAMUT_RED_TINT_2_FRAME 0x1D
+#define FX_BAHAMUT_RED_TINT_2_RGB   0x97, 0x4D, 0x4D
+#define FX_BAHAMUT_RED_TINT_3_FRAME 0x20
+#define FX_BAHAMUT_RED_TINT_3_RGB   0x80, 0x40, 0x40
+#define FX_BAHAMUT_CORE_FRAMES      0x49 /* EXPLODE: SMOKE_SHELL and FLAME_STRIP (the core) drawn until this frame */
+#define FX_BAHAMUT_CORE_IN_FRAMES   7    /* the core shrinks in over these frames, then grows */
+#define FX_BAHAMUT_CORE_FLASH_FRAME 5    /* EXPLODE: a blue flash over CORE_FLASH_FRAMES */
+#define FX_BAHAMUT_CORE_FLASH_FRAMES 7
+#define FX_BAHAMUT_AFTERGLOW_FRAME  0x3B /* EXPLODE: RED_STRIP fades from here to the end */
+#define FX_BAHAMUT_COLUMN_FRAMES    0x41 /* EXPLODE: the SMOKE_RING column drawn until this frame */
+#define FX_BAHAMUT_PILLARS          6    /* EXPLODE: FIRE_RING pillars, */
+#define FX_BAHAMUT_PILLAR_STEP      7    /* one every this many frames, */
+#define FX_BAHAMUT_PILLAR_LIFE      0x20 /* each this long, */
+#define FX_BAHAMUT_PILLAR_RISE_FRAMES 4  /* rising over these frames */
+#define FX_BAHAMUT_DOME_FLASH_FRAMES 0x10 /* EXPLODE: FIRE_DOME flash */
+#define FX_BAHAMUT_COLUMN_BOLTS     2    /* EXPLODE: PURPLE_BOLTs up the column, opposite each other, */
+#define FX_BAHAMUT_THIRD_BOLT_FRAMES 0x26 /* and the third until this frame */
+#define FX_BAHAMUT_LIGHTNINGS       5    /* EXPLODE: LIGHTNING_BOLTs around the core */
+#define FX_BAHAMUT_EMBERS_FRAME     0x31 /* EXPLODE: EMBERS_2 start */
+#define FX_BAHAMUT_CYL_TPAGE        0x1D   /* fxm_drawTexCylinder texture: 4-bit page (0x340, 0x100), abr 0 */
+#define FX_BAHAMUT_CYL_CLUT         0x3E81 /* CLUT at (0x10, 0xFA) */
+#define FX_BAHAMUT_CYL_U            0
+#define FX_BAHAMUT_CYL_V            0xC0
+#define FX_BAHAMUT_CYL_ROWS         3    /* fxm_drawTexCylinder: quad rings */
+#define FX_BAHAMUT_CYL_COLS         16   /* quads per ring: gouraud at the first and last quad, flat between */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
@@ -167,6 +232,6 @@ typedef struct {
 
 extern SVECTOR fx_0e3_1_origin;
 extern Fx0e31Bolt13 fx_0e3_1_arcs[];
-extern Fx0e31Bolt fx_0e3_1_bolts[3];
+extern Fx0e31Bolt fx_0e3_1_bolts[FX_BAHAMUT_BEAM_BOLTS];
 
 #endif

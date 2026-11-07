@@ -60,8 +60,8 @@
 #define FX_IFRIT_SUMMON_POS_PATH_22  0x96 /* summon data entry 22: position path (fxm_posPathInit) */
 
 /* fx_114 choreography (docs/fxdata.md, "Choreography literals"): op80's camera shots and Ifrit's motion keys, the
- * ops' sizes and lengths, trail buffers, model textures and the scrolled flame rect. The op80 effect keys inside
- * the shots and ops 81 .. 83 are still numeric. */
+ * ops' sizes and lengths, trail buffers, model textures and the scrolled flame rect (the keys inside the shots and
+ * ops 81 .. 85: deep pass below). */
 #define FX_IFRIT_MODEL_SLOTS        0x20  /* btlfx_initEffModels slots */
 #define FX_IFRIT_SHOT1_FRAME        0x2F  /* op80: camera shot 1 (position tracks 16 / 15); shot 0 (paths 22 / 10) before it */
 #define FX_IFRIT_MOTION_1_FRAME     0x30  /* summon motion 1 */
@@ -77,7 +77,7 @@
 #define FX_IFRIT_OP81_FRAMES        0x14  /* op81's length */
 #define FX_IFRIT_OP82_FRAMES        0x1E  /* op82's length */
 #define FX_IFRIT_OP83_FRAMES        0x3C  /* op83's length */
-#define FX_IFRIT_OP85_FRAMES        0x10  /* op85's length */
+#define FX_IFRIT_OP85_FRAMES        FX_IFRIT_WHITE_FADE_FRAMES /* op85's length */
 #define FX_IFRIT_FLAME_TPAGE        0x9A   /* Hi_RegisterTexEffModel texture of FIRE_COLUMN, FLAME_DOME, FLAME_RING: 8-bit page (0x280, 0x100), abr 0 */
 #define FX_IFRIT_FLAME_CLUT         0x3DC0 /* CLUT at (0x0, 0xF7) */
 #define FX_IFRIT_FLAME_U            0      /* texture origin (u, v) in the page */
@@ -96,6 +96,82 @@
 #define FX_IFRIT_FLAME_VRAM_H       0x80
 #define FX_IFRIT_FLAME_SRC_X        0x240 /* from this source */
 #define FX_IFRIT_FLAME_SRC_Y        0x100
+
+/* fx_114 deep pass: the keys inside op80's shots and ops 81 .. 85 (countdown fields, the lengths written into
+ * them, draw windows, piece counts). */
+#define FX_IFRIT_STAND_Z            (-0x4B0) /* op80: z of Ifrit's spot (body, glow grid, bowl, canopy, pillars, rings, camera point 0 of shot 0) */
+#define FX_IFRIT_TRACK_LEAD         0x10  /* op80: the summon data paths / tracks are read at frame + 0x10 (frame168 starts there for shots 0 and 4) */
+#define FX_IFRIT_FIREBALL_FRAMES    0x2C  /* FIREBALL drawn (spinning, EMBERS following it) until this frame; then freed, EMBERS stop, EMBER_TRAIL starts */
+#define FX_IFRIT_BOWL_FRAME         0x28  /* FIRE_RING starts; GOURAUD_BOWL drawn from here, fading out (timer172) */
+#define FX_IFRIT_BOWL_FADE_FRAMES   6     /* timer172: GOURAUD_BOWL fades to black */
+#define FX_IFRIT_BOWL_END_FRAME     (FX_IFRIT_BOWL_FRAME + FX_IFRIT_BOWL_FADE_FRAMES) /* GOURAUD_BOWL freed */
+#define FX_IFRIT_PILLAR_FRAME       0x29  /* CANOPY, FIRE_COLUMN and CYLINDER drawn, BACKDROP layers (frame - this) and the flame scroll from here */
+#define FX_IFRIT_FLASH_FRAME        0x2A  /* timer16E: the screen whitens (additive tint 0 -> 0xFF) */
+#define FX_IFRIT_FLASH_FRAMES       6     /* timer16E / timer170: flash in, then out */
+#define FX_IFRIT_FLASH_OUT_FRAME    (FX_IFRIT_FLASH_FRAME + FX_IFRIT_FLASH_FRAMES) /* timer170: the white fades back */
+#define FX_IFRIT_PILLAR_FADE_FRAME  0x36  /* timer174 / timer176: CANOPY and the two pillar models fade out */
+#define FX_IFRIT_PILLAR_FADE_FRAMES 0xD
+#define FX_IFRIT_PILLAR_END_FRAME   (FX_IFRIT_PILLAR_FADE_FRAME + FX_IFRIT_PILLAR_FADE_FRAMES) /* the pillar window ends, CANOPY freed */
+#define FX_IFRIT_HEAT_FRAME         0x30  /* the heat tint (subtractive grey + additive orange) from here */
+#define FX_IFRIT_HEAT_PULSE_FRAMES  16    /* its orange pulses with this period (frame / 16 & 1, frame % 16) */
+#define FX_IFRIT_HEAT_R             0x40  /* additive orange at the pulse's peak */
+#define FX_IFRIT_HEAT_G             0x20
+#define FX_IFRIT_HEAT_DARKEN        0x40  /* the subtractive grey under it */
+#define FX_IFRIT_HEAT_FADE_FRAME    0xE3  /* the heat tint fades out (pulsing already stopped at SHOT4_END_FRAME) */
+#define FX_IFRIT_HEAT_FADE_FRAMES   16
+#define FX_IFRIT_HEAT_END_FRAME     (FX_IFRIT_HEAT_FADE_FRAME + FX_IFRIT_HEAT_FADE_FRAMES)
+#define FX_IFRIT_BODY_FRAMES        0xA8  /* Ifrit (rising along SUMMON_POS_PATH_20) and its glow grid drawn, shaded, until this frame; the swirls stop */
+#define FX_IFRIT_BODY_SHADE         0x20  /* Hi_ModifySummonModelRGB of Ifrit under the heat tint */
+#define FX_IFRIT_GLOW_TPAGE         0x11A /* fxm_drawTexelQuadsB under Ifrit: 15-bit page (0x280, 0x100) */
+#define FX_IFRIT_GLOW_X             0
+#define FX_IFRIT_GLOW_Y             0xC0
+#define FX_IFRIT_GLOW_COLS          2     /* frames per row */
+#define FX_IFRIT_GLOW_FRAMES        8     /* frame / CYCLE % 8: frames, one per pulse */
+#define FX_IFRIT_GLOW_CYCLE_FRAMES  16    /* one pulse: brightens over 8 frames, dims over 8 */
+#define FX_IFRIT_GLOW_CELL          0x100 /* grid cell size */
+#define FX_IFRIT_GLOW_GRID          0x10  /* grid cells (and frame texels) per side */
+#define FX_IFRIT_SWIRLS             4     /* the FLAME_SWIRL emitters, each pinned to one of Ifrit's bones (fx_114_pinBones) */
+#define FX_IFRIT_SWIRL_FRAME        0x7B  /* the four FLAME_SWIRLs start (the frame after shot 3) */
+#define FX_IFRIT_SWIRL_PIN_END_FRAME 0xB7 /* the pin points follow Ifrit's bones until this frame */
+#define FX_IFRIT_ZOOM_FRAME         0xA2  /* op80: the screen grid zooms in, the projection distance shrinks, until BODY_FRAMES */
+#define FX_IFRIT_PROJ_DIST          0x208 /* the zooms' projection distance at their first frame */
+#define FX_IFRIT_OP81_FRAME         1     /* op81: ROCK_RINGS and FLAME_LINE start at Ifrit's bone 0x1B; GOURAUD_BOWL drawn, fading out */
+#define FX_IFRIT_OP81_FADE_FRAMES   0xC   /* timer44 */
+#define FX_IFRIT_OP81_END_FRAME     (FX_IFRIT_OP81_FRAME + FX_IFRIT_OP81_FADE_FRAMES) /* bowl freed, emitters stop */
+#define FX_IFRIT_HAZE_FRAMES        0x1D  /* op82: WHITE_HAZE drawn, then freed */
+#define FX_IFRIT_CLUSTER_FREE_FRAME 18    /* op82: BLOCK_CLUSTER freed (never drawn in op82) */
+#define FX_IFRIT_HAZE_VRAM_X        0x1C0 /* btlfx_drawBgOffscreen rect: WHITE_HAZE's texture (page 0x117) */
+#define FX_IFRIT_HAZE_VRAM_Y        0x100
+#define FX_IFRIT_HAZE_VRAM_W        0x80
+#define FX_IFRIT_HAZE_VRAM_H        0xA0
+#define FX_IFRIT_OP82_RING_FRAME    9     /* op82: ORANGE_RING_2 starts */
+#define FX_IFRIT_TRAILS_FRAME       8     /* op82: the FIRE_TRAILs drawn along their paths, growing 2 points a frame */
+#define FX_IFRIT_TRAILS_FRAMES      10
+#define FX_IFRIT_TRAIL_COUNT        13    /* FIRE_TRAILs, one per TRAIL_PATHS entry */
+#define FX_IFRIT_TRAIL_BYTES        0x50  /* fx_114_op82Trails: buffer per trail */
+#define FX_IFRIT_TRAIL_FADE_IN_FRAMES  4  /* timer60, from TRAILS_FRAME */
+#define FX_IFRIT_TRAIL_FADE_OUT_FRAME  2  /* timer62 set here, but it only counts inside the trail window, so it overrides the fade-in from TRAILS_FRAME */
+#define FX_IFRIT_TRAIL_FADE_OUT_FRAMES 6
+#define FX_IFRIT_OP82_ZOOM_FRAME    0xE   /* op82: the screen grid zoom (as op80's) */
+#define FX_IFRIT_OP82_ZOOM_FRAMES   4
+#define FX_IFRIT_TARGET_Z           0x320 /* ops 82 / 83: z of the impact point (haze, crater pieces, dome, rings) */
+#define FX_IFRIT_ROCK_PIECES        23    /* op83: crater pieces (PIECE_MODELS / PIECE_TRACKS entries; model118[1..]) */
+#define FX_IFRIT_RINGS_FRAME        3     /* op83: ORANGE_RINGS start */
+#define FX_IFRIT_DOME_FRAME         4     /* op83: HEAT_DOME, FLAME_DOME and FLAME_RING drawn (tracks at frame - this) */
+#define FX_IFRIT_DOME_FADE_IN_FRAMES 3    /* timer110: FLAME_DOME fades in */
+#define FX_IFRIT_RING_FADE_IN_FRAMES 6    /* timer114: FLAME_RING fades in */
+#define FX_IFRIT_DOME_FADE_FRAME    0x15  /* timer10E / 112 / 116: all three fade out */
+#define FX_IFRIT_DOME_FADE_FRAMES   0x10
+#define FX_IFRIT_DOME_END_FRAME     (FX_IFRIT_DOME_FADE_FRAME + FX_IFRIT_DOME_FADE_FRAMES)
+#define FX_IFRIT_ROCKS_FRAME        6     /* op83: SPOKED_RING and the crater pieces drawn until ROCKS_END_FRAME */
+#define FX_IFRIT_ROCKS_END_FRAME    0x14
+#define FX_IFRIT_ROCK_DELAY         2     /* piece time = frame - this (track keys, launch frames frame0) */
+#define FX_IFRIT_ROCK_SPIN_FRAMES   2     /* a launched piece spins for this many frames */
+#define FX_IFRIT_ROCK_FLY_FRAMES    30    /* launch speed = distance from the crater / this */
+#define FX_IFRIT_ROCK_FLOOR_Y       0x32  /* a piece below this height has landed (done2) */
+#define FX_IFRIT_WHITE_FADE_FRAMES  0x10  /* op85: the screen fades from white */
+#define FX_IFRIT_CAM_KEY_SLOTS      64    /* fx_114_camKeys: camera key tracks (fxm_camChanAdd / fxm_camChanUpdate; unused by the ops) */
+#define FX_IFRIT_CAM_CHANNELS       4     /* fx_114_camChanFrames: frame counters per channel */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -185,7 +261,7 @@ extern Unk800F78A4 *fx_114_env;
 extern Fx114Wave fx_114_pathTrail;
 extern Fx114Track6 fx_114_vecTrack3; /* scale keys */
 extern u32 fx_114_bgOt[];
-extern u8 fx_114_op82Trails[13][0x50];
+extern u8 fx_114_op82Trails[FX_IFRIT_TRAIL_COUNT][FX_IFRIT_TRAIL_BYTES];
 
 s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
@@ -302,7 +378,7 @@ typedef struct {
     s16 timer112;
     s16 timer114;
     s16 timer116;
-    u16 model118[24]; /* models */
+    u16 model118[1 + FX_IFRIT_ROCK_PIECES]; /* SPOKED_RING, the crater pieces */
     u16 model148;
     u16 model14A;
     u16 model14C;
@@ -442,7 +518,7 @@ extern Fx114Track6 fx_114_vecTrack0;
 extern Fx114Track6 fx_114_vecTrack1;
 extern Fx114Track6 fx_114_vecTrack2;
 extern SVECTOR fx_114_emitPos0;
-extern SVECTOR fx_114_emitPos1[4];
+extern SVECTOR fx_114_emitPos1[FX_IFRIT_SWIRLS];
 extern u8 fx_114_op80Trails1[];
 extern u8 fx_114_op80Trails2[];
 extern u8 fx_114_op80Trails3[];

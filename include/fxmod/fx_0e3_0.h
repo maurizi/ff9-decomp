@@ -21,7 +21,7 @@
 #define FX_BAHAMUT_SMOKE_ARC       0x86 /* summon data: 'so' model, curved band with a grey smoke texture, stacked nine times as a cone */
 
 /* fx_0e3_0 choreography (docs/fxdata.md, "Choreography literals"; partial: the sizes, buffers, strip shapes, ribbon
- * texture and primitive words; op80's state machine is still numeric). */
+ * texture and primitive words; op80's state machine: deep pass below). */
 #define FX_BAHAMUT_PUFF_SLOTS     0xC  /* op80 pool items (Fx0e30Puff) */
 #define FX_BAHAMUT_MODEL_COUNT    0x10 /* btlfx_initEffModels slots */
 #define FX_BAHAMUT_ARC_POINTS     13   /* points of a WHITE_BOLT arc (fxm_drawOffsetTrail0, Fx0e30Arc), */
@@ -35,6 +35,53 @@
 #define FX_BAHAMUT_RIBBON_CLUT    0x3D40 /* CLUT at (0x0, 0xF5), */
 #define FX_BAHAMUT_RIBBON_U       0      /* texels from (u, v) */
 #define FX_BAHAMUT_RIBBON_V       0x80
+
+/* fx_0e3_0 deep pass: op80's states (in the order they run: 0, 10, 1, 2, 4, 5), their keys and the ribbon / arc
+ * counts. */
+#define FX_BAHAMUT_RIBBON_W       0x40 /* the ribbon texture's size (texels) */
+#define FX_BAHAMUT_RIBBON_H       0x80
+#define FX_BAHAMUT_RIBBON_CLEAR   999  /* fxm_drawTexRibbonTrail: n > 1000 clears n - this segments instead of drawing */
+#define FX_BAHAMUT_STATE_SWOOP    0    /* op80 state: white fade-in over the TERRAIN core, CLOUD_RINGs rising, TEAL_PUFFs; Bahamut swoops in */
+#define FX_BAHAMUT_STATE_RISE     10   /* Bahamut rises past the camera, growing */
+#define FX_BAHAMUT_STATE_DIVE     1    /* Bahamut flies off (motion frame held), the SMOKE_STRIP pillar, a screen grid */
+#define FX_BAHAMUT_STATE_HOVER    2    /* Bahamut climbs in front of CLOUD_SPHERE, brightening */
+#define FX_BAHAMUT_STATE_CHARGE   4    /* WHITE_BOLT arcs from the mouth bones */
+#define FX_BAHAMUT_STATE_BLAST    5    /* BLUE_SPARKS, BLUE_RINGS, FIRE_SPARKS, the SMOKE_ARC cone, PURPLE_BOLTs, the grid (op80 ends) */
+#define FX_BAHAMUT_SWOOP_FRAMES   69
+#define FX_BAHAMUT_INTRO_FLASH_FRAMES 0xC /* SWOOP: the white flash fades over these frames */
+#define FX_BAHAMUT_SWOOP_FRAME    0x18 /* SWOOP: Bahamut's motion starts, the swoop runs from here to the end */
+#define FX_BAHAMUT_TRAILS_FRAME   0x2C /* SWOOP: the ribbons and wing trails reset here and draw from the frame after */
+#define FX_BAHAMUT_CLOUD_RINGS    9    /* SWOOP: CLOUD_RING copies rising in a staggered wave */
+#define FX_BAHAMUT_PUFF_EVERY_FRAME 0x23 /* SWOOP: a TEAL_PUFF every other frame before this frame, every frame after */
+#define FX_BAHAMUT_WHITE_FADE_FRAMES 0x2E /* SWOOP: the white tint and WHITE_RINGS fade out over these frames */
+#define FX_BAHAMUT_RISE_FRAMES    24
+#define FX_BAHAMUT_RISE_TILT_FRAMES 0x10 /* RISE: the camera tilts up over these frames */
+#define FX_BAHAMUT_RISE_CLIMB_FRAME 0x11 /* RISE: from here Bahamut climbs fast */
+#define FX_BAHAMUT_DIVE_FRAMES    0x18
+#define FX_BAHAMUT_DIVE_MOT_FRAME 0xA  /* DIVE: the motion frame held */
+#define FX_BAHAMUT_PILLAR_FRAME   0xE  /* DIVE: SMOKE_STRIP (the pillar) and the screen grid from here */
+#define FX_BAHAMUT_PILLAR_FRAMES  10   /* the pillar's sine ramp */
+#define FX_BAHAMUT_HOVER_FRAMES   0x1A
+#define FX_BAHAMUT_CHARGE_FRAMES  0x1E
+#define FX_BAHAMUT_CHARGE_MOT_FRAME 0xA /* CHARGE: the motion starts at this frame */
+#define FX_BAHAMUT_MOUTH_ARCS     2    /* CHARGE / BLAST: WHITE_BOLT arcs from fx_0e3_0_trailBones[0..1] */
+#define FX_BAHAMUT_ARC_REACH      0x398 /* to a point this far ahead along the bone */
+#define FX_BAHAMUT_BLAST_FRAMES   0x41
+#define FX_BAHAMUT_HOLD_FRAMES    2    /* BLAST: motion frame 0 held */
+#define FX_BAHAMUT_SPARKS_FRAME   7    /* BLAST: BLUE_SPARKS start */
+#define FX_BAHAMUT_FIRE_FRAME     0xC  /* BLAST: BLUE_RINGS and FIRE_SPARKS start; the mouth arcs give way to random arcs */
+#define FX_BAHAMUT_CAM_SWAY_FRAME 5    /* BLAST: the camera sways from here to the end */
+#define FX_BAHAMUT_CONE_FRAME     0x14 /* BLAST: the SMOKE_ARC cone and CLOUD_SPHERE's fade run from here to the end */
+#define FX_BAHAMUT_CONE_RINGS     9    /* SMOKE_ARC copies stacked as the cone */
+#define FX_BAHAMUT_FLASH_FRAME    0x16 /* BLAST: an additive grey flash, */
+#define FX_BAHAMUT_FLASH_RGB      0x5C, 0x5C, 0x5C
+#define FX_BAHAMUT_BOLTS_FRAME    0x18 /* BLAST: the PURPLE_BOLTs run from here to the end */
+#define FX_BAHAMUT_BOLTS          2    /* fx_0e3_0_bolts: one each side */
+#define FX_BAHAMUT_ARCS_FEW       4    /* BLAST: random arcs a frame, */
+#define FX_BAHAMUT_ARCS_MANY      6    /* from ARCS_MANY_FRAME */
+#define FX_BAHAMUT_ARCS_MANY_FRAME 0x19
+#define FX_BAHAMUT_IMPACT_FRAME   0x1C /* BLAST: the camera shakes for SHAKE_FRAMES, the screen grid fades to the end */
+#define FX_BAHAMUT_SHAKE_FRAMES   7
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
@@ -129,9 +176,9 @@ typedef struct {
 
 extern SVECTOR fx_0e3_0_origin;
 extern s16 fx_0e3_0_trailBones[];
-extern Fx0e30BonePair fx_0e3_0_ribbonBones[8];
+extern Fx0e30BonePair fx_0e3_0_ribbonBones[2 * FX_BAHAMUT_RIBBONS];
 extern Fx0e30Seg fx_0e3_0_ribbons[FX_BAHAMUT_RIBBONS][FX_BAHAMUT_RIBBON_SEGMENTS];
-extern u8 fx_0e3_0_strips[4][0x12C];
+extern u8 fx_0e3_0_strips[FX_BAHAMUT_RIBBONS][0x12C];
 extern Fx0e30Arc fx_0e3_0_arcs[];
 extern Fx0e30Bolt fx_0e3_0_bolts[];
 extern BtlModelBuf fx_0e3_0_effModels[];
