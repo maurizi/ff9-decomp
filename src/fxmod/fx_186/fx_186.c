@@ -12,7 +12,7 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 
     s32 rnd;
 
     if (mode == 1) {
-        rock->state0 = 0;
+        rock->state0 = FX_EARTH_SHAKE_ROCK_STATE_BOB;
         rock->bobVelY6 = ex->btlfx_rand() % 1000 - 400;
         rock->rot14.vx = 0;
         rock->rot14.vy = 0;
@@ -20,9 +20,9 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 
         rock->spin1E = 0;
         rock->spin1C = 0;
     } else {
-        scale.vx = 0x2000;
-        scale.vy = 0x2000;
-        scale.vz = 0x2000;
+        scale.vx = FX_EARTH_SHAKE_ROCK_SCALE;
+        scale.vy = FX_EARTH_SHAKE_ROCK_SCALE;
+        scale.vz = FX_EARTH_SHAKE_ROCK_SCALE;
         pos.vx = rock->posC.vx;
         pos.vy = rock->posC.vy;
         pos.vz = rock->posC.vz;
@@ -30,14 +30,14 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 
         rock->rot14.vx += rock->spin1C;
         rock->rot14.vy += rock->spin1E;
         switch (rock->state0) {
-        case 0:
+        case FX_EARTH_SHAKE_ROCK_STATE_BOB:
             pos.vx = rock->posC.vx;
             pos.vy = rock->posC.vy;
             pos.vz = rock->posC.vz;
             t = frame << 7;
             pos.vy = pos.vy - ((ex->math_sin(t >> 2) * rock->bobVelY6) >> 12) + ((frame & 1) * 2 - 1) * (t >> 7);
-            if (frame >= 0x20) {
-                rock->state0 = 1;
+            if (frame >= FX_EARTH_SHAKE_ROCK_BOB_FRAMES) {
+                rock->state0 = FX_EARTH_SHAKE_ROCK_STATE_FLY;
                 ((s16 *)rock)[-1] = -1;
                 rock->posC.vx -= rock->bobVelY6;
                 rock->spin1C = ex->btlfx_randCentered(8);
@@ -50,8 +50,8 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 
                 rock->velA = rock->posC.vz / 4 + ex->btlfx_randCentered(0x80);
             }
             break;
-        case 1:
-            t = (frame << 12) / 40;
+        case FX_EARTH_SHAKE_ROCK_STATE_FLY:
+            t = (frame << 12) / FX_EARTH_SHAKE_ROCK_FLY_FRAMES;
             alpha -= t;
             rock->posC.vx += rock->vel8 >> 2;
             rock->posC.vz += rock->velA >> 2;
@@ -59,7 +59,7 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 
             rock->velA = rock->velA * 7 >> 3;
             rock->posC.vy += rock->bobVelY6 / 5;
             rock->bobVelY6 += 12;
-            if (frame >= 0x28) {
+            if (frame >= FX_EARTH_SHAKE_ROCK_FLY_FRAMES) {
                 return 1;
             }
             break;
@@ -87,15 +87,15 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        init->workSize = 0x4C;
-        init->elemSize = 0x28;
+        init->workSize = sizeof(Fx186Work80);
+        init->elemSize = sizeof(Fx186Rock);
         init->elemFn = (s32)fx_186_op80PoolTask;
-        init->poolCount = 0xA;
+        init->poolCount = FX_EARTH_SHAKE_ROCK_MODELS;
     } else if (mode == 1) {
-        work->state0 = 3;
+        work->state0 = FX_EARTH_SHAKE_STATE_BG;
         work->frame4 = 0;
         fx_186_env = env;
-        ex->btlfx_initEffModels(fx_186_effModels, 0xC);
+        ex->btlfx_initEffModels(fx_186_effModels, FX_EARTH_SHAKE_ROCK_MODELS + 2);
         work->pos8.vx = 0;
         work->pos8.vy = 0;
         work->pos8.vz = 0;
@@ -109,12 +109,12 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         tint = 0;
         frame = entry->frame;
         switch (work->state0) {
-        case 3:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, fx_186_bgOt, work->pos8.vx, work->pos8.vz, 0xC00);
-            work->state0 = 0;
+        case FX_EARTH_SHAKE_STATE_BG:
+            ex->btlfx_drawBgOffscreen(FX_EARTH_SHAKE_BG_VRAM_X, FX_EARTH_SHAKE_BG_VRAM_Y, FX_EARTH_SHAKE_BG_VRAM_W, FX_EARTH_SHAKE_BG_VRAM_H, fx_186_bgOt, work->pos8.vx, work->pos8.vz, 0xC00);
+            work->state0 = FX_EARTH_SHAKE_STATE_RISE;
             entry->frame = -1;
             break;
-        case 0:
+        case FX_EARTH_SHAKE_STATE_RISE:
             /* gcc 2.8 frees block-scoped stack slots only at the end of a switch; the original reuses each case's
              * slots for the next case, which this one-label switch reproduces. */
             switch (frame) {
@@ -138,23 +138,23 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = work->pos8.vz;
                 env->camera->points[3].vy = (s16)(env->camera->points[3].vy - 0x100) - (t >> 7) * ((frame & 1) * 2 - 1);
                 if (frame == 1) {
-                    for (fill = fx_186_vramSample, k = 0; k < 0x60; k++, fill++) {
+                    for (fill = fx_186_vramSample, k = 0; k < FX_EARTH_SHAKE_SAMPLE_PIXELS; k++, fill++) {
                         *fill = -1;
                     }
-                    rect.x = 0x200;
-                    rect.y = 0x180;
-                    rect.w = 4;
-                    rect.h = 4;
+                    rect.x = FX_EARTH_SHAKE_PROBE_0_X;
+                    rect.y = FX_EARTH_SHAKE_PROBE_0_Y;
+                    rect.w = FX_EARTH_SHAKE_PROBE_SIZE;
+                    rect.h = FX_EARTH_SHAKE_PROBE_SIZE;
                     ex->StoreImage(&rect, (u32 *)fx_186_vramSample);
-                    rect.x = 0x27C;
-                    rect.y = 0x180;
-                    rect.w = 4;
-                    rect.h = 4;
+                    rect.x = FX_EARTH_SHAKE_PROBE_1_X;
+                    rect.y = FX_EARTH_SHAKE_PROBE_1_Y;
+                    rect.w = FX_EARTH_SHAKE_PROBE_SIZE;
+                    rect.h = FX_EARTH_SHAKE_PROBE_SIZE;
                     ex->StoreImage(&rect, (u32 *)fx_186_vramSample + 0x10);
-                    rect.x = 0x240;
-                    rect.y = 0x1EC;
-                    rect.w = 4;
-                    rect.h = 4;
+                    rect.x = FX_EARTH_SHAKE_PROBE_2_X;
+                    rect.y = FX_EARTH_SHAKE_PROBE_2_Y;
+                    rect.w = FX_EARTH_SHAKE_PROBE_SIZE;
+                    rect.h = FX_EARTH_SHAKE_PROBE_SIZE;
                     ex->StoreImage(&rect, (u32 *)fx_186_vramSample + 0x30);
                 }
                 ringScale = (t + 0x1000) >> 2;
@@ -166,7 +166,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vx = -0x400;
                 rot.vy = 0;
                 rot.vz = frame * 16;
-                for (i = 0; i < 6; i++) {
+                for (i = 0; i < FX_EARTH_SHAKE_ARCH_COPIES; i++) {
                     scale.vx = scale.vy = (ringScale * ((ex->math_sin((i << 10) / 5) >> 1) + 0x800)) >> 12;
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model44);
                     ex->Hi_ModifyEffModelRGB(work->model44, (ex->math_sin(t >> 2) >> 5) - 0x80,
@@ -178,22 +178,22 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                     pulseAng = ((frame + 4) << 12) / 20;
                     pulseAng >>= 2;
-                    scale.vz = 0x2000;
-                    scale.vx = 0x2000;
+                    scale.vz = FX_EARTH_SHAKE_ROCK_SCALE;
+                    scale.vx = FX_EARTH_SHAKE_ROCK_SCALE;
                     scale.vy = ex->math_sin(pulseAng) * 2 + 0x1000;
                     rot.vz = 0;
                     rot.vy = 0;
                     rot.vx = 0;
                     pos.vz = 0;
                     pos.vx = 0;
-                    pos.vy = 0x5AE;
+                    pos.vy = FX_EARTH_SHAKE_RUBBLE_Y;
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model48);
                     ex->Hi_ModifyEffModelAbr(work->model48, BTLFX_ABR_ADD);
                     ex->Hi_ModifyEffModelRGB(work->model48, (ex->math_sin(pulseAng) >> 5) - 0x80, (ex->math_sin(pulseAng) >> 5) - 0x80,
                                              (ex->math_sin(pulseAng) >> 5) - 0x80);
-                    ex->btlfx_drawScrollMove(frame * 16, 0x2C0, 0x180, 0x20, 0x80, 0x2E0, 0x180);
+                    ex->btlfx_drawScrollMove(frame * 16, FX_EARTH_SHAKE_SMOKE_VRAM_X, FX_EARTH_SHAKE_SMOKE_VRAM_Y, FX_EARTH_SHAKE_SMOKE_VRAM_W, FX_EARTH_SHAKE_SMOKE_VRAM_H, FX_EARTH_SHAKE_SMOKE_SRC_X, FX_EARTH_SHAKE_SMOKE_SRC_Y);
                 }
-                if (frame >= 9) {
+                if (frame >= FX_EARTH_SHAKE_RINGS_FRAME) {
                     rot2.vx = 0x400;
                     rot2.vy = 0;
                     rot2.vz = 0;
@@ -205,16 +205,16 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_CYAN_RING), &work->pos8, &rot2,
                                       ex->math_sin(ang >> 2) >> 1, 0, BTLFX_ABR_ADD, ex->math_sin(ang >> 2));
                 }
-                if (frame >= 0x10) {
-                    work->state0 = 1;
+                if (frame >= FX_EARTH_SHAKE_RISE_FRAMES) {
+                    work->state0 = FX_EARTH_SHAKE_STATE_BURST;
                     entry->frame = -1;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
-                    for (blankCount = 0, pixel = fx_186_vramSample, k = 0; k < 0x60; k++, pixel++) {
+                    for (blankCount = 0, pixel = fx_186_vramSample, k = 0; k < FX_EARTH_SHAKE_SAMPLE_PIXELS; k++, pixel++) {
                         if (*pixel == 0) {
                             blankCount++;
                         }
                     }
-                    for (i = 0; i < 10; i++) {
+                    for (i = 0; i < FX_EARTH_SHAKE_ROCK_MODELS; i++) {
                         if (blankCount != 0) {
                             work->model1C[i] =
                                 ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_186_modelFileIds1[i]), 0);
@@ -227,7 +227,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             }
             break;
-        case 1:
+        case FX_EARTH_SHAKE_STATE_BURST:
             switch (frame) {
             default: {
                 VECTOR pos;
@@ -253,12 +253,12 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (work->emit18 != NULL) {
                         work->emit18->otZ = 0x100;
                     }
-                    for (j = 0; j < 25; j++) {
+                    for (j = 0; j < FX_EARTH_SHAKE_ROCK_SPAWNS; j++) {
                         rock = ex->btlfx_poolSpawn((s16 *)entry->pool);
                         if (rock != NULL) {
                             rock->model20 = work->model1C[j];
                             rock->posC.vx = work->pos8.vx;
-                            rock->posC.vy = work->pos8.vy + 0x5AE;
+                            rock->posC.vy = work->pos8.vy + FX_EARTH_SHAKE_RUBBLE_Y;
                             rock->posC.vz = work->pos8.vz;
                         }
                     }
@@ -266,12 +266,12 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (work->emit18 != NULL && work->emit18->state == BTLFX_EMIT_DONE) {
                     work->emit18 = NULL;
                 }
-                if (frame < 4) {
+                if (frame < FX_EARTH_SHAKE_FLASH_FRAMES) {
                     flash = 0xFF - ((frame * 0xFF) >> 2);
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);
                 }
-                if (frame < 0x18) {
-                    t = (frame << 12) / 24;
+                if (frame < FX_EARTH_SHAKE_ARCH_FRAMES) {
+                    t = (frame << 12) / FX_EARTH_SHAKE_ARCH_FRAMES;
                     scale.vz = t * 2 + 0x600;
                     ringScale = (t >> 2) + 0x800;
                     pos.vx = work->pos8.vx;
@@ -282,7 +282,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot.vx = -0x400;
                     rot.vy = 0;
                     rot.vz = frame * 16 + 0x100;
-                    for (i = 0; i < 6; i++) {
+                    for (i = 0; i < FX_EARTH_SHAKE_ARCH_COPIES; i++) {
                         scale.vx = scale.vy = (ringScale * ((ex->math_sin((i << 10) / 5) >> 1) + 0x800)) >> 12;
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model44);
                         ex->Hi_ModifyEffModelRGB(work->model44, (ex->math_cos(ang) >> 5) - 0x80,
@@ -302,20 +302,20 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                       ex->math_cos((frame << 8) >> 2));
                     env->otZ = 0;
                 }
-                if (frame >= 0x20) {
-                    work->state0 = 2;
+                if (frame >= FX_EARTH_SHAKE_BURST_FRAMES) {
+                    work->state0 = FX_EARTH_SHAKE_STATE_SETTLE;
                     entry->frame = -1;
                     ex->btlfx_stopEmitter(work->emit18);
                 }
             }
             }
             break;
-        case 2: {
+        case FX_EARTH_SHAKE_STATE_SETTLE: {
             s32 flash;
             Pool6CEntry *emitter;
 
-            t = (frame << 12) / 40;
-            tint = 0x89;
+            t = (frame << 12) / FX_EARTH_SHAKE_SETTLE_FRAMES;
+            tint = FX_EARTH_SHAKE_GRID_TINT;
             if (frame == 1) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_ROCK_DEBRIS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
@@ -333,8 +333,8 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 flash = 0x80 - (((frame - 1) << 7) >> 3);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);
             }
-            if (frame >= 0x28) {
-                work->state0 = 3;
+            if (frame >= FX_EARTH_SHAKE_SETTLE_FRAMES) {
+                work->state0 = FX_EARTH_SHAKE_STATE_BG;
                 return 1;
             }
             break;
@@ -371,7 +371,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 w1;
 
     if (mode == 0) {
-        *args = 0x10C;
+        *args = sizeof(Fx186Work81);
     } else if (mode == 1) {
         fx_186_env = env;
         {
@@ -381,7 +381,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
              * compares qty numbers instead of positions), giving %hi(fx_186_env) v0 and env->targets v1. */
             if (n != 0) unit = 0;
             unit = 0;
-            work->state0 = 0;
+            work->state0 = FX_EARTH_SHAKE_TOSS_STATE_SHAKE;
             work->count104 = n;
             if (n <= 0) {
                 return 0;
@@ -401,7 +401,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_EARTH_SHAKE_TOSS_STATE_SHAKE:
             t = frame << 7;
             for (i = 0; i < work->count104; i++) {
                 w1 = ((s32 *)&work->pos4[i])[1];
@@ -411,13 +411,13 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 unitPos.vy -= (t >> 4) + (ex->btlfx_rand() & 0x7F);
                 ex->btlfx_setUnitPos(i, (s16 *)&unitPos);
             }
-            if (frame >= 0x20) {
-                work->state0 = 1;
+            if (frame >= FX_EARTH_SHAKE_TOSS_SHAKE_FRAMES) {
+                work->state0 = FX_EARTH_SHAKE_TOSS_STATE_TOSS;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 40;
+        case FX_EARTH_SHAKE_TOSS_STATE_TOSS:
+            t = (frame << 12) / FX_EARTH_SHAKE_TOSS_FRAMES;
             for (i = 0; i < work->count104; i++) {
                 w1 = ((s32 *)&work->pos4[i])[1];
                 w0 = ((s32 *)&work->pos4[i])[0];
@@ -430,27 +430,27 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->rotC4[i].vz += work->spin84[i].vz;
                 ex->btlfx_setUnitRot(i, (s16 *)&work->rotC4[i]);
             }
-            if (frame >= 0x28) {
+            if (frame >= FX_EARTH_SHAKE_TOSS_FRAMES) {
                 for (i = 0; i < work->count104; i++) {
                     ex->btlfx_setUnitRot(i, (s16 *)&work->rot44[i]);
                     ex->btlfx_getUnitHomePos(i, (s16 *)&unitPos);
                     ex->btlfx_setUnitPos(i, (s16 *)&unitPos);
                 }
-                work->state0 = 2;
+                work->state0 = FX_EARTH_SHAKE_TOSS_STATE_RING;
                 entry->frame = -1;
             }
             break;
-        case 2:
+        case FX_EARTH_SHAKE_TOSS_STATE_RING:
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            t = (frame << 12) / 7;
+            t = (frame << 12) / FX_EARTH_SHAKE_TOSS_RING_FRAMES;
             for (i = 0; i < work->count104; i++) {
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_GREY_RING), &work->pos4[i], &rot, 0x1000, frame, BTLFX_ABR_ADD,
                                   ex->math_cos(t >> 2));
             }
-            if (frame >= 7) {
+            if (frame >= FX_EARTH_SHAKE_TOSS_RING_FRAMES) {
                 return 1;
             }
             break;

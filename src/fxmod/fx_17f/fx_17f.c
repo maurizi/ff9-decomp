@@ -5,7 +5,7 @@ void fx_17f_op80MeltVertex(SVECTOR *v, s32 i) {
     if (v->vy < 0) {
         v->vy = 0;
     }
-    if (v->vy < 0x1E) {
+    if (v->vy < FX_MELT_SPREAD_HEIGHT) {
         v->vx = v->vx * 0x5C / 90;
         v->vz = (s16)(v->vz - 0xC8) * 0x5C / 90 + 0xC8;
     }
@@ -20,7 +20,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 fade;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx17fWork);
     } else if (mode == 1) {
         fx_17f_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos20);
@@ -42,26 +42,26 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vx = (work->pos20.vx + work->posC.vx) / 2;
         work->pos20.vy = (work->pos20.vy + work->posC.vy) / 2 - 0x11C;
         work->pos20.vz = (work->pos20.vz + work->posC.vz) / 2;
-        for (i = 0; i < 0x2BC; i++) {
+        for (i = 0; i < FX_MELT_VERTICES; i++) {
             fx_17f_vertexDrops[i] = (ex->btlfx_rand() & 7) + 4;
         }
     } else {
         frame = entry->frame;
         ex->btl_forEachModelVertex(work->model1C, fx_17f_op80MeltVertex);
-        if (frame >= 0x37) {
-            fade = 0x80 - (frame - 0x37) * 8;
+        if (frame >= FX_MELT_FADE_FRAME) {
+            fade = 0x80 - (frame - FX_MELT_FADE_FRAME) * 8;
             if (fade < 0x10) {
                 fade = 0x10;
             }
             ex->btlfx_fadeUnitById(BTLFX_UNIT_PARTNER, fade);
         }
-        if (frame == 3) {
+        if (frame == FX_MELT_SPLASH_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_SPLASH), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
         }
-        if (frame == 6) {
+        if (frame == FX_MELT_BLOB_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_BLOB), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
@@ -71,17 +71,17 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter->otZ = 0x80;
             }
         }
-        if (frame == 0x1C) {
+        if (frame == FX_MELT_RIPPLE_FRAME) {
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_BLOB_2), (s32)&work->posC);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MELT_GOO_RIPPLE), (s32)&work->posC);
         }
         work->pos20.vy += 5;
-        if (frame >= 0x47) {
+        if (frame >= FX_MELT_FRAMES) {
             ex->btlfx_fadeUnitById(BTLFX_UNIT_PARTNER, -1);
             ex->btlfx_swapModelData(0xE, fx_17f_modelBackup);
             work->posC.vx = 0;
             work->posC.vy = 0;
-            work->posC.vz = 0x3A98;
+            work->posC.vz = FX_MELT_HIDE_Z;
             ex->btlfx_setUnitPos(BTLFX_UNIT_PARTNER, (s16 *)&work->posC);
             return 1;
         }
