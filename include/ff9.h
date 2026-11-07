@@ -2432,6 +2432,8 @@ extern s32 g_padPortMask[];
 #define HP_MAX 9999 /* max HP (chr_calcMaxHp, chr_calcEquipStats) */
 #define MP_MAX 999 /* max MP (chr_calcMaxMp, chr_calcEquipStats) */
 #define STAT_MAX 99 /* strength and magic cap (chr_calcBaseStrength / Magic, btl_calcCmd BTL_FORMULA_STRENGTH_UP / MAGIC_UP) */
+#define SPEED_SPIRIT_MAX 50 /* speed and spirit cap (chr_calcBaseSpeed / Spirit) */
+#define STONES_MAX 99 /* magic stones cap (chr_calcMaxStones) */
 #define DEF_STAT_MAX 999 /* attack, defence, evade, magic defence, magic evade (chr_calcEquipStats) */
 #define DAMAGE_MAX 9999 /* cap on one HP or MP change, damage or healing (btl_calcCmd, the fieldCalc_* item formulas) */
 #define RECORD_MAX 9999 /* tallies: card wins/losses/draws, GameData.stealCount, GameData.dragonKills */

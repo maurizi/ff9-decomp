@@ -264,6 +264,11 @@
  * back when its elapsed-time reading wrapped */
 #define AKAO_TICK_RCNT_TARGET 0x44E8
 
+/* akao_uploadSeBank / akao_sendCmdEC: SPU destination of a resident one-shot sound (the effect sound bank btlfx_loadSoundBank
+ * uploads, AKAO_CMD_STREAM_PLAY_ONE_SHOT data): the battle SE bank area, or 40 KB above it with upper != 0 */
+#define AKAO_SPU_RESIDENT_LO 0x4F100
+#define AKAO_SPU_RESIDENT_HI 0x59100
+
 /* SPU registers (psx-spx names) */
 #define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(SPU_VOICE_BASE + (r) + (v) * 16))

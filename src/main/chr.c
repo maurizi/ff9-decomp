@@ -682,8 +682,8 @@ s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
         chr->equipBonus[0] += chr_sumEquipBonus(chr->equip, 0);
     }
     stat = cls->speed + lv / 10 + (chr->equipBonus[0] >> 5);
-    if (stat >= 51) {
-        stat = 50;
+    if (stat >= SPEED_SPIRIT_MAX + 1) {
+        stat = SPEED_SPIRIT_MAX;
     }
     return stat;
 }
@@ -742,8 +742,8 @@ s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
         bonus[3] += extra + chr_sumEquipBonus(chr->equip, 3);
     }
     stat = cls->spirit + lv * 3 / 20 + (bonus[3] >> 5);
-    if (stat >= 51) {
-        stat = 50;
+    if (stat >= SPEED_SPIRIT_MAX + 1) {
+        stat = SPEED_SPIRIT_MAX;
     }
     return stat;
 }
@@ -764,8 +764,8 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
         bonus[4] += extra;
     }
     stat = cls->stones + lv * 4 / 10 + (bonus[4] >> 5);
-    if (stat >= 100) {
-        stat = 99;
+    if (stat >= STONES_MAX + 1) {
+        stat = STONES_MAX;
     }
     return stat;
 }
