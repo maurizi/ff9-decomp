@@ -11677,3 +11677,5 @@ CHOCO_WM_PICTURE_X WM_CHOCOGRAPH_PICTURE_X  # [runtime] R44
 CHOCO_WM_PICTURE_Y WM_CHOCOGRAPH_PICTURE_Y  # [runtime] R44
 # new (R44, ff9.h): MENU_HELP_MARGIN_X 0xC (ovl_33 menuAbility_updateHelp, ovl_37 menuItem_updateHelp)
 WM_NOCACHE_RIVER_GORGE_X WM_NOCACHE_RIVER_BRIDGE_X  # [runtime] R45: a natural stone bridge (also _Z, _R)
+TEXANIM_LAST_FRAME_NONE TEXANIM_FORCE_UPLOAD  # [code] R46 integration: ovl_0a's name for ff9.h's TexAnim.lastFrame sentinel; one name everywhere
+# moved (R46 integration): STORY_GARNET_HAIRCUT 10300 ovl_0a.h -> ff9.h (also main chr_calcAppearance)

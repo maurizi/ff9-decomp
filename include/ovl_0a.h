@@ -1739,11 +1739,5 @@ s32 preload_update(void); /* main */
 s32 tpage_getX(s32 tpage); /* main */
 s32 tpage_getY(s16 tpage); /* main */
 s32 vib_update(void); /* main */
-/* TexAnim.lastFrame (ff9.h): no frame uploaded yet, so the next update uploads whatever frame pos is on (also main
- * event.c and ovl_0b write 0x1000 there) */
-#define TEXANIM_LAST_FRAME_NONE 0x1000
-/* story counter (g_evtGlobalVars.h[0]) from which Garnet has short hair: main chr_calcAppearance (CHR_KIND_GARNET_SHORT,
- * written 10300 there) and fld_remapModelId */
-#define STORY_GARNET_HAIRCUT 10300
 
 #endif

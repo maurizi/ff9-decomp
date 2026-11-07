@@ -160,7 +160,7 @@ s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
     case CHR_VIVI:
         return CHR_KIND_VIVI;
     case CHR_DAGGER:
-        if ((u16)g_evtGlobalVars.h[0] >= 10300) {
+        if ((u16)g_evtGlobalVars.h[0] >= STORY_GARNET_HAIRCUT) {
             result = CHR_KIND_GARNET_SHORT;
             if (k == ITEM_ICON_RACKET) {
                 result = CHR_KIND_GARNET_SHORT_RACKET;

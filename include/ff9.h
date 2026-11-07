@@ -1900,6 +1900,8 @@ extern EventVars g_evtGlobalVars;
 #define STORY_DISC4 0x2AF3
 #define STORY_WORLD_LATE 0x2B52 /* the world map loads FILE_WM_DATA_LATE (data set WM_DATASET_DISC4) from here on (main
                                 * wm_getWorldDataFileId, ovl_0c w_frame.c, ovl_65 battle_end.c). Evidence: [code] */
+#define STORY_GARNET_HAIRCUT 10300 /* Garnet has short hair from here on: main chr_calcAppearance (CHR_KIND_GARNET_SHORT),
+                                    * ovl_0a fld_remapModelId (FLD_MODEL_GARNET_SHORT) */
 /* story flags in g_evtGlobalVars.b[] read by game code (docs/runtime-findings.md R30) */
 #define EVT_GB_TRANCE_ENABLED 0x10      /* Trance gauge shown and filled (menuStatus_drawExp, btl_cmd) */
 #define EVT_GB_DAGGER_FALTERS 0x11      /* Dagger may fail to act after Alexandria (btl_cmd) */

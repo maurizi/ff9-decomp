@@ -496,7 +496,7 @@ void fld_drawModels(void) {
             if (PSX_NULLABLE(mdl->texAnims)->count >= 2 && fld_isModelTexAnimActive(mdl) == 0) {
                 PSX_NULLABLE(mdl->texAnims)->anims[2].flags |= TEXANIM_ACTIVE;
                 PSX_NULLABLE(mdl->texAnims)->anims[2].pos = 0;
-                PSX_NULLABLE(mdl->texAnims)->anims[2].lastFrame = TEXANIM_LAST_FRAME_NONE;
+                PSX_NULLABLE(mdl->texAnims)->anims[2].lastFrame = TEXANIM_FORCE_UPLOAD;
             }
         }
     }
