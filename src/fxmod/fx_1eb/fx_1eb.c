@@ -141,10 +141,10 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->Hi_DrawSliceEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i]);
                 }
                 if (work->timer4C >= 0) {
-                    ex->Hi_ModifyEffModelAbr(work->model52[i], 1);
+                    ex->Hi_ModifyEffModelAbr(work->model52[i], BTLFX_ABR_ADD);
                     ex->Hi_ModifyEffModelRGB(work->model52[i], work->rgb40, work->rgb40, work->rgb40);
                 } else {
-                    ex->Hi_ModifyEffModelAbr(work->model52[i], 0);
+                    ex->Hi_ModifyEffModelAbr(work->model52[i], BTLFX_ABR_HALF);
                 }
             }
         }

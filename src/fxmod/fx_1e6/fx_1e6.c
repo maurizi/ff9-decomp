@@ -76,7 +76,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->alphaC -= 0x400;
             }
             fx_1e6_buildTrail(&fx_1e6_op80Trail, 0x10C, frame * 4);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_RED_TRAIL), 0, NULL, 0, 0x1000, work->alphaC, 1, (u8 *)&fx_1e6_op80Trail, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CORRECT_RED_TRAIL), 0, NULL, 0, 0x1000, work->alphaC, BTLFX_ABR_ADD, (u8 *)&fx_1e6_op80Trail, 0);
         }
         return (s32)frame >= 0x3C;
     }
@@ -223,7 +223,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->rgb44 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer60, 0x10);
                     work->timer60--;
                 }
-                ex->Hi_ModifyEffModelAbr(work->model64, 1);
+                ex->Hi_ModifyEffModelAbr(work->model64, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(work->model64, work->rgb44, work->rgb44, work->rgb44);
             }
         }

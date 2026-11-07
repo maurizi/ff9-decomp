@@ -69,14 +69,14 @@ void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 reach, s32
                         BTLFX_COPY_SVEC(&lineBase, dst);
                         BTLFX_COPY_SVEC(&lineTop, dst);
                         lineTop.vy -= 0x1000;
-                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineTop, &lineBase, 0, 0x800, 1, 0x32);
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineTop, &lineBase, 0, 0x800, BTLFX_ABR_ADD, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
                 }
             }
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_strandParams[j * 4]), 0, (s32 *)from, 0, 0x1000, alpha,
-                                1, (u8 *)tr, fade);
+                                BTLFX_ABR_ADD, (u8 *)tr, fade);
         }
         layer++;
     } while (layer < 3);
@@ -106,7 +106,7 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i & 7]), &pos, &rot, 0x3000,
-                                        0, 1, ot, 0, 0);
+                                        0, BTLFX_ABR_ADD, ot, 0, 0);
             }
         }
     }
@@ -120,7 +120,7 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i & 7]), &pos, &rot, 0x1800,
-                                        0, 1, ot, 0, 0);
+                                        0, BTLFX_ABR_ADD, ot, 0, 0);
             }
         }
     }
@@ -143,7 +143,7 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
         pos.vz = from->vz + ofs->vz * 2;
         ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
         rot.vz = -ang.vy;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i + 8]), &pos, &rot, 0x2AF8, 0, 1, ot, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i + 8]), &pos, &rot, 0x2AF8, 0, BTLFX_ABR_ADD, ot, 0, 0);
         ofs++;
         i++;
     } while (i < 3);
@@ -209,8 +209,8 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 ringTop.vx = ringPos.vx;
                 ringTop.vy = work->pos8.vy - 0x1000;
                 ringTop.vz = ringPos.vz;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, 0xAAA, 0, 1, t);
-                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &ringTop, frame, t, 1, 0x20);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, 0xAAA, 0, BTLFX_ABR_ADD, t);
+                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &ringTop, frame, t, BTLFX_ABR_ADD, 0x20);
             }
             env->otZ = 0;
             if (frame >= 0x3E) {
@@ -229,8 +229,8 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             env->otZ = 0x10;
             t = (frame << 12) / 51;
             bright = 0x1000 - t;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &centerPos, NULL, 0xAAA, 0, 1, bright);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &centerPos, &centerTop, frame, bright, 1, (t >> 7) + 0x20);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &centerPos, NULL, 0xAAA, 0, BTLFX_ABR_ADD, bright);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &centerPos, &centerTop, frame, bright, BTLFX_ABR_ADD, (t >> 7) + 0x20);
             env->otZ = 0;
             rot.vx = 0x400;
             rot.vz = 0;
@@ -240,14 +240,14 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 s32 ang = (frame << 12) >> 6;
                 s32 ringSize = ex->math_sin(ang) * 5;
                 s32 ringAlpha = ex->math_cos(ang);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, ringSize, 0, 1, ringAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, ringSize, 0, BTLFX_ABR_ADD, ringAlpha);
             }
             if (frame >= 0x1E) {
                 offsetAlpha = (frame - 0x1E) << 9;
                 if (offsetAlpha > 0x1000) {
                     offsetAlpha = 0x1000;
                 }
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, 0x5000, 0, 1, offsetAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &centerPos, &rot, 0x5000, 0, BTLFX_ABR_ADD, offsetAlpha);
             }
             flag = 0;
             if (frame < 0x26) {
@@ -274,7 +274,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                     } else {
                         offsetAlpha = 0;
                     }
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((0x1000 - prog) * 100) >> 12, 0, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, ((0x1000 - prog) * 100) >> 12, 0, 0);
                 }
             } else {
                 prog = ((frame - 0x26) << 12) / 13;

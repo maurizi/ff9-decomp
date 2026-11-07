@@ -244,17 +244,17 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->timer130 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->timer130, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->timer130, 0x10, BTLFX_ABR_ADD, 0);
             if (--work->timer130 == -1) {
                 work->active134 = 1;
             }
         }
         if (work->timer132 >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer132, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer132, 0x10, BTLFX_ABR_ADD, 0);
             work->timer132--;
         }
         if (work->active134 != 0) {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
         }
         return frame >= 0x3D;
     }

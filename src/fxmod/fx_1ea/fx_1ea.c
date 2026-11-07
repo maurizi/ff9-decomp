@@ -312,7 +312,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_1ea_buildTrail(&fx_1ea_ribbon0.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails0[ribbon], 0x100, fx_1ea_ribbon0.index8, fx_1ea_ribbon0.countA,
                               fx_1ea_ribbon0.width10);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_DRAGON_TRAIL), 0, NULL, 0, fx_1ea_ribbon0.scaleE,
-                                    fx_1ea_ribbon0.alphaC, 1, fx_1ea_ribbonTrails0[ribbon], 0);
+                                    fx_1ea_ribbon0.alphaC, BTLFX_ABR_ADD, fx_1ea_ribbonTrails0[ribbon], 0);
             }
         }
         if (frame >= 0 && frame < 0x1E) {
@@ -327,7 +327,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_1ea_buildTrailRotY(&fx_1ea_ribbon1.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails1[strand], 0x88, fx_1ea_ribbon1.index8, fx_1ea_ribbon1.countA,
                               fx_1ea_ribbon1.width10, ang);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DRAGONS_CREST_DRAGON_TRAIL_2), 0, NULL, 0, fx_1ea_ribbon1.scaleE,
-                                    fx_1ea_ribbon1.alphaC, 1, fx_1ea_ribbonTrails1[strand], 0);
+                                    fx_1ea_ribbon1.alphaC, BTLFX_ABR_ADD, fx_1ea_ribbonTrails1[strand], 0);
                 if (strand & 1) {
                     ang += 0x555;
                 }
@@ -378,13 +378,13 @@ s32 fx_1ea_op82(s32 mode, Fx1eaWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (work->timer0 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->timer0, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->timer0, 0x10, BTLFX_ABR_ADD, 0);
             work->timer0--;
         } else if (work->timer2 >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer2, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer2, 0x10, BTLFX_ABR_ADD, 0);
             work->timer2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->ot + OT_LAST, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot + OT_LAST, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
         }
         return frame >= 0x43;
     }

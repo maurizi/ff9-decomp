@@ -139,7 +139,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos54, NULL, t >> 1, 0, 1, t);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos54, NULL, t >> 1, 0, BTLFX_ABR_ADD, t);
             env->otZ = 0;
             slideX = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), slideX, 0x78, 0, 0xFF, 0x1000);
@@ -197,7 +197,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             vv.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv, &vv, &cv, 0, NULL);
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos54, NULL, (t >> 1) + 0x800, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos54, NULL, (t >> 1) + 0x800, 0, BTLFX_ABR_ADD,
                               ex->math_cos(t >> 2));
             env->otZ = 0;
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 0xFF, 0x1000);
@@ -318,7 +318,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ((s32 *)env->viewMatrix)[7] = r3;
             t = (frame << 12) / 20;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
-            ex->Hi_ModifyEffModelAbr(work->model64, 1);
+            ex->Hi_ModifyEffModelAbr(work->model64, BTLFX_ABR_ADD);
             bright = 0x1000 - t;
             ex->Hi_ModifyEffModelRGB(work->model64, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             w0 = ((s32 *)&work->viewMtx9C)[0];

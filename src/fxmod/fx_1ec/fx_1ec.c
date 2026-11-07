@@ -129,7 +129,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit0[7]);
             break;
         case 0x34:
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             break;
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_BACKDROP), frame);
@@ -198,7 +198,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_CRIMSON_STREAK), (s32)&work->pos3C);
         break;
     case 0x33:
-        ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+        ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
         break;
     case 0x38:
         work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_TRAIL), (s32)&fx_1ec_emitPos1);
@@ -337,14 +337,14 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->timer68 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x3C - work->timer68, 0x3C, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x3C - work->timer68, 0x3C, BTLFX_ABR_ADD, 0);
             work->timer68--;
             if (work->timer68 == -1) {
                 work->flag6A = 1;
                 ex->btlfx_signalScriptCue();
             }
         } else if (work->flag6A != 0) {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
         }
         if (frame >= 0x20) {
             for (i = 0; i < env->targets->targetCount; i++) {

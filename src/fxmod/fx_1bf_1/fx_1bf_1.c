@@ -184,7 +184,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = frame << 8;
             if (frame < 16) {
                 fadeTint = 0xFF - ((frame * 0xFF) >> 4);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, fadeTint, fadeTint * 2 / 3, fadeTint / 2);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, fadeTint, fadeTint * 2 / 3, fadeTint / 2);
             }
             work->pos18.vy -= 4 + ((ex->math_cos(t >> 2) * 10) >> 12);
             env->camera->points[3].vx = work->pos18.vx;
@@ -218,10 +218,10 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 beamWidth = 0xC00 - ((prog << 11) >> 13);
                 beamLevel = 0x1000;
                 if (frame == 6) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0xFF, 0x80, 0x80);
                 } else {
                     flashTint = (prog << 7) >> 12;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, flashTint, flashTint, flashTint * 2 / 3);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, flashTint, flashTint, flashTint * 2 / 3);
                 }
                 swellAng = prog >> 2;
                 gridBright = (prog << 6) >> 12;
@@ -298,7 +298,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model7C);
                 ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x10, 0x40, 0x350, 0x100);
                 if (frame == 1 || frame == 3) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x60, 0x10);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x80, 0x60, 0x10);
                 }
             } else {
                 elapsed = frame - 5;
@@ -322,7 +322,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                              ((ex->math_cos(lift) - 0x800) >> 5) - 0x80);
                 }
                 if (frame == 5) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0x80);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0x80, 0x80, 0x80);
                     emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_ROCK_DEBRIS_2), (s32)&work->pos8);
                     if (emitter != NULL) {
                         emitter->otZ = 0x100;
@@ -341,7 +341,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     }
                 } else if (frame < 21) {
                     dimTint = 0x80 - ((elapsed << 7) >> 4);
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 16), 1, dimTint, dimTint, dimTint >> 2);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 16), BTLFX_ABR_ADD, dimTint, dimTint, dimTint >> 2);
                     gridBright = dimTint >> 1;
                     gridGrow = 0x400;
                 }
@@ -404,12 +404,12 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 35) {
                 env->otZ = 0x100;
                 ringT = ((frame - 35) << 12) / 35;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos8, NULL, ringT + 0xAAA, 0, 1, ringT);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos8, NULL, ringT + 0xAAA, 0, BTLFX_ABR_ADD, ringT);
                 env->otZ = 0;
             }
             if (frame >= 58) {
                 whiteTint = (frame - 58) * 0xFF / 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 256), 1, whiteTint, whiteTint, whiteTint * 2 / 3);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 256), BTLFX_ABR_ADD, whiteTint, whiteTint, whiteTint * 2 / 3);
             }
             if (frame == 41) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_ROCK_DEBRIS), (s32)&work->pos8);
@@ -537,10 +537,10 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         }
                     }
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 512), 1, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 512), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             } else {
                 outTint = 0xFF - (frame - 41) * 0xFF / 8;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 512), 1, outTint, outTint, outTint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 512), BTLFX_ABR_ADD, outTint, outTint, outTint);
             }
             gridBright = ((t << 6) >> 12) + 0x20;
             gridGrow = (t >> 3) + 0x100;
@@ -616,7 +616,7 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1
         ang += dang + *noise++;
     }
     env->otZ = 0x80;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)trail, mode);
     env->otZ = 0;
 }
 

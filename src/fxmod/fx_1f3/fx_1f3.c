@@ -74,7 +74,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1f3_rings[i].angle134 = ex->btlfx_rand() & 0xFFF;
             fx_1f3_rings[i].spin138 = (ex->btlfx_rand() & 0xFF) + 0x40;
             fx_1f3_rings[i].angleStep140 = 0x40;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_1f3_rings[i].trail20, 2);
         }
         for (i = 0, scaleMax = 0x600, scaleMin = 0x400; i < 8; i++, scaleMax += 0x200, scaleMin += 0x200) {
@@ -358,7 +358,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         fx_1f3_rings[i].angle134 += fx_1f3_rings[i].spin138;
                         shade = (8 - fx_1f3_rings[i].timer12C) << 10;
                     }
-                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, 0, 0x1000, shade, 1,
+                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, 0, 0x1000, shade, BTLFX_ABR_ADD,
                                         (u8 *)&fx_1f3_rings[i].trail20, 2);
                 }
             }
@@ -366,11 +366,11 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->timer0[2] != 0) {
             work->timer0[2]--;
-            fxm_tintScreenRatio(work->timer0[2], 4, 0xFF, 0, 1, 0);
+            fxm_tintScreenRatio(work->timer0[2], 4, 0xFF, 0, BTLFX_ABR_ADD, 0);
         }
         if (work->timer0[3] != 0) {
             work->timer0[3]--;
-            fxm_tintScreenRatio(work->timer0[3], 8, 0, 0xFF, 1, 0);
+            fxm_tintScreenRatio(work->timer0[3], 8, 0, 0xFF, BTLFX_ABR_ADD, 0);
         }
         if (work->timer0[9] != 0) {
             work->timer0[9]--;

@@ -30,7 +30,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1f7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         for (i = 0; i < 6; i++) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_1f7_trails[i], 0);
             fx_1f7_trails[i].count10C = 4;
             fx_1f7_trails[i].index110 = 0x20;
@@ -103,7 +103,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         env->otZ = 0x200;
                         /* &fx_1f7_trails[i] rather than tr: cse shares the address, so its base is worth hoisting and
                          * tr becomes a giv that loop.c reduces (the original's s1). */
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, frame, 0x1000, alpha, 1,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW_TRAIL), 0, NULL, frame, 0x1000, alpha, BTLFX_ABR_ADD,
                                             (u8 *)&fx_1f7_trails[i], 0);
                         env->otZ = 0;
                         tr->index110 -= 4;
@@ -132,7 +132,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (--sp->delay10 < 0) {
                         env->otZ = 0x200;
                         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_BLUE_SHOCKWAVE_GLOW), &fx_1f7_sparkPoints[sp->index0], NULL, 0x4000,
-                                                sp->frameC, 1, 0x1000, sp->offsetX4, 0);
+                                                sp->frameC, BTLFX_ABR_ADD, 0x1000, sp->offsetX4, 0);
                         env->otZ = 0;
                         if (++sp->frameC >= 6) {
                             sp->index0 = ex->btlfx_randRange(0, 0x2F);
@@ -146,7 +146,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer8 != 0) {
             work->timer8--;
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0, 0, work->timer8 << 6);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0, 0, work->timer8 << 6);
         }
         return frame >= 0x40;
     }

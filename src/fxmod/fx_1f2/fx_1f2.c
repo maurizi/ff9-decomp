@@ -119,7 +119,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1f2_emitPos1.vz = 0;
         for (i = 0; i < 0x10; i++) {
             fx_1f2_trails[i].timer4C = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_1f2_trails[i], 0);
         }
         for (i = 0; i < 8; i++) {
@@ -249,7 +249,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer4C = 0;
             for (i = 0; i < 0x10; i++) {
                 fx_1f2_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1f2_trails[i], 0);
             }
             work->timer20 = 0x40;
@@ -327,7 +327,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer14 = 0x10;
             for (i = 0; i < 0x10; i++) {
                 fx_1f2_unitTrails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1f2_unitTrails[i], 0);
             }
             break;
@@ -492,22 +492,22 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->timerC != 0) {
             work->timerC--;
             tint = fxm_easeLerp(1, 0x20, work->timerC, 0, 0xFF);
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 2, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_SUB, tint, tint, tint);
         }
         if (work->timer10 != 0) {
             work->timer10--;
             tint = fxm_easeLerp(2, 0x10, work->timer10, 0xFF, 0);
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 2, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_SUB, tint, tint, tint);
         }
         if (work->timer14 != 0) {
             work->timer14--;
             tint = fxm_easeLerp(1, 0x10, work->timer14, 0, 0xFF);
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), 1, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), BTLFX_ABR_ADD, tint, tint, tint);
         }
         if (work->timer18 != 0) {
             work->timer18--;
             tint = fxm_easeLerp(0, 0x10, work->timer18, 0xFF, 0);
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), 1, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), BTLFX_ABR_ADD, tint, tint, tint);
         }
         if (work->timer20 != 0) {
             s32 fade;
@@ -583,7 +583,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             sv_sp2++;
                         }
                         alpha = tr_sp2->timer4C << 9;
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, frame, 0x1000, alpha, 1,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, frame, 0x1000, alpha, BTLFX_ABR_ADD,
                                             (u8 *)&fx_1f2_trails[i], 0);
                     }
                 }
@@ -640,9 +640,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             }
                             alpha_u4c = 0x800;
                             if (i & 1) {
-                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL_2), 0, NULL, frame, 0x1000, alpha_u4c, 1, (u8 *)&fx_1f2_trails[i], 0);
+                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL_2), 0, NULL, frame, 0x1000, alpha_u4c, BTLFX_ABR_ADD, (u8 *)&fx_1f2_trails[i], 0);
                             } else {
-                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, frame, 0x1000, alpha_u4c, 1, (u8 *)&fx_1f2_trails[i], 0);
+                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, frame, 0x1000, alpha_u4c, BTLFX_ABR_ADD, (u8 *)&fx_1f2_trails[i], 0);
                             }
                         }
                     } else {
@@ -681,7 +681,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     } else {
                         fd = ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL);
                     }
-                    ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&fx_1f2_trails[i], 0);
+                    ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4cn, BTLFX_ABR_ADD, (u8 *)&fx_1f2_trails[i], 0);
                     env->otZ = 0;
                 }
             }
@@ -712,7 +712,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (work->timer58 < 8) {
                             alpha_u58 = work->timer58 << 9;
                         }
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, frame, 0x1000, alpha_u58, 1,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, frame, 0x1000, alpha_u58, BTLFX_ABR_ADD,
                                             (u8 *)tr, 0);
                     }
                 } else {

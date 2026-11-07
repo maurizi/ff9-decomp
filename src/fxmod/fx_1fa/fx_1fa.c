@@ -107,7 +107,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                         scale = (sprite->radius10 << 8) + 0x4000;
                         fade = sprite->timer4 << 9;
                         offX = (ex->math_sin(sprite->angleC) * sprite->radius10) >> 12;
-                        ex->btlfx_drawParticles(sprite->sprite8, &fx_1fa_emitPos1, NULL, scale, 0, 1, fade, offX,
+                        ex->btlfx_drawParticles(sprite->sprite8, &fx_1fa_emitPos1, NULL, scale, 0, BTLFX_ABR_ADD, fade, offX,
                                                 (ex->math_cos(sprite->angleC) * sprite->radius10) >> 12);
                     }
                 }
