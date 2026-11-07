@@ -6,23 +6,23 @@ static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 t
     SVECTOR rot;
     s32 rad;
 
-    if (frame < 0x10) {
+    if (frame < FX_ANNOY_LEAVE_FRAMES) {
         rot.vx = 0;
         rot.vz = 0;
         rot.vy = fx_0e9_orbit.angle6 + 0x800;
         ex->btlfx_pointAhead((s16 *)&fx_0e9_startPos, (s16 *)&rot, frame * 40, (s16 *)&newPos);
     } else {
-        rad = fx_0e9_orbit.radius2 = fxm_lerpRatio(fx_0e9_orbit.radius0, 0, 0x6E - fx_0e9_orbit.timerA, 0x6E);
+        rad = fx_0e9_orbit.radius2 = fxm_lerpRatio(fx_0e9_orbit.radius0, 0, FX_ANNOY_ORBIT_FRAMES - fx_0e9_orbit.timerA, FX_ANNOY_ORBIT_FRAMES);
         rad += (fx_0e9_orbit.timerA + fx_0e9_orbit.timerA / 2) * ex->math_sin(fx_0e9_orbit.wobble8) / 4096;
         newPos.vx = rad * ex->math_sin(fx_0e9_orbit.angle6) / 4096;
         newPos.vy = 0;
         newPos.vz = rad * ex->math_cos(fx_0e9_orbit.angle6) / 4096;
         switch (fx_0e9_orbit.dir4) {
-        case 0:
-            fx_0e9_orbit.angle6 -= 0x60;
+        case FX_ANNOY_ORBIT_DIR_DEC:
+            fx_0e9_orbit.angle6 -= FX_ANNOY_ORBIT_STEP;
             break;
-        case 1:
-            fx_0e9_orbit.angle6 += 0x60;
+        case FX_ANNOY_ORBIT_DIR_INC:
+            fx_0e9_orbit.angle6 += FX_ANNOY_ORBIT_STEP;
             break;
         }
         fx_0e9_orbit.wobble8 += 0x100;
@@ -52,14 +52,14 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0e9Work);
     } else if (mode == 1) {
         fx_0e9_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
-        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, 0xC8, (s16 *)&fx_0e9_startPos);
-        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, 0x348, (s16 *)&fx_0e9_orbitStart);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, FX_ANNOY_START_DISTANCE, (s16 *)&fx_0e9_startPos);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, FX_ANNOY_ORBIT_DISTANCE, (s16 *)&fx_0e9_orbitStart);
         fx_0e9_orbitCenter.vx = work->pos18.vx;
         fx_0e9_orbitCenter.vy = work->pos18.vy;
         fx_0e9_orbitCenter.vz = work->pos18.vz;
@@ -70,7 +70,7 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0e9_orbit.radius0 = fx_0e9_orbit.radius2 = ex->btlfx_sqrt(delta.vx * delta.vx + delta.vz * delta.vz, 0x14);
         fx_0e9_orbit.dir4 = ex->btlfx_rand() % 2;
         fx_0e9_orbit.wobble8 = 0;
-        fx_0e9_orbit.timerA = 0x6E;
+        fx_0e9_orbit.timerA = FX_ANNOY_ORBIT_FRAMES;
         fx_0e9_orbit.angle6 = rot.vy;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ANNOY_ORANGE_SHIMMER), (s32)&fx_0e9_emitPos);
         if (work->emit0 != NULL) {
@@ -78,10 +78,10 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x50) {
+        if (frame == FX_ANNOY_WISPS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ANNOY_PINK_WISPS), (s32)&work->pos18);
         }
-        return frame >= 0x8C;
+        return frame >= FX_ANNOY_FRAMES;
     }
     return 0;
 }

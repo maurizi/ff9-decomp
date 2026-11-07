@@ -6,7 +6,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     u16 lineFrame;
 
     if (mode == 0) {
-        *args = 0x44;
+        *args = sizeof(Fx0e5Work);
     } else if (mode == 1) {
         fx_0e5_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -16,7 +16,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->linePos38.vx = work->pos10.vx;
         work->linePos38.vy = work->pos10.vy;
         work->linePos38.vz = work->pos10.vz;
-        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot20, 0xC8, (s16 *)&work->pos30);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot20, FX_SOUL_BLADE_FLASH_DISTANCE, (s16 *)&work->pos30);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOUL_BLADE_LIGHT_FLASH), (s32)&work->pos30);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -26,21 +26,21 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->lineFrame40 = 0;
     } else {
         frame = entry->frame;
-        if (frame == 0xF) {
+        if (frame == FX_SOUL_BLADE_WISPS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOUL_BLADE_SPIRIT_WISPS), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame >= 0xF && frame < 0x1C) {
+        if (frame >= FX_SOUL_BLADE_WISPS_FRAME && frame < FX_SOUL_BLADE_FLARES_END_FRAME) {
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_SOUL_BLADE_LENS_FLARES), &work->linePos38, work->lineFrame40, work->lineAlpha42);
-            if (frame - 0xF >= 5) {
+            if (frame - FX_SOUL_BLADE_WISPS_FRAME >= FX_SOUL_BLADE_FLARES_FADE_FRAME) {
                 work->lineAlpha42 -= 0x200;
             }
             work->lineFrame40++;
             lineFrame = work->lineFrame40;
-            if (lineFrame >= 6) {
-                lineFrame = 5;
+            if (lineFrame >= FX_SOUL_BLADE_FLARES_ANIM_FRAMES) {
+                lineFrame = FX_SOUL_BLADE_FLARES_ANIM_FRAMES - 1;
             }
             work->lineFrame40 = lineFrame;
         }
@@ -54,7 +54,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->rot.vz = work->aimRot28.vz;
             }
         }
-        if (frame >= 0xF) {
+        if (frame >= FX_SOUL_BLADE_WISPS_FRAME) {
             if (work->emit4 != NULL) {
                 if (work->emit4->state == BTLFX_EMIT_DONE) {
                     work->emit4 = NULL;
@@ -66,7 +66,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x3C;
+        return frame >= FX_SOUL_BLADE_FRAMES;
     }
     return 0;
 }

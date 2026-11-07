@@ -18,10 +18,10 @@ s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 tra
 
 static s32 fxm_arcParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ea_env);
-    s32 t = (frame << 12) / 18;
+    s32 t = (frame << 12) / FX_SACRIFICE_ARC_FRAMES;
 
     ex->btlfx_lerpVec((s16 *)&fx_0ea_arcFrom, (s16 *)to, t, (s16 *)pos);
-    pos->vy -= ex->math_sin(t / 2) * 800 / 4096;
+    pos->vy -= ex->math_sin(t / 2) * FX_SACRIFICE_ARC_HEIGHT / 4096;
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -37,7 +37,7 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 lineFrame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx0eaWork80);
     } else if (mode == 1) {
         fx_0ea_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);
@@ -52,25 +52,25 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->lineFrame18 = 0;
     } else {
         frame = entry->frame;
-        if (frame == 0x1E) {
+        if (frame == FX_SACRIFICE_FLASH_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SACRIFICE_LIGHT_FLASH), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
         }
-        if (frame >= 0x1E && frame < 0x2B) {
+        if (frame >= FX_SACRIFICE_FLASH_FRAME && frame < FX_SACRIFICE_FLARES_END_FRAME) {
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_SACRIFICE_LENS_FLARES), &work->linePos10, work->lineFrame18, work->lineAlpha1A);
-            if (frame - 0x1E >= 5) {
+            if (frame - FX_SACRIFICE_FLASH_FRAME >= FX_SACRIFICE_FLARES_FADE_FRAME) {
                 work->lineAlpha1A -= 0x200;
             }
             work->lineFrame18++;
             lineFrame = work->lineFrame18;
-            if (lineFrame >= 6) {
-                lineFrame = 5;
+            if (lineFrame >= FX_SACRIFICE_FLARES_ANIM_FRAMES) {
+                lineFrame = FX_SACRIFICE_FLARES_ANIM_FRAMES - 1;
             }
             work->lineFrame18 = lineFrame;
         }
-        return frame >= 0x32;
+        return frame >= FX_SACRIFICE_FRAMES;
     }
     return 0;
 }
@@ -81,7 +81,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 target;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx0eaWork81);
     } else if (mode == 1) {
         target = *args;
         work->target20 = target;
@@ -112,16 +112,16 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x14) {
+        if (frame == FX_SACRIFICE_FLARE_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SACRIFICE_WHITE_FLARE), (s32)&work->pos18);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(work->target20, 0x80);
             }
         }
-        if (frame == 0xF) {
+        if (frame == FX_SACRIFICE_RELEASE_FRAME) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
-        return frame >= 0x32;
+        return frame >= FX_SACRIFICE_FRAMES;
     }
     return 0;
 }

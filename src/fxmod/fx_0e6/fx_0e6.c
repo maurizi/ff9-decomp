@@ -10,7 +10,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR *pt;
 
     if (mode == 0) {
-        *args = 0x3C;
+        *args = sizeof(Fx0e6Work);
     } else if (mode == 1) {
         fx_0e6_env = env;
         ex->btlfx_initEffModels(fx_0e6_effModels, 1);
@@ -20,7 +20,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale4.vx = 0x1000;
         work->scale4.vy = 0x1000;
         work->scale4.vz = 0x1000;
-        work->model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_SHELL), 0xF7, 0x3D00, 0, 0);
+        work->model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_SHELL), FX_STONE_ROCK_SHELL_TPAGE, FX_STONE_ROCK_SHELL_CLUT, FX_STONE_ROCK_SHELL_U, FX_STONE_ROCK_SHELL_V);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos2C);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos34);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_STRIP), 0, 0, -1, 0x1000, 0x1000, mode,
@@ -31,31 +31,31 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos14.vx = pos.vx;
         work->pos14.vy = pos.vy;
         work->pos14.vz = pos.vz;
-        if (frame < 4) {
+        if (frame < FX_STONE_FLIGHT_FRAMES) {
             ex->Hi_DrawEffModel(&work->rot24, &work->pos14, (s32)&work->scale4, work->model0);
         }
-        if (frame < 8) {
-            n = 25;
+        if (frame < FX_STONE_STRIP_FRAMES) {
+            n = FX_STONE_STRIP_POINTS;
             line = &fx_0e6_strip;
-            line->count2 = 0x18;
-            line->lastSlot0 = 0x18;
+            line->count2 = FX_STONE_STRIP_POINTS - 1;
+            line->lastSlot0 = FX_STONE_STRIP_POINTS - 1;
             line->head1 = 0;
             pt = line->pts4;
             for (i = 0; i < n; i++) {
                 ex->btlfx_lerpVec((s16 *)&work->pos2C, (s16 *)&pos, (0x1000000 / n * i) >> 12, (s16 *)pt);
-                pt->pad = 0x20;
+                pt->pad = FX_STONE_STRIP_WIDTH;
                 pt++;
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_STRIP), 0, 0, 0, 0x1000, (8 - frame) << 9, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_STRIP), 0, 0, 0, 0x1000, (FX_STONE_STRIP_FRAMES - frame) << 9, BTLFX_ABR_ADD,
                               (u8 *)line, 0);
         }
-        if (frame == 4) {
+        if (frame == FX_STONE_FLIGHT_FRAMES) {
             Pool6CEntry *emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_STONE_RED_RINGS), (s32)&work->pos34);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        return frame >= 0x1E;
+        return frame >= FX_STONE_FRAMES;
     }
     return 0;
 }
