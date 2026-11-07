@@ -2,7 +2,7 @@
 
 static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_127_env);
-    s32 status = fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
+    s32 status = fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, FX_WAVE_PATH_FRAMES, frame, n);
 
     fx_127_emitterPos.vx = pos->vx;
     fx_127_emitterPos.vy = 0;
@@ -17,7 +17,7 @@ static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 
 }
 
 static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    return fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
+    return fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, FX_WAVE_PATH_FRAMES, frame, n);
 }
 
 static s32 fxm_lerpParticle(VECTOR *out, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 len, s32 frame, s32 n) {
@@ -39,7 +39,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x84;
+        *args = sizeof(Fx127Work80);
     } else if (mode == 1) {
         fx_127_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos24);
@@ -52,7 +52,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_matrixPointAhead(&boneMat, 0, (s32)&work->pos44);
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->rot74);
         switch (frame) {
-        case 0xA:
+        case FX_WAVE_CHARGE_FRAME:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS), (s32)&fx_127_emitPos0);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WATER_STREAK), (s32)&fx_127_emitPos0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WATER_STREAK_2), (s32)&fx_127_emitPos0);
@@ -68,7 +68,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
-        case 0x22:
+        case FX_WAVE_RELEASE_FRAME:
             ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos44, (s16 *)&work->rot54);
             work->rot5C.vx = work->rot54.vx;
             work->rot5C.vy = work->rot54.vy;
@@ -89,13 +89,13 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_127_emitter = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_STRIPED_RINGS_2), (s32)&fx_127_emitPos3);
             if (work->emit10 != NULL) {
                 work->emit10->trails = (s32)fx_127_op80Trails0;
-                work->emit10->trailSlots = 0x112;
-                work->emit10->trailStride = 0x18;
+                work->emit10->trailSlots = FX_WAVE_STRIPED_TRAIL_SLOTS;
+                work->emit10->trailStride = FX_WAVE_STRIPED_TRAIL_STRIDE;
             }
             if (work->emit14 != NULL) {
                 work->emit14->trails = (s32)fx_127_op80Trails1;
-                work->emit14->trailSlots = 0x28;
-                work->emit14->trailStride = 0x40;
+                work->emit14->trailSlots = FX_WAVE_WATER_TRAIL_SLOTS;
+                work->emit14->trailStride = FX_WAVE_WATER_TRAIL_STRIDE;
             }
             if (work->emit10 != NULL) {
                 ((Fx127EffHdr *)work->emit10->file)->motionFn8 = fx_127_op80ParticleMotion0;
@@ -110,14 +110,14 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit14->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
             break;
-        case 0x27:
+        case FX_WAVE_AIM_FRAME:
             ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->rot5C, -0xC8, (s16 *)&work->pos6C);
             fx_127_aimPoint.vx = work->pos6C.vx;
             fx_127_aimPoint.vy = work->pos6C.vy;
             fx_127_aimPoint.vz = work->pos6C.vz;
             break;
         }
-        if (frame >= 0xA && frame < 0xE) {
+        if (frame >= FX_WAVE_CHARGE_FRAME && frame < FX_WAVE_CHARGE_FRAME + FX_WAVE_FOLLOW_FRAMES) {
             if (work->emit0 != NULL && work->emit0->state == BTLFX_EMIT_DONE) {
                 work->emit0 = NULL;
             }
@@ -136,7 +136,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot7C.vz = work->rot74.vz;
             work->rot7C.vy += 0x800;
         }
-        if (frame >= 0xA) {
+        if (frame >= FX_WAVE_CHARGE_FRAME) {
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;
@@ -168,7 +168,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_WAVE_CAST_FRAMES;
     }
     return 0;
 }
@@ -178,7 +178,7 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx127Work81);
     } else if (mode == 1) {
         fx_127_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
@@ -209,7 +209,7 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 4:
+        case FX_WAVE_WHITE_RING_FRAME:
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RING), (s32)&work->pos38);
             break;
         }
@@ -225,7 +225,7 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_WAVE_HIT_FRAMES;
     }
     return 0;
 }

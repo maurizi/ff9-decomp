@@ -25,6 +25,26 @@
 #define FX_DRAGON_BREATH_WHITE_RINGS   0x26 /* emitter: white and pale-cyan gouraud rings, 30 frames */
 
 /* particle as the path callbacks see it */
+/* fx_128 choreography (docs/fxdata.md, "Choreography literals"): op80's length, op81's dragon flight along the
+ * file's paths, its fades and emitter keys, the trail buffers. */
+#define FX_DRAGON_BREATH_CAST_FRAMES      0x28 /* op80's length: LIGHT_STREAK and SPARKLE_CIRCLE at the caster */
+#define FX_DRAGON_BREATH_SLICES           5    /* op81: sliced models on their own rot/pos paths (fx_128_rotPosPath1, fx_128_modelFileIds) */
+#define FX_DRAGON_BREATH_MODEL_SLOTS      (2 + FX_DRAGON_BREATH_SLICES) /* btlfx_initEffModels slots: DRAGON, DRAGON_2 and the slices */
+#define FX_DRAGON_BREATH_DRAGON_FRAME     8    /* the dragon flies its paths (path frame = frame - this) and fades in */
+#define FX_DRAGON_BREATH_FADE_IN_FRAMES   4    /* over this many frames */
+#define FX_DRAGON_BREATH_BUBBLE_RINGS_FRAME 0x19 /* BUBBLE_RINGS start and follow the position path */
+#define FX_DRAGON_BREATH_DIVE_FRAME       0x25 /* path frame from which the dragon pitches no higher than towards a single target */
+#define FX_DRAGON_BREATH_BREATH_FRAME     0x2D /* BUBBLES, ORB_2 and GREEN_TRAIL_2 fly from the dragon's mouth to the target */
+#define FX_DRAGON_BREATH_SPRAY_COUNT      10   /* fx_128_lerpToRand: random end points round the target for ORB_2's particles */
+#define FX_DRAGON_BREATH_SPRAY_FRAMES     12   /* the particle callbacks' flight time */
+#define FX_DRAGON_BREATH_TRAIL_2_SLOTS    9    /* GREEN_TRAIL_2's trail buffer (fx_128_op81Trails0): slots */
+#define FX_DRAGON_BREATH_TRAIL_STRIDE     0x48 /* bytes per slot (both trails) */
+#define FX_DRAGON_BREATH_FADE_OUT_FRAME   0x39 /* the dragon fades out from this frame */
+#define FX_DRAGON_BREATH_FADE_OUT_FRAMES  8    /* over this many, and stops drawing */
+#define FX_DRAGON_BREATH_HIT_FRAME        0x3C /* BUBBLES_2, ORB, GREEN_TRAIL and WHITE_RINGS at the target */
+#define FX_DRAGON_BREATH_TRAIL_SLOTS      8    /* GREEN_TRAIL's trail buffer (fx_128_op81Trails1): slots */
+#define FX_DRAGON_BREATH_FRAMES           0x82 /* op81's length (the op ends) */
+
 typedef struct {
     VECTOR pos0; /* position */
     u8 pad10[0x1F - 0x10];
@@ -41,7 +61,7 @@ typedef struct {
 extern Unk800F78A4 *fx_128_env;
 extern SVECTOR fx_128_lerpFrom; /* path start */
 extern SVECTOR fx_128_lerpTo; /* path end */
-extern SVECTOR fx_128_lerpToRand[]; /* path ends */
+extern SVECTOR fx_128_lerpToRand[FX_DRAGON_BREATH_SPRAY_COUNT]; /* path ends */
 
 static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
@@ -109,7 +129,7 @@ typedef struct {
     SVECTOR pos90;
     s32 timer98; /* fade-in countdown */
     s32 timer9C; /* fade-out countdown */
-    u16 modelA0[8]; /* models */
+    u16 modelA0[8]; /* DRAGON, DRAGON_2, the slices, one spare */ /* models */
 } Fx128Work81; /* 0xB0 */
 
 extern u16 fx_128_modelFileIds[];
