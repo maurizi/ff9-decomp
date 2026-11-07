@@ -26,16 +26,16 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
         if (frame == 0) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL), (s32)&it->pos8, NULL, -1, 0, 0, BTLFX_ABR_HALF, it->trail18, 0);
         }
-        if (frame < 20) {
-            it->speed2 += ex->math_cos((frame << 10) / 20) >> 7;
+        if (frame < FX_ARK_SPARK_LAUNCH_FRAMES) {
+            it->speed2 += ex->math_cos((frame << 10) / FX_ARK_SPARK_LAUNCH_FRAMES) >> 7;
             it->turn4 += 0x20;
-        } else if (frame < 24) {
+        } else if (frame < FX_ARK_SPARK_BRAKE_END) {
             it->speed2 -= 0x20;
             it->turn4 += 0x80;
         } else {
             it->speed2 += 0x20;
-            if (it->speed2 > 2000) {
-                it->speed2 = 2000;
+            if (it->speed2 > FX_ARK_SPARK_MAX_SPEED) {
+                it->speed2 = FX_ARK_SPARK_MAX_SPEED;
             }
             it->turn4 += 0x18;
             if (it->turn4 > 0x991) {
@@ -88,18 +88,18 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
         if (frame == 0) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, -1, 0, 0, BTLFX_ABR_HALF, it->trail18, 0);
         }
-        trailScale = 0x1800;
-        it->pos8.vz += 0x300;
-        it->pos8.vy += 0x300;
+        trailScale = FX_ARK_STRIKE_TRAIL_WIDTH;
+        it->pos8.vz += FX_ARK_STRIKE_FALL_STEP;
+        it->pos8.vy += FX_ARK_STRIKE_FALL_STEP;
         if (it->angle10 == FX_17D_5_HIT_FINAL) {
-            trailScale = 0x5000;
+            trailScale = FX_ARK_FINAL_TRAIL_WIDTH;
         }
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, trailScale, 0x1000, BTLFX_ABR_ADD, it->trail18, 0);
         if (frame >= FX_ARK_SPARK_STRIKE_FRAMES) {
             it->state0 = FX_ARK_SPARK_HIT;
             ((s16 *)it)[-1] = -1;
             if (it->angle10 == FX_17D_5_HIT_FINAL) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0x40, 0x40, 0x40);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, FX_ARK_FINAL_DARKEN_RGB);
                 it->state0 = FX_ARK_SPARK_FINAL_HIT;
             } else if (it->angle10 != FX_17D_5_HIT_BURST) {
                 flash = (ex->btlfx_rand() & 0x1F) + 0x28;
@@ -114,8 +114,8 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
         }
         break;
     case FX_ARK_SPARK_HIT:
-        t = (frame << 12) / 24;
-        if (frame < 8) {
+        t = (frame << 12) / FX_ARK_SPARK_HIT_FRAMES;
+        if (frame < FX_ARK_HIT_TRAIL_FRAMES) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 it->trail18, 0);
         }
@@ -153,11 +153,11 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *it, Unk800F78A4 *env, Un
         break;
     case FX_ARK_SPARK_FINAL_HIT:
         t = frame << 7;
-        if (frame < 8) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, 0x5000, 0x1000, BTLFX_ABR_ADD,
+        if (frame < FX_ARK_HIT_TRAIL_FRAMES) {
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_TRAIL_2), (s32)&it->pos8, NULL, 0, FX_ARK_FINAL_TRAIL_WIDTH, 0x1000, BTLFX_ABR_ADD,
                                 it->trail18, 0);
-            if (frame < 6) {
-                fade = 0x80 - t / 6;
+            if (frame < FX_ARK_FINAL_FLASH_FRAMES) {
+                fade = 0x80 - t / FX_ARK_FINAL_FLASH_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, fade, fade, fade);
             }
         }
@@ -285,22 +285,22 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     emitter->otZ = 0x80;
                 }
             }
-            lineFrame = frame - 0x20;
-            if ((u32)lineFrame < 0x10) {
+            lineFrame = frame - FX_ARK_LENS_FLARE_FRAME;
+            if ((u32)lineFrame < FX_ARK_LENS_FLARE_FRAMES) {
                 lineData = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_LENS_FLARE);
                 lineFrame <<= 12;
                 ex->btlfx_drawSpriteLine(lineData, &work->posC, lineFrame >> 12, ex->math_cos(lineFrame >> 6));
             }
-            if (frame >= 0x1F && frame < 0x27) {
-                tint = 0xFF - (((frame - 0x1F) * 0xFF) >> 3);
+            if (frame >= FX_ARK_CREAM_RING_FRAME && frame < FX_ARK_CREAM_RING_FRAME + FX_ARK_GATHER_FLASH_FRAMES) {
+                tint = 0xFF - (((frame - FX_ARK_CREAM_RING_FRAME) * 0xFF) >> 3);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, tint, tint, tint * 2 / 3);
             }
-            if (frame >= 0x31) {
+            if (frame >= FX_ARK_GRID_FRAME) {
                 flag = 1;
-                fade = ((frame - 0x31) << 12) >> 4;
+                fade = ((frame - FX_ARK_GRID_FRAME) << 12) >> 4;
             }
             if (frame >= FX_ARK_TRAILS_FRAME && work->count8 < FX_ARK_SPARK_POOL) {
-                for (i = 0; i < 3; i++) {
+                for (i = 0; i < FX_ARK_TRAILS_PER_FRAME; i++) {
                     if (work->count8 < FX_ARK_SPARK_POOL) {
                         work->count8++;
                         spark = ex->btlfx_poolSpawn((s16 *)entry->pool);
@@ -312,9 +312,9 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                             spark->targetY1E = work->target14.vy;
                             spark->speed2 = 0x90;
                             {
-                                s32 slot = work->count8 % 3;
+                                s32 slot = work->count8 % FX_ARK_TRAILS_PER_FRAME;
                                 spark->angle12 = work->rot7C.vy + (slot * 0x300 - 0x300);
-                                slot = work->count8 / 3;
+                                slot = work->count8 / FX_ARK_TRAILS_PER_FRAME;
                                 spark->angle10 = work->rot7C.vx + 0x80 + slot * 0x58;
                             }
                             spark->flag14 = 0;
@@ -386,8 +386,8 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->target14, &fx_17d_5_targetPos);
                 ex->btlfx_poolClear(entry->pool);
-                for (j = 0; j < 0x20; j++) {
-                    if (work->count8 < 0x39) {
+                for (j = 0; j < FX_ARK_HOMERS; j++) {
+                    if (work->count8 < FX_ARK_SPARK_POOL) {
                         work->count8++;
                         homer = ex->btlfx_poolSpawn((s16 *)entry->pool);
                         if (homer != NULL) {
@@ -424,7 +424,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &fx_17d_5_targetPos, &rot, 0x5000, 0, BTLFX_ABR_ADD, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &fx_17d_5_targetPos, &rot, FX_ARK_RED_FLASH_RING_SCALE, 0, BTLFX_ABR_ADD, -1);
             }
             if (frame >= FX_ARK_HOMING_FRAMES) {
                 work->state0 = FX_ARK_STATE_STRIKE;
@@ -449,23 +449,23 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case FX_ARK_STATE_STRIKE:
-            t = (frame << 12) / 72;
+            t = (frame << 12) / FX_ARK_STRIKE_FRAMES;
             if (frame == 0) {
                 ex->btlfx_poolClear(entry->pool);
             }
-            if (work->count8 < 0x20) {
+            if (work->count8 < FX_ARK_STRIKERS) {
                 work->count8++;
-                if (work->count8 < 0x1F) {
+                if (work->count8 < FX_ARK_STRIKERS - 1) {
                     striker = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (striker != NULL) {
                         striker->state0 = FX_ARK_SPARK_STRIKE;
                         BTLFX_COPY_SVEC(&striker->pos1C, &work->pos24);
                         striker->pos1C -= t * 3 / 2 - 0x800 + ex->btlfx_randCentered(1000);
                         striker->targetY1E = 0;
-                        striker->targetZ20 += (work->count8 % 3) * 1200 - 0x2B0 + ex->btlfx_randCentered(0x6A4);
+                        striker->targetZ20 += (work->count8 % FX_ARK_STRIKE_LANES) * FX_ARK_STRIKE_LANE_SPACING - 0x2B0 + ex->btlfx_randCentered(0x6A4);
                         striker->pos8.vx = striker->pos1C;
-                        striker->pos8.vy = striker->targetY1E - 0x1800;
-                        striker->pos8.vz = striker->targetZ20 - 0x1800;
+                        striker->pos8.vy = striker->targetY1E - FX_ARK_STRIKE_FALL_HEIGHT;
+                        striker->pos8.vz = striker->targetZ20 - FX_ARK_STRIKE_FALL_HEIGHT;
                         striker->angle10 = work->count8 & 1;
                         striker->index6 = work->count8 - 1;
                         striker->trail18 = fx_17d_5_sparkTrails[work->count8];
@@ -477,11 +477,11 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         BTLFX_COPY_SVEC(&striker->pos1C, &work->pos24);
                         striker->targetY1E = 0;
                         striker->pos1C += 0x6A4 - t * 3 / 2;
-                        striker->angle10 = 2;
+                        striker->angle10 = FX_17D_5_HIT_FINAL;
                         striker->pos8.vx = striker->pos1C;
                         striker->targetZ20 += 0x400;
-                        striker->pos8.vy = striker->targetY1E - 0x1800;
-                        striker->pos8.vz = striker->targetZ20 - 0x1800;
+                        striker->pos8.vy = striker->targetY1E - FX_ARK_STRIKE_FALL_HEIGHT;
+                        striker->pos8.vz = striker->targetZ20 - FX_ARK_STRIKE_FALL_HEIGHT;
                         striker->index6 = work->count8 - 1;
                         striker->trail18 = fx_17d_5_sparkTrails[work->count8];
                     }
@@ -491,11 +491,11 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos3C.vx += 0x800 - t;
             work->pos3C.vy -= 0x20;
             work->pos3C.vz = fx_17d_5_targetPos.vz;
-            if (frame >= 9 && frame < 0x31) {
-                if (frame < 0x28) {
+            if (frame >= FX_ARK_SHAKE_FRAME && frame < FX_ARK_SHAKE_OFF_FRAME) {
+                if (frame < FX_ARK_SHAKE_PEAK_FRAME) {
                     shake = (t >> 5) + 0x26;
-                } else if (frame < 0x2D) {
-                    shake = (ex->math_cos(((frame - 0x28) << 10) / 5) * 400) >> 12;
+                } else if (frame < FX_ARK_SHAKE_END_FRAME) {
+                    shake = (ex->math_cos(((frame - FX_ARK_SHAKE_PEAK_FRAME) << 10) / (FX_ARK_SHAKE_END_FRAME - FX_ARK_SHAKE_PEAK_FRAME)) * 400) >> 12;
                 } else {
                     shake = 0;
                 }
@@ -505,15 +505,15 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vx = work->pos3C.vx;
             env->camera->points[2].vy = work->pos3C.vy;
             env->camera->points[2].vz = work->pos3C.vz;
-            if (frame < 0x10) {
+            if (frame < FX_ARK_STRIKE_RING_FRAMES) {
                 ringAlpha = ex->math_cos((frame << 10) >> 4);
                 rot.vx = 0x400;
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &fx_17d_5_targetPos, &rot, 0x5000, 0, BTLFX_ABR_ADD, ringAlpha);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &fx_17d_5_targetPos, &rot, FX_ARK_RED_FLASH_RING_SCALE, 0, BTLFX_ABR_ADD, ringAlpha);
             }
-            ex->btlfx_drawScrollMove(frame * 29, FX_ARK_STRIKE_VRAM_X, FX_ARK_STRIKE_VRAM_Y, FX_ARK_STRIKE_VRAM_W, FX_ARK_STRIKE_VRAM_H, FX_ARK_STRIKE_SRC_X, FX_ARK_STRIKE_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_STRIKE_SCROLL_SPEED, FX_ARK_STRIKE_VRAM_X, FX_ARK_STRIKE_VRAM_Y, FX_ARK_STRIKE_VRAM_W, FX_ARK_STRIKE_VRAM_H, FX_ARK_STRIKE_SRC_X, FX_ARK_STRIKE_SRC_Y);
             if (frame >= FX_ARK_STRIKE_TINT_FRAME) {
                 tintIn = (frame - FX_ARK_STRIKE_TINT_FRAME) * 0xFF;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, tintIn >> 4, (tintIn >> 4) * 2 / 3, tintIn >> 5);

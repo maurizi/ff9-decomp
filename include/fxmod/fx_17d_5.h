@@ -48,6 +48,34 @@
 #define FX_ARK_STRIKE_SRC_X  0x200
 #define FX_ARK_STRIKE_SRC_Y  0x180
 
+/* fx_17d_5 choreography, deep pass (docs/fxchoreo_deep_c.md): keys inside op80's states and the sparks' phases */
+#define FX_ARK_LENS_FLARE_FRAME  0x20 /* STATE_GATHER: LENS_FLARE plays from here, */
+#define FX_ARK_LENS_FLARE_FRAMES 0x10 /* for this long */
+#define FX_ARK_GATHER_FLASH_FRAMES 8  /* STATE_GATHER: a white-yellow flash fades over these frames from CREAM_RING_FRAME */
+#define FX_ARK_GRID_FRAME        0x31 /* STATE_GATHER: the screen grid brightens from here to the state's end */
+#define FX_ARK_TRAILS_PER_FRAME  3    /* STATE_GATHER: trails spawned a frame, fanned out by count % 3 and count / 3 */
+#define FX_ARK_HOMERS            0x20 /* STATE_HOMING: trails spawned at its frame 0 */
+#define FX_ARK_RED_FLASH_RING_SCALE 0x5000 /* HOMING / STRIKE: the RED_FLASH_RING on the target */
+#define FX_ARK_STRIKERS          0x20 /* STATE_STRIKE: one striker a frame, the last one the final hit (FX_17D_5_HIT_FINAL) */
+#define FX_ARK_STRIKE_LANES      3    /* the strikers land in 3 lanes (count % 3), */
+#define FX_ARK_STRIKE_LANE_SPACING 1200 /* this far apart (plus a random spread) */
+#define FX_ARK_SHAKE_FRAME       9    /* STATE_STRIKE: camera point 2 shakes from here, growing until PEAK_FRAME, */
+#define FX_ARK_SHAKE_PEAK_FRAME  0x28
+#define FX_ARK_SHAKE_END_FRAME   0x2D /* decaying (a cosine quarter) until here */
+#define FX_ARK_SHAKE_OFF_FRAME   0x31 /* (the shake block runs until here, with no shake after END_FRAME) */
+#define FX_ARK_STRIKE_RING_FRAMES 0x10 /* STATE_STRIKE: the RED_FLASH_RING fades out over these frames */
+#define FX_ARK_STRIKE_SCROLL_SPEED 29 /* STRIKE rect texels a frame */
+#define FX_ARK_SPARK_LAUNCH_FRAMES 20 /* SPARK_TRAIL: the trail speeds up (a cosine quarter) over these frames, */
+#define FX_ARK_SPARK_BRAKE_END   24   /* brakes until here, then speeds up to MAX_SPEED */
+#define FX_ARK_SPARK_MAX_SPEED   2000
+#define FX_ARK_STRIKE_FALL_STEP  0x300 /* SPARK_STRIKE: the striker falls this much down and in a frame, */
+#define FX_ARK_STRIKE_FALL_HEIGHT ((FX_ARK_SPARK_STRIKE_FRAMES + 1) * FX_ARK_STRIKE_FALL_STEP) /* from this far, landing at its last frame */
+#define FX_ARK_STRIKE_TRAIL_WIDTH 0x1800 /* TRAIL_2's width for a striker, */
+#define FX_ARK_FINAL_TRAIL_WIDTH 0x5000 /* for the final one (SPARK_STRIKE and SPARK_FINAL_HIT) */
+#define FX_ARK_FINAL_DARKEN_RGB  0x40, 0x40, 0x40 /* the final striker's landing: a subtractive tint */
+#define FX_ARK_HIT_TRAIL_FRAMES  8    /* SPARK_HIT / SPARK_FINAL_HIT: TRAIL_2 still drawn for these frames */
+#define FX_ARK_FINAL_FLASH_FRAMES 6   /* SPARK_FINAL_HIT: a white flash fades over these frames */
+
 typedef struct {
     s32 vx, vy, vz;
 } Fx17d5Vec3;
