@@ -170,7 +170,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     gt4 = (POLY_GT4 *)fx_0e3_1_env->prim;
     *(s32 *)&colDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    fx_0e3_1_env->prim = (u8 *)(ft4 + 46);
+    fx_0e3_1_env->prim = (u8 *)(ft4 + (FX_BAHAMUT_CYL_ROWS * FX_BAHAMUT_CYL_COLS - 2));
     colFlat.r = colFlat.g = colFlat.b = bright;
     colLit.r = colLit.g = colLit.b = bright;
     colFlat.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
@@ -188,9 +188,9 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     rowY = 0;
     w0 >>= 1;
     w1 >>= 1;
-    span = dy * 3;
-    for (row = 0; row < 3; row++, rowY += dy) {
-        for (j = 0; j < 16; j++, seg++, ang += dang << 8) {
+    span = dy * FX_BAHAMUT_CYL_ROWS;
+    for (row = 0; row < FX_BAHAMUT_CYL_ROWS; row++, rowY += dy) {
+        for (j = 0; j < FX_BAHAMUT_CYL_COLS; j++, seg++, ang += dang << 8) {
             nextJ = (j + 1) << 8;
             y0 = rowY + (((j << 8) * dy) >> 12);
             y1 = rowY + ((nextJ * dy) >> 12);
@@ -226,7 +226,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 ft = 0;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
-            } else if (seg >= 47) {
+            } else if (seg >= FX_BAHAMUT_CYL_ROWS * FX_BAHAMUT_CYL_COLS - 1) {
                 ft = 0;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
@@ -428,7 +428,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         *args = sizeof(Fx0e31Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_BAHAMUT_STATE_RAISE;
         work->frame4 = 0;
         fx_0e3_1_env = env;
         work->modelC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_ARC_2), 1);
@@ -471,8 +471,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         frame = entry->frame;
         switch (work->state0) {
             s32 y6_l; /* declared here: its pseudo (spill slot) comes after the function-level ones */
-        case 0:
-            t = (frame << 12) / 35;
+        case FX_BAHAMUT_STATE_RAISE:
+            t = (frame << 12) / FX_BAHAMUT_RAISE_FRAMES;
             ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, SUMMON(env)->summonModel60, 1);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&boneMat);
             ex->btlfx_matrixPointAhead(&boneMat, 0x40, (s32)&work->camTarget40);
@@ -481,36 +481,36 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vy = work->camTarget40.vy;
             arcAmp = 0x100;
             env->camera->points[3].vz = work->camTarget40.vz;
-            if (frame >= 0x23) {
-                work->state0 = 1;
+            if (frame >= FX_BAHAMUT_RAISE_FRAMES) {
+                work->state0 = FX_BAHAMUT_STATE_CHARGE;
                 entry->frame = -1;
                 work->emit60 = NULL;
             }
             break;
-        case 1:
-            rndAng = frame / 6; /* dead: its magic constant, shared with the / 6 below, stays at the top of the case */
+        case FX_BAHAMUT_STATE_CHARGE:
+            rndAng = frame / FX_BAHAMUT_SPHERE_IN_FRAMES; /* dead: its magic constant, shared with the / 6 below, stays at the top of the case */
             arcAmp = 0x80;
-            if (frame < 6) {
-                fade = (frame << 11) / 6;
-            } else if (frame < 0x2C) {
-                fade = ex->math_cos(((frame - 6) << 10) / 38) >> 1;
+            if (frame < FX_BAHAMUT_SPHERE_IN_FRAMES) {
+                fade = (frame << 11) / FX_BAHAMUT_SPHERE_IN_FRAMES;
+            } else if (frame < FX_BAHAMUT_SPHERE_END_FRAME) {
+                fade = ex->math_cos(((frame - FX_BAHAMUT_SPHERE_IN_FRAMES) << 10) / (FX_BAHAMUT_SPHERE_END_FRAME - FX_BAHAMUT_SPHERE_IN_FRAMES)) >> 1;
             }
             work->rot80.vz += 8;
             ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, SUMMON(env)->summonModel60, 0);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&handMat);
-            ex->btlfx_matrixPointAhead(&handMat, 0x5C, (s32)&work->pos30);
+            ex->btlfx_matrixPointAhead(&handMat, FX_BAHAMUT_HAND_REACH, (s32)&work->pos30);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&handRotMat);
             ex->btlfx_matrixAngles(&handRotMat, &work->handRot58.vx);
             work->handRot58.vx -= 0x800;
-            if (frame >= 0x10) {
+            if (frame >= FX_BAHAMUT_ORBS_FRAME) {
                 s32 frameCount = work->frame4;
                 from.vx = work->pos30.vx;
-                tA = (frame - 0x10) << 7;
+                tA = (frame - FX_BAHAMUT_ORBS_FRAME) << 7;
                 from.vy = work->pos30.vy;
                 from.vz = work->pos30.vz;
                 chargeAmp = (tA >> 7) + 0x10;
                 ang1 = frameCount << 8;
-                chargeArcs = (ex->math_sin(tA >> 2) * 6) >> 12;
+                chargeArcs = (ex->math_sin(tA >> 2) * FX_BAHAMUT_CHARGE_ARCS) >> 12;
                 for (i = 0; i < chargeArcs; i++) {
                     rndAng = ex->btlfx_rand();
                     to.vx = work->pos30.vx;
@@ -541,45 +541,45 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit64->rot.vz = work->handRot58.vz;
             }
             env->otZ = 0x80;
-            t_s2 = ((frame << 12) / 48) >> 2;
+            t_s2 = ((frame << 12) / FX_BAHAMUT_CHARGE_FRAMES) >> 2;
             chargeRingScale = (ex->math_sin(t_s2) >> 1) + 0x800;
             chargeRingFade = ex->math_sin(t_s2);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CHARGE_RINGS), &work->pos30, NULL, chargeRingScale >> 1, 0, BTLFX_ABR_ADD, chargeRingFade);
-            if (frame >= 0x2B) {
-                tB = (((frame - 0x2B) << 12) / 5) >> 2;
+            if (frame >= FX_BAHAMUT_FLARE_FRAME) {
+                tB = (((frame - FX_BAHAMUT_FLARE_FRAME) << 12) / (FX_BAHAMUT_CHARGE_FRAMES - FX_BAHAMUT_FLARE_FRAME)) >> 2;
                 flashRingScale = ex->math_sin(tB) / 3;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flashRingScale, 0, BTLFX_ABR_ADD, 0x1000);
                 ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LENS_FLARE), &work->pos30, 0xB, ex->math_sin(tB));
             }
-            if (frame >= 0x10) {
-                sparkRing = ex->math_sin(((frame - 0x10) << 7) >> 2);
+            if (frame >= FX_BAHAMUT_ORBS_FRAME) {
+                sparkRing = ex->math_sin(((frame - FX_BAHAMUT_ORBS_FRAME) << 7) >> 2);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, sparkRing, 0, BTLFX_ABR_ADD, sparkRing);
             }
-            if (frame == 0x26) {
+            if (frame == FX_BAHAMUT_PURPLE_GLOW_FRAME) {
                 Pool6CEntry *sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_PURPLE_GLOW), (s32)&work->pos30);
                 if (sparkEmitter != NULL) {
                     sparkEmitter->otZ = 0x80;
                 }
             }
             env->otZ = 0;
-            if (frame == 0x10) {
+            if (frame == FX_BAHAMUT_ORBS_FRAME) {
                 work->emit68 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_ENERGY_ORBS), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame == 0x2F) {
+            if (frame == FX_BAHAMUT_RED_FLASH_FRAME) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_OPAQUE, 0x80, 0, 0);
             }
-            if (frame >= 0x28) {
-                tC = ((frame - 0x28) << 12) >> 5;
+            if (frame >= FX_BAHAMUT_SPIN_RING_FRAME) {
+                tC = ((frame - FX_BAHAMUT_SPIN_RING_FRAME) << 12) >> 5;
                 { s32 q4b;
                 spinRingScale = (ex->math_cos(tC) * 3) >> 1;
                 q4b = ex->math_sin(tC);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPIN_RING), &work->pos30, &work->rotBC, spinRingScale, 0, BTLFX_ABR_ADD, q4b); }
             }
-            if (frame >= 0x30) {
-                work->state0 = 2;
+            if (frame >= FX_BAHAMUT_CHARGE_FRAMES) {
+                work->state0 = FX_BAHAMUT_STATE_FIRE;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion19C, SUMMON(env)->summonModel60);
@@ -587,10 +587,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0, 0xFF, 0xFF);
             }
             break;
-        case 2:
-            t = (frame << 12) / 28;
-            if (frame >= 0xE) {
-                tint = ((frame - 0xE) << 12) / 14;
+        case FX_BAHAMUT_STATE_FIRE:
+            t = (frame << 12) / FX_BAHAMUT_FIRE_FRAMES;
+            if (frame >= FX_BAHAMUT_SWING_FRAME) {
+                tint = ((frame - FX_BAHAMUT_SWING_FRAME) << 12) / (FX_BAHAMUT_FIRE_FRAMES - FX_BAHAMUT_SWING_FRAME);
             }
             ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, SUMMON(env)->summonModel60, 1);
             if (frame == 1) {
@@ -602,18 +602,18 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&tipRotMat);
                 ex->btlfx_matrixAngles(&tipRotMat, &work->rotBC.vx);
             }
-            if (frame < 0x12) {
+            if (frame < FX_BAHAMUT_SWING_BASE_FRAME) {
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&tipMat);
-                ex->btlfx_matrixPointAhead(&tipMat, 0x5C, (s32)&work->pos30);
+                ex->btlfx_matrixPointAhead(&tipMat, FX_BAHAMUT_HAND_REACH, (s32)&work->pos30);
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&tipRotMat);
                 ex->btlfx_matrixPointAhead(&tipRotMat, 0x80, (s32)&work->camTarget40);
             } else {
-                if (frame == 0x12) {
+                if (frame == FX_BAHAMUT_SWING_BASE_FRAME) {
                     ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&u1.m);
                     ex->btlfx_matrixPointAhead(&u1.m, 0x80, (s32)&work->swingBase48);
                 }
                 ex->btlfx_pointAhead(&work->swingBase48.vx, &work->rotBC.vx,
-                                  -((ex->math_sin(((frame - 0xE) << 10) / 14) * 3) / 2), &work->camTarget40.vx);
+                                  -((ex->math_sin(((frame - FX_BAHAMUT_SWING_FRAME) << 10) / (FX_BAHAMUT_FIRE_FRAMES - FX_BAHAMUT_SWING_FRAME)) * 3) / 2), &work->camTarget40.vx);
             }
             env->camera->points[3].vx = work->camTarget40.vx;
             env->camera->points[3].vy = work->camTarget40.vy;
@@ -631,8 +631,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->posA4.vz = work->pos30.vz;
             fxm_rollTowardEye((VECTOR *)&work->posA4, &work->rotBC);
             ex->Hi_DrawEffModel(&work->rotBC, (VECTOR *)&work->posA4, (s32)&work->scaleB0, work->modelA0);
-            if (frame < 0x18 && frame != 1) {
-                waveAng = (frame << 10) / 24;
+            if (frame < FX_BAHAMUT_CONE_FRAMES && frame != 1) {
+                waveAng = (frame << 10) / FX_BAHAMUT_CONE_FRAMES;
                 u1.v.s1.vx = u1.v.s1.vy = ex->math_sin(waveAng) / 2 + 0x800;
                 u1.v.s1.vz = 0x1000;
                 u1.v.r1.vx = work->rotBC.vx;
@@ -644,14 +644,14 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             BTLFX_COPY_SVEC(&u1.v.a1, &work->pos30);
             ex->btlfx_pointAhead(&u1.v.a1.vx, &work->rotBC.vx, -(t + 0x1000), &chargeTo.vx);
-            for (kk = 0, ang3 = -work->frame4 << 7; kk < 3; kk++, ang3 += 0x554) {
+            for (kk = 0, ang3 = -work->frame4 << 7; kk < FX_BAHAMUT_BEAM_BOLTS; kk++, ang3 += 0x554) {
                 chargeFade = ex->btlfx_randCentered(0x400) + 0xC00;
                 fxm_drawOffsetTrail2(entry, &fx_0e3_1_bolts[kk], &u1.v.a1, &chargeTo, 0x7C, 0x200, ang3, 0xC0, 0, chargeFade, 0x1D);
-                for (branch = 0; branch < 4; branch++) {
+                for (branch = 0; branch < FX_BAHAMUT_BOLT_BRANCHES; branch++) {
                     fxm_drawOffsetBranch(entry, &fx_0e3_1_bolts[kk], (Fx0e31Bolt *)((Fx0e31Bolt5 *)fx_0e3_1_arcs + branch), chargeFade);
                 }
             }
-            if (frame < 0x21) {
+            if (frame < FX_BAHAMUT_DISC_FRAMES) {
                 s32 ya;
                 s32 yb;
                 ya = frame << 12;
@@ -669,7 +669,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 discPos.vx = discAhead.vx;
                 discPos.vy = discAhead.vy;
                 discPos.vz = discAhead.vz;
-                for (; i < 3; i++) {
+                for (; i < FX_BAHAMUT_DISC_COPIES; i++) {
                     ex->Hi_DrawEffModel(&discRot, &discPos, (s32)&discScale, work->modelC4);
                     ex->Hi_ModifyEffModelRGB(work->modelC4, discRgb, discRgb, discRgb);
                     discScale.vx = discScale.vy = (discScale.vx * 3) >> 2;
@@ -677,7 +677,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             env->otZ = 0x190;
-            if (frame < 0x10 && frame != 1) {
+            if (frame < FX_BAHAMUT_FLASH_RING_FRAMES && frame != 1) {
                 flareScale = (ex->math_cos(t >> 2) >> 2) + 0x555;
                 flareFade = ex->math_cos((frame << 8) >> 2);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flareScale, 0, BTLFX_ABR_ADD, flareFade);
@@ -704,12 +704,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, glowScale, 0, BTLFX_ABR_ADD, qa);
             }
             env->otZ = 0;
-            if (frame >= 0x1C) {
-                work->state0 = 3;
+            if (frame >= FX_BAHAMUT_FIRE_FRAMES) {
+                work->state0 = FX_BAHAMUT_STATE_STRIKE;
                 entry->frame = -1;
             }
             break;
-        case 3:
+        case FX_BAHAMUT_STATE_STRIKE:
             tint = 0x1000;
             if (frame == 0) {
                 work->pos30.vx = fx_0e3_1_origin.vx;
@@ -738,22 +738,22 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->rotBC, (VECTOR *)&work->posA4, (s32)&work->scaleB0, work->modelA0);
             BTLFX_COPY_SVEC(&strikeFrom, &work->pos30);
             ex->btlfx_pointAhead(&strikeFrom.vx, &work->rotBC.vx, -0x2800, &strikeTo.vx);
-            for (k2k = 0, ang2 = -work->frame4 << 7; k2k < 3; k2k++, ang2 += 0x554) {
+            for (k2k = 0, ang2 = -work->frame4 << 7; k2k < FX_BAHAMUT_BEAM_BOLTS; k2k++, ang2 += 0x554) {
                 strikeFade = ex->btlfx_randCentered(0x400) + 0xC00;
                 fxm_drawOffsetTrail2(entry, &fx_0e3_1_bolts[k2k], &strikeFrom, &strikeTo, 0x400, 0x528, ang2, 0xC0, 0, strikeFade, 0x84);
-                for (strikeBranch = 0; strikeBranch < 4; strikeBranch++) {
+                for (strikeBranch = 0; strikeBranch < FX_BAHAMUT_BOLT_BRANCHES; strikeBranch++) {
                     fxm_drawOffsetBranch(entry, &fx_0e3_1_bolts[k2k], (Fx0e31Bolt *)((Fx0e31Bolt5 *)fx_0e3_1_arcs + strikeBranch), strikeFade);
                 }
             }
             shake = 0x1000;
-            if (frame >= 2) {
-                work->state0 = 4;
+            if (frame >= FX_BAHAMUT_STRIKE_FRAMES) {
+                work->state0 = FX_BAHAMUT_STATE_IMPACT;
                 entry->frame = -1;
             }
             break;
-        case 4:
-            t = (frame << 12) / 14;
-            if (frame == 5) {
+        case FX_BAHAMUT_STATE_IMPACT:
+            t = (frame << 12) / FX_BAHAMUT_IMPACT_FRAMES;
+            if (frame == FX_BAHAMUT_QUAKE_FRAME) {
                 ex->btlfx_playFileSound(0x28, entry->file, -1);
                 ex->btlfx_playFileSound(0x2A, entry->file, -1);
                 ex->btlfx_playFileSound(0x2B, entry->file, -1);
@@ -768,17 +768,17 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->posA4.vy = fx_0e3_1_origin.vy;
                 work->posA4.vz = fx_0e3_1_origin.vz;
             }
-            if (frame < 4) {
+            if (frame < FX_BAHAMUT_IMPACT_FLASH_FRAME) {
                 tint = 0x1000 - ((frame << 12) >> 2);
                 work->scaleB0.vx = work->scaleB0.vy = 0x1200;
                 work->scaleB0.vz = 0x1555;
-            } else if (frame == 4) {
+            } else if (frame == FX_BAHAMUT_IMPACT_FLASH_FRAME) {
                 work->scaleB0.vx = work->scaleB0.vy = 0x4000;
-            } else if ((shrink = frame - 4) < 0xB) {
-                shrink = (shrink << 12) / 10;
+            } else if ((shrink = frame - FX_BAHAMUT_IMPACT_FLASH_FRAME) < FX_BAHAMUT_BURST_FRAMES + 1) {
+                shrink = (shrink << 12) / FX_BAHAMUT_BURST_FRAMES;
                 work->scaleB0.vx = work->scaleB0.vy = ((0x1000 - shrink) * 3) >> 1;
             }
-            if (frame < 5) {
+            if (frame < FX_BAHAMUT_QUAKE_FRAME) {
                 work->camTarget40.vx = work->pos30.vx;
                 work->camTarget40.vy = work->pos30.vy;
                 work->camTarget40.vz = work->pos30.vz;
@@ -787,10 +787,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vy = work->camTarget40.vy;
                 env->camera->points[3].vz = work->camTarget40.vz;
             }
-            if (frame == 4) {
+            if (frame == FX_BAHAMUT_IMPACT_FLASH_FRAME) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x20, 0x80, 0xFF);
-            } else if ((u32)(frame - 5) < 7) {
-                quake = 0x1000 - (((frame - 5) << 12) / 7);
+            } else if ((u32)(frame - FX_BAHAMUT_QUAKE_FRAME) < FX_BAHAMUT_QUAKE_FRAMES) {
+                quake = 0x1000 - (((frame - FX_BAHAMUT_QUAKE_FRAME) << 12) / FX_BAHAMUT_QUAKE_FRAMES);
                 quakeAmp = quake >> 5;
                 work->camTarget40.vx = fx_0e3_1_origin.vx + ex->btlfx_randCentered(quakeAmp);
                 work->camTarget40.vy = fx_0e3_1_origin.vy + ex->btlfx_randCentered(quakeAmp);
@@ -806,11 +806,11 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 fxm_rollTowardEye((VECTOR *)&work->posA4, &work->rotBC);
                 ex->Hi_DrawEffModel(&work->rotBC, (VECTOR *)&work->posA4, (s32)&work->scaleB0, work->modelA0);
             }
-            if (frame >= 4) {
+            if (frame >= FX_BAHAMUT_IMPACT_FLASH_FRAME) {
                 s32 k7a;
                 burstRot.vx = 0;
                 burstRot.vz = 0;
-                k7a = ((frame - 4) << 12) / 10;
+                k7a = ((frame - FX_BAHAMUT_IMPACT_FLASH_FRAME) << 12) / FX_BAHAMUT_BURST_FRAMES;
                 burstPhase = k7a >> 2;
                 burstRot.vy = k7a >> 3;
                 burstScale.vx = burstScale.vz = burstPhase + 0x555;
@@ -839,7 +839,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&burstFrom, &work->pos30);
             ex->btlfx_pointAhead(&burstFrom.vx, &work->rotBC.vx, t - 0x2800, &burstTo.vx);
             burstAmp = (t >> 2) + 0x400;
-            for (burstBolt = 0, ang4 = work->frame4 << 8; burstBolt < 3; burstBolt++, ang4 += 0x554) {
+            for (burstBolt = 0, ang4 = work->frame4 << 8; burstBolt < FX_BAHAMUT_BEAM_BOLTS; burstBolt++, ang4 += 0x554) {
                 fxm_drawOffsetTrail2(entry, &fx_0e3_1_bolts[burstBolt], &burstFrom, &burstTo, burstAmp, burstAmp, ang4, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
                               0x84);
             }
@@ -854,9 +854,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 qb = ex->math_cos(burstAng);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_VIOLET_RINGS), &work->pos30, NULL, burstGlowScale, 0, BTLFX_ABR_ADD, qb);
             }
-            if (frame >= 4) {
-                ringFrame = frame - 4;
-                if (ringFrame < 0xA) {
+            if (frame >= FX_BAHAMUT_IMPACT_FLASH_FRAME) {
+                ringFrame = frame - FX_BAHAMUT_IMPACT_FLASH_FRAME;
+                if (ringFrame < FX_BAHAMUT_BURST_FRAMES) {
                     ringRot.vx = 0x400;
                     ringRot.vy = 0;
                     ringRot.vz = 0;
@@ -866,8 +866,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             env->otZ = 0;
-            if (frame >= 0xE) {
-                work->state0 = 5;
+            if (frame >= FX_BAHAMUT_IMPACT_FRAMES) {
+                work->state0 = FX_BAHAMUT_STATE_EXPLODE;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit70);
                 ex->btlfx_stopEmitter(work->emit74);
@@ -893,8 +893,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[2].vz = 0x300;
             }
             break;
-        case 5:
-            t = (frame << 12) / 77;
+        case FX_BAHAMUT_STATE_EXPLODE:
+            t = (frame << 12) / FX_BAHAMUT_EXPLODE_FRAMES;
             if (frame == 0) {
                 work->pos30.vx = fx_0e3_1_origin.vx;
                 work->pos30.vy = fx_0e3_1_origin.vy;
@@ -916,32 +916,32 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->camTarget40.vx;
             env->camera->points[3].vy = work->camTarget40.vy;
             env->camera->points[3].vz = work->camTarget40.vz;
-            if (frame < 2) {
+            if (frame < FX_BAHAMUT_WHITE_FRAME) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0xFF - (frame << 7), 0xFF - (frame << 7), 0xFF);
-            } else if (frame == 2) {
+            } else if (frame == FX_BAHAMUT_WHITE_FRAME) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
-            } else if (frame < 0x13) {
-                fadeLevel = 0x1000 - (((frame - 3) << 12) >> 4);
+            } else if (frame < FX_BAHAMUT_WHITE_FRAME + 1 + FX_BAHAMUT_WHITE_FADE_FRAMES) {
+                fadeLevel = 0x1000 - (((frame - (FX_BAHAMUT_WHITE_FRAME + 1)) << 12) >> 4);
                 fadeLevel = (fadeLevel * 0xA0) >> 12;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, fadeLevel, fadeLevel, fadeLevel);
             }
-            if (frame == 0x14) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xD7, 0x64, 0x64);
+            if (frame == FX_BAHAMUT_RED_TINT_1_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_BAHAMUT_RED_TINT_1_RGB);
             }
-            if (frame == 0x1D) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x97, 0x4D, 0x4D);
+            if (frame == FX_BAHAMUT_RED_TINT_2_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_BAHAMUT_RED_TINT_2_RGB);
             }
-            if (frame == 0x20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x80, 0x40, 0x40);
+            if (frame == FX_BAHAMUT_RED_TINT_3_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_BAHAMUT_RED_TINT_3_RGB);
             }
-            if (frame < 0x49) {
-                if (frame < 7) {
-                    coreScale = 0x2000 - ex->math_sin((frame << 10) / 7);
+            if (frame < FX_BAHAMUT_CORE_FRAMES) {
+                if (frame < FX_BAHAMUT_CORE_IN_FRAMES) {
+                    coreScale = 0x2000 - ex->math_sin((frame << 10) / FX_BAHAMUT_CORE_IN_FRAMES);
                 } else {
-                    coreScale = 0x7800 - ((frame - 7) * 0x1124) / 65 * 7;
+                    coreScale = 0x7800 - ((frame - FX_BAHAMUT_CORE_IN_FRAMES) * 0x1124) / 65 * 7;
                 }
-                if ((u32)(frame - 5) < 7) {
-                    flashTint = ex->math_sin(((frame - 5) << 11) >> 12) * 0xF5;
+                if ((u32)(frame - FX_BAHAMUT_CORE_FLASH_FRAME) < FX_BAHAMUT_CORE_FLASH_FRAMES) {
+                    flashTint = ex->math_sin(((frame - FX_BAHAMUT_CORE_FLASH_FRAME) << 11) >> 12) * 0xF5;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x400), BTLFX_ABR_ADD, 0, flashTint >> 14, flashTint >> 12);
                 }
                 work->scaleB0.vx = work->scaleB0.vy = coreScale;
@@ -950,8 +950,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_DrawEffModel(&work->rotBC, (VECTOR *)&work->posA4, (s32)&work->scaleB0, work->modelD0);
                 ex->Hi_DrawEffModel(&work->rotBC, (VECTOR *)&work->posA4, (s32)&work->scaleB0, work->modelD4);
             }
-            if (frame >= 0x3B) {
-                afterT = ((frame - 0x3B) << 12) / 18;
+            if (frame >= FX_BAHAMUT_AFTERGLOW_FRAME) {
+                afterT = ((frame - FX_BAHAMUT_AFTERGLOW_FRAME) << 12) / (FX_BAHAMUT_EXPLODE_FRAMES - FX_BAHAMUT_AFTERGLOW_FRAME);
                 work->scaleB0.vx = work->scaleB0.vy = 0x1000;
                 fxm_rollTowardEye((VECTOR *)&work->posA4, &work->rotBC);
                 work->rotBC.vz += 0x400;
@@ -971,9 +971,11 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ringRot.vz = 0;
             cylRise = (((t >> 3) + 0x500) * 4) / 3;
             y6_l = ex->math_cos(cylPhase) >> 5;
-            fxm_drawTexCylinder(&work->pos30, &ringRot, &ss, innerRadius, cylPhase + 0xA00, cylWidth >> 1, cylWidth, y6_l, 0x1D, 0x3E81, 0, 0xC0, -frame << 7, cylRise, 1, 1);
-            fxm_drawTexCylinder(&work->pos30, &ringRot, &ss, innerRadius, cylPhase + 0xA00, cylWidth >> 1, cylWidth, y6_l, 0x1D, 0x3E81, 0, 0xC0, frame * 0xA0, cylRise, 1, -1);
-            if (frame < 0x41) {
+            fxm_drawTexCylinder(&work->pos30, &ringRot, &ss, innerRadius, cylPhase + 0xA00, cylWidth >> 1, cylWidth, y6_l, FX_BAHAMUT_CYL_TPAGE, FX_BAHAMUT_CYL_CLUT, FX_BAHAMUT_CYL_U, FX_BAHAMUT_CYL_V,
+                          -frame << 7, cylRise, BTLFX_ABR_ADD, 1);
+            fxm_drawTexCylinder(&work->pos30, &ringRot, &ss, innerRadius, cylPhase + 0xA00, cylWidth >> 1, cylWidth, y6_l, FX_BAHAMUT_CYL_TPAGE, FX_BAHAMUT_CYL_CLUT, FX_BAHAMUT_CYL_U, FX_BAHAMUT_CYL_V,
+                          frame * 0xA0, cylRise, BTLFX_ABR_ADD, -1);
+            if (frame < FX_BAHAMUT_COLUMN_FRAMES) {
                 columnAng = (frame << 6) >> 2;
                 columnCos = ex->math_cos(columnAng) - 0x5DC;
                 columnRot.vx = 0;
@@ -996,15 +998,15 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pillarPos.vx = work->pos30.vx;
             pillarPos.vy = work->pos30.vy;
             pillarPos.vz = work->pos30.vz;
-            for (i = 0, j = 7; i < 6; j += 7, i++) {
+            for (i = 0, j = FX_BAHAMUT_PILLAR_STEP; i < FX_BAHAMUT_PILLARS; j += FX_BAHAMUT_PILLAR_STEP, i++) {
                 pillarFrame = frame - j;
-                if ((u32)pillarFrame < 0x20) {
+                if ((u32)pillarFrame < FX_BAHAMUT_PILLAR_LIFE) {
                     pillarCos = ex->math_cos((pillarFrame << 12) >> 7);
                     pillarScale.vx = pillarScale.vz = pillarWidth;
-                    if (pillarFrame < 4) {
+                    if (pillarFrame < FX_BAHAMUT_PILLAR_RISE_FRAMES) {
                         pillarScale.vy = ex->math_sin((pillarFrame << 10) >> 2) * 6;
                     } else {
-                        pillarScale.vy = 0x6000 - ((pillarFrame - 4) << 8);
+                        pillarScale.vy = 0x6000 - ((pillarFrame - FX_BAHAMUT_PILLAR_RISE_FRAMES) << 8);
                     }
                     pillarScale.vy = (pillarScale.vy * (8 - i)) >> 3;
                     if (i < 2) {
@@ -1016,7 +1018,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 pillarWidth = (pillarWidth * 9) >> 3;
                 pillarRot.vy = (pillarRot.vy * 3) >> 2;
             }
-            if (frame < 0x10) {
+            if (frame < FX_BAHAMUT_DOME_FLASH_FRAMES) {
                 flashT = frame << 12;
                 flashRot.vy = frame * 0x37;
                 flashRot.vx = 0;
@@ -1039,19 +1041,19 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             boltAmp = 0x1000 - ((t * 0xDAC) >> 12);
             ang = (work->frame4 << 9) + (ex->btlfx_rand() & 0x1FF);
             boltWidth = (ex->math_cos(t >> 2) * 0xF5) >> 12;
-            for (boltIdx = 0; boltIdx < 2; boltIdx++, ang += 0x800) {
+            for (boltIdx = 0; boltIdx < FX_BAHAMUT_COLUMN_BOLTS; boltIdx++, ang += 0x1000 / FX_BAHAMUT_COLUMN_BOLTS) {
                 fxm_drawOffsetTrail2(entry, &fx_0e3_1_bolts[boltIdx], &boltFrom, &boltTo, (boltAmp * 3) >> 2, boltAmp, ang, 0xC0, 0, 0x1000, boltWidth);
             }
-            if (frame < 0x26) {
+            if (frame < FX_BAHAMUT_THIRD_BOLT_FRAMES) {
                 boltAmp = (boltAmp * 3) >> 1;
                 boltWidth = (ex->math_cos(t >> 1) * 0xF5) >> 12;
-                fxm_drawOffsetTrail2(entry, &fx_0e3_1_bolts[2], &boltFrom, &boltTo, (boltAmp * 3) >> 2, boltAmp, -ang, 0xC0, 0, 0x1000, boltWidth);
+                fxm_drawOffsetTrail2(entry, &fx_0e3_1_bolts[FX_BAHAMUT_COLUMN_BOLTS], &boltFrom, &boltTo, (boltAmp * 3) >> 2, boltAmp, -ang, 0xC0, 0, 0x1000, boltWidth);
             }
             spreadRadius = 0x1000 - t;
             env->otZ = 0x300;
             ang = work->frame4 << 7;
             sparkWidth = ((ex->math_cos(t >> 2) * 0xEB) >> 12) + 0x20;
-            for (boltIdx = 0; boltIdx < 5; boltIdx++, ang += 0x333 + ex->btlfx_randCentered(0x20)) {
+            for (boltIdx = 0; boltIdx < FX_BAHAMUT_LIGHTNINGS; boltIdx++, ang += 0x1000 / FX_BAHAMUT_LIGHTNINGS + ex->btlfx_randCentered(0x20)) {
                 boltFrom.vx = work->pos30.vx;
                 boltFrom.vy = work->pos30.vy;
                 boltFrom.vz = work->pos30.vz;
@@ -1067,7 +1069,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                               ex->math_cos(t >> 2), sparkWidth);
             }
             env->otZ = 0;
-            if (frame == 0x31) {
+            if (frame == FX_BAHAMUT_EMBERS_FRAME) {
                 BTLFX_COPY_SVEC(&work->pos38, &work->pos30);
                 work->pos38.vy -= 0x400;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BAHAMUT_EMBERS_2), (s32)&work->pos38);
@@ -1090,7 +1092,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->otZ = 0;
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BACKDROP), frame);
             ex->btlfx_drawScrollMove(work->frame4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
-            if (frame >= 0x4D) {
+            if (frame >= FX_BAHAMUT_EXPLODE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
