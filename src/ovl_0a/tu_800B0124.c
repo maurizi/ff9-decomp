@@ -541,8 +541,8 @@ void fld_getSoundPanVolume(s16 posX, s16 posY, s16 posZ, u8 *outPan, u8 *outVolu
     z = z / 4 + g_gameState->gameData->ctx.field->area->scene->otBias;
     if (z < 0) {
         z = 0;
-    } else if (z >= ONE) {
-        z = 0xFFF;
+    } else if (z >= OT_LEN) {
+        z = OT_LAST;
     }
     edge = z / 32;
     span = (128 - edge) * 2;
@@ -564,7 +564,7 @@ void fld_getSoundPanVolume(s16 posX, s16 posY, s16 posZ, u8 *outPan, u8 *outVolu
         pan -= edge;
     }
     *outPan = pan;
-    *outVolume = (ONE - z) * 127 / 4096;
+    *outVolume = (OT_LEN - z) * 127 / OT_LEN;
 }
 
 void fld_suspendResidentSfx(void) {

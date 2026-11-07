@@ -314,7 +314,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     amp = ((ONE - math_sin(scale)) * amp) >> 12;
                     break;
                 case BTLFX_FALLOFF_INV_COS:
-                    amp = ((0x1000 - math_cos(scale)) * amp) >> 12;
+                    amp = ((ONE - math_cos(scale)) * amp) >> 12;
                     break;
                 case BTLFX_FALLOFF_SIN2:
                     amp = (math_sin(scale * 2) * amp) >> 12;

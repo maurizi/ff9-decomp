@@ -402,7 +402,7 @@ void btlfx_drawTrailFlat(s32 ring, s32 pointCount, s32 texV, s32 texU, s32 texH,
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (pointCount != 0) {
-        inv = 0x1000 / pointCount;
+        inv = ONE / pointCount;
         ctx.ring = ring;
         ctx.fadeStep = inv;
         ctx.fade = inv;
@@ -422,7 +422,7 @@ void btlfx_drawTrailScreen(s32 ring, s32 pointCount, s32 texV, s32 texU, s32 tex
     s32 inv;
 
     if (alpha < 0) {
-        alpha = 0x1000;
+        alpha = ONE;
     }
     gte_DpqColorFar_nst(c1, alpha);
     prim = g_btlfxEnv->prim;
@@ -438,7 +438,7 @@ void btlfx_drawTrailScreen(s32 ring, s32 pointCount, s32 texV, s32 texU, s32 tex
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (pointCount != 0) {
-        inv = 0x1000 / pointCount;
+        inv = ONE / pointCount;
         ctx.ring = ring;
         ctx.v0 = texV;
         ctx.v1 = texH;

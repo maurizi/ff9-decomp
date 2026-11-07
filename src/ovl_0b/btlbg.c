@@ -23,7 +23,7 @@ void btlbg_init(BtlBgHeader *header, BtlUnit9C50 *texAnims) {
             anim->flags |= BTL_TEXANIM_PLAY;
             animRef = g_btlbgTexAnims + i;
             animRef->pos = 0;
-            animRef->lastFrame = 0x1000;
+            animRef->lastFrame = TEXANIM_FORCE_UPLOAD;
         }
     }
     g_btlbgScrollCount = g_btlbgHeader->scrollCount;

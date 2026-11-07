@@ -1141,8 +1141,8 @@ void wm_calcSoundPanVolume(s16 posX, s16 posY, s16 posZ, s32 unused, u8 *outPan,
     z /= 8;
     if (z < 0) {
         z = 0;
-    } else if (z >= ONE) {
-        z = 0xFFF;
+    } else if (z >= OT_LEN) {
+        z = OT_LAST;
     }
     margin = z / 32;
     span = (128 - margin) * 2;
@@ -1162,7 +1162,7 @@ void wm_calcSoundPanVolume(s16 posX, s16 posY, s16 posZ, s32 unused, u8 *outPan,
         pan += 255 - margin;
     }
     *outPan = pan;
-    *outVolume = (ONE - z) * 127 / 4096;
+    *outVolume = (OT_LEN - z) * 127 / OT_LEN;
 }
 
 void wm_setMusicVolumeFade(s32 volume, s32 frames) {

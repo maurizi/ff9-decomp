@@ -264,7 +264,7 @@ void btl_resetUnit(BtlUnit *unit, ModelSlot *modelSlot) {
         unit->obj = modelSlot->actor;
         PSX_NULLABLE(unit->model->texAnims)[2].flags |= BTL_TEXANIM_PLAY;
         PSX_NULLABLE(unit->model->texAnims)[2].pos = 0;
-        PSX_NULLABLE(unit->model->texAnims)[2].lastFrame = 0x1000;
+        PSX_NULLABLE(unit->model->texAnims)[2].lastFrame = TEXANIM_FORCE_UPLOAD;
         for (i = 0; i < unit->model->header->meshCount; i++) {
             btl_setMeshRgb(unit->model, i, 0, 0, 0);
         }

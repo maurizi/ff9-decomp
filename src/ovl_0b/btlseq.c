@@ -610,7 +610,7 @@ s32 btlseq_opPlayTexAnim(BtlScript *script, BtlUnit *unit) {
     texAnim2 = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim2->pos = 0;
     texAnim = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
-    texAnim->lastFrame = 0x1000;
+    texAnim->lastFrame = TEXANIM_FORCE_UPLOAD;
     script->pc += 2;
     return 1;
 }
@@ -622,7 +622,7 @@ s32 btlseq_opLoopTexAnim(BtlScript *script, BtlUnit *unit) {
     texAnim2 = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim2->pos = 0;
     texAnim = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
-    texAnim->lastFrame = 0x1000;
+    texAnim->lastFrame = TEXANIM_FORCE_UPLOAD;
     script->pc += 2;
     return 1;
 }

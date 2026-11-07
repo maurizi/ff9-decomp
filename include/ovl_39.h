@@ -246,11 +246,11 @@ typedef struct {
 } DirEnt;
 
 typedef struct {
-    u8 v[10];
+    u8 v[CHR_NAME_SIZE];
 } __attribute__((aligned(2))) SaveName; /* 10 bytes, copied as a halfword-aligned block */
 
 typedef struct {
-    u8 v[10];
+    u8 v[CHR_NAME_SIZE];
 } Name10; /* character name, byte-aligned copy */
 
 typedef struct {
@@ -260,7 +260,7 @@ typedef struct {
 typedef struct {
     u8 present;
     u8 portrait; /* menuSave_getPortrait, 0xFF = none */
-    u8 name[0xA];
+    u8 name[CHR_NAME_SIZE];
     u8 level;
     u8 padD[3];
 } SaveMember;
@@ -293,7 +293,7 @@ typedef struct {
     SaveLocation location;
     s32 playTime; /* game_getPlayTime, frames */
     s32 gil;
-    SaveMember party[4];
+    SaveMember party[PARTY_SIZE];
     s32 windowColor; /* config Window Color (GameState.unk24 bit 18, ovl_34 row 10), the row is drawn in it */
     u32 counter; /* save counter, the newest save gets the cursor */
     u8 cursor;   /* list cursor row when saved */
@@ -399,7 +399,7 @@ typedef struct {
     u32 counter;
     s32 playTime;
     s32 gil;
-    SaveMember party[4];
+    SaveMember party[PARTY_SIZE];
 } SaveFile; /* 0x98 */
 
 /* Save menu state (s_menuSave). */

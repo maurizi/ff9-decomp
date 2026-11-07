@@ -54,9 +54,9 @@ void wm_updateCamera(void) {
         altitude = g_worldPlayer->pos.vy + 0x1518;
         g_worldCameraTargetHeight = g_worldCameraParams.targetHeight - (altitude > 0 ? altitude >> 3 : altitude / 6);
     }
-    g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / 4096) >> 12;
+    g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / ONE) >> 12;
     g_worldCameraEyeOffset.vy = g_worldCameraParams.eyeHeight;
-    g_worldCameraEyeOffset.vz = math_cos(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / 4096) >> 12;
+    g_worldCameraEyeOffset.vz = math_cos(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / ONE) >> 12;
     if (g_worldCameraHold == 0) {
         wm_cameraFollow();
     }
@@ -314,7 +314,7 @@ void wm_cameraFollow(void) {
                 }
                 ease = (((WM_CAM_EYE_STEP_MAX - ease) * g_worldCameraEaseBoost >> 12) + 0x800) << 1;
                 step *= ease;
-                step /= 4096;
+                step /= ONE;
                 break;
             }
         }
@@ -1960,8 +1960,8 @@ void wm_cameraAutoTurnWalk(void) {
             g_worldAutoTurnDiv = g_worldAutoTurnDivMax;
         }
         boost = (((0x800 - abs(yawDiff)) * g_worldAutoTurnBoost >> 12) + 0x800) * (2 * g_worldCameraTurnGain);
-        turnStep = (yawDiff * 256 / g_worldAutoTurnDiv) * (boost / 4096);
-        g_worldCamera->yaw += turnStep / 4096;
+        turnStep = (yawDiff * 256 / g_worldAutoTurnDiv) * (boost / ONE);
+        g_worldCamera->yaw += turnStep / ONE;
     }
     g_worldCamera->yaw &= 0xFFF;
 }

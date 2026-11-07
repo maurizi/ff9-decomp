@@ -97,7 +97,7 @@ typedef struct {
     u8 gridCursor;     /* NAME_GRID_COLS per row */
     u8 len;            /* name length (max NAME_MAX_LEN) */
     u8 gridSize[2];    /* characters in each set's grid */
-    u8 name[10];       /* name being edited, 0xFF-terminated */
+    u8 name[CHR_NAME_SIZE]; /* name being edited, 0xFF-terminated */
     u8 defaultName[11];
     u8 *charSets[2];   /* NAME_TEXT_CHARSET strings */
     u8 startDefault;   /* menu argument < 12: the name starts as the default name, else as the current one */

@@ -693,7 +693,7 @@ s32 btlfx_opDrawOnUnit(s32 mode, Unk800E57B0 *work, Unk800F78A4 *env, s32 *entry
             btlfx_drawParticles(work->data, &work->pos, &rot, work->scale, work->frame, 1, ONE, work->offX, work->offY);
             break;
         case BTLFX_DRAWON_QUADS:
-            btlfx_drawAnimQuads(work->data, &work->pos, &rot, work->scale, work->frame, 1, 0x1000);
+            btlfx_drawAnimQuads(work->data, &work->pos, &rot, work->scale, work->frame, 1, ONE);
             break;
         case BTLFX_DRAWON_EMITTER:
             if (work->frame == work->frames) {
