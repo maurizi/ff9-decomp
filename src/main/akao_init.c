@@ -208,11 +208,11 @@ void akao_init(void) {
     akao_initState();
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
-    while (SetRCnt(0xF2000002, 0x44E8, 0x1000) == 0) {
+    while (SetRCnt(RCntCNT2, AKAO_TICK_RCNT_TARGET, RCntMdINTR) == 0) {
     }
-    while (StartRCnt(0xF2000002) == 0) {
+    while (StartRCnt(RCntCNT2) == 0) {
     }
-    while ((g_akaoTickEvent = OpenEvent(0xF2000002, 2, 0x1000, (void (*)(void))akao_tick)) == -1) {
+    while ((g_akaoTickEvent = OpenEvent(RCntCNT2, EvSpINT, EvMdINTR, (void (*)(void))akao_tick)) == -1) {
     }
     while (EnableEvent(g_akaoTickEvent) == 0) {
     }
@@ -223,9 +223,9 @@ void akao_quit(void) {
         akao_spuWrite(g_akaoSilenceSample, 0x40);
         akao_waitSpuTransfer();
     }
-    while (StopRCnt(0xF2000002) == 0) {
+    while (StopRCnt(RCntCNT2) == 0) {
     }
-    UnDeliverEvent(0xF2000002, 2);
+    UnDeliverEvent(RCntCNT2, EvSpINT);
     while (DisableEvent(g_akaoTickEvent) == 0) {
     }
     while (CloseEvent(g_akaoTickEvent) == 0) {

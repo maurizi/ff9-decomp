@@ -287,7 +287,7 @@ s32 akao_tick(void) {
     s32 time2;
     s32 time3;
 
-    t0 = GetRCnt(0xF2000002);
+    t0 = GetRCnt(RCntCNT2);
     g_akaoVsyncs[1] = g_akaoVsyncs[0];
     now = VSync(-1);
     ticks = 1;
@@ -373,9 +373,9 @@ s32 akao_tick(void) {
             akao_tickSe();
         }
     } while (ticks != 0);
-    t0 = GetRCnt(0xF2000002) - t0;
+    t0 = GetRCnt(RCntCNT2) - t0;
     if (t0 <= 0) {
-        t0 += 0x44E8;
+        t0 += AKAO_TICK_RCNT_TARGET;
     }
     time1 = g_akaoTickTimes[1];
     time2 = g_akaoTickTimes[2];
@@ -1800,10 +1800,10 @@ s32 akao_allocStreamVoices(void) {
 }
 
 void akao_streamUploadSecond(void) {
-    u8 *src = g_akaoStream.readPtr + 0x800;
-    SpuSetTransferStartAddr(AKAO_SPU_STREAM_BLOCK(2));
+    u8 *src = g_akaoStream.readPtr + AKAO_STREAM_BLOCK_SIZE;
+    SpuSetTransferStartAddr(AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L));
     SpuSetTransferCallback(akao_streamStartMono);
-    SpuWrite(src, 0x800);
+    SpuWrite(src, AKAO_STREAM_BLOCK_SIZE);
 }
 
 void akao_streamStart(s32 addr, s32 vol, s32 flag) {
@@ -1835,17 +1835,17 @@ void akao_streamStart(s32 addr, s32 vol, s32 flag) {
     g_akaoStream.voiceMask = voiceBits;
     akao_keyOff(voiceBits);
     SpuSetTransferMode(0);
-    SpuSetTransferStartAddr(AKAO_SPU_STREAM_BLOCK(0));
+    SpuSetTransferStartAddr(AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L));
     g_akaoSpuBusy = 1;
     g_akaoStream.loopPtr = (g_akaoStream.flags & AKAO_STREAM_LOOP) ? (s32)(g_akaoStream.readPtr + h->loopStart) : 0;
     if (g_akaoStream.flags & AKAO_STREAM_STEREO) {
         g_akaoStream.loopBytes = (g_akaoStream.flags & AKAO_STREAM_LOOP) ? g_akaoStream.bytesLeft - (h->loopStart >> 1) : 0;
         SpuSetTransferCallback(akao_streamStartStereo);
-        size = 0x2000;
+        size = 4 * AKAO_STREAM_BLOCK_SIZE;
     } else {
         g_akaoStream.loopBytes = (g_akaoStream.flags & AKAO_STREAM_LOOP) ? g_akaoStream.bytesLeft - h->loopStart : 0;
         SpuSetTransferCallback(akao_streamUploadSecond);
-        size = 0x800;
+        size = AKAO_STREAM_BLOCK_SIZE;
     }
     SpuWrite(g_akaoStream.readPtr, size);
     if (flag) {
@@ -1866,13 +1866,13 @@ void akao_streamSetVoice(s32 voiceIdx, s32 mode, s32 startAddr, s32 loopAddr) {
 
     if (g_akaoOutputFlags & AKAO_MODE_MONO) {
         volL = volR = (g_akaoSeVolume * g_akaoMonoGain) >> 16;
-    } else if (mode == 1) {
+    } else if (mode == AKAO_STREAM_VOICE_LEFT) {
         volR = 0;
         volL = (u32)g_akaoSeVolume >> 1;
-    } else if (mode == 2) {
+    } else if (mode == AKAO_STREAM_VOICE_RIGHT) {
         volL = 0;
         volR = (u32)g_akaoSeVolume >> 1;
-    } else if (mode == 3) {
+    } else if (mode == AKAO_STREAM_VOICE_CENTER) {
         h = g_akaoSeVolume >> 1;
         volL = volR = (h >> 1) + (h >> 2);
     } else {
@@ -1895,8 +1895,8 @@ void akao_streamKeyOn(s32 step, s32 irqBase, void (*cb)(void)) {
     if (g_akaoStream.voiceMask != 0) {
         SpuSetTransferCallback(NULL);
         g_akaoSpuBusy = 0;
-        if (g_akaoStream.bytesLeft > 0x1000) {
-            g_akaoStream.bytesLeft -= 0x1000;
+        if (g_akaoStream.bytesLeft > 2 * AKAO_STREAM_BLOCK_SIZE) {
+            g_akaoStream.bytesLeft -= 2 * AKAO_STREAM_BLOCK_SIZE;
             g_akaoStream.readPtr += step;
             SpuSetIRQCallback(cb);
         } else {
@@ -1911,15 +1911,15 @@ void akao_streamKeyOn(s32 step, s32 irqBase, void (*cb)(void)) {
 }
 
 void akao_streamStartMono(void) {
-    akao_streamSetVoice(g_akaoStream.voice, 0, AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(2));
-    akao_streamSetVoice(g_akaoStream.voice + 1, 0, AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(2));
-    akao_streamKeyOn(0x1000, AKAO_SPU_STREAM_BLOCK(2), akao_streamRefillMonoA);
+    akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_PAN, AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L));
+    akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_PAN, AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L));
+    akao_streamKeyOn(2 * AKAO_STREAM_BLOCK_SIZE, AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L), akao_streamRefillMonoA);
 }
 
 void akao_streamStartStereo(void) {
-    akao_streamSetVoice(g_akaoStream.voice, 1, AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(2));
-    akao_streamSetVoice(g_akaoStream.voice + 1, 2, AKAO_SPU_STREAM_BLOCK(1), AKAO_SPU_STREAM_BLOCK(3));
-    akao_streamKeyOn(0x2000, AKAO_SPU_STREAM_BLOCK(2), akao_streamRefillStereoA);
+    akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_LEFT, AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L));
+    akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_RIGHT, AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_R), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_R));
+    akao_streamKeyOn(4 * AKAO_STREAM_BLOCK_SIZE, AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L), akao_streamRefillStereoA);
 }
 
 void akao_streamRefill(s32 addrL, s32 addrR, s32 size, void (*cb)(void)) {
@@ -1930,9 +1930,9 @@ void akao_streamRefill(s32 addrL, s32 addrR, s32 size, void (*cb)(void)) {
     akao_beginSpuTransfer();
     SpuWrite(g_akaoStream.readPtr, size);
     SpuSetIRQ(0);
-    if (g_akaoStream.bytesLeft > 0x800) {
+    if (g_akaoStream.bytesLeft > AKAO_STREAM_BLOCK_SIZE) {
         SpuSetIRQCallback(cb);
-        g_akaoStream.bytesLeft -= 0x800;
+        g_akaoStream.bytesLeft -= AKAO_STREAM_BLOCK_SIZE;
         g_akaoStream.readPtr += size;
     } else if (g_akaoStream.loopPtr != NULL) {
         SpuSetIRQCallback(cb);
@@ -1951,19 +1951,19 @@ void akao_streamRefill(s32 addrL, s32 addrR, s32 size, void (*cb)(void)) {
 }
 
 void akao_streamRefillMonoA(void) {
-    akao_streamRefill(AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(0), 0x800, akao_streamRefillMonoB);
+    akao_streamRefill(AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_STREAM_BLOCK_SIZE, akao_streamRefillMonoB);
 }
 
 void akao_streamRefillMonoB(void) {
-    akao_streamRefill(AKAO_SPU_STREAM_BLOCK(2), AKAO_SPU_STREAM_BLOCK(2), 0x800, akao_streamRefillMonoA);
+    akao_streamRefill(AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L), AKAO_STREAM_BLOCK_SIZE, akao_streamRefillMonoA);
 }
 
 void akao_streamRefillStereoA(void) {
-    akao_streamRefill(AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(1), 0x1000, akao_streamRefillStereoB);
+    akao_streamRefill(AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_R), 2 * AKAO_STREAM_BLOCK_SIZE, akao_streamRefillStereoB);
 }
 
 void akao_streamRefillStereoB(void) {
-    akao_streamRefill(AKAO_SPU_STREAM_BLOCK(2), AKAO_SPU_STREAM_BLOCK(3), 0x1000, akao_streamRefillStereoA);
+    akao_streamRefill(AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_R), 2 * AKAO_STREAM_BLOCK_SIZE, akao_streamRefillStereoA);
 }
 
 void akao_cmdStreamStart(s32 *args) {
@@ -2061,8 +2061,8 @@ void akao_streamOneShotStart(void) {
     } else {
         irq = g_akaoStream.spuAddr + (g_akaoStream.bytesLeft >> 1) + 8;
     }
-    akao_streamSetVoice(g_akaoStream.voice, 0, g_akaoStream.spuAddr, AKAO_SPU_SILENCE_LOOP);
-    akao_streamSetVoice(g_akaoStream.voice + 1, 0, g_akaoStream.spuAddr, AKAO_SPU_SILENCE_LOOP);
+    akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_PAN, g_akaoStream.spuAddr, AKAO_SPU_SILENCE_LOOP);
+    akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_PAN, g_akaoStream.spuAddr, AKAO_SPU_SILENCE_LOOP);
     SpuSetIRQAddr(irq);
     SpuSetIRQCallback(akao_streamArmStop);
     akao_keyOn(g_akaoStream.voiceMask);
@@ -2150,21 +2150,21 @@ void akao_streamPlayResident(s32 unused, s32 flag) {
     g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     SpuSetIRQAddr(irq);
     SpuSetIRQCallback(akao_streamArmStop);
-    if (h2[6] & 1) {
-        if (h2[6] & 2) {
-            akao_streamSetVoice(g_akaoStream.voice, 1, h2[8], h2[8] + h2[5]);
-            akao_streamSetVoice(g_akaoStream.voice + 1, 2, h2[8] + h2[9], h2[8] + h2[9] + h2[5]);
+    if (h2[6] & AKAO_STREAM_STEREO) {
+        if (h2[6] & AKAO_STREAM_LOOP) {
+            akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_LEFT, h2[8], h2[8] + h2[5]);
+            akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_RIGHT, h2[8] + h2[9], h2[8] + h2[9] + h2[5]);
         } else {
-            akao_streamSetVoice(g_akaoStream.voice, 1, h2[8], AKAO_SPU_SILENCE_LOOP);
-            akao_streamSetVoice(g_akaoStream.voice + 1, 2, h2[8] + h2[9], AKAO_SPU_SILENCE_LOOP);
+            akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_LEFT, h2[8], AKAO_SPU_SILENCE_LOOP);
+            akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_RIGHT, h2[8] + h2[9], AKAO_SPU_SILENCE_LOOP);
         }
     } else {
-        if (h2[6] & 2) {
-            akao_streamSetVoice(g_akaoStream.voice, 3, h2[8], h2[8] + h2[5]);
-            akao_streamSetVoice(g_akaoStream.voice + 1, 3, h2[8], h2[8] + h2[5]);
+        if (h2[6] & AKAO_STREAM_LOOP) {
+            akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_CENTER, h2[8], h2[8] + h2[5]);
+            akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_CENTER, h2[8], h2[8] + h2[5]);
         } else {
-            akao_streamSetVoice(g_akaoStream.voice, 3, h2[8], AKAO_SPU_SILENCE_LOOP);
-            akao_streamSetVoice(g_akaoStream.voice + 1, 3, h2[8], AKAO_SPU_SILENCE_LOOP);
+            akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_CENTER, h2[8], AKAO_SPU_SILENCE_LOOP);
+            akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_CENTER, h2[8], AKAO_SPU_SILENCE_LOOP);
         }
     }
     akao_keyOn(g_akaoStreamVoices);
@@ -2226,18 +2226,18 @@ void akao_streamStartRing(void) {
     streamState->flags = h->flags;
     streamState->pitch = h->pitch;
     SpuSetTransferMode(0);
-    SpuSetTransferStartAddr(AKAO_SPU_STREAM_BLOCK(0));
+    SpuSetTransferStartAddr(AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L));
     g_akaoSpuBusy = 1;
     SpuSetTransferCallback(akao_streamStartRingVoices);
     if (streamState->flags & AKAO_STREAM_FOUR_VOICES) {
-        SpuWrite(g_akaoStream.readPtr + 0xD0, 0x4000);
+        SpuWrite(g_akaoStream.readPtr + 0xD0, 8 * AKAO_STREAM_BLOCK_SIZE);
         akao_streamNextReadBlock(&streamState->readBlock);
         akao_streamNextReadBlock(&streamState->readBlock);
         akao_streamNextReadBlock(&streamState->readBlock);
         akao_streamNextReadBlock(&streamState->readBlock);
         streamState->voiceMask |= (1 << (voiceIdx - 2)) | (1 << (voiceIdx - 1));
     } else {
-        SpuWrite(g_akaoStream.readPtr + 0xD0, 0x2000);
+        SpuWrite(g_akaoStream.readPtr + 0xD0, 4 * AKAO_STREAM_BLOCK_SIZE);
         akao_streamNextReadBlock(&streamState->readBlock);
         akao_streamNextReadBlock(&streamState->readBlock);
     }
@@ -2268,17 +2268,17 @@ void akao_streamStartRingVoices(void) {
     s32 step;
     s32 irqBase;
     if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
-        akao_streamSetVoice(g_akaoStream.voice, 1, AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(4));
-        akao_streamSetVoice(g_akaoStream.voice + 1, 2, AKAO_SPU_STREAM_BLOCK(1), AKAO_SPU_STREAM_BLOCK(5));
-        akao_streamSetVoice(g_akaoStream.voice - 2, 1, AKAO_SPU_STREAM_BLOCK(2), AKAO_SPU_STREAM_BLOCK(6));
-        akao_streamSetVoice(g_akaoStream.voice - 1, 2, AKAO_SPU_STREAM_BLOCK(3), AKAO_SPU_STREAM_BLOCK(7));
-        step = 0x4000;
-        irqBase = AKAO_SPU_STREAM_BLOCK(4);
+        akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_LEFT, AKAO_SPU_STREAM_BUF4(0, 0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF4(1, 0, AKAO_STREAM_L));
+        akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_RIGHT, AKAO_SPU_STREAM_BUF4(0, 0, AKAO_STREAM_R), AKAO_SPU_STREAM_BUF4(1, 0, AKAO_STREAM_R));
+        akao_streamSetVoice(g_akaoStream.voice - 2, AKAO_STREAM_VOICE_LEFT, AKAO_SPU_STREAM_BUF4(0, 1, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF4(1, 1, AKAO_STREAM_L));
+        akao_streamSetVoice(g_akaoStream.voice - 1, AKAO_STREAM_VOICE_RIGHT, AKAO_SPU_STREAM_BUF4(0, 1, AKAO_STREAM_R), AKAO_SPU_STREAM_BUF4(1, 1, AKAO_STREAM_R));
+        step = 8 * AKAO_STREAM_BLOCK_SIZE;
+        irqBase = AKAO_SPU_STREAM_BUF4(1, 0, AKAO_STREAM_L);
     } else {
-        akao_streamSetVoice(g_akaoStream.voice, 1, AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(2));
-        akao_streamSetVoice(g_akaoStream.voice + 1, 2, AKAO_SPU_STREAM_BLOCK(1), AKAO_SPU_STREAM_BLOCK(3));
-        step = 0x2000;
-        irqBase = AKAO_SPU_STREAM_BLOCK(2);
+        akao_streamSetVoice(g_akaoStream.voice, AKAO_STREAM_VOICE_LEFT, AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L));
+        akao_streamSetVoice(g_akaoStream.voice + 1, AKAO_STREAM_VOICE_RIGHT, AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_R), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_R));
+        step = 4 * AKAO_STREAM_BLOCK_SIZE;
+        irqBase = AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L);
     }
     akao_streamRingKeyOn(step, irqBase, akao_streamRefillRingA);
 }
@@ -2321,17 +2321,17 @@ void akao_streamRefillRingA(void) {
     s32 addrR;
     if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
         akao_streamNextReadBlock(&g_akaoStream.readBlock);
-        addrL = akao_streamRefillRing(AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(1), 0x2000, akao_streamRefillRingB);
-        addrR = AKAO_SPU_STREAM_BLOCK(3);
+        addrL = akao_streamRefillRing(AKAO_SPU_STREAM_BUF4(0, 0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF4(0, 0, AKAO_STREAM_R), 4 * AKAO_STREAM_BLOCK_SIZE, akao_streamRefillRingB);
+        addrR = AKAO_SPU_STREAM_BUF4(0, 1, AKAO_STREAM_R);
         if (addrL == AKAO_SPU_SILENCE_LOOP) {
             addrR = AKAO_SPU_SILENCE_LOOP;
         } else {
-            addrL = AKAO_SPU_STREAM_BLOCK(2);
+            addrL = AKAO_SPU_STREAM_BUF4(0, 1, AKAO_STREAM_L);
         }
         akao_setVoiceLoopAddr(g_akaoStream.voice - 2, addrL);
         akao_setVoiceLoopAddr(g_akaoStream.voice - 1, addrR);
     } else {
-        akao_streamRefillRing(AKAO_SPU_STREAM_BLOCK(0), AKAO_SPU_STREAM_BLOCK(1), 0x1000, akao_streamRefillRingB);
+        akao_streamRefillRing(AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(0, AKAO_STREAM_R), 2 * AKAO_STREAM_BLOCK_SIZE, akao_streamRefillRingB);
     }
 }
 
@@ -2340,17 +2340,17 @@ void akao_streamRefillRingB(void) {
     s32 addrR;
     if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
         akao_streamNextReadBlock(&g_akaoStream.readBlock);
-        addrL = akao_streamRefillRing(AKAO_SPU_STREAM_BLOCK(4), AKAO_SPU_STREAM_BLOCK(5), 0x2000, akao_streamRefillRingA);
-        addrR = AKAO_SPU_STREAM_BLOCK(7);
+        addrL = akao_streamRefillRing(AKAO_SPU_STREAM_BUF4(1, 0, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF4(1, 0, AKAO_STREAM_R), 4 * AKAO_STREAM_BLOCK_SIZE, akao_streamRefillRingA);
+        addrR = AKAO_SPU_STREAM_BUF4(1, 1, AKAO_STREAM_R);
         if (addrL == AKAO_SPU_SILENCE_LOOP) {
             addrR = AKAO_SPU_SILENCE_LOOP;
         } else {
-            addrL = AKAO_SPU_STREAM_BLOCK(6);
+            addrL = AKAO_SPU_STREAM_BUF4(1, 1, AKAO_STREAM_L);
         }
         akao_setVoiceLoopAddr(g_akaoStream.voice - 2, addrL);
         akao_setVoiceLoopAddr(g_akaoStream.voice - 1, addrR);
     } else {
-        akao_streamRefillRing(AKAO_SPU_STREAM_BLOCK(2), AKAO_SPU_STREAM_BLOCK(3), 0x1000, akao_streamRefillRingA);
+        akao_streamRefillRing(AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_L), AKAO_SPU_STREAM_BUF(1, AKAO_STREAM_R), 2 * AKAO_STREAM_BLOCK_SIZE, akao_streamRefillRingA);
     }
 }
 

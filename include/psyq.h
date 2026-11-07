@@ -405,6 +405,11 @@ int sprintf(char *buf, const char *fmt, ...);
 #define EvSpTIMOUT 0x0100
 #define EvSpNEW 0x2000
 #define EvMdNOINTR 0x2000
+/* libapi root counters (SetRCnt/StartRCnt/GetRCnt/OpenEvent) */
+#define RCntCNT2 0xF2000002 /* root counter 2: an event class and a counter spec */
+#define RCntMdINTR 0x1000 /* SetRCnt mode: interrupt at the target */
+#define EvSpINT 0x0002 /* event spec: interrupt */
+#define EvMdINTR 0x1000 /* event mode: call the handler */
 /* sys/file.h open() modes; FCREAT takes the block count in bits 16+ */
 #define FREAD 0x0001
 #define FWRITE 0x0002
