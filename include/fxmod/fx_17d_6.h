@@ -15,6 +15,8 @@
 #define FX_ARK_PEACH_RING    0xB /* rings: white-peach-mauve gouraud rings */
 #define FX_ARK_FAN_EMITTER_2 0xC /* emitter: two fans; the render shows small olive / orange garbled patches; runtime (docs/runtime-findings.md effect-data pass): not fetched within 4600 frames of a full Ark (look pending) */
 #define FX_ARK_SPRITE_LINE   0xD /* sprite line: green textures, partly not resolved (almost empty in the render); runtime (docs/runtime-findings.md effect-data pass): not fetched within 4600 frames of a full Ark (look pending) */
+#define FX_ARK_BRANCH_TRAIL  0x7 /* table: trail strip of op83's bolt branches (fxm_drawArcTrailBranch's file; look pending) */
+#define FX_ARK_BOLT_TRAIL    0x8 /* table: trail strip of op83's lightning bolts (fxm_drawArcTrail's file; fxdata classifies it as camera; look pending) */
 #define FX_ARK_GREY_RING     0xE /* emitter: grey-white gouraud ring */
 #define FX_ARK_ORANGE_DISC 0x8B /* summon data: 'so' model, flat disc with an orange-brown speckle texture */
 #define FX_ARK_GREY_SWIRL_DISC 0x8D /* summon data: 'so' model, flat disc with a grey swirl texture */
@@ -48,6 +50,26 @@
 #define FX_ARK_BOLT_FRAMES   6    /* a bolt's life (it fades over it) */
 #define FX_ARK_NOISE_ROWS    64   /* fx_17d_6_noise rows (three random offsets each) */
 
+/* fx_17d_6 choreography, deep pass (docs/fxchoreo_deep_c.md): keys inside op80's states, op83's bolt cadence */
+#define FX_ARK_GLOW_TINT_FRAMES   0x10 /* STATE_GLOW: an orange flash fades over these frames, */
+#define FX_ARK_GLOW_FLASH_FRAMES  4    /* a white one over these */
+#define FX_ARK_GLOW_MOTION_FRAME  0x1D /* STATE_GLOW: the summon motion is held at frame 0 until here */
+#define FX_ARK_DISC_LAYERS        4    /* GLOW / RINGS: ORANGE_DISC drawn as nested, counter-spinning layers, */
+#define FX_ARK_SWIRL_DISC_LAYER   2    /* this one GREY_SWIRL_DISC */
+#define FX_ARK_SCROLL_SPEED       6    /* SCROLL texels a frame (backwards from 0x3E8) */
+#define FX_ARK_GRID_SCALE         0x1080 /* GLOW / RINGS: the screen grid's scale */
+#define FX_ARK_BURST_CAMERA_FRAMES 0x20 /* STATE_BURST: camera point 2 slides from bone 0 to bone 2 (a sine quarter) */
+#define FX_ARK_MUZZLE_BONE        0x21 /* STATE_FAN: camera point 2 on this summon bone (fx_17d_4's beam muzzle) */
+#define FX_ARK_BOLTS_ON           0    /* fx_17d_6_boltState: op83 spawns bolts */
+#define FX_ARK_BOLTS_END          1    /* op83 clears its pool and ends (op80 has ended) */
+#define FX_ARK_BOLTS_PAUSED       2    /* STATE_RINGS: no bolts */
+#define FX_ARK_BOLT_INTERVAL      4    /* op83: a bolt every 4 frames until RUSH_FRAME, then every frame */
+#define FX_ARK_BOLT_RUSH_FRAME    0x43
+#define FX_ARK_BOLT_JITTER_FRAMES 3    /* a bolt's noise row moves for its first frames, then it holds still */
+#define FX_ARK_BOLT_WIDTH         0xB  /* Fx17d6Bolt.width15 */
+#define FX_ARK_BOLT_POINTS        17   /* points of a bolt's trail (Fx17d6Trail17); the branch leaves at a random point < 15, */
+#define FX_ARK_BRANCH_POINTS      5    /* with this many (Fx17d6Trail5) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
@@ -63,7 +85,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR points4[17];
+    SVECTOR points4[FX_ARK_BOLT_POINTS];
 } Fx17d6Trail17; /* 0x8C */
 
 typedef struct {
@@ -71,7 +93,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR points4[5];
+    SVECTOR points4[FX_ARK_BRANCH_POINTS];
 } Fx17d6Trail5; /* 0x2C */
 
 typedef struct {
@@ -87,8 +109,8 @@ typedef struct {
     s32 *noise18; /* noise */
 } Fx17d6Bolt;
 
-extern Fx17d6Trail17 fx_17d_6_boltTrails[];
-extern Fx17d6Trail5 fx_17d_6_branchTrails[];
+extern Fx17d6Trail17 fx_17d_6_boltTrails[FX_ARK_BOLT_POOL];
+extern Fx17d6Trail5 fx_17d_6_branchTrails[FX_ARK_BOLT_POOL];
 
 typedef struct {
     s32 frame0; /* frame */
