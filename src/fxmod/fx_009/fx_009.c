@@ -4,17 +4,17 @@ s32 fx_009_op80(s32 mode, Fx009Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 4;
+        *args = sizeof(Fx009Work);
     } else if (mode == 1) {
         fx_009_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURE_SPARKLE_SWIRL), (s32)&env->targets->centerX);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_009_trails;
-            work->emit0->trailSlots = 0x17;
-            work->emit0->trailStride = 0x70;
+            work->emit0->trailSlots = FX_CURE_SPARKLE_SWIRL_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_CURE_SPARKLE_SWIRL_TRAIL_STRIDE;
         }
     } else {
-        return entry->frame >= 0x32;
+        return entry->frame >= FX_CURE_FRAMES;
     }
     return 0;
 }

@@ -25,13 +25,64 @@
 #define FX_THUNDAGA_SPARKLE_SWARM  0x26 /* emitter: swarms of blue, lilac and teal twinkle dots, the cyan sparkles around the strike; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_THUNDAGA_SPARK_DOTS     0x27 /* emitter: white spark dots (btlfx_emitDots) */
 
+/* fx_018 choreography (docs/fxdata.md, "Choreography literals"): op80's states, their lengths, keyframes and screen
+ * tints; op83's bolt kinds and lengths; the bolt pool items' lengths and widths; the strip sizes. */
+#define FX_THUNDAGA_STATE_CHARGE 0 /* op80: FX_THUNDAGA_VIOLET_GLOW(_2) gather at the target */
+#define FX_THUNDAGA_STATE_STRIKE 1 /* op80: FX_THUNDAGA_LIGHTNING_ARCS, a blue flash and FX_THUNDAGA_THIN_BOLT */
+#define FX_THUNDAGA_STATE_BLAST  2 /* op80: the bolts, rings, FX_THUNDAGA_GLOW_DOME and the spark balls */
+#define FX_THUNDAGA_VIOLET_GLOW_2_FRAME 5    /* CHARGE: FX_THUNDAGA_VIOLET_GLOW_2 starts */
+#define FX_THUNDAGA_CHARGE_FRAMES      29    /* CHARGE's length; one frame before its end a subtractive DARKEN tint, at the end DARKEN_2 */
+#define FX_THUNDAGA_DARKEN_RGB         0x80, 0x40, 0    /* subtractive screen tint (the screen turns blue) */
+#define FX_THUNDAGA_DARKEN_2_RGB       0x80, 0x80, 0x80 /* subtractive screen tint (grey: the screen darkens) */
+#define FX_THUNDAGA_STRIKE_TINT_RGB    0x20, 0x40, 0xFF /* STRIKE frame 0: additive screen tint (blue) */
+#define FX_THUNDAGA_STRIKE_DARKEN_RGB  0x80, 0x80, 0xFF /* STRIKE's last frame: subtractive screen tint */
+#define FX_THUNDAGA_STRIKE_FRAMES      2     /* STRIKE's length; at its end LIGHTNING_ARCS_2 and SPARKLE_SWARM start */
+#define FX_THUNDAGA_BLAST_FRAMES       50    /* BLAST's length (the op ends); FX_THUNDAGA_BLUE_RING spreads over it */
+#define FX_THUNDAGA_FLASH_FRAMES       6     /* BLAST: additive blue-white screen flash */
+#define FX_THUNDAGA_LIGHTNING_BOLT_FRAMES 20 /* BLAST: FX_THUNDAGA_LIGHTNING_BOLT fades over this many frames */
+#define FX_THUNDAGA_THIN_BOLT_FRAMES   10    /* BLAST: FX_THUNDAGA_THIN_BOLT fades over this many frames */
+#define FX_THUNDAGA_VIOLET_RING_FRAMES 24    /* BLAST: FX_THUNDAGA_VIOLET_RING shrinks and fades */
+#define FX_THUNDAGA_WHITE_RING_FRAMES  16    /* BLAST: FX_THUNDAGA_WHITE_RING spreads flat and fades */
+#define FX_THUNDAGA_GLOW_DOME_FRAMES   24    /* BLAST: FX_THUNDAGA_GLOW_DOME and the spark balls around it */
+#define FX_THUNDAGA_SPARK_BALLS        16    /* BLAST: FX_THUNDAGA_SPARK_BALL particles circling the dome */
+#define FX_THUNDAGA_SPARK_BALL_FRAME_MASK 7  /* the spark ball's 8 animation frames */
+#define FX_THUNDAGA_MODEL_COUNT        2     /* btlfx_initEffModels slots: GLOW_DOME, DISC */
+#define FX_THUNDAGA_BOLTS_CHARGE 0 /* op83 kind (its init arg): a flat bolt every other frame around the target */
+#define FX_THUNDAGA_BOLTS_BURST  1 /* op83 kind: a ring of bolts, then bolts reaching further out, screen flashes */
+#define FX_THUNDAGA_BOLTS_CHAIN  2 /* op83 kind: a chain of bolts zig-zagging around the target, plus spokes */
+#define FX_THUNDAGA_CHARGE_BOLTS_FRAMES 29   /* BOLTS_CHARGE's length */
+#define FX_THUNDAGA_BURST_RING_BOLTS   6     /* BOLTS_BURST frame 0: bolts in the ring */
+#define FX_THUNDAGA_BURST_OUTER_FRAME  6     /* BOLTS_BURST: two outer bolts per frame from here */
+#define FX_THUNDAGA_BURST_OUTER_END    16    /* up to this frame */
+#define FX_THUNDAGA_BURST_FLASH_FRAME_1 8    /* BOLTS_BURST: additive BURST_TINT on these three frames */
+#define FX_THUNDAGA_BURST_FLASH_FRAME_2 10
+#define FX_THUNDAGA_BURST_FLASH_FRAME_3 13
+#define FX_THUNDAGA_BURST_DARKEN_FRAME 9     /* BOLTS_BURST: subtractive BURST_DARKEN on this one */
+#define FX_THUNDAGA_BURST_TINT_RGB     0x10, 0x40, 0x80 /* additive (blue) */
+#define FX_THUNDAGA_BURST_DARKEN_RGB   0xFF, 0xFF, 0    /* subtractive (the screen turns blue) */
+#define FX_THUNDAGA_BURST_BOLTS_FRAMES 20    /* BOLTS_BURST's length */
+#define FX_THUNDAGA_CHAIN_BOLTS_FRAMES 31    /* BOLTS_CHAIN's length (one chain link per frame, growing reach) */
+#define FX_THUNDAGA_CHAIN_SPOKES_FRAMES 19   /* BOLTS_CHAIN: a flat spoke bolt per frame until this frame */
+#define FX_THUNDAGA_CHAIN_TINT_RGB     0x10, 0x20, 0x46 /* BOLTS_CHAIN: additive (blue), on random odd frames */
+#define FX_THUNDAGA_BOLT_HEIGHT        0xC00 /* a bolt comes down from this far above its strike point */
+#define FX_THUNDAGA_BOLT_FRAMES        8     /* pool item: a screen-space bolt shows for this many frames */
+#define FX_THUNDAGA_FAST_BOLT_FRAMES   6     /* (BOLTS_CHAIN: fx_018_fastBolts) */
+#define FX_THUNDAGA_FLAT_BOLT_FRAMES   6     /* pool item: a flat-strip bolt shows for this many frames */
+#define FX_THUNDAGA_FAST_FLAT_BOLT_FRAMES 4
+#define FX_THUNDAGA_BOLT_WIDTH         0x97  /* line width of a screen-space bolt at its first frame (+ 2 * width15) */
+#define FX_THUNDAGA_FLAT_BOLT_WIDTH    0xAA  /* line width of a flat-strip bolt at its first frame */
+#define FX_THUNDAGA_STRIP_POINTS       15    /* points of a bolt strip (fxm_drawJaggedStrip15) */
+#define FX_THUNDAGA_BRANCH_POINTS      3     /* points of a branch (fxm_drawJaggedStrip3) */
+#define FX_THUNDAGA_JITTER_ROWS        0x40  /* fx_018_jitter rows of three random offsets (along, across, angle) */
+#define FX_THUNDAGA_BOLT_SLOTS         0x10  /* pool items and strips; strip10 = bolt count % slots */
+
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[15]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_THUNDAGA_STRIP_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx018Strip; /* 0x7C */
 
 typedef struct {
@@ -55,7 +106,8 @@ typedef struct {
     s8 width15; /* extra width */
     u8 pad16[2];
     s32 *jitter18; /* jitter table */
-} Fx018Bolt;
+    u8 pad1C[8]; /* unused: op83 asks for 0x24-byte items */
+} Fx018Bolt; /* 0x24 */
 #define FX_018_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 typedef struct {
