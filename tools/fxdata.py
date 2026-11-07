@@ -1177,6 +1177,9 @@ def c_usage(module):
         return {}
     names = defines([os.path.join(ROOT, 'include', 'fxmod', module + '.h'),
                      os.path.join(ROOT, 'include', 'btlfx_mod.h')])
+    _NAMES.clear()
+    _NAMES.update(_expr_defines([os.path.join(ROOT, 'include', x) for x in
+                                 ('ff9.h', 'psyq.h', 'res_ids.h', 'ovl_0b.h', 'btlfx_mod.h', 'fxmod/' + module + '.h')]))
     out = {}
     for fn in sorted(os.listdir(d)):
         if not fn.endswith('.c'):
@@ -1371,10 +1374,46 @@ def jsonable(x):
     return x
 
 
-def lit(s):
+_NAMES = {}   # #define NAME expr of the module being analysed (set by c_usage): lets lit() read named C arguments
+
+
+def _expr_defines(paths):
+    out = {}
+    for p in paths:
+        if os.path.exists(p):
+            for m in re.finditer(r'^#define\s+([A-Z_]\w*)\s+([^/\n]+?)\s*(?:/\*.*)?$', open(p).read(), re.M):
+                out[m.group(1)] = m.group(2).strip()
+    return out
+
+
+def lit(s, depth=0):
+    """Integer value of a C argument: a literal, or an expression of literals and the module's #defines
+    (+ - * / << >> | & ~, parentheses, casts dropped); None if anything else is in it."""
     try:
         return int(s, 0)
     except (ValueError, TypeError):
+        pass
+    if not isinstance(s, str) or depth > 8:
+        return None
+    e = re.sub(r'\((?:s|u)(?:8|16|32)\)|\((?:unsigned |signed )?(?:int|short|char|long)\)', '', s.strip())
+    def sub(m):
+        t = m.group(0)
+        if re.fullmatch(r'0[xX][0-9A-Fa-f]+|\d+', t):
+            return str(int(t, 0))
+        v = _NAMES.get(t)
+        r = lit(v, depth + 1) if v is not None else None
+        if r is None:
+            raise KeyError(t)
+        return str(r)
+    try:
+        e = re.sub(r'0[xX][0-9A-Fa-f]+|[A-Za-z_]\w*|\d+', sub, e)
+    except KeyError:
+        return None
+    if not re.fullmatch(r'[\d\s+\-*/<>|&~()]+', e):
+        return None
+    try:
+        return int(eval(e.replace('/', '//'), {'__builtins__': {}}))
+    except Exception:
         return None
 
 
