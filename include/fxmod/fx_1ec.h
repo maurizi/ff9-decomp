@@ -38,6 +38,53 @@
 #define FX_ULTIMA_BACKDROP       0x26 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_180 entry 0x19) */
 #define FX_ULTIMA_VIOLET_GLOW_2  0x27 /* emitter: textured ring + lilac gouraud ring, started in the final blast; named by analogy with entry 0x12 (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
+/* fx_1ec choreography (docs/fxdata.md, "Choreography literals"): the three ops' emitter keys and lengths, their trail
+ * buffers and path sets, op82's morph and the white-out that cues the script. */
+#define FX_ULTIMA_PATHS          0x12 /* op80: position paths in FX_ULTIMA_PATH_SET (fx_1ec_posPath0) */
+#define FX_ULTIMA_FLARE_FRAME    8    /* op80: RED_FLARE_2 and GREY_TRAIL start */
+#define FX_ULTIMA_HAZE_FRAME     0x12 /* op80: VIOLET_HAZE and ROCK_DEBRIS start */
+#define FX_ULTIMA_LENS_FLARE_FRAME 0x30 /* op80: RED_LENS_FLARE, PINK_RING, ROCK_DEBRIS_2 and ROCK_TRAIL start */
+#define FX_ULTIMA_FLASH_FRAME    0x34 /* op80: one frame of additive white screen tint */
+#define FX_ULTIMA_WHITE_RGB      0xFF, 0xFF, 0xFF
+#define FX_ULTIMA_ROCK_TRAIL_STOP_FRAME 0x4E /* op80: ROCK_TRAIL stops */
+#define FX_ULTIMA_OP80_FRAMES    0x64 /* op80: the task ends at this frame */
+#define FX_ULTIMA_GREY_TRAIL_TRAIL_SLOTS  0x14 /* trail buffers (Pool6CEntry trailSlots / trailStride): op80's GREY_TRAIL */
+#define FX_ULTIMA_GREY_TRAIL_TRAIL_STRIDE 0x50
+#define FX_ULTIMA_ROCK_TRAIL_TRAIL_SLOTS  0x12 /*   op80's ROCK_TRAIL */
+#define FX_ULTIMA_ROCK_TRAIL_TRAIL_STRIDE 0x70
+#define FX_ULTIMA_PATHS_2        0x1E /* op81: position paths in FX_ULTIMA_PATH_SET_2 (fx_1ec_posPath1) */
+#define FX_ULTIMA_BLAST_RINGS_FRAME 0x14 /* op81: BLAST_RINGS start (WHITE_BEAM at frame 0) */
+#define FX_ULTIMA_GREY_TRAIL_2_FRAME 0x18 /* op81: GREY_TRAIL_2 starts */
+#define FX_ULTIMA_COLOR_RING_FRAME 0x1C /* op81: COLOR_RING starts */
+#define FX_ULTIMA_SPARKS_FRAME   0x30 /* op81: PINK_SPARKS, VIOLET_GLOW, RED_FLARE, CRIMSON_STREAK start */
+#define FX_ULTIMA_FLASH_2_FRAME  0x33 /* op81: one frame of additive white screen tint */
+#define FX_ULTIMA_PINK_TRAIL_FRAME 0x38 /* op81: PINK_TRAIL starts */
+#define FX_ULTIMA_PINK_TRAIL_2_FRAME 0x45 /* op81: PINK_TRAIL_2 starts */
+#define FX_ULTIMA_PINK_TRAIL_STOP_FRAME 0x4B /* op81: PINK_TRAIL stops */
+#define FX_ULTIMA_OP81_FRAMES    0x64 /* op81: the task ends at this frame */
+#define FX_ULTIMA_WHITE_BEAM_TRAIL_SLOTS  0x17 /*   op81's WHITE_BEAM */
+#define FX_ULTIMA_WHITE_BEAM_TRAIL_STRIDE 0x90
+#define FX_ULTIMA_GREY_TRAIL_2_TRAIL_SLOTS  0x20 /*   op81's GREY_TRAIL_2 */
+#define FX_ULTIMA_GREY_TRAIL_2_TRAIL_STRIDE 0x50
+#define FX_ULTIMA_PINK_TRAIL_TRAIL_SLOTS  0x2A /*   op81's PINK_TRAIL */
+#define FX_ULTIMA_PINK_TRAIL_TRAIL_STRIDE 0x90
+#define FX_ULTIMA_PINK_TRAIL_2_TRAIL_SLOTS  0x16 /*   op81's PINK_TRAIL_2 */
+#define FX_ULTIMA_PINK_TRAIL_2_TRAIL_STRIDE 0x90
+#define FX_ULTIMA_MODEL_SLOTS    2    /* op82: btlfx_initEffModels slots (the morph pair) */
+#define FX_ULTIMA_ORB_BURST_FRAME 4   /* op82: PINK_ORB_BURST starts (PINK_SPIKES at frame 0) */
+#define FX_ULTIMA_SPIKES_2_FRAME 16   /* op82: PINK_SPIKES_2 and RED_BURST start */
+#define FX_ULTIMA_ROCK_SWIRL_FRAME 30 /* op82: ROCK_SWIRL(_2), VIOLET_GLOW_2 start; the model morphs away from here */
+#define FX_ULTIMA_MORPH_FRAMES   20   /*   over this many frames */
+#define FX_ULTIMA_ROCK_SWIRL_TRAIL_SLOTS    0x14 /*   op82's ROCK_SWIRL */
+#define FX_ULTIMA_ROCK_SWIRL_TRAIL_STRIDE   0x90
+#define FX_ULTIMA_ROCK_SWIRL_2_TRAIL_SLOTS  0x26 /*   op82's ROCK_SWIRL_2 */
+#define FX_ULTIMA_ROCK_SWIRL_2_TRAIL_STRIDE 0x90
+#define FX_ULTIMA_WHITE_OUT_FRAME 32  /* op82: the targets are knocked down (then lie KO) and the additive white-out starts, */
+#define FX_ULTIMA_WHITE_OUT_FRAMES 0x3C /*  this long; then the script cue, and the screen stays white */
+#define FX_ULTIMA_DARKEN_FRAME   42   /* op82: the morph model darkens (0 -> -0xFF), */
+#define FX_ULTIMA_DARKEN_FRAMES  8    /*   over this many frames */
+#define FX_ULTIMA_OP82_FRAMES    0x78 /* op82: the models are cleared and the task ends at this frame */
+
 typedef struct {
     s16 x, y, z;
 } Fx1ecPoint;
@@ -107,10 +154,10 @@ static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *fx_1ec_env;
-extern Fx1ecPath fx_1ec_posPath0[0x12];
+extern Fx1ecPath fx_1ec_posPath0[FX_ULTIMA_PATHS];
 static s32 fxm_posPathGet(Fx1ecPath *path, s32 t, SVECTOR *out);
 extern SVECTOR fx_1ec_op80Origin;
-extern Fx1ecPath fx_1ec_posPath1[0x1E];
+extern Fx1ecPath fx_1ec_posPath1[FX_ULTIMA_PATHS_2];
 extern SVECTOR fx_1ec_op81Origin;
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 /* end copied */
