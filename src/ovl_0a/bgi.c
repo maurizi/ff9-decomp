@@ -38,7 +38,7 @@ s32 bgi_pointInTriangle(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 *
     origin[z] = bgi->curPos[z] + floor->curPos[z];
     tmp[0] = 0;
     tmp[1] = 0;
-    for (; i < 3; i++) {
+    for (; i < (s32)ARRAY_COUNT(corner); i++) {
         corner[i].xyz[x] = origin[x] + vtx[tri->vertices[i]].xyz[x];
         corner[i].xyz[z] = origin[z] + vtx[tri->vertices[i]].xyz[z];
         if (corner[i].xyz[x] == pos[x]) {
@@ -62,7 +62,7 @@ s32 bgi_pointInTriangle(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 *
     }
     pv[0] = &corner[2];
     tmp[0] = pos[z] >= pv[0]->xyz[z];
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(corner); i++) {
         pv[1] = &corner[i];
         tmp[1] = pos[z] >= pv[1]->xyz[z];
         if (tmp[0] != tmp[1]) {
@@ -103,7 +103,7 @@ s32 bgi_pointInTriangleXZ(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, SVE
     origin[z] = bgi->curPos[z] + floor->curPos[z];
     tmp[0] = 0;
     tmp[1] = 0;
-    for (; i < 3; i++) {
+    for (; i < (s32)ARRAY_COUNT(corner); i++) {
         corner[i].xyz[x] = origin[x] + vtx[tri->vertices[i]].xyz[x];
         corner[i].xyz[z] = origin[z] + vtx[tri->vertices[i]].xyz[z];
         if (corner[i].xyz[x] == pos[x]) {
@@ -127,7 +127,7 @@ s32 bgi_pointInTriangleXZ(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, SVE
     }
     pv[0] = &corner[2];
     tmp[0] = pos[z] >= pv[0]->xyz[z];
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(corner); i++) {
         pv[1] = &corner[i];
         tmp[1] = pos[z] >= pv[1]->xyz[z];
         if (tmp[0] != tmp[1]) {
@@ -196,14 +196,14 @@ s32 bgi_findEdgeCrossing(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 
     origin[0] = bgi->curPos[0] + floor->curPos[0];
     origin[1] = bgi->curPos[1] + floor->curPos[1];
     origin[2] = bgi->curPos[2] + floor->curPos[2];
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(corner); i++) {
         corner[i].xyz[0] = origin[0] + vtx[tri->vertices[i]].xyz[0];
         corner[i].xyz[1] = origin[1] + vtx[tri->vertices[i]].xyz[1];
         corner[i].xyz[2] = origin[2] + vtx[tri->vertices[i]].xyz[2];
     }
     pv[0] = &corner[2];
     cnt = 0;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(corner); i++) {
         pv[1] = &corner[i];
         if (i != edge) {
             denom = (pv[1]->xyz[x] - pv[0]->xyz[x]) * (ez = to[z] - from[z]);
@@ -285,7 +285,7 @@ s32 bgi_findEdgeCrossing(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 
     case 3:
         best = 0;
         min = 0x7FFFFFFF;
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(hit); i++) {
             distSq = hit[i][0] * hit[i][0] + hit[i][1] * hit[i][1] + hit[i][2] * hit[i][2];
             if (distSq < min) {
                 best = i;
@@ -668,7 +668,7 @@ s32 bgi_linkFrameNeighbors(BgiHeader *bgi, BgiAnim *anim, BgiKeyframe *frame) {
 
     for (i = 0; i < frame->triangleCount; i++, ids++) {
         tri = &g_fieldBgi.triangles[*ids];
-        for (j = 0; j < 3; j++) {
+        for (j = 0; j < (s32)ARRAY_COUNT(tri->neighbors); j++) {
             nb = tri->neighbors[j];
             if (nb >= 0) {
                 nbTri = &g_fieldBgi.triangles[nb];

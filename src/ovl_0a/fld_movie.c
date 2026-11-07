@@ -1740,7 +1740,7 @@ void fld_resetSprite(FieldSprite *spr) {
     spr->spriteId = -1;
     spr->parent = -1;
     spr->bone = 0;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(spr->pos); i++) {
         spr->pos[i] = 0;
         spr->rot[i] = 0;
         spr->offset[i] = 0;

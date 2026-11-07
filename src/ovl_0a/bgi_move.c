@@ -190,14 +190,14 @@ s32 bgi_pushOutOfEdges(BgiActor *actor, SVECTOR *pos, BgiTriangle *tri, s16 *out
     pt.vy = g_fieldBgi.header->curPos[1] + floorInfo->curPos[1];
     pt.vz = g_fieldBgi.header->curPos[2] + floorInfo->curPos[2];
     vt = g_fieldBgi.vertices;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(verts); i++) {
         verts[i].vx = pt.vx + vt[tri->vertices[i]].vx;
         verts[i].vy = pt.vy + vt[tri->vertices[i]].vy;
         verts[i].vz = pt.vz + vt[tri->vertices[i]].vz;
     }
     edgeVerts[0] = &verts[2];
     hit = 0;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(verts); i++) {
         edgeVerts[1] = &verts[i];
         dist = bgi_closestPointOnSegment(pos, (SVECTOR *)edgeVerts[0], (SVECTOR *)edgeVerts[1], &pt, &on);
         if ((u32)actor->radiusSq >= dist) {
@@ -256,7 +256,7 @@ u16 bgi_findTriangleNear(BgiActor *actor, BgiTriangle **triInOut, s32 pos, s32 d
         if ((u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[tris[0]->floor], tris[0], (s16 *)pos)) {
             return 1;
         }
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(tris[0]->neighbors); i++) {
             tris[1] = bgi_getPassableNeighbor(actor, tris[0], i);
             if (tris[1] != NULL && (u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[tris[1]->floor], tris[1], (s16 *)pos)) {
                 actor->triangle = tris[0]->neighbors[i];

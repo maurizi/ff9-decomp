@@ -2846,7 +2846,7 @@ s32 fldbg_initOverlays(u8 *heap, BgSprt **spritesOut) {
         size++;
     }
     *spritesOut = (BgSprt *)(heap + size);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_fieldBgState.viewportPos); i++) {
         g_fieldBgState.viewportPos[i][0] = 0;
         g_fieldBgState.viewportPos[i][1] = 0;
         g_fieldBgState.viewportSize[i][0] = cam->width;

@@ -614,6 +614,38 @@ typedef struct WmEffect {
                            /* recorded as low-frequency wind and hiss */
 #define WM_SE_AIRSHIP_WATER 38 /* the airships' loop over water: started with the Hilda Garde / Invincible move modes, volume follows speed and height over water (w_movementChange, wm_controlFly) */
 
+/* The SE ids behind the world sounds (w_musicGetID), named after the WM_SE_* sound that plays them (docs/sound-ids.md
+ * "World-map sound numbers"). Only the world map uses them, so they stay here rather than in snd_ids.h. Two-voice
+ * sounds have _1/_2. 0x37A/0x37B are the chocobo's peck and step: WM_SE_CHOCOBO_DIG plays both. Sound 0 (0x68, never
+ * requested) and 34 (0x44C, an unreached chocobo script tag) stay numbers. */
+#define SE_WM_CHEST_OPEN_1 0x27D
+#define SE_WM_CHEST_OPEN_2 0x27E
+#define SE_WM_MOOGLE_APPEAR 0x552
+#define SE_WM_TENT_START 0x553
+#define SE_WM_DEAD_PEPPER 0x44B
+#define SE_WM_TENT_REST 0x4CF
+#define SE_WM_MOOGLE_CALL 0x596
+#define SE_WM_CHOCOBO_PECK 0x37A
+#define SE_WM_CHOCOBO_STEP 0x37B
+#define SE_WM_CHOCOBO_STEP_2 0x37C
+#define SE_WM_AIRSHIP_WATER 0x5DB
+#define SE_WM_CHEST_RISE 0xA47
+#define SE_WM_CHEST_LAND 0xC26
+#define SE_WM_FLEET_LOOP_1 0x374
+#define SE_WM_FLEET_LOOP_2 0x375
+#define SE_WM_AIRSHIP_CUTSCENE_LOOP_1 0x376
+#define SE_WM_AIRSHIP_CUTSCENE_LOOP_2 0x377
+#define SE_WM_INVINCIBLE_LOOP_1 0x378
+#define SE_WM_INVINCIBLE_LOOP_2 0x379
+#define SE_WM_HILDA_GARDE_LOOP_1 0x554
+#define SE_WM_HILDA_GARDE_LOOP_2 0x555
+#define SE_WM_BOAT_LOOP_1 0x5D9
+#define SE_WM_BOAT_LOOP_2 0x5DA
+#define SE_WM_RUMBLE_LOOP_1 0x37D
+#define SE_WM_RUMBLE_LOOP_2 0x37E
+#define SE_WM_WIND_LOOP_1 0x37F
+#define SE_WM_WIND_LOOP_2 0x380
+
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
 typedef struct WmReadtxSlot {
     struct WmReadtxSlot *prev;

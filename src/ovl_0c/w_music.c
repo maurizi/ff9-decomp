@@ -49,10 +49,10 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
         se.seIds[0] = SE_ITEMS;
         break;
     case WM_SE_CHEST_OPEN:
-        se.seIds[0] = 0x27D;
+        se.seIds[0] = SE_WM_CHEST_OPEN_1;
         break;
     case WM_SE_CHEST_OPEN_2:
-        se.seIds[0] = 0x27E;
+        se.seIds[0] = SE_WM_CHEST_OPEN_2;
         break;
     case WM_SE_HELP_OPEN:
         se.seIds[0] = SE_HELP_OPEN;
@@ -69,37 +69,37 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
     } else {
         switch (sound) {
         case WM_SE_DEAD_PEPPER:
-            se.seIds[0] = 0x44B;
+            se.seIds[0] = SE_WM_DEAD_PEPPER;
             break;
         case WM_SE_TENT_REST:
-            se.seIds[0] = 0x4CF;
+            se.seIds[0] = SE_WM_TENT_REST;
             break;
         case WM_SE_MOOGLE_CALL:
-            se.seIds[0] = 0x596;
+            se.seIds[0] = SE_WM_MOOGLE_CALL;
             break;
         case 34:
             se.seIds[0] = 0x44C;
             break;
         case WM_SE_CHOCOBO_STEP_2:
-            se.seIds[0] = 0x37C;
+            se.seIds[0] = SE_WM_CHOCOBO_STEP_2;
             break;
         case WM_SE_CHOCOBO_CALL:
             se.seIds[0] = SE_CHOCOBO_CALL;
             break;
         case WM_SE_CHOCOBO_PECK:
-            se.seIds[0] = 0x37A;
+            se.seIds[0] = SE_WM_CHOCOBO_PECK;
             break;
         case WM_SE_AIRSHIP_WATER:
-            se.seIds[0] = 0x5DB;
+            se.seIds[0] = SE_WM_AIRSHIP_WATER;
             break;
         case WM_SE_CHOCOBO_STEP:
-            se.seIds[0] = 0x37B;
+            se.seIds[0] = SE_WM_CHOCOBO_STEP;
             break;
         case WM_SE_CHEST_RISE:
-            se.seIds[0] = 0xA47;
+            se.seIds[0] = SE_WM_CHEST_RISE;
             break;
         case WM_SE_CHEST_LAND:
-            se.seIds[0] = 0xC26;
+            se.seIds[0] = SE_WM_CHEST_LAND;
             break;
         }
         if (se.seIds[0] != -1) {
@@ -110,10 +110,10 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
         } else {
             switch (sound) {
             case WM_SE_MOOGLE_APPEAR:
-                se.seIds[0] = 0x552;
+                se.seIds[0] = SE_WM_MOOGLE_APPEAR;
                 break;
             case WM_SE_TENT_START:
-                se.seIds[0] = 0x553;
+                se.seIds[0] = SE_WM_TENT_START;
                 break;
             }
             if (se.seIds[0] != -1) {
@@ -126,44 +126,44 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
                 __asm__(".rdata\n\t.word 0\n\t.text");
                 switch (sound) {
                 case WM_SE_CHOCOBO_DIG:
-                    se.seIds[0] = 0x37A;
+                    se.seIds[0] = SE_WM_CHOCOBO_PECK;
                     se.channelMask = 0;
-                    se.seIds[1] = 0x37B;
+                    se.seIds[1] = SE_WM_CHOCOBO_STEP;
                     break;
                 case WM_SE_FLEET_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
-                    se.seIds[0] = 0x374;
-                    se.seIds[1] = 0x375;
+                    se.seIds[0] = SE_WM_FLEET_LOOP_1;
+                    se.seIds[1] = SE_WM_FLEET_LOOP_2;
                     break;
                 case WM_SE_AIRSHIP_CUTSCENE_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
-                    se.seIds[0] = 0x376;
-                    se.seIds[1] = 0x377;
+                    se.seIds[0] = SE_WM_AIRSHIP_CUTSCENE_LOOP_1;
+                    se.seIds[1] = SE_WM_AIRSHIP_CUTSCENE_LOOP_2;
                     break;
                 case WM_SE_INVINCIBLE_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
-                    se.seIds[0] = 0x378;
-                    se.seIds[1] = 0x379;
+                    se.seIds[0] = SE_WM_INVINCIBLE_LOOP_1;
+                    se.seIds[1] = SE_WM_INVINCIBLE_LOOP_2;
                     break;
                 case WM_SE_HILDA_GARDE_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
-                    se.seIds[0] = 0x554;
-                    se.seIds[1] = 0x555;
+                    se.seIds[0] = SE_WM_HILDA_GARDE_LOOP_1;
+                    se.seIds[1] = SE_WM_HILDA_GARDE_LOOP_2;
                     break;
                 case WM_SE_BOAT_LOOP:
                     se.channelMask = WM_SE_GROUP_VEHICLE;
-                    se.seIds[0] = 0x5D9;
-                    se.seIds[1] = 0x5DA;
+                    se.seIds[0] = SE_WM_BOAT_LOOP_1;
+                    se.seIds[1] = SE_WM_BOAT_LOOP_2;
                     break;
                 case WM_SE_RUMBLE_LOOP:
                     se.channelMask = WM_SE_GROUP_AMBIENT;
-                    se.seIds[0] = 0x37D;
-                    se.seIds[1] = 0x37E;
+                    se.seIds[0] = SE_WM_RUMBLE_LOOP_1;
+                    se.seIds[1] = SE_WM_RUMBLE_LOOP_2;
                     break;
                 case WM_SE_WIND_LOOP:
                     se.channelMask = WM_SE_GROUP_AMBIENT;
-                    se.seIds[0] = 0x37F;
-                    se.seIds[1] = 0x380;
+                    se.seIds[0] = SE_WM_WIND_LOOP_1;
+                    se.seIds[1] = SE_WM_WIND_LOOP_2;
                     break;
                 }
                 if (se.seIds[0] != -1) {
