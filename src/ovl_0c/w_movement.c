@@ -1272,9 +1272,9 @@ void wm_movePlayer(WmActorType *cc) {
             }
         }
     }
-    ex = g_worldPlayer->pos.vx - WM_NOCACHE_RIVER_GORGE_X;
-    ez = g_worldPlayer->pos.vz - WM_NOCACHE_RIVER_GORGE_Z;
-    if (ABS(ex) < WM_NOCACHE_RIVER_GORGE_R && ABS(ez) < WM_NOCACHE_RIVER_GORGE_R) {
+    ex = g_worldPlayer->pos.vx - WM_NOCACHE_RIVER_BRIDGE_X;
+    ez = g_worldPlayer->pos.vz - WM_NOCACHE_RIVER_BRIDGE_Z;
+    if (ABS(ex) < WM_NOCACHE_RIVER_BRIDGE_R && ABS(ez) < WM_NOCACHE_RIVER_BRIDGE_R) {
         g_worldUsePolyCache = 0;
     }
     ex = g_worldPlayer->pos.vx - WM_NOCACHE_CONDE_PETIE_X;

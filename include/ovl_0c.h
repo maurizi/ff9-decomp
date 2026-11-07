@@ -513,14 +513,18 @@ typedef struct WmEffect {
 #define WM_FLY_CEILING_SOFT 0x7E8
 /* wm_movePlayer: boxes (centre, half size) where the walkmesh polygon cache is turned off (g_worldUsePolyCache = 0),
  * named for the navi place (g_worldNaviPlaces page 1, name = world text bank 0 entry place + 1, read from the disc)
- * at or nearest their centre. Why the cache is unusable there is not proven: the cache returns the first cached
- * polygon containing (x, z) without checking y, so presumably these are places with stacked ground (runtime R44 found
- * no walking difference with the stores nopped; pending, low). Evidence: [code], data */
-#define WM_NOCACHE_RIVER_GORGE_X 0x407F7 /* (264183, -245187), map cell (16, 14): a narrow river canyon running into the
-                                          * sea ([runtime] R44, medium); no navi place on it (19 "Chocobo's Forest" is
-                                          * 14400 away) */
-#define WM_NOCACHE_RIVER_GORGE_Z -0x3BDC3
-#define WM_NOCACHE_RIVER_GORGE_R 0x800
+ * at or nearest their centre. Every box surrounds stacked ground: cliff overhangs (flying-only terrain) over walkable
+ * floor, or a natural bridge (0.6-26.5% of in-box points have two layers > 64 apart, almost none outside). The cache
+ * keeps the last hits per actor type and returns the first cached triangle containing (x, z) without checking y; off,
+ * the triangle nearest the probe's height wins. wm_movePlayer sets the flag back to 1 before the player's own step, so
+ * the clear only reaches later lookups: the camera's eye-floor probes and other actors (parked vehicle, mount,
+ * moogle). A fixed-height probe entering an overhang from the open side would get the floor below (offline replay,
+ * 1-4% of in-box points); not seen on screen with the current camera. Evidence: [code], data, [runtime] R45 */
+#define WM_NOCACHE_RIVER_BRIDGE_X 0x407F7 /* (264183, -245187), map cell (16, 14): a natural stone bridge about 1000
+                                           * units above a river running into the sea ([runtime] R45); no navi place on
+                                           * it (19 "Chocobo's Forest" is 14400 away) */
+#define WM_NOCACHE_RIVER_BRIDGE_Z -0x3BDC3
+#define WM_NOCACHE_RIVER_BRIDGE_R 0x800
 #define WM_NOCACHE_CONDE_PETIE_X 0x37FA8 /* place 32 "Conde Petie" (229037, -90135) */
 #define WM_NOCACHE_CONDE_PETIE_Z -0x1606D
 #define WM_NOCACHE_CONDE_PETIE_R 0xC00
@@ -665,8 +669,9 @@ typedef struct {
 /* wm_updateActors: tilts settling back each frame. Evidence: [code] */
 #define WM_ROLL_SETTLE_STEP 10 /* the mount's rotZ eases to 0, the camera roll to 0 (turning slowly or not at all), */
                                /* a landed vehicle's rotZ to WM_VEHICLE_REST_ROLL, by this a frame */
-#define WM_VEHICLE_REST_ROLL 14 /* a vehicle's rotZ at rest: [runtime] R44 reads 14 parked and flying straight, but
-                                * the drawn Hilda Garde 3 ignores this rotZ (no visible tilt; low) */
+#define WM_VEHICLE_REST_ROLL 14 /* rotZ the Hilda Garde 3, Blue Narciss and Invincible settle to at rest (parked and
+                                * flying straight): a slight ~1.2 degree lean; all three draw with rotZ (the chocobo
+                                * settles to 0) ([runtime] R45) */
 #define WM_VEHICLE_FLY_SETTLE_STEP 16 /* ... flying straight */
 #define WM_ROLL_SETTLE_SPEED 300 /* the camera roll also levels out below this speed */
 

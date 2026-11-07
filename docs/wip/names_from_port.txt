@@ -11676,3 +11676,4 @@ CHOCO_WM_CLUT_Y WM_CHOCOGRAPH_CLUT_Y  # [runtime] R44
 CHOCO_WM_PICTURE_X WM_CHOCOGRAPH_PICTURE_X  # [runtime] R44
 CHOCO_WM_PICTURE_Y WM_CHOCOGRAPH_PICTURE_Y  # [runtime] R44
 # new (R44, ff9.h): MENU_HELP_MARGIN_X 0xC (ovl_33 menuAbility_updateHelp, ovl_37 menuItem_updateHelp)
+WM_NOCACHE_RIVER_GORGE_X WM_NOCACHE_RIVER_BRIDGE_X  # [runtime] R45: a natural stone bridge (also _Z, _R)

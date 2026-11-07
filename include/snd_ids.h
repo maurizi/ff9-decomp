@@ -247,8 +247,11 @@
                               * battle / spell SE key its instruments */
 /* AKAO bank header ids (AkaoBankHeader.id, FF9.IMG dir 11) by range: akao_loadBankInSlot moves a bank loaded into
  * slot n > 0 up the SPU from its header address by a per-range step. [runtime] R44 (load traces, bank file scan) */
-#define AKAO_BANK_BATTLE_SE_FIRST 200 /* 200-299: battle SE banks (8 instruments at 192, SPU 0x4F100; step 20 KB); only
-                                       * the unslotted 208 (the battle's own) was seen loading (low) */
+#define AKAO_BANK_BATTLE_SE_FIRST 200 /* 200-299: battle SE banks (8 instruments at 192, SPU 0x4F100; step 20 KB). 208 is
+                                       * the battle's own SE bank, loaded unslotted; the slotted 2xx branch is unused in
+                                       * retail: no dependency table, script or caller loads 200-207 (btl_loadWeaponSoundStep
+                                       * has no callers, every weapon's bank key is 0xFFFF). Per-character weapon sound
+                                       * sets is a guess (low) ([runtime] R45) */
 #define AKAO_BANK_BATTLE_SE_COUNT 100
 #define AKAO_BANK_ENEMY_SE_FIRST 300  /* 300-499: an enemy type's SE bank, one slot per type (3 instruments at 224, SPU
                                        * 0x43100; step 16 KB, loaded-bank index slot + 4; e.g. Malboro 350) (medium) */

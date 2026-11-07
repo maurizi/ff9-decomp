@@ -4999,3 +4999,112 @@ compass); disc 3 `r44_tonberry_start` (encounter 872, Tonberries, Zidane's comma
 - states (disc 4): `r44_bj_action_jk_vs_qk` (action prompt, player J K vs dealer Q + hole K: Stand gives a push),
   `r44_bj_hit_jack` (player 2 8 J after a hit, dealer K + hole Q: Stand gives a push). Screenshots in build/r44rt/bj_*.
   No breakpoints left; emulator stopped afterwards.
+
+## R45 runtime pass: open world/sound questions  (status: proposed)
+
+Method: PCSX-Redux, disc 1 (`field_worldmap_ice_exit`), disc 3 (`cpass_wm_hadris`, `cpass_wm_airship9`,
+`r37b_wm_boat_entry`, `r37b_wm_chocobo_ride`, `disc3_pandemonium_lv99_field` + `tools/rt/enter_battle.py`), disc 4
+(`r37b_wm_invincible_entry`). Scripts and evidence are in `build/r45rt/`. No breakpoints left.
+
+### Q1 why wm_movePlayer turns the poly cache off in the WM_NOCACHE_* boxes (ovl_0c)
+- **What the cache does** ([code]): `g_worldPolyCache[k]` (per actor type, `WmActorType.polyCache`) and
+  `g_worldCameraPolyCache[4]` hold the last 6 (cell, triangle) hits of wm_getBlockHeight. With the cache on, the first
+  cached triangle that contains (x, z) is returned **without looking at y**. With the cache off, every triangle of the
+  block is scanned and the one whose height is nearest the probe's y wins (stacked ground is resolved by height).
+- **Who the clear affects** ([code], confirmed at runtime): wm_movePlayer sets `g_worldUsePolyCache = 1` at its top
+  (0x800B0494), *before* the player's wm_tryStep, and the 11 clears come after the step. So the player's own movement
+  lookups always use the cache, inside the boxes too. The trace logged every wm_getBlockHeight call (bp at its call in
+  wm_getGroundHeight 0x800BE81C / return 0x800BE824, `ghlog.py`): the wm_tryStep caller (ra 0x800B0EE0) always ran with
+  flag 1. Only the lookups between this frame's step and the next frame's wm_movePlayer see the 0:
+  - wm_cameraFollow's eye-floor probes (ra 0x800ADBF8/C2C/C6C/CA0, flying 0x800ADD40);
+  - the non-player actors in wm_updateActors (ra 0x800AFE5C: parked vehicle, mount, moogle, and the player itself while
+    control is off).
+  On topography 0x34 (WM_TOPO_NO_ENCOUNTER), wm_tryStep passes no cache at all. That covers the player's own steps on
+  the bridge below.
+- **What every box contains: stacked walkmesh** (static proof). `meshdump.py` dumped the loaded chunks (airship
+  teleported to each box centre, `tpdump.py`). `boxstack.py` sampled (x, z) every 32 units and counted points covered
+  by two or more triangles whose heights differ by 64 or more. Inside the boxes: GORGE 8.0 %, CONDE 9.9 %, ICE 0.6 %,
+  ICE2 1.7 %, LAGOON 6.2 %, CPATH 18.1 %, GIZA 1.8 %, DESERT 8.3 %, IPSEN 26.5 %, DAG 2.1 %. In the ring 0-4096 around
+  each box: 0 % everywhere except a few mountain-over-mountain points at Conde Petie (0.2 %), its path (0.1 %) and 3
+  points at Daguerreo (`boxstack.py`, `stackmap.py`, `boxpolys.py`). The layers are mostly cliff or overhang triangles
+  (topography 0x3B, flying only) above walkable floor: Ipsen 0x3B over 0x13/0x05 (crater rim), Conde Petie 0x3B over
+  0x11, the Conde Petie path 0x3B / 0x31 over water 0x36-0x39, Lagoon ground 0x00 over 0x3B, and at the river box
+  **0x34 over the river 0x33**.
+- **The "river gorge" box is a natural stone bridge.** Walker teleported onto it (`r45_wm_gorge_bridge`; the walker's
+  floorY 0x800CCCDE and cellAttr had to be poked to the bridge first, otherwise it keeps its old floor, which is why R44
+  could not walk): a brown stone arch carries the land across the river (`gh_bridge_orig.png`, `r45_wm_gorge_bridge.png`).
+  The walkmesh has the arch top (topography 0x34, y -1048..-792) 1000 units above the river (0x33, y -10) in cell
+  1424, x 263248..264975, z -245760..-244393.
+- **What goes wrong with the cache on** (offline replay of the exact 6-slot cache, `cachesim.py`, results
+  `cachesim_*.txt`). Probes cross each box on straight lines in 8 headings:
+  - A ground-following probe (y = the height it found) never gets a wrong layer: 0 errors in every box.
+  - A probe at a fixed height above the ground (a camera eye, a flyer) that enters an overhang from the side where only
+    the floor exists keeps returning the cached **floor** triangle under the overhang. Wrong-layer answers at 1-4 % of
+    in-box points: e.g. the gorge, river y -10 instead of the bridge top y -1048; Ipsen, crater floor +856 instead of
+    the rim -772; Conde Petie, ground -711 instead of the cliff top -3250.
+  So with the cache on, an eye or actor probing from above would take the floor under the bridge or overhang for the
+  ground: the camera eye or a non-player actor drops into the rock or under the bridge.
+- **Not reproduced visibly.** Runs of the same inputs with the 11 `sb zero` nopped versus original found no lookup whose
+  answer differed from the nearest-y scan (`ghcheck.py`): Ice Cavern walking plus a 150-frame L1 camera turn
+  (`gh_ice_*`, `w_ice_l1_*`), crossing the bridge plus L1/R1 turns (`gh_bridge_*`), Ipsen crater walking plus turns
+  (`gh_ipsen_*`), an airship pass over Daguerreo (`gh_dag_air_orig`). With the current camera presets the eye stays far
+  above these layers. Clearance is 500 over an eye 4400 above the player (g_worldCameraParams 350/7000/-4400/-500/-1500),
+  so the floor answer is never the one that clamps the eye. Side effect seen: with the patch the uncached scans are
+  slower; at Ipsen the patched run's game frames land 1 vsync earlier from frame 17 on.
+- Proposed: keep `WM_NOCACHE_*`. Comment: "boxes around overhangs and the natural bridge (walkmesh triangles stacked
+  over the same x, z; none in the 4 k around them). The cache returns a cached triangle without checking y, so a probe
+  from above (camera eye floor probes, actors other than the controlled player) would get the floor under an overhang.
+  The clear only affects lookups after the player's own step, which runs cached (on the bridge top WM_TOPO_NO_ENCOUNTER
+  makes wm_tryStep uncached)". Rename `WM_NOCACHE_RIVER_GORGE_*` -> **`WM_NOCACHE_RIVER_BRIDGE_*`** ("a natural stone
+  arch over a river, cell 16,14"). Confidence: high for stacked layers / the bridge / which lookups the clear affects;
+  medium for the failure mode (replayed offline, not seen on screen).
+
+### Q2 WM_VEHICLE_REST_ROLL (rotZ 14): every vehicle draws with rotZ; 14 is a barely visible ~1.2 degree list
+- wm_drawActorModel builds the model matrix from `objSlot->actor->rotZ`. For every vehicle that actor is the vehicle
+  itself (bp 0x800AF6AC after game_getModel; logged rot passed to math_rotMatrixYXZ, e.g. boat (0, 2976, 390)).
+- R44's "no change" was a capture-timing artefact: a value poked and shot within a few vsyncs isn't on screen yet, and
+  single-vsync stepping froze the boat's display. Clean method `restroll.py`: patch the seven settle constants in
+  wm_updateActors (0x800AFFEC .. 0x800B00A4) so the game itself settles to a target T, run 120-420 vsyncs, screenshot.
+  - Hilda Garde 3 flying (`cpass_wm_airship9`): T 0 vs 14, 406 px differ; ±40 tilts it (`rest_hg3fly_cmp.png`).
+    Single-frame pokes of ±400 (`roll.py`) bank it clearly (`roll_hg3_cmp.png`).
+  - Blue Narciss (`r37b_wm_boat_entry`, type 8): 0 vs 14, 319 px; ±400 lays it on its side (`rest_boat_cmp.png`).
+  - Invincible (disc 4 `r37b_wm_invincible_entry`, type 10): 0 vs 14, 230 px; ±40 visible (`rest_inv_cmp.png`).
+  - Chocobo (g_worldMountActor, `r37b_wm_chocobo_ride`): ±390 tilts it (`roll_choco_*`), but it settles to 0, not 14.
+    WM_VEHICLE_REST_ROLL only applies to g_worldVehicleActor (types 8-10).
+- At 14 (14/4096 of a turn, about 1.2 degrees) the ships sit with a 1-2 px lean (one wing or leg a pixel lower). It
+  can't be seen as a tilt without a diff. Comment: "all three vehicles draw with rotZ; at rest they keep this slight
+  roll (~1.2 degrees, 1-2 px on screen; HG3, Blue Narciss, Invincible)". high.
+
+### Q3 sound banks 200-299 in akao_loadBankInSlot: no slotted load exists
+- Bank files with header ids 200-299 (all discs identical, `banks_disc*.txt`): 200-207 are dir-11 files 120, 142,
+  79, 99, 39, 58, 0 and 20, each 8 instruments at instrument 192 / SPU 0x4F100, at most 20288 bytes (fits the 20 KB
+  slot step). 208 is file 513: 32 instruments at 192, 81792 bytes, about 4 x 20 KB. That is the same span as four slots
+  of an 8-instrument bank, so the 2xx step looks made for loading one 8-instrument bank per party slot instead of 208.
+- Nothing references 200-207. `bankref.py` checked every dep table of every FF9.IMG directory on all 4 discs: none.
+  `sndscan.py` and an op count checked every event script: battle scripts (dir 5) have no sound ops at all, and
+  field/world scripts never issue a bank command (SND_TYPE 3). The code path that would slot a bank by party member
+  (btl_loadWeaponSoundStep -> btl_soundCmd SND_BANK_LOAD slot+4, btl_getWeaponSoundBank) has no callers, and the
+  weapon-model directory's sound-bank key (FileEntry16.idHi) is 0xFFFF for every weapon.
+- Slotted loads by source (deps mapped to header ids, `bankdeps2.py` plus header lookup): battle deps with top byte 2
+  (btl_loadSoundsStep, slots 0/1) are all 300-499; field deps with top byte 4 and a DB_SE link (fld_soundBankReadCallback)
+  are all 500-599; 208 is referenced by every encounter with top byte 0 and loaded unslotted (akao_loadBankRetry).
+- Runtime: g_akaoLoadedBanks (0x800809C0) read after each battle load (`btlbanks.sh`, `btlbanks.txt`):
+  - 899 -> [0] = 350;
+  - 77 -> 490;
+  - 167 -> 476;
+  - 194 -> 476;
+  - 262 -> 466;
+  - 1 -> 371;
+  - 5 -> 310;
+  - 37 -> 311;
+  - 872 (Tonberries) -> no enemy bank (504 left from field 2714);
+  - 280 did not enter.
+  None of these is 2xx. Summons and ATEs were not re-traced: no data path can reach the range (R44 traced a Shiva
+  summon: nothing slotted).
+- Proposed: `AKAO_BANK_BATTLE_SE_FIRST` comment: "200-299: battle SE banks; 208 (the battle's own, all 32 instruments)
+  is loaded unslotted. 200-207 are 8-instrument banks of one 20 KB slot each that nothing loads (no dep, no script; the
+  per-party-slot loader btl_loadWeaponSoundStep is dead code), so the slotted 2xx branch is unused". What 200-207
+  contain was not listened to. "Per-character weapon SE" is a guess from the 8 banks and the dead weapon-bank code
+  (low). Confidence: high that the branch is unused in retail.
+
+New state: disc 3 `r45_wm_gorge_bridge` (walker next to the natural bridge, cell 16,14).
