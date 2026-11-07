@@ -42,12 +42,22 @@
 #define FX_BAHAMUT_SMOKE_ARC_2        0x84 /* summon data: 'so' model, curved band with a grey smoke texture */
 #define FX_BAHAMUT_CLOUD_SPHERE       0x85 /* summon data: 'so' model, sphere with a blue-white cloud texture, drawn fading at the end (same entry as fx_0e3_0's) */
 
+/* fx_0e3_1 choreography (docs/fxdata.md, "Choreography literals"; partial: the work size, strip shapes, bone count
+ * and primitive words; op80's state machine is still numeric). */
+#define FX_BAHAMUT_ARC_POINTS       13   /* points of a WHITE_BOLT arc (Fx0e31Bolt13), */
+#define FX_BAHAMUT_ARC_WIDTH        0x1C /* their width */
+#define FX_BAHAMUT_SPARK_POINTS     5    /* points of a WHITE_BOLT_2 spark (Fx0e31Bolt5), */
+#define FX_BAHAMUT_SPARK_WIDTH      0x1A /* their width */
+#define FX_BAHAMUT_BOLT_POINTS      57   /* points of a PURPLE_BOLT strip (Fx0e31Bolt) */
+#define FX_BAHAMUT_LIGHTNING_POINTS 13   /* points of a LIGHTNING_BOLT strip */
+#define FX_BAHAMUT_SUMMON_BONES     92   /* the summon model's bones: random arc ends (Hi_GetSummonBonePos(rand() % this)) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[57]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_BAHAMUT_BOLT_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e31Bolt;
 
 extern Unk800F78A4 *fx_0e3_1_env;
@@ -129,7 +139,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[13]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_BAHAMUT_ARC_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e31Bolt13; /* 0x6C */
 
 typedef struct {
@@ -137,7 +147,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[5]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_BAHAMUT_SPARK_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e31Bolt5; /* 0x2C */
 
 typedef struct {

@@ -20,12 +20,28 @@
 #define FX_BAHAMUT_CLOUD_SPHERE    0x85 /* summon data: 'so' model, sphere with a blue-white cloud texture, drawn fading at the end */
 #define FX_BAHAMUT_SMOKE_ARC       0x86 /* summon data: 'so' model, curved band with a grey smoke texture, stacked nine times as a cone */
 
+/* fx_0e3_0 choreography (docs/fxdata.md, "Choreography literals"; partial: the sizes, buffers, strip shapes, ribbon
+ * texture and primitive words; op80's state machine is still numeric). */
+#define FX_BAHAMUT_PUFF_SLOTS     0xC  /* op80 pool items (Fx0e30Puff) */
+#define FX_BAHAMUT_MODEL_COUNT    0x10 /* btlfx_initEffModels slots */
+#define FX_BAHAMUT_ARC_POINTS     13   /* points of a WHITE_BOLT arc (fxm_drawOffsetTrail0, Fx0e30Arc), */
+#define FX_BAHAMUT_ARC_WIDTH      0x19 /* their width */
+#define FX_BAHAMUT_BOLT_POINTS    49   /* points of a PURPLE_BOLT strip (fxm_drawOffsetTrail1, Fx0e30Bolt), */
+#define FX_BAHAMUT_BOLT_WIDTH     0x33 /* their width */
+#define FX_BAHAMUT_SUMMON_BONES   92   /* the summon model's bones: random arc ends (Hi_GetSummonBonePos(rand() % this)) */
+#define FX_BAHAMUT_RIBBONS        4    /* fx_0e3_0_ribbons / ribbon bone pairs */
+#define FX_BAHAMUT_RIBBON_SEGMENTS 15  /* a ribbon's history steps */
+#define FX_BAHAMUT_RIBBON_TPAGE   0x9D   /* fxm_drawTexRibbonTrail texture: 8-bit page (0x340, 0x100), */
+#define FX_BAHAMUT_RIBBON_CLUT    0x3D40 /* CLUT at (0x0, 0xF5), */
+#define FX_BAHAMUT_RIBBON_U       0      /* texels from (u, v) */
+#define FX_BAHAMUT_RIBBON_V       0x80
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[49]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_BAHAMUT_BOLT_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e30Bolt;
 
 typedef struct {
@@ -33,7 +49,7 @@ typedef struct {
     s32 phase8; /* phase */
     s16 sizeC; /* size */
     s16 speedE; /* speed */
-} Fx0e30Puff;
+} Fx0e30Puff; /* 0x10 */
 
 typedef struct {
     SVECTOR a0; /* pad: point valid */
@@ -108,13 +124,13 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[13]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_BAHAMUT_ARC_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e30Arc; /* 0x6C */
 
 extern SVECTOR fx_0e3_0_origin;
 extern s16 fx_0e3_0_trailBones[];
 extern Fx0e30BonePair fx_0e3_0_ribbonBones[8];
-extern Fx0e30Seg fx_0e3_0_ribbons[4][15];
+extern Fx0e30Seg fx_0e3_0_ribbons[FX_BAHAMUT_RIBBONS][FX_BAHAMUT_RIBBON_SEGMENTS];
 extern u8 fx_0e3_0_strips[4][0x12C];
 extern Fx0e30Arc fx_0e3_0_arcs[];
 extern Fx0e30Bolt fx_0e3_0_bolts[];
