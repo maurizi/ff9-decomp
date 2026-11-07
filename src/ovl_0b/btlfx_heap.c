@@ -267,12 +267,12 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 *(s32 *)&vec.vz = *(s32 *)&pos.vz;
                 cnt = btlfx_distance(&vec, PSX_NULLABLE(owner->fieldPos));
                 ((s32 *)&vec)[0] = 0;
-                vec.vy = -0x1000;
+                vec.vy = -ONE;
                 break;
             case BTLFX_FIELD_ALONG_AXIS:
                 btlfx_toLocalPolar(&pos, PSX_NULLABLE(owner->fieldPos), PSX_NULLABLE(owner->fieldRot), (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
-                    btlfx_rotateOffset(PSX_NULLABLE(owner->fieldRot), 0x1000, (s32)&vec);
+                    btlfx_rotateOffset(PSX_NULLABLE(owner->fieldRot), ONE, (s32)&vec);
                 }
                 break;
             case BTLFX_FIELD_AROUND_AXIS:
@@ -280,7 +280,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 if (cnt <= range) {
                     ((s32 *)&vec)[1] = 0;
                     ((s32 *)&vec)[0] = 0;
-                    btlfx_offsetPoint(&vec, (s32)&vec, 0, (XY32 *)PSX_NULLABLE(owner->fieldRot), 0x1000, scale);
+                    btlfx_offsetPoint(&vec, (s32)&vec, 0, (XY32 *)PSX_NULLABLE(owner->fieldRot), ONE, scale);
                 }
                 break;
             case BTLFX_FIELD_FADE:
@@ -311,7 +311,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     amp = (math_sin(scale) * amp) >> 12;
                     break;
                 case BTLFX_FALLOFF_INV_SIN:
-                    amp = ((0x1000 - math_sin(scale)) * amp) >> 12;
+                    amp = ((ONE - math_sin(scale)) * amp) >> 12;
                     break;
                 case BTLFX_FALLOFF_INV_COS:
                     amp = ((0x1000 - math_cos(scale)) * amp) >> 12;
@@ -382,11 +382,11 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 if (alpha < 0) {
                     alpha = 0;
                 }
-                if (alpha > 0x1000) {
-                    alpha = 0x1000;
+                if (alpha > ONE) {
+                    alpha = ONE;
                 }
             }
-            if (alpha == 0x1000) {
+            if (alpha == ONE) {
                 alpha = -1;
             }
             if (fl & BTLFX_ELEM_FIXED_SCALE) {
@@ -713,7 +713,7 @@ s32 btlfx_updateEmitters(Pool30 *pool, Pool6C *list) {
         end[1] = hdr->alphaEnd;
         end[2] = an->gravityEnd;
         btlfx_lerpVec(cur.h, end, t, cur.h);
-        gte_lddp(0x1000 - t);
+        gte_lddp(ONE - t);
         gte_ldsv(an->accelStart);
         gte_gpf12();
         emitter->scale = cur.h[0];
@@ -942,7 +942,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                     }
                 }
                 btlfx_rotateOffset(&rot, acc, (s32)&off);
-                LoadAverageCol((u8 *)&emitter->tail->s.sphere.axisScaleStart, (u8 *)&emitter->tail->s.sphere.axisScaleEnd, 0x1000 - t, t, (u8 *)&col);
+                LoadAverageCol((u8 *)&emitter->tail->s.sphere.axisScaleStart, (u8 *)&emitter->tail->s.sphere.axisScaleEnd, ONE - t, t, (u8 *)&col);
                 off.vx = (off.vx * col.r) >> 7;
                 off.vy = (off.vy * col.g) >> 7;
                 off.vz = (off.vz * col.b) >> 7;
@@ -1270,7 +1270,7 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *parent, SVECTOR *pos, SVECTO
                 if (owner->trails != 0) {
                     owner->subSpawnCount %= owner->trailSlots;
                 }
-                gte_lddp(0x1000 - t);
+                gte_lddp(ONE - t);
                 gte_ldsv(sub->radiusStart);
                 gte_gpf12();
                 btlfx_randRotation(&ang);

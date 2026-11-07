@@ -494,14 +494,14 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
             if (path->frames == 0 || path->framesLeft == 0) {
                 wa[i] = 0;
             } else {
-                k = (u32)((0x1000 - path->frames * g_btlCamScript.easeSpeed) << 17) / (u32)(path->frames * path->frames);
+                k = (u32)((ONE - path->frames * g_btlCamScript.easeSpeed) << 17) / (u32)(path->frames * path->frames);
                 switch (modes & BTLCAM_MODE2_MASK) {
                 case BTLCAM_EASE_LINEAR:
                     wa[i] = (0x10000000 / path->frames * path->framesLeft) >> 16;
                     break;
                 case BTLCAM_EASE_IN:
                     steps = path->frames - path->framesLeft;
-                    wa[i] = 0x1000 - ((k * steps * steps) >> 17) - steps * g_btlCamScript.easeSpeed;
+                    wa[i] = ONE - ((k * steps * steps) >> 17) - steps * g_btlCamScript.easeSpeed;
                     break;
                 case BTLCAM_EASE_OUT:
                     steps = path->framesLeft;
@@ -509,7 +509,7 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
                     break;
                 }
             }
-            wb[i] = 0x1000 - wa[i];
+            wb[i] = ONE - wa[i];
             modes >>= BTLCAM_MODE2_BITS;
         }
     }
@@ -898,7 +898,7 @@ void btlcam_applyTargetView(SVECTOR *eye, SVECTOR *at) {
                     g_btlCamera.viewState = 2;
                 } else {
                     wFrom = g_btlCamera.viewBlend * 0x555;
-                    wTo = 0x1000 - wFrom;
+                    wTo = ONE - wFrom;
                     LoadAverageShort12(&g_btlCamera.viewFromEye, &g_btlCamera.points[4], wFrom, wTo, eye);
                     LoadAverageShort12(&g_btlCamera.viewFromAt, &g_btlCamera.points[5], wFrom, wTo, at);
                 }

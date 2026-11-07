@@ -531,9 +531,9 @@ void btl_setModelTransform(BtlModel *model, SVECTOR *rot, VECTOR *pos, VECTOR *s
     if (scale != 0) {
         btl_scaleModelMatrix(model, scale);
     } else {
-        model->scaleX = 0x1000;
-        model->scaleY = 0x1000;
-        model->scaleZ = 0x1000;
+        model->scaleX = ONE;
+        model->scaleY = ONE;
+        model->scaleZ = ONE;
         btl_applyModelScale(model);
     }
 }
@@ -546,15 +546,15 @@ void btl_scaleModelMatrix(BtlModel *model, VECTOR *scale) {
 
     words = (s32 *)&mat;
     x = scale->vx;
-    words[0] = 0x1000;
+    words[0] = ONE;
     mat.m[0][0] = x;
     y = scale->vy;
-    words[2] = 0x1000;
+    words[2] = ONE;
     mat.m[1][1] = y;
     z = scale->vz;
     words[1] = 0;
     words[3] = 0;
-    words[4] = 0x1000;
+    words[4] = ONE;
     words[5] = 0;
     words[6] = 0;
     words[7] = 0;
@@ -585,7 +585,7 @@ void Hi_StartSummonTexAnim(s32 summonId, s32 anim, u8 once) {
         ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->flags |= BTL_TEXANIM_PLAY;
     }
     ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->pos = 0;
-    ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->lastFrame = 0x1000;
+    ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->lastFrame = TEXANIM_FORCE_UPLOAD;
 }
 
 void Hi_StopSummonTexAnim(s32 summonId, s32 anim) {

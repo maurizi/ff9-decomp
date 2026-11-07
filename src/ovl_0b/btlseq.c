@@ -580,9 +580,9 @@ void btlseq_opScale(BtlScript *script, BtlUnit *unit) {
     scaleWork[0] = curScale;
     factor = script->pc[1] | (script->pc[2] << 8);
     if (factor == -1) {
-        targetScale = 0x1000;
+        targetScale = ONE;
     } else {
-        targetScale = curScale * factor / 0x1000;
+        targetScale = curScale * factor / ONE;
     }
     scaleWork[1] = targetScale - scaleWork[0];
     script->opFrame = 1;
@@ -593,7 +593,7 @@ s32 btlseq_stepScale(BtlScript *script, BtlUnit *unit) {
     s16 *scaleWork = script->work;
     u16 scale = script->work[0] + scaleWork[1] * script->opFrame / scaleWork[2];
     btl_setUnitAttr((s32)unit, BTL_ATTR_SCALE, scale);
-    if (scale == 0x1000) {
+    if (scale == ONE) {
         unit->model->flags &= ~BTL_MODEL_SCALED;
     }
     if (script->opFrame >= scaleWork[2]) {

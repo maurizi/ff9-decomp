@@ -70,7 +70,7 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
     if (tilt < 0) {
         tilt = -tilt;
     }
-    trans.vz = ((0x1000 - tilt) * 12500 + view->t[2] * tilt) / 0x1000;
+    trans.vz = ((ONE - tilt) * 12500 + view->t[2] * tilt) / ONE;
     trans.vx = 0;
     TransMatrix(&skyMatrix, &trans);
     if (g_btlbgScrollPaused == 0) {

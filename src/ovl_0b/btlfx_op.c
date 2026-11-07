@@ -66,8 +66,8 @@ s32 btlfx_stepForward(s32 unitId, s32 targetId, s32 frame) {
             btlfx_applyFloatHeight(unitId, (s16 *)stepPos);
         }
         ratio = ((frame + 1) << 12) / frames;
-        if (ratio > 0x1000) {
-            ratio = 0x1000;
+        if (ratio > ONE) {
+            ratio = ONE;
         }
         btlfx_lerpVec((s16 *)homePos, (s16 *)stepPos, ratio, (s16 *)pos);
         btlfx_setUnitPos(unitId, (s16 *)pos);
@@ -108,8 +108,8 @@ s32 btlfx_moveUnitHome(s32 unitId, s32 frame, s16 *startPos, s32 stopped) {
         btlfx_applyFloatHeight(unitId, homePos);
     }
     ratio = ((frame + 1) << 12) / frames;
-    if (ratio > 0x1000) {
-        ratio = 0x1000;
+    if (ratio > ONE) {
+        ratio = ONE;
     }
     btlfx_lerpVec(startPos, homePos, ratio, pos);
     btlfx_setUnitPos(unitId, pos);
@@ -503,9 +503,9 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 }
                 if (work->emitter != NULL && step < 5) {
                     level = (step << 12) >> 2;
-                    work->emitter->alpha = 0x1000 - level;
+                    work->emitter->alpha = ONE - level;
                     if (work->emitter != NULL) {
-                        work->emitter->scale = level * 2 + 0x1000;
+                        work->emitter->scale = level * 2 + ONE;
                     }
                     if (step != 4) {
                         goto skip;
@@ -690,7 +690,7 @@ s32 btlfx_opDrawOnUnit(s32 mode, Unk800E57B0 *work, Unk800F78A4 *env, s32 *entry
         }
         switch (work->kind) {
         case BTLFX_DRAWON_PARTICLES:
-            btlfx_drawParticles(work->data, &work->pos, &rot, work->scale, work->frame, 1, 0x1000, work->offX, work->offY);
+            btlfx_drawParticles(work->data, &work->pos, &rot, work->scale, work->frame, 1, ONE, work->offX, work->offY);
             break;
         case BTLFX_DRAWON_QUADS:
             btlfx_drawAnimQuads(work->data, &work->pos, &rot, work->scale, work->frame, 1, 0x1000);
@@ -1001,7 +1001,7 @@ void btlfx_sampleGradient(u8 *p, CVECTOR *out, s32 x) {
     }
     val = x - ((u16 *)p)[3];
     val = (val << 12) / ((u16 *)p)[2];
-    LoadAverageCol(p, p + 8, 0x1000 - val, val, (u8 *)out);
+    LoadAverageCol(p, p + 8, ONE - val, val, (u8 *)out);
 }
 
 void btlfx_drawScrollMove(s32 scroll, s32 dstX, s32 dstY, s32 width, s32 height, s32 srcX, s32 srcY) {
@@ -1077,7 +1077,7 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
     cy = centerY;
     SetGeomOffset(centerX, centerY);
     math_rotMatrixYXZ(rot, &mat);
-    scale->vz = 0x1000;
+    scale->vz = ONE;
     ScaleMatrix(&mat, scale);
     mat.t[1] = 0;
     mat.t[0] = 0;
@@ -1115,7 +1115,7 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
                 }
                 gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
                 gte_ldxy0(&vert[2]);
-                if (otz < 0x1000) {
+                if (otz < OT_LEN) {
                     len = 0x09000000;
                     addPrimLen(&g_btlfxEnv->ot[otz], poly, len);
                 }
@@ -1422,7 +1422,7 @@ void btlfx_turnUnitToward(s32 unitId, s16 *targetPos, s16 *startRot, s32 axes, s
     if (frame == 0 || startRot == NULL) {
         if (startRot == NULL) {
             startRot = curRot.h;
-            ratio = 0x1000;
+            ratio = ONE;
         }
         btlfx_getUnitRot(unitId, startRot);
     }
@@ -1445,7 +1445,7 @@ void btlfx_turnUnitToward(s32 unitId, s16 *targetPos, s16 *startRot, s32 axes, s
         rot.h[1] = 0;
     }
     rot.h[2] = roll;
-    btlfx_turnToward(startRot, rot.h, 0x1000 - ratio);
+    btlfx_turnToward(startRot, rot.h, ONE - ratio);
     btlfx_setUnitRot(unitId, rot.h);
 }
 
@@ -1453,9 +1453,9 @@ void btlfx_getUnitScale(s32 unitId, VECTOR *out) {
     BtlUnit *unit = btl_getUnit(unitId);
     BtlModel *model = unit->model;
     if (!(model->flags & BTL_MODEL_SCALED)) {
-        out->vz = 0x1000;
-        out->vy = 0x1000;
-        out->vx = 0x1000;
+        out->vz = ONE;
+        out->vy = ONE;
+        out->vx = ONE;
     } else {
         out->vx = model->scaleX;
         out->vy = unit->model->scaleY;
@@ -1466,7 +1466,7 @@ void btlfx_getUnitScale(s32 unitId, VECTOR *out) {
 void btlfx_setUnitScale(s32 unitId, s32 *scale) {
     BtlUnit *unit = btl_getUnit(unitId);
     if (btl_isModelPart(unit) == 0) {
-        if (scale[0] == 0x1000 && scale[1] == scale[0] && scale[2] == scale[1]) {
+        if (scale[0] == ONE && scale[1] == scale[0] && scale[2] == scale[1]) {
             unit->model->flags &= ~BTL_MODEL_SCALED;
         } else {
             unit->model->flags |= BTL_MODEL_SCALED;
@@ -1837,7 +1837,7 @@ void btlfx_setUnitTexAnim(s32 unitId, s32 mode, s32 second) {
     case 0:
         ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].pos = 0;
-        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].lastFrame = 0x1000;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].lastFrame = TEXANIM_FORCE_UPLOAD;
         break;
     case 1:
         ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
@@ -1845,7 +1845,7 @@ void btlfx_setUnitTexAnim(s32 unitId, s32 mode, s32 second) {
     case 2:
         ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].flags |= BTL_TEXANIM_PLAY;
         ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].pos = 0;
-        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].lastFrame = 0x1000;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].lastFrame = TEXANIM_FORCE_UPLOAD;
         break;
     }
 }

@@ -560,8 +560,8 @@ s32 btlfx_moveUnitLinear(s32 unitId, s16 *dest, s32 frame, s32 frames, s16 *from
         }
     }
     t = ((frame + 1) << 12) / frames;
-    if (t > 0x1000) {
-        t = 0x1000;
+    if (t > ONE) {
+        t = ONE;
     }
     btlfx_lerpVec(from, dest, t, pos);
     btlfx_setUnitPos(BTLFX_UNIT_CASTER, pos);

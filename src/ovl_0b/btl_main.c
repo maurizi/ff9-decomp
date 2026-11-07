@@ -1558,17 +1558,17 @@ u8 *btl_drawShadow(BtlShadow *shadows, s32 slot, s32 groundY, s32 bones, u8 *pri
     gte_stir(mtx.t);
     gte_SetRotMatrix(&mtx);
     gte_SetTransMatrix(&mtx);
-    SHADOW_PT(-0x1000, 0x1000);
+    SHADOW_PT(-ONE, ONE);
     gte_stsxy(&SHADOW_QUAD(0)->x0);
     gte_stsz(&z[0]);
-    SHADOW_PT(0, 0x1000);
+    SHADOW_PT(0, ONE);
     gte_stsxy(&SHADOW_QUAD(0)->x1);
     gte_stsxy(&SHADOW_QUAD(1)->x0);
     gte_stsz(&z[1]);
-    SHADOW_PT(0x1000, 0x1000);
+    SHADOW_PT(ONE, ONE);
     gte_stsxy(&SHADOW_QUAD(1)->x1);
     gte_stsz(&z[2]);
-    SHADOW_PT(-0x1000, 0);
+    SHADOW_PT(-ONE, 0);
     gte_stsxy(&SHADOW_QUAD(0)->x2);
     gte_stsxy(&SHADOW_QUAD(2)->x0);
     gte_stsz(&z[3]);
@@ -1581,18 +1581,18 @@ u8 *btl_drawShadow(BtlShadow *shadows, s32 slot, s32 groundY, s32 bones, u8 *pri
     if (z[4] == 0) {
         return prim;
     }
-    SHADOW_PT(0x1000, 0);
+    SHADOW_PT(ONE, 0);
     gte_stsxy(&SHADOW_QUAD(1)->x3);
     gte_stsxy(&SHADOW_QUAD(3)->x1);
     gte_stsz(&z[5]);
-    SHADOW_PT(-0x1000, -0x1000);
+    SHADOW_PT(-ONE, -ONE);
     gte_stsxy(&SHADOW_QUAD(2)->x2);
     gte_stsz(&z[6]);
-    SHADOW_PT(0, -0x1000);
+    SHADOW_PT(0, -ONE);
     gte_stsxy(&SHADOW_QUAD(2)->x3);
     gte_stsxy(&SHADOW_QUAD(3)->x2);
     gte_stsz(&z[7]);
-    SHADOW_PT(0x1000, -0x1000);
+    SHADOW_PT(ONE, -ONE);
     gte_stsxy(&SHADOW_QUAD(3)->x3);
     gte_stsz(&z[8]);
 
@@ -1669,7 +1669,7 @@ void btl_calcShadowMatrix(Unk800AD4E4 *shadow, BtlObj *obj, MATRIX *out, s32 gro
         boneMtx.t[1] = 0;
         boneMtx.t[0] = 0;
         downVec.vx = 0;
-        downVec.vy = -0x1000;
+        downVec.vy = -ONE;
         downVec.vz = 0;
         gte_SetRotMatrix(&boneMtx);
         gte_SetTransMatrix(&boneMtx);
@@ -1690,13 +1690,13 @@ void btl_calcShadowMatrix(Unk800AD4E4 *shadow, BtlObj *obj, MATRIX *out, s32 gro
         if (dir.vx == 0 && dir.vy == 0 && dir.vz == 0) {
             fwd.vx = 0;
             fwd.vy = 0;
-            fwd.vz = 0x1000;
+            fwd.vz = ONE;
         } else {
             dir.vy = 0;
             VectorNormal(&dir, &fwd);
         }
     }
-    up.vy = 0x1000;
+    up.vy = ONE;
     up.vx = 0;
     up.vz = 0;
     gte_ldopv1(&up);

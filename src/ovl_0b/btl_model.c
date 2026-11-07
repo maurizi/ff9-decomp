@@ -149,7 +149,7 @@ void btl_updateTexAnims(TexAnimSet *set) {
                 }
                 pos += anim->speed;
             } else {
-                pos += 0x1000;
+                pos += ONE;
             }
             if ((pos >> 12) < anim->frameCount) {
                 anim->pos = pos;

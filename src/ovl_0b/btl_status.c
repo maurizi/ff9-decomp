@@ -251,7 +251,7 @@ s32 btl_removeStatus(BtlUnit *unit, u32 mask) {
         if ((s32)model->motion == a4[BTL_MOTION_KO] || (s32)model->motion == a4[8]) {
             PSX_NULLABLE(model->texAnims)[2].flags |= BTL_TEXANIM_PLAY;
             PSX_NULLABLE(unit->model->texAnims)[2].pos = 0;
-            PSX_NULLABLE(unit->model->texAnims)[2].lastFrame = 0x1000;
+            PSX_NULLABLE(unit->model->texAnims)[2].lastFrame = TEXANIM_FORCE_UPLOAD;
             unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_GET_UP];
             unit->obj->frame = 0;
         }

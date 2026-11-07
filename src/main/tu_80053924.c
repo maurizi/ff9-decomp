@@ -89,8 +89,8 @@ s32 swirl_update(s16 startX, s16 startY) {
         }
         if (g_swirlVariant) {
             wobble = math_sin(g_swirlFrame * 8);
-            x += wobble * (160 - x) / 4096;
-            y += wobble * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
+            x += wobble * (160 - x) / ONE;
+            y += wobble * (g_gameState->drawEnv->clip.h / 2 - y) / ONE;
         }
         g_swirlPkt = swirl_buildMesh(g_swirlPkt, x, y);
         i = g_gameState->gameData->drawBuf;
@@ -107,7 +107,7 @@ s32 swirl_update(s16 startX, s16 startY) {
         if (g_swirlFrame >= g_swirlParams->flashStart) {
             swirl_drawFlash(x, y);
             g_swirlFlash += g_swirlParams->flashStep;
-            if ((s16)g_swirlFlash >= 0x1000) {
+            if ((s16)g_swirlFlash >= ONE) {
                 g_swirlFlash = 0xFFF;
             }
         }
@@ -216,15 +216,15 @@ u32 *swirl_buildMesh(u32 *work, s32 x, s32 y) {
     for (i = 0; i < 5; i++) {
         t = math_cos(i << 8);
         pts = g_swirlColumns;
-        pts[i].vx = x - (x * t) / 4096;
-        pts[8 - i].vx = x + (dx * t) / 4096;
-        pts[i].vy = y - (y * t) / 4096;
-        pts[8 - i].vy = y + (dy * t) / 4096;
+        pts[i].vx = x - (x * t) / ONE;
+        pts[8 - i].vx = x + (dx * t) / ONE;
+        pts[i].vy = y - (y * t) / ONE;
+        pts[8 - i].vy = y + (dy * t) / ONE;
     }
     for (i = 1; i < 8; i++) {
-        ex = ((pts[i].vx - xs[i]) * g_swirlZoom) / 4096;
+        ex = ((pts[i].vx - xs[i]) * g_swirlZoom) / ONE;
         py = ys;
-        ey = ((pts[i].vy - ys[i]) * g_swirlZoom) / 4096;
+        ey = ((pts[i].vy - ys[i]) * g_swirlZoom) / ONE;
         pts[i].vx = xs[i] + ex;
         pts[i].vy = ys[i] + ey;
     }

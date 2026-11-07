@@ -1474,7 +1474,7 @@ s32 evt_execInstr(void) {
         if (mdl != NULL) {
             PSX_NULLABLE(mdl->texAnims)->unk0[operand1].flags |= TEXANIM_ACTIVE;
             PSX_NULLABLE(mdl->texAnims)->unk0[operand1].pos = 0;
-            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].lastFrame = 0x1000;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].lastFrame = TEXANIM_FORCE_UPLOAD;
         }
         return 0;
     case EVT_OP_TEX_ANIM_PLAY_ONCE:
@@ -1484,7 +1484,7 @@ s32 evt_execInstr(void) {
         if (mdl != NULL) {
             PSX_NULLABLE(mdl->texAnims)->unk0[operand1].flags |= TEXANIM_ACTIVE | TEXANIM_ONESHOT;
             PSX_NULLABLE(mdl->texAnims)->unk0[operand1].pos = 0;
-            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].lastFrame = 0x1000;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].lastFrame = TEXANIM_FORCE_UPLOAD;
         }
         return 0;
     case EVT_OP_TEX_ANIM_STOP:

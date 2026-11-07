@@ -4943,8 +4943,10 @@ typedef struct {
     u8 pad5[0xC - 5];
     s32 pos; /* TexAnim.pos: frame position (20.12) */
     u8 pad10[0x12 - 0x10];
-    s16 lastFrame; /* TexAnim.lastFrame: 0x1000 forces the next frame's upload */
+    s16 lastFrame; /* TexAnim.lastFrame: TEXANIM_FORCE_UPLOAD forces the next frame's upload */
 } Unk8004AFF0Sub; /* 0x14 */
+#define TEXANIM_FORCE_UPLOAD 0x1000 /* TexAnim.lastFrame: a frame no animation reaches, so the next update uploads its
+                                     * frame (texture animation started or restarted: event ops, btl_attr, hi_model) */
 /* TexAnim.flags (ovl_0a fldmdl_updateTexAnims; set by EVT_OP_TEX_ANIM_PLAY and ops C1/C2) */
 #define TEXANIM_ACTIVE 0x1
 #define TEXANIM_ONESHOT 0x2 /* cleared with TEXANIM_ACTIVE at the end */
