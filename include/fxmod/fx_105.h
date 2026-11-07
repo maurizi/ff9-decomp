@@ -75,6 +75,7 @@
 #define FX_ODIN_MOTION_2_FRAME     0x7F  /* summon motion 2 */
 #define FX_ODIN_SHOT0_END_FRAME    0x93  /* the first shot ends: emitters stop, Odin hides, summon motion 3 */
 #define FX_ODIN_SHOT1_FRAME        0xA7  /* camera shot 1 (fxm_camKeyAdd); Odin shows again from 0x9C */
+#define FX_ODIN_SHOW_FRAME         0x9C  /* Odin shows again (motion frame held at 0) until SHOT1_FRAME */
 #define FX_ODIN_DEBRIS_RINGS_FRAME 0xAB  /* DEBRIS_RINGS at camera point 2 */
 #define FX_ODIN_CUT_FRAME          0xD8  /* timer14: black screen, then the cut models */
 #define FX_ODIN_CUT_FRAMES         0x21
@@ -99,6 +100,45 @@
 #define FX_ODIN_WORLD_RIBBON_CLUT  0x3DC0 /* fx_105_drawWorldRibbon's CLUT at (0x0, 0xF7) */
 #define FX_ODIN_CAM_RIBBON_POINTS  0x11  /* fx_105_camRibbonPts */
 #define FX_ODIN_WORLD_RIBBON_POINTS 0x40 /* fx_105_worldRibbonPts */
+/* deep pass: inside the countdowns (values of the count, which runs down from the length written into it) */
+#define FX_ODIN_CLEAR_WORDS        16    /* init clears this many words from work->visible0 (visible0, timer4 .. timer30, pad34) */
+#define FX_ODIN_MOON_FADE_IN_FRAMES 0xF  /* timer8: MOON's emitter alpha ramps up over its first frames */
+#define FX_ODIN_NIGHT_FADE_OUT_FRAMES 8  /* timerC: the night band fades (additive, at the front) over its last frames */
+#define FX_ODIN_NIGHT_BLUE         0x30  /* the night band's blue at full brightness (bottom edge; the top is black) */
+#define FX_ODIN_STARS_RIGHT        0x1E0 /* the stars start at x 0xC0 .. this and re-enter here after drifting off */
+#define FX_ODIN_STARS_BOTTOM       0xDA  /* their y range (the battle screen's height) */
+#define FX_ODIN_STARS_RISE_START   0x31  /* timer30 from this count */
+#define FX_ODIN_STARS_RISE_END     0x29  /* down to this one: the stars move up 10 px a frame */
+#define FX_ODIN_CUT_MORPH_FRAMES   0x10  /* timer14 (CUT_FRAMES): black screen while the count is above MORPH + 1; at
+                                          * MORPH + 1 WHITE_FOLD_0, at MORPH WHITE_FOLD_1, then WHITE_FOLD_2 morphs into
+                                          * WHITE_FOLD_3 over this many frames, */
+#define FX_ODIN_CUT_FADE_FRAMES    8     /* fading out over the last this many */
+#define FX_ODIN_BLADE_BONE         0x27  /* timer4: the blade ribbon runs along this summon bone, */
+#define FX_ODIN_BLADE_BASE         0x80  /* from this far along it */
+#define FX_ODIN_BLADE_TIP          0x384 /* to this far */
+#define FX_ODIN_BLADE_FADE_FRAMES  4     /* and fades over the last frames */
+#define FX_ODIN_FLASH_SWEEP_FRAMES 8     /* timer1C (FLASH_FRAMES): the white band's right edge brightens over the first
+                                          * this many frames (the left over all of them: the flash sweeps right to left) */
+#define FX_ODIN_DIM_SWEEP_FRAMES   0x10  /* timer20 (DIM_FRAMES): the dimming band's left edge darkens over the first
+                                          * this many frames (the right over all of them) */
+#define FX_ODIN_DIM_LEVEL          0x7F  /* the dimming band's full level (additive grey) */
+#define FX_ODIN_LIGHT_BAND_Y       0xA0  /* timer18: the band over the screen's bottom from this line (subtractive white
+                                          * at the bottom edge: it darkens) */
+#define FX_ODIN_WIND_FADE_FRAMES   4     /* timer24: the wind streaks fade over the last frames */
+#define FX_ODIN_SMOKE_FADE_FRAMES  0x10  /* timer2C: the world ribbons fade over the last frames, shrinking from all their points */
+#define FX_ODIN_CAM_RIBBON_GROW    8     /* timer28: on its first frame the camera ribbon is (count) * this points long; then
+                                          * it fades over CAM_RIBBON_FRAMES - 2 */
+#define FX_ODIN_CAM_KEY_TARGETS    3     /* fxm_camKeyUpdate: camera slots a key track writes (BTLFX_CAM_SLOT nibbles) */
+#define FX_ODIN_CAM_EXT_SLOT       10    /* slots from this one address the module's extra points instead of env->camera's */
+/* texture boxes in the wind / ribbon pages */
+#define FX_ODIN_WIND_U_MAX         0x4F  /* wind streak: u 0 .. this, */
+#define FX_ODIN_WIND_V_MIN         0xA0  /* v this .. */
+#define FX_ODIN_WIND_V_MAX         0xEF
+#define FX_ODIN_CAM_RIBBON_U_MIN   0xC0  /* camera ribbon: u this .. 0xFF, v along its length */
+#define FX_ODIN_WORLD_RIBBON_U_MAX 0xBF  /* world ribbon: u this .. 0 along its length, */
+#define FX_ODIN_WORLD_RIBBON_V_MIN 0xA0  /* v this .. */
+#define FX_ODIN_WORLD_RIBBON_V_MAX 0xDF
+#define FX_ODIN_WORLD_RIBBON_HALF_WIDTH 0xC0 /* world ribbon: edge offsets either side of each path point */
 
 extern Unk800F78A4 *fx_105_env;
 typedef struct {
