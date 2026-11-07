@@ -14,6 +14,19 @@
 #define FX_WATER_GUN_WATER_TRAIL_2 0x6 /* emitter: water strip trail */
 #define FX_WATER_GUN_BUBBLES       0x7 /* emitter: bubble rings */
 
+/* fx_0a7 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_WATER_GUN_TRAIL_REACH  0x12C /* FX_WATER_GUN_WATER_TRAIL_2 starts this far from the unit's bone towards the target */
+#define FX_WATER_GUN_SPRAY_REACH  0xC8  /* FX_WATER_GUN_SPRAY_ARC starts this far */
+#define FX_WATER_GUN_HIT_FRAME    12    /* WATER_TRAIL and SPRAY_ARC_2 start at the target (and are aimed from then on) */
+#define FX_WATER_GUN_BUBBLES_FRAME 30   /* FX_WATER_GUN_BUBBLES start */
+#define FX_WATER_GUN_FRAMES       0x32  /* op80's length (the op ends) */
+#define FX_WATER_GUN_WATER_TRAIL_2_TRAIL_SLOTS  0xB  /* FX_WATER_GUN_WATER_TRAIL_2's trail buffer fx_0a7_trails: slots of */
+#define FX_WATER_GUN_WATER_TRAIL_2_TRAIL_STRIDE 0x40 /* this many bytes */
+#define FX_WATER_GUN_SPRAY_ARC_TRAIL_SLOTS      0x2D /* FX_WATER_GUN_SPRAY_ARC's trail buffer fx_0a7_trails2: slots of */
+#define FX_WATER_GUN_SPRAY_ARC_TRAIL_STRIDE     0x18 /* this many bytes */
+#define FX_WATER_GUN_WATER_TRAIL_TRAIL_SLOTS    0x51 /* FX_WATER_GUN_WATER_TRAIL's trail buffer fx_0a7_trails3: slots of */
+#define FX_WATER_GUN_WATER_TRAIL_TRAIL_STRIDE   0x40 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

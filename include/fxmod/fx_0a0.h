@@ -14,6 +14,16 @@
 #define FX_WEB_STRAND_LINE      0x6 /* table: strand line data (fxm_drawTrailLine) */
 #define FX_WEB_STRANDS          0x7 /* trail: dark strip, the white web strands wrapping the target (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
+/* fx_0a0 choreography (docs/fxdata.md, "Choreography literals"): op80's states and lengths, the strand line. */
+#define FX_WEB_STATE_WRAP   0    /* the strands wrap the target, the puffs follow the unit's bone */
+#define FX_WEB_STATE_FADE   1    /* the strands fade out (fx_0a0_trailAlpha), then the op ends */
+#define FX_WEB_WRAP_FRAMES  0x29 /* FX_WEB_STATE_WRAP's length */
+#define FX_WEB_FADE_FRAMES  8    /* FX_WEB_STATE_FADE's length */
+#define FX_WEB_LINE_FRAMES  0x28 /* the strand line from the target to the unit's bone shows (fading) for this many frames */
+#define FX_WEB_LINE_WIDTH   0x40 /* its width (fxm_drawTrailLine) */
+#define FX_WEB_STRANDS_TRAIL_SLOTS  0x10 /* FX_WEB_CALLBACK_EMITTER's trail buffer fx_0a0_trails (the strands): slots of */
+#define FX_WEB_STRANDS_TRAIL_STRIDE 0xAC /* this many bytes */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

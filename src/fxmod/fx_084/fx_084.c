@@ -7,7 +7,7 @@ static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s
 
     ex->btlfx_lerpVec((s16 *)&fx_084_pathFrom, (s16 *)&fx_084_pathTo, t, (s16 *)pos);
     arcAng = t >> 1;
-    pos->vy -= (ex->math_sin(arcAng) * 0x180) >> 12;
+    pos->vy -= (ex->math_sin(arcAng) * FX_DRAIN_ORB_ARC) >> 12;
     switch (pt->slot) {
     case 1:
         pos->vy -= (ex->math_sin(arcAng) << 9) >> 12;
@@ -19,7 +19,7 @@ static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
-    if (frame >= 0x10) {
+    if (frame >= FX_DRAIN_ORB_FRAMES) {
         return -1;
     }
     return 0;
@@ -31,10 +31,10 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx084Work);
     } else if (mode == 1) {
         fx_084_env = env;
-        work->state0 = 0;
+        work->state0 = FX_DRAIN_STATE_START;
         fx_084_task = entry;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         BTLFX_COPY_SVEC(&fx_084_pathFrom, &work->pos4);
@@ -47,8 +47,8 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         BTLFX_COPY_SVEC(&fx_084_pathTo, &work->posC);
         switch (work->state0) {
-        case 0:
-            work->state0 = 1;
+        case FX_DRAIN_STATE_START:
+            work->state0 = FX_DRAIN_STATE_ORB;
             entry->frame = -1;
             work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_PINK_ORB), (s32)&fx_084_pathFrom);
             if (work->emit1C != NULL) {
@@ -58,9 +58,9 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit1C->file->m.module.update = fx_084_op80ParticleMotion;
             }
             break;
-        case 1:
-            if (frame >= 0x10) {
-                work->state0 = 2;
+        case FX_DRAIN_STATE_ORB:
+            if (frame >= FX_DRAIN_ORB_FRAMES) {
+                work->state0 = FX_DRAIN_STATE_RING;
                 entry->frame = -1;
                 work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_RED_RING), (s32)&work->posC);
                 if (work->emit20 != NULL) {
@@ -69,7 +69,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos4, (s16 *)&work->aim14);
             }
             break;
-        case 2:
+        case FX_DRAIN_STATE_RING:
             if (work->emit20 != NULL) {
                 if (work->emit20->state == BTLFX_EMIT_DONE) {
                     work->emit20 = NULL;
@@ -80,13 +80,13 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit20->rot.vz = work->aim14.vz;
                 }
             }
-            if (frame == 6) {
+            if (frame == FX_DRAIN_SPECKS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_PINK_SPECKS), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }
             }
-            if (frame >= 0x2C) {
+            if (frame >= FX_DRAIN_RING_FRAMES) {
                 return 1;
             }
             break;

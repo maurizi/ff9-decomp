@@ -17,6 +17,13 @@
 #define FX_REIS_WIND_GREEN_WISP      0xF /* emitter: green wisp puffs */
 #define FX_REIS_WIND_GREEN_CRESCENT  0x10 /* emitter: green crescents */
 
+/* fx_0a8 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_REIS_WIND_STREAK_FRAMES   0x28 /* op80 (light streak and sparkle circle at the unit)'s length */
+#define FX_REIS_WIND_SPARKLES_FRAME  8    /* op81: SPARKLES, GREEN_WISP and GREEN_CRESCENT start */
+#define FX_REIS_WIND_FRAMES          0x28 /* op81's length (the op ends) */
+#define FX_REIS_WIND_WIND_TRAIL_TRAIL_SLOTS  6    /* FX_REIS_WIND_WIND_TRAIL's trail buffer fx_0a8_trails: slots of */
+#define FX_REIS_WIND_WIND_TRAIL_TRAIL_STRIDE 0x60 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

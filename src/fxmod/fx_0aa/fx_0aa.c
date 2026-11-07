@@ -24,12 +24,12 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0aaWork80);
     } else if (mode == 1) {
         fx_0aa_env = env;
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_SNOWSTORM_STREAM_FRAME) {
             ex->btlfx_getUnitBonePos(0x10, 0x12, (u16 *)&work->pos10);
             ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->pos18);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_BURST), (s32)&work->pos10);
@@ -38,13 +38,13 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_STREAM_2), (s32)&fx_0aa_emitStartPos1);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_0aa_trails;
-                work->emit8->trailSlots = 0xC;
-                work->emit8->trailStride = 0x70;
+                work->emit8->trailSlots = FX_SNOWSTORM_SNOW_STREAM_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_SNOWSTORM_SNOW_STREAM_TRAIL_STRIDE;
             }
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_0aa_trails2;
-                work->emitC->trailSlots = 0xC;
-                work->emitC->trailStride = 0x70;
+                work->emitC->trailSlots = FX_SNOWSTORM_SNOW_STREAM_TRAIL_SLOTS;
+                work->emitC->trailStride = FX_SNOWSTORM_SNOW_STREAM_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->file->m.module.update = fx_0aa_op80ParticleMotion0;
@@ -67,7 +67,7 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_0aa_pathTo0.vx = fx_0aa_pathFrom0.vx;
             fx_0aa_pathTo1.vx = fx_0aa_pathFrom1.vx;
         }
-        return frame >= 0x1E;
+        return frame >= FX_SNOWSTORM_BLOW_FRAMES;
     }
     return 0;
 }
@@ -77,7 +77,7 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx0aaWork81);
     } else if (mode == 1) {
         work->pos14.vx = env->targets->centerX;
         work->pos14.vy = env->targets->centerY;
@@ -89,21 +89,21 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_FROST_RINGS), (s32)&work->pos14);
             break;
-        case 4:
+        case FX_SNOWSTORM_MIST_FRAME:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_MIST), (s32)&work->pos14);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_TRAIL), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0aa_trails3;
-                work->emit0->trailSlots = 8;
-                work->emit0->trailStride = 0x110;
+                work->emit0->trailSlots = FX_SNOWSTORM_SNOW_TRAIL_TRAIL_SLOTS;
+                work->emit0->trailStride = FX_SNOWSTORM_SNOW_TRAIL_TRAIL_STRIDE;
             }
             break;
-        case 6:
+        case FX_SNOWSTORM_FLAKES_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_ICE_FLAKES), (s32)&work->pos14);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_FLAKES), (s32)&work->pos14);
             break;
         }
-        return frame >= 0x28;
+        return frame >= FX_SNOWSTORM_FRAMES;
     }
     return 0;
 }

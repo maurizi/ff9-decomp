@@ -18,6 +18,17 @@
 #define FX_SNOWSTORM_FLAKES        0x8 /* emitter: snowflake sprites */
 #define FX_SNOWSTORM_SNOW_TRAIL    0x9 /* emitter: snow streak trail spiralling */
 
+/* fx_0aa choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_SNOWSTORM_STREAM_FRAME 4    /* op80: SNOW_BURST, _2 and the snow streams from the unit's two bones start */
+#define FX_SNOWSTORM_BLOW_FRAMES  0x1E /* op80's length */
+#define FX_SNOWSTORM_MIST_FRAME   4    /* op81: FX_SNOWSTORM_MIST and FX_SNOWSTORM_SNOW_TRAIL start (FROST_RINGS at 0) */
+#define FX_SNOWSTORM_FLAKES_FRAME 6    /* op81: FX_SNOWSTORM_ICE_FLAKES and FX_SNOWSTORM_FLAKES start */
+#define FX_SNOWSTORM_FRAMES       0x28 /* op81's length (the op ends) */
+#define FX_SNOWSTORM_SNOW_STREAM_TRAIL_SLOTS  0xC   /* SNOW_STREAM and _2's trail buffers fx_0aa_trails, _trails2: slots of */
+#define FX_SNOWSTORM_SNOW_STREAM_TRAIL_STRIDE 0x70  /* this many bytes */
+#define FX_SNOWSTORM_SNOW_TRAIL_TRAIL_SLOTS   8     /* FX_SNOWSTORM_SNOW_TRAIL's trail buffer fx_0aa_trails3: slots of */
+#define FX_SNOWSTORM_SNOW_TRAIL_TRAIL_STRIDE  0x110 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

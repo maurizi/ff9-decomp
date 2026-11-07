@@ -13,18 +13,18 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        *args = 0x38;
+        *args = sizeof(Fx082Work80);
     } else if (mode == 1) {
         fx_082_env = env;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos18);
         BTLFX_COPY_SVEC(&work->pos8, &work->pos18);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot20);
-        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot20, 0x226, (s16 *)&work->pos18);
-        work->state0 = 0;
+        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot20, FX_MAGIC_HAMMER_REACH, (s16 *)&work->pos18);
+        work->state0 = FX_MAGIC_HAMMER_STATE_GROW;
         work->unk4 = 0;
-        work->pos18.vy -= 0x145;
+        work->pos18.vy -= FX_MAGIC_HAMMER_HEIGHT;
         BTLFX_COPY_SVEC(&work->rot28, &work->rot20);
-        ex->btlfx_initEffModels(fx_082_effModels, 2);
+        ex->btlfx_initEffModels(fx_082_effModels, FX_MAGIC_HAMMER_MODEL_COUNT);
         work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_HAMMER), 0);
         work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_HAMMER), 0);
         env->camera->points[0].vx = work->pos18.vx;
@@ -34,8 +34,8 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         bright = morph = sc = 0;
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 7;
+        case FX_MAGIC_HAMMER_STATE_GROW:
+            t = (frame << 12) / FX_MAGIC_HAMMER_GROW_FRAMES;
             if (frame == 0) {
                 work->pos10.vx = work->pos18.vx;
                 work->pos10.vy = work->pos18.vy;
@@ -52,26 +52,26 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             work->rot28.vx = -0x200;
-            sc = (t * 0xC00) >> 12;
+            sc = (t * FX_MAGIC_HAMMER_SCALE) >> 12;
             bright = 0x1000;
-            if (frame >= 7) {
-                work->state0 = 1;
+            if (frame >= FX_MAGIC_HAMMER_GROW_FRAMES) {
+                work->state0 = FX_MAGIC_HAMMER_STATE_SWING;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_MAGIC_HAMMER_STATE_SWING:
             t = frame << 10;
             work->rot28.vx = (((0x1000 - ex->math_cos(t >> 2)) * 0x600) >> 12) - 0x200;
-            sc = 0xC00;
+            sc = FX_MAGIC_HAMMER_SCALE;
             bright = 0x1000;
-            if (frame == 3) {
+            if (frame == FX_MAGIC_HAMMER_RINGS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_PASTEL_RINGS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
             }
-            if (frame >= 4) {
-                work->state0 = 2;
+            if (frame >= FX_MAGIC_HAMMER_SWING_FRAMES) {
+                work->state0 = FX_MAGIC_HAMMER_STATE_HIT;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_VIOLET_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
@@ -83,11 +83,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 2:
+        case FX_MAGIC_HAMMER_STATE_HIT:
             morph = 0x1000;
-            sc = 0xC00;
+            sc = FX_MAGIC_HAMMER_SCALE;
             bright = 0x1000;
-            t = (frame << 12) / 6;
+            t = (frame << 12) / FX_MAGIC_HAMMER_HIT_FRAMES;
             work->rot28.vx = 0x400 - ((frame & 1) * 2 - 1) * (ex->math_cos(t >> 2) >> 7);
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_RAINBOW_STREAK), (s32)&work->pos8);
@@ -99,16 +99,16 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x20;
                 }
             }
-            if (frame >= 6) {
-                work->state0 = 3;
+            if (frame >= FX_MAGIC_HAMMER_HIT_FRAMES) {
+                work->state0 = FX_MAGIC_HAMMER_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 3:
-            sc = 0xC00;
+        case FX_MAGIC_HAMMER_STATE_FADE:
+            sc = FX_MAGIC_HAMMER_SCALE;
             t = frame << 9;
             bright = ex->math_cos(t >> 2);
-            if (frame >= 8) {
+            if (frame >= FX_MAGIC_HAMMER_FADE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -141,7 +141,7 @@ s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 amp;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx082Work81);
     } else if (mode != 1) {
         frame = entry->frame;
         scale[0] = work->scale0[0];
@@ -156,7 +156,7 @@ s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale[0] += amp;
         scale[2] += amp;
         ex->btlfx_setUnitScale(0, scale);
-        if (frame >= 0x10) {
+        if (frame >= FX_MAGIC_HAMMER_SQUASH_FRAMES) {
             ex->btlfx_setUnitScale(0, work->scale0);
             return 1;
         }

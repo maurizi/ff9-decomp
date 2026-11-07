@@ -5,7 +5,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x58;
+        *args = sizeof(Fx0a7Work);
     } else if (mode == 1) {
         fx_0a7_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos18);
@@ -14,19 +14,19 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos30);
         ex->btlfx_aimAngles((s16 *)&work->pos30, (s16 *)&work->pos20, (s16 *)&work->aim48);
         ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos30, (s16 *)&work->aim50);
-        ex->btlfx_pointAhead((s16 *)&work->pos30, (s16 *)&work->aim48, 0x12C, (s16 *)&work->pos38);
-        ex->btlfx_pointAhead((s16 *)&work->pos30, (s16 *)&work->aim48, 0xC8, (s16 *)&work->pos40);
+        ex->btlfx_pointAhead((s16 *)&work->pos30, (s16 *)&work->aim48, FX_WATER_GUN_TRAIL_REACH, (s16 *)&work->pos38);
+        ex->btlfx_pointAhead((s16 *)&work->pos30, (s16 *)&work->aim48, FX_WATER_GUN_SPRAY_REACH, (s16 *)&work->pos40);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_WATER_TRAIL_2), (s32)&work->pos38);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_SPRAY_ARC), (s32)&work->pos40);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_0a7_trails;
-            work->emit0->trailSlots = 0xB;
-            work->emit0->trailStride = 0x40;
+            work->emit0->trailSlots = FX_WATER_GUN_WATER_TRAIL_2_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_WATER_GUN_WATER_TRAIL_2_TRAIL_STRIDE;
         }
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_0a7_trails2;
-            work->emit4->trailSlots = 0x2D;
-            work->emit4->trailStride = 0x18;
+            work->emit4->trailSlots = FX_WATER_GUN_SPRAY_ARC_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_WATER_GUN_SPRAY_ARC_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
@@ -37,13 +37,13 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 12:
+        case FX_WATER_GUN_HIT_FRAME:
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_WATER_TRAIL), (s32)&work->pos20);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_SPRAY_ARC_2), (s32)&work->pos20);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_0a7_trails3;
-                work->emitC->trailSlots = 0x51;
-                work->emitC->trailStride = 0x40;
+                work->emitC->trailSlots = FX_WATER_GUN_WATER_TRAIL_TRAIL_SLOTS;
+                work->emitC->trailStride = FX_WATER_GUN_WATER_TRAIL_TRAIL_STRIDE;
             }
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -52,7 +52,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 30:
+        case FX_WATER_GUN_BUBBLES_FRAME:
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_BUBBLES), (s32)&work->pos28);
             break;
         }
@@ -76,7 +76,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = work->aim48.vz;
             }
         }
-        if (frame >= 0xC) {
+        if (frame >= FX_WATER_GUN_HIT_FRAME) {
             if (work->emitC != NULL) {
                 if (work->emitC->state == BTLFX_EMIT_DONE) {
                     work->emitC = NULL;
@@ -98,7 +98,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x32;
+        return frame >= FX_WATER_GUN_FRAMES;
     }
     return 0;
 }

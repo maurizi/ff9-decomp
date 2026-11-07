@@ -18,7 +18,7 @@ void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s3
     gte_strgb(&col0);
     gte_DpqColorFar_nst(c1, p);
     gte_strgb(&col1);
-    col0.cd = (abr == 0xFF) ? 0x50 : 0x52;
+    col0.cd = (abr == BTLFX_ABR_OPAQUE) ? GPU_LINE_G2 : GPU_LINE_G2 | GPU_ABE;
     gte_ldv3(a, b, a);
     gte_rtpt();
     *(u32 *)&prim->r0 = *(u32 *)&col0;
@@ -26,7 +26,7 @@ void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s3
     gte_stsxy01(&prim->x0, &prim->x1);
     gte_avsz3();
     gte_stszotz(&otz);
-    ex->btlfx_addPrimAbr(0x4000000, otz, prim, abr);
+    ex->btlfx_addPrimAbr(PRIM_TAG(LINE_G2), otz, prim, abr);
 }
 
 static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
@@ -61,11 +61,11 @@ static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
     }
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRANDS), (s32)pos, (s32 *)p->origin, frame, *scale, fx_0a0_trailAlpha, BTLFX_ABR_ADD,
                       (u8 *)trail, 2);
-    if (frame < 0x28) {
-        fade = ex->math_cos((frame << 10) / 40);
+    if (frame < FX_WEB_LINE_FRAMES) {
+        fade = ex->math_cos((frame << 10) / FX_WEB_LINE_FRAMES);
         col0.r = col0.g = col0.b = 0x80;
         col1.r = col1.g = col1.b = 0x31;
-        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_LINE), pos, &fx_0a0_bonePos, 0, fade, 1, 0x40);
+        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_LINE), pos, &fx_0a0_bonePos, 0, fade, BTLFX_ABR_ADD, FX_WEB_LINE_WIDTH);
     }
 }
 
@@ -75,10 +75,10 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx0a0Work);
     } else if (mode == 1) {
         fx_0a0_env = env;
-        work->state0 = 0;
+        work->state0 = FX_WEB_STATE_WRAP;
         fx_0a0_trailAlpha = 0x1000;
         fx_0a0_task = entry;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
@@ -91,8 +91,8 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->emit1C != NULL) {
             work->emit1C->trails = (s32)fx_0a0_trails;
-            work->emit1C->trailSlots = 0x10;
-            work->emit1C->trailStride = 0xAC;
+            work->emit1C->trailSlots = FX_WEB_STRANDS_TRAIL_SLOTS;
+            work->emit1C->trailStride = FX_WEB_STRANDS_TRAIL_STRIDE;
         }
         work->emit1C->elems->draw = fx_0a0_op80ElemDraw;
         work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WEB_WHITE_PUFFS), (s32)&work->posC);
@@ -104,20 +104,20 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
         BTLFX_COPY_SVEC(&fx_0a0_bonePos, &work->pos4);
         switch (work->state0) {
-        case 0:
+        case FX_WEB_STATE_WRAP:
             if (work->emit20 != NULL && work->emit20->state == BTLFX_EMIT_DONE) {
                 work->emit20 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->emit20, (s32)&work->pos4);
-            if (frame >= 0x29) {
-                work->state0 = 1;
+            if (frame >= FX_WEB_WRAP_FRAMES) {
+                work->state0 = FX_WEB_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = frame * 0x200;
+        case FX_WEB_STATE_FADE:
+            t = frame * (0x1000 / FX_WEB_FADE_FRAMES);
             fx_0a0_trailAlpha = 0x1000 - t;
-            if (frame >= 8) {
+            if (frame >= FX_WEB_FADE_FRAMES) {
                 ex->btlfx_stopEmitter(work->emit1C);
                 return 1;
             }

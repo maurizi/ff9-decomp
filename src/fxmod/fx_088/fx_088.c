@@ -5,7 +5,7 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx088Work80);
     } else if (mode == 1) {
         fx_088_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -13,8 +13,8 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_STREAKS), (s32)&work->pos10);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_088_trails;
-            work->emit0->trailSlots = 0x19;
-            work->emit0->trailStride = 0x30;
+            work->emit0->trailSlots = FX_SPARE_CHANGE_STREAKS_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_SPARE_CHANGE_STREAKS_TRAIL_STRIDE;
         }
         ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->aim18);
     } else {
@@ -29,13 +29,13 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->rot.vz = work->aim18.vz;
             }
         }
-        if (frame == 0xC) {
+        if (frame == FX_SPARE_CHANGE_COINS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_COINS), (s32)&env->targets->centerX);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x20;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_SPARE_CHANGE_FRAMES;
     }
     return 0;
 }
@@ -44,7 +44,7 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx088Work81);
     } else if (mode == 1) {
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
@@ -52,7 +52,7 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
-        return fxm_turnUnitBy(0x10, frame, 0xF, &work->pos8, &work->turn0) != 0;
+        return fxm_turnUnitBy(0x10, frame, FX_SPARE_CHANGE_TURN_FRAMES, &work->pos8, &work->turn0) != 0;
     }
     return 0;
 }

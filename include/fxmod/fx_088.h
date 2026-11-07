@@ -11,6 +11,13 @@
 #define FX_SPARE_CHANGE_STREAKS 0x7 /* emitter: violet-white light streak trails (same call site as fx_087 entry 0x6) */
 #define FX_SPARE_CHANGE_COINS   0x8 /* emitter: bronze coin sprites + white flashes (same call site as fx_087 entry 0x8) */
 
+/* fx_088 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_SPARE_CHANGE_COINS_FRAME 0xC  /* op80: FX_SPARE_CHANGE_COINS start */
+#define FX_SPARE_CHANGE_FRAMES      0x28 /* op80's length (the op ends) */
+#define FX_SPARE_CHANGE_TURN_FRAMES 0xF  /* op81: the unit turns by turn0 over this many frames (the op ends) */
+#define FX_SPARE_CHANGE_STREAKS_TRAIL_SLOTS  0x19 /* FX_SPARE_CHANGE_STREAKS' trail buffer fx_088_trails: slots of */
+#define FX_SPARE_CHANGE_STREAKS_TRAIL_STRIDE 0x30 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

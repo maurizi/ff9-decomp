@@ -15,6 +15,18 @@
 #define FX_AERIAL_SLASH_WIND_RINGS 0xE /* emitter: violet sparkle curtain ring + violet-white rings */
 #define FX_AERIAL_SLASH_DUST_RING 0xF /* emitter: ring textured with grey smoke */
 
+/* fx_08b choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_AERIAL_SLASH_GUST_REACH  0x708   /* the gust (WIND_RINGS, DUST_RING, BLUE_GUST) lands this far ahead of the unit */
+#define FX_AERIAL_SLASH_AIM_REACH   0x7D0   /* the crescents fly towards the point this far ahead */
+#define FX_AERIAL_SLASH_GUST_Y      (-0xC8) /* both at this height (y, up is negative) */
+#define FX_AERIAL_SLASH_BLADE_REACH 0x190   /* the crescents start this far along the unit's bones 5 and 0x22 */
+#define FX_AERIAL_SLASH_BLADE_DROP  0x32    /* and this much lower */
+#define FX_AERIAL_SLASH_GUST_FRAME  10      /* the gust starts, with a white screen flash on this and the next frame */
+#define FX_AERIAL_SLASH_FLASH       0x80    /* the flash's additive level per channel */
+#define FX_AERIAL_SLASH_GRID_FRAME  0xD     /* the screen grid distortion (btlfx_drawScreenGrid) runs from this frame */
+#define FX_AERIAL_SLASH_FRAMES      0x28    /* op80's length (the op ends) */
+#define FX_AERIAL_SLASH_DUST_FRAMES 0x28    /* op81 (FX_AERIAL_SLASH_DUST_CLOUD at one target)'s length */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -17,6 +17,23 @@
 #define FX_MAGIC_HAMMER_VIOLET_RING  0x7 /* emitter: white-violet gouraud rings */
 #define FX_MAGIC_HAMMER_CYAN_RING    0x8 /* emitter: white-cyan gouraud rings */
 
+/* fx_082 choreography (docs/fxdata.md, "Choreography literals"): op80's states and their lengths, the hammer's
+ * place and size; op81's squash. */
+#define FX_MAGIC_HAMMER_STATE_GROW  0 /* the hammer appears (grows) above the target, the smoke puffs */
+#define FX_MAGIC_HAMMER_STATE_SWING 1 /* it swings down */
+#define FX_MAGIC_HAMMER_STATE_HIT   2 /* it shakes on the hit: rainbow streak and stars */
+#define FX_MAGIC_HAMMER_STATE_FADE  3 /* it fades out, then the op ends */
+#define FX_MAGIC_HAMMER_GROW_FRAMES  7 /* FX_MAGIC_HAMMER_STATE_GROW's length (the (frame << 12) / N grow ramp) */
+#define FX_MAGIC_HAMMER_SWING_FRAMES 4 /* FX_MAGIC_HAMMER_STATE_SWING's length (the swing angle ramp is frame << 10) */
+#define FX_MAGIC_HAMMER_RINGS_FRAME  3 /* FX_MAGIC_HAMMER_STATE_SWING: FX_MAGIC_HAMMER_PASTEL_RINGS start; the violet / cyan rings at its end */
+#define FX_MAGIC_HAMMER_HIT_FRAMES   6 /* FX_MAGIC_HAMMER_STATE_HIT's length (the shake ramp (frame << 12) / N) */
+#define FX_MAGIC_HAMMER_FADE_FRAMES  8 /* FX_MAGIC_HAMMER_STATE_FADE's length (the fade ramp is frame << 9) */
+#define FX_MAGIC_HAMMER_SCALE   0xC00 /* the hammer's full scale (0x1000 = 1) */
+#define FX_MAGIC_HAMMER_REACH   0x226 /* the hammer hangs this far ahead of the target */
+#define FX_MAGIC_HAMMER_HEIGHT  0x145 /* and this far above its body position (the camera looks there) */
+#define FX_MAGIC_HAMMER_MODEL_COUNT 2 /* btlfx_initEffModels slots: FX_MAGIC_HAMMER_HAMMER twice (morph pair) */
+#define FX_MAGIC_HAMMER_SQUASH_FRAMES 0x10 /* op81: the target wobbles (scale) for this many frames, then its scale is restored */
+
 typedef struct {
     s32 state0; /* state */
     s32 unk4; /* write-only (cleared at init) */
