@@ -10,7 +10,7 @@ static void fxm_shatterModel(s32 model, SVECTOR *center) {
 
     ex->Hi_SplitMdlVertex(model, -1, (s32)fx_179_shatterTris);
     shard = fx_179_shatterPieces;
-    for (i = 0; i < 160; i++, tri++, triCopy++, shard++) {
+    for (i = 0; i < FX_MEDEO_SHARDS; i++, tri++, triCopy++, shard++) {
         shard->frame18 = 0;
         shard->pos0 = (tri->verts0[0].vx + triCopy->verts0[1].vx + triCopy->verts0[2].vx) / 3 << 12;
         shard->pos4 = (triCopy->verts0[0].vy + triCopy->verts0[1].vy + triCopy->verts0[2].vy) / 3 << 12;
@@ -46,8 +46,8 @@ void fxm_updateShatterPieces(void) {
     bias[0] = 0;
     bias[1] = 0;
     ex = BTLFX_EXPORTS(fx_179_env);
-    sc.vx = sc.vy = sc.vz = 0xF00;
-    for (i = 0; i < 160; i++, shard++, tri++) {
+    sc.vx = sc.vy = sc.vz = FX_MEDEO_SHARD_SCALE;
+    for (i = 0; i < FX_MEDEO_SHARDS; i++, shard++, tri++) {
         if (shard->frame18 >= 0) {
             if (shard->frame18 >= shard->delay1A) {
                 center.vx = shard->pos0 >> 12;
@@ -77,7 +77,7 @@ void fxm_updateShatterPieces(void) {
                     tri->verts0[j].vy = world.vy;
                     tri->verts0[j].vz = world.vz;
                 }
-                if (++shard->frame18 >= 0x20) {
+                if (++shard->frame18 >= FX_MEDEO_SHARD_FRAMES) {
                     shard->frame18 = -1;
                 }
             } else {
@@ -124,11 +124,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     gt4 = (POLY_GT4 *)fx_179_env->prim;
     *(s32 *)&colDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    fx_179_env->prim = (u8 *)(ft4 + 14);
+    fx_179_env->prim = (u8 *)(ft4 + (FX_MEDEO_RIBBON_SEGMENTS - 2));
     colFlat.r = colFlat.g = colFlat.b = bright;
     colLit.r = colLit.g = colLit.b = bright;
-    colFlat.code = abr != 0xFF ? 0x2E : 0x2C;
-    colDark.code = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
+    colDark.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     tpage |= TPAGE_ABR(abr);
     colLit.code = colDark.code;
     gte_rtv0tr_b();
@@ -143,7 +143,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     w0 >>= 1;
     w1 >>= 1;
     for (row = 0; row < 1; row++, rowY += dy) {
-        for (j = 0; j < 16; j++, seg++, ang += dang << 8) {
+        for (j = 0; j < FX_MEDEO_RIBBON_SEGMENTS; j++, seg++, ang += dang << 8) {
             nextJ = (j + 1) << 8;
             nextSeg = (seg + 1) << 8;
             y0 = rowY + (((j << 8) * dy) >> 12);
@@ -163,10 +163,10 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
             quad[3].vz = y1 + ex->btlfx_lerp(w0, w1, bulge1);
             gte_ldv3c(quad);
             gte_rtpt();
-            tile = seg & 0xF;
+            tile = seg & FX_MEDEO_RIBBON_SEGMENTS - 1;
             u0 = u + tile * 8;
             u1 = u0 + 8;
-            if (tile == 15) {
+            if (tile == FX_MEDEO_RIBBON_SEGMENTS - 1) {
                 u1 = u0 + 7;
             }
             v0 = v;
@@ -176,7 +176,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 ft = 0;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
-            } else if (seg >= 15) {
+            } else if (seg >= FX_MEDEO_RIBBON_SEGMENTS - 1) {
                 ft = 0;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
@@ -208,11 +208,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -238,20 +238,20 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx179Work);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_MEDEO_STATE_ORBIT;
         work->frame4 = 0;
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
         work->pos10.vz = env->targets->centerZ;
         fx_179_env = env;
         ex->btlfx_initEffModels(fx_179_effModels, 1);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MEDEO_METEOR), 0x9A, 0x3D40, 0, 0);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MEDEO_METEOR), FX_MEDEO_METEOR_TPAGE, FX_MEDEO_METEOR_CLUT, FX_MEDEO_METEOR_U, FX_MEDEO_METEOR_V);
     } else {
     frame = entry->frame;
     switch (work->state0) {
-    case 0:
+    case FX_MEDEO_STATE_ORBIT:
         bobAng = (frame << 8) >> 2;
         pos.vz = work->pos10.vz + ex->math_cos(bobAng) * 3 / 2;
         pos.vy = -(ex->math_cos(bobAng) * 3 / 2 + 0x180) + work->pos10.vy;
@@ -259,35 +259,35 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         rot.vz = -frame << 6;
         pos.vx = 0;
         rot.vy = 0;
-        scale.vx = 0xAAA;
-        scale.vy = 0xAAA;
-        scale.vz = 0xAAA;
+        scale.vx = FX_MEDEO_METEOR_SCALE;
+        scale.vy = FX_MEDEO_METEOR_SCALE;
+        scale.vz = FX_MEDEO_METEOR_SCALE;
         work->pos8.vx = pos.vx;
         work->pos8.vy = pos.vy;
         work->pos8.vz = pos.vz;
-        if (frame < 0xB) {
+        if (frame < FX_MEDEO_CAMERA_FRAMES + 1) {
             from.vx = pos.vx;
             from.vy = pos.vy;
             from.vz = pos.vz;
             BTLFX_COPY_SVEC(&to, &work->pos10);
             to.vy -= 0x200;
-            ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, (frame << 12) / 10, (s16 *)&out);
+            ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, (frame << 12) / FX_MEDEO_CAMERA_FRAMES, (s16 *)&out);
             env->camera->points[3].vx = out.vx;
             env->camera->points[3].vy = out.vy;
             env->camera->points[3].vz = out.vz;
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
-        scratch.v.vx = scratch.v.vy = scratch.v.vz = 0xAAA;
-        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
-                      -(work->frame4 * 0x180), 0x2000, 1, 1);
-        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, 0x17, 0x3D00, 0, 0x40,
-                      -(work->frame4 * 0x180) + 0x400, 0x2000, 1, 1);
-        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D04, 0, 0x40,
-                      -(work->frame4 * 0x180) + 0x800, 0x2000, 1, 1);
-        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D06, 0, 0x40,
-                      -(work->frame4 * 0x180) + 0xC00, 0x2000, 1, 1);
-        if (frame >= 0x10) {
-            work->state0 = 1;
+        scratch.v.vx = scratch.v.vy = scratch.v.vz = FX_MEDEO_METEOR_SCALE;
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, FX_MEDEO_RIBBON_TPAGE, FX_MEDEO_RIBBON_CLUT, 0, FX_MEDEO_RIBBON_V,
+                      -(work->frame4 * 0x180), 0x2000, BTLFX_ABR_ADD, 1);
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, FX_MEDEO_RIBBON_TPAGE, FX_MEDEO_RIBBON_2_CLUT, 0, FX_MEDEO_RIBBON_V,
+                      -(work->frame4 * 0x180) + 0x400, 0x2000, BTLFX_ABR_ADD, 1);
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, FX_MEDEO_RIBBON_TPAGE, FX_MEDEO_RIBBON_3_CLUT, 0, FX_MEDEO_RIBBON_V,
+                      -(work->frame4 * 0x180) + 0x800, 0x2000, BTLFX_ABR_ADD, 1);
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, FX_MEDEO_RIBBON_TPAGE, FX_MEDEO_RIBBON_4_CLUT, 0, FX_MEDEO_RIBBON_V,
+                      -(work->frame4 * 0x180) + 0xC00, 0x2000, BTLFX_ABR_ADD, 1);
+        if (frame >= FX_MEDEO_ORBIT_FRAMES) {
+            work->state0 = FX_MEDEO_STATE_SHATTER;
             entry->frame = -1;
             scratch.s.vx = 0;
             scratch.s.vy = 0;
@@ -330,25 +330,25 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         break;
-    case 1:
+    case FX_MEDEO_STATE_SHATTER:
         if (frame == 0) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 100, 100, 100);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_MEDEO_DARKEN_RGB);
         }
         if (frame == 1) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 70, 70, 70);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_MEDEO_FLASH_RGB);
         }
         rot.vx = 0;
         rot.vy = 0;
         rot.vz = 0;
-        scale.vx = 0xAAA;
-        scale.vy = 0xAAA;
-        scale.vz = 0xAAA;
+        scale.vx = FX_MEDEO_METEOR_SCALE;
+        scale.vy = FX_MEDEO_METEOR_SCALE;
+        scale.vz = FX_MEDEO_METEOR_SCALE;
         pos.vx = work->pos10.vx;
         pos.vy = work->pos10.vy;
         pos.vz = work->pos10.vz;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
         fxm_updateShatterPieces();
-        if (frame >= 0x20) {
+        if (frame >= FX_MEDEO_SHATTER_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

@@ -17,6 +17,31 @@
 #define FX_MEDEO_COLOR_SMOKE_2 0xA /* emitter: spiral of yellow, purple, cyan and green smoke puffs */
 #define FX_MEDEO_GREEN_SPECKS  0xB /* emitter: two sprite elements, tiny green specks at run time; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
+/* fx_179 choreography (docs/fxdata.md, "Choreography literals"): op80's states and lengths, the meteor's texture
+ * and scale, the four textured ribbons round it (fxm_drawTexCylinder), the shatter pieces, the screen tints. */
+#define FX_MEDEO_STATE_ORBIT   0    /* op80 work->state0: METEOR bobs above the targets inside the ribbons, the camera follows */
+#define FX_MEDEO_CAMERA_FRAMES 10   /* (over this many frames) */
+#define FX_MEDEO_ORBIT_FRAMES  0x10 /* then it shatters; WHITE_RING, GLOW_TRAIL, COLOR_LIGHT_BARS, ... start */
+#define FX_MEDEO_STATE_SHATTER 1    /* the pieces fly apart */
+#define FX_MEDEO_SHATTER_FRAMES 0x20 /* (the op ends; the models are cleared) */
+#define FX_MEDEO_METEOR_TPAGE  0x9A   /* 8-bit page (0x280, 0x100) */
+#define FX_MEDEO_METEOR_CLUT   0x3D40 /* CLUT (0, 0xF5) */
+#define FX_MEDEO_METEOR_U      0
+#define FX_MEDEO_METEOR_V      0
+#define FX_MEDEO_METEOR_SCALE  0xAAA  /* METEOR's and the ribbons' scale */
+#define FX_MEDEO_RIBBON_TPAGE  0x17   /* the ribbons: 4-bit page (0x1C0, 0x100), u 0, v RIBBON_V, additive; */
+#define FX_MEDEO_RIBBON_V      0x40
+#define FX_MEDEO_RIBBON_CLUT   0x3D03 /* one CLUT each: (0x30, 0xF4), */
+#define FX_MEDEO_RIBBON_2_CLUT 0x3D00 /* (0, 0xF4), */
+#define FX_MEDEO_RIBBON_3_CLUT 0x3D04 /* (0x40, 0xF4), */
+#define FX_MEDEO_RIBBON_4_CLUT 0x3D06 /* (0x60, 0xF4) */
+#define FX_MEDEO_RIBBON_SEGMENTS 16   /* fxm_drawTexCylinder: quads round the ribbon (8-texel tiles; the end ones gouraud-faded) */
+#define FX_MEDEO_SHARDS        160    /* fx_179_shatterTris / fx_179_shatterPieces: METEOR's triangles, each flies off */
+#define FX_MEDEO_SHARD_SCALE   0xF00
+#define FX_MEDEO_SHARD_FRAMES  0x20   /* a piece is gone after this many frames */
+#define FX_MEDEO_DARKEN_RGB    100, 100, 100 /* STATE_SHATTER frame 0: subtractive */
+#define FX_MEDEO_FLASH_RGB     70, 70, 70    /* frame 1: additive */
+
 typedef struct {
     SVECTOR verts0[3];
 } Fx179Tri; /* model triangle */
@@ -41,7 +66,8 @@ typedef struct {
     SVECTOR pos8; /* orb position */
     SVECTOR pos10; /* caster position */
     s32 model18; /* model */
-} Fx179Work;
+    u8 unused1C[4]; /* pads to the size op80 asks for */
+} Fx179Work; /* 0x20 */
 
 typedef struct {
     u8 r;
@@ -53,8 +79,8 @@ typedef struct {
 extern Unk800F78A4 *fx_179_env;
 extern BtlModelBuf fx_179_effModels[];
 extern u8 fx_179_op80Trails[];
-extern Fx179Tri fx_179_shatterTris[160];
-extern Fx179Shard fx_179_shatterPieces[160];
+extern Fx179Tri fx_179_shatterTris[FX_MEDEO_SHARDS];
+extern Fx179Shard fx_179_shatterPieces[FX_MEDEO_SHARDS];
 
 static void fxm_shatterModel(s32 model, SVECTOR *center);
 void fxm_updateShatterPieces(void);
