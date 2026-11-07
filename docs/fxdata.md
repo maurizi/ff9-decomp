@@ -392,7 +392,7 @@ the spell prefix and a comment that says what the code does with the value:
 | texel frames | `FX_FIRAGA_FLOOR_GLOW_TPAGE/X/Y/COLS/GRID` | `fxm_drawTexelQuads`' StoreImage rect (2x4 frames of 16x16 texels in the 15-bit page) |
 | sizes | `_SCALE`, `_HEIGHT`, `_REACH`, `_RADIUS`, `_WIDTH` | a scale or offset used for one named piece in several places (`FX_BLIZZARD_ICE_SCALE`, all-targets twins' `pos.vy -= FX_BLIZZARA_ICE_HEIGHT`) |
 | screen tints | `FX_<SPELL>_<WHAT>_RGB` = `r, g, b` | the three constant colour args of `btlfx_drawScreenTint` (`FX_BLIZZARD_FREEZE_TINT_RGB 0, 0x20, 0x46`); `DARKEN` for the subtractive ones (abr 2) |
-| GPU words | `GPU_POLY_G4 | GPU_ABE`, `PRIM_TAG(POLY_GT4)`, `BTLFX_ABR_OPAQUE` | the existing psyq.h / ovl_0b.h names, in the modules' own primitive helpers |
+| GPU words | `GPU_POLY_G4 \| GPU_ABE`, `PRIM_TAG(POLY_GT4)`, `BTLFX_ABR_OPAQUE` | the existing psyq.h / ovl_0b.h names, in the modules' own primitive helpers |
 
 Derived numbers are written as expressions of the names when the code computes them that way (constant-folded,
 byte-identical): `/ (FX_FIRA_GROUND_RING_FRAMES - FX_FIRA_RING_PULSE_FRAME)` for Fira's 21,
