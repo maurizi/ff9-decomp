@@ -8,10 +8,10 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR trackPos;
 
     if (mode == 0) {
-        *args = 0x60;
+        *args = sizeof(Fx078Work);
     } else if (mode == 1) {
         fx_078_env = env;
-        ex->btlfx_initEffModels(fx_078_effModels, 0xA);
+        ex->btlfx_initEffModels(fx_078_effModels, FX_BIO_MODEL_COUNT);
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
         work->pos10.vz = env->targets->centerZ;
@@ -24,9 +24,9 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale30.vx = 0x1000;
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < FX_BIO_MODEL_COUNT; i++) {
             work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_078_modelBlocks[i]),
-                                                        0x97, 0x3D40, 0, 0);
+                                                        FX_BIO_MODEL_TPAGE, FX_BIO_MODEL_CLUT, 0, 0);
         }
         fxm_rotPosTrackInit(&fx_078_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_ROT_POS_TRACK));
         fxm_vecTrackInit(&fx_078_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_VEC_TRACK));
@@ -38,13 +38,13 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_RED_BUBBLES), (s32)&fx_078_emitStartPos);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_GREEN_RING), (s32)&work->pos10);
             break;
-        case 0x26:
+        case FX_BIO_BURST_FRAME:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_BUBBLE_TRAIL), (s32)&work->pos10);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_GREEN_CLOUD), (s32)&work->pos10);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_078_trails;
-                work->emit8->trailSlots = 0x3C;
-                work->emit8->trailStride = 0x28;
+                work->emit8->trailSlots = FX_BIO_BUBBLE_TRAIL_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_BIO_BUBBLE_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->otZ = 0x80;
@@ -54,7 +54,7 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (frame >= 0 && frame < 0x2D) {
+        if (frame >= 0 && frame < FX_BIO_MODEL_FRAMES) {
             fxm_rotPosTrackGet(&fx_078_rotPosKeys, frame, &work->rot18, &trackPos);
             work->pos20.vx = trackPos.vx;
             work->pos20.vy = trackPos.vy;
@@ -63,9 +63,9 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos20.vy += work->pos10.vy;
             work->pos20.vz += work->pos10.vz;
             fxm_vecTrackGet(&fx_078_scaleKeys, frame, &work->scale30);
-            modelIdx = frame % 10;
+            modelIdx = frame % FX_BIO_MODEL_COUNT;
             ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model4C[modelIdx]);
-            ex->Hi_ModifyEffModelAbr(work->model4C[modelIdx], 1);
+            ex->Hi_ModifyEffModelAbr(work->model4C[modelIdx], BTLFX_ABR_ADD);
         }
         fxm_posTrackGet(&fx_078_emitPosKeys, frame, &work->emitPos44);
         work->emitPos44.vx += work->pos10.vx;
@@ -75,7 +75,7 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->emitPos44);
-        if (frame >= 0x3C) {
+        if (frame >= FX_BIO_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

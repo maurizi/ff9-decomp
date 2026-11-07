@@ -198,10 +198,10 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     case 0:
         tmp = frame << 9;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
-        ex->Hi_ModifyEffModelAbr(work->model28, 1);
+        ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
         ex->Hi_ModifyEffModelRGB(work->model28, (tmp >> 5) - 0x80, (tmp >> 5) - 0x80, (tmp >> 5) - 0x80);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_GLOWS), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_WAVE), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_GLOWS), &out, NULL, 0x1400, frame, BTLFX_ABR_ADD, 0x1000, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_WAVE), &out, NULL, 0x1400, frame, BTLFX_ABR_ADD, 0x1000, 0, 0);
         if (frame >= 8) {
             part->state4 = 1;
             ((s16 *)part)[-1] = -1;
@@ -209,7 +209,7 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
         break;
     case 1:
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
-        ex->Hi_ModifyEffModelAbr(work->model28, 1);
+        ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
         ex->Hi_ModifyEffModelRGB(work->model28, 0, 0, 0);
         if (work->shrinkDone24 != 0) {
             part->state4 = 2;
@@ -220,7 +220,7 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
         tmp = frame << 8;
         fade = ex->math_cos(tmp >> 2);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
-        ex->Hi_ModifyEffModelAbr(work->model28, 1);
+        ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
         tint = (fade >> 5) - 0x80;
         ex->Hi_ModifyEffModelRGB(work->model28, tint, tint, tint);
         if (frame >= 16) {
@@ -353,8 +353,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             env->otZ = work->otZ8;
             alpha = ex->math_sin(t >> 2);
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, 0x2000, 0, 1, alpha, 0, 0);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, 2, alpha);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, 0x2000, 0, BTLFX_ABR_ADD, alpha, 0, 0);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, BTLFX_ABR_SUB, alpha);
             env->otZ = 0;
             if (frame >= 12) {
                 work->state0 = 1;
@@ -370,8 +370,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &grabRect, fx_07e_op81GridVertex);
             fx_07e_twist = ex->math_sin(t >> 2) >> 1;
             env->otZ = work->otZ8;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, 0x2000, 0, 1, 0x1000, 0, 0);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, 2, 0x1000);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, 0x2000, 0, BTLFX_ABR_ADD, 0x1000, 0, 0);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, BTLFX_ABR_SUB, 0x1000);
             env->otZ = 0;
             if (frame >= 16) {
                 work->state0 = 2;
@@ -390,8 +390,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->otZ = work->otZ8;
             size = 0x1000 - ex->math_sin(ang);
             alpha = ex->math_cos(ang);
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, size * 2, 0, 1, alpha, 0, 0);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, size * 2, 0, 2, alpha);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, size * 2, 0, BTLFX_ABR_ADD, alpha, 0, 0);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, size * 2, 0, BTLFX_ABR_SUB, alpha);
             env->otZ = 0;
             if (frame >= 12) {
                 return 1;

@@ -5,7 +5,7 @@ s32 fx_0a2_op80(s32 mode, Fx0a2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0a2Work);
     } else if (mode == 1) {
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
@@ -14,15 +14,15 @@ s32 fx_0a2_op80(s32 mode, Fx0a2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURA_STAR_TRAIL), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_0a2_trails;
-            work->emit0->trailSlots = 0xB;
-            work->emit0->trailStride = 0xA0;
+            work->emit0->trailSlots = FX_CURA_STAR_TRAIL_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_CURA_STAR_TRAIL_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x14) {
+        if (frame == FX_CURA_SPARKLE_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURA_SPARKLE_BURST), (s32)&work->pos8);
         }
-        return frame >= 0x3C;
+        return frame >= FX_CURA_FRAMES;
     }
     return 0;
 }

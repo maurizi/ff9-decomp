@@ -210,7 +210,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_playFileSound(0x14, entry->file, -1);
             }
             if (frame == 26) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0xFF, 0xFF, 0);
             }
             if (frame == 27) {
                 s32 ang;
@@ -228,7 +228,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_playFileSound(0x17, entry->file, -1);
             }
             if (frame == 28) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xDC, 0, 0x20);
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_GREEN_ORB), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);

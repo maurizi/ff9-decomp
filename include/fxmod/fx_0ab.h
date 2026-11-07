@@ -13,6 +13,15 @@
 #define FX_MAELSTROM_SWIRL       0x3 /* emitter: dark red spiral swirl */
 #define FX_MAELSTROM_WIND_TRAIL  0x4 /* emitter: grey smoke trail spiralling */
 
+/* fx_0ab choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_MAELSTROM_STREAKS_HEIGHT 0xC8  /* FX_MAELSTROM_RED_STREAKS start this far above the target */
+#define FX_MAELSTROM_PUFFS_HEIGHT   0x190 /* FX_MAELSTROM_RED_PUFFS start this far above the target */
+#define FX_MAELSTROM_STREAKS_FRAME  0xC   /* FX_MAELSTROM_RED_STREAKS start */
+#define FX_MAELSTROM_PUFFS_FRAME    0x10  /* FX_MAELSTROM_RED_PUFFS start */
+#define FX_MAELSTROM_FRAMES         0x28  /* op80's length (the op ends) */
+#define FX_MAELSTROM_WIND_TRAIL_TRAIL_SLOTS  0x11 /* FX_MAELSTROM_WIND_TRAIL's trail buffer fx_0ab_trails: slots of */
+#define FX_MAELSTROM_WIND_TRAIL_TRAIL_STRIDE 0x60 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

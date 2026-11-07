@@ -49,10 +49,10 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
             ((Fx0a9Bolt *)(part->point18 - 2))->lastSlot0 = ((Fx0a9Bolt *)(part->point18 - 2))->count2 = 0xA;
             ((Fx0a9Bolt *)(part->point18 - 2))->head1 = 0;
             if (part->kind17 == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_BOLT_PILLAR), 0, NULL, 4, 0x1000, fade, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_BOLT_PILLAR), 0, NULL, 4, 0x1000, fade, BTLFX_ABR_ADD,
                                   (u8 *)part->point18 - 4, 0);
             } else {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_TRAIL_2), 0, NULL, 4, 0x1000, fade, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_TRAIL_2), 0, NULL, 4, 0x1000, fade, BTLFX_ABR_ADD,
                                   (u8 *)part->point18 - 4, 2);
             }
         }
@@ -144,7 +144,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         env->otZ = 0x40;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHTNING_BLUE_RING), &work->pos8, NULL,
-                          ex->math_sin((frame << 11) / 24) * 2 / 3, 0, 1, 0x1000 - ((frame & 1) << 11));
+                          ex->math_sin((frame << 11) / 24) * 2 / 3, 0, BTLFX_ABR_ADD, 0x1000 - ((frame & 1) << 11));
         env->otZ = 0;
         if (frame >= 0x18) {
             return 1;

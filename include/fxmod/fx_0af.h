@@ -12,6 +12,13 @@
 #define FX_ZOMBIE_BREATH_GREEN_GLOW      0x7 /* emitter: white puffs + pale green glow */
 #define FX_ZOMBIE_BREATH_BREATH_TRAILS_2 0x8 /* emitter: white ghostly puff trails + one more trail */
 
+/* fx_0af choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_ZOMBIE_BREATH_STATE_BLOW  0    /* op80's only state: the breath trails blow towards the target */
+#define FX_ZOMBIE_BREATH_GLOW_FRAME  0x10 /* FX_ZOMBIE_BREATH_GREEN_GLOW and _BREATH_TRAILS_2 start */
+#define FX_ZOMBIE_BREATH_FRAMES      0x3C /* op80's length (the op ends) */
+#define FX_ZOMBIE_BREATH_TRAIL_SLOTS  0x1E /* both breath-trail emitters' trail buffers (fx_0af_trails, _trails2): slots of */
+#define FX_ZOMBIE_BREATH_TRAIL_STRIDE 0x4C /* this many bytes */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;

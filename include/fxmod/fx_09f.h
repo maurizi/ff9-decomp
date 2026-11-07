@@ -15,6 +15,11 @@
 #define FX_PYRO_FLAMES      0x7 /* emitter: flames + smoke */
 #define FX_PYRO_FLAMES_2    0xC /* emitter: spiralling flames + smoke */
 
+/* fx_09f choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_PYRO_STATE_FLAMES 0    /* op80's only state */
+#define FX_PYRO_SMOKE_FRAME  8    /* FX_PYRO_SMOKE starts */
+#define FX_PYRO_FRAMES       0x3C /* op80's length (the op ends) */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* caster position */

@@ -6,9 +6,9 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0adWork);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_AERO_BREATH_STATE_BLOW;
         fx_0ad_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
@@ -16,8 +16,8 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_BREATH_WIND_TRAILS), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_0ad_trails;
-            work->emit4->trailSlots = 0x24;
-            work->emit4->trailStride = 0x5C;
+            work->emit4->trailSlots = FX_AERO_BREATH_WIND_TRAILS_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_AERO_BREATH_WIND_TRAILS_TRAIL_STRIDE;
         }
         if (work->emit4 != NULL) {
             work->emit4->otZ = 0x20;
@@ -25,19 +25,19 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_AERO_BREATH_STATE_BLOW:
             if (work->emit4 != NULL) {
                 work->emit4->rot.vx = work->aim18.vx;
                 work->emit4->rot.vy = work->aim18.vy;
                 work->emit4->rot.vz = work->aim18.vz;
             }
-            if (frame == 0x16) {
+            if (frame == FX_AERO_BREATH_SWIRL_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_BREATH_SWIRL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
                 }
             }
-            if (frame >= 0x28) {
+            if (frame >= FX_AERO_BREATH_FRAMES) {
                 return 1;
             }
             break;

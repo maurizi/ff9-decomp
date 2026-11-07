@@ -10,6 +10,14 @@
 #define FX_CONFUSE_SWIRLS       0x2 /* emitter: teal and pink spiral swirl particles */
 #define FX_CONFUSE_STAFF_SWIRL  0x9 /* emitter: 3D and screen trails of treble / bass staves with notes, smoke swirl and haze band, orbiting the target; runtime (docs/runtime-findings.md effect-data pass) */
 
+/* fx_060 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and trail buffers. */
+#define FX_CONFUSE_SWIRLS_FRAME 0x10 /* FX_CONFUSE_SWIRLS starts */
+#define FX_CONFUSE_FRAMES       0x31 /* op80's length (the op ends) */
+#define FX_CONFUSE_STAFF_WAVES_TRAIL_SLOTS  0x13 /* FX_CONFUSE_STAFF_WAVES' trail buffer fx_060_trails: slots of */
+#define FX_CONFUSE_STAFF_WAVES_TRAIL_STRIDE 0x6C /* this many bytes */
+#define FX_CONFUSE_STAFF_SWIRL_TRAIL_SLOTS  0xC  /* FX_CONFUSE_STAFF_SWIRL's trail buffer fx_060_trails2: slots of */
+#define FX_CONFUSE_STAFF_SWIRL_TRAIL_STRIDE 0x7C /* this many bytes */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target body position */

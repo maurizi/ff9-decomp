@@ -69,7 +69,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 5; i++) {
             fx_07a_strips[i].timer10C = -i;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_07a_strips[i], 0);
         }
         work->pos94.vx = fx_07a_centerPos.vx = env->targets->centerX;
@@ -146,7 +146,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 40:
             work->timers0[10] = 0;
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 0xFF, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_OPAQUE, 0xFF, 0xFF, 0xFF);
             work->timers0[1] = 0;
             break;
         }
@@ -237,7 +237,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models40[1].rot4, &work->pos94, (s32)&work->models40[1].scaleC, work->models40[1].model0);
             ex->Hi_DrawEffModel(&work->models40[2].rot4, &work->pos94, (s32)&work->models40[2].scaleC, work->models40[2].model0);
             ex->Hi_DrawEffModel(&work->models40[0].rot4, &work->pos94, (s32)&work->models40[0].scaleC, work->models40[0].model0);
-            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, 1);
+            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, BTLFX_ABR_ADD);
         }
         if (work->timers0[0] != 0) {
             work->timers0[0]--;
@@ -266,10 +266,10 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                     if (tr->timer10C < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, frame, 0x1000,
-                                            tr->timer10C << 10, 1, (u8 *)strip, 0);
+                                            tr->timer10C << 10, BTLFX_ABR_ADD, (u8 *)strip, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, frame, 0x1000,
-                                            0x1000, 1, (u8 *)strip, 0);
+                                            0x1000, BTLFX_ABR_ADD, (u8 *)strip, 0);
                     }
                 } else if (tr->timer10C < 0) {
                     tr->timer10C++;
@@ -443,5 +443,5 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
             poly++;
         }
     }
-    ex->btlfx_addPrim(0x01000000, ot * 4 - 4, ex->btlfx_allocDrMode(0, 2));
+    ex->btlfx_addPrim(0x01000000, ot * 4 - 4, ex->btlfx_allocDrMode(0, BTLFX_ABR_SUB));
 }

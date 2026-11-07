@@ -11,6 +11,10 @@
 #define FX_BLIND_VORTEX   0x6 /* emitter: silver-blue swirling vortex ring */
 #define FX_BLIND_VORTEX_2 0x8 /* emitter: silver-blue swirling vortex ring + fans */
 
+/* fx_09e choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_BLIND_VORTEX_FRAME 0x18 /* FX_BLIND_VORTEX starts (FX_BLIND_VORTEX_2 at the start) */
+#define FX_BLIND_FRAMES       0x38 /* op80's length (the op ends) */
+
 typedef struct {
     SVECTOR pos0; /* caster body position */
 } Fx09eWork;

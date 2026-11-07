@@ -11,6 +11,14 @@
 #define FX_SPORE_GREEN_GLOW 0x7 /* emitter: orbiting trail + sprite, a pale gold strip and a soft green glow at run time; runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 #define FX_SPORE_SPORES 0x8 /* emitter: brown spore sprites */
 
+/* fx_0a5 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_SPORE_GLOW_FRAME   0x19  /* FX_SPORE_GREEN_GLOW starts and sweeps across the targets from then on */
+#define FX_SPORE_SWEEP_X      0x5DC /* the sweep runs from x = this to x = -this (pos18 -> pos20) */
+#define FX_SPORE_SWEEP_FRAMES 30    /* the sweep ratio (frame << 12) / this reaches 1 at this frame */
+#define FX_SPORE_FRAMES       0x50  /* op80's length (the op ends) */
+#define FX_SPORE_GREEN_GLOW_TRAIL_SLOTS  0x80 /* FX_SPORE_GREEN_GLOW's trail buffer fx_0a5_trails: slots of */
+#define FX_SPORE_GREEN_GLOW_TRAIL_STRIDE 0x20 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

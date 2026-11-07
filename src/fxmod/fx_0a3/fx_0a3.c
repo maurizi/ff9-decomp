@@ -5,31 +5,31 @@ s32 fx_0a3_op80(s32 mode, Fx0a3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0a3Work);
     } else if (mode == 1) {
         fx_0a3_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot18);
         ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot18, 0x190, (s16 *)&work->pos8);
-        ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot18, 0xC8, (s16 *)&work->pos10);
+        ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot18, FX_ELECTROCUTE_REACH, (s16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ELECTROCUTE_BLUE_BOLTS), (s32)&work->pos10);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_0a3_trails;
-            work->emit0->trailSlots = 0x2C;
-            work->emit0->trailStride = 0x28;
+            work->emit0->trailSlots = FX_ELECTROCUTE_BLUE_BOLTS_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_ELECTROCUTE_BLUE_BOLTS_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xA) {
+        if (frame == FX_ELECTROCUTE_BOLTS_2_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ELECTROCUTE_BLUE_BOLTS_2), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_0a3_trails2;
-                work->emit4->trailSlots = 0x14;
-                work->emit4->trailStride = 0x28;
+                work->emit4->trailSlots = FX_ELECTROCUTE_BLUE_BOLTS_2_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_ELECTROCUTE_BLUE_BOLTS_2_TRAIL_STRIDE;
             }
         }
-        return frame >= 0x1E;
+        return frame >= FX_ELECTROCUTE_FRAMES;
     }
     return 0;
 }

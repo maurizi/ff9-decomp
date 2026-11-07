@@ -314,7 +314,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vy = 0;
                 rot.vz = 0;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
-                ex->Hi_ModifyEffModelAbr(work->model28, 1);
+                ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(work->model28, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80);
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
             }
@@ -342,7 +342,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 VECTOR sc2;
 
                 tintT = ((frame - 24) << 12) / 25;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, (tintT << 6) >> 12, 0, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, (tintT << 6) >> 12, 0, 0);
                 col2.r = col2.g = col2.b = ((ex->math_sin(tintT >> 2) << 5) >> 12) + 0x10;
                 sc2.vx = 0x1080;
                 sc2.vy = 0x1080;
@@ -352,10 +352,10 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             px = 0x1B8 - (frame & 7) * 60;
             py = 0x140 - (frame & 7) * 60;
-            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_DARK_CLOUDS), px + 0x64, py + 0x78, 0, 1, fadeIn);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_DARK_CLOUDS), px + 0x64, py + 0x78, 0, BTLFX_ABR_ADD, fadeIn);
             px = 0x1B8 - (frame + 5) % 10 * 60;
             py = 0x140 - (frame + 5) % 10 * 60;
-            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_CLOUDS), px - 0x40, py + 0x78, 0, 1, fadeIn);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_CLOUDS), px - 0x40, py + 0x78, 0, BTLFX_ABR_ADD, fadeIn);
             if (frame >= 49) {
                 ex->btlfx_stopEmitter(work->emit44);
                 BTLFX_COPY_SVEC(&work->pos1C, &env->targets->centerX);
@@ -448,7 +448,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 work->state0 = 3;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xC8, 0xC8, 0x64);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0xC8, 0xC8, 0x64);
                 dir.vx = 0x4E0;
                 dir.vy = 0x800;
                 dir.vz = 0x700;
@@ -484,7 +484,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 i;
 
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x64, 0x20, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x64, 0x20, 0x20);
             }
             if (frame < 21) {
                 env->camera->points[3].vx = work->pos1C.vx;
@@ -524,8 +524,8 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->model34, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
                 env->otZ = 0x80;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_ORANGE_RING), &work->pos1C, NULL,
-                                  ((ex->math_sin(burstT >> 1) + 0x1000) * 3) >> 1, 0, 1, 0x1000);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_ORANGE_RING), &work->pos1C, NULL, 0x1C00, 0, 1,
+                                  ((ex->math_sin(burstT >> 1) + 0x1000) * 3) >> 1, 0, BTLFX_ABR_ADD, 0x1000);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_ORANGE_RING), &work->pos1C, NULL, 0x1C00, 0, BTLFX_ABR_ADD,
                                   0x1000);
                 env->otZ = 0;
             }
@@ -544,16 +544,16 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     BTLFX_COPY_SVEC(&spritePos, &fx_086_spritePos[i * 3]);
                     spritePos.pad = 0;
                     ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS_2), &spritePos, NULL, 0x3000,
-                                          fx_086_spritePos[i * 3].pad, 1, spriteAlpha);
+                                          fx_086_spritePos[i * 3].pad, BTLFX_ABR_ADD, spriteAlpha);
                 }
             }
             if (frame >= 4) {
                 elapsed = frame - 4;
                 if (elapsed == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0xFF, 0xFF, 0xFF);
                 } else if (elapsed < 24) {
                     bright = ex->math_cos((elapsed << 10) / 24) * 0xFF / 4096;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, bright, bright, bright >> 1);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, bright, bright, bright >> 1);
                 }
                 t = elapsed << 7;
                 if (elapsed < 32) {
@@ -581,7 +581,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         scale.vx = scale.vz = t * 3 / 4 + 0xC00;
                         pos.vy += -0x370 - elapsed * 24;
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
-                        ex->Hi_ModifyEffModelAbr(work->model30, 2);
+                        ex->Hi_ModifyEffModelAbr(work->model30, BTLFX_ABR_SUB);
                         cs = (bright >> 5) - 0x80;
                         ex->Hi_ModifyEffModelRGB(work->model30, cs, cs, cs);
                         pos.vy += elapsed * 24;
@@ -589,7 +589,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         scale.vy = ex->math_cos(ang) + 0x1000;
                         scale.vx = scale.vz = t + 0x1000;
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
-                        ex->Hi_ModifyEffModelAbr(work->model30, 1);
+                        ex->Hi_ModifyEffModelAbr(work->model30, BTLFX_ABR_ADD);
                         ex->Hi_ModifyEffModelRGB(work->model30, cs, cs, cs);
                         pos.vy += 0x2BC + elapsed * 20;
                         cs2 = 0xA00; /* a variable: a literal 0xA00 gets folded into the size >> 2 term */
@@ -621,7 +621,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->Hi_ModifyEffModelRGB(work->model2C, (glow >> 5) - 0x80, (glow >> 5) - 0x80, (glow >> 5) - 0x80);
                     env->otZ = 0x300;
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_ORANGE_RING), &work->pos1C, NULL,
-                                      (ex->math_cos(pulseAng) + 0x1000) * 2, 0, 1, glow);
+                                      (ex->math_cos(pulseAng) + 0x1000) * 2, 0, BTLFX_ABR_ADD, glow);
                     env->otZ = 0;
                 }
             }

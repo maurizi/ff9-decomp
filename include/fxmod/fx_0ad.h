@@ -11,6 +11,13 @@
 #define FX_AERO_BREATH_SWIRL       0x1 /* emitter: green wind swirl */
 #define FX_AERO_BREATH_WIND_TRAILS 0x6 /* emitter: green wind trails spiralling */
 
+/* fx_0ad choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_AERO_BREATH_STATE_BLOW   0    /* op80's only state: the wind trails blow towards the target */
+#define FX_AERO_BREATH_SWIRL_FRAME  0x16 /* FX_AERO_BREATH_SWIRL starts */
+#define FX_AERO_BREATH_FRAMES       0x28 /* op80's length (the op ends) */
+#define FX_AERO_BREATH_WIND_TRAILS_TRAIL_SLOTS  0x24 /* FX_AERO_BREATH_WIND_TRAILS' trail buffer fx_0ad_trails: slots of */
+#define FX_AERO_BREATH_WIND_TRAILS_TRAIL_STRIDE 0x5C /* this many bytes */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;

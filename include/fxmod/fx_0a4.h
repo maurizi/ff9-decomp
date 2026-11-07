@@ -11,6 +11,10 @@
 #define FX_BUZZ_INSECT     0x1 /* emitter: one sprite, a small grey winged insect silhouette (2 frames) at run time (not ablated); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_BUZZ_SOUND_WAVE 0x6 /* emitter: ring textured with a yellow sine wave */
 
+/* fx_0a4 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_BUZZ_SOUND_WAVE_FRAME 0x12 /* FX_BUZZ_SOUND_WAVE starts */
+#define FX_BUZZ_FRAMES           0x28 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

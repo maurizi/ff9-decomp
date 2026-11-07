@@ -13,6 +13,17 @@
 #define FX_CURA_CRESCENT_BURST 0x8 /* emitter: ring + yellow, white and green crescent sprites */
 #define FX_CURA_CYAN_GLOW      0xA /* emitter: fan of a round cyan-white glow, the cyan glow streaks round the target; runtime (docs/runtime-findings.md effect-data pass) */
 
+/* fx_08d choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_CURA_CYAN_GLOW_FRAME          0x12 /* FX_CURA_CYAN_GLOW starts */
+#define FX_CURA_CRESCENT_FRAME           0x14 /* FX_CURA_CRESCENT_BURST starts */
+#define FX_CURA_STAR_FLARES_FRAME        0x25 /* FX_CURA_STAR_FLARES shows from this frame */
+#define FX_CURA_STAR_FLARES_FRAMES       0xC  /* for this many frames */
+#define FX_CURA_STAR_FLARES_FADE_IN_FRAMES 6  /* fading in over the first of them, then out */
+#define FX_CURA_STAR_FLARES_ANIM_FRAMES  6    /* sprite-line frames (frame1C stops on the last) */
+#define FX_CURA_FRAMES                   0x32 /* op80's length (the op ends) */
+#define FX_CURA_STAR_TRAIL_TRAIL_SLOTS   3    /* FX_CURA_STAR_TRAIL's trail buffer fx_08d_trails: slots of */
+#define FX_CURA_STAR_TRAIL_TRAIL_STRIDE  0xA0 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

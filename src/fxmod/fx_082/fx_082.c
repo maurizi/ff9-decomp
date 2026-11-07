@@ -123,7 +123,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale[2] = sc;
             ex->Hi_DrawMorphEffModel(&work->rot28, (VECTOR *)mpos, (s32)scale, work->model30, work->model34, 0x1000 - morph);
             if (bright < 0x1000) {
-                ex->Hi_ModifyEffModelAbr(work->model30, 1);
+                ex->Hi_ModifyEffModelAbr(work->model30, BTLFX_ABR_ADD);
                 tint = (bright >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model30, tint, tint, tint);
             }

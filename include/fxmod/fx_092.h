@@ -13,6 +13,13 @@
 #define FX_HYPNOTIZE_VIOLET_RING   0x3 /* emitter: violet-tan gouraud rings */
 #define FX_HYPNOTIZE_SPARKLE_DOTS  0x4 /* emitter: faint white sparkle dots (btlfx_emitDots) */
 
+/* fx_092 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_HYPNOTIZE_REACH        0xC8  /* FX_HYPNOTIZE_MAGENTA_RINGS start this far ahead of the unit's bone (and the camera looks there) */
+#define FX_HYPNOTIZE_HALO_HEIGHT  0x1C2 /* FX_HYPNOTIZE_HALO_RINGS start this far above the target */
+#define FX_HYPNOTIZE_DOTS_HEIGHT  0xC8  /* FX_HYPNOTIZE_SPARKLE_DOTS start this far above the target */
+#define FX_HYPNOTIZE_RINGS_FRAME  0xA   /* HALO_RINGS, VIOLET_RING and SPARKLE_DOTS start */
+#define FX_HYPNOTIZE_FRAMES       0x32  /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

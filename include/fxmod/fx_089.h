@@ -11,6 +11,10 @@
 #define FX_REVIVE_LIGHT_SWIRL 0x4 /* emitter: blue-white light swirl + flare */
 #define FX_REVIVE_FEATHERS    0x5 /* emitter: white wing / feather sprites + flare */
 
+/* fx_089 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_REVIVE_FEATHERS_FRAME 0xF  /* FX_REVIVE_FEATHERS starts */
+#define FX_REVIVE_FRAMES         0x28 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

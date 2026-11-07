@@ -14,6 +14,13 @@
 #define FX_DELTA_ATTACK_COLOR_RINGS  0x4 /* emitter: yellow / blue / red / gold gouraud rings */
 #define FX_DELTA_ATTACK_RAINBOW_STREAK 0x5 /* emitter: fan drawn as a thin rainbow-coloured horizontal streak */
 
+/* fx_094 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_DELTA_ATTACK_WHITE_RING_2_FRAME   0x10 /* FX_DELTA_ATTACK_WHITE_RING_2 starts */
+#define FX_DELTA_ATTACK_VIOLET_RING_FRAME    0x18 /* FX_DELTA_ATTACK_VIOLET_RING starts */
+#define FX_DELTA_ATTACK_RAINBOW_STREAK_FRAME 0x30 /* FX_DELTA_ATTACK_RAINBOW_STREAK starts */
+#define FX_DELTA_ATTACK_WHITE_RING_FRAME     0x40 /* FX_DELTA_ATTACK_WHITE_RING starts */
+#define FX_DELTA_ATTACK_FRAMES               0x68 /* op80's length (the op ends) */
+
 typedef struct {
     SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos8; /* caster body position */

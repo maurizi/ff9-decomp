@@ -4,7 +4,7 @@ s32 fx_07c_op80(s32 mode, Fx07cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx07cWork);
     } else if (mode == 1) {
         work->pos4.vx = env->targets->centerX;
         work->pos4.vy = env->targets->centerY;
@@ -12,7 +12,7 @@ s32 fx_07c_op80(s32 mode, Fx07cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_07c_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MINI_LIGHT_BEAM), (s32)&work->pos4);
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_MINI_FRAMES;
     }
     return 0;
 }

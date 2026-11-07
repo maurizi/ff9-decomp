@@ -9,6 +9,11 @@
 #define FX_BLIND_VORTEX   0x7 /* emitter: silver-blue swirling vortex ring (same call site as fx_09e entry 0x6) */
 #define FX_BLIND_VORTEX_2 0x8 /* emitter: silver-blue swirling vortex ring + fans (same call site as fx_09e entry 0x8) */
 
+/* fx_09d choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_BLIND_VORTEX_FRAME 0x18 /* FX_BLIND_VORTEX starts (FX_BLIND_VORTEX_2 at the start) */
+#define FX_BLIND_FRAMES       0x38 /* op80's length (the op ends) */
+#define FX_BLIND_VORTEX_Y     (-0x190) /* the vortices turn at this height (y, up is negative) over the targets' centre */
+
 typedef struct {
     SVECTOR pos0; /* position: env->targets->centerX, -0x190, centerZ */
 } Fx09dWork;

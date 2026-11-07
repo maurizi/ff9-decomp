@@ -11,6 +11,15 @@
 #define FX_ELECTROCUTE_BLUE_BOLTS   0x1 /* emitter: blue bolt trail with blue glow sprites, the blue lightning crackling round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_ELECTROCUTE_BLUE_BOLTS_2 0x2 /* emitter: the same blue bolt trail + sprites, spiralling: part of the blue lightning round the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
+/* fx_0a3 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_ELECTROCUTE_REACH          0xC8 /* the bolts start this far ahead of the unit (pos10) */
+#define FX_ELECTROCUTE_BOLTS_2_FRAME  0xA  /* FX_ELECTROCUTE_BLUE_BOLTS_2 starts */
+#define FX_ELECTROCUTE_FRAMES         0x1E /* op80's length (the op ends) */
+#define FX_ELECTROCUTE_BLUE_BOLTS_TRAIL_SLOTS    0x2C /* FX_ELECTROCUTE_BLUE_BOLTS' trail buffer fx_0a3_trails: slots of */
+#define FX_ELECTROCUTE_BLUE_BOLTS_TRAIL_STRIDE   0x28 /* this many bytes */
+#define FX_ELECTROCUTE_BLUE_BOLTS_2_TRAIL_SLOTS  0x14 /* FX_ELECTROCUTE_BLUE_BOLTS_2's trail buffer fx_0a3_trails2: slots of */
+#define FX_ELECTROCUTE_BLUE_BOLTS_2_TRAIL_STRIDE 0x28 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

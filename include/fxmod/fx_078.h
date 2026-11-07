@@ -17,6 +17,17 @@
 #define FX_BIO_BUBBLE_TRAIL  0x16 /* emitter: screen trail of glowing green bubbles around the burst; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_BIO_GREEN_CLOUD   0x17 /* emitter: murky green cloud + grey glow */
 
+/* fx_078 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, the model frames and their
+ * texture, and the trail buffer. */
+#define FX_BIO_MODEL_COUNT 10   /* btlfx_initEffModels slots: the burst model's frames (fx_078_modelBlocks), cycled per frame */
+#define FX_BIO_BURST_FRAME 0x26 /* FX_BIO_BUBBLE_TRAIL and FX_BIO_GREEN_CLOUD start */
+#define FX_BIO_MODEL_FRAMES 0x2D /* the burst model is drawn (keyframe tracks) for this many frames */
+#define FX_BIO_FRAMES      0x3C /* op80's length (the op ends) */
+#define FX_BIO_MODEL_TPAGE 0x97   /* burst model texture: 8-bit page (0x1C0, 0x100) */
+#define FX_BIO_MODEL_CLUT  0x3D40 /* CLUT (0, 0xF5) */
+#define FX_BIO_BUBBLE_TRAIL_TRAIL_SLOTS  0x3C /* FX_BIO_BUBBLE_TRAIL's trail buffer fx_078_trails: slots of */
+#define FX_BIO_BUBBLE_TRAIL_TRAIL_STRIDE 0x28 /* this many bytes */
+
 /* keyframe tracks read from the effect file: count, then the keys (as in fx_05d) */
 typedef struct {
     s16 posX0, posY2, posZ4; /* position */
@@ -48,10 +59,10 @@ typedef struct {
     VECTOR scale30; /* model scale */
     s32 unk40; /* unused */
     SVECTOR emitPos44; /* trail position */
-    u16 model4C[10]; /* models */
+    u16 model4C[FX_BIO_MODEL_COUNT]; /* models */
 } Fx078Work; /* 0x60 */
 
-extern u8 fx_078_modelBlocks[10];
+extern u8 fx_078_modelBlocks[FX_BIO_MODEL_COUNT];
 extern Unk800F78A4 *fx_078_env;
 extern BtlModelBuf fx_078_effModels[];
 extern s32 fx_078_trails[];

@@ -6,7 +6,7 @@ s32 fx_094_op80(s32 mode, Fx094Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx094Work);
     } else if (mode == 1) {
         fx_094_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);
@@ -17,25 +17,25 @@ s32 fx_094_op80(s32 mode, Fx094Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 0x10:
+        case FX_DELTA_ATTACK_WHITE_RING_2_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_WHITE_RING_2), (s32)&work->pos10);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 0x18:
+        case FX_DELTA_ATTACK_VIOLET_RING_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_VIOLET_RING), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 0x30:
+        case FX_DELTA_ATTACK_RAINBOW_STREAK_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_RAINBOW_STREAK), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 0x40:
+        case FX_DELTA_ATTACK_WHITE_RING_FRAME:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_WHITE_RING), (s32)&work->pos10);
             break;
         }
@@ -49,7 +49,7 @@ s32 fx_094_op80(s32 mode, Fx094Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit20->rot.vz = work->aim18.vz;
             }
         }
-        return frame >= 0x68;
+        return frame >= FX_DELTA_ATTACK_FRAMES;
     }
     return 0;
 }

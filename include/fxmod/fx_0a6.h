@@ -14,6 +14,13 @@
 #define FX_SWEEP_TAN_RING   0x4 /* emitter: tan-white gouraud rings */
 #define FX_SWEEP_DUST_CLOUD 0x5 /* emitter: dust cloud puffs */
 
+/* fx_0a6 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_SWEEP_HEIGHT      0xC8 /* DUST_RINGS, WIND_TRAIL, DUST_PUFF and DUST_CLOUD start this far above the targets' centre */
+#define FX_SWEEP_CLOUD_FRAME 6    /* FX_SWEEP_DUST_CLOUD starts (the others at frame 0) */
+#define FX_SWEEP_FRAMES      0x28 /* op80's length (the op ends) */
+#define FX_SWEEP_WIND_TRAIL_TRAIL_SLOTS  0x12 /* FX_SWEEP_WIND_TRAIL's trail buffer fx_0a6_trails: slots of */
+#define FX_SWEEP_WIND_TRAIL_TRAIL_STRIDE 0x60 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

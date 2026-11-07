@@ -13,6 +13,15 @@
 #define FX_BERSERK_FIRE_RING  0x8 /* emitter: red-orange-yellow gouraud rings */
 #define FX_BERSERK_STAR_FLASH 0xB /* emitter: white and red star flashes + violet ring */
 
+/* fx_08c choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_BERSERK_STATE_FUNNEL 0    /* op80's only state: the funnel grows twice (full and half height) */
+#define FX_BERSERK_FRAMES       0x20 /* FX_BERSERK_STATE_FUNNEL's length (the op ends) */
+#define FX_BERSERK_MODEL_COUNT  2    /* btlfx_initEffModels slots (only FX_BERSERK_FUNNEL is registered) */
+/* FX_BERSERK_FUNNEL samples the rect FX_BERSERK_FLAME_TEXTURE renders each frame: (0x200, 0x100) + v 0x80 */
+#define FX_BERSERK_FUNNEL_TPAGE 0x138  /* 15-bit page (0x200, 0x100), abr 1 */
+#define FX_BERSERK_FUNNEL_CLUT  0xFFFF /* none (15-bit page) */
+#define FX_BERSERK_FUNNEL_V     0x80
+
 typedef struct {
     s32 state0; /* state */
     s32 bgFrame4; /* frame for btlfx_drawLayerTexture */

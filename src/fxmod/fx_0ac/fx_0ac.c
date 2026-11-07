@@ -6,7 +6,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx0acWork);
     } else if (mode == 1) {
         fx_0ac_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
@@ -14,19 +14,19 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 2:
+        case FX_SLEEPING_JUICE_SPLASH_FRAME:
             ex->btlfx_getUnitArgBoneMatrix(0x10, 0, &bone);
-            ex->btlfx_matrixPointAhead((MATRIX *)&bone, -0x32, (s32)&work->pos20);
-            work->pos20.vy -= 0x96;
+            ex->btlfx_matrixPointAhead((MATRIX *)&bone, FX_SLEEPING_JUICE_SPLASH_REACH, (s32)&work->pos20);
+            work->pos20.vy -= FX_SLEEPING_JUICE_SPLASH_HEIGHT;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_SPLASH_TRAILS), (s32)&work->pos20);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0ac_trails;
-                work->emit0->trailSlots = 0x3B;
-                work->emit0->trailStride = 0xBC;
+                work->emit0->trailSlots = FX_SLEEPING_JUICE_SPLASH_TRAILS_TRAIL_SLOTS;
+                work->emit0->trailStride = FX_SLEEPING_JUICE_SPLASH_TRAILS_TRAIL_STRIDE;
             }
             ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos10, (s16 *)&work->aim28);
             break;
-        case 8:
+        case FX_SLEEPING_JUICE_BUBBLES_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_BUBBLES), (s32)&work->pos18);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_GLOW), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_RIPPLE), (s32)&work->pos18);
@@ -38,7 +38,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (frame >= 2) {
+        if (frame >= FX_SLEEPING_JUICE_SPLASH_FRAME) {
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;
@@ -50,7 +50,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x32;
+        return frame >= FX_SLEEPING_JUICE_FRAMES;
     }
     return 0;
 }

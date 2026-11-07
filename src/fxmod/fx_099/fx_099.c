@@ -83,7 +83,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         rot.vy += (i << 12) / 5;
                         ex->Hi_SetEffModelSlice(work->model1C, 0);
                         ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->modelPos34, (s32)work->scale28, work->model1C);
-                        ex->Hi_ModifyEffModelAbr(work->model1C, 1);
+                        ex->Hi_ModifyEffModelAbr(work->model1C, BTLFX_ABR_ADD);
                         ex->Hi_ModifyEffModelRGB(work->model1C, bright, bright, bright);
                     }
                 }

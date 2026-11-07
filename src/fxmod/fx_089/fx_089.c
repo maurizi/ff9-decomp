@@ -5,7 +5,7 @@ s32 fx_089_op80(s32 mode, Fx089Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx089Work);
     } else if (mode == 1) {
         fx_089_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -15,13 +15,13 @@ s32 fx_089_op80(s32 mode, Fx089Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xF) {
+        if (frame == FX_REVIVE_FEATHERS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REVIVE_FEATHERS), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x20;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_REVIVE_FRAMES;
     }
     return 0;
 }

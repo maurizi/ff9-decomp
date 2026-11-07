@@ -8,6 +8,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_MINI_LIGHT_BEAM  0x6 /* emitter: fan drawn as a blue-white horizontal light beam + small blue rings */
 
+/* fx_07c choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_MINI_FRAMES 0x28 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* position: env->targets->centerX..Z */

@@ -51,7 +51,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 5; i++) {
             fx_062_strips[i].timer118 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_062_strips[i], 0);
         }
         ex->btlfx_getUnitHomePos(0, (s16 *)&fx_062_targetHome);
@@ -201,7 +201,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models40[1].rot4, &work->pos94, (s32)&work->models40[1].scaleC, work->models40[1].model0);
             ex->Hi_DrawEffModel(&work->models40[2].rot4, &work->pos94, (s32)&work->models40[2].scaleC, work->models40[2].model0);
             ex->Hi_DrawEffModel(&work->models40[0].rot4, &work->pos94, (s32)&work->models40[0].scaleC, work->models40[0].model0);
-            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, 1);
+            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, BTLFX_ABR_ADD);
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEMI_BACKDROP), frame);
         }
         if (work->timers0[4] != 0) {
@@ -257,7 +257,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     pt->vz = tr->pos64.vz;
                     pt->halfWidth6 = tr->width114;
                     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, frame, 0x1000,
-                                        tr->timer118 << 9, 1, strip, 0);
+                                        tr->timer118 << 9, BTLFX_ABR_ADD, strip, 0);
                 } else if (work->timers0[0] >= 9) {
                     tr->timer118 = ex->btlfx_randRange(2, 8);
                     tr->angle104 = ex->btlfx_randRange(0x280, 0x600);

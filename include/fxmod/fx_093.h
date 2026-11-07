@@ -13,6 +13,11 @@
 #define FX_CANNON_BLAST_RING 0x8 /* emitter: cream-orange gouraud rings */
 #define FX_CANNON_DUST_RING  0xC /* emitter: grey dust ring */
 
+/* fx_093 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_CANNON_MUZZLE_REACH    0x100 /* the smoke aims at the point this far along the unit's bone (pos8) */
+#define FX_CANNON_EXPLOSION_FRAME 8     /* FX_CANNON_EXPLOSION and FX_CANNON_DUST_RING start */
+#define FX_CANNON_FRAMES          0x43  /* op80's length (the op ends) */
+
 typedef struct {
     SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos8; /* unit 0x10 bone position */

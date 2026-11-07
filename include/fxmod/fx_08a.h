@@ -13,6 +13,13 @@
 #define FX_AUTO_LIFE_GOLD_WINGS    0x9 /* emitter: golden wing sprites */
 #define FX_AUTO_LIFE_GOLD_WINGS_2  0xA /* emitter: golden wing sprites */
 
+/* fx_08a choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_AUTO_LIFE_STATE_WINGS  0    /* op80's only state */
+#define FX_AUTO_LIFE_WINGS_FRAME  6    /* FX_AUTO_LIFE_GOLD_WINGS and _2 start */
+#define FX_AUTO_LIFE_FRAMES       0x28 /* op80's length (the op ends) */
+#define FX_AUTO_LIFE_SPIRAL_TRAILS_TRAIL_SLOTS  0x19 /* FX_AUTO_LIFE_SPIRAL_TRAILS' trail buffer fx_08a_trails: slots of */
+#define FX_AUTO_LIFE_SPIRAL_TRAILS_TRAIL_STRIDE 0x34 /* this many bytes */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* caster body position */

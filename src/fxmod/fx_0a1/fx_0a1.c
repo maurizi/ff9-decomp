@@ -32,9 +32,9 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos8, 0x1000 - ex->math_cos(t >> 2),
                               (s16 *)&pos);
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLASTER_TRAIL_2), 0, NULL, -1, 0x1000, 0, 1, fx_0a1_trail, 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLASTER_TRAIL_2), 0, NULL, -1, 0x1000, 0, BTLFX_ABR_ADD, fx_0a1_trail, 0);
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLASTER_TRAIL_2), (s32)&pos, NULL, 0, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_BLASTER_TRAIL_2), (s32)&pos, NULL, 0, 0x1000, 0x1000, BTLFX_ABR_ADD,
                               fx_0a1_trail, 0);
             if (frame >= 0xA) {
                 work->state0 = 1;

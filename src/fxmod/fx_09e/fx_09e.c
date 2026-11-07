@@ -6,7 +6,7 @@ s32 fx_09e_op80(s32 mode, Fx09eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(Fx09eWork);
     } else if (mode == 1) {
         fx_09e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
@@ -16,13 +16,13 @@ s32 fx_09e_op80(s32 mode, Fx09eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x18) {
+        if (frame == FX_BLIND_VORTEX_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIND_VORTEX), (s32)&work->pos0);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        return frame >= 0x38;
+        return frame >= FX_BLIND_FRAMES;
     }
     return 0;
 }

@@ -11,6 +11,13 @@
 #define FX_VENOM_BREATH_VENOM_CLOUD  0x1 /* emitter: violet venom blobs + droplets */
 #define FX_VENOM_BREATH_VENOM_SPLASH 0x2 /* emitter: violet venom blobs and droplet splash */
 
+/* fx_0ae choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_VENOM_BREATH_STATE_BLOW   0    /* op80's only state: the venom cloud follows the unit's bone towards the target */
+#define FX_VENOM_BREATH_SPLASH_FRAME 0xC  /* FX_VENOM_BREATH_VENOM_SPLASH starts */
+#define FX_VENOM_BREATH_FRAMES       0x3C /* op80's length (the op ends) */
+#define FX_VENOM_BREATH_VENOM_CLOUD_TRAIL_SLOTS  0x2D /* FX_VENOM_BREATH_VENOM_CLOUD's trail buffer fx_0ae_trails: slots of */
+#define FX_VENOM_BREATH_VENOM_CLOUD_TRAIL_STRIDE 0x2C /* this many bytes */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;

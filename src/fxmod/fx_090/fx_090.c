@@ -76,13 +76,13 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0x12 && frame < 0x18) {
             work->scale3C.vy = ((frame - 0x12) << 12) / 6;
             ex->Hi_DrawEffModel(&work->rot24, &work->pos2C, (s32)&work->scale3C, work->model70);
-            ex->Hi_ModifyEffModelAbr(work->model70, 1);
+            ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model70, work->bright4C, work->bright4C, work->bright4C);
         }
         if (frame >= 0x18 && frame < 0x32) {
             ex->Hi_DrawMorphEffModel(&work->rot24, &work->pos2C, (s32)&work->scale3C, work->model70, work->model72,
                                      0x1000 - ((frame - 0x18) << 12) / 26);
-            ex->Hi_ModifyEffModelAbr(work->model70, 1);
+            ex->Hi_ModifyEffModelAbr(work->model70, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model70, work->bright4C, work->bright4C, work->bright4C);
         }
         if (frame >= 0x12) {

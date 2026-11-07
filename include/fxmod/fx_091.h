@@ -11,6 +11,9 @@
 #define FX_ENTICE_BACKDROP    0x1 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ENTICE_VIOLET_HALO 0x2 /* emitter: violet glow ring + sprites */
 
+/* fx_091 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_ENTICE_FRAMES 0x42 /* op80's length (the op ends) */
+
 typedef struct {
     s32 bgFrame0; /* frame for btlfx_drawLayerTexture */
     Pool6CEntry *emit4;

@@ -7,7 +7,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 ratio;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx0a5Work);
     } else if (mode == 1) {
         fx_0a5_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
@@ -17,18 +17,18 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vx = env->targets->centerX;
         work->pos20.vy = env->targets->centerY;
         work->pos20.vz = env->targets->centerZ;
-        work->pos18.vx = 0x5DC;
-        work->pos20.vx = -0x5DC;
+        work->pos18.vx = FX_SPORE_SWEEP_X;
+        work->pos20.vx = -FX_SPORE_SWEEP_X;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPORE_SPORES), (s32)&work->pos8);
         ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->aim10);
     } else {
         frame = entry->frame;
-        if (frame == 0x19) {
+        if (frame == FX_SPORE_GLOW_FRAME) {
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPORE_GREEN_GLOW), (s32)&work->pos18);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0a5_trails;
-                work->emit0->trailSlots = 0x80;
-                work->emit0->trailStride = 0x20;
+                work->emit0->trailSlots = FX_SPORE_GREEN_GLOW_TRAIL_SLOTS;
+                work->emit0->trailStride = FX_SPORE_GREEN_GLOW_TRAIL_STRIDE;
             }
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x80;
@@ -44,8 +44,8 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = work->aim10.vz;
             }
         }
-        if (frame >= 0x19) {
-            t = (frame << 12) / 30;
+        if (frame >= FX_SPORE_GLOW_FRAME) {
+            t = (frame << 12) / FX_SPORE_SWEEP_FRAMES;
             ratio = 0x1000;
             if (t <= 0x1000) {
                 ratio = t;
@@ -60,7 +60,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_SPORE_FRAMES;
     }
     return 0;
 }

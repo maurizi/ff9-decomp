@@ -5,7 +5,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx091Work);
     } else if (mode == 1) {
         work->bgFrame0 = 0;
         fx_091_env = env;
@@ -30,7 +30,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ENTICE_BACKDROP), work->bgFrame0);
         work->bgFrame0++;
-        return frame >= 0x42;
+        return frame >= FX_ENTICE_FRAMES;
     }
     return 0;
 }

@@ -13,6 +13,15 @@
 #define FX_SLEEPING_JUICE_BUBBLES       0x3 /* emitter: yellow bubble cloud */
 #define FX_SLEEPING_JUICE_GLOW          0x4 /* emitter: yellow glow burst */
 
+/* fx_0ac choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_SLEEPING_JUICE_SPLASH_FRAME  2     /* FX_SLEEPING_JUICE_SPLASH_TRAILS start (and turn towards the target from then on) */
+#define FX_SLEEPING_JUICE_SPLASH_REACH  (-0x32) /* from the point this far along the unit's bone */
+#define FX_SLEEPING_JUICE_SPLASH_HEIGHT 0x96  /* raised by this much */
+#define FX_SLEEPING_JUICE_BUBBLES_FRAME 8     /* BUBBLES, GLOW and RIPPLE start */
+#define FX_SLEEPING_JUICE_FRAMES        0x32  /* op80's length (the op ends) */
+#define FX_SLEEPING_JUICE_SPLASH_TRAILS_TRAIL_SLOTS  0x3B /* FX_SLEEPING_JUICE_SPLASH_TRAILS' trail buffer fx_0ac_trails: slots of */
+#define FX_SLEEPING_JUICE_SPLASH_TRAILS_TRAIL_STRIDE 0xBC /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

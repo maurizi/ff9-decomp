@@ -49,7 +49,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 10; i++) {
             fx_063_strips[i].timer100 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_063_strips[i], 0);
         }
         if (env->targets->centerZ < 0) {
@@ -158,7 +158,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models40[1].rot4, &work->pos94, (s32)&work->models40[1].scaleC, work->models40[1].model0);
             ex->Hi_DrawEffModel(&work->models40[2].rot4, &work->pos94, (s32)&work->models40[2].scaleC, work->models40[2].model0);
             ex->Hi_DrawEffModel(&work->models40[0].rot4, &work->pos94, (s32)&work->models40[0].scaleC, work->models40[0].model0);
-            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, 1);
+            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, BTLFX_ABR_ADD);
         }
         if (work->timers0[3] != 0) {
             tint = -((8 - work->timers0[3]) << 5);
@@ -237,10 +237,10 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     pt->halfWidth6 = tr->widthFC;
                     if (tr->timer100 < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, frame, 0x1000,
-                                            tr->timer100 << 10, 1, strip, 0);
+                                            tr->timer100 << 10, BTLFX_ABR_ADD, strip, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_GLOW_TRAIL), 0, NULL, frame, 0x1000,
-                                            0x1000, 1, strip, 0);
+                                            0x1000, BTLFX_ABR_ADD, strip, 0);
                     }
                 } else if (work->timers0[0] >= 7) {
                     tr->timer100 = ex->btlfx_randRange(2, 6);

@@ -5,7 +5,7 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x34;
+        *args = sizeof(Fx087Work);
     } else if (mode == 1) {
         fx_087_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
@@ -14,8 +14,8 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_STREAKS), (s32)&work->pos1C);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_087_trails;
-            work->emit4->trailSlots = 0x19;
-            work->emit4->trailStride = 0x30;
+            work->emit4->trailSlots = FX_SPARE_CHANGE_STREAKS_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_SPARE_CHANGE_STREAKS_TRAIL_STRIDE;
         }
         ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos14, (s16 *)&work->aim2C);
     } else {
@@ -30,13 +30,13 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = work->aim2C.vz;
             }
         }
-        if (frame == 8) {
+        if (frame == FX_SPARE_CHANGE_COINS_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_COINS), (s32)&work->pos14);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_SPARE_CHANGE_FRAMES;
     }
     return 0;
 }

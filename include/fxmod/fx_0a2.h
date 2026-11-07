@@ -11,6 +11,12 @@
 #define FX_CURA_SPARKLE_BURST 0x1 /* emitter: green star twinkles; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_CURA_STAR_TRAIL    0x2 /* emitter: blue star-sparkle trail spiralling + sprites */
 
+/* fx_0a2 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_CURA_SPARKLE_FRAME 0x14 /* FX_CURA_SPARKLE_BURST starts */
+#define FX_CURA_FRAMES        0x3C /* op80's length (the op ends) */
+#define FX_CURA_STAR_TRAIL_TRAIL_SLOTS  0xB  /* FX_CURA_STAR_TRAIL's trail buffer fx_0a2_trails: slots of */
+#define FX_CURA_STAR_TRAIL_TRAIL_STRIDE 0xA0 /* this many bytes */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
