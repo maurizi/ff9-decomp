@@ -72,7 +72,7 @@ s32 vib_update(void) {
     if (small >= 0x80) {
         small = 1;
     }
-    if (!((g_gameState->config & 0xFF) >> CFG_BIT_VIBRATION) || g_gameState->mode == GS_MODE_FIELD_LIKE) {
+    if (!((g_gameState->config & 0xFF) >> CFG_BIT_VIBRATION) || g_gameState->mode == GS_MODE_UNUSED_5) {
         g_padActuator[0].smallMotor = small;
         g_padActuator[0].largeMotor = large;
         if (g_gameState->mode == GS_MODE_BATTLE && btlui_isSecondPortUsed()) {

@@ -75,7 +75,7 @@ void msg_beginDraw(void) {
     u32 *tbl;
     u8 *cur;
 
-    if (gs->mode == GS_MODE_BATTLE || gs->mode == GS_MODE_BATTLE_LIKE) {
+    if (gs->mode == GS_MODE_BATTLE || gs->mode == GS_MODE_UNUSED_6) {
         g_msgDrawBufMode = 1;
         pp = &g_msgBattlePktPtr;
         tbl = &g_msgBattlePktBufs[gs->gameData->drawBuf];

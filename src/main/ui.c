@@ -734,7 +734,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         setlen(pkt, PRIM_LEN(TILE));
         rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR);
         if (cur >= max) {
-            rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR_FULL);
+            rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR_MASTERED);
         }
         if (flag) {
             rgbc |= GPU_CODE(GPU_ABE);

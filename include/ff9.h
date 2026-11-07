@@ -2380,9 +2380,10 @@ extern s32 g_padPortMask[];
 #define GS_MODE_BATTLE 2 /* ovl_0b btl_entry */
 #define GS_MODE_WORLD 3 /* ovl_0c wm_entry */
 #define GS_MODE_ENDING 4 /* ovl_15 ending_main */
-/* 5 and 6 have no overlay and no case in game_main (docs/wip/constants_runtime_main.md); named by how code treats them */
-#define GS_MODE_FIELD_LIKE 5 /* vib_update and ovl_64/ovl_0a treat it like the field */
-#define GS_MODE_BATTLE_LIKE 6 /* msg_beginDraw treats it like the battle */
+/* 5 and 6 are never set in retail: no case in game_main's dispatcher, 0xFF in game_loadModeOverlay's overlay table,
+ * every store to GameState.mode writes another value, and R46 watched GameState.mode at runtime without a 5 or 6 */
+#define GS_MODE_UNUSED_5 5 /* vib_update, bgi_move and ovl_64 mbg treat it like the field */
+#define GS_MODE_UNUSED_6 6 /* msg_beginDraw treats it like the battle */
 #define GS_MODE_GAME_OVER 7 /* ovl_65 fld_gameOver (field exit FLD_EXIT_GAME_OVER) */
 #define GS_MODE_BATTLE_END 8 /* ovl_65 battleEnd_main, set by ovl_0b when a battle ends */
 #define GS_MODE_TETRA_MASTER 9 /* ovl_0d tm_main; as prevMode it makes evt_init/evt_createModels rebuild the field models */
@@ -2825,10 +2826,11 @@ typedef struct {
                                     * the AP gauge's numbers) */
 #define UI_RGB_HALF       0x404040 /* half brightness: UI_LABEL_DIM labels, and multi-target cursors every 4th frame
                                     * (btlui_drawTargetCursors) */
-#define UI_RGB_HELP_FILL  0xA8B078 /* help window background (win_drawHelpFill, win_drawHelpTailFill) */
+#define UI_RGB_HELP_FILL  0xA8B078 /* the help window's teal background and its speech tail (win_drawHelpFill,
+                                    * win_drawHelpTailFill; runtime R46) */
 #define UI_RGB_ETCHED_MID 0x403838 /* ui_drawEtchedLine: the middle line, between the window colour's two lines */
-#define UI_RGB_AP_BAR     0x70A838 /* ui_buildApGauge bar while learning */
-#define UI_RGB_AP_BAR_FULL 0x2838A8 /* ui_buildApGauge bar at cur == max */
+#define UI_RGB_AP_BAR     0x70A838 /* ui_buildApGauge bar while learning: green (runtime R46) */
+#define UI_RGB_AP_BAR_MASTERED 0x2838A8 /* ui_buildApGauge bar at cur == max: red, under the mastered stars (runtime R46) */
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows
