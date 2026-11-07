@@ -43,6 +43,69 @@
 #define FX_RAMUH_SUMMON_KEYS_5      0x85 /* summon data entry 5: per-frame key table (op80) */
 #define FX_RAMUH_BLUE_FLASH         0x86 /* summon data entry 6: emitter, orbiting fan of a horizontal blue light flash */
 
+/* fx_0ba choreography (docs/fxdata.md, "Choreography literals"): op80's states (the summon and the storm clouds)
+ * and op81's (the bolt), their lengths, keyframes and screen tints, the pool sizes, the VRAM rects the scrolling
+ * cloud textures fill (checked against the models' tpage), GPU words. */
+#define FX_RAMUH_MODEL_COUNT    6    /* op80: btlfx_initEffModels slots */
+#define FX_RAMUH_SUMMON_STATE_APPEAR 0 /* op80: the screen brightens, the clouds scroll */
+#define FX_RAMUH_SUMMON_STATE_STORM  1 /* op80: the summon; CLOUD_DISC / CLOUD_RING morph, BLUE_FLASH, STORM_CLOUDS */
+#define FX_RAMUH_SUMMON_STATE_COLUMN 2 /* op80: CLOUD_PLANE_2 and CAPPED_COLUMN */
+#define FX_RAMUH_APPEAR_FADE_FRAMES 6  /* FX_RAMUH_SUMMON_STATE_APPEAR: brightens over this many frames */
+#define FX_RAMUH_APPEAR_FRAMES  0x20   /* FX_RAMUH_SUMMON_STATE_APPEAR's length (the summon motion starts) */
+#define FX_RAMUH_STORM_1_FRAME  0xC    /* FX_RAMUH_SUMMON_STATE_STORM keyframes */
+#define FX_RAMUH_STORM_2_FRAME  0x18
+#define FX_RAMUH_STORM_MOTION_FRAME 0x3B /* the summon's second motion */
+#define FX_RAMUH_STORM_CLOUD_FRAME  0x3C /* the cloud morph models, BLUE_FLASH and STORM_CLOUDS start */
+#define FX_RAMUH_STORM_FRAMES   0x5F   /* FX_RAMUH_SUMMON_STATE_STORM's length */
+#define FX_RAMUH_COLUMN_FRAME   0x14   /* FX_RAMUH_SUMMON_STATE_COLUMN: CAPPED_COLUMN shows from here */
+#define FX_RAMUH_COLUMN_FRAMES  0x1E   /* FX_RAMUH_SUMMON_STATE_COLUMN's length */
+#define FX_RAMUH_BOLT_MODEL_COUNT 5    /* op81: btlfx_initEffModels slots */
+#define FX_RAMUH_STATE_GATHER 0 /* op81: Ramuh's motion keys, GREY_RING, the glow */
+#define FX_RAMUH_STATE_CHARGE 1 /* op81: subtractive white flash, then a blue one */
+#define FX_RAMUH_STATE_STRIKE 2 /* op81: the bolt: sparks, rings, ribbons and a run of screen tints */
+#define FX_RAMUH_STATE_TAIL   3 /* op81: the emitters fade and stop */
+#define FX_RAMUH_GLOW_FRAME     7    /* FX_RAMUH_STATE_GATHER: the glow pulses from here */
+#define FX_RAMUH_GATHER_FRAMES  15   /* FX_RAMUH_STATE_GATHER's length */
+#define FX_RAMUH_CHARGE_FRAMES  9    /* FX_RAMUH_STATE_CHARGE's length; at its end a subtractive tint (leaves blue) */
+#define FX_RAMUH_CHARGE_END_RGB 0xFF, 0xFF, 0
+#define FX_RAMUH_STRIKE_FRAMES  51   /* FX_RAMUH_STATE_STRIKE's length (BOLT_SPARKS start at its end) */
+#define FX_RAMUH_SPARK_BURST_FRAME 14 /* FX_RAMUH_STATE_STRIKE: FX_RAMUH_BOLT_SPARK_BURST starts */
+#define FX_RAMUH_FLASH_FRAME    16   /*   additive blue flash fading over */
+#define FX_RAMUH_FLASH_FRAMES   6    /*   this many frames (yellow tint on its first) */
+#define FX_RAMUH_FLASH_RGB      0x80, 0x80, 0
+#define FX_RAMUH_GLOW_RINGS_FRAME 20 /*   FX_RAMUH_BLUE_GLOW_RINGS start */
+#define FX_RAMUH_DARKEN_FRAME   22   /*   one frame of subtractive tint, */
+#define FX_RAMUH_DARKEN_RGB     0x80, 0x80, 0x20
+#define FX_RAMUH_YELLOW_FRAME   23   /*   then additive yellow fading over */
+#define FX_RAMUH_YELLOW_FRAMES  3    /*   this many frames */
+#define FX_RAMUH_BLUE_FRAME     29   /*   one frame of additive blue */
+#define FX_RAMUH_BLUE_RGB       0x20, 0x64, 0xFF
+#define FX_RAMUH_DARKEN_2_FRAME 33   /*   one frame of subtractive tint, */
+#define FX_RAMUH_DARKEN_2_RGB   0x40, 0x40, 0
+#define FX_RAMUH_GREY_FRAME     34   /*   one of additive grey */
+#define FX_RAMUH_GREY_RGB       0x40, 0x40, 0x40
+#define FX_RAMUH_SKY_FRAME      41   /*   additive sky-blue fade-in over */
+#define FX_RAMUH_SKY_FRAMES     10   /*   this many frames */
+#define FX_RAMUH_TAIL_FRAMES    20   /* FX_RAMUH_STATE_TAIL's length (the op ends); on its first frame a cyan tint */
+#define FX_RAMUH_TAIL_RGB       0x20, 0xFF, 0xFF
+#define FX_RAMUH_BOLT_SLOTS     0x20 /* op83: pool items (Fx0baBolt) */
+#define FX_RAMUH_PART_SLOTS     0x55 /* op85: pool items (Fx0baPart) */
+/* Scrolling textures: FX_RAMUH_CLOUD_PLANE / CLOUD_RING / CLOUD_DISC's storm-cloud page (tpage 0x99 = 8-bit page
+ * (0x240, 0x100)): btlfx_drawScrollMove copies each half's top rows down to v 0x70, scrolled; CAPPED_COLUMN (tpage
+ * 0x15 = 4-bit page (0x140, 0x100)) gets its right half from its left one. */
+#define FX_RAMUH_CLOUD_VRAM_X   0x240
+#define FX_RAMUH_CLOUD_2_VRAM_X 0x280
+#define FX_RAMUH_CLOUD_VRAM_Y   0x170
+#define FX_RAMUH_CLOUD_VRAM_W   0x38
+#define FX_RAMUH_CLOUD_VRAM_H   0x70
+#define FX_RAMUH_CLOUD_SRC_Y    0x100
+#define FX_RAMUH_COLUMN_VRAM_X  0x160
+#define FX_RAMUH_COLUMN_VRAM_Y  0x100
+#define FX_RAMUH_COLUMN_VRAM_W  0x20
+#define FX_RAMUH_COLUMN_VRAM_H  0x80
+#define FX_RAMUH_COLUMN_SRC_X   0x140
+#define FX_RAMUH_COLUMN_SRC_Y   0x100
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
