@@ -1465,7 +1465,7 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 #define FIELD_SHADOW_ADD(k, q) \
     k = (k >> 2) + bias; \
     if (-g_gameState->gameData->ctx.field->area->scene->otBias < k \
-        && k < 0x1000 - g_gameState->gameData->ctx.field->area->scene->otBias) { \
+        && k < OT_LEN - g_gameState->gameData->ctx.field->area->scene->otBias) { \
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], place->prims[g_gameState->gameData->drawBuf][q]); \
     }
 
@@ -1718,5 +1718,8 @@ s32 preload_update(void); /* main */
 s32 tpage_getX(s32 tpage); /* main */
 s32 tpage_getY(s16 tpage); /* main */
 s32 vib_update(void); /* main */
+/* TexAnim.lastFrame (ff9.h): no frame uploaded yet, so the next update uploads whatever frame pos is on (also main
+ * event.c and ovl_0b write 0x1000 there) */
+#define TEXANIM_LAST_FRAME_NONE 0x1000
 
 #endif

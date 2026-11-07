@@ -180,7 +180,7 @@ void wm_drawMap(void) {
     wm_drawBlocks();
     SetBackColor(g_worldWeatherData.work[0].backdropBackColor.c[0], g_worldWeatherData.work[0].backdropBackColor.c[2], g_worldWeatherData.work[0].backdropBackColor.c[4]);
     if (g_worldBackdropOn != 0) {
-        MATRIX m1 = { { { 0x1000, 0, 0 }, { 0, 0x1000, 0 }, { 0, 0, 0x1000 } }, { 0, 0xE10, 0 } };
+        MATRIX m1 = { { { ONE, 0, 0 }, { 0, ONE, 0 }, { 0, 0, ONE } }, { 0, 0xE10, 0 } };
         MATRIX out;
         MATRIX m2 = *g_worldViewMatrix;
 
@@ -458,7 +458,7 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale) 
         camRel.vz = g_worldDepth + camRel.vz;
     }
     ApplyMatrixLV(g_worldViewMatrix, &camRel, outView);
-    scale = 0x1000 - ((outView->vz >> 4) + (outView->vz >> 6));
+    scale = ONE - ((outView->vz >> 4) + (outView->vz >> 6));
     camRel.vy = ((pos->vy * scale) >> 12) - g_worldCameraEye[1];
     ApplyMatrixLV(g_worldViewMatrix, &camRel, outView);
     outRel->vx = pos->vx - g_worldCameraTarget[0];
@@ -1146,7 +1146,7 @@ void wm_updateVisibleBlocks(void) {
                     for (cnt = 0; cnt < cellBlock->outlineCount; cnt++) {
                         sv = verts[cellBlock->outline[cnt]];
                         RotTrans(&sv, &out, &flag);
-                        sv.vy = sv.vy * (0x1000 - (out.vz >> 4)) >> 12;
+                        sv.vy = sv.vy * (ONE - (out.vz >> 4)) >> 12;
                         z[cnt] = RotTransPers(&sv, &sxy, &interp, &flag);
                         sy[cnt] = (u32)sxy >> 16;
                         sx[cnt] = sxy;

@@ -725,7 +725,7 @@ s32 moveId;
             pos = move->min + step;
             break;
         case 1:
-            pos = move->min + range * ((s16)math_cos((s16)((step << 12) / range) + 0x800) + 0x1000) / 0x2000;
+            pos = move->min + range * ((s16)math_cos((s16)((step << 12) / range) + 0x800) + ONE) / 0x2000;
             break;
         default:
             pos = move->min + step;

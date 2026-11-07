@@ -703,11 +703,11 @@ void wm_callChocobo(void) {
 }
 
 s32 wm_lerp(s32 from, s32 to, s32 t) {
-    return ((from * (0x1000 - t)) >> 0xC) + ((to * t) >> 0xC);
+    return ((from * (ONE - t)) >> 0xC) + ((to * t) >> 0xC);
 }
 
 s32 wm_lerpS8(s8 from, s8 to, s32 t) {
-    return ((((from << 0xA) * (0x1000 - t)) >> 0xC) + (((to << 0xA) * t) >> 0xC)) >> 0xA;
+    return ((((from << 0xA) * (ONE - t)) >> 0xC) + (((to << 0xA) * t) >> 0xC)) >> 0xA;
 }
 
 /* fixed-point lerp of two values with headroom bits of headroom */
@@ -795,7 +795,7 @@ s32 wm_getSubOvlBase(void) {
 
 void wm_initLighting(void) {
     g_worldMapLightMatrix.m[0][0] = 0;
-    g_worldMapLightMatrix.m[0][1] = -0x1000;
+    g_worldMapLightMatrix.m[0][1] = -ONE;
     g_worldMapLightMatrix.m[0][2] = 0;
     g_worldMapLightMatrix.m[1][0] = ONE;
     g_worldMapLightMatrix.m[1][1] = 0;

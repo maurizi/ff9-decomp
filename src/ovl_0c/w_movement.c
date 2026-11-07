@@ -25,7 +25,7 @@ void wm_initCamera(void) {
         g_worldCamera->viewBlend = 0;
     }
     if (g_worldCamera->viewBlendSpeed > 0) {
-        g_worldCamera->viewBlend = 0x1000;
+        g_worldCamera->viewBlend = ONE;
     }
     g_worldCameraBlend = 0;
     g_worldCameraBlendSpeed = 0;
@@ -264,7 +264,7 @@ void wm_cameraFollow(void) {
             if (g_worldCameraTurning != 0) {
                 k = WM_CAM_RISE_SHIFT_FAST;
             }
-            if (g_worldCamera->viewBlend != 0 && g_worldCamera->viewBlend != 0x1000) {
+            if (g_worldCamera->viewBlend != 0 && g_worldCamera->viewBlend != ONE) {
                 k = WM_CAM_RISE_SHIFT_BLEND;
             }
             y2 = g_worldCameraParams.groundClearance + h;
@@ -380,15 +380,15 @@ void wm_updateCameraPreset(void) {
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
     }
-    if (g_worldCamera->viewBlend >= 0x1000) {
-        g_worldCamera->viewBlend = 0x1000;
+    if (g_worldCamera->viewBlend >= ONE) {
+        g_worldCamera->viewBlend = ONE;
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
     }
     if (g_worldCameraBlendSpeed != 0) {
         g_worldCameraBlend += g_worldCameraBlendSpeed;
-        if (g_worldCameraBlend > 0x1000) {
-            g_worldCameraBlend = 0x1000;
+        if (g_worldCameraBlend > ONE) {
+            g_worldCameraBlend = ONE;
         }
         wm_calcCameraPreset(-g_worldPlayer->pos.vy, g_worldCameraBlendRow, k, g_worldCamera->viewBlend, &preset);
         g_worldCameraParams.projDist = wm_lerpShift(g_worldCameraParamsFrom.projDist, preset.projDist, g_worldCameraBlend, 9);
@@ -396,7 +396,7 @@ void wm_updateCameraPreset(void) {
         g_worldCameraParams.eyeHeight = wm_lerpShift(g_worldCameraParamsFrom.eyeHeight, preset.eyeHeight, g_worldCameraBlend, 0xE);
         g_worldCameraParams.groundClearance = wm_lerpShift(g_worldCameraParamsFrom.groundClearance, preset.groundClearance, g_worldCameraBlend, 0xE);
         g_worldCameraParams.targetHeight = wm_lerpShift(g_worldCameraParamsFrom.targetHeight, preset.targetHeight, g_worldCameraBlend, 0xE);
-        if (g_worldCameraBlend >= 0x1000) {
+        if (g_worldCameraBlend >= ONE) {
             g_worldCameraBlendSpeed = 0;
         }
     } else {
@@ -437,7 +437,7 @@ void wm_toggleCameraView(void) {
             atEnd = 1;
             g_worldCamera->viewBlendSpeed = 0x100;
         }
-        if (g_worldCamera->viewBlend == 0x1000) {
+        if (g_worldCamera->viewBlend == ONE) {
             atEnd = 1;
             g_worldCamera->viewBlendSpeed = -0x100;
         }
@@ -477,7 +477,7 @@ s32 wm_getCameraViewState() {
     if (blend == 0) {
         return 0;
     }
-    if (blend == 0x1000) {
+    if (blend == ONE) {
         return 2;
     }
     return 1;
@@ -540,8 +540,8 @@ void wm_lookAt(MATRIX *out, SVECTOR *eye, SVECTOR *target, VECTOR *up) {
 s32 wm_cameraAltitudeBlend(s32 altitude) {
     altitude = (altitude - 1000) << 12;
     altitude /= 4500;
-    if (altitude > 0x1000) {
-        altitude = 0x1000;
+    if (altitude > ONE) {
+        altitude = ONE;
     }
     if (altitude < 0) {
         altitude = 0;
@@ -569,7 +569,7 @@ void wm_initMovement(void) {
     g_worldClimbSmooth = 0;
     g_worldPlayerHeading = 0;
     g_worldMoveInitWord = 0;
-    g_worldCameraTurnGain = 0x1000;
+    g_worldCameraTurnGain = ONE;
     g_worldCeilingGap = 0;
     g_worldDrawActors = 1;
     g_worldFastFly = 0;
@@ -803,8 +803,8 @@ void wm_setActorFog(EvtObject *act, s32 depth) {
     t -= 0xC1F;
     t <<= 12;
     t /= 2176;
-    if (t > 0x1000) {
-        t = 0x1000;
+    if (t > ONE) {
+        t = ONE;
     }
     if (t < 0) {
         t = 0;
@@ -818,7 +818,7 @@ void wm_setActorFog(EvtObject *act, s32 depth) {
     if (cue < 0) {
         cue = 0;
     }
-    if (cue >= 0x1000) {
+    if (cue >= ONE) {
         cue = 0xFFF;
     }
     for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, palAnim++) {
@@ -827,8 +827,8 @@ void wm_setActorFog(EvtObject *act, s32 depth) {
             if (cue < 0) {
                 cue = 0;
             }
-            if (cue > 0x1000) {
-                cue = 0x1000;
+            if (cue > ONE) {
+                cue = ONE;
             }
             wm_depthCueClut(palAnim->srcPal, palAnim->workPal[*g_worldBufIndex], cue, g_worldWeatherData.work[0].fxBackColor);
             rect->x = palAnim->clutX;
@@ -913,7 +913,7 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
 
     typeInfo = &g_worldActorTypeInfo[act->actorType];
     k = act->modelSlot;
-    sx = 0x1000;
+    sx = ONE;
     if (act->actorType != WM_ACTOR_SHADOW_ONLY) {
         lift = typeInfo->floorY - act->pos.vy;
         pos->vy += lift;
@@ -932,7 +932,7 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
         if (fade < 0) {
             fade = 0;
         }
-        if (fade >= 0x1000) {
+        if (fade >= ONE) {
             fade = 0xFFF;
         }
         sz *= fade;
@@ -961,7 +961,7 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
         if (fade < 0) {
             fade = 0;
         }
-        if (fade >= 0x1000) {
+        if (fade >= ONE) {
             fade = 0xFFF;
         }
         alpha = (typeInfo->shadowDepth * size) >> 12;
@@ -1885,7 +1885,7 @@ void wm_controlFly(void) {
             if (onWater && abs(g_worldPlayerSpeed) > WM_AIRSHIP_SPRAY_SPEED) {
                 h = g_worldPlayer->pos.vy;
                 if (h >= WM_AIRSHIP_SPRAY_ALT) {
-                    g_worldSprayTarget = 0x1000 - abs(h + 400) * 2;
+                    g_worldSprayTarget = ONE - abs(h + 400) * 2;
                     wm_spawnEffect(g_worldPlayer->pos.vx, WM_FX_SPRAY_Y, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SPRAY, WM_FX_SCALE_AIRSHIP_SPRAY);
                     h = abs(g_worldPlayerSpeed);
                     if (h >= 0x200) {
@@ -1905,17 +1905,17 @@ void wm_controlFly(void) {
                 wm_seFadeVolume(WM_SE_AIRSHIP_WATER, WM_SE_FADE_SPRAY_OUT, 0);
             }
             if (topo == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= WM_SAND_DUST_ALT) {
-                g_worldSprayTarget = 0x1000 - (g_worldPlayer->pos.vy - 0x514) * 2;
+                g_worldSprayTarget = ONE - (g_worldPlayer->pos.vy - 0x514) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + WM_LOW_FX_Y, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SAND, WM_FX_SCALE_AIRSHIP_SPRAY);
             }
             break;
         case WM_ACTOR_CHOCOBO4:
             if (onWater && abs(g_worldPlayerSpeed) > WM_CHOCOBO_SPRAY_SPEED && g_worldPlayer->pos.vy >= WM_CHOCOBO_SPRAY_ALT) {
-                g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy - WM_CHOCOBO_SPRAY_ALT) * 2;
+                g_worldSprayTarget = ONE - abs(g_worldPlayer->pos.vy - WM_CHOCOBO_SPRAY_ALT) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, WM_FX_SPRAY_Y, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SPRAY, WM_FX_SCALE_CHOCOBO_SPRAY);
             }
             if (topo == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= WM_SAND_DUST_ALT) {
-                g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy - WM_SAND_DUST_ALT) * 2;
+                g_worldSprayTarget = ONE - abs(g_worldPlayer->pos.vy - WM_SAND_DUST_ALT) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + WM_LOW_FX_Y, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SAND, WM_FX_SCALE_CHOCOBO_SAND);
             }
             break;
@@ -1944,7 +1944,7 @@ void wm_cameraAutoTurnWalk(void) {
         yawDiff = 0;
     }
     if (g_worldPlayerSpeed != 0) {
-        g_worldCameraTurnGain = 0x1000;
+        g_worldCameraTurnGain = ONE;
     } else {
         g_worldCameraTurnGain -= 0x200;
         if (g_worldCameraTurnGain < 0) {

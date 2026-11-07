@@ -117,7 +117,7 @@ void wm_drawEffects(void) {
                 case WM_FX_CHOCOBO_SAND:
                 case WM_FX_AIRSHIP_SPRAY:
                 case WM_FX_AIRSHIP_SAND:
-                    if (g_worldSprayTarget >= 0x1000) {
+                    if (g_worldSprayTarget >= ONE) {
                         g_worldSprayTarget = 0xFFF;
                     }
                     if (g_worldSprayTarget < 0) {

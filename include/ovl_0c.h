@@ -1951,7 +1951,7 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 /* wm_drawShadow: link shadow quad q at its deepest corner */
 #define SHADOW_ADD(k, q) \
     k >>= 3; \
-    if (-g_worldOtBias < k && k < 0x1000 - g_worldOtBias) { \
+    if (-g_worldOtBias < k && k < OT_LEN - g_worldOtBias) { \
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], shadow->prims[g_gameState->gameData->drawBuf][q]); \
     }
 

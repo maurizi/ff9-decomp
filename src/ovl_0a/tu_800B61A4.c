@@ -103,9 +103,9 @@ void fldmdl_initModel(ModelObj *mdl, u8 *work) {
         size += g2->packetSize;
         g2++;
     }
-    mdl->scaleX = 0x1000;
-    mdl->scaleY = 0x1000;
-    mdl->scaleZ = 0x1000;
+    mdl->scaleX = ONE;
+    mdl->scaleY = ONE;
+    mdl->scaleZ = ONE;
     mdl->parent = NULL;
     mdl->mirrorSrc = NULL;
     mdl->unk5C = 0;
@@ -1618,7 +1618,7 @@ loop:
     gte_stlvnl(boneMtx->t);
     if (head == idx) {
         up.vx = 0;
-        up.vy = 0x1000;
+        up.vy = ONE;
         up.vz = 0;
         lookDir.vx = boneMtx->t[0] - mdl->lookAtTarget[0];
         lookDir.vy = boneMtx->t[1] - mdl->lookAtTarget[1];
@@ -1734,7 +1734,7 @@ void fldmdl_updateTexAnims(TexAnimSet *set) {
                 }
                 pos += anim->speed;
             } else {
-                pos += 0x1000;
+                pos += ONE;
             }
             if ((pos >> 12) < anim->frameCount) {
                 anim->pos = pos;
@@ -3200,7 +3200,7 @@ s32 fldbg_updateScroll(void) {
             g_fieldBgState.scroll.x = g_fieldBgState.scrollFrom.x + wx * cnt / dur;
             g_fieldBgState.scroll.y = g_fieldBgState.scrollFrom.y + wy * cnt / dur;
         } else {
-            y = math_cos(((cnt << 16) >> 5) / dur + 0x800) + 0x1000;
+            y = math_cos(((cnt << 16) >> 5) / dur + 0x800) + ONE;
             ax = wx * y / 0x2000;
             ay = wy * y / 0x2000;
             g_fieldBgState.scroll.x = g_fieldBgState.scrollFrom.x + ax;

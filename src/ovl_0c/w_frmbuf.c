@@ -145,12 +145,12 @@ void wm_weatherUpdate(void) {
     }
     if (g_worldWeatherBlend >= 0) {
         g_worldWeatherBlend += g_worldWeatherSpeed;
-        if (g_worldWeatherBlend > 0x1000) {
-            g_worldWeatherBlend = 0x1000;
+        if (g_worldWeatherBlend > ONE) {
+            g_worldWeatherBlend = ONE;
         }
         wm_blendWeather(&g_worldWeatherData.work[1], &g_worldWeatherData.work[3], &g_worldWeatherData.work[4], g_worldWeatherBlend, g_worldWeatherBlend);
         wm_blendWeather(&g_worldWeatherData.work[2], &g_worldWeatherData.work[5], &g_worldWeatherData.work[6], g_worldWeatherBlend, g_worldWeatherBlend);
-        if (g_worldWeatherBlend == 0x1000) {
+        if (g_worldWeatherBlend == ONE) {
             g_worldWeatherBlend = -1;
         }
     }
@@ -158,8 +158,8 @@ void wm_weatherUpdate(void) {
     t -= 0x898;
     t <<= 12;
     t /= 4500;
-    if (t > 0x1000) {
-        t = 0x1000;
+    if (t > ONE) {
+        t = ONE;
     }
     if (t < 0) {
         t = 0;
@@ -287,14 +287,14 @@ void wm_blendWeather(WmSky *out, WmSky *from, WmSky *to, s32 t, s32 unusedT) {
     if (t < 0) {
         t = 0;
     }
-    if (t > 0x1000) {
-        t = 0x1000;
+    if (t > ONE) {
+        t = ONE;
     }
     if (unusedT < 0) {
         unusedT = 0;
     }
-    if (unusedT > 0x1000) {
-        unusedT = 0x1000;
+    if (unusedT > ONE) {
+        unusedT = ONE;
     }
     out->lightColor[0].vx = wm_lerpShift(from->lightColor[0].vx, to->lightColor[0].vx, t, 0xD);
     out->lightColor[0].vy = wm_lerpShift(from->lightColor[0].vy, to->lightColor[0].vy, t, 0xD);
@@ -382,7 +382,7 @@ void wm_weatherStart(void) {
     g_worldWeatherAutoMode = wm_getWeatherByPos();
     g_worldFog = wm_getStoryFog();
     printf("start weather mode : %d / fog : %d\n", g_worldWeatherAutoMode, g_worldFog);
-    wm_setWeather(g_worldWeatherAutoMode, g_worldFog, 0x1000);
+    wm_setWeather(g_worldWeatherAutoMode, g_worldFog, ONE);
 }
 
 s32 wm_getStoryFog(void) {

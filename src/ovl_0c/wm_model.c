@@ -103,9 +103,9 @@ void wm_initModel(ModelObj *mdl, u8 *work) {
         size += g2->packetSize;
         g2++;
     }
-    mdl->scaleX = 0x1000;
-    mdl->scaleY = 0x1000;
-    mdl->scaleZ = 0x1000;
+    mdl->scaleX = ONE;
+    mdl->scaleY = ONE;
+    mdl->scaleZ = ONE;
     mdl->parent = NULL;
     mdl->mirrorSrc = NULL;
     mdl->unk5C = 0;

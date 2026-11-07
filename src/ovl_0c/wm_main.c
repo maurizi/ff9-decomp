@@ -649,17 +649,17 @@ void wm_drawShadow(WmObjEnt *shadows, s32 slot, s32 groundY, s32 jointIdx) {
     gte_stir(mat.t);
     gte_SetRotMatrix(&mat);
     gte_SetTransMatrix(&mat);
-    SHADOW_PT(-0x1000, 0x1000);
+    SHADOW_PT(-ONE, ONE);
     gte_stsxy(&quads[0]->x0);
     gte_stsz(&z[0]);
-    SHADOW_PT(0, 0x1000);
+    SHADOW_PT(0, ONE);
     gte_stsxy(&quads[0]->x1);
     gte_stsxy(&quads[1]->x0);
     gte_stsz(&z[1]);
-    SHADOW_PT(0x1000, 0x1000);
+    SHADOW_PT(ONE, ONE);
     gte_stsxy(&quads[1]->x1);
     gte_stsz(&z[2]);
-    SHADOW_PT(-0x1000, 0);
+    SHADOW_PT(-ONE, 0);
     gte_stsxy(&quads[0]->x2);
     gte_stsxy(&quads[2]->x0);
     gte_stsz(&z[3]);
@@ -669,18 +669,18 @@ void wm_drawShadow(WmObjEnt *shadows, s32 slot, s32 groundY, s32 jointIdx) {
     gte_stsxy(&quads[2]->x1);
     gte_stsxy(&quads[3]->x0);
     gte_stsz(&z[4]);
-    SHADOW_PT(0x1000, 0);
+    SHADOW_PT(ONE, 0);
     gte_stsxy(&quads[1]->x3);
     gte_stsxy(&quads[3]->x1);
     gte_stsz(&z[5]);
-    SHADOW_PT(-0x1000, -0x1000);
+    SHADOW_PT(-ONE, -ONE);
     gte_stsxy(&quads[2]->x2);
     gte_stsz(&z[6]);
-    SHADOW_PT(0, -0x1000);
+    SHADOW_PT(0, -ONE);
     gte_stsxy(&quads[2]->x3);
     gte_stsxy(&quads[3]->x2);
     gte_stsz(&z[7]);
-    SHADOW_PT(0x1000, -0x1000);
+    SHADOW_PT(ONE, -ONE);
     gte_stsxy(&quads[3]->x3);
     gte_stsz(&z[8]);
 
@@ -757,7 +757,7 @@ void wm_calcShadowMatrix(WmObjEnt *shadow, WmObjSlot *obj, MATRIX *out, s32 grou
     mat.t[1] = 0;
     mat.t[0] = 0;
     axis.vx = 0;
-    axis.vy = -0x1000;
+    axis.vy = -ONE;
     axis.vz = 0;
     gte_SetRotMatrix(&mat);
     gte_SetTransMatrix(&mat);
@@ -766,7 +766,7 @@ void wm_calcShadowMatrix(WmObjEnt *shadow, WmObjSlot *obj, MATRIX *out, s32 grou
     gte_stlvnl(&dir);
     dir.vy = 0;
     VectorNormal(&dir, &fwd);
-    up.vy = 0x1000;
+    up.vy = ONE;
     up.vx = 0;
     up.vz = 0;
     fwd.vx = -fwd.vx;
@@ -1141,7 +1141,7 @@ void wm_calcSoundPanVolume(s16 posX, s16 posY, s16 posZ, s32 unused, u8 *outPan,
     z /= 8;
     if (z < 0) {
         z = 0;
-    } else if (z >= 0x1000) {
+    } else if (z >= ONE) {
         z = 0xFFF;
     }
     margin = z / 32;
@@ -1162,7 +1162,7 @@ void wm_calcSoundPanVolume(s16 posX, s16 posY, s16 posZ, s32 unused, u8 *outPan,
         pan += 255 - margin;
     }
     *outPan = pan;
-    *outVolume = (0x1000 - z) * 127 / 4096;
+    *outVolume = (ONE - z) * 127 / 4096;
 }
 
 void wm_setMusicVolumeFade(s32 volume, s32 frames) {

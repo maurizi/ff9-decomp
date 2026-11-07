@@ -451,7 +451,7 @@ void fld_drawModels(void) {
             gte_stsxy(&sxy);
             gte_stsz(&z);
             z = z / 4 + g_gameState->gameData->ctx.field->area->scene->otBias;
-            if (z < lim || z > 0x1000 - lim) {
+            if (z < lim || z > OT_LEN - lim) {
                 list[i] = NULL;
             }
         }
@@ -496,7 +496,7 @@ void fld_drawModels(void) {
             if (PSX_NULLABLE(mdl->texAnims)->count >= 2 && fld_isModelTexAnimActive(mdl) == 0) {
                 PSX_NULLABLE(mdl->texAnims)->anims[2].flags |= TEXANIM_ACTIVE;
                 PSX_NULLABLE(mdl->texAnims)->anims[2].pos = 0;
-                PSX_NULLABLE(mdl->texAnims)->anims[2].lastFrame = 0x1000;
+                PSX_NULLABLE(mdl->texAnims)->anims[2].lastFrame = TEXANIM_LAST_FRAME_NONE;
             }
         }
     }
@@ -572,7 +572,7 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
             x->mirrorPoint.v.vy = 0;
             x->mirrorPoint.v.vz = 0;
             x->mirrorNormal.v.vx = 0;
-            x->mirrorNormal.v.vy = 0x1000;
+            x->mirrorNormal.v.vy = ONE;
             x->mirrorNormal.v.vz = 0;
             x->tint.w = 0;
             g_gameState->gameData->ctx.field->area->scene->heapTop += sizeof(FieldActorExt);
@@ -962,17 +962,17 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
     gte_stir(mtx.t);
     gte_SetRotMatrix(&mtx);
     gte_SetTransMatrix(&mtx);
-    FIELD_SHADOW_PT(-0x1000, 0x1000);
+    FIELD_SHADOW_PT(-ONE, ONE);
     gte_stsxy(&polys[0]->x0);
     gte_stsz(&z[0]);
-    FIELD_SHADOW_PT(0, 0x1000);
+    FIELD_SHADOW_PT(0, ONE);
     gte_stsxy(&polys[0]->x1);
     gte_stsxy(&polys[1]->x0);
     gte_stsz(&z[1]);
-    FIELD_SHADOW_PT(0x1000, 0x1000);
+    FIELD_SHADOW_PT(ONE, ONE);
     gte_stsxy(&polys[1]->x1);
     gte_stsz(&z[2]);
-    FIELD_SHADOW_PT(-0x1000, 0);
+    FIELD_SHADOW_PT(-ONE, 0);
     gte_stsxy(&polys[0]->x2);
     gte_stsxy(&polys[2]->x0);
     gte_stsz(&z[3]);
@@ -982,18 +982,18 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
     gte_stsxy(&polys[2]->x1);
     gte_stsxy(&polys[3]->x0);
     gte_stsz(&z[4]);
-    FIELD_SHADOW_PT(0x1000, 0);
+    FIELD_SHADOW_PT(ONE, 0);
     gte_stsxy(&polys[1]->x3);
     gte_stsxy(&polys[3]->x1);
     gte_stsz(&z[5]);
-    FIELD_SHADOW_PT(-0x1000, -0x1000);
+    FIELD_SHADOW_PT(-ONE, -ONE);
     gte_stsxy(&polys[2]->x2);
     gte_stsz(&z[6]);
-    FIELD_SHADOW_PT(0, -0x1000);
+    FIELD_SHADOW_PT(0, -ONE);
     gte_stsxy(&polys[2]->x3);
     gte_stsxy(&polys[3]->x2);
     gte_stsz(&z[7]);
-    FIELD_SHADOW_PT(0x1000, -0x1000);
+    FIELD_SHADOW_PT(ONE, -ONE);
     gte_stsxy(&polys[3]->x3);
     gte_stsz(&z[8]);
 
@@ -1088,7 +1088,7 @@ void fld_calcShadowMatrix(FieldObjEnt *ent, FieldObjSlot *obj, MATRIX *out) {
         mtx.t[1] = 0;
         mtx.t[0] = 0;
         axis.vx = 0;
-        axis.vy = -0x1000;
+        axis.vy = -ONE;
         axis.vz = 0;
         gte_SetRotMatrix(&mtx);
         gte_SetTransMatrix(&mtx);
@@ -1097,7 +1097,7 @@ void fld_calcShadowMatrix(FieldObjEnt *ent, FieldObjSlot *obj, MATRIX *out) {
         gte_stlvnl(&dir);
         dir.vy = 0;
         VectorNormal(&dir, &fwd);
-        up.vy = 0x1000;
+        up.vy = ONE;
         up.vx = 0;
         up.vz = 0;
         fwd.vx = -fwd.vx;
@@ -1732,7 +1732,7 @@ void fld_drawSprites(void) {
 void fld_resetSprite(FieldSprite *spr) {
     s32 i;
 
-    spr->scale = 0x1000;
+    spr->scale = ONE;
     spr->speed = 0x10;
     spr->brightness = 0x80;
     spr->flags = FLD_SPR_VISIBLE;
