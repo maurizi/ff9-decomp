@@ -101,7 +101,13 @@ typedef struct {
 #define MBG_MDEC_OUT_SIZE (MBG_SLICE_W_24 * 240 * 2) /* one decoded 16-pixel slice at 24 bits, 240 lines */
 #define MBG_RING_SLOT_SECTORS 8 /* mbg_streamSetRing: sectors per frame slot */
 #define MBG_RING_SECTORS 0x40 /* and in the ring (8 slots) */
-#define MBG_RING_BUF_SIZE 0x23E20 /* the CD ring's buffer (its slot headers and MBG_RING_SECTORS sectors take 0x20120) */
+/* a video sector is read whole (CD_FORM2_WORDS) MBG_SECTOR_HDR bytes before its slot position, so each sector's
+ * header is overwritten by the next one's data and a slot's data is contiguous (mbg_streamReadyCallback) */
+#define MBG_SECTOR_HDR 0x20
+#define MBG_SECTOR_DATA (CD_FORM2_WORDS * 4 - MBG_SECTOR_HDR) /* 0x8F4 */
+#define MBG_RING_BUF_SIZE ((MBG_RING_SECTORS / MBG_RING_SLOT_SECTORS + 1) * sizeof(Ovl64RingHdr) + \
+                           MBG_RING_SECTORS * MBG_SECTOR_DATA) /* the CD ring: a header per slot plus one, then data
+                                                                * (mbg_streamSetRing) */
 #define MBG_AUDIO_SECTORS 0xC /* mbg_streamSetAudioBuffer: audio sectors buffered */
 #define MBG_AUDIO_BUF_SIZE (MBG_AUDIO_SECTORS * 0x800)
 #define MBG_VOLUME_DELAY 3 /* g_mbgPlayer.volumeDelay default (mbg_setVolume with < 0) */

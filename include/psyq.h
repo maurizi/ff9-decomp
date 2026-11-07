@@ -397,6 +397,11 @@ int sprintf(char *buf, const char *fmt, ...);
 #define CdlStatNoDisk 0
 #define CdlOtherFormat 1
 #define CdlCdromFormat 2
+/* CdGetSector word counts: the parts of a Mode 2 sector as the CD controller hands them over */
+#define CD_HEADER_WORDS 3 /* 4-byte header (CdlLOC position + mode) and the 8-byte XA subheader (file, channel, ...
+                           * twice) */
+#define CD_FORM1_WORDS 0x200 /* 2048 bytes of Form 1 user data */
+#define CD_FORM2_WORDS 0x245 /* 2324 bytes of Form 2 user data */
 /* libapi event classes and specs of the memory card */
 #define SwCARD 0xF4000001
 #define HwCARD 0xF0000011

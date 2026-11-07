@@ -40,7 +40,7 @@ void cd_onDataReady(u8 intr, u8 *result) {
         g_cdResult = *(Unk8 *)result;
     }
     if (intr == CdlDataReady) {
-        CdGetSector(pos, 3);
+        CdGetSector(pos, CD_HEADER_WORDS);
         sector = CdPosToInt((CdlLOC *)pos);
         prev = g_cdLoad.lastSector;
         if (prev == 0) {
@@ -82,7 +82,7 @@ void cd_onSectorReady(void) {
         chunks = g_cdLoad.cur.chunks;
     }
     if (chunks[g_cdLoad.chunkIndex].dest != NULL) {
-        CdGetSector((u32 *)chunks[g_cdLoad.chunkIndex].dest + g_cdLoad.chunkOfs / 4, 0x200);
+        CdGetSector((u32 *)chunks[g_cdLoad.chunkIndex].dest + g_cdLoad.chunkOfs / 4, CD_FORM1_WORDS);
     }
     g_cdLoad.chunkOfs += 0x800;
     g_cdLoad.bytesRead += 0x800;

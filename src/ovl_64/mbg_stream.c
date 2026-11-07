@@ -64,7 +64,7 @@ void mbg_streamOnVideoSector(void) {
     Ovl64RingHdr *h;
 
     sectData = (u32 *)(g_mbgStream.ringData +
-                (g_mbgStream.writeSlot * g_mbgStream.slotSectors - (g_mbgStream.slotSector + 1 - g_mbgStream.slotSectors)) * 0x8F4);
+                (g_mbgStream.writeSlot * g_mbgStream.slotSectors - (g_mbgStream.slotSector + 1 - g_mbgStream.slotSectors)) * MBG_SECTOR_DATA);
     sectData -= 8;
     if (g_mbgStream.slotSector == 0) {
         dst = (u32 *)&g_mbgStream.ringHdrs[g_mbgStream.writeSlot];
@@ -247,7 +247,7 @@ s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera
         return MBG_FRAME_END;
     }
     *hdr = h;
-    *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * 0x8F4;
+    *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * MBG_SECTOR_DATA;
     if (g_mbgStream.hasCamera != 0) {
         *outCamera = &g_mbgSlotCameras[g_mbgStream.readSlot];
         *outMask = &g_mbgSlotMasks[g_mbgStream.readSlot];
@@ -286,7 +286,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
             return;
         }
     }
-    CdGetSector(hdr, 3);
+    CdGetSector(hdr, CD_HEADER_WORDS);
     if (CdPosToInt((CdlLOC *)hdr) != g_mbgStream.sector) {
         mbg_streamReadyCallback_retry();
         return;
@@ -302,7 +302,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
     g_mbgStreamBusy = 1;
     g_mbgSectorLogCount = 0;
     if (g_mbgStream.cycleSector < 2) {
-        CdGetSector(g_mbgStream.audioBuf + (g_mbgStream.audioWrite << 11), 0x200);
+        CdGetSector(g_mbgStream.audioBuf + (g_mbgStream.audioWrite << 11), CD_FORM1_WORDS);
         g_cdLoad.bytesRead += 0x800;
         mbg_streamOnAudioSector();
     } else {
@@ -320,12 +320,12 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
                     u32 last;
                     sect = g_mbgStream.writeSlot * g_mbgStream.slotSectors - (g_mbgStream.slotSector - (last = g_mbgStream.slotSectors - 1));
                 }
-                addr = g_mbgStream.ringData + sect * 0x8F4;
-                addr -= 0x20;
+                addr = g_mbgStream.ringData + sect * MBG_SECTOR_DATA;
+                addr -= MBG_SECTOR_HDR;
                 g_mbgSectorLogFrame[g_mbgSectorLogCount] = g_mbgStream.frame;
                 g_mbgSectorLogSlot[g_mbgSectorLogCount] = prev;
                 g_mbgSectorLogCount++;
-                CdGetSector(addr, 0x245);
+                CdGetSector(addr, CD_FORM2_WORDS);
                 g_cdLoad.bytesRead += 0x800;
                 cd_pause();
                 mbg_streamOnVideoSector();
@@ -338,9 +338,9 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
             u32 last;
             sect = g_mbgStream.writeSlot * g_mbgStream.slotSectors - (g_mbgStream.slotSector - (last = g_mbgStream.slotSectors - 1));
         }
-        addr = g_mbgStream.ringData + sect * 0x8F4;
-        addr -= 0x20;
-        CdGetSector(addr, 0x245);
+        addr = g_mbgStream.ringData + sect * MBG_SECTOR_DATA;
+        addr -= MBG_SECTOR_HDR;
+        CdGetSector(addr, CD_FORM2_WORDS);
         g_cdLoad.bytesRead += 0x800;
         mbg_streamOnVideoSector();
     }
@@ -477,7 +477,7 @@ s32 mbg_streamPeekFrame(u8 **data, Ovl64RingHdr **hdr, s32 *kind) {
         *kind = 3;
     }
     *hdr = h;
-    *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * 0x8F4;
+    *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * MBG_SECTOR_DATA;
     return 0;
 }
 
@@ -527,7 +527,7 @@ s32 mbg_streamClearRing(void) {
 }
 
 s32 mbg_streamFreeFrame(u8 *data) {
-    Ovl64RingHdr *h = &g_mbgStream.ringHdrs[(u32)(data - g_mbgStream.ringData) / 0x8F4 / g_mbgStream.slotSectors];
+    Ovl64RingHdr *h = &g_mbgStream.ringHdrs[(u32)(data - g_mbgStream.ringData) / MBG_SECTOR_DATA / g_mbgStream.slotSectors];
 
     h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_FREE;
     if (g_mbgStream.stalled != 0) {
