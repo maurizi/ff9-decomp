@@ -346,7 +346,7 @@ void rewards_drawPanelShade(RECT *rect) {
 void rewards_initWindows(void) {
     s32 i;
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_rewards.wins); i++) {
         s_rewards.winShown[i] = s_rewardsWinInit[i].shown;
         s_rewards.wins[i].rect = s_rewardsWinInit[i].rect;
         if (s_rewardsWinInit[i].shown != 0) {
@@ -368,7 +368,7 @@ void rewards_moveMemberWins(void) {
     TweenDef *tween;
     WinDef *winDef;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsExp[i] != 0) {
             w = s_rewards.levelWins[i].win;
             if (w != NULL && w->state != WIN_STATE_CLOSED) {
@@ -431,7 +431,7 @@ void rewards_finishExp(void) {
     Rewards *rw = &s_rewards.rewards;
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsExp[i] != 0) {
             rewards_addExp(i, rw->exp[i].target - rw->exp[i].cur);
             rewards_showLevelUp(i);
@@ -439,7 +439,7 @@ void rewards_finishExp(void) {
     }
     snd_stopSe(SE_EXP_COUNT);
     snd_playSe(SE_CURSOR);
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_rewardsWinClose); i++) {
         tween_start(&s_rewards.wins[2 + i], &s_rewardsWinClose[i], 0);
     }
     s_rewards.screen = 1;
@@ -461,7 +461,7 @@ void rewards_onExpWindowsClosed(void) {
     s_rewards.winShown[3] = 0;
     s_rewards.winShown[2] = 0;
     rewards_closeMemberWins();
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         WinSlot_clear(&s_rewards.learnWins[i]);
         WinSlot_clear(&s_rewards.levelWins[i]);
     }
@@ -476,13 +476,13 @@ void rewards_findMembers(void) {
     s32 i;
     Character *chr;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         s_rewards.getsAp[i] = 0;
         s_rewards.getsExp[i] = 0;
     }
     i = 0;
     s_rewards.expMembers = 0;
-    for (; i < 4; i++) {
+    for (; i < PARTY_SIZE; i++) {
         if ((g_btlRewards.expMask >> i) & 1) {
             if (g_gameState->gameData->party[i] != NULL) {
                 s_rewards.getsExp[i] = func_801F_canExp(g_gameState->gameData->party[i]);
@@ -631,7 +631,7 @@ void rewards_open(void) {
     s_rewards.closing = 0;
     rewards_compute();
     rewards_clearWinSlot(&s_rewards.fullWin);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         rewards_clearWinSlot(&s_rewards.levelWins[i]);
         rewards_clearWinSlot(&s_rewards.learnWins[i]);
     }
@@ -702,7 +702,7 @@ void rewards_clearWinSlot(WinSlot *slot) {
 void rewards_closeMemberWins(void) {
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsExp[i] != 0 && s_rewards.levelWins[i].win != NULL) {
             win_close(s_rewards.levelWins[i].win);
         }
@@ -715,7 +715,7 @@ void rewards_closeMemberWins(void) {
 void rewards_stepWindows(void) {
     s32 i;
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_rewards.wins); i++) {
         if (s_rewards.winShown[i] != 0 && s_rewards.wins[i].anim != 0) {
             tween_step(&s_rewards.wins[i]);
         }
@@ -754,7 +754,7 @@ void rewards_giveAp(void) {
     s32 i;
     u8 any = 0;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsAp[i] != 0) {
             rewards_addAp(i, rw->apGain[i].target);
         }
@@ -833,7 +833,7 @@ void rewards_updateLearnWins(void) {
     RECT *rr;
 
     w = s_rewards.learnWins;
-    for (i = 0; i < 4; w++, i++) {
+    for (i = 0; i < PARTY_SIZE; w++, i++) {
         if (s_rewards.getsAp[i] != 0) {
             if (w->delay == 0) {
                 if (w->win == NULL) {
@@ -882,7 +882,7 @@ void rewards_addAp(s32 slot, u32 ap) {
         for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             if (chr->equip[i] != ITEM_NONE) {
                 item = &g_itemTable[chr->equip[i]];
-                for (j = 0; j < 3; j++) {
+                for (j = 0; j < (s32)ARRAY_COUNT(item->abilities); j++) {
                     if (item->abilities[j] != 0) {
                         k = chr_findAbilitySlot(chr->info.b.id, item->abilities[j]);
                         if (k >= 0) {
@@ -917,11 +917,11 @@ u8 rewards_willLearn(Character *chr, s32 ap) {
     learns = 0;
     eq = chr->equip;
     ch = chr->info.b.id;
-    memset(s_rewardsAbilityItems, 0, 0x30);
+    memset(s_rewardsAbilityItems, 0, sizeof(s_rewardsAbilityItems));
     for (i = 0; i < 5; i++) {
         if (eq[i] != ITEM_NONE) {
             item = &g_itemTable[eq[i]];
-            for (j = 0; j < 3; j++) {
+            for (j = 0; j < (s32)ARRAY_COUNT(item->abilities); j++) {
                 if (item->abilities[j] != 0) {
                     k = chr_findAbilitySlot(ch & 0xFF, item->abilities[j]);
                     if (k >= 0) {
@@ -934,7 +934,7 @@ u8 rewards_willLearn(Character *chr, s32 ap) {
             }
         }
     }
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_rewardsAbilityItems); i++) {
         if (s_rewardsAbilityItems[i] != 0) {
             have = chr->ap[i];
             if (s_rewardsAbilityItems[i] * ap >= g_abilityRows[chr->info.b.row][i].ap - have) {
@@ -1019,7 +1019,7 @@ void rewards_stepAp(void) {
     s32 i;
     Counter *counter;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsAp[i] != 0) {
             counter = &s_rewards.rewards.apGain[i];
             if (counter->cur < counter->target) {
@@ -1168,7 +1168,7 @@ void rewards_stepExp(void) {
     s32 step;
     u8 done = 1;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsExp[i] != 0) {
             counter = &s_rewards.rewards.exp[i];
             if (counter->cur < counter->target) {
@@ -1187,7 +1187,7 @@ void rewards_updateLevelUps(void) {
     Popup *popup;
     s32 i;
 
-    for (popup = s_rewards.levelPopups, i = 0; i < 4; popup++, i++) {
+    for (popup = s_rewards.levelPopups, i = 0; i < PARTY_SIZE; popup++, i++) {
         if (s_rewards.getsExp[i] != 0) {
             if (popup->active == 0) {
                 if (popup->pending != 0) {

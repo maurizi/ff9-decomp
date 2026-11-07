@@ -383,7 +383,7 @@ void menuConfig_drawSlider(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     ec = &ic[2];
     width = w + 8;
     if (pos != 0) {
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(s_menuConfigSliderColors); i++) {
             s32 k = i + 2;
             s32 yy = (y + k) << 16;
             setlen(g_primPtr, PRIM_LEN(LINE_F2));

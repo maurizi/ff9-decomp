@@ -188,7 +188,7 @@ void opening_titleOpenCardEvents(void) {
     s32 h;
 
     EnterCriticalSection();
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_titleMenu.cardEvents); i++) {
         h = OpenEvent(0xF4000001, g_titleCardEvents[i], 0x2000, 0);
         g_titleMenu.cardEvents[i] = h;
         EnableEvent(h);
@@ -200,7 +200,7 @@ void opening_titleCloseCardEvents(void) {
     s32 i;
 
     EnterCriticalSection();
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_titleMenu.cardEvents); i++) {
         DisableEvent(g_titleMenu.cardEvents[i]);
         CloseEvent(g_titleMenu.cardEvents[i]);
     }
@@ -235,7 +235,7 @@ u8 opening_titleHasCard(void) {
 void opening_titleStartCardInfo(void) {
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_titleMenu.cardEvents); i++) {
         TestEvent(g_titleMenu.cardEvents[i]);
     }
     _card_wait(0);
@@ -247,7 +247,7 @@ s32 opening_titleTestCardEvents(void) {
     s32 i;
     s32 event = -1;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_titleMenu.cardEvents); i++) {
         if (TestEvent(g_titleMenu.cardEvents[i]) == 1) {
             event = i;
             break;

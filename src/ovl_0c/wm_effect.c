@@ -3,7 +3,7 @@
 void wm_initEffects(void) {
     s32 i;
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldBlockFx6RingRot); i++) {
         g_worldBlockFx6RingRot[i].vx = i << 7;
         g_worldBlockFx6RingRot[i].vy = rand() % 4096;
         g_worldBlockFx6RingRot[i].vz = 0;
@@ -14,7 +14,7 @@ void wm_initEffects(void) {
         g_worldBlockFx6FlashRot[i].vy = rand() % 4096;
         g_worldBlockFx6FlashRot[i].vz = 0;
     }
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldEffectPos); i++) {
         g_worldEffectPos[i].vx = 0;
         g_worldEffectPos[i].vy = 0;
         g_worldEffectPos[i].vz = 0;
@@ -134,7 +134,7 @@ void wm_drawEffects(void) {
                 case WM_FX_MEMORIA_STREAM:
                 case WM_FX_MEMORIA_STREAM_2: {
                     SVECTOR rot;
-                    memset(&rot, 0, 8);
+                    memset(&rot, 0, sizeof(rot));
                     rot.pad = 1;
                     rot.vy = ratan2(WM_FX_MEMORIA_AIM_X - fx->x, WM_FX_MEMORIA_AIM_Z - fx->z);
                     g_worldOtBias = 0;
@@ -255,7 +255,7 @@ void wm_drawBlockFx(u8 fxId) {
                 SetTransMatrix(&mtx);
                 wm_drawModel(WM_PACK0(WM_PACK_CLAY_OUTER), 0x50, 1);
                 wm_drawModel(WM_PACK0(WM_PACK_CLAY_MODEL), 0x3C, 0);
-                for (j = 0; j < 3; j++) {
+                for (j = 0; j < (s32)ARRAY_COUNT(g_worldBlockFx4PartRots); j++) {
                     math_rotMatrixXYZ(&g_worldBlockFx4PartRots[j], &mtx);
                     wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)mtx.t, &view, 0);
                     CompMatrix(g_worldViewMatrix, &mtx, &mtx);
@@ -311,7 +311,7 @@ void wm_drawBlockFx(u8 fxId) {
             SetRotMatrix(&mtx);
             SetTransMatrix(&mtx);
             wm_drawModel(WM_PACK0(WM_PACK_CORE_SHELL_B), 0, 2);
-            for (i = 0; i < 10; i++) {
+            for (i = 0; i < (s32)ARRAY_COUNT(g_worldBlockFx6FlashTimer); i++) {
                 MATRIX m1;
                 MATRIX m2;
                 VECTOR rel;
@@ -455,11 +455,11 @@ void wm_updateBlockFx(s32 fxId) {
         g_worldBlockFx6RotA.vy -= 0x10;
         g_worldBlockFx6RotB.vz -= 0x10;
         g_worldBlockFx6RotB.vy -= 8;
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(g_worldBlockFx6RingRot); i++) {
             rotY = g_worldBlockFx6RingRot[i].vy - 10;
             g_worldBlockFx6RingRot[i].vy = rotY - i / 4;
         }
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(g_worldBlockFx6FlashRot); i++) {
             g_worldBlockFx6FlashRot[i].vx += -6 + rand() % 13;
             g_worldBlockFx6FlashRot[i].vy += -6 + rand() % 13;
         }

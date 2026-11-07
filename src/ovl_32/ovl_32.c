@@ -328,7 +328,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
     s32 i;
 
     clut = GetClut(CHOCO_FRAME_CLUT_X, CHOCO_FRAME_CLUT_Y);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuChocographFramePieces); i++) {
         setlen(g_primPtr, PRIM_LEN(POLY_FT4));
         ((Ft4W *)g_primPtr)->rgbc = dim ? GPU_RGBC(GPU_POLY_FT4 | GPU_ABE, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_POLY_FT4, GPU_RGB_NEUTRAL);
         if (i < 2) {

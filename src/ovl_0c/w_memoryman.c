@@ -76,7 +76,7 @@ void wm_initClutAnims(void) {
 
     off = 0;
     src = 0;
-    memset(&rect, 0, 8);
+    memset(&rect, 0, sizeof(rect));
     rect.h = 1;
     g_worldClutAnimFx2 = 0;
     g_worldTexAnimStep[0] = 0;
@@ -213,7 +213,7 @@ void wm_scrollTextures(void) {
     s32 rows;
     RECT *rect;
 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldTexScrolls); i++) {
         x = g_worldTexScrolls[i].x;
         y = g_worldTexScrolls[i].y;
         w = g_worldTexScrolls[i].w;

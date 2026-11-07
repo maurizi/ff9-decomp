@@ -63,7 +63,7 @@ void wm_updateCamera(void) {
     g_worldCameraEyeRel.vx = g_worldCameraEye[0] - g_worldCameraTarget[0];
     g_worldCameraEyeRel.vy = g_worldCameraEye[1] - g_worldCameraTarget[1];
     g_worldCameraEyeRel.vz = g_worldCameraEye[2] - g_worldCameraTarget[2];
-    memset(&rot, 0, 8);
+    memset(&rot, 0, sizeof(rot));
     rot.vz = g_worldCameraRoll;
     rot.vy = g_worldCamera->yaw;
     math_rotMatrixXYZ(&rot, &rotMat);
@@ -579,9 +579,9 @@ void wm_initMovement(void) {
     g_worldCameraTurning = 0;
     g_worldCameraFastRise = 0;
     g_worldFlyTurning = 0;
-    for (i = 0; i < 11; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldPolyCache); i++) {
         g_worldPolyCache[i].lastSlot = 0;
-        for (j = 0; j < 6; j++) {
+        for (j = 0; j < (s32)ARRAY_COUNT(g_worldPolyCache[i].polys); j++) {
             g_worldPolyCache[i].polys[j] = j;
             g_worldPolyCache[i].cells[j] = -1;
         }
@@ -855,7 +855,7 @@ s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused) { /* its caller 
     typeInfo = &g_worldActorTypeInfo[act->actorType];
     objSlot = (WmObjSlot *)game_getModel(act->modelSlot);
     obj = objSlot->model;
-    memset(&rot, 0, 8);
+    memset(&rot, 0, sizeof(rot));
     rot.vx = objSlot->actor->pos.rotX;
     rot.vy = objSlot->actor->pos.rotY;
     rot.vz = objSlot->actor->rotZ;

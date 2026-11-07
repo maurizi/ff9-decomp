@@ -156,7 +156,7 @@ void wm_applyEncounterEvents(void) {
         i++;
         row++;
     } while (i < 9);
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldAmbientSeDist); i++) {
         g_worldAmbientSeDist[i] = 0xFFFF;
         g_worldAmbientSeOn[i] = 0;
     }
@@ -219,7 +219,7 @@ void wm_updateMap(void) {
         wm_updateChunks();
         wm_updateVisibleBlocks();
     }
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldAmbientSeDist); i++) {
         dx = (g_worldPlayer->pos.vx >> 8) - (g_worldAmbientSeX[i] >> 8);
         dz = (g_worldPlayer->pos.vz >> 8) - (g_worldAmbientSeZ[i] >> 8);
         g_worldAmbientSeDist[i] = SquareRoot0(dx * dx + dz * dz);
@@ -1732,11 +1732,11 @@ void wm_naviDrawFullMap(void) {
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
     arrow = g_worldNaviFullMapArrow;
-    memset(&rot0, 0, 8);
+    memset(&rot0, 0, sizeof(rot0));
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
     math_rotMatrixXYZ(&rot, &rotMat);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(arrowPts); i++) {
         ApplyMatrix(&rotMat, &arrow.v[i], &arrowPts[i]);
     }
     px = &x;
@@ -1868,12 +1868,12 @@ void wm_naviDrawMiniMap(void) {
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
     arrow = g_worldNaviMiniMapArrow;
-    memset(&rot0, 0, 8);
+    memset(&rot0, 0, sizeof(rot0));
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
     pulse = (math_sin(g_worldFrameCount << 6) >> 7) + 0x80;
     math_rotMatrixXYZ(&rot, &rotMat);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(arrowPts); i++) {
         ApplyMatrix(&rotMat, &arrow.v[i], &arrowPts[i]);
     }
     px = &x;
@@ -2116,7 +2116,7 @@ void wm_naviDrawFrame(s32 x, s32 y) {
     poly = (POLY_FT4 *)g_worldPrimPtr;
     clut = GetClut(0x280, 0xF0);
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldNaviFrameParts); i++) {
         SetPolyFT4(poly);
         if (i < 2) {
             setXYWH(poly, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y, g_worldNaviFrameParts[i].w,

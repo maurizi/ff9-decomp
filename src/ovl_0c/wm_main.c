@@ -112,7 +112,7 @@ void wm_resetContext(void) {
     wm->parkedSoundSize = -1;
     wm->worldData = 0;
     wm->obj = 0;
-    for (i = 0; i < 0x34; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(wm->unk14); i++) {
         wm->unk14[i] = 0;
     }
 }
@@ -638,7 +638,7 @@ void wm_drawShadow(WmObjEnt *shadows, s32 slot, s32 groundY, s32 jointIdx) {
         return;
     }
     wm_calcShadowMatrix(shadow, objSlot, &mat, groundY, jointIdx);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(quads); i++) {
         quads[i] = shadow->prims[g_gameState->gameData->drawBuf][i];
         setRGB0(quads[i], shadow->shade, shadow->shade, shadow->shade);
     }

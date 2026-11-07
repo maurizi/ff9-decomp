@@ -866,7 +866,7 @@ void wm_initDiscImage(void) {
     s32 i;
 
     if (g_worldDataSet == WM_DATASET_DISC1) {
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(g_worldImageNames); i++) {
             g_worldImageNames[i] = g_worldImageNamesDisc1[i];
         }
         printf("Read CD Image [Disc-1]\n");
@@ -874,7 +874,7 @@ void wm_initDiscImage(void) {
         g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE_H(WM_DATASET_DISC1))->sector + g_gameState->imgSector;
         g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, WM_IMAGE_FILE_V(WM_DATASET_DISC1))->sector + g_gameState->imgSector;
     } else {
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(g_worldImageNames); i++) {
             g_worldImageNames[i] = g_worldImageNamesDisc4[i];
         }
         printf("Read CD Image [Disc-4]\n");

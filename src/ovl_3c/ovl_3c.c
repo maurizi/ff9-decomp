@@ -52,7 +52,7 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
     s32 j;
     Unk8006D328 *bonus;
 
-    memset(sum, result, 4);
+    memset(sum, result, sizeof(sum));
     for (i = 1; i < 5; i++) {
         if (equip[i] != ITEM_NONE) {
             if (equip[i] < ITEM_FIRST_USABLE) {
@@ -313,7 +313,7 @@ void shopBuy_drawInfo(void) {
     equip = (g_itemTable[id].slots & ITEM_SLOT_EQUIP) != 0;
     ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, SHOP_OTZ_TEXT, g_labelInfo, UI_LABEL_NORMAL);
     win_drawBox(rect, SHOP_OTZ_WIN, WIN_STYLE_LINE_RULE);
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_shopBuyInfoRowY); i++) {
         text_drawBlock(rect->x + SHOP_INFO_TEXT_X, rect->y + s_shopBuyInfoRowY[i] - 4, SHOP_OTZ_TEXT, text_getFrom(g_shopText, s_shopBuyInfoRowText[i]),
                       (s_shopBuyInfoRowAlways[i] | equip) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
@@ -733,7 +733,7 @@ void shopSynth_drawInfo(void) {
     ui_drawEtchedLine(rect->x + 2, rect->y + SHOP_SYNTH_DIV_Y, SHOP_OTZ_WIN, rect->w - 5);
     win_drawBox(rect, SHOP_OTZ_WIN, WIN_STYLE_LINE_RULE);
     ui_drawLabel(rect->x + WIN_TITLE_X, rect->y + WIN_TITLE_Y, SHOP_OTZ_TEXT, g_labelInfo, UI_LABEL_NORMAL);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_shopSynthInfoRowY); i++) {
         text_drawBlock(rect->x + SHOP_INFO_TEXT_X, rect->y + s_shopSynthInfoRowY[i] - 4, SHOP_OTZ_TEXT, text_getFrom(g_shopText, s_shopSynthInfoRowText[i]),
                       (s_shopSynthInfoRowAlways[i] | equip) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
@@ -1236,7 +1236,7 @@ void shopSell_drawInfoWindow(Window *w) {
     list = &s_shopSell.list;
     slot = &g_gameState->gameData->items.slots[(list->top + list->cursor) * 2 + list->col];
     equip = (g_itemTable[slot->id].slots & ITEM_SLOT_EQUIP) != 0;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_shopSellInfoRowY); i++) {
         text_drawBlock(rect->x + SHOP_QTY_TEXT_X, rect->y + s_shopSellInfoRowY[i] - 4, w->otz, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
                       (s_shopSellInfoRowAlways[i] | equip) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }

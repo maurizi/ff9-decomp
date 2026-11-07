@@ -757,7 +757,7 @@ void menuSave_openCheck(void) {
     s_menuSaveCheck.otherBlocks = 0;
     s_menuSaveCheck.dirCount = 0;
     s_menuSaveCheck.file = 0;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuSaveCheck.triesPerResult); i++) {
         s_menuSaveCheck.triesPerResult[i] = 0;
     }
     for (i = 0; i < SAVE_FILES; i++) {
@@ -1497,7 +1497,7 @@ void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     ec = &ic[2];
     width = w + 8;
     if (pos != 0) {
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < (s32)ARRAY_COUNT(s_menuSaveGaugeColors); i++) {
             s32 k = i + 2;
             s32 yy = (y + k) << 16;
             setlen(g_primPtr, PRIM_LEN(LINE_F2));
@@ -1852,7 +1852,7 @@ void menuSave_buildHeader(SaveBuf *save) {
             h->party[i].present = 0;
             h->party[i].portrait = PORTRAIT_NONE;
             h->party[i].level = 0;
-            memset(h->party[i].name, TEXT_END, 10);
+            memset(h->party[i].name, TEXT_END, sizeof(h->party[i].name));
         }
     }
 }
@@ -1986,7 +1986,7 @@ void menuSave_initCrcTable(void) {
     u16 j;
     u16 crc;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuSaveCrcTable); i++) {
         crc = i;
         for (j = 0; j < 8; j++) {
             if (crc & 1) {
@@ -2149,7 +2149,7 @@ void menuSave_copyCards(CardData *dst, CardData *src) {
     dst->wins = src->wins;
     dst->losses = src->losses;
     dst->draws = src->draws;
-    for (i = 0; i < 0x69; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(dst->cards); i++) {
         dst->cards[i].id = src->cards[i].id;
         dst->cards[i].arrows = src->cards[i].arrows;
         dst->cards[i].power = src->cards[i].power;

@@ -33,7 +33,7 @@ void menuCard_init(void) {
     while (cd_getState()) {
     }
     s_menuCard.imageFile = file_find(DIR_COMMON, FILE_CARD_IMAGES);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuCardRepeatIds); i++) {
         id = s_menuCardRepeatIds[i];
         s_menuCard.saved[i].repeatDelay = pad_getRepeatDelay(0, id);
         s_menuCard.saved[i].repeatInterval = pad_getRepeatInterval(0, id);
@@ -502,7 +502,7 @@ void menuCard_calcCollectorPoints(s32 *out) {
             kinds += infoTbl[i].points;
         }
     }
-    memset(s_menuCardArrowsSeen, 0, 0x100);
+    memset(s_menuCardArrowsSeen, 0, sizeof(s_menuCardArrowsSeen));
     for (i = 0; i < CARD_KINDS; i++) {
         for (j = 0; j < s_menuCard.count[i]; j++) {
             card = card_find(i, j);
@@ -510,7 +510,7 @@ void menuCard_calcCollectorPoints(s32 *out) {
             typePts += s_menuCardTypePoints[card->type];
         }
     }
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuCardArrowsSeen); i++) {
         if (s_menuCardArrowsSeen[i] != 0) {
             arrowPts += 5;
         }
@@ -554,7 +554,7 @@ void menuCard_exit(void) {
     s32 i;
     s32 id;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuCardRestoreRepeatIds); i++) {
         id = s_menuCardRestoreRepeatIds[i];
         pad_setRepeatDelay(0, id, s_menuCard.saved[i].repeatDelay);
         pad_setRepeatInterval(0, id, s_menuCard.saved[i].repeatInterval);
@@ -680,7 +680,7 @@ void menuCard_drawArrows(s32 x, s32 y, s32 otz, CardEntry *card) {
     s32 i;
 
     color = menuCard_getStatsColor();
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(s_menuCardArrows); i++) {
         if ((card->arrows >> i) & 1) {
             menuCard_drawSprite(x + s_menuCardArrows[i].x, y + s_menuCardArrows[i].y, otz, s_menuCardArrows[i].sprite, color);
         }
@@ -698,7 +698,7 @@ void menuCard_drawStats(s32 x, s32 y, s32 otz, CardEntry *card) {
     statSpr[1] = card->type + CARD_SPR_TYPE;
     statSpr[2] = (card->physDef >> 4) + CARD_SPR_HEX;
     statSpr[3] = (card->magicDef >> 4) + CARD_SPR_HEX;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(statSpr); i++) {
         menuCard_drawSprite(x + CARD_STATS_X + i * CARD_STATS_STEP, y + CARD_STATS_Y, otz, statSpr[i], color);
     }
 }
