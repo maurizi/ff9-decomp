@@ -6,7 +6,7 @@ static void fxm_camKeyReset(void) {
 
     fx_0b1_camKeyFrame = 0;
     freeMark = -1;
-    for (i = 15; i >= 0; i--) {
+    for (i = FX_CARBUNCLE_CAM_TRACKS - 1; i >= 0; i--) {
         fx_0b1_camKeys[i].framesLeft4 = freeMark;
     }
 }
@@ -14,7 +14,7 @@ static void fxm_camKeyReset(void) {
 static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data) {
     s32 i;
 
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < FX_CARBUNCLE_CAM_TRACKS; i++) {
         if (fx_0b1_camKeys[i].framesLeft4 == -1) {
             fx_0b1_camKeys[i].framesLeft4 = 0;
             fx_0b1_camKeys[i].data10 = data + 1;
@@ -37,7 +37,7 @@ static void fxm_camKeyUpdate(void) {
     s32 x, y, z;
     s32 extIdx;
 
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < FX_CARBUNCLE_CAM_TRACKS; i++) {
         if (fx_0b1_camKeys[i].framesLeft4 == 0 && fx_0b1_camKeys[i].start0 == frame) {
             fx_0b1_camKeys[i].framesLeft4 = *fx_0b1_camKeys[i].data10;
             fx_0b1_camKeys[i].data10++;
@@ -93,7 +93,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     case 0:
         ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
-    case 1:
+    case FX_CARBUNCLE_START_FRAME:
         ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
@@ -120,14 +120,14 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     s32 lineWidth;
     s32 topY;
     s32 i;
-    u8 count = 0x15;
+    u8 count = FX_CARBUNCLE_BEAM_POINTS;
     s32 bright;
 
     if (mode == 0) {
         *args = 0;
     } else if (mode == 1) {
         fx_0b1_env = env;
-        for (i = 7; i >= 0; i--) {
+        for (i = FX_CARBUNCLE_TIMERS - 1; i >= 0; i--) {
             fx_0b1_timers[i] = 0;
         }
         fx_0b1_emitter0 = NULL;
@@ -165,41 +165,41 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 1:
+        case FX_CARBUNCLE_START_FRAME:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_RING_BURST), (s32)&fx_0b1_startPos);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_CRYSTAL_SPARKLES), (s32)&fx_0b1_startPos);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_WHITE_LIGHT_STREAK), (s32)&fx_0b1_startPos);
-            fx_0b1_timers[5] = 0x10;
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH] = FX_CARBUNCLE_FLASH_FRAMES;
             break;
-        case 9:
+        case FX_CARBUNCLE_SUMMON_FRAME:
             ex->Hi_SetSummonMotion(SUMMON0B1(env)->summon54->motion180, SUMMON0B1(env)->model60);
-            fx_0b1_timers[0] = 1;
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_SUMMON] = 1;
             fx_0b1_emitter0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_GREEN_MOTES), (s32)&fx_0b1_emitPos0);
             break;
-        case 0x18:
+        case FX_CARBUNCLE_MOTES_2_FRAME:
             fx_0b1_emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_GREEN_MOTES), (s32)&fx_0b1_emitPos1);
             break;
-        case 0x40:
-            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitPos2);
+        case FX_CARBUNCLE_LENS_FLARE_FRAME:
+            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, FX_CARBUNCLE_BEAM_BONE, (u16 *)&fx_0b1_emitPos2);
             fx_0b1_emitter2 = emit2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LENS_FLARE), (s32)&fx_0b1_emitPos2);
             if (emit2 != NULL) {
                 emit2->trails = (s32)fx_0b1_trails;
-                emit2->trailSlots = 0x28;
-                emit2->trailStride = 0xAC;
+                emit2->trailSlots = FX_CARBUNCLE_LENS_FLARE_TRAIL_SLOTS;
+                emit2->trailStride = FX_CARBUNCLE_LENS_FLARE_TRAIL_STRIDE;
                 emit2->otZ = 0x50;
             }
             break;
-        case 0x48:
-            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitStartPos3);
+        case FX_CARBUNCLE_RED_RING_FRAME:
+            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, FX_CARBUNCLE_BEAM_BONE, (u16 *)&fx_0b1_emitStartPos3);
             fx_0b1_emitter3 = emit3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_RED_RING), (s32)&fx_0b1_emitStartPos3);
             if (emit3 != NULL) {
                 emit3->otZ = 0x40;
             }
             break;
-        case 0x67:
+        case FX_CARBUNCLE_RED_RING_STOP_FRAME:
             ex->btlfx_stopEmitter(fx_0b1_emitter3);
             break;
-        case 0x6C:
+        case FX_CARBUNCLE_BEAM_FRAME:
             ex->btlfx_stopEmitter(fx_0b1_emitter2);
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0, (u16 *)&fx_0b1_emitPos4);
             fx_0b1_emitPos4.vy -= 0x180;
@@ -207,55 +207,55 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             if (emit4 != NULL) {
                 emit4->otZ = -0x80;
             }
-            fx_0b1_timers[1] = 0x10;
-            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitPos5);
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_DARKEN] = FX_CARBUNCLE_DARKEN_FRAMES;
+            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, FX_CARBUNCLE_BEAM_BONE, (u16 *)&fx_0b1_emitPos5);
             fx_0b1_emitter5 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LENS_STREAK), (s32)&fx_0b1_emitPos5);
-            fx_0b1_timers[2] = 8;
-            fx_0b1_timers[3] = 1;
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_RISE] = FX_CARBUNCLE_BEAM_RISE_FRAMES;
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM] = 1;
             break;
-        case 0x77:
-            fx_0b1_timers[0] = 0;
+        case FX_CARBUNCLE_GLINT_FRAME:
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_SUMMON] = 0;
             ex->btlfx_stopEmitter(fx_0b1_emitter0);
             ex->btlfx_stopEmitter(fx_0b1_emitter1);
-            fx_0b1_emitPos6.vy = fx_0b1_emitPos5.vy - 0x1800;
+            fx_0b1_emitPos6.vy = fx_0b1_emitPos5.vy - FX_CARBUNCLE_BEAM_HEIGHT;
             fx_0b1_emitPos6.vx = fx_0b1_emitPos5.vx;
             fx_0b1_emitPos6.vz = fx_0b1_emitPos5.vz;
             fx_0b1_emitter6 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_FLAME_GLINT), (s32)&fx_0b1_emitPos6);
             break;
-        case 0x97:
+        case FX_CARBUNCLE_BURST_FRAME:
             ex->btlfx_stopEmitter(fx_0b1_emitter4);
             ex->btlfx_stopEmitter(fx_0b1_emitter5);
             ex->btlfx_stopEmitter(fx_0b1_emitter6);
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xB0, 0xB0, 0xB0);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, FX_CARBUNCLE_BURST_TINT_RGB);
             fx_0b1_emitPos7.vy = fx_0b1_emitPos6.vy;
             fx_0b1_emitPos7.vx = fx_0b1_emitPos6.vx;
             fx_0b1_emitPos7.vz = fx_0b1_emitPos6.vz;
             fx_0b1_emitter7 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_RING_BURST_3), (s32)&fx_0b1_emitPos7);
             break;
-        case 0x99:
-            fx_0b1_timers[4] = 4;
+        case FX_CARBUNCLE_LENS_STREAK_2_FRAME:
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_FADE] = FX_CARBUNCLE_BEAM_FADE_FRAMES;
             fx_0b1_emitPos8.vx = fx_0b1_emitPos10.vx = fx_0b1_emitPos6.vx;
             fx_0b1_emitPos8.vy = fx_0b1_emitPos10.vy = fx_0b1_emitPos6.vy;
             fx_0b1_emitPos8.vz = fx_0b1_emitPos10.vz = fx_0b1_emitPos6.vz;
             fx_0b1_emitter8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LENS_STREAK_2), (s32)&fx_0b1_emitPos8);
             break;
-        case 0x9F:
+        case FX_CARBUNCLE_ORANGE_MOTES_2_FRAME:
             fx_0b1_emitter10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORANGE_MOTES_2), (s32)&fx_0b1_emitPos10);
             break;
-        case 0xAE:
+        case FX_CARBUNCLE_ORANGE_MOTES_FRAME:
             fx_0b1_emitter9 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORANGE_MOTES), (s32)&fx_0b1_emitPos9);
             break;
-        case 0xCA:
+        case FX_CARBUNCLE_ORANGE_MOTES_2_STOP_FRAME:
             ex->btlfx_stopEmitter(fx_0b1_emitter10);
             break;
         }
-        if (fx_0b1_timers[0] != 0) {
+        if (fx_0b1_timers[FX_CARBUNCLE_TIMER_SUMMON] != 0) {
             fx_0b1_summonPos.vx = env->camera->points[2].vx;
             fx_0b1_summonPos.vy = env->camera->points[2].vy;
             fx_0b1_summonPos.vz = env->camera->points[2].vz;
             ex->Hi_DrawSummonModel(&fx_0b1_summonRot, &fx_0b1_summonPos, (s32)&fx_0b1_summonScale, SUMMON0B1(env)->model60, 1);
-            if (fx_0b1_timers[1] != 0) {
-                fx_0b1_timers[1]--;
+            if (fx_0b1_timers[FX_CARBUNCLE_TIMER_DARKEN] != 0) {
+                fx_0b1_timers[FX_CARBUNCLE_TIMER_DARKEN]--;
                 ex->Hi_ModifySummonModelRGB(SUMMON0B1(env)->model60, -0x40, -0x40, -0x40);
             }
         }
@@ -275,40 +275,40 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             if (fx_0b1_emitter3->state == BTLFX_EMIT_DONE) {
                 fx_0b1_emitter3 = NULL;
             }
-            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitPos3);
+            ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, FX_CARBUNCLE_BEAM_BONE, (u16 *)&fx_0b1_emitPos3);
             ex->btlfx_moveEmitterTo((s32)fx_0b1_emitter3, (s32)&fx_0b1_emitPos3);
         }
-        if (fx_0b1_timers[3] != 0) {
+        if (fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM] != 0) {
             tr = fx_0b1_beams;
             pt0 = tr->pts4;
-            tr->lastSlot0 = tr->count2 = 0x14;
+            tr->lastSlot0 = tr->count2 = FX_CARBUNCLE_BEAM_POINTS - 1;
             tr->head1 = 0;
             tr2 = tr + 1;
-            tr2->lastSlot0 = tr2->count2 = 0x14;
+            tr2->lastSlot0 = tr2->count2 = FX_CARBUNCLE_BEAM_POINTS - 1;
             tr2->head1 = 0;
             do {
                 /* empty: the original has a block boundary here (an emptied macro?) */
             } while (0);
             pt1 = tr[1].pts4;
-            if (fx_0b1_timers[2] != 0) {
-                fx_0b1_timers[2]--;
-                topY = fx_0b1_emitPos5.vy - fxm_easeLerp(1, 8, fx_0b1_timers[2], 0, 0x1800);
+            if (fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_RISE] != 0) {
+                fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_RISE]--;
+                topY = fx_0b1_emitPos5.vy - fxm_easeLerp(1, FX_CARBUNCLE_BEAM_RISE_FRAMES, fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_RISE], 0, FX_CARBUNCLE_BEAM_HEIGHT);
             } else {
-                topY = fx_0b1_emitPos5.vy - 0x1800;
+                topY = fx_0b1_emitPos5.vy - FX_CARBUNCLE_BEAM_HEIGHT;
             }
-            if (fx_0b1_timers[4] != 0) {
-                fx_0b1_timers[4]--;
-                if (fx_0b1_timers[4] == 0) {
-                    fx_0b1_timers[3] = 0;
+            if (fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_FADE] != 0) {
+                fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_FADE]--;
+                if (fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_FADE] == 0) {
+                    fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM] = 0;
                 }
-                lineWidth = fx_0b1_timers[4] << 4;
-                alpha = fx_0b1_timers[4] << 10;
+                lineWidth = fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_FADE] << 4;
+                alpha = fx_0b1_timers[FX_CARBUNCLE_TIMER_BEAM_FADE] << 10;
             } else {
-                lineWidth = 0x40;
+                lineWidth = FX_CARBUNCLE_BEAM_WIDTH;
                 alpha = 0x1000;
             }
             for (i = 0; i < count; i++) {
-                pt0->vy = pt1->vy = ex->btlfx_lerpRatio(fx_0b1_emitPos5.vy, topY, i, 0x15);
+                pt0->vy = pt1->vy = ex->btlfx_lerpRatio(fx_0b1_emitPos5.vy, topY, i, FX_CARBUNCLE_BEAM_POINTS);
                 pt0->vx = pt1->vx = fx_0b1_emitPos5.vx;
                 pt0->vz = pt1->vz = fx_0b1_emitPos5.vz;
                 pt0->pad = lineWidth;
@@ -319,12 +319,12 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_0b1_beams[0], 0);
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_0b1_beams[1], 0);
         }
-        if (fx_0b1_timers[5] != 0) {
-            fx_0b1_timers[5]--;
-            if (fx_0b1_timers[5] >= 9) {
-                bright = (0x10 - fx_0b1_timers[5]) << 4;
+        if (fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH] != 0) {
+            fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH]--;
+            if (fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH] >= 9) {
+                bright = (FX_CARBUNCLE_FLASH_FRAMES - fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH]) << 4;
             } else {
-                bright = fx_0b1_timers[5] << 4;
+                bright = fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH] << 4;
             }
             col.r = col.g = col.b = bright;
             scale.vx = 0x1000;
@@ -336,7 +336,7 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
         fxm_camKeyUpdate();
-        return frame >= 0x10A;
+        return frame >= FX_CARBUNCLE_FRAMES;
     }
     return 0;
 }
@@ -352,10 +352,10 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         fx_0b1_fadeTimer = 0;
         fx_0b1_env = env;
-        ex->btlfx_initEffModels(fx_0b1_effModels, 4);
+        ex->btlfx_initEffModels(fx_0b1_effModels, FX_CARBUNCLE_MODEL_COUNT);
         for (i = 0; i < env->targets->targetCount; i++) {
-            fx_0b1_models[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_STAR_CRYSTAL), 0x177,
-                                                       0xFFFF, 0, 0x80);
+            fx_0b1_models[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_STAR_CRYSTAL), FX_CARBUNCLE_STAR_CRYSTAL_TPAGE,
+                                                       FX_CARBUNCLE_STAR_CRYSTAL_CLUT, FX_CARBUNCLE_STAR_CRYSTAL_U, FX_CARBUNCLE_STAR_CRYSTAL_V);
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_0b1_bodyPos[i]);
             fx_0b1_modelPos[i].vx = fx_0b1_bodyPos[i].vx;
             fx_0b1_modelPos[i].vy = fx_0b1_bodyPos[i].vy;
@@ -372,7 +372,7 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         frame = entry->frame;
         if (frame == 0) {
             do {
-                fx_0b1_fadeTimer = 0x20;
+                fx_0b1_fadeTimer = FX_CARBUNCLE_CRYSTAL_FRAMES;
             } while (0);
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_PINK_RING), (s32)&fx_0b1_bodyPos[i]);
@@ -384,19 +384,19 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             do {
                 for (i = 0; i < env->targets->targetCount; i++) {
                     ex->Hi_DrawEffModel(&fx_0b1_modelRot, &fx_0b1_modelPos[i], (s32)&fx_0b1_modelScale, fx_0b1_models[i]);
-                    if (fx_0b1_fadeTimer >= 0x19) {
-                        bright = (0x18 - fx_0b1_fadeTimer) * 0x10;
+                    if (fx_0b1_fadeTimer >= FX_CARBUNCLE_CRYSTAL_FRAMES - FX_CARBUNCLE_CRYSTAL_FADE_FRAMES + 1) {
+                        bright = (FX_CARBUNCLE_CRYSTAL_FRAMES - FX_CARBUNCLE_CRYSTAL_FADE_FRAMES - fx_0b1_fadeTimer) * 0x10;
                         ex->Hi_ModifyEffModelRGB(fx_0b1_models[i], bright, bright, bright);
                     }
-                    if (fx_0b1_fadeTimer < 8) {
-                        bright = (fx_0b1_fadeTimer - 8) * 0x10;
+                    if (fx_0b1_fadeTimer < FX_CARBUNCLE_CRYSTAL_FADE_FRAMES) {
+                        bright = (fx_0b1_fadeTimer - FX_CARBUNCLE_CRYSTAL_FADE_FRAMES) * 0x10;
                         ex->Hi_ModifyEffModelRGB(fx_0b1_models[i], bright, bright, bright);
                     }
                 }
             } while (0);
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_BACKDROP), frame);
         }
-        return frame >= 0x20;
+        return frame >= FX_CARBUNCLE_CRYSTAL_FRAMES;
     }
     return 0;
 }

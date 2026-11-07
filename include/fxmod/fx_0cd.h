@@ -18,6 +18,23 @@
 #define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites; the render still reads garbled yellow texels (texture not resolved); runtime (docs/runtime-findings.md effect-data pass 2): its run-time sprite is a tiny green glint; ablating it changes < 210 px (look pending) */
 #define FX_AERA_GREEN_TORNADO 0xD /* 'so' model: twisted green column with a smoke texture (tornado) */
 
+/* fx_0cd choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length, the three models'
+ * countdowns (fade in and out over FX_AERA_MODEL_FADE_FRAMES at each end), the trail buffers. */
+#define FX_AERA_BLADES_2_FRAME    8    /* op80: the second FX_AERA_GREEN_WIND_BLADES starts (the first at frame 0) */
+#define FX_AERA_WIND_RING_FRAME   0x10 /* op80: FX_AERA_WIND_RING and the GREEN_WIND_RING model (timer0) start */
+#define FX_AERA_WIND_RING_FRAMES  0x20 /* GREEN_WIND_RING model: grows taller and wider for this many frames */
+#define FX_AERA_TORNADO_FRAME     0x28 /* op80: FX_AERA_GREEN_BURST and the GREEN_TORNADO model (timer4) start */
+#define FX_AERA_TORNADO_FRAMES    0x30 /* GREEN_TORNADO model: widens for this many frames */
+#define FX_AERA_ARC_FRAME         0x38 /* op80: the GREY_ARC model (timer8) starts at the caster's body */
+#define FX_AERA_ARC_FRAMES        0x18 /* GREY_ARC model: shrinks for this many frames */
+#define FX_AERA_MODEL_FADE_FRAMES 8    /* each model fades in over its first and out over its last this many frames */
+#define FX_AERA_GUST_FRAME        0x50 /* op80: FX_AERA_GUST_RINGS and FX_AERA_GREEN_RING start */
+#define FX_AERA_SPRITE_BURST_FRAME 0x58 /* op80: FX_AERA_SPRITE_BURST starts */
+#define FX_AERA_FRAMES            0x80 /* op80: the task ends at this frame */
+#define FX_AERA_MODEL_COUNT       3    /* btlfx_initEffModels slots: GREEN_TORNADO, GREY_ARC, GREEN_WIND_RING */
+#define FX_AERA_GREEN_WIND_BLADES_TRAIL_SLOTS  0x26 /* each FX_AERA_GREEN_WIND_BLADES' trail buffer (fx_0cd_trails, _trails2): slots of */
+#define FX_AERA_GREEN_WIND_BLADES_TRAIL_STRIDE 0x7C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s32 model0; /* model */
     SVECTOR rot4; /* rotation */

@@ -16,6 +16,26 @@
 #define FX_LIGHT_FLARE_GLOW_RING     0x11 /* rings: textured ring drawn twice, tilted: the yellow-green glow ring round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 #define FX_LIGHT_FLARE_FIREBALL      0x12 /* 'so' model: sphere with a fire texture, drawn fading */
 
+/* fx_0cb choreography (docs/fxdata.md, "Choreography literals"): op80's length, tints and fireball spawning, the
+ * fireball pool items' look, and the VRAM rect of the fireball's scrolling texture. */
+#define FX_LIGHT_FLARE_FRAMES        50   /* op80: the rings fade over this many frames, then the task ends */
+#define FX_LIGHT_FLARE_DARKEN_RGB    0, 0x40, 0x40 /* op80 frame 0: subtractive screen tint (darkens green and blue) */
+#define FX_LIGHT_FLARE_FLASH_FRAMES  7    /* op80: then an additive yellow-white screen flash fades until this frame */
+#define FX_LIGHT_FLARE_SPAWN_FRAMES  0x20 /* op80: a fireball pool item spawns every SPAWN_GAP frames until this frame */
+#define FX_LIGHT_FLARE_SPAWN_GAP     3
+#define FX_LIGHT_FLARE_SLOTS         6    /* pool items */
+#define FX_LIGHT_FLARE_MODEL_COUNT   3    /* btlfx_initEffModels slots (FIREBALL and RED_HALO registered) */
+#define FX_LIGHT_FLARE_BURST_FRAMES     8 /* pool item: FIREBALL + RED_HALO pulse at a random spot for this many frames, */
+#define FX_LIGHT_FLARE_BURST_IN_FRAMES  3 /* brightening over the first ones, then fading */
+/* FX_LIGHT_FLARE_FIREBALL samples (tpage 0x99 = 8-bit page (0x240, 0x100), u / v 0) the rect at VRAM_X; each frame
+ * btlfx_drawScrollMove copies the file's fire texture from (SRC_X, SRC_Y) beside it into it, scrolled. */
+#define FX_LIGHT_FLARE_FIREBALL_VRAM_X 0x240
+#define FX_LIGHT_FLARE_FIREBALL_VRAM_Y 0x100
+#define FX_LIGHT_FLARE_FIREBALL_VRAM_W 0x38
+#define FX_LIGHT_FLARE_FIREBALL_VRAM_H 0x70
+#define FX_LIGHT_FLARE_FIREBALL_SRC_X  0x278
+#define FX_LIGHT_FLARE_FIREBALL_SRC_Y  0x100
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */
