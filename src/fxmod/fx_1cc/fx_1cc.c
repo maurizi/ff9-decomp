@@ -520,7 +520,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0x200;
             rot.vy = 0;
             t = (frame << 12) / FX_SEALION_APPEARS_BULGE_FRAMES;
-            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x4400, t >> 5, 0x9A, 0x3D40, 0, 0x80, 0, 1);
+            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x4400, t >> 5, 0x9A, 0x3D40, 0, 0x80, 0, BTLFX_ABR_ADD);
             ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
             if (frame >= FX_SEALION_APPEARS_BULGE_FRAMES) {
                 work->state0 = 1;
@@ -533,7 +533,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = 0x200;
-            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x4400, 0x80, 0x9A, 0x3D40, 0, 0x80, -((ex->math_sin(ang) * 700) >> 12), 1);
+            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x4400, 0x80, 0x9A, 0x3D40, 0, 0x80, -((ex->math_sin(ang) * 700) >> 12), BTLFX_ABR_ADD);
             ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
             ringAlpha = t;
             rot.pad = 1;

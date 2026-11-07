@@ -42,13 +42,13 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx127Work80);
     } else if (mode == 1) {
         fx_127_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos24);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot2C);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos24);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot2C);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos34);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos3C);
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&boneMat);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x3C, (BtlBone *)&boneMat);
         ex->btlfx_matrixPointAhead(&boneMat, 0, (s32)&work->pos44);
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->rot74);
         switch (frame) {
@@ -62,10 +62,10 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos4C.vy = 0;
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WAVE_WHITE_RINGS_2), (s32)&work->pos4C);
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case FX_WAVE_RELEASE_FRAME:
@@ -77,9 +77,9 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_127_aimRot.vx = work->rot5C.vx;
             fx_127_aimRot.vy = work->rot5C.vy;
             fx_127_aimRot.vz = work->rot5C.vz;
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&releaseMat);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x3C, (BtlBone *)&releaseMat);
             ex->btlfx_matrixPointAhead(&releaseMat, 0, (s32)&work->pos64);
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&fromMat);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x3C, (BtlBone *)&fromMat);
             ex->btlfx_matrixPointAhead(&fromMat, 0, (s32)&fx_127_lerpFrom);
             fx_127_lerpTo.vx = work->pos34.vx;
             fx_127_lerpTo.vy = work->pos34.vy;

@@ -295,11 +295,11 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, FX_ROULETTE_RIBBON_BONE, &fx_0ed_ribbonPt1, &ptB);
             fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, FX_ROULETTE_RIBBON_BONE, &fx_0ed_ribbonPt2, &ptC);
             if (amp < 0) {
-                fxm_drawRibbonTrail(&ptA, &ptB, 0x3F8, &fx_0ed_ribbonRgb0, &fx_0ed_ribbonRgb1, 0, fx_0ed_ribbon0, 1);
-                fxm_drawRibbonTrail(&ptB, &ptC, 0x3F8, &fx_0ed_ribbonRgb1, &fx_0ed_ribbonRgb2, 0, fx_0ed_ribbon1, 1);
+                fxm_drawRibbonTrail(&ptA, &ptB, 0x3F8, &fx_0ed_ribbonRgb0, &fx_0ed_ribbonRgb1, 0, fx_0ed_ribbon0, BTLFX_ABR_ADD);
+                fxm_drawRibbonTrail(&ptB, &ptC, 0x3F8, &fx_0ed_ribbonRgb1, &fx_0ed_ribbonRgb2, 0, fx_0ed_ribbon1, BTLFX_ABR_ADD);
             } else {
-                fxm_drawRibbonTrail(&ptA, &ptB, 0x10, &fx_0ed_ribbonRgb0, &fx_0ed_ribbonRgb1, amp, fx_0ed_ribbon0, 1);
-                fxm_drawRibbonTrail(&ptB, &ptC, 0x10, &fx_0ed_ribbonRgb1, &fx_0ed_ribbonRgb2, amp, fx_0ed_ribbon1, 1);
+                fxm_drawRibbonTrail(&ptA, &ptB, 0x10, &fx_0ed_ribbonRgb0, &fx_0ed_ribbonRgb1, amp, fx_0ed_ribbon0, BTLFX_ABR_ADD);
+                fxm_drawRibbonTrail(&ptB, &ptC, 0x10, &fx_0ed_ribbonRgb1, &fx_0ed_ribbonRgb2, amp, fx_0ed_ribbon1, BTLFX_ABR_ADD);
                 BTLFX_COPY_SVEC(&work->unk20, &ptA);
                 {
                     s32 ofs;
@@ -389,7 +389,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case FX_ROULETTE_PICK_STATE_MARK:
             env->otZ = 0x80;
-            ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_TARGET_RING), &work->pos10, 0, 0xFF, -1);
+            ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_TARGET_RING), &work->pos10, 0, BTLFX_ABR_OPAQUE, -1);
             env->otZ = 0;
             if (work->frame8 < FX_ROULETTE_PICK_STEPS) {
                 gridBright = work->frame8 * FX_ROULETTE_GRID_BRIGHT / FX_ROULETTE_PICK_STEPS;

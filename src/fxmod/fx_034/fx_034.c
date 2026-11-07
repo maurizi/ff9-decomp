@@ -136,10 +136,10 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_034_env = env;
         ex->btlfx_initEffModels(fx_034_effModels, FX_COLD_BREATH_MODEL_COUNT);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos34);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot3C);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos34);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos44);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4C);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos4C);
         work->emit0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COLD_BREATH_ICE_CHUNKS), (s32)&work->pos4C);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_034_trails;

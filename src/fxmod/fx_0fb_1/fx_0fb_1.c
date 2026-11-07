@@ -1006,8 +1006,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         } else {
             scrollX = (work->frame4 * 0xE) % 240;
         }
-        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0xA0 - scrollX, 0xA0, 0, 3, trail);
-        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0x280 - scrollX, 0xA0, 0, 3, trail);
+        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0xA0 - scrollX, 0xA0, 0, BTLFX_ABR_QUARTER, trail);
+        ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0x280 - scrollX, 0xA0, 0, BTLFX_ABR_QUARTER, trail);
     }
     if (glow != 0) {
         CVECTOR col;

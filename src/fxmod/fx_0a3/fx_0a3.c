@@ -8,9 +8,9 @@ s32 fx_0a3_op80(s32 mode, Fx0a3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx0a3Work);
     } else if (mode == 1) {
         fx_0a3_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot18);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos10);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot18);
         ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot18, 0x190, (s16 *)&work->pos8);
         ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot18, FX_ELECTROCUTE_REACH, (s16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ELECTROCUTE_BLUE_BOLTS), (s32)&work->pos10);

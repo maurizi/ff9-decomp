@@ -21,7 +21,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale4.vy = 0x1000;
         work->scale4.vz = 0x1000;
         work->model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_SHELL), FX_STONE_ROCK_SHELL_TPAGE, FX_STONE_ROCK_SHELL_CLUT, FX_STONE_ROCK_SHELL_U, FX_STONE_ROCK_SHELL_V);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos2C);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos2C);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos34);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_STONE_ROCK_STRIP), 0, 0, -1, 0x1000, 0x1000, mode,
                           (u8 *)&fx_0e6_strip, 0);

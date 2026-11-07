@@ -631,12 +631,12 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         }
         if (wave != 0) {
-            fx_0e1_0_drawWaveQuadGrid(0xFFE, -0x31, 0xDC, 0xC, 5, 0x28, 0x32, 1, 0x1000, FX_REBIRTH_FLAME_WAVE_TPAGE, FX_REBIRTH_FLAME_WAVE_CLUT, FX_REBIRTH_FLAME_WAVE_U, FX_REBIRTH_FLAME_WAVE_V, 0x40, 0x80,
+            fx_0e1_0_drawWaveQuadGrid(0xFFE, -0x31, 0xDC, 0xC, 5, 0x28, 0x32, BTLFX_ABR_ADD, 0x1000, FX_REBIRTH_FLAME_WAVE_TPAGE, FX_REBIRTH_FLAME_WAVE_CLUT, FX_REBIRTH_FLAME_WAVE_U, FX_REBIRTH_FLAME_WAVE_V, 0x40, 0x80,
                           wave >> 6, 0x20, (work->frame4 << 5) + 0x400, 0x140, 0x200);
             ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, FX_REBIRTH_FLAME_WAVE_VRAM_X, FX_REBIRTH_FLAME_WAVE_VRAM_Y, FX_REBIRTH_FLAME_WAVE_VRAM_W, FX_REBIRTH_FLAME_WAVE_VRAM_H, FX_REBIRTH_FLAME_WAVE_SRC_X, FX_REBIRTH_FLAME_WAVE_SRC_Y);
         }
         if (wave2 != 0) {
-            fx_0e1_0_drawWaveQuadGrid(2, -0x20, 0xDC, 6, 5, 0x42, 0x32, 1, 0x1000, FX_REBIRTH_FLAME_WAVE_2_TPAGE, FX_REBIRTH_FLAME_WAVE_2_CLUT, FX_REBIRTH_FLAME_WAVE_2_U, FX_REBIRTH_FLAME_WAVE_2_V, 0x40, 0x80,
+            fx_0e1_0_drawWaveQuadGrid(2, -0x20, 0xDC, 6, 5, 0x42, 0x32, BTLFX_ABR_ADD, 0x1000, FX_REBIRTH_FLAME_WAVE_2_TPAGE, FX_REBIRTH_FLAME_WAVE_2_CLUT, FX_REBIRTH_FLAME_WAVE_2_U, FX_REBIRTH_FLAME_WAVE_2_V, 0x40, 0x80,
                           wave2 >> 7, 0x16, work->frame4 << 6, 0x200, 0x302);
             ex->btlfx_drawScrollMove(10000 - work->frame4 * 4, FX_REBIRTH_FLAME_WAVE_2_VRAM_X, FX_REBIRTH_FLAME_WAVE_2_VRAM_Y, FX_REBIRTH_FLAME_WAVE_2_VRAM_W,
                                      FX_REBIRTH_FLAME_WAVE_2_VRAM_H, FX_REBIRTH_FLAME_WAVE_2_SRC_X, FX_REBIRTH_FLAME_WAVE_2_SRC_Y);
@@ -687,13 +687,13 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 for (i = 0; i < FX_REBIRTH_FLAME_RIBBONS; i++) {
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneA0, (u16 *)&sc);
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&boneB);
-                    fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x3FC, 0, 0, 0, 0, 0, 0, 0, fx_0e1_0_ribbons[i], 1, 0);
+                    fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x3FC, 0, 0, 0, 0, 0, 0, 0, fx_0e1_0_ribbons[i], BTLFX_ABR_ADD, 0);
                 }
             }
             for (i = 0; i < FX_REBIRTH_FLAME_RIBBONS; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneA0, (u16 *)&sc);
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&boneB);
-                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x14, FX_REBIRTH_FLAME_WAVE_2_TPAGE, FX_REBIRTH_FLAME_WAVE_2_CLUT, FX_REBIRTH_FLAME_WAVE_2_U, FX_REBIRTH_FLAME_WAVE_2_V, 0x40, 0x80, ((rib >> 5) * 2) / 3, fx_0e1_0_ribbons[i], 1,
+                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x14, FX_REBIRTH_FLAME_WAVE_2_TPAGE, FX_REBIRTH_FLAME_WAVE_2_CLUT, FX_REBIRTH_FLAME_WAVE_2_U, FX_REBIRTH_FLAME_WAVE_2_V, 0x40, 0x80, ((rib >> 5) * 2) / 3, fx_0e1_0_ribbons[i], BTLFX_ABR_ADD,
                               10000 - work->frame4);
             }
             env->otZ = 0;

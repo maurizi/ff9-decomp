@@ -63,7 +63,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         for (i = 0; i < 8; i++) {
             fx_0b8_bolts[i].timerDC = -i * 2;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_STREAK), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_STREAK), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_0b8_bolts[i], 0);
         }
         work->scroll1E4 = 8;
@@ -429,19 +429,19 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 bright = 0xFF;
             }
             bandY = fxm_easeLerp(0, 0x4C, work->flags0[0x11], 0, 0x28);
-            fx_0b8_drawScreenBand(0x10, bandY + 0x8E, 0x62, (frame * 4) & 0xFC, bright >> 2, bright >> 1, 0x18, 0x3D09, 1);
-            fx_0b8_drawScreenBand(0x20, bandY + 0x74, 0x80, (frame * 2) & 0xFE, bright >> 1, bright, 0x18, 0x3D09, 1);
+            fx_0b8_drawScreenBand(0x10, bandY + 0x8E, 0x62, (frame * 4) & 0xFC, bright >> 2, bright >> 1, 0x18, 0x3D09, BTLFX_ABR_ADD);
+            fx_0b8_drawScreenBand(0x20, bandY + 0x74, 0x80, (frame * 2) & 0xFE, bright >> 1, bright, 0x18, 0x3D09, BTLFX_ABR_ADD);
         }
         if (work->flags0[0x12] != 0) {
             work->flags0[0x12]--;
             if (work->flags0[0x12] >= 0x29) {
-                fxm_tintScreenLerp(0, 0xD0, work->flags0[0x12] - 0x28, 8, 1, 0);
+                fxm_tintScreenLerp(0, 0xD0, work->flags0[0x12] - 0x28, 8, BTLFX_ABR_ADD, 0);
             }
             for (i = 0; i < 4; i++) {
                 bd = &fx_0b8_bands[i];
                 bd->y0 += bd->dy18;
                 bd->x8 = (bd->x8 + bd->dx14) & 0xFF;
-                fx_0b8_drawScreenBand(0, bd->y0, bd->h4, bd->x8, bd->colorC, bd->color10, 0x18, 0x3D09, 1);
+                fx_0b8_drawScreenBand(0, bd->y0, bd->h4, bd->x8, bd->colorC, bd->color10, 0x18, 0x3D09, BTLFX_ABR_ADD);
             }
         }
         if (work->flags0[0xE] != 0) {
@@ -465,10 +465,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                     if (bolt->timerDC < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_STREAK), 0, NULL, frame, 0x1000,
-                                            bolt->timerDC << 10, 1, tr, 0);
+                                            bolt->timerDC << 10, BTLFX_ABR_ADD, tr, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_STREAK), 0, NULL, frame, 0x1000, 0x1000,
-                                            1, tr, 0);
+                                            BTLFX_ABR_ADD, tr, 0);
                     }
                 } else if (bolt->timerDC < 0) {
                     bolt->timerDC++;
@@ -650,11 +650,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang.vy = -0x1200;
             rot.vz = 0;
             rot.vx += 0xA0;
-            fx_0b8_drawGradientPlane(&ang, &rot, bright, 0x17, 0x3D09, 1);
+            fx_0b8_drawGradientPlane(&ang, &rot, bright, 0x17, 0x3D09, BTLFX_ABR_ADD);
             ang.vy = 0x200;
             rot.vz = 0x800;
             rot.vx -= 0x140;
-            fx_0b8_drawGradientPlane(&ang, &rot, bright, 0x17, 0x3D09, 1);
+            fx_0b8_drawGradientPlane(&ang, &rot, bright, 0x17, 0x3D09, BTLFX_ABR_ADD);
         }
         if (work->flags0[0x20] != 0) {
             work->flags0[0x20]--;
@@ -722,7 +722,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->flags0[7] != 0) {
             work->flags0[7]--;
-            fxm_tintScreenLerp(0xFF, 0, work->flags0[7], 8, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, work->flags0[7], 8, BTLFX_ABR_ADD, 0);
         }
         if (work->flags0[0xD] != 0) {
             s32 sh;

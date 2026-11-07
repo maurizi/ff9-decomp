@@ -15,7 +15,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case FX_SLEEPING_JUICE_SPLASH_FRAME:
-            ex->btlfx_getUnitArgBoneMatrix(0x10, 0, &bone);
+            ex->btlfx_getUnitArgBoneMatrix(BTLFX_UNIT_CASTER, 0, &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, FX_SLEEPING_JUICE_SPLASH_REACH, (s32)&work->pos20);
             work->pos20.vy -= FX_SLEEPING_JUICE_SPLASH_HEIGHT;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_SPLASH_TRAILS), (s32)&work->pos20);

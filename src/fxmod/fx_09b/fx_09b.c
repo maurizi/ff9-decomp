@@ -64,7 +64,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         } else {
             work->pos64.vy -= ex->btlfx_rand() % 100;
         }
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos3C);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos3C);
         work->fromPos5C.vx = work->pos3C.vx;
         work->fromPos5C.vy = work->pos3C.vy;
         work->fromPos5C.vz = work->pos3C.vz;
@@ -93,7 +93,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4->file->m.module.update = fx_09b_pinParticles[work->instance6C];
         }
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         frame = entry->frame;

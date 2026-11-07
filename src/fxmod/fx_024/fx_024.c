@@ -17,24 +17,24 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx024Work80);
     } else if (mode == 1) {
         fx_024_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos18);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot20);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos18);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot20);
         work->pos38.vx = work->pos18.vx;
         work->pos38.vy = work->pos18.vy;
         work->pos38.vz = work->pos18.vz;
         ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot20, FX_AERIAL_SLASH_GUST_REACH, (s16 *)&work->pos38);
         work->pos38.vy = -FX_AERIAL_SLASH_GUST_HEIGHT;
-        ex->btlfx_getUnitBoneMatrix(0x10, 0xD, (BtlBone *)&u.m);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0xD, (BtlBone *)&u.m);
         ex->btlfx_matrixPointAhead(&u.m, FX_AERIAL_SLASH_BLADE_REACH, (s32)&work->pos28);
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x1D, (BtlBone *)&boneMat);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x1D, (BtlBone *)&boneMat);
         ex->btlfx_matrixPointAhead(&boneMat, FX_AERIAL_SLASH_BLADE_REACH, (s32)&work->pos30);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_CRESCENT), (s32)&work->pos28);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_CRESCENT_2), (s32)&work->pos30);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x100);
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x100);
         }
         ex->btlfx_aimAngles((s16 *)&work->pos28, (s16 *)&work->pos38, (s16 *)&work->aim40);
         ex->btlfx_aimAngles((s16 *)&work->pos30, (s16 *)&work->pos38, (s16 *)&work->aim48);

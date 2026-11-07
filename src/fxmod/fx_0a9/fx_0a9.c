@@ -127,12 +127,12 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos8);
         fxm_resetBolts();
         return 0;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos8);
         if (frame < FX_LIGHTNING_BOLTS_FRAMES) {
             for (i = 0; i < FX_LIGHTNING_BOLTS_PER_FRAME; i++) {
                 BTLFX_COPY_SVEC(&target, &work->pos0);

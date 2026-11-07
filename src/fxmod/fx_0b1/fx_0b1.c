@@ -160,8 +160,8 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fxm_camKeyAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_CAMERA_KEYS_3));
         fxm_camKeyAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_CAMERA_KEYS));
         fxm_camKeyAdd(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_CAMERA_KEYS_2));
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)&fx_0b1_beams[0], 0);
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)&fx_0b1_beams[1], 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD, (u8 *)&fx_0b1_beams[0], 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD, (u8 *)&fx_0b1_beams[1], 0);
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -226,7 +226,7 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_stopEmitter(fx_0b1_emitter4);
             ex->btlfx_stopEmitter(fx_0b1_emitter5);
             ex->btlfx_stopEmitter(fx_0b1_emitter6);
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, FX_CARBUNCLE_BURST_TINT_RGB);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, FX_CARBUNCLE_BURST_TINT_RGB);
             fx_0b1_emitPos7.vy = fx_0b1_emitPos6.vy;
             fx_0b1_emitPos7.vx = fx_0b1_emitPos6.vx;
             fx_0b1_emitPos7.vz = fx_0b1_emitPos6.vz;
@@ -316,8 +316,8 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 pt0++;
                 pt1++;
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_0b1_beams[0], 0);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_0b1_beams[1], 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, frame, 0x1000, alpha, BTLFX_ABR_ADD, (u8 *)&fx_0b1_beams[0], 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LIGHT_BEAM), 0, NULL, frame, 0x1000, alpha, BTLFX_ABR_ADD, (u8 *)&fx_0b1_beams[1], 0);
         }
         if (fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH] != 0) {
             fx_0b1_timers[FX_CARBUNCLE_TIMER_FLASH]--;

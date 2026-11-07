@@ -297,11 +297,11 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt1, &bonePt1);
             fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt2, &bonePt2);
             if (amp < 0) {
-                fxm_drawRibbonTrail(&bonePt0, &bonePt1, FX_DEATH_RIBBON_CLEAR + FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, 0, fx_05e_ribbonA, 1);
-                fxm_drawRibbonTrail(&bonePt1, &bonePt2, FX_DEATH_RIBBON_CLEAR + FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, 0, fx_05e_ribbonB, 1);
+                fxm_drawRibbonTrail(&bonePt0, &bonePt1, FX_DEATH_RIBBON_CLEAR + FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, 0, fx_05e_ribbonA, BTLFX_ABR_ADD);
+                fxm_drawRibbonTrail(&bonePt1, &bonePt2, FX_DEATH_RIBBON_CLEAR + FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, 0, fx_05e_ribbonB, BTLFX_ABR_ADD);
             } else {
-                fxm_drawRibbonTrail(&bonePt0, &bonePt1, FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, amp, fx_05e_ribbonA, 1);
-                fxm_drawRibbonTrail(&bonePt1, &bonePt2, FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, amp, fx_05e_ribbonB, 1);
+                fxm_drawRibbonTrail(&bonePt0, &bonePt1, FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, amp, fx_05e_ribbonA, BTLFX_ABR_ADD);
+                fxm_drawRibbonTrail(&bonePt1, &bonePt2, FX_DEATH_RIBBON_SEGMENTS, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, amp, fx_05e_ribbonB, BTLFX_ABR_ADD);
                 BTLFX_COPY_SVEC(&work->pos20, &bonePt0);
                 {
                     s32 offA;

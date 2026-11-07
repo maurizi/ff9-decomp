@@ -46,8 +46,8 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->state0 = 0;
         fx_194_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos4);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHOCKWAVE_DUST_WAVE), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = 0x200;
@@ -120,7 +120,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_194_env = env;
         work->state0 = 0;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos4);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHOCKWAVE_WHITE_GLOW), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = 0x200;

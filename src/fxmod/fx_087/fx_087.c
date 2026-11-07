@@ -8,9 +8,9 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx087Work);
     } else if (mode == 1) {
         fx_087_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos1C);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x17, (u16 *)&work->pos1C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_STREAKS), (s32)&work->pos1C);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_087_trails;

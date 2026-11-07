@@ -201,15 +201,15 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1b7Work80);
     } else if (mode == 1) {
         fx_1b7_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&pos);
         pos.vz -= 0x258;
         work->pos8[0] = pos.vx;
         work->pos8[1] = pos.vy;
         work->pos8[2] = pos.vz;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitScale(0x10, work->scale1C);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
+        ex->btlfx_getUnitScale(BTLFX_UNIT_CASTER, work->scale1C);
         work->rot14.vy += 0x800;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos28);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos28);
         work->pos28.vy -= 0x180;
         work->pos30.vx = work->pos28.vx;
         work->pos30.vy = work->pos28.vy;
@@ -292,7 +292,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->state0 = FX_DEATH_STATE_SHATTER;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit40);
-                ex->btlfx_fadeUnitById(0x10, 0);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
                 ex->btlfx_moveSummonToHeap(0x6E);
                 ex->btlfx_initEffModels(fx_1b7_effModels, FX_DEATH_MODELS);
                 for (i = 0; i < FX_DEATH_MODELS; i++) {
@@ -366,7 +366,7 @@ s32 fx_1b7_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 0;
     } else if (mode == 1) {
         fx_1b7_env = env;
-        ex->btlfx_clearUnitStatus(0x10);
+        ex->btlfx_clearUnitStatus(BTLFX_UNIT_CASTER);
     } else {
         return 1;
     }

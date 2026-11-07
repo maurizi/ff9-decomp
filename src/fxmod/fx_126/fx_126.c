@@ -10,8 +10,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx126Work);
     } else if (mode == 1) {
         fx_126_env = env;
-        ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->pos60);
-        ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->pos58);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x30, (u16 *)&work->pos60);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 8, (u16 *)&work->pos58);
         ex->btlfx_initEffModels(fx_126_effModels, FX_BOOMERANG_MODEL_SLOTS);
         work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BOOMERANG_CURVED_BLADE), 0xFF);
         work->model4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BOOMERANG_CURVED_BLADE), 0xFF);

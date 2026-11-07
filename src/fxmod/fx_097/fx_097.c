@@ -366,7 +366,7 @@ static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk801
                     ex->btlfx_pointAhead((s16 *)&ringFrom, (s16 *)&rot, 0x2F6, (s16 *)&ringPos);
                     data = ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SNOW_RING_2);
                     ringScale = (ex->math_sin(ang) * 0x1154) >> 12;
-                    ex->btlfx_drawRings((u8 *)data, &ringPos, &rot, ringScale, 0, 1, ex->math_cos(ang) * 2 / 3);
+                    ex->btlfx_drawRings((u8 *)data, &ringPos, &rot, ringScale, 0, BTLFX_ABR_ADD, ex->math_cos(ang) * 2 / 3);
                 }
             }
             pieceIdx = FX_BLIZZAGA_CRYSTAL_PIECES;
@@ -440,7 +440,7 @@ static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk801
         pos.vy = it->posC.vy >> 4;
         pos.vz = it->posC.vz >> 4;
         ex->Hi_DrawEffModel(&it->rot20, &pos, (s32)&scale, it->model2C);
-        ex->Hi_ModifyEffModelAbr(it->model2C, 1);
+        ex->Hi_ModifyEffModelAbr(it->model2C, BTLFX_ABR_ADD);
         ex->Hi_ModifyEffModelRGB(it->model2C, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
         if (++it->frame8 >= FX_BLIZZAGA_PIECE_FRAMES) {
             return 1;
@@ -522,7 +522,7 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0x200;
             rot.vy = 0;
             t = (frame << 12) / FX_BLIZZAGA_BULGE_FRAMES;
-            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x26A8, t >> 5, FX_BLIZZAGA_BULGE_TPAGE, FX_BLIZZAGA_BULGE_CLUT, 0, 0x80, 0, 1);
+            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x26A8, t >> 5, FX_BLIZZAGA_BULGE_TPAGE, FX_BLIZZAGA_BULGE_CLUT, 0, 0x80, 0, BTLFX_ABR_ADD);
             ex->btlfx_drawScrollMove(work->frame4 * 3, FX_BLIZZAGA_REFLECTION_VRAM_X, FX_BLIZZAGA_REFLECTION_VRAM_Y,
                                      FX_BLIZZAGA_REFLECTION_VRAM_W, FX_BLIZZAGA_REFLECTION_VRAM_H, FX_BLIZZAGA_REFLECTION_SRC_X,
                                      FX_BLIZZAGA_REFLECTION_SRC_Y);
@@ -537,14 +537,14 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = 0x200;
-            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x26A8, 0x80, FX_BLIZZAGA_BULGE_TPAGE, FX_BLIZZAGA_BULGE_CLUT, 0, 0x80, -((ex->math_sin(ang) * 0x2BC) >> 12), 1);
+            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x26A8, 0x80, FX_BLIZZAGA_BULGE_TPAGE, FX_BLIZZAGA_BULGE_CLUT, 0, 0x80, -((ex->math_sin(ang) * 0x2BC) >> 12), BTLFX_ABR_ADD);
             ex->btlfx_drawScrollMove(work->frame4 * 3, FX_BLIZZAGA_REFLECTION_VRAM_X, FX_BLIZZAGA_REFLECTION_VRAM_Y,
                                      FX_BLIZZAGA_REFLECTION_VRAM_W, FX_BLIZZAGA_REFLECTION_VRAM_H, FX_BLIZZAGA_REFLECTION_SRC_X,
                                      FX_BLIZZAGA_REFLECTION_SRC_Y);
             ringAlpha = t;
             rot.pad = 1;
             data = ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SNOW_RING_2);
-            ex->btlfx_drawRings((u8 *)data, &work->pos58, &rot, ((((ex->math_sin(ang) * 0x19FE) >> 12) + 0x1154) * 3) >> 2, 0, 1,
+            ex->btlfx_drawRings((u8 *)data, &work->pos58, &rot, ((((ex->math_sin(ang) * 0x19FE) >> 12) + 0x1154) * 3) >> 2, 0, BTLFX_ABR_ADD,
                               ex->math_cos(ang));
             if (frame >= FX_BLIZZAGA_RISE_FRAMES) {
                 work->state0 = FX_BLIZZAGA_STATE_CRYSTAL;
@@ -563,8 +563,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter2 != NULL) {
                     emitter2->otZ = 0x80;
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_BLIZZAGA_DARKEN_RGB);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZAGA_BLUE_TINT_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_BLIZZAGA_DARKEN_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_BLIZZAGA_BLUE_TINT_RGB);
             }
             break;
         case FX_BLIZZAGA_STATE_CRYSTAL:
@@ -580,9 +580,9 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model14);
             if (frame < FX_BLIZZAGA_CRYSTAL_FLASH_FRAMES) {
                 t = 0xFF - (frame * 0xFF) / FX_BLIZZAGA_CRYSTAL_FLASH_FRAMES;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, t >> 2, t * 2 / 3, t);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, t >> 2, t * 2 / 3, t);
                 if (frame == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZAGA_WHITE_FLASH_RGB);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_BLIZZAGA_WHITE_FLASH_RGB);
                 }
             }
             if (frame >= FX_BLIZZAGA_CRYSTAL_FRAMES) {
@@ -661,7 +661,7 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->state0 = FX_BLIZZAGA_STATE_SHATTER;
                 work->shatter78 = 1;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_BLIZZAGA_DARKEN_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_BLIZZAGA_DARKEN_RGB);
                 ex->btlfx_stopEmitter(work->emit84);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_ICE_FLARES), (s32)&work->pos58);
                 if (emitter != NULL) {
@@ -729,9 +729,9 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < FX_BLIZZAGA_SHATTER_FLASH_FRAMES) {
                 tint = 0xFF - ((frame * 0xFF) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 2, tint * 2 / 3, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint >> 2, tint * 2 / 3, tint);
                 if (frame == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZAGA_WHITE_FLASH_RGB);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_BLIZZAGA_WHITE_FLASH_RGB);
                 }
             }
             if (frame >= FX_BLIZZAGA_SHATTER_FRAMES) {
@@ -757,13 +757,13 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             vec.vz = work->frame4 * 0x29;
             vec.pad = 1;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SNOW_RING), &work->pos58, &vec, (work->frame4 << 6) + 0x15A9, 0,
-                              1, ringAlpha);
+                              BTLFX_ABR_ADD, ringAlpha);
             vec.vz = work->frame4 * 0x18 + 0x400;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SNOW_RING), &work->pos58, &vec, (work->frame4 << 6) + 0x15A9, 0,
-                              1, ringAlpha);
+                              BTLFX_ABR_ADD, ringAlpha);
             env->otZ = 0x127;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_FROST_RING), &work->pos58, NULL, (work->frame4 << 5) + 0x15A9, 0,
-                              1, ringAlpha);
+                              BTLFX_ABR_ADD, ringAlpha);
             env->otZ = 0;
         }
         work->frame4++;

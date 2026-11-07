@@ -17,21 +17,21 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->pos8.vy -= 0x80;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos18);
         ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos8, (s16 *)&work->rot24);
         ex->btlfx_initEffModels(fx_0ce_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SCREECH_BLADE_RING), 1);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_PURPLE_MIST), (s32)&work->pos18);
         if (emitter != NULL) {
-            emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+            emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x10);
         }
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_SOUND_RINGS), (s32)&work->pos18);
         if (emitter != NULL) {
-            emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+            emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x10);
         }
         work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_TRAIL), (s32)&work->pos18);
         if (work->emit2C != NULL) {
-            work->emit2C->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+            work->emit2C->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x10);
         }
         if (work->emit2C != NULL) {
             work->emit2C->trails = (s32)fx_0ce_trails;
@@ -48,7 +48,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_LILAC_RING), (s32)&work->pos10);
                 if (emitter != NULL) {
-                    emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+                    emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x10);
                 }
             }
             break;

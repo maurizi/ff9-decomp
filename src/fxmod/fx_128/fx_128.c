@@ -31,15 +31,15 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx128Work80);
     } else if (mode == 1) {
         fx_128_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_LIGHT_STREAK), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_SPARKLE_CIRCLE), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         frame = entry->frame;
@@ -89,8 +89,8 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_128_env = env;
         ex->btlfx_initEffModels(fx_128_effModels, FX_DRAGON_BREATH_MODEL_SLOTS);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos50);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot58);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos50);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot58);
         if (env->targets->targetCount == mode) {
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos60);
             ex->btlfx_getUnitPos(0, (s16 *)&work->pos68);

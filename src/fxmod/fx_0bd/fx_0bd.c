@@ -28,7 +28,7 @@ s32 fx_0bd_op81(s32 mode, Fx0bdWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0bd_env = env;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos0);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos0);
         env->camera->points[0].vx = work->pos0.vx;
         env->camera->points[0].vy = work->pos0.vy;
         env->camera->points[0].vz = work->pos0.vz;

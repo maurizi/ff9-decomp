@@ -35,7 +35,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_GROUND_RING), &work->pos4, &rot, ringScale * 2 / 3, 0xC, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_GROUND_RING), &work->pos4, &rot, ringScale * 2 / 3, 0xC, BTLFX_ABR_ADD,
                                   ex->math_sin(t >> 1));
             }
             if (frame == FX_SWDMAG_FIRA_SMOKE_FRAME) {
@@ -97,7 +97,7 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale0 = 0;
         scale1 = 0;
         frame = entry->frame;
-        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
+        ex->btlfx_getWeaponPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
         case FX_SWDMAG_FIRA_FLASH_STATE_IN:
@@ -141,8 +141,8 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SWORD_GLINT_2), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, BTLFX_ABR_ADD, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SWORD_GLINT_2), &work->pos8, &rot, scale1 / 2, 0, BTLFX_ABR_ADD, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

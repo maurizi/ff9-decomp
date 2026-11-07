@@ -115,7 +115,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vy = ex->math_cos(ang) / 6;
         }
         if (frame == FX_TRANCE_MOTION_FRAME) {
-            ex->btlfx_resetIdleMotion(0, 0x10);
+            ex->btlfx_resetIdleMotion(0, BTLFX_UNIT_CASTER);
             work->unk20 = 0;
         }
         if (frame >= FX_TRANCE_RELEASE_FRAMES) {

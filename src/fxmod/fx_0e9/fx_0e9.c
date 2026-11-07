@@ -55,8 +55,8 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx0e9Work);
     } else if (mode == 1) {
         fx_0e9_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos8);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
         ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, FX_ANNOY_START_DISTANCE, (s16 *)&fx_0e9_startPos);
         ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, FX_ANNOY_ORBIT_DISTANCE, (s16 *)&fx_0e9_orbitStart);

@@ -13,9 +13,9 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_115_env = env;
         ex->btlfx_initEffModels(fx_115_effModels, FX_THROW_MODEL_SLOTS);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos10);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x17, (u16 *)&work->pos10);
         ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->rot18);
         work->scale30.vx = 0x100;
         work->scale30.vy = 0x100;

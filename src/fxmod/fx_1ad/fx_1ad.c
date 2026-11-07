@@ -11,8 +11,8 @@ static s32 fx_1ad_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTO
     SVECTOR to;
     SVECTOR point;
 
-    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][link + 1], (u16 *)&from);
-    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][link + 2], (u16 *)&to);
+    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1ad_boneChains[row][link + 1], (u16 *)&from);
+    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1ad_boneChains[row][link + 2], (u16 *)&to);
     ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, frac, (s16 *)&point);
     pos->vx = point.vx;
     pos->vy = point.vy;
@@ -50,7 +50,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_6_LEGS_SLIME_SHELL), 1);
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBonePos(0x10, FX_6_LEGS_SHELL_BONE, (u16 *)&work->pos8);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_6_LEGS_SHELL_BONE, (u16 *)&work->pos8);
         pos.vx = work->pos8.vx;
         pos.vy = work->pos8.vy;
         pos.vz = work->pos8.vz;
@@ -85,7 +85,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 pulse = ex->math_cos((frame * 0x52 + 0x200) & 0x3FE);
                 scale.vz = 0x1800;
                 scale.vx = scale.vy = pulse / 3 + 0x1800;
-                ex->btlfx_getUnitBoneMatrix(0x10, FX_6_LEGS_SHELL_ROT_BONE, (BtlBone *)&boneMtx);
+                ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, FX_6_LEGS_SHELL_ROT_BONE, (BtlBone *)&boneMtx);
                 ex->btlfx_matrixAngles(&boneMtx, (s16 *)&rot);
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
                 ex->Hi_ModifyEffModelRGB(work->model24, (ex->math_sin(t >> 1) >> 5) - 0x80,

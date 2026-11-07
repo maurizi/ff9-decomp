@@ -17,12 +17,12 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx1afWork);
     } else if (mode == 1) {
         fx_1af_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&unitPos);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&unitPos);
         work->pos8[0] = unitPos.vx;
         work->pos8[1] = unitPos.vy;
         work->pos8[2] = unitPos.vz;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitScale(0x10, (VECTOR *)work->scale1C);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
+        ex->btlfx_getUnitScale(BTLFX_UNIT_CASTER, (VECTOR *)work->scale1C);
         fx_1af_task = entry;
         work->state0 = 0;
         work->frame4 = 0;
@@ -41,7 +41,7 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame > 0) {
                 work->state0 = FX_DEATH_STATE_DISSOLVE;
                 entry->frame = -1;
-                ex->btlfx_fadeUnitById(0x10, 0);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
                 ex->btlfx_moveSummonToHeap(0x50);
                 ex->btlfx_initEffModels(fx_1af_effModels, FX_DEATH_MODELS);
                 for (i = 0; i < FX_DEATH_MODELS; i++) {
@@ -160,7 +160,7 @@ s32 fx_1af_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 0;
     } else if (mode == 1) {
         fx_1af_env = env;
-        ex->btlfx_clearUnitStatus(0x10);
+        ex->btlfx_clearUnitStatus(BTLFX_UNIT_CASTER);
     } else {
         return 1;
     }
@@ -175,7 +175,7 @@ s32 fx_1af_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 4;
     } else if (mode == 1) {
         fx_1af_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&unitPos);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&unitPos);
         env->camera->points[3].vx = unitPos.vx;
         env->camera->points[3].vy = unitPos.vy;
         env->camera->points[3].vz = unitPos.vz;

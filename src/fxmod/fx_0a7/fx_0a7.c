@@ -8,10 +8,10 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx0a7Work);
     } else if (mode == 1) {
         fx_0a7_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos18);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos18);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos30);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos30);
         ex->btlfx_aimAngles((s16 *)&work->pos30, (s16 *)&work->pos20, (s16 *)&work->aim48);
         ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos30, (s16 *)&work->aim50);
         ex->btlfx_pointAhead((s16 *)&work->pos30, (s16 *)&work->aim48, FX_WATER_GUN_TRAIL_REACH, (s16 *)&work->pos38);
@@ -29,7 +29,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4->trailStride = FX_WATER_GUN_SPRAY_ARC_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
         }
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);

@@ -31,12 +31,12 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == FX_GNOLL_ATTACK_SPARKLE_FRAME) {
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x11, &bone);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x11, &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x800, (s32)&tip);
-            ex->btlfx_getUnitBonePos(0x10, 0x11, (u16 *)&bonePos);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x11, (u16 *)&bonePos);
             ex->btlfx_aimAngles((s16 *)&tip, (s16 *)&bonePos, (s16 *)&work->aim34);
             work->aim34.vy -= 0xB4;
-            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&tip);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x17, (u16 *)&tip);
             work->pos2C.vx = tip.vx - ((ex->math_sin(work->aim34.vy) * FX_GNOLL_ATTACK_SPARKLE_BACK) >> 12);
             work->pos2C.vz = tip.vz - ((ex->math_cos(work->aim34.vy) * FX_GNOLL_ATTACK_SPARKLE_BACK) >> 12);
             work->pos2C.vy = tip.vy - ((ex->math_sin(work->aim34.vx) * FX_GNOLL_ATTACK_SPARKLE_BACK) >> 12);

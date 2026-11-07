@@ -327,7 +327,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 fxm_buildPathTrail(&fx_0d2_streak.keys, fx_0d2_streakBufs[i], sizeof(fx_0d2_streakBufs[0]), fx_0d2_streak.start8, trailLen, fx_0d2_streak.from10, fx_0d2_streak.to12, 1);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_STREAK), 0, NULL, 0, fx_0d2_streak.scaleE,
-                                    fx_0d2_streak.fadeC, 1, fx_0d2_streakBufs[i], 0);
+                                    fx_0d2_streak.fadeC, BTLFX_ABR_ADD, fx_0d2_streakBufs[i], 0);
             }
         }
         if ((u32)(frame - FX_FENRIR_STREAK_2_FRAME) < FX_FENRIR_STREAK_2_FRAMES) {
@@ -339,7 +339,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_buildPathTrail(&fx_0d2_streak2.keys, fx_0d2_streakBufs2[j], sizeof(fx_0d2_streakBufs2[0]), fx_0d2_streak2.start8, fx_0d2_streak2.lengthA, fx_0d2_streak2.from10,
                               fx_0d2_streak2.to12, 0);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_STREAK_2), 0, NULL, 0, fx_0d2_streak2.scaleE,
-                                    fx_0d2_streak2.fadeC, 1, fx_0d2_streakBufs2[j], 0);
+                                    fx_0d2_streak2.fadeC, BTLFX_ABR_ADD, fx_0d2_streakBufs2[j], 0);
             }
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FENRIR_BACKDROP), frame);
@@ -685,7 +685,7 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->fadeOut130--;
         }
         if (work->white134 != 0) {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, FX_FENRIR_WHITE_RGB);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, FX_FENRIR_WHITE_RGB);
         }
         return frame >= FX_FENRIR_GROUND_FRAMES;
     }

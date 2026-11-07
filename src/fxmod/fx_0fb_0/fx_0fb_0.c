@@ -469,7 +469,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->camPos64.vy = env->camera->eye.vy;
             work->camPos64.vz = env->camera->eye.vz;
             if (frame >= FX_MADEEN_RIPPLE_FRAME) {
-                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0xF0 - (((frame - FX_MADEEN_RIPPLE_FRAME) * 0xE600) >> 12), 8, 2, 0x78, 1,
+                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0xF0 - (((frame - FX_MADEEN_RIPPLE_FRAME) * 0xE600) >> 12), 8, 2, 0x78, BTLFX_ABR_ADD,
                                   fx_0fb_0_rippleRgb, 0x20, work->frame4 << 7, 0x100, 0x400);
             }
             if (frame == FX_MADEEN_LIGHT_BAND_FRAME) {
@@ -518,7 +518,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             domeBright = 0x1000;
             gridBright = FX_MADEEN_GRID_BRIGHT;
             if (frame < FX_MADEEN_RING_OUT_FRAMES) {
-                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), ((((frame << 12) / (FX_MADEEN_RING_OUT_FRAMES - 1)) * 0x118) >> 12) + 0xA, 8, 2, 0x8C, 1,
+                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), ((((frame << 12) / (FX_MADEEN_RING_OUT_FRAMES - 1)) * 0x118) >> 12) + 0xA, 8, 2, 0x8C, BTLFX_ABR_ADD,
                                   fx_0fb_0_rippleRgb, 0x20, work->frame4 << 7, 0x100, 0x400);
             }
             if (frame == 0) {
@@ -730,7 +730,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 for (strand = 0; strand < FX_MADEEN_RIBBONS; strand++) {
                     ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, fx_0fb_0_ribbonBones[strand][0], (u16 *)&ptA);
                     ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, fx_0fb_0_ribbonBones[strand][1], (u16 *)&ptB);
-                    fxm_drawRibbonTrail(&ptA, &ptB, FX_MADEEN_RIBBON_CLEAR + FX_MADEEN_RIBBON_POINTS, &fx_0fb_0_ribbonRgb[strand & 1], &fx_0fb_0_ribbonRgb[(strand & 1) + 1], 0, fx_0fb_0_ribbons[strand].seg, 1);
+                    fxm_drawRibbonTrail(&ptA, &ptB, FX_MADEEN_RIBBON_CLEAR + FX_MADEEN_RIBBON_POINTS, &fx_0fb_0_ribbonRgb[strand & 1], &fx_0fb_0_ribbonRgb[(strand & 1) + 1], 0, fx_0fb_0_ribbons[strand].seg, BTLFX_ABR_ADD);
                 }
                 for (strip = 0; strip < FX_MADEEN_TRAILS; strip++) {
                     ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->summonModel60, fx_0fb_0_trailBones[strip], &m);
@@ -742,7 +742,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             for (strand = 0; strand < FX_MADEEN_RIBBONS; strand++) {
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, fx_0fb_0_ribbonBones[strand][0], (u16 *)&ptA);
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, fx_0fb_0_ribbonBones[strand][1], (u16 *)&ptB);
-                fxm_drawRibbonTrail(&ptA, &ptB, FX_MADEEN_RIBBON_POINTS - 1, &fx_0fb_0_ribbonRgb[strand & 1], &fx_0fb_0_ribbonRgb[(strand & 1) + 1], 0x1000, fx_0fb_0_ribbons[strand].seg, 1);
+                fxm_drawRibbonTrail(&ptA, &ptB, FX_MADEEN_RIBBON_POINTS - 1, &fx_0fb_0_ribbonRgb[strand & 1], &fx_0fb_0_ribbonRgb[(strand & 1) + 1], 0x1000, fx_0fb_0_ribbons[strand].seg, BTLFX_ABR_ADD);
             }
             if (frame >= FX_MADEEN_GLOW_FRAME) {
                 glowScale = ((((frame - FX_MADEEN_GLOW_FRAME) << 12) / (FX_MADEEN_CHARGE_FRAMES - FX_MADEEN_GLOW_FRAME)) * 2) + 0x1000;
@@ -993,12 +993,12 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pos.vy -= 0x79C0;
             pos.vx += 0xA00;
             pos.vz -= 0x1400;
-            fx_0fb_0_drawWaveCurtain(&pos, 0x4000, curtainCol, FX_MADEEN_WAVE_TPAGE, FX_MADEEN_WAVE_CLUT, FX_MADEEN_WAVE_U, FX_MADEEN_WAVE_V, 0x7D0, work->frame4 * 0x5C, 0xF0, 1,
+            fx_0fb_0_drawWaveCurtain(&pos, 0x4000, curtainCol, FX_MADEEN_WAVE_TPAGE, FX_MADEEN_WAVE_CLUT, FX_MADEEN_WAVE_U, FX_MADEEN_WAVE_V, 0x7D0, work->frame4 * 0x5C, 0xF0, BTLFX_ABR_ADD,
                           work->frame4 * 0x37);
             pos.vy += 0x640;
             pos.vx -= 0x1400;
             pos.vz += 0x2800;
-            fx_0fb_0_drawWaveCurtain(&pos, 0x4000, curtainCol, FX_MADEEN_WAVE_TPAGE, FX_MADEEN_WAVE_CLUT, FX_MADEEN_WAVE_U, FX_MADEEN_WAVE_V, 0x76C, work->frame4 * 0x5C + 0x400, 0xF0, 1,
+            fx_0fb_0_drawWaveCurtain(&pos, 0x4000, curtainCol, FX_MADEEN_WAVE_TPAGE, FX_MADEEN_WAVE_CLUT, FX_MADEEN_WAVE_U, FX_MADEEN_WAVE_V, 0x76C, work->frame4 * 0x5C + 0x400, 0xF0, BTLFX_ABR_ADD,
                           work->frame4 * 0x37 - 0x200);
         }
         if (sheetPhase != 0) {
@@ -1015,7 +1015,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pos.vz = (0x1000 - sheetPhase) * 2;
             pos.vx = fx_0fb_0_origin.vx;
             pos.vy = fx_0fb_0_origin.vy;
-            fx_0fb_0_drawWaveSheet(&pos, &rot, &sc, ex->math_sin(sheetPhase >> 2) >> 5, FX_MADEEN_WAVE_TPAGE, FX_MADEEN_WAVE_CLUT, FX_MADEEN_WAVE_U, FX_MADEEN_WAVE_V, 0x400, sheetPhase, 0x180, 1);
+            fx_0fb_0_drawWaveSheet(&pos, &rot, &sc, ex->math_sin(sheetPhase >> 2) >> 5, FX_MADEEN_WAVE_TPAGE, FX_MADEEN_WAVE_CLUT, FX_MADEEN_WAVE_U, FX_MADEEN_WAVE_V, 0x400, sheetPhase, 0x180, BTLFX_ABR_ADD);
             env->otZ = 0;
         }
         if (curtainBright != 0 || sheetPhase != 0) {
@@ -1043,8 +1043,8 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (spriteAlpha != 0) {
             step = (work->frame4 * 16) % 240;
-            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0xA0 - step, 0xA0, 0, 3, spriteAlpha);
-            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0x280 - step, 0xA0, 0, 3, spriteAlpha);
+            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0xA0 - step, 0xA0, 0, BTLFX_ABR_QUARTER, spriteAlpha);
+            ex->btlfx_drawSpriteAtOt(8, (u8 *)ex->btlfx_getFileData(entry->file, FX_MADEEN_CLOUD_STRIP), 0x280 - step, 0xA0, 0, BTLFX_ABR_QUARTER, spriteAlpha);
         }
         if (gridBright != 0) {
             CVECTOR col;

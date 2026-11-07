@@ -28,7 +28,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     } while (i < FX_TWISTER_STREAK_POINTS);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_WIND_STREAK), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_WIND_STREAK), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)trail, 0);
 }
 
 void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s32 radius1, s32 bright, s32 tpage, s32 clut, s32 texU,
@@ -232,22 +232,22 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = alpha;
             drift = alpha >> 6;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V, drift,
-                          work->frame4 * 0xC8, 0x190, 0xC8, 1, 0x10);
+                          work->frame4 * 0xC8, 0x190, 0xC8, BTLFX_ABR_ADD, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, alpha / 2, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, BTLFX_ABR_ADD, alpha / 2, 0,
                               0);
             scale.vy = 0x2000;
             scale.vx = 0x2000;
             t = alpha >> 2;
             scale.vz = ex->math_sin(t) * 2;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, alpha >> 5, FX_TWISTER_INNER_TPAGE,
-                          FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, drift, work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
+                          FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, drift, work->frame4 * 0xC8, 0x190, 0x80, BTLFX_ABR_ADD, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, drift, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U,
-                          FX_TWISTER_OUTER_V, drift, work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
+                          FX_TWISTER_OUTER_V, drift, work->frame4 * 0xC8, 0x190, 0x40, BTLFX_ABR_ADD, 8);
             if (frame >= FX_TWISTER_GROW_FRAMES) {
                 work->state0 = FX_TWISTER_STATE_WIDEN;
                 entry->frame = -1;
@@ -262,20 +262,20 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = (frame << 12) / FX_TWISTER_WIDEN_FRAMES;
             scale.vx = scale.vy = t + 0x1000;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V, (t >> 5) + 0x40,
-                          work->frame4 * 0xC8, 0x190, 0xC8, 1, 0x10);
+                          work->frame4 * 0xC8, 0x190, 0xC8, BTLFX_ABR_ADD, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, BTLFX_ABR_ADD,
                               t / 2 + 0x800, 0, 0);
             scale.vz = scale.vx = scale.vy = 0x2000;
             radius = 0x1C8 - (t >> 5);
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, radius, 0x280, 0x80, FX_TWISTER_INNER_TPAGE, FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, (t >> 5) + 0x40, work->frame4 * 0xC8,
-                          0x190, 0x80, 1, 8);
+                          0x190, 0x80, BTLFX_ABR_ADD, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, radius, 0x280, 0x40, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U, FX_TWISTER_OUTER_V, (t >> 5) + 0x40,
-                          work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
+                          work->frame4 * 0xC8, 0x190, 0x40, BTLFX_ABR_ADD, 8);
             if (frame >= FX_TWISTER_WIDEN_FRAMES) {
                 Pool6CEntry *emitter;
 
@@ -298,18 +298,18 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = scale.vy = scale.vz = size;
             drift = (t >> 5) + 0xC0;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V, drift,
-                          work->frame4 * 0xC8, 0x190, (t >> 5) + 0xA0, 1, 0x10);
+                          work->frame4 * 0xC8, 0x190, (t >> 5) + 0xA0, BTLFX_ABR_ADD, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, alpha, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, BTLFX_ABR_ADD, alpha, 0, 0);
             scale.vx = scale.vy = scale.vz = size;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, FX_TWISTER_INNER_TPAGE, FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, drift,
-                          work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
+                          work->frame4 * 0xC8, 0x190, 0x80, BTLFX_ABR_ADD, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x40, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U, FX_TWISTER_OUTER_V, drift,
-                          work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
+                          work->frame4 * 0xC8, 0x190, 0x40, BTLFX_ABR_ADD, 8);
             if (frame >= FX_TWISTER_SPIN_FRAMES) {
                 work->state0 = FX_TWISTER_STATE_FADE;
                 entry->frame = -1;
@@ -324,20 +324,20 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = frame << 8;
             fadeAng = t >> 2;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x88, 0x180, ex->math_cos(fadeAng) >> 5, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V,
-                          0x140, work->frame4 * 0xC8, 0x190, 0x120, 1, 0x10);
+                          0x140, work->frame4 * 0xC8, 0x190, 0x120, BTLFX_ABR_ADD, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->frame4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, 0x1000 - t, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, BTLFX_ABR_ADD, 0x1000 - t, 0,
                               0);
             scale.vx = scale.vy = scale.vz = 0x2800;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 5, FX_TWISTER_INNER_TPAGE, FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, 0x140,
-                          work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
+                          work->frame4 * 0xC8, 0x190, 0x80, BTLFX_ABR_ADD, 8);
             alpha -= t;
             scale.vx = scale.vy = scale.vx * 3 / 2;
             fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 6, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U, FX_TWISTER_OUTER_V,
-                          0x140, work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
+                          0x140, work->frame4 * 0xC8, 0x190, 0x40, BTLFX_ABR_ADD, 8);
             if (frame >= FX_TWISTER_FADE_FRAMES) {
                 return one;
             }

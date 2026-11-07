@@ -525,7 +525,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (summonFrame < FX_PHOENIX_SUMMON_FADE_FRAMES) {
                     ex->Hi_ModifySummonModelRGB(((Fx0d3Summon *)env->loader)->model60, ((summonFrame * 0xA0) >> 3) - 0xA0,
                                                 ((summonFrame * 0xA0) >> 3) - 0xA0, ((summonFrame * 0xA0) >> 3) - 0xA0);
-                    ex->Hi_ModifySummonModelAbr(((Fx0d3Summon *)env->loader)->model60, 1);
+                    ex->Hi_ModifySummonModelAbr(((Fx0d3Summon *)env->loader)->model60, BTLFX_ABR_ADD);
                 }
             }
             pos.vx = work->pos8.vx;
@@ -861,7 +861,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                      FX_PHOENIX_DISC_VRAM_H, FX_PHOENIX_DISC_SRC_X, FX_PHOENIX_DISC_SRC_Y);
             ex->math_cos(growT);
             ex->math_cos(growT << 1);
-            ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, fx_0d3_rippleColors, 0x18, frame_119 * 0x190, 0x186,
+            ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, BTLFX_ABR_ADD, fx_0d3_rippleColors, 0x18, frame_119 * 0x190, 0x186,
                               0x100);
         }
         waveFrame = frame_119 - FX_PHOENIX_GOLD_FEATHERS_FRAME;
@@ -887,14 +887,14 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame_119 == FX_PHOENIX_BLUE_FRAME) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_PHOENIX_BLUE_RGB);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_PHOENIX_BLUE_RGB);
         }
         if (frame_119 == FX_PHOENIX_DARKEN_FRAME) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_PHOENIX_DARKEN_RGB);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_PHOENIX_DARKEN_RGB);
         }
         if ((u32)(frame_119 - FX_PHOENIX_FLASH_FRAME) < FX_PHOENIX_FLASH_FRAMES) {
             tint = 0xF0 - (((frame_119 - FX_PHOENIX_FLASH_FRAME) * 0xF0) >> 3);
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint >> 1);
         }
         if (frame_119 >= FX_PHOENIX_BURST_FRAMES) {
             work->state0 = FX_PHOENIX_STATE_RIPPLE;
@@ -933,7 +933,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model58);
         ex->math_cos(t);
         ex->math_cos(t << 1);
-        ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, fx_0d3_rippleColors2, 0x18, frame_119 * 0x140, 0x186, 0x100);
+        ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, BTLFX_ABR_ADD, fx_0d3_rippleColors2, 0x18, frame_119 * 0x140, 0x186, 0x100);
         ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 7, FX_PHOENIX_DOME_VRAM_X, FX_PHOENIX_DOME_VRAM_Y, FX_PHOENIX_DOME_VRAM_W,
                                  FX_PHOENIX_DOME_VRAM_H, FX_PHOENIX_DOME_SRC_X, FX_PHOENIX_DOME_SRC_Y);
         fx_0d3_waveAmp = 4;
@@ -988,7 +988,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           (void (*)(SVECTOR *))fxm_waveVertexX);
         ex->math_cos(t);
         ex->math_cos(t << 1);
-        ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, fx_0d3_rippleColors3, 0x1D, frame_119 << 9, 0x186, 0x100);
+        ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, BTLFX_ABR_ADD, fx_0d3_rippleColors3, 0x1D, frame_119 << 9, 0x186, 0x100);
         if (frame_119 >= FX_PHOENIX_COPPER_FRAMES) {
             work->state0 = FX_PHOENIX_STATE_REBIRTH;
             entry->frame = -1;
@@ -1032,7 +1032,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = 0;
         rot.pad = 1;
         fxm_drawTexelQuads(&fx_0d3_centerPos, &rot, FX_PHOENIX_FLOOR_GLOW_TPAGE, 0, 0, FX_PHOENIX_FLOOR_GLOW_COLS,
-                      frame_119 & FX_PHOENIX_FLOOR_GLOW_FRAME_MASK, FX_PHOENIX_FLOOR_GLOW_CELL, FX_PHOENIX_FLOOR_GLOW_GRID, FX_PHOENIX_FLOOR_GLOW_GRID, pulse + 0x1000, ex->math_cos(pulse), 1,
+                      frame_119 & FX_PHOENIX_FLOOR_GLOW_FRAME_MASK, FX_PHOENIX_FLOOR_GLOW_CELL, FX_PHOENIX_FLOOR_GLOW_GRID, FX_PHOENIX_FLOOR_GLOW_GRID, pulse + 0x1000, ex->math_cos(pulse), BTLFX_ABR_ADD,
                       fx_0d3_texels, 0);
         env->otZ = 0;
         ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 3, FX_PHOENIX_DISC_VRAM_X, FX_PHOENIX_DISC_VRAM_Y, FX_PHOENIX_DISC_VRAM_W,
@@ -1042,14 +1042,14 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->model60, fx_0d3_ribbonBones[i].bone0, (u16 *)&u.c.b0);
                 ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->model60, fx_0d3_ribbonBones[i].bone4, (u16 *)&u.c.b1);
-                fxm_drawTexRibbonTrail(&u.c.b0, &u.c.b1, 0x3F3, 0, 0, 0, 0, 0, 0, 0, fx_0d3_ribbonSegs[i], 1, 0);
+                fxm_drawTexRibbonTrail(&u.c.b0, &u.c.b1, 0x3F3, 0, 0, 0, 0, 0, 0, 0, fx_0d3_ribbonSegs[i], BTLFX_ABR_ADD, 0);
             }
         }
         for (i = 0; i < 6; i++) {
             ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->model60, fx_0d3_ribbonBones[i].bone0, (u16 *)&u.c.b0);
             ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->model60, fx_0d3_ribbonBones[i].bone4, (u16 *)&u.c.b1);
             fxm_drawTexRibbonTrail(&u.c.b0, &u.c.b1, 0xB, FX_PHOENIX_RIBBON_TPAGE, FX_PHOENIX_RIBBON_CLUT, FX_PHOENIX_RIBBON_U, FX_PHOENIX_RIBBON_V,
-                          FX_PHOENIX_RIBBON_W, FX_PHOENIX_RIBBON_H, 0x80, fx_0d3_ribbonSegs[i], 1,
+                          FX_PHOENIX_RIBBON_W, FX_PHOENIX_RIBBON_H, 0x80, fx_0d3_ribbonSegs[i], BTLFX_ABR_ADD,
                           10000 - work->frame4);
         }
         env->otZ = 0;
@@ -1063,7 +1063,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.c.rot, &u.c.sc, &u.c.col, 1, NULL);
         if (frame_119 >= FX_PHOENIX_WHITE_IN_FRAME) {
             fadeIn = (frame_119 - FX_PHOENIX_WHITE_IN_FRAME) * 0xFF / (FX_PHOENIX_REBIRTH_FRAMES - FX_PHOENIX_WHITE_IN_FRAME);
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, fadeIn, fadeIn, fadeIn);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, fadeIn, fadeIn, fadeIn);
         }
         if (frame_119 >= FX_PHOENIX_REBIRTH_FRAMES) {
             work->state0 = FX_PHOENIX_STATE_TAIL;
@@ -1081,7 +1081,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t = (frame_119 << 12) / FX_PHOENIX_TAIL_FRAMES;
         if (frame_119 < FX_PHOENIX_WHITE_OUT_FRAMES) {
             fadeOut = 0xFF - frame_119 * 0xFF / FX_PHOENIX_WHITE_OUT_FRAMES;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, fadeOut, fadeOut, fadeOut);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, fadeOut, fadeOut, fadeOut);
         }
         work->camAt40.vx = fx_0d3_summonPos.vx;
         work->camAt40.vy = fx_0d3_summonPos.vy;

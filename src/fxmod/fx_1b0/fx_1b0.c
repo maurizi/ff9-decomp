@@ -221,14 +221,14 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1b0Work80);
     } else if (mode == 1) {
         fx_1b0_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&scratch);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&scratch);
         work->pos8[0] = scratch.vx;
         work->pos8[1] = scratch.vy;
         work->pos8[2] = scratch.vz;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitScale(0x10, work->scale1C);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
+        ex->btlfx_getUnitScale(BTLFX_UNIT_CASTER, work->scale1C);
         work->rot14.vy += 0x800;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos28);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos28);
         fx_1b0_orbitCenter.vx = work->pos28.vx;
         fx_1b0_orbitCenter.vy = work->pos28.vy;
         fx_1b0_orbitCenter.vz = work->pos28.vz;
@@ -311,7 +311,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_sampleGradient(fx_1b0_colorGradient, &work->color38, frame - (FX_DEATH_MODELS_FRAME + 1));
             }
             if (frame == FX_DEATH_MODELS_FRAME) {
-                ex->btlfx_fadeUnitById(0x10, 0);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
                 ex->btlfx_moveSummonToHeap(0x64);
                 ex->btlfx_initEffModels(fx_1b0_effModels, FX_DEATH_MODEL_SLOTS);
                 for (j = 0; j < FX_DEATH_MODELS; j++) {
@@ -442,7 +442,7 @@ s32 fx_1b0_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 0;
     } else if (mode == 1) {
         fx_1b0_env = env;
-        ex->btlfx_clearUnitStatus(0x10);
+        ex->btlfx_clearUnitStatus(BTLFX_UNIT_CASTER);
     } else {
         return 1;
     }

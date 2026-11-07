@@ -29,7 +29,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_043_particleTo.vx = work->pos14.vx;
         fx_043_particleTo.vy = work->pos14.vy;
         fx_043_particleTo.vz = work->pos14.vz;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->posC);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->posC);
         fx_043_particleFrom.vx = work->posC.vx;
         fx_043_particleFrom.vy = work->posC.vy;
         fx_043_particleFrom.vz = work->posC.vz;

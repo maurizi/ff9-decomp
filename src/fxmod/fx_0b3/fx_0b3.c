@@ -192,7 +192,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= FX_LEVIATHAN_WHITE_IN_FRAME) {
                 tint = (frame - FX_LEVIATHAN_WHITE_IN_FRAME) * 0xFF / (FX_LEVIATHAN_SURFACE_FRAMES - FX_LEVIATHAN_WHITE_IN_FRAME);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, tint, tint, tint);
             }
             if (frame >= FX_LEVIATHAN_SURFACE_FRAMES) {
                 ex->Hi_FreeEffModel(work->model6C);
@@ -274,7 +274,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < FX_LEVIATHAN_WHITE_OUT_FRAMES) {
                 tint = 0xFF - frame * 0xFF / FX_LEVIATHAN_WHITE_OUT_FRAMES;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, tint, tint, tint);
             }
             if (frame == 0) {
                 work->morphWeight9C = 0x1000;
@@ -827,9 +827,9 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 20; i++) {
                     BTLFX_COPY_SVEC(&pt, &fx_0b3_crestPts[i]);
                     ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM_2), &pt, NULL, ((i & 1) << 12) + 0x5000,
-                                      frame + i * 5, 1, 0x1000);
+                                      frame + i * 5, BTLFX_ABR_ADD, 0x1000);
                     pt.vy = -0x100;
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &pt, NULL, 0x7000, frame + i * 3, 1,
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &pt, NULL, 0x7000, frame + i * 3, BTLFX_ABR_ADD,
                                       0xC00);
                 }
                 env->otZ = 0;
@@ -1204,7 +1204,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (fx_0b3_edgePts[i].pad != 0) {
                         bright0 = (i & 1) << 12; /* bright0 reused: a global pseudo, so bright0 + 0x3800 is not tied to it */
                         ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_0b3_edgePts[i], NULL,
-                                                scaleAdd + (s16)(bright0 + 0x3800), frame + i * 2, 1, 0x1000);
+                                                scaleAdd + (s16)(bright0 + 0x3800), frame + i * 2, BTLFX_ABR_ADD, 0x1000);
                     }
                 }
                 env->otZ = 0x37;
@@ -1212,7 +1212,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     for (i = 0, j = frame; i < 7; j += 2, i++) {
                         if (fx_0b3_edgePts[i].pad != 0) {
                             ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_0b3_edgePts[i], NULL,
-                                                    0x2400, j + 4, 1, 0x1000);
+                                                    0x2400, j + 4, BTLFX_ABR_ADD, 0x1000);
                         }
                     }
                 }
@@ -1245,7 +1245,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fadeAng = ((frame - 0x2B) << 10) / 38;
                 ex->math_cos(fadeAng);
                 ex->math_cos(fadeAng);
-                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), -0x20, 0x10, 3, 0x50, 1, &fx_0b3_rippleColor, 0x18, frame << 8, 0x186,
+                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), -0x20, 0x10, 3, 0x50, BTLFX_ABR_ADD, &fx_0b3_rippleColor, 0x18, frame << 8, 0x186,
                                   0x100);
                 if (frame == FX_LEVIATHAN_IMPACT_FRAME) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_HALF, FX_LEVIATHAN_IMPACT_TINT_RGB);

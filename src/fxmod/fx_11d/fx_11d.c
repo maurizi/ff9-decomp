@@ -20,8 +20,8 @@ static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s3
     SVECTOR boneB;
     SVECTOR mid;
 
-    ex->btlfx_getUnitBonePos(0x10, key->bone0, (u16 *)&boneA);
-    ex->btlfx_getUnitBonePos(0x10, key->bone2, (u16 *)&boneB);
+    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, key->bone0, (u16 *)&boneA);
+    ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, key->bone2, (u16 *)&boneB);
     ex->btlfx_lerpVec((s16 *)&boneA, (s16 *)&boneB, key->blend4, (s16 *)&mid);
     mid.vz -= 0x32;
     pos->vx = mid.vx;
@@ -44,7 +44,7 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx11dWork);
     } else if (mode == 1) {
         fx_11d_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos1C);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos1C);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_TEAL_RING), (s32)&work->pos1C);
         if (work->emit0 != NULL) {
             work->emit0->otZ = -0x80;
@@ -61,10 +61,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ((Fx11dEffHdr *)work->emit8->file)->motion8 = fx_11d_op80ParticleMotion1;
             }
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x100);
             }
             if (work->emit8 != NULL) {
-                work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x100);
             }
         }
         if (frame >= 0 && frame < FX_ABSORB_ORBS_FRAMES && frame % FX_ABSORB_ORB_INTERVAL == 0) {
@@ -88,19 +88,19 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             /* sets unkC twice; unk10 keeps its default */
             if (work->emitC != NULL) {
-                work->emitC->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
+                work->emitC->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x100);
             }
             if (work->emitC != NULL) {
-                work->emitC->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
+                work->emitC->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x100);
             }
         }
         switch (frame) {
         case 0:
-            ex->btlfx_getUnitBonePos(0x10, 0x37, (u16 *)&work->pos24);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x37, (u16 *)&work->pos24);
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_VIOLET_BLOBS), (s32)&work->pos24);
             break;
         case FX_ABSORB_LENS_FLARE_FRAME:
-            ex->btlfx_getUnitBonePos(0x10, 0, (u16 *)&work->pos2C);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos2C);
             work->pos2C.vy -= 0xC8;
             work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ABSORB_LENS_FLARE), (s32)&work->pos2C);
             if (work->emit18 != NULL) {

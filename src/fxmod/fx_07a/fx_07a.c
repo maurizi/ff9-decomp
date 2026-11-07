@@ -112,7 +112,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_07a_ringTwist[0] = 0;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&fx_07a_bonePos);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x17, (u16 *)&fx_07a_bonePos);
         switch (frame) {
         case 0:
             ex->btlfx_drawBgOffscreen(FX_DEMI_SHOCK_BG_VRAM_X, FX_DEMI_SHOCK_BG_VRAM_Y, FX_DEMI_SHOCK_BG_VRAM_W, FX_DEMI_SHOCK_BG_VRAM_H, fx_07a_bgOt, fx_07a_centerPos.vx, fx_07a_centerPos.vz, 0x1208);

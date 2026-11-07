@@ -14,7 +14,7 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vz = work->pos10.vz;
         work->pos18.vy -= FX_TROUBLE_JUICE_TRAIL_HEIGHT;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos20);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos28);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_JUICE_SPLASH), (s32)&work->pos28);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

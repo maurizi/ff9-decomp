@@ -5,7 +5,7 @@ static s32 fx_059_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode != 1) {
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_tailBlocks[work->kindC]), pos, 0, 0x1000, frame, 1,
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_tailBlocks[work->kindC]), pos, 0, 0x1000, frame, BTLFX_ABR_ADD,
                           0x1000 - (frame << 12) / 12, 0, 0);
         if (frame >= FX_HASTE_TRAIL_FRAMES) {
             return 1;
@@ -58,7 +58,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((s32 *)trailPt)[1] = ((s32 *)&pos)[1];
             }
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_headBlocks[work->kindC]), &pos, 0, 0x1000, 0,
-                              1, -1, 0, 0);
+                              BTLFX_ABR_ADD, -1, 0, 0);
             if (frame >= FX_HASTE_SPIRAL_FRAMES) {
                 work->state0 = FX_HASTE_STATE_END;
                 entry->frame = -1;

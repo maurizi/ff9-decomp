@@ -104,7 +104,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                                          0xFF - (frame * 255) / FX_REBIRTH_FLAME_UNWHITE_FRAMES);
             }
             if (frame < FX_REBIRTH_FLAME_RIPPLE_FRAMES) {
-                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -frame * 2, 4, 1, 0x78, 1, &fx_0e1_1_rippleRgb, 0x18, work->frame4 << 8, 0x100, 0);
+                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -frame * 2, 4, 1, 0x78, BTLFX_ABR_ADD, &fx_0e1_1_rippleRgb, 0x18, work->frame4 << 8, 0x100, 0);
             }
             if (work->emit2C->state == BTLFX_EMIT_DONE) {
                 work->alpha3C = 0;

@@ -15,18 +15,18 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0a1_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos18);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos18, (s16 *)&work->aim28);
     } else {
         frame = entry->frame;
         switch (work->state0) {
         case FX_BLASTER_STATE_BEAM:
             t = (frame << 12) / FX_BLASTER_BEAM_FRAMES;
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos20);
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos20);
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLASTER_VIOLET_RING), (s32)&work->pos20);
                 if (emitter != NULL) {
-                    emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x40);
+                    emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x40);
                 }
             }
             ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos8, 0x1000 - ex->math_cos(t >> 2),

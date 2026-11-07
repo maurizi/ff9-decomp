@@ -9,7 +9,7 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx030Work);
     } else if (mode == 1) {
         fx_030_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos0);
         work->pos8.vx = env->targets->centerX;
         work->pos8.vz = env->targets->centerZ + FX_POLLEN_AIM_DEPTH;
         work->pos8.vy = 0;

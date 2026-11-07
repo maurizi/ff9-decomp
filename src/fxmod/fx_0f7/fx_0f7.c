@@ -69,10 +69,10 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                     if (spark->kind4 == 0) {
                         ex->btlfx_drawSpriteAtOt(spark->ot8, (u8 *)ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_RUNES), spark->x10, spark->y14, 0,
-                                          1, alpha);
+                                          BTLFX_ABR_ADD, alpha);
                     } else {
                         ex->btlfx_drawSpriteAtOt(spark->ot8, (u8 *)ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_RUNES_2), spark->x10, spark->y14,
-                                          0, 1, alpha);
+                                          0, BTLFX_ABR_ADD, alpha);
                     }
                 } else {
                     spark->delay0--;

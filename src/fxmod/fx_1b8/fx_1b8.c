@@ -7,10 +7,10 @@ s32 fx_1b8_op80(s32 mode, Fx1b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1b8Work80);
     } else if (mode == 1) {
         fx_1b8_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SWIRL), (s32)&work->pos4);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         return entry->frame >= FX_DEATH_SWIRL_FRAMES;
@@ -26,7 +26,7 @@ s32 fx_1b8_op81(s32 mode, Fx1b8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1b8Work81);
     } else if (mode == 1) {
         fx_1b8_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos10);
         work->pos18.vx = work->pos10.vx;
         work->pos18.vy = work->pos10.vy;
         work->pos18.vz = work->pos10.vz;
@@ -41,10 +41,10 @@ s32 fx_1b8_op81(s32 mode, Fx1b8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_WATER_SPOUT), (s32)&work->pos20);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_WATER_WAVE), (s32)&work->pos18);
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             break;
         case FX_DEATH_RIPPLES_FRAME:

@@ -40,13 +40,13 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx0eaWork80);
     } else if (mode == 1) {
         fx_0ea_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos8);
         work->linePos10.vx = work->pos8.vx;
         work->linePos10.vy = work->pos8.vy;
         work->linePos10.vz = work->pos8.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SACRIFICE_RED_PETALS), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         work->lineAlpha1A = 0x1000;
         work->lineFrame18 = 0;
@@ -55,7 +55,7 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame == FX_SACRIFICE_FLASH_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SACRIFICE_LIGHT_FLASH), (s32)&work->pos8);
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
         }
         if (frame >= FX_SACRIFICE_FLASH_FRAME && frame < FX_SACRIFICE_FLARES_END_FRAME) {
@@ -86,7 +86,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         target = *args;
         work->target20 = target;
         fx_0ea_env = env;
-        if (target >= env->targets->targetCount || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->target20)) {
+        if (target >= env->targets->targetCount || ex->btl_getUnit(BTLFX_UNIT_CASTER) == ex->btl_getUnit(work->target20)) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -94,7 +94,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_playFileSound(0x13, entry->file, -1);
         ex->btlfx_playFileSound(0x14, entry->file, -1);
         ex->btlfx_playFileSound(0x15, entry->file, -1);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
         fx_0ea_arcFrom.vx = work->pos8.vx;
         fx_0ea_arcFrom.vy = work->pos8.vy;
         fx_0ea_arcFrom.vz = work->pos8.vz;
@@ -107,7 +107,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit0 != NULL) {
             ((Fx0eaEffHdr *)work->emit0->file)->motion8 = fx_0ea_op81ParticleMotions[work->target20];
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
         }
     } else {

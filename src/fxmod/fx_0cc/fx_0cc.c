@@ -33,7 +33,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model10);
             env->otZ = 0x80;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_RED_GLOW), &part->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_RED_GLOW), &part->pos4, NULL, 0x1000, 0, BTLFX_ABR_ADD, -1, 0, 0);
             env->otZ = 0;
             if (frame >= FX_METEORITE_FALL_FRAMES) {
                 part->state0 = FX_METEORITE_STATE_IMPACT;
@@ -42,7 +42,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
                     part->emitC->frame = part->emitC->tail->anim.duration;
                 }
                 part->pos4.vy = 0;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_METEORITE_IMPACT_TINT_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_METEORITE_IMPACT_TINT_RGB);
             }
             break;
         case FX_METEORITE_STATE_IMPACT:
@@ -53,12 +53,12 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             BTLFX_COPY_SVEC(&pos, &part->pos4);
             pos.vy -= frame * 4;
             env->otZ = 0x10;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_SMOKE), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_SMOKE), &pos, NULL, 0x3000, frame, BTLFX_ABR_ADD, -1, 0, 0);
             if (frame < FX_METEORITE_FLASH_FRAMES) {
                 env->otZ = 0x64;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_RING), &pos, NULL, -1, frame, 1, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_RING), &pos, NULL, -1, frame, BTLFX_ABR_ADD, -1);
                 env->otZ = 0;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_FLASH), &part->pos4, &rot, 0x1000, frame, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_FLASH), &part->pos4, &rot, 0x1000, frame, BTLFX_ABR_ADD,
                                   -1, 0, 0);
             }
             env->otZ = 0;

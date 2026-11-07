@@ -9,7 +9,7 @@ s32 fx_094_op80(s32 mode, Fx094Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx094Work);
     } else if (mode == 1) {
         fx_094_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DELTA_ATTACK_COLOR_RINGS), (s32)&work->pos0);

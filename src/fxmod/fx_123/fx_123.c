@@ -75,7 +75,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx123Work80);
     } else if (mode == 1) {
         fx_123_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos4C);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos4C);
         work->pos54.vx = work->pos4C.vx;
         work->pos54.vy = work->pos4C.vy;
         work->pos54.vz = work->pos4C.vz;
@@ -117,7 +117,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= 0 && frame < FX_RAINING_SWORDS_FLAMES_FOLLOW_FRAMES) {
         bone = fx_123_op80Bones;
         for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++, bone++) {
-            ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, bone->bone0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
                 work->emit0[i] = NULL;
@@ -128,7 +128,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= FX_RAINING_SWORDS_FLAMES_2_FRAME && frame < FX_RAINING_SWORDS_FLAMES_STOP_FRAME) {
         bone = fx_123_op80Bones;
         for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++, bone++) {
-            ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, bone->bone0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit18[i] != NULL && work->emit18[i]->state == BTLFX_EMIT_DONE) {
                 work->emit18[i] = NULL;
@@ -139,7 +139,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= FX_RAINING_SWORDS_FLAMES_3_FRAME && frame < FX_RAINING_SWORDS_FLAMES_3_END_FRAME) {
         bone = fx_123_op80Bones;
         for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++, bone++) {
-            ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, bone->bone0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit30[i] != NULL && work->emit30[i]->state == BTLFX_EMIT_DONE) {
                 work->emit30[i] = NULL;
@@ -171,7 +171,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_123_env = env;
         ex->btlfx_initEffModels(fx_123_effModels, FX_RAINING_SWORDS_MODEL_SLOTS);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos64);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos64);
         for (path = 0; path < FX_RAINING_SWORDS_COUNT; path++) {
             fxm_rotPosPathInit((Fx123Path *)&fx_123_rotPosPath[path], (u16 *)ex->btlfx_getFileData(entry->file, fx_123_pathFileIds[path]));
             setVector(&work->rot6C[path], 0, 0, 0);

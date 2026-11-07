@@ -52,8 +52,8 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             work->count64++;
             if (!(frame & (FX_TIDAL_WAVE_INTERVAL - 1))) {
-                ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_BONE, (u16 *)&work->pos44);
-                ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_2_BONE, (u16 *)&work->pos4C);
+                ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_TIDAL_WAVE_TRAIL_BONE, (u16 *)&work->pos44);
+                ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_TIDAL_WAVE_TRAIL_2_BONE, (u16 *)&work->pos4C);
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_TRAIL), (s32)&work->pos44);
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_TRAIL), (s32)&work->pos4C);
                 if (work->emit4 != NULL) {
@@ -126,7 +126,7 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1b2_env = env;
         ex->btlfx_initEffModels(fx_1b2_effModels, FX_TIDAL_WAVE_MODELS);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -134,8 +134,8 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_FOAM), (s32)&work->posC);
             break;
         case FX_TIDAL_WAVE_RED_TRAIL_FRAME:
-            ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_BONE, (u16 *)&work->pos14);
-            ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_2_BONE, (u16 *)&work->pos1C);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_TIDAL_WAVE_TRAIL_BONE, (u16 *)&work->pos14);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_TIDAL_WAVE_TRAIL_2_BONE, (u16 *)&work->pos1C);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_RED_TRAIL), (s32)&work->pos14);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_RED_TRAIL), (s32)&work->pos1C);
             if (work->emit4 != NULL) {

@@ -83,7 +83,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_040_aboveTarget.vz = env->targets->centerZ;
         fx_040_env = env;
         fx_040_aboveTarget.vy -= FX_BUBBLES_HEIGHT;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos40);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos40);
         fx_040_origin.vx = work->pos40.vx;
         fx_040_origin.vy = work->pos40.vy;
         fx_040_origin.vz = work->pos40.vz;

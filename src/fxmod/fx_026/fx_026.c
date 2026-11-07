@@ -335,7 +335,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ringScale = ringScale * 9 >> 3;
         }
         env->otZ = 0x40;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_FROST_RINGS), &work->pos30, 0, ringScale, 0, 1, ringAlpha);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_FROST_RINGS), &work->pos30, 0, ringScale, 0, BTLFX_ABR_ADD, ringAlpha);
         env->otZ = 0;
     }
     work->frame4++;
@@ -397,7 +397,7 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         if (frame >= FX_SHIVA_STREAK_FADE_FRAME) {
             fade = ex->math_cos(((frame - FX_SHIVA_STREAK_FADE_FRAME) << 10) >> 4);
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK), 0, 0, 0, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)strip, 0);
         if (frame >= FX_SHIVA_STREAK_FRAMES) {
             return 1;
         }
@@ -437,7 +437,7 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         if (frame >= FX_SHIVA_STREAK_2_FADE_FRAME) {
             fade = ex->math_cos(((frame - FX_SHIVA_STREAK_2_FADE_FRAME) << 10) >> 4);
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK_2), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK_2), 0, 0, 0, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)strip, 0);
         if (frame >= FX_SHIVA_STREAK_2_FRAMES) {
             return 1;
         }
@@ -485,7 +485,7 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         if (frame >= FX_SHIVA_STREAK_3_FADE_FRAME) {
             fade = ex->math_cos(((frame - FX_SHIVA_STREAK_3_FADE_FRAME) << 10) >> 4);
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK_3), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK_3), 0, 0, 0, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)strip, 0);
         if (frame >= FX_SHIVA_STREAK_3_FRAMES) {
             return 1;
         }

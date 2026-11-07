@@ -45,9 +45,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_playFileSound(2, entry->file, -1);
         ex->btlfx_playFileSound(4, entry->file, -1);
         ex->btlfx_playFileSound(7, entry->file, -1);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos10);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos20);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos20);
         if (ex->btlfx_rand() & 1) {
             work->pos18.vx += 0x32 + (s32)ex->btlfx_rand % 200;
         } else {
@@ -82,7 +82,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->file->m.module.update = fx_1a6_op80ParticleMotions[work->index48];
         }
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
         }
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);

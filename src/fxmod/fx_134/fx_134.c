@@ -653,13 +653,13 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     spriteAlpha = 0x1000;
                 }
                 if (spriteAlpha != 0) {
-                    ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), spriteX = (t >> 7) + 0xA0, spriteY, 0, 1, spriteAlpha);
+                    ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), spriteX = (t >> 7) + 0xA0, spriteY, 0, BTLFX_ABR_ADD, spriteAlpha);
                     spriteAlpha += ex->btlfx_randCentered(0x18);
                     if (spriteAlpha < 0) {
                         spriteAlpha = 0;
                     }
-                    ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), spriteX, spriteY, 0, 1, spriteAlpha);
-                    ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SPACE_LAYER), spriteX, spriteY + 0x60, 0, 1, spriteAlpha);
+                    ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), spriteX, spriteY, 0, BTLFX_ABR_ADD, spriteAlpha);
+                    ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SPACE_LAYER), spriteX, spriteY + 0x60, 0, BTLFX_ABR_ADD, spriteAlpha);
                 }
                 if (frame == FX_DOOMSDAY_GLOW_FRAME) {
                     work->emit80 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_GREEN_GLOW), (s32)&work->pos8);
@@ -709,16 +709,16 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                          (((ex->math_sin(pulseAng) >> 1) + 0x800) >> 5) - 0x80);
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BACKDROP), work->frame4);
                 ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), (t >> 6) + 0xA0, (t >> 9) + 0x78,
-                                  0, 1, -1);
+                                  0, BTLFX_ABR_ADD, -1);
                 fxm_drawMirrorSprite(0xFFD, (t >> 5) + 0x78, (t >> 8) + 0xA9, FX_DOOMSDAY_MIRROR_W, FX_DOOMSDAY_MIRROR_H, 0x80, FX_DOOMSDAY_MIRROR_TPAGE,
                                      FX_DOOMSDAY_MIRROR_CLUT, FX_DOOMSDAY_MIRROR_U, FX_DOOMSDAY_MIRROR_V, BTLFX_ABR_OPAQUE);
-                ex->btlfx_drawRippleGrid((s32)(env->ot + 8), (t >> 8) + 0x78, 1, 2, 0x78, 1, fx_134_rippleColors0, 0, 0, 0, 0);
+                ex->btlfx_drawRippleGrid((s32)(env->ot + 8), (t >> 8) + 0x78, 1, 2, 0x78, BTLFX_ABR_ADD, fx_134_rippleColors0, 0, 0, 0, 0);
                 gridBright = 0x93;
                 gridY = 0;
                 gridX = 0;
                 ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BLUE_PLANET), (frame << 6) / 40 + 0xBE, 0x73, 0,
-                                  0xFF, -1);
-                ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_RED_PLANET), (t >> 6) + 0x20, 0x40, 0, 0xFF, -1);
+                                  BTLFX_ABR_OPAQUE, -1);
+                ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_RED_PLANET), (t >> 6) + 0x20, 0x40, 0, BTLFX_ABR_OPAQUE, -1);
                 spawnRadius = (frame << 7) + 0x2000;
                 orb = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (orb != NULL) {
@@ -784,9 +784,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->rot3C.vy += 4;
                 ex->Hi_DrawEffModel(&work->rot3C, (VECTOR *)&work->pos24, (s32)&work->scale30, work->model64);
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BACKDROP), work->frame4);
-                ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0x120, 0x58, 0, 1, -1);
-                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), 0x78, 0xA0, 0, 1, -1);
-                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SPACE_LAYER), 0x78, 0x46, 0, 1, -1);
+                ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0x120, 0x58, 0, BTLFX_ABR_ADD, -1);
+                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), 0x78, 0xA0, 0, BTLFX_ABR_ADD, -1);
+                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SPACE_LAYER), 0x78, 0x46, 0, BTLFX_ABR_ADD, -1);
                 ringScale = (ex->math_sin(t >> 2) >> 3) + 0x1300;
                 scale.vz = 0x1000;
                 ringBright = (((t >> 1) + 0x800) >> 5) - 0x80;
@@ -894,9 +894,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot2.vz += 0x400;
                 pos2.vy -= FX_DOOMSDAY_ARCH_COLUMN_STEP;
             }
-            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0x120, 0x58, 0, 1, -1);
-            ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), 0x78, 0xA0, 0, 1, -1);
-            ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SPACE_LAYER), 0x78, 0x46, 0, 1, -1);
+            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0x120, 0x58, 0, BTLFX_ABR_ADD, -1);
+            ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), 0x78, 0xA0, 0, BTLFX_ABR_ADD, -1);
+            ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_SPACE_LAYER), 0x78, 0x46, 0, BTLFX_ABR_ADD, -1);
             if (frame >= FX_DOOMSDAY_TUNNEL_FRAMES) {
                 work->state0 = FX_DOOMSDAY_STATE_CONE;
                 entry->frame = -1;
@@ -1013,10 +1013,10 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             scrollX = t >> 6;
-            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0xA0 - scrollX, 0x58, 0, 1, -1);
-            ex->btlfx_drawRippleGrid((s32)(env->ot + 0x3E8), 0x28, 1, 3, 0x64, 1, fx_134_rippleColors1, 0, 0, 0, 0);
-            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BLUE_PLANET), 0xDC - t / 55, 0x78, 0, 1, -1);
-            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_RED_PLANET), 0x28 - scrollX, 0x28, 0, 1, -1);
+            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0xA0 - scrollX, 0x58, 0, BTLFX_ABR_ADD, -1);
+            ex->btlfx_drawRippleGrid((s32)(env->ot + 0x3E8), 0x28, 1, 3, 0x64, BTLFX_ABR_ADD, fx_134_rippleColors1, 0, 0, 0, 0);
+            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BLUE_PLANET), 0xDC - t / 55, 0x78, 0, BTLFX_ABR_ADD, -1);
+            ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_RED_PLANET), 0x28 - scrollX, 0x28, 0, BTLFX_ABR_ADD, -1);
             work->scroll58 += 4 + ((t * 10) >> 12);
             fxm_drawTiledStrip(0, work->scroll58 % SCREEN_W, 0xA0 - (t >> 8), FX_DOOMSDAY_SMOKE_SIZE, FX_DOOMSDAY_SMOKE_SIZE, 0x80, FX_DOOMSDAY_SMOKE_TPAGE,
                           FX_DOOMSDAY_SMOKE_CLUT, FX_DOOMSDAY_SMOKE_U, 0, BTLFX_ABR_ADD, 0);
@@ -1275,7 +1275,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_134_rippleColors2[1].g = (ex->math_sin(pulseAng7) * 0xFF) >> 12;
             fx_134_rippleColors2[1].b = (u32)ex->math_sin(pulseAng7) >> 6;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_DOOMSDAY_IMPACT_TINT_RGB);
-            ex->btlfx_drawRippleGrid((s32)(env->ot + 0xFF0), 0x28, 2, 2, 0xC8, 0xFF, fx_134_rippleColors2, 0, 0, 0, 0);
+            ex->btlfx_drawRippleGrid((s32)(env->ot + 0xFF0), 0x28, 2, 2, 0xC8, BTLFX_ABR_OPAQUE, fx_134_rippleColors2, 0, 0, 0, 0);
             if (frame > FX_DOOMSDAY_IMPACT_WHITE_FRAME) {
                 flash = (frame - FX_DOOMSDAY_IMPACT_WHITE_FRAME) * 0xFF / (FX_DOOMSDAY_IMPACT_FRAMES - FX_DOOMSDAY_IMPACT_WHITE_FRAME);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, flash, flash, flash);

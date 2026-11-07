@@ -11,7 +11,7 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->state0 = FX_AERO_BREATH_STATE_BLOW;
         fx_0ad_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos8);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos10, (s16 *)&work->aim18);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_BREATH_WIND_TRAILS), (s32)&work->pos8);
         if (work->emit4 != NULL) {

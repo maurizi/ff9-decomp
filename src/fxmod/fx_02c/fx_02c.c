@@ -8,7 +8,7 @@ s32 fx_02c_op80(s32 mode, Fx02cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx02cWork);
     } else if (mode == 1) {
         fx_02c_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
         work->pos10.vz = env->targets->centerZ;

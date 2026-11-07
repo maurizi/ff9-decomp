@@ -401,7 +401,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (fx_196_wavePoints[i].pad != 0) {
                         texBright = (i & 1) << 12;
                         ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_196_wavePoints[i], NULL,
-                                                ((t * 3) >> 3) + 0x3800 + texBright, frame + i * 2, 1, 0x1000);
+                                                ((t * 3) >> 3) + 0x3800 + texBright, frame + i * 2, BTLFX_ABR_ADD, 0x1000);
                     }
                 }
                 env->otZ = 0x37;
@@ -409,7 +409,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     for (i = 0; i < 7; i++) {
                         if (fx_196_wavePoints[i].pad != 0) {
                             ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_FOAM), &fx_196_wavePoints[i], NULL,
-                                                    0x2400, frame + i * 2 + 4, 1, 0x1000);
+                                                    0x2400, frame + i * 2 + 4, BTLFX_ABR_ADD, 0x1000);
                         }
                     }
                 }
@@ -438,7 +438,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rippleAng = ((frame - 0x2B) << 10) / 38;
                 ex->math_cos(rippleAng);
                 ex->math_cos(rippleAng);
-                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, 1, fx_196_rippleColors, 0x18, frame << 8, 0x186,
+                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, BTLFX_ABR_ADD, fx_196_rippleColors, 0x18, frame << 8, 0x186,
                                   0x100);
                 if (frame == FX_LEVIATHAN_IMPACT_FRAME) {
                     ex->btlfx_drawScreenTint((u32 *)&env->ot[2], BTLFX_ABR_HALF, FX_LEVIATHAN_IMPACT_TINT_RGB);

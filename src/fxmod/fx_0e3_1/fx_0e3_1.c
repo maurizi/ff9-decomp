@@ -685,7 +685,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_RINGS), &work->pos30, &work->rotBC, 0x1000,
                                   frame, BTLFX_ABR_ADD, flareFade);
                 ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPARKLE_RING), &work->pos30, &work->rotBC, 0x2000,
-                                      frame, 1, flareFade);
+                                      frame, BTLFX_ABR_ADD, flareFade);
                 ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LENS_FLARE), &work->pos30, frame - 1, flareFade);
             }
             if (frame < 0x11) {

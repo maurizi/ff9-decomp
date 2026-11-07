@@ -266,7 +266,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot38.vy = rot.vy >> 1;
             work->rot38.vz = rot.vz >> 1;
             fxm_drawStreakField((u32 *)env->ot + 8, FX_ARK_STREAKS, 0x80, ((ex->math_sin(swayAng) * 0x18) >> 12) - 1, &rot, fx_17d_0_streakPoints,
-                          &col, t, 1);
+                          &col, t, BTLFX_ABR_ADD);
             if (frame >= FX_ARK_GRID_FRAME) {
                 code = 1;
                 abr = 1;
@@ -300,12 +300,12 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot38.vx = rot.vx >> 1;
             work->rot38.vy = rot.vy >> 1;
             work->rot38.vz = rot.vz >> 1;
-            fxm_drawStreakField((u32 *)env->ot + 8, FX_ARK_STREAKS, 0x80, ~((t * 20) >> 12), &rot, fx_17d_0_streakPoints, &col, 0x1000, 1);
+            fxm_drawStreakField((u32 *)env->ot + 8, FX_ARK_STREAKS, 0x80, ~((t * 20) >> 12), &rot, fx_17d_0_streakPoints, &col, 0x1000, BTLFX_ABR_ADD);
             code = 1;
             abr = 1;
             spriteX = ((0x1000 - ex->math_sin(phase)) >> 5) + 0xA0;
             spriteY = 0x6E - ((0x1000 - ((0x1000 - ex->math_cos(swayAng)) >> 1)) >> 3);
-            ex->btlfx_drawSpriteAtOt(FX_ARK_RED_ROCK_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), spriteX, spriteY, 0, 0xFF, t);
+            ex->btlfx_drawSpriteAtOt(FX_ARK_RED_ROCK_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), spriteX, spriteY, 0, BTLFX_ABR_OPAQUE, t);
             gridBright = 0x60 - gridScale;
             if (frame >= FX_ARK_SPACE_FRAMES) {
                 work->state0 = code;
@@ -366,7 +366,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vz = work->frame4 * 4;
             streakSpeed = (t >> 8) + 0x14;
             fxm_drawStreakField((u32 *)env->ot + 0x400, FX_ARK_STREAKS, 0x80, -streakSpeed, &rot, fx_17d_0_streakPoints, &col,
-                          (ex->math_cos(phase) >> 1) + 0x800, 1);
+                          (ex->math_cos(phase) >> 1) + 0x800, BTLFX_ABR_ADD);
             pieceScale = 0x1000 - ex->math_cos(phase);
             pieceScale = 0x1000 - ex->math_cos(pieceScale >> 2);
             if (t > 0xC00) {
@@ -375,7 +375,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             fx_17d_0_drawPieces(entry, &work->pos10, frame % FX_ARK_PIECE_LOOP_FRAMES, (s32)work->model5C, work->model86, pieceScale);
             if (frame < FX_ARK_PIECES_FRAMES) {
                 spriteY = (frame >> 2) + 0x6E;
-                ex->btlfx_drawSpriteAtOt(FX_ARK_RED_ROCK_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), 0xA0, spriteY, 0, 0xFF, alpha);
+                ex->btlfx_drawSpriteAtOt(FX_ARK_RED_ROCK_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), 0xA0, spriteY, 0, BTLFX_ABR_OPAQUE, alpha);
             }
             code = 1;
             abr = 1;
@@ -485,7 +485,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame >= FX_ARK_BAND_FRAME) {
-                fx_17d_0_drawCenterBandY((u32 *)env->ot + 1, 1,
+                fx_17d_0_drawCenterBandY((u32 *)env->ot + 1, BTLFX_ABR_ADD,
                               ((0x1000 - ex->math_cos((((frame - FX_ARK_BAND_FRAME) << 12) / FX_ARK_BAND_OPEN_FRAMES) >> 2)) * FX_ARK_BAND_HEIGHT) >> 12, FX_ARK_BAND_RGB);
             }
             if (frame >= FX_ARK_WHITE_FRAME) {

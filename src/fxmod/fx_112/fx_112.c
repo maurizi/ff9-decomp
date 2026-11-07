@@ -60,8 +60,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         } else if (frame >= FX_EAT_VANISH_FRAME + 1) {
             t = ((frame - FX_EAT_VANISH_FRAME) << 12) / (FX_EAT_GRAB_FRAMES - FX_EAT_VANISH_FRAME);
-            ex->btlfx_getUnitBonePos(0x10, 9, (u16 *)&locals.s0.a);
-            ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&locals.s0.b);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 9, (u16 *)&locals.s0.a);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x1C, (u16 *)&locals.s0.b);
             ex->btlfx_aimAngles((s16 *)&locals.s0.a, (s16 *)&locals.s0.b, (s16 *)&locals.s0.rot);
             locals.s0.rot.vy += 0x800;
             locals.s0.pos.vx = (locals.s0.a.vx + locals.s0.b.vx) >> 1;
@@ -79,8 +79,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case FX_EAT_STATE_SWALLOW:
         t = (frame << 12) / FX_EAT_SWALLOW_FRAMES;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&locals.s1.pos);
-        ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&locals.s1.bone);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&locals.s1.pos);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x1C, (u16 *)&locals.s1.bone);
         ex->btlfx_lerpVec((s16 *)&locals.s1.bone, (s16 *)&locals.s1.pos, t, (s16 *)&locals.s1.v);
         arc = ex->math_sin((t * 0x992) >> 12);
         locals.s1.rot.vx = -frame << 8;
@@ -97,7 +97,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         break;
     case FX_EAT_STATE_CHEW:
-        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 4, (u16 *)&work->pos48);
         slot = frame / FX_EAT_TRAIL_INTERVAL;
         if (frame == slot * FX_EAT_TRAIL_INTERVAL) {
             trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EAT_ORBIT_TRAIL), (s32)&work->pos48);
@@ -124,8 +124,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         break;
     case FX_EAT_STATE_SPIT:
-        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
-        ex->btlfx_getUnitBoneMatrix(0x10, 4, &locals.s4.m);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 4, (u16 *)&work->pos48);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 4, &locals.s4.m);
         ex->btlfx_matrixAngles((MATRIX *)&locals.s4.m, (s16 *)&locals.s4.rot);
         if (work->emit50 != NULL) {
             work->emit50->rot.vx = locals.s4.rot.vx;

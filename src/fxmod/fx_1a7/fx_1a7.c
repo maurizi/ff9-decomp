@@ -126,14 +126,14 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_GREEN_RINGS), (s32)&fx_1a7_emitPos);
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBoneMatrix(0x10, FX_MIND_BLAST_BONE, (BtlBone *)&boneMtx);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, FX_MIND_BLAST_BONE, (BtlBone *)&boneMtx);
         ex->btlfx_matrixPointAhead(&boneMtx, FX_MIND_BLAST_CHARGE_AHEAD, (s32)&work->pos34);
         if (frame == FX_MIND_BLAST_LAUNCH_FRAME) {
-            ex->btlfx_getUnitBoneMatrix(0x10, FX_MIND_BLAST_BONE, (BtlBone *)&launchMtx);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, FX_MIND_BLAST_BONE, (BtlBone *)&launchMtx);
             ex->btlfx_matrixPointAhead(&launchMtx, FX_MIND_BLAST_LAUNCH_AHEAD, (s32)&fx_1a7_op80MotionFrom);
             fx_1a7_op80MotionFrom.vy -= FX_MIND_BLAST_LAUNCH_HEIGHT;
         }
@@ -184,7 +184,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1a7Work81);
     } else if (mode == 1) {
         fx_1a7_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos34);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos34);
         fx_1a7_op81MotionTo.vx = work->pos34.vx;
         fx_1a7_op81MotionTo.vy = work->pos34.vy;
         fx_1a7_op81MotionTo.vz = work->pos34.vz;

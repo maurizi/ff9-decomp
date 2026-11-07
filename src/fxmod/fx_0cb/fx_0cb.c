@@ -246,10 +246,10 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->state0 == 0) {
             t = (frame << 12) / FX_LIGHT_FLARE_FRAMES;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_LIGHT_FLARE_DARKEN_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_LIGHT_FLARE_DARKEN_RGB);
             } else if (frame < FX_LIGHT_FLARE_FLASH_FRAMES) {
                 tint = 0x78 - (frame - 1) * 0x14;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint >> 1);
             }
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP), work->frame4);
             ex->btlfx_drawScrollMove(frame * 8, FX_LIGHT_FLARE_FIREBALL_VRAM_X, FX_LIGHT_FLARE_FIREBALL_VRAM_Y, FX_LIGHT_FLARE_FIREBALL_VRAM_W,
@@ -285,18 +285,18 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             alpha = ex->math_cos(ang);
             env->otZ = work->otZ8 + 0x46;
             data = (u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RINGS);
-            ex->btlfx_drawRings(data, &work->posC, &rot, ex->math_cos(ang) / 3 + 0x2AA, 0, 1, alpha);
+            ex->btlfx_drawRings(data, &work->posC, &rot, ex->math_cos(ang) / 3 + 0x2AA, 0, BTLFX_ABR_ADD, alpha);
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP_2), work->frame4);
             rot.vx = 0x200;
             rot.vy = 0x590;
             rot.vz = 0x80;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, BTLFX_ABR_ADD, alpha);
             rot.vx = 0x600;
             rot.vy = 0x990;
             rot.vz = 0x80;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, BTLFX_ABR_ADD, alpha);
             env->otZ = 0;
             if (frame >= FX_LIGHT_FLARE_FRAMES) {
                 ex->btlfx_clearEffModels();

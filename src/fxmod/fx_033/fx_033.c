@@ -30,7 +30,7 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->timer0 = 0;
         fx_033_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos14);
         work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNORT_SMOKE_STREAKS), (s32)&work->pos4);

@@ -134,7 +134,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx191Work80);
     } else if (mode == 1) {
         fx_191_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
         fx_191_op80Origin.vx = work->pos10.vx;
         fx_191_op80Origin.vy = work->pos10.vy;

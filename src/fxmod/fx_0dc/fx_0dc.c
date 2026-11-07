@@ -479,7 +479,7 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             ry = scale1 = scale0 = alpha = 0;
             frame = entry->frame;
-            ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
+            ex->btlfx_getWeaponPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->pos8);
             switch (work->state0) {
             case FX_SWDMAG_BLIZZAGA_SWORD_STATE_APPEAR:
                 ry = 0x200;

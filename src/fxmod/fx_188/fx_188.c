@@ -67,8 +67,8 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_188_env = env;
         BTLFX_COPY_SVEC(&work->pos4, &env->targets->centerX);
         work->pos4.vy -= FX_LV3_DEF_LESS_HEIGHT;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->posC);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
         fx_188_particleScale = 0x1000;
         work->rot14.vy += 0x800;
     } else {

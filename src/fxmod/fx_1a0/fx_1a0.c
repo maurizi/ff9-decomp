@@ -79,7 +79,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0 && frame < FX_FLAME_SLASH_BURSTS_FOLLOW_FRAMES) {
             bone = fx_1a0_op80Bones;
             for (i = 0; i < FX_FLAME_SLASH_BURSTS; i++, bone++) {
-                ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, (BtlBone *)&m);
+                ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, bone->bone0, (BtlBone *)&m);
                 ex->btlfx_matrixPointAhead(&m, bone->dist2, (s32)&work->pos18[i]);
                 if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
                     work->emit0[i] = NULL;

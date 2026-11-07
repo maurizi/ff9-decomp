@@ -195,7 +195,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state10) {
         case FX_SWDMAG_FIRAGA_STATE_FLASH:
             t = frame << 9;
-            ex->btlfx_drawScreenTint((u32 *)env->ot + 0x800, 1, (t * 70) >> 12, 0, 0);
+            ex->btlfx_drawScreenTint((u32 *)env->ot + 0x800, BTLFX_ABR_ADD, (t * 70) >> 12, 0, 0);
             if (frame == FX_SWDMAG_FIRAGA_SPARKS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_EMBERS), (s32)work);
                 if (emitter != NULL) {
@@ -213,7 +213,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             bri = ex->math_cos(t >> 2);
             env->otZ = 0x200;
             scl = t / 3 + 0x555;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GLOW), &work->pos8, NULL, 0x1000, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GLOW), &work->pos8, NULL, 0x1000, 0, BTLFX_ABR_ADD,
                               ex->math_cos(t >> 2));
             env->otZ = 0;
             if (frame >= FX_SWDMAG_FIRAGA_FLASH_FRAMES) {
@@ -225,10 +225,10 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / FX_SWDMAG_FIRAGA_PILLAR_FRAMES;
             if (frame < FX_SWDMAG_FIRAGA_WHITE_FLASH_FRAMES) {
                 tint = ex->math_cos(frame << 8) * 0xFF;
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, tint >> 12, tint >> 13, tint >> 15);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, BTLFX_ABR_ADD, tint >> 12, tint >> 13, tint >> 15);
             }
             if (frame < FX_SWDMAG_FIRAGA_RED_TINT_FRAMES) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + OT_LAST, 0xFF,
+                ex->btlfx_drawScreenTint((u32 *)env->ot + OT_LAST, BTLFX_ABR_OPAQUE,
                                          ((ex->math_cos(frame << 5) / 2 + 0x800) * (ex->btlfx_rand() % 50 + 7)) >> 12, 0,
                                          0);
             }
@@ -263,11 +263,11 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos2.vz = work->pos8.vz;
                 pos2.vy -= 0x400;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_PILLAR_RING), &pos2, &rot, ex->math_sin(ringAng) * 3 / 2 + 0x1000,
-                                  0, 1, ex->math_cos(ringAng));
+                                  0, BTLFX_ABR_ADD, ex->math_cos(ringAng));
             }
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_GLOW), &work->pos8, NULL,
-                              ex->math_cos(t >> 2) / 2 * 2 + 0x2000, 0, 1, ex->math_cos(t >> 2));
+                              ex->math_cos(t >> 2) / 2 * 2 + 0x2000, 0, BTLFX_ABR_ADD, ex->math_cos(t >> 2));
             env->otZ = 0;
             if (rising) {
                 ex->btlfx_drawScrollMove(roll, FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_X, FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_Y, FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_W,
@@ -396,7 +396,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         sparkPos.vx += ex->btlfx_randCentered(0x140);
                         sparkPos.vy += ex->btlfx_randCentered(0x100);
                         sparkPos.vz += ex->btlfx_randCentered(0x140);
-                        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SPARK), &sparkPos, NULL, 0x7000, 0, 1, fade);
+                        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_COLUMN_SPARK), &sparkPos, NULL, 0x7000, 0, BTLFX_ABR_ADD, fade);
                         cnt++;
                         env->otZ = 0;
                     }
@@ -454,7 +454,7 @@ s32 fx_0d6_op84(s32 mode, Fx0d6Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale0 = 0;
         scale1 = 0;
         frame = entry->frame;
-        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
+        ex->btlfx_getWeaponPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
         case FX_SWDMAG_FIRAGA_FLASH_STATE_IN:
@@ -498,8 +498,8 @@ s32 fx_0d6_op84(s32 mode, Fx0d6Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SWORD_FLASH), &work->pos8, &rot, scale1, 0, 1, alpha * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SWORD_GLINT), &work->pos8, NULL, scale0 / 3, 0, BTLFX_ABR_ADD, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRAGA_SWORD_FLASH), &work->pos8, &rot, scale1, 0, BTLFX_ABR_ADD, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }

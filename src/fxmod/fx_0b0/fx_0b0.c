@@ -20,8 +20,8 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&work->pos34, &work->posC);
         work->pos2C.vx -= FX_LEAF_SWIRL_SIDE;
         work->pos34.vx += FX_LEAF_SWIRL_SIDE;
-        ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[0], (u16 *)&work->pos1C);
-        ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[1], (u16 *)&work->pos24);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_0b0_bones[0], (u16 *)&work->pos1C);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_0b0_bones[1], (u16 *)&work->pos24);
         work->emit4 = work->emit8 = NULL;
     } else {
         frame = entry->frame;
@@ -33,8 +33,8 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             } else {
                 t = 0x1000;
             }
-            ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[0], (u16 *)&work->pos1C);
-            ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[1], (u16 *)&work->pos24);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_0b0_bones[0], (u16 *)&work->pos1C);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_0b0_bones[1], (u16 *)&work->pos24);
             ex->btlfx_lerpVec((s16 *)&work->pos1C, (s16 *)&work->pos2C, t, (s16 *)&pos0);
             ex->btlfx_lerpVec((s16 *)&work->pos24, (s16 *)&work->pos34, t, (s16 *)&pos1);
             if (frame == 0) {

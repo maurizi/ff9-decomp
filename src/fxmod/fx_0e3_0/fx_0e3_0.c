@@ -875,7 +875,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (u16 *)&vec);
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (u16 *)&ahead);
-                fxm_drawTexRibbonTrail(&vec, &ahead, FX_BAHAMUT_RIBBON_CLEAR + FX_BAHAMUT_RIBBON_SEGMENTS, 0, 0, 0, 0, 0, 0, 0, fx_0e3_0_ribbons[j], 1, 0);
+                fxm_drawTexRibbonTrail(&vec, &ahead, FX_BAHAMUT_RIBBON_CLEAR + FX_BAHAMUT_RIBBON_SEGMENTS, 0, 0, 0, 0, 0, 0, 0, fx_0e3_0_ribbons[j], BTLFX_ABR_ADD, 0);
             }
             for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_trailBones[j], (u16 *)&vec);
@@ -889,7 +889,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (BtlBone *)&boneMatB);
             ex->btlfx_matrixPointAhead(&boneMatB, (fx_0e3_0_ribbonBones[j + FX_BAHAMUT_RIBBONS].edgeB2 * work->summonScale1C.vy) >> 12, (s32)&ahead);
             fxm_drawTexRibbonTrail(&vec, &ahead, FX_BAHAMUT_RIBBON_SEGMENTS - 1, FX_BAHAMUT_RIBBON_TPAGE, FX_BAHAMUT_RIBBON_CLUT, FX_BAHAMUT_RIBBON_U,
-                          FX_BAHAMUT_RIBBON_V, FX_BAHAMUT_RIBBON_W, FX_BAHAMUT_RIBBON_H, trail >> 5, fx_0e3_0_ribbons[j], 1,
+                          FX_BAHAMUT_RIBBON_V, FX_BAHAMUT_RIBBON_W, FX_BAHAMUT_RIBBON_H, trail >> 5, fx_0e3_0_ribbons[j], BTLFX_ABR_ADD,
                           10000 - work->frame4);
         }
         for (j = 0; j < FX_BAHAMUT_RIBBONS; j++) {

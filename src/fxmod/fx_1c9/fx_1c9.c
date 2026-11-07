@@ -13,7 +13,7 @@ s32 fx_1c9_op80(s32 mode, Fx1c9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         env->otZ = 0x80;
-        ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDER_SLASH_LIGHTNING), &work->pos4, frame, 1, -1);
+        ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDER_SLASH_LIGHTNING), &work->pos4, frame, BTLFX_ABR_ADD, -1);
         if (frame == FX_THUNDER_SLASH_SPARKS_FRAME) {
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDER_SLASH_SPARKS), (s32)&work->pos4);
             if (work->emit0 != NULL) {

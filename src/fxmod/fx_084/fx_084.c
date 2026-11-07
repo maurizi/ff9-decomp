@@ -40,10 +40,10 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&fx_084_pathFrom, &work->pos4);
     } else {
         frame = entry->frame;
-        if (ex->btlfx_isEnemyUnit(0x10) == 0) {
-            ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->posC);
+        if (ex->btlfx_isEnemyUnit(BTLFX_UNIT_CASTER) == 0) {
+            ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->posC);
         } else {
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->posC);
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->posC);
         }
         BTLFX_COPY_SVEC(&fx_084_pathTo, &work->posC);
         switch (work->state0) {
@@ -64,7 +64,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_RED_RING), (s32)&work->posC);
                 if (work->emit20 != NULL) {
-                    work->emit20->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
+                    work->emit20->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x18);
                 }
                 ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos4, (s16 *)&work->aim14);
             }
@@ -83,7 +83,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == FX_DRAIN_SPECKS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_PINK_SPECKS), (s32)&work->posC);
                 if (emitter != NULL) {
-                    emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
+                    emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x18);
                 }
             }
             if (frame >= FX_DRAIN_RING_FRAMES) {

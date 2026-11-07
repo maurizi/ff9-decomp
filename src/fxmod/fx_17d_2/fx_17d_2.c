@@ -129,9 +129,9 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             ex->btlfx_drawScrollMove(frame * 10, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
             ex->btlfx_drawScrollMove(frame * 7, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_GREEN_GLOW_SPRITE), frame / 3 + 0x10E, 0x40 - frame / 3,
-                              0, 0xFF, -1);
+                              0, BTLFX_ABR_OPAQUE, -1);
             ex->btlfx_drawSpriteAtOt(0xE00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STATIC_SPRITE), frame / 3 + 0xA0, 0x70 - frame / 3,
-                              0, 0xFF, 0x1000 - t / 2);
+                              0, BTLFX_ABR_OPAQUE, 0x1000 - t / 2);
             col.r = col.g = col.b = 0x84;
             sc.vy = sc.vx = (frame >> 1) + 0x1000;
             rot.vx = 0;

@@ -81,7 +81,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->state0 = FX_WEB_STATE_WRAP;
         fx_0a0_trailAlpha = 0x1000;
         fx_0a0_task = entry;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos4);
         BTLFX_COPY_SVEC(&fx_0a0_bonePos, &work->pos4);
         BTLFX_COPY_SVEC(&work->posC, &work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
@@ -101,7 +101,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos4);
         BTLFX_COPY_SVEC(&fx_0a0_bonePos, &work->pos4);
         switch (work->state0) {
         case FX_WEB_STATE_WRAP:

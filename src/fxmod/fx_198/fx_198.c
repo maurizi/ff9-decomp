@@ -24,7 +24,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->state0 = 0;
         work->frame4 = 0;
         fx_198_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
         ex->btlfx_initEffModels(fx_198_effModels, FX_TSUNAMI_MODELS);
         key = (Fx198Key *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_BOWL);
         work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)key, FX_TSUNAMI_BOWL_TPAGE, FX_TSUNAMI_BOWL_CLUT, FX_TSUNAMI_BOWL_U, FX_TSUNAMI_BOWL_V);
@@ -77,7 +77,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     quadPos.vx = work->posC.vx + ((quadKey->x0 * work->scale8) >> 12);
                     quadPos.vy = work->posC.vy + ((quadKey->y2 * work->scale8) >> 12);
                     quadPos.vz = work->posC.vz + ((quadKey->z4 * work->scale8) >> 12);
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x2000, work->frame4 + j * 4 + j, 1, quadAlpha);
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x2000, work->frame4 + j * 4 + j, BTLFX_ABR_ADD, quadAlpha);
                     quadRot.vz += 0x40;
                 }
                 if (frame < FX_TSUNAMI_RING_FADE_FRAME) {
@@ -89,7 +89,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         quadPos.vx = work->posC.vx + ((quadKey->x0 * work->scale8) >> 12);
                         quadPos.vy = work->posC.vy + ((quadKey->y2 * work->scale8) >> 12);
                         quadPos.vz = work->posC.vz + ((quadKey->z4 * work->scale8) >> 12);
-                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x1800, work->frame4 + j * 4 + j, 1, quadAlpha);
+                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x1800, work->frame4 + j * 4 + j, BTLFX_ABR_ADD, quadAlpha);
                         quadRot.vz += 0x40;
                     }
                 }
@@ -111,7 +111,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 for (; i < FX_TSUNAMI_ROW_SPLASHES; i++) {
                     ex->btlfx_getFileData(entry->file, fx_198_quadPathFileIds[i]);
                     quadPos.vx = i * 0x100 - 0x500;
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x1800, work->frame4 + i * 4 + i, 1, ex->math_cos(t >> 2));
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x1800, work->frame4 + i * 4 + i, BTLFX_ABR_ADD, ex->math_cos(t >> 2));
                     quadRot.vz += 0x40;
                 }
                 env->otZ = 0;

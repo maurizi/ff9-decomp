@@ -200,7 +200,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 otz = -0x46;
             }
             fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, otz, &rot2, fx_08f_streakPts, &streakCol,
-                          ex->math_cos((frame << 10) / FX_METEOR_SKY_FRAMES) * 3 / 4 + 0x400, 1);
+                          ex->math_cos((frame << 10) / FX_METEOR_SKY_FRAMES) * 3 / 4 + 0x400, BTLFX_ABR_ADD);
             if (frame == 2) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS), (s32)&work->pos14);
                 work->emit44 = emitter;

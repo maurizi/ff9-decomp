@@ -40,14 +40,14 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case FX_WHIRL_SLASH_DUST_FRAME:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos28);
+            ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos28);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_DUST_PUFF_2), (s32)&work->pos28);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_DUST_CLOUD), (s32)&work->pos20);
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             break;
         case FX_WHIRL_SLASH_HIT_FRAME:
@@ -62,10 +62,10 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case FX_WHIRL_SLASH_DUST_PUFF_FRAME:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos28);
+            ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos28);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_DUST_PUFF), (s32)&work->pos28);
             if (work->emit10 != NULL) {
-                work->emit10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit10->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             break;
         case FX_WHIRL_SLASH_SLASH_FRAME:

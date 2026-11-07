@@ -30,8 +30,8 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == FX_SNOWSTORM_STREAM_FRAME) {
-            ex->btlfx_getUnitBonePos(0x10, 0x12, (u16 *)&work->pos10);
-            ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->pos18);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x12, (u16 *)&work->pos10);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x2B, (u16 *)&work->pos18);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_BURST), (s32)&work->pos10);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_BURST_2), (s32)&work->pos18);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_STREAM), (s32)&fx_0aa_emitStartPos0);

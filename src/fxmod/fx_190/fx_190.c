@@ -11,9 +11,9 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->count0 = 0;
         fx_190_env = env;
-        ex->btlfx_getUnitBonePos(0x10, FX_VIRAL_SMOKE_GREEN_BONE, (u16 *)&work->pos44);
-        ex->btlfx_getUnitBonePos(0x10, FX_VIRAL_SMOKE_BROWN_BONE, (u16 *)&work->pos4C);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos34);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_VIRAL_SMOKE_GREEN_BONE, (u16 *)&work->pos44);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_VIRAL_SMOKE_BROWN_BONE, (u16 *)&work->pos4C);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos34);
         work->pos3C.vx = env->targets->centerX;
         work->pos3C.vz = env->targets->centerZ;
         work->pos3C.vy = 0;

@@ -26,7 +26,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
     case FX_COMET_STATE_FALL:
         t = (frame << 12) / FX_COMET_FALL_FRAMES;
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), 0, NULL, -1, 0x1000, 0, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), 0, NULL, -1, 0x1000, 0, BTLFX_ABR_ADD,
                               (u8 *)&fx_038_strips[it->strip20], 0);
         }
         BTLFX_COPY_SVEC(&fallPos, &it->pos18);
@@ -47,9 +47,9 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         BTLFX_COPY_SVEC(&trailPos, &it->pos4);
         trailPos.vy += 0x140;
         trailPos.vz -= 0xA0;
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), (s32)&trailPos, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), (s32)&trailPos, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, BTLFX_ABR_ADD,
                           (u8 *)&fx_038_strips[it->strip20], 0);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_GLOW), &it->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_GLOW), &it->pos4, NULL, 0x1000, 0, BTLFX_ABR_ADD, -1, 0, 0);
         env->otZ = 0;
         if (it->strip20 == 0) {
             env->camera->points[0].vx = it->pos4.vx;
@@ -83,11 +83,11 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
         }
         spinAng = t >> 2;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_GLOW), &it->pos4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(spinAng), 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_GLOW), &it->pos4, NULL, (t << 1) + 0x1800, 0, BTLFX_ABR_ADD, ex->math_cos(spinAng), 0, 0);
         BTLFX_COPY_SVEC(&trailPos, &it->pos4);
         trailPos.vy += 0x140;
         trailPos.vz -= 0xA0;
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), (s32)&it->pos4, NULL, 0, 0, 0x555, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), (s32)&it->pos4, NULL, 0, 0, 0x555, BTLFX_ABR_ADD,
                           (u8 *)&fx_038_strips[it->strip20], 0);
         it->rotC.vy += ex->math_cos(spinAng) >> 7;
         pos.vx = it->pos4.vx;
@@ -118,7 +118,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         ringRot.vx = 0x400;
         ringRot.vz = 0;
         ringRot.vy = 0;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_RING), &it->pos4, &ringRot, ex->math_sin(growAng) + 0xAAA, 8, 1, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_RING), &it->pos4, &ringRot, ex->math_sin(growAng) + 0xAAA, 8, BTLFX_ABR_ADD, fade);
         if (frame < FX_COMET_FIRE_GLOW_FRAMES) {
             s32 burstT;
 
@@ -127,7 +127,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             ringRot.vz = 0;
             ringRot.vy = 0;
             burstT = (frame << 12) / FX_COMET_FIRE_GLOW_FRAMES;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_FIRE_GLOW), &it->pos4, &ringRot, ex->math_cos(burstT >> 2) * 3, 6, 1, ex->math_cos(burstT >> 2), 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_FIRE_GLOW), &it->pos4, &ringRot, ex->math_cos(burstT >> 2) * 3, 6, BTLFX_ABR_ADD, ex->math_cos(burstT >> 2), 0, 0);
         }
         if (frame >= FX_COMET_IMPACT_FRAMES) {
             return 1;

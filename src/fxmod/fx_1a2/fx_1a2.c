@@ -304,12 +304,12 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     switch (w->state0) {
     case FX_MOONLIGHT_SLASH_STATE_CHARGE:
         t = (frame << 12) / FX_MOONLIGHT_SLASH_CHARGE_FRAMES;
-        ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&bonePos);
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&boneMtx1);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x10, (u16 *)&bonePos);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x10, (BtlBone *)&boneMtx1);
         ex->btlfx_matrixPointAhead(&boneMtx1, 0x10E, (s32)&ribbon1);
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&boneMtx2);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x10, (BtlBone *)&boneMtx2);
         ex->btlfx_matrixPointAhead(&boneMtx2, 0x147, (s32)&ribbon2);
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&boneMtx3);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x10, (BtlBone *)&boneMtx3);
         ex->btlfx_matrixPointAhead(&boneMtx3, 0x155, (s32)&ribbon3);
         if (frame == 0) {
             fxm_drawRibbonTrail(&bonePos, &ribbon1, FX_MOONLIGHT_SLASH_RIBBON_CLEAR + FX_MOONLIGHT_SLASH_RIBBON_POINTS, &fx_1a2_colors0, &fx_1a2_colors1, 0,
@@ -495,8 +495,8 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->pos22 -= 0x1AE;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_MOONLIGHT_SLASH_SHATTER_TINT_RGB);
                 ex->btlfx_fadeUnitById(0, 0);
-                ex->btlfx_fadeUnitById(0x11, -2);
-                ex->btlfx_setUnitPos(0x11, (s16 *)&w->pos8);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_PARTNER, -2);
+                ex->btlfx_setUnitPos(BTLFX_UNIT_PARTNER, (s16 *)&w->pos8);
             }
             pos.vx = w->pos8.vx;
             pos.vy = w->pos8.vy;
@@ -608,18 +608,18 @@ s32 fx_1a2_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         *args = sizeof(SVECTOR);
     } else if (mode == 1) {
         fx_1a2_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)work);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)work);
         return 0;
     } else {
         frame = entry->frame;
         work->vz += 0x60;
-        ex->btlfx_setUnitPos(0x10, (s16 *)work);
+        ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)work);
         if (frame < FX_MOONLIGHT_SLASH_OP81_FADE_FRAME) {
             alpha = 0x80;
         } else {
             alpha = 0x80 - (frame - FX_MOONLIGHT_SLASH_OP81_FADE_FRAME) * 0x10;
         }
-        ex->btlfx_fadeUnitById(0x10, alpha);
+        ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, alpha);
         if (frame >= FX_MOONLIGHT_SLASH_OP81_FRAMES) {
             return 1;
         }

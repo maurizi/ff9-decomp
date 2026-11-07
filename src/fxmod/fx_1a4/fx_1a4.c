@@ -13,10 +13,10 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1a4Work80);
     } else if (mode == 1) {
         fx_1a4_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos14);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos14);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_COLOUR_STREAKS), (s32)&work->pos14);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         work->timer3C = -1;
         work->timer3E = -1;
@@ -24,16 +24,16 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->flag38 = env->targets->fxArgs[1] == 0;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos1C);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos1C);
         switch (frame) {
         case FX_DEATH0_BURST_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_DUST_BURST), (s32)&fx_1a4_emitPos0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_FIRE_DEBRIS), (s32)&fx_1a4_emitPos1);
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             if (work->emit8 != NULL) {
-                work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case FX_DEATH0_DEBRIS_FRAME:
@@ -44,7 +44,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->flag38 != 0) {
                 work->timer3E = -1;
                 work->timer3C = FX_DEATH0_SINK_FRAMES;
-                ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos24);
+                ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos24);
                 work->pos24.vy = 0;
             }
             break;
@@ -58,7 +58,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             risePos.vx = work->pos24.vx;
             risePos.vy = work->pos24.vy + riseFrame * riseFrame;
             risePos.vz = work->pos24.vz;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&risePos);
+            ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)&risePos);
         }
         if (work->timer3E >= 0) {
             work->timer3E--;
@@ -66,15 +66,15 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             hopPos.vx = work->pos2C.vx;
             hopPos.vy = work->pos2C.vy - (hopFrame * 0x50 - hopFrame * 5 * hopFrame);
             hopPos.vz = work->pos2C.vz;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&hopPos);
+            ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)&hopPos);
         }
         if (work->timer40 >= 0) {
             work->fade34 = fxm_lerpRatio(0, -0x80, FX_DEATH0_FADE_FRAMES - work->timer40, FX_DEATH0_FADE_FRAMES);
             alpha = work->fade34 + 0x80;
             if (alpha < FX_DEATH0_FADE_MIN) {
-                ex->btlfx_fadeUnitById(0x10, FX_DEATH0_FADE_MIN);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, FX_DEATH0_FADE_MIN);
             } else {
-                ex->btlfx_fadeUnitById(0x10, alpha);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, alpha);
             }
             work->timer40--;
         }
@@ -105,7 +105,7 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         ex->btlfx_initEffModels(fx_1a4_effModels, FX_DEATH0_MODELS);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos44);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos44);
         work->rot8.vx = 0x800;
         work->rot8.vy = 0;
         work->rot8.vz = 0;
@@ -135,10 +135,10 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_DUST_SPIRAL), (s32)&work->pos44);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_DUST_SPIRAL_2), (s32)&work->pos44);
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case FX_DEATH0_FLAMES_FADE_FRAME:

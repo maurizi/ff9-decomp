@@ -87,7 +87,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos94.vz = fx_079_curBodyPos.vz = fx_079_bodyPos.vz;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&fx_079_bonePos);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x17, (u16 *)&fx_079_bonePos);
         switch (frame) {
         case 0:
             work->timers0[FX_DEMI_SHOCK_T_BACKDROP] = 1;

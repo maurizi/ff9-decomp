@@ -22,8 +22,8 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->state0 = FX_TRANCE_STATE_CHARGE;
         fx_101_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos14);
         work->flag20 = 0;
         work->frame4 = 0;
         fx_101_stopBolts = 0;
@@ -52,10 +52,10 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->state0 = FX_TRANCE_STATE_HOLD;
             entry->frame = -1;
             ((Fx101BattleState *)env->state)->signal10 = 0;
-            ex->btlfx_fadeUnitById(0x10, 0);
+            ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_THIN_STREAKS), (s32)&work->pos14);
             if (work->emit8 != NULL) {
-                work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             work->frame1C = 0;
         }
@@ -83,19 +83,19 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->state0 = FX_TRANCE_STATE_RELEASE;
             entry->frame = -1;
             env->camera->paused = 0;
-            ex->btlfx_fadeUnitById(0x10, 0x80);
+            ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0x80);
             ex->btlfx_stopEmitter(work->emit8);
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_PINK_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_STREAKS), (s32)&work->posC);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANCE_SPARKLE_SPIRAL), (s32)&work->posC);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
             }
         }
         break;
@@ -118,11 +118,11 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vx = scale.vz = (ex->math_sin(ang) >> 3) + FX_TRANCE_AURA_WIDTH;
             scale.vy = ex->math_cos(ang) / 6;
         }
-        if (frame == FX_TRANCE_MOTION_FRAME && ex->btlfx_resetIdleMotion(1, 0x10) == 0) {
+        if (frame == FX_TRANCE_MOTION_FRAME && ex->btlfx_resetIdleMotion(1, BTLFX_UNIT_CASTER) == 0) {
             work->flag20 = 1;
         }
         if (work->flag20 != 0 && frame >= FX_TRANCE_MOTION_END_FRAME) {
-            ex->btlfx_resetIdleMotion(0, 0x10);
+            ex->btlfx_resetIdleMotion(0, BTLFX_UNIT_CASTER);
             work->flag20 = 0;
         }
         if (frame >= FX_TRANCE_RELEASE_FRAMES) {
@@ -236,7 +236,7 @@ s32 fx_101_op82(s32 mode, Fx101Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_101_env = env;
         fx_101_resetBolts();
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos0);
         work->angle8.vx = 0;
         work->angle8.vy = 0;
         work->angle8.vz = 0;

@@ -7,10 +7,10 @@ s32 fx_0c7_op80(s32 mode, Fx0c7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx0c7Work);
     } else if (mode == 1) {
         fx_0c7_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FOCUS_GLOW_RING), (s32)&work->pos4);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         return entry->frame >= FX_FOCUS_FRAMES;

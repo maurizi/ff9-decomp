@@ -58,7 +58,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vz = work->pos14.vz;
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
-            ex->Hi_ModifyEffModelAbr(work->model8, 0);
+            ex->Hi_ModifyEffModelAbr(work->model8, BTLFX_ABR_HALF);
             ex->Hi_ModifyEffModelRGB(work->model8, 0, 0, 0);
             if (frame >= FX_BLIZZARD_GROW_FRAMES) {
                 work->state0 = FX_BLIZZARD_STATE_GLEAM;
@@ -78,10 +78,10 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = frame << 8;
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
-            ex->Hi_ModifyEffModelAbr(work->model8, 0);
+            ex->Hi_ModifyEffModelAbr(work->model8, BTLFX_ABR_HALF);
             ex->Hi_ModifyEffModelRGB(work->model8, 0, 0, 0);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model4);
-            ex->Hi_ModifyEffModelAbr(work->model4, 1);
+            ex->Hi_ModifyEffModelAbr(work->model4, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model4, (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) >> 5) - 0x80);
             ex->btlfx_drawScrollMove(((0x1000 - ex->math_cos(t >> 1)) >> 9) + frame * 5, FX_BLIZZARD_REFLECTION_VRAM_X,
@@ -103,7 +103,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARD_FROST_RING), (s32)&work->pos1C);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZARD_FREEZE_TINT_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_BLIZZARD_FREEZE_TINT_RGB);
             }
             break;
         case FX_BLIZZARD_STATE_SHATTER:

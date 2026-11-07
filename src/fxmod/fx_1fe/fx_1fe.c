@@ -258,7 +258,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                      FX_PHOENIX_DISC_SRC_X, FX_PHOENIX_DISC_SRC_Y);
                 ex->math_cos(grow);
                 ex->math_cos(grow * 2);
-                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, &fx_1fe_rippleColor, 0x18, frame * 400, 0x186, 0x100);
+                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, BTLFX_ABR_ADD, &fx_1fe_rippleColor, 0x18, frame * 400, 0x186, 0x100);
             }
             if ((u32)(frame - FX_PHOENIX_GOLD_FEATHERS_FRAME) < FX_PHOENIX_WAVE_FRAMES) {
                 s32 pulse;

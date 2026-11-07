@@ -8,7 +8,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx01cWork);
     } else if (mode == 1) {
         fx_01c_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos14);
         if (env->targets->targetCount == 1) {
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos1C);
         } else {
@@ -19,10 +19,10 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_BUBBLE), (s32)&work->pos14);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_BLUE_RING), (s32)&work->pos14);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         ex->btlfx_aimAngles((s16 *)&work->pos14, (s16 *)&work->pos1C, (s16 *)&work->aim24);
     } else {

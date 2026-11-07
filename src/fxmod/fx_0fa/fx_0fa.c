@@ -61,8 +61,8 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot3C.vx = 0;
         work->rot3C.vy = 0;
         work->rot3C.vz = 0;
-        ex->btlfx_getUnitBodyPos(0x10, 0, &work->pos44.vx);
-        ex->btlfx_getUnitBodyPos(0x10, 0, &work->homePos28.vx);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, &work->pos44.vx);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, &work->homePos28.vx);
         work->pos4C.vx = work->pos44.vx;
         work->pos4C.vy = work->pos44.vy;
         work->pos4C.vz = work->pos44.vz;

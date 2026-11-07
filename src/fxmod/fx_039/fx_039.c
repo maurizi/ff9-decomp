@@ -35,10 +35,10 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (proj >= FX_OSMOSE_PROJECTILES) {
             return 1;
         }
-        if (ex->btlfx_isEnemyUnit(0x10)) {
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
+        if (ex->btlfx_isEnemyUnit(BTLFX_UNIT_CASTER)) {
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos8);
         } else {
-            ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
+            ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
         }
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_OSMOSE_ABSORB_FLASH), (s32)&work->pos10);

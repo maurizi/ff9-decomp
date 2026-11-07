@@ -199,7 +199,7 @@ s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale0 = 0;
         scale1 = 0;
         frame = entry->frame;
-        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
+        ex->btlfx_getWeaponPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
         case FX_SWDMAG_WATER_SWORD_STATE_APPEAR:

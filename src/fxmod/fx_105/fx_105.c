@@ -340,7 +340,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->color11C.r = 0;
         work->color120.r = 0;
         work->color120.b = 0x10;
-        fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x408, &work->color11C, &work->color120, 0x1000, fx_105_ribbonSegs, 1);
+        fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x408, &work->color11C, &work->color120, 0x1000, fx_105_ribbonSegs, BTLFX_ABR_ADD);
         fx_105_initWindStreaks();
         fxm_camKeyReset();
         fxm_camKeyAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_ODIN_SHOT0_CAMERA_KEYS_3));
@@ -645,7 +645,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer4 < FX_ODIN_BLADE_FADE_FRAMES) {
                 ribbonFade = work->timer4 << 10;
             }
-            fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x10, &work->color11C, &work->color120, ribbonFade, fx_105_ribbonSegs, 1);
+            fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x10, &work->color11C, &work->color120, ribbonFade, fx_105_ribbonSegs, BTLFX_ABR_ADD);
         }
         if (work->flag10 != 0) {
             work->pos158[0] = env->camera->points[3].vx;
@@ -716,7 +716,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     bright = (ex->btlfx_rand() & 0x3FF) + 0x800;
                 }
                 fx_105_stars[i].flicker10 = ex->btlfx_rand() & 0x1F;
-                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_STAR), fx_105_stars[i].posX0, fx_105_stars[i].posY4, 0, 1, bright);
+                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_STAR), fx_105_stars[i].posX0, fx_105_stars[i].posY4, 0, BTLFX_ABR_ADD, bright);
                 if (work->timer30 < FX_ODIN_STARS_DRIFT_FRAMES) {
                     fx_105_stars[i].posX0 -= fx_105_stars[i].speed8;
                     if (fx_105_stars[i].posX0 < 0) {

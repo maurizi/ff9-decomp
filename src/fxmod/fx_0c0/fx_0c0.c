@@ -8,15 +8,15 @@ s32 fx_0c0_op80(s32 mode, Fx0c0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx0c0Work);
     } else if (mode == 1) {
         fx_0c0_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos10);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHOCK_ENERGY_ORB), (s32)&work->pos10);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHOCK_SPARKLES), (s32)&work->pos10);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         frame = entry->frame;

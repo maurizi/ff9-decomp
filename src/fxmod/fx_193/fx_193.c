@@ -43,8 +43,8 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_193_op80To1.vx = work->pos8.vx;
         fx_193_op80To1.vy = work->pos8.vy;
         fx_193_op80To1.vz = work->pos8.vz;
-        ex->btlfx_getUnitBonePos(0x10, FX_COUNTER_HORN_TRAIL_BONE, (u16 *)&fx_193_op80From0);
-        ex->btlfx_getUnitBonePos(0x10, FX_COUNTER_HORN_TRAIL_2_BONE, (u16 *)&fx_193_op80From1);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_COUNTER_HORN_TRAIL_BONE, (u16 *)&fx_193_op80From0);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_COUNTER_HORN_TRAIL_2_BONE, (u16 *)&fx_193_op80From1);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_RED_TRAIL), (s32)&fx_193_emitPos);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_RED_TRAIL_2), (s32)&fx_193_emitPos);
         if (work->emit0 != NULL) {

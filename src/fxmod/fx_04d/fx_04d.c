@@ -115,10 +115,10 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         ex->Hi_SetEffModelOffset(work->model4, 2);
         ex->Hi_DrawEffModel(pieceRot, (VECTOR *)&it->posC[0], (s32)&scale, work->model4);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->model4, 1);
+            ex->Hi_ModifyEffModelAbr(work->model4, BTLFX_ABR_ADD);
             bright = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->model4, 0);
+            ex->Hi_ModifyEffModelAbr(work->model4, BTLFX_ABR_HALF);
             bright = fade * 2;
             bright += fade;
             bright >>= 6;
@@ -129,10 +129,10 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
     } else {
         ex->Hi_DrawEffModel(pieceRot, (VECTOR *)&it->posC[0], (s32)&scale, work->model10);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->model10, 1);
+            ex->Hi_ModifyEffModelAbr(work->model10, BTLFX_ABR_ADD);
             bright = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->model10, 0);
+            ex->Hi_ModifyEffModelAbr(work->model10, BTLFX_ABR_HALF);
             bright = fade * 2;
             bright += fade;
             bright >>= 6;
@@ -141,10 +141,10 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         ex->Hi_ModifyEffModelRGB(work->model10, bright, bright, bright);
         ex->Hi_DrawEffModel(pieceRot, (VECTOR *)&it->posC[1], (s32)&scale, work->modelC);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->modelC, 1);
+            ex->Hi_ModifyEffModelAbr(work->modelC, BTLFX_ABR_ADD);
             bright = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->modelC, 0);
+            ex->Hi_ModifyEffModelAbr(work->modelC, BTLFX_ABR_HALF);
             bright = fade * 2;
             bright += fade;
             bright >>= 6;
@@ -153,10 +153,10 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         ex->Hi_ModifyEffModelRGB(work->modelC, bright, bright, bright);
         ex->Hi_DrawEffModel(pieceRot, (VECTOR *)&it->posC[2], (s32)&scale, work->model8);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->model8, 1);
+            ex->Hi_ModifyEffModelAbr(work->model8, BTLFX_ABR_ADD);
             bright = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->model8, 0);
+            ex->Hi_ModifyEffModelAbr(work->model8, BTLFX_ABR_HALF);
             bright = fade * 2;
             bright += fade;
             bright >>= 6;
@@ -270,7 +270,7 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     case FX_BLIZZARA_STATE_SHATTER:
         if (frame < 5) {
             tint = (4 - frame) * 250 / 4;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 2, tint >> 1, tint);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint >> 2, tint >> 1, tint);
         }
         if (frame == FX_BLIZZARA_SHATTER_WAVE_FRAME) {
             finalEmitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARA_SHATTER_WAVE), (s32)&work->pos18);

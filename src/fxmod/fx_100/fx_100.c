@@ -8,17 +8,17 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx100Work80);
     } else if (mode == 1) {
         fx_100_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos14);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
     } else {
         frame = entry->frame;
         switch (frame) {
         case FX_SOLUTION_DUST_PUFF_FRAME:
-            ex->btlfx_getUnitBonePos(0x10, 0x22, (u16 *)&work->pos24);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x22, (u16 *)&work->pos24);
             work->pos24.vy = 0;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_DUST_PUFF), (s32)&work->pos24);
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case FX_SOLUTION_SPIRAL_FRAME:
@@ -66,7 +66,7 @@ s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x11, (BtlBone *)&m);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, 0x11, (BtlBone *)&m);
             ex->btlfx_matrixPointAhead(&m, 0, (s32)&work->pos14);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_SPECK_TRAIL), (s32)&work->pos14);
             if (work->emit0 != NULL) {

@@ -44,7 +44,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0c9_env = env;
         ex->btlfx_initEffModels(fx_0c9_effModels, 1);
-        ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->posC);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->posC);
         work->posC.vy -= 0x50;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos14);
         work->pos1C.vx = work->pos14.vx;

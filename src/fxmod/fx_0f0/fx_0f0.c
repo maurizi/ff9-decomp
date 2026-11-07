@@ -13,26 +13,26 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos1C);
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos1C);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_BLUE_SPECKS), (s32)&work->pos1C);
             break;
         case FX_ZOMBIE_POWDER_SPRAY_FRAME:
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos24);
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos24);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_MIST_TRAIL), (s32)&work->pos24);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_MIST_TRAIL_2), (s32)&work->pos24);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_VIOLET_CLOUD), (s32)&work->pos24);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ZOMBIE_POWDER_SPORE_TRAIL), (s32)&work->pos24);
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             if (work->emit8 != NULL) {
-                work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             if (work->emitC != NULL) {
-                work->emitC->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emitC->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             if (work->emit10 != NULL) {
-                work->emit10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit10->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_0f0_op80Trails0;

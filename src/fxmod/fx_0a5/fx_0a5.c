@@ -10,7 +10,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx0a5Work);
     } else if (mode == 1) {
         fx_0a5_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos8);
         work->pos18.vx = env->targets->centerX;
         work->pos18.vy = env->targets->centerY;
         work->pos18.vz = env->targets->centerZ;

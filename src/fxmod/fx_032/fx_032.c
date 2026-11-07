@@ -17,21 +17,21 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_032_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
-        ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m0);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[1], (BtlBone *)&m0);
         ex->btlfx_matrixPointAhead(&m0, (s16)env->targets->fxParam, (s32)env->camera);
     } else {
         frame = entry->frame;
         if (frame == FX_GLOWING_EYES_SPARKS_FRAME) {
-            ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m0);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[1], (BtlBone *)&m0);
             ex->btlfx_matrixPointAhead(&m0, (s16)env->targets->fxParam, (s32)&work->pos8);
             work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARK_DOTS), (s32)&work->pos8);
-            ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m1);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[1], (BtlBone *)&m1);
             ex->btlfx_matrixPointAhead(&m1, (s16)env->targets->fxParam, (s32)&work->pos18);
             work->emit4C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_GLOW_RINGS), (s32)&work->pos18);
-            ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m2);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[0], (BtlBone *)&m2);
             ex->btlfx_matrixPointAhead(&m2, (s16)env->targets->fxParam, (s32)&work->pos28);
             work->emit50 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARK_DOTS), (s32)&work->pos28);
-            ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m3);
+            ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[0], (BtlBone *)&m3);
             ex->btlfx_matrixPointAhead(&m3, (s16)env->targets->fxParam, (s32)&work->pos38);
             work->emit54 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_GLOW_RINGS_2), (s32)&work->pos38);
         }
@@ -41,7 +41,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit48 = NULL;
                 }
                 if (work->emit48 != NULL) {
-                    ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m4);
+                    ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[1], (BtlBone *)&m4);
                     ex->btlfx_matrixPointAhead(&m4, (s16)env->targets->fxParam, (s32)&work->pos10);
                     ex->btlfx_moveEmitterTo((s32)work->emit48, (s32)&work->pos10);
                 }
@@ -51,7 +51,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit4C = NULL;
                 }
                 if (work->emit4C != NULL) {
-                    ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m5);
+                    ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[1], (BtlBone *)&m5);
                     ex->btlfx_matrixPointAhead(&m5, (s16)env->targets->fxParam, (s32)&work->pos20);
                     ex->btlfx_moveEmitterTo((s32)work->emit4C, (s32)&work->pos20);
                 }
@@ -61,7 +61,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit50 = NULL;
                 }
                 if (work->emit50 != NULL) {
-                    ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m6);
+                    ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[0], (BtlBone *)&m6);
                     ex->btlfx_matrixPointAhead(&m6, (s16)env->targets->fxParam, (s32)&work->pos30);
                     ex->btlfx_moveEmitterTo((s32)work->emit50, (s32)&work->pos30);
                 }
@@ -71,7 +71,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit54 = NULL;
                 }
                 if (work->emit54 != NULL) {
-                    ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m7);
+                    ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, env->targets->fxArgs[0], (BtlBone *)&m7);
                     ex->btlfx_matrixPointAhead(&m7, (s16)env->targets->fxParam, (s32)&work->pos40);
                     ex->btlfx_moveEmitterTo((s32)work->emit54, (s32)&work->pos40);
                 }

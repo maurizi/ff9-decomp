@@ -28,10 +28,10 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx049Strip *strip, s3
         pt++;
     }
     if (kind < FX_049_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 2);
     }
 }
@@ -65,10 +65,10 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx049Strip *strip, s32
         pt++;
     }
     if (kind < FX_049_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 2);
     }
 }
@@ -95,12 +95,12 @@ static void fx_049_op83ElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s
     BTLFX_COPY_SVEC(&elemRot, rot);
     entry = fx_049_task;
     fade = ex->math_sin((frame << 11) / n);
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB), pos, &elemRot, *scale, frame, 1, fade, 0, 0);
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_FADE), pos, &elemRot, *scale, frame, 1, fade, 2, 2);
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_LENS_FLARES), pos, &elemRot, *scale * 5 / 2, frame, 1, *alpha, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB), pos, &elemRot, *scale, frame, BTLFX_ABR_ADD, fade, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_FADE), pos, &elemRot, *scale, frame, BTLFX_ABR_ADD, fade, 2, 2);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_LENS_FLARES), pos, &elemRot, *scale * 5 / 2, frame, BTLFX_ABR_ADD, *alpha, 0, 0);
     spriteScale = (frame << 12) / n + 0x1800;
-    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_STAR_GLINTS), pos, &elemRot, spriteScale, frame, 1, *alpha);
-    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_DOTS), pos, &elemRot, spriteScale, frame, 1, *alpha);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_STAR_GLINTS), pos, &elemRot, spriteScale, frame, BTLFX_ABR_ADD, *alpha);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_DOTS), pos, &elemRot, spriteScale, frame, BTLFX_ABR_ADD, *alpha);
 }
 
 static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -137,7 +137,7 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 if ((it->strip10 & 1) && it->width15 != FX_049_WIDTH_DEFAULT) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_THUNDARA_BOLT_TINT_RGB);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_THUNDARA_BOLT_TINT_RGB);
                     emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDARA_IMPACT_FLASH), (s32)&it->pos0);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
@@ -282,11 +282,11 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == FX_THUNDARA_DARKEN_FRAME) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_THUNDARA_DARKEN_RGB);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_THUNDARA_DARKEN_RGB);
         }
         if (frame >= FX_THUNDARA_FLASH_FRAME && frame < FX_THUNDARA_FLASH_FRAME + FX_THUNDARA_FLASH_FRAMES) {
             tint = 200 - (frame - FX_THUNDARA_FLASH_FRAME) * 200 / FX_THUNDARA_FLASH_FRAMES;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 1, tint >> 1, tint);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint >> 1, tint >> 1, tint);
         }
         if (frame == FX_THUNDARA_ORB_FRAME) {
             drawEmitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_EMITTER), (s32)&work->pos0);

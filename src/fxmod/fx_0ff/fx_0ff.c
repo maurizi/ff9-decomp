@@ -48,13 +48,13 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case FX_COOK_FLAMES_FRAME:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COOK_FLAMES), (s32)&work->posB4);
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case FX_COOK_WHITE_RINGS_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COOK_WHITE_RINGS), (s32)&work->posAC);
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case 0:

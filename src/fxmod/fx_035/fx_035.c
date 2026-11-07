@@ -8,7 +8,7 @@ s32 fx_035_op80(s32 mode, Fx035Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *args = sizeof(Fx035Work);
     } else if (mode == 1) {
         fx_035_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos14);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos14);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         work->pos1C.vx = work->posC.vx;
         work->pos1C.vy = work->posC.vy;

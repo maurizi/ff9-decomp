@@ -181,14 +181,14 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx1b6Work80);
     } else if (mode == 1) {
         fx_1b6_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&pos);
         pos.vy -= 0x110;
         work->pos8[0] = pos.vx;
         work->pos8[1] = pos.vy;
         work->pos8[2] = pos.vz;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitScale(0x10, work->scale1C);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos44);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
+        ex->btlfx_getUnitScale(BTLFX_UNIT_CASTER, work->scale1C);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos44);
         work->pos44.vy -= 0x397;
         BTLFX_COPY_SVEC(&work->pos4C, &work->pos44);
         work->pos4C.vz += 0x12C;
@@ -238,7 +238,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= FX_DEATH_CHARGE_FRAMES) {
                 ex->btlfx_initParticleSystem();
-                ex->btlfx_fadeUnitById(0x10, 0);
+                ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
                 ex->btlfx_moveSummonToHeap(0x64);
                 work->state0 = FX_DEATH_STATE_SHATTER;
                 entry->frame = -1;
@@ -310,7 +310,7 @@ s32 fx_1b6_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 0;
     } else if (mode == 1) {
         fx_1b6_env = env;
-        ex->btlfx_clearUnitStatus(0x10);
+        ex->btlfx_clearUnitStatus(BTLFX_UNIT_CASTER);
     } else {
         return 1;
     }
@@ -325,7 +325,7 @@ s32 fx_1b6_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *args = 4;
     } else if (mode == 1) {
         fx_1b6_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&pos);
         pos.vy += 0x180;
         env->camera->points[3].vx = pos.vx;
         env->camera->points[3].vy = pos.vy;

@@ -438,7 +438,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                     trailPos.vx -= it->vel4.vx;
                     trailPos.vy -= it->vel4.vy;
                     trailPos.vz -= it->vel4.vz;
-                    fxm_drawSprite3D(&trailPos, NULL, 0x600, fade, 0x1A, 0x3D06, (i & 3) << 6, (i >> 2) << 6, 0x40, 0x40, 1);
+                    fxm_drawSprite3D(&trailPos, NULL, 0x600, fade, 0x1A, 0x3D06, (i & 3) << 6, (i >> 2) << 6, 0x40, 0x40, BTLFX_ABR_ADD);
                 }
                 env->otZ = 0;
             }
@@ -700,7 +700,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_0e0_rippleColors[1].g = (ex->math_sin(rippleAng) * 0xFF) >> 12;
             fx_0e0_rippleColors[1].b = (u32)ex->math_sin(rippleAng) >> 6;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_SWDMAG_DOOMSDAY_IMPACT_TINT_RGB);
-            ex->btlfx_drawRippleGrid((s32)(env->ot + 0xFF0), 0x28, 2, 2, 0xC8, 0xFF, fx_0e0_rippleColors, 0, 0, 0, 0);
+            ex->btlfx_drawRippleGrid((s32)(env->ot + 0xFF0), 0x28, 2, 2, 0xC8, BTLFX_ABR_OPAQUE, fx_0e0_rippleColors, 0, 0, 0, 0);
             if (frame > FX_SWDMAG_DOOMSDAY_IMPACT_WHITE_FRAME) {
                 tint = ((frame - FX_SWDMAG_DOOMSDAY_IMPACT_WHITE_FRAME) * 0xFF) / (FX_SWDMAG_DOOMSDAY_IMPACT_FRAMES - FX_SWDMAG_DOOMSDAY_IMPACT_WHITE_FRAME);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, tint, tint, tint);
@@ -861,7 +861,7 @@ s32 fx_0e0_op84(s32 mode, Fx0e0Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             ry = scale1 = scale0 = alpha = 0;
             frame = entry->frame;
-            ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
+            ex->btlfx_getWeaponPos(BTLFX_UNIT_CASTER, 1, (s16 *)&work->pos8);
             switch (work->state0) {
             case FX_SWDMAG_DOOMSDAY_SWORD_STATE_APPEAR:
                 ry = 0x200;

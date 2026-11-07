@@ -35,7 +35,7 @@ s32 fx_002_op80(s32 mode, Fx002Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot.vy = 0;
                 rot.pad = 1;
                 data = ex->btlfx_getFileData(entry->file, FX_FIRA_GROUND_RING);
-                ex->btlfx_drawRings((u8 *)data, &work->pos4, &rot, scale * 2 / 3, 0xC, 1, ex->math_sin(t >> 1));
+                ex->btlfx_drawRings((u8 *)data, &work->pos4, &rot, scale * 2 / 3, 0xC, BTLFX_ABR_ADD, ex->math_sin(t >> 1));
             }
             if (frame == FX_FIRA_SMOKE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRA_SMOKE), (s32)&work->posC);

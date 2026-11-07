@@ -31,10 +31,10 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case FX_BLOWUP_RED_RING_FRAME:
-            ex->btlfx_getUnitBonePos(0x10, 1, (u16 *)&work->pos1C);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 1, (u16 *)&work->pos1C);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_RED_RING), (s32)&work->pos1C);
             if (work->emit0 != NULL) {
-                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             break;
         case FX_BLOWUP_EXPLOSION_FRAME:
@@ -69,7 +69,7 @@ s32 fx_036_op81(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         fx_036_env = env;
         *work = FX_BLOWUP_FADE_LEVEL;
     } else {
-        ex->btlfx_fadeUnitById(0x10, *work);
+        ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, *work);
         *work -= FX_BLOWUP_FADE_STEP;
         return *work < 0;
     }

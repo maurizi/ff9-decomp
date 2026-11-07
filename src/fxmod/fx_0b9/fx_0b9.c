@@ -23,7 +23,7 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case FX_SANDSTORM_SAND_TRAIL_2_FRAME:
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos10);
             fx_0b9_srcPos.vx = work->pos10.vx;
             fx_0b9_srcPos.vy = work->pos10.vy;
             fx_0b9_srcPos.vz = work->pos10.vz;
@@ -37,7 +37,7 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= FX_SANDSTORM_SAND_TRAIL_FRAME) {
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos18);
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;

@@ -28,10 +28,10 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s3
         pt++;
     }
     if (kind < FX_042_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 2);
     }
 }
@@ -65,10 +65,10 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx042Strip *strip, s32
         pt++;
     }
     if (kind < FX_042_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, BTLFX_ABR_ADD,
                           (u8 *)strip, 2);
     }
 }
@@ -112,7 +112,7 @@ static s32 fx_042_op83PoolTask(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk801
                 if (it->emit1C != NULL) {
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_THUNDER_BOLT_TINT_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_THUNDER_BOLT_TINT_RGB);
             }
             if (frame >= FX_THUNDER_BOLT_FRAMES) {
                 it->state11 = 1;

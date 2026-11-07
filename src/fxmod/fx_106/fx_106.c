@@ -22,12 +22,12 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx106Work80);
     } else if (mode == 1) {
         fx_106_env = env;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot8);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         fx_106_pathEnd.vx = work->pos10.vx;
         fx_106_pathEnd.vy = work->pos10.vy;
         fx_106_pathEnd.vz = work->pos10.vz;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos18);
         ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot8, 0, (s16 *)&work->pos20);
         fx_106_pathStart.vx = work->pos20.vx;
         fx_106_pathStart.vy = work->pos20.vy;
@@ -46,7 +46,7 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         return entry->frame >= FX_MUCUS_SPIT_FRAMES;

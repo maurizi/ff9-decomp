@@ -8,11 +8,11 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx0c2Work80);
     } else if (mode == 1) {
         fx_0c2_env = env;
-        ex->btlfx_getUnitBoneMatrix(0x10, FX_NO_MERCY_BONE, &bone);
+        ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, FX_NO_MERCY_BONE, &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_BLUE_RING), (s32)&work->pos4);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x20);
         }
     } else {
         return entry->frame >= FX_NO_MERCY_RING_FRAMES;
@@ -47,19 +47,19 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
-        fxm_startUnitMotion(0x10, BTL_MOTION_CAST_END);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
+        fxm_startUnitMotion(BTLFX_UNIT_CASTER, BTL_MOTION_CAST_END);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
         ex->btlfx_getUnitBodyPos(work->unit4C, 0, (s16 *)&work->pos1C);
         ex->btlfx_getUnitRot(work->unit4C, (s16 *)&work->rot24);
     } else {
         frame = entry->frame;
         if (frame == FX_NO_MERCY_DASH_FRAME) {
-            ex->btlfx_getUnitBonePos(0x10, FX_NO_MERCY_BONE, (u16 *)&work->pos34);
+            ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_NO_MERCY_BONE, (u16 *)&work->pos34);
             fx_0c2_pathFrom.vx = work->pos34.vx;
             fx_0c2_pathFrom.vy = work->pos34.vy;
             fx_0c2_pathFrom.vz = work->pos34.vz;
-            ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
+            ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot14);
             ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&work->rot14, FX_NO_MERCY_DUST_REACH, (s16 *)&work->pos2C);
             ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos1C, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&ang, 0, (s16 *)&fx_0c2_pathTo);
@@ -69,7 +69,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->file->m.module.update = fx_0c2_op81ParticleMotion;
             }
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
             ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos1C, (s16 *)&work->rot44);
             work->rot3C.vx = work->rot44.vx;
@@ -116,8 +116,8 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (fxm_isMotionDone(0x10)) {
-            fxm_startUnitMotion(0x10, BTL_MOTION_READY);
+        if (fxm_isMotionDone(BTLFX_UNIT_CASTER)) {
+            fxm_startUnitMotion(BTLFX_UNIT_CASTER, BTL_MOTION_READY);
         }
         if (frame >= FX_NO_MERCY_FRAMES) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
@@ -139,7 +139,7 @@ s32 fx_0c2_op82(s32 mode, Fx0c2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
-        return fxm_turnUnitBy(0x10, frame, FX_NO_MERCY_TURN_FRAMES, &work->pos8, &work->turn0) != 0;
+        return fxm_turnUnitBy(BTLFX_UNIT_CASTER, frame, FX_NO_MERCY_TURN_FRAMES, &work->pos8, &work->turn0) != 0;
     }
     return 0;
 }
@@ -160,7 +160,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(unit, (s16 *)&work->pos8);
     } else {
         frame = entry->frame;
-        return fxm_turnUnitToward(0x10, work->unit10, frame, FX_NO_MERCY_FACE_FRAMES, 0, 1, &work->turn0) != 0;
+        return fxm_turnUnitToward(BTLFX_UNIT_CASTER, work->unit10, frame, FX_NO_MERCY_FACE_FRAMES, 0, 1, &work->turn0) != 0;
     }
     return 0;
 }

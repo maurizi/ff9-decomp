@@ -28,7 +28,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_initEffModels(fx_11e_effModels, FX_VIRUS_FLY_MODEL_SLOTS);
             fx_11e_modelsReady = mode;
         }
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos50);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos50);
         ex->btlfx_getUnitBodyPos(work->unit58, 0, &work->pos48.vx);
         work->rot4.vx = 0;
         work->rot4.vy = 0;

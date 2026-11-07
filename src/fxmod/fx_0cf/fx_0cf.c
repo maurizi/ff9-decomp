@@ -28,7 +28,7 @@ s32 fx_0cf_op81(s32 mode, Fx0cfWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx0cfWork81);
     } else if (mode == 1) {
         fx_0cf_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos0);
         work->pos18.vx = env->targets->centerX;
         work->pos18.vy = env->targets->centerY;
         work->pos18.vz = env->targets->centerZ;
@@ -37,7 +37,7 @@ s32 fx_0cf_op81(s32 mode, Fx0cfWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot8, FX_STOCK_BREAK_LEAP_REACH, (s16 *)&work->pos10);
     } else {
         frame = entry->frame;
-        return fxm_moveUnitArc(0x10, &work->pos10, frame, FX_STOCK_BREAK_LEAP_FRAMES, 0, &work->pos20) != 0;
+        return fxm_moveUnitArc(BTLFX_UNIT_CASTER, &work->pos10, frame, FX_STOCK_BREAK_LEAP_FRAMES, 0, &work->pos20) != 0;
     }
     return 0;
 }
