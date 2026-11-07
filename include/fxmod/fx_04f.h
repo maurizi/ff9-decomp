@@ -13,6 +13,26 @@
 #define FX_REFLECT_PANELS     0xC /* model: three curved panels, black / white texture */
 #define FX_REFLECT_STREAK_TEXTURE 0xD /* layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x1C0,0x120) 128x32, a red comet-like streak; skipping it changes nothing visible; runtime (docs/runtime-findings.md effect-data pass, medium) */
 
+/* fx_04f choreography (docs/fxdata.md, "Choreography literals"): op80's states and their lengths, the glow-band pool, the models'
+ * texture. */
+#define FX_REFLECT_STATE_OPEN    0    /* op80: the star and panels open (scale ramps), */
+#define FX_REFLECT_OPEN_FRAMES   8    /* for this many frames; then FX_REFLECT_HALO_RINGS start */
+#define FX_REFLECT_STATE_GLOW    1    /* the star whitens and grows, glow bands spawn, the halo rings move out, */
+#define FX_REFLECT_GLOW_FRAMES   20   /* for this many frames */
+#define FX_REFLECT_WHITEN_FRAMES 10   /* FX_REFLECT_STATE_GLOW: the star's green / blue rise to full over this many */
+#define FX_REFLECT_BAND_INTERVAL 5    /* FX_REFLECT_STATE_GLOW: a glow-band pool item spawns every this many frames */
+#define FX_REFLECT_STATE_FADE    2    /* everything fades out over FADE_FRAMES; the op ends a frame later */
+#define FX_REFLECT_FADE_FRAMES   12
+#define FX_REFLECT_BAND_COUNT    3    /* glow-band pool items (op80 poolCount) */
+#define FX_REFLECT_BAND_FRAMES   9    /* glow-band item: FX_REFLECT_GLOW_BAND flies out, brightening then dimming, for this many frames */
+#define FX_REFLECT_MODEL_COUNT   4    /* btlfx_initEffModels slots */
+/* FX_REFLECT_STAR and FX_REFLECT_PANELS: 15-bit page (0x1C0, 0x100), no clut; the star at v 0x80 (VRAM y 0x180),
+ * where FX_REFLECT_SPARKLE_TEXTURE renders (0x1C0, 0x1C0); the panels at v 0, where FX_REFLECT_STREAK_TEXTURE
+ * renders (0x1C0, 0x120). */
+#define FX_REFLECT_TPAGE         0x117
+#define FX_REFLECT_CLUT          0xFFFF
+#define FX_REFLECT_STAR_V        0x80
+
 typedef struct {
     s32 state0; /* state */
     s32 model4; /* models */

@@ -12,6 +12,13 @@
 #define FX_ULTRA_SOUND_WAVE_SWIRL        0x4 /* emitter: rainbow swirl + lilac ring */
 #define FX_ULTRA_SOUND_WAVE_WISPS        0x5 /* emitter: wisps cycling orange-green-blue-violet */
 
+/* fx_044 choreography (docs/fxdata.md, "Choreography literals"): op80's and op81's lengths. */
+#define FX_ULTRA_SOUND_WAVE_FRAMES       0x28 /* op80: the task ends at this frame */
+#define FX_ULTRA_SOUND_WAVE_RING_HEIGHT  0xC8 /* op81: FX_ULTRA_SOUND_WAVE_RAINBOW_RING's position (pos1C) above the target body */
+#define FX_ULTRA_SOUND_WAVE_HIT_FRAMES   0x28 /* op81: the task ends at this frame */
+#define FX_ULTRA_SOUND_WAVE_RAINBOW_RING_TRAIL_SLOTS  0xD /* FX_ULTRA_SOUND_WAVE_RAINBOW_RING's trail buffer fx_044_trails: slots of */
+#define FX_ULTRA_SOUND_WAVE_RAINBOW_RING_TRAIL_STRIDE 0x90 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

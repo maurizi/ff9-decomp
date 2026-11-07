@@ -10,6 +10,17 @@
 #define FX_SANDSTORM_SAND_TRAIL   0x2 /* emitter: homing trail with a grey streak strip */
 #define FX_SANDSTORM_SAND_TRAIL_2 0x3 /* emitter: screen trail with a grey streak strip */
 
+/* fx_04b choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length; op81's height and length. */
+#define FX_SANDSTORM_TRAIL_FRAME   10  /* op80: FX_SANDSTORM_SAND_TRAIL starts at the targets, homing on the caster from then on */
+#define FX_SANDSTORM_TRAIL_2_FRAME 40  /* op80: FX_SANDSTORM_SAND_TRAIL_2 starts at the caster, aimed at the targets */
+#define FX_SANDSTORM_FRAMES        100 /* op80: the task ends at this frame */
+#define FX_SANDSTORM_CLOUD_HEIGHT  0xC8 /* op81: FX_SANDSTORM_SAND_CLOUD's position (pos4) above the target */
+#define FX_SANDSTORM_CLOUD_FRAMES  0x3C /* op81: the task ends at this frame */
+#define FX_SANDSTORM_SAND_TRAIL_TRAIL_SLOTS  0x82 /* FX_SANDSTORM_SAND_TRAIL's trail buffer fx_04b_trails: slots of */
+#define FX_SANDSTORM_SAND_TRAIL_TRAIL_STRIDE 0x18 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_SANDSTORM_SAND_TRAIL_2_TRAIL_SLOTS  0xA0 /* FX_SANDSTORM_SAND_TRAIL_2's trail buffer fx_04b_trails2: slots of */
+#define FX_SANDSTORM_SAND_TRAIL_2_TRAIL_STRIDE 0x18 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

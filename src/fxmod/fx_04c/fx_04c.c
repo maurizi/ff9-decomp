@@ -7,7 +7,7 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 zWord;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx04cWork80);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_04c_env = env;
@@ -27,7 +27,7 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         if (work->hold0 == 0) {
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FLOAT_CLOUD_TEXTURE), frame);
-            if (frame >= 0x3C) {
+            if (frame >= FX_FLOAT_FRAMES) {
                 return 1;
             }
         }
@@ -41,7 +41,7 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x3C;
+        *args = sizeof(Fx04cWork81);
     } else if (mode == 1) {
         fx_04c_env = env;
         work->count34 = env->targets->targetCount;
@@ -50,33 +50,33 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitPos(i, (s16 *)&work->pos4[i]);
             work->emit24[i] = NULL;
         }
-        work->state0 = 0;
+        work->state0 = FX_FLOAT_STATE_START;
         work->target38 = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_FLOAT_STATE_START:
             work->emit24[work->target38] =
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLOAT_STAR_FLASH), (s32)&work->pos4[work->target38]);
             if (work->emit24[work->target38] != NULL) {
                 work->emit24[work->target38]->otZ = ex->btlfx_addRadiusSixth(work->target38, 0x40);
             }
-            work->state0 = 1;
+            work->state0 = FX_FLOAT_STATE_NEXT;
             entry->frame = -1;
             break;
-        case 1:
+        case FX_FLOAT_STATE_NEXT:
             if (frame > 0) {
                 if (++work->target38 < work->count34) {
-                    work->state0 = 0;
+                    work->state0 = FX_FLOAT_STATE_START;
                     entry->frame = -1;
                 } else {
-                    work->state0 = 2;
+                    work->state0 = FX_FLOAT_STATE_END;
                     entry->frame = -1;
                 }
             }
             break;
-        case 2:
-            if (frame >= 0xA) {
+        case FX_FLOAT_STATE_END:
+            if (frame >= FX_FLOAT_END_FRAMES) {
                 return 1;
             }
             break;
@@ -91,7 +91,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x3C;
+        *args = sizeof(Fx04cWork81);
     } else if (mode == 1) {
         fx_04c_env = env;
         work->count34 = env->targets->targetCount;
@@ -100,34 +100,34 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitPos(i, (s16 *)&work->pos4[i]);
             work->emit24[i] = NULL;
         }
-        work->state0 = 0;
+        work->state0 = FX_FLOAT_STATE_START;
         work->target38 = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_FLOAT_STATE_START:
             work->emit24[work->target38] =
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLOAT_SPECK_RING), (s32)&work->pos4[work->target38]);
             if (work->emit24[work->target38] != NULL) {
                 work->emit24[work->target38]->otZ = ex->btlfx_addRadiusSixth(work->target38, 0x40);
             }
-            work->state0 = 1;
+            work->state0 = FX_FLOAT_STATE_NEXT;
             entry->frame = -1;
             break;
-        case 1:
+        case FX_FLOAT_STATE_NEXT:
             if (frame > 0) {
                 if (++work->target38 < work->count34) {
-                    work->state0 = 0;
+                    work->state0 = FX_FLOAT_STATE_START;
                     entry->frame = -1;
                 } else {
-                    work->state0 = 2;
+                    work->state0 = FX_FLOAT_STATE_END;
                     env->state->signals[2] = 1;
                     entry->frame = -1;
                 }
             }
             break;
-        case 2:
-            if (frame >= 0xA) {
+        case FX_FLOAT_STATE_END:
+            if (frame >= FX_FLOAT_END_FRAMES) {
                 return 1;
             }
             break;

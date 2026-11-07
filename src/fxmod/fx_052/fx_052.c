@@ -6,10 +6,10 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 elapsed;
 
     if (mode == 0) {
-        *args = 0x58;
+        *args = sizeof(Fx052Work80);
     } else if (mode == 1) {
         fx_052_env = env;
-        ex->btlfx_initEffModels(fx_052_effModels, 3);
+        ex->btlfx_initEffModels(fx_052_effModels, FX_LIMIT_GLOVE_MODEL_COUNT);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos40);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos48);
         work->rotC.vz = -0x200;
@@ -32,29 +32,29 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 0x1E:
+        case FX_LIMIT_GLOVE_GLOW_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GOLD_GLOW), (s32)&work->pos48);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_052_trails;
-                work->emit4->trailSlots = 0x14;
-                work->emit4->trailStride = 0xB0;
+                work->emit4->trailSlots = FX_LIMIT_GLOVE_GOLD_GLOW_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_LIMIT_GLOVE_GOLD_GLOW_TRAIL_STRIDE;
             }
             break;
-        case 0x37:
-            work->fadeIn50 = 0x18;
+        case FX_LIMIT_GLOVE_ORB_FRAME:
+            work->fadeIn50 = FX_LIMIT_GLOVE_FADE_FRAMES;
             break;
-        case 0x50:
+        case FX_LIMIT_GLOVE_GLOW_2_FRAME:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_GOLD_GLOW_2), (s32)&work->pos48);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_052_trails2;
-                work->emit8->trailSlots = 0x14;
-                work->emit8->trailStride = 0xB0;
+                work->emit8->trailSlots = FX_LIMIT_GLOVE_GOLD_GLOW_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_LIMIT_GLOVE_GOLD_GLOW_TRAIL_STRIDE;
             }
             break;
         }
-        elapsed = frame - 0x37;
-        if (elapsed >= 0 && elapsed < 0x79) {
-            if (elapsed >= 0x23) {
+        elapsed = frame - FX_LIMIT_GLOVE_ORB_FRAME;
+        if (elapsed >= 0 && elapsed < FX_LIMIT_GLOVE_ORB_FRAMES) {
+            if (elapsed >= FX_LIMIT_GLOVE_GRID_FRAME) {
                 if (work->scale2C.vx > 0x400) {
                     work->scale2C.vx -= 0x100;
                     work->scale2C.vy -= 0x100;
@@ -67,14 +67,14 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rotC, &work->pos1C, (s32)&work->scale2C, work->model52);
             work->rotC.vy -= 0x10;
             if (work->fadeIn50 >= 0) {
-                work->rgb3C = fxm_lerpRatio(-0x80, 0, 0x18 - work->fadeIn50, 0x18);
+                work->rgb3C = fxm_lerpRatio(-0x80, 0, FX_LIMIT_GLOVE_FADE_FRAMES - work->fadeIn50, FX_LIMIT_GLOVE_FADE_FRAMES);
                 work->fadeIn50--;
                 ex->Hi_ModifyEffModelRGB(work->model52, work->rgb3C, work->rgb3C, work->rgb3C);
                 ex->Hi_ModifyEffModelRGB(work->model56, work->rgb3C, work->rgb3C, work->rgb3C);
             }
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_BACKDROP), frame);
-        if (frame >= 0xC8) {
+        if (frame >= FX_LIMIT_GLOVE_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -87,7 +87,7 @@ s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx052Work81);
     } else if (mode == 1) {
         fx_052_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
@@ -98,20 +98,20 @@ s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 15:
+        case FX_LIMIT_GLOVE_RINGS_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_BLUE_RINGS), (s32)&work->posC);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 40:
+        case FX_LIMIT_GLOVE_SPECKS_FRAME:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LIMIT_GLOVE_PINK_SPECKS), (s32)&work->posC);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }
-        return frame >= 0x5A;
+        return frame >= FX_LIMIT_GLOVE_BEAM_FRAMES;
     }
     return 0;
 }
@@ -121,7 +121,7 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 4;
+        *args = sizeof(Fx052Work82);
     } else if (mode == 1) {
         fx_052_env = env;
         work->fadeOut2 = -1;
@@ -130,22 +130,25 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->fadeIn0 = 0x10;
+            work->fadeIn0 = FX_LIMIT_GLOVE_FLASH_FADE_FRAMES;
             break;
-        case 20:
-            work->fadeOut2 = 0x10;
+        case FX_LIMIT_GLOVE_FLASH_OUT_FRAME:
+            work->fadeOut2 = FX_LIMIT_GLOVE_FLASH_FADE_FRAMES;
             break;
         }
         if (work->fadeIn0 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->fadeIn0, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, FX_LIMIT_GLOVE_FLASH_LEVEL, FX_LIMIT_GLOVE_FLASH_FADE_FRAMES - work->fadeIn0,
+                               FX_LIMIT_GLOVE_FLASH_FADE_FRAMES, BTLFX_ABR_ADD, 0);
             work->fadeIn0--;
         } else if (work->fadeOut2 >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->fadeOut2, 0x10, 1, 0);
+            fxm_tintScreenLerp(FX_LIMIT_GLOVE_FLASH_LEVEL, 0, FX_LIMIT_GLOVE_FLASH_FADE_FRAMES - work->fadeOut2,
+                               FX_LIMIT_GLOVE_FLASH_FADE_FRAMES, BTLFX_ABR_ADD, 0);
             work->fadeOut2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, FX_LIMIT_GLOVE_FLASH_LEVEL, FX_LIMIT_GLOVE_FLASH_LEVEL,
+                                     FX_LIMIT_GLOVE_FLASH_LEVEL);
         }
-        return frame >= 0x20;
+        return frame >= FX_LIMIT_GLOVE_FLASH_FRAMES;
     }
     return 0;
 }

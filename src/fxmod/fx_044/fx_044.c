@@ -5,7 +5,7 @@ s32 fx_044_op80(s32 mode, Fx044Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx044Work80);
     } else if (mode == 1) {
         fx_044_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -25,7 +25,7 @@ s32 fx_044_op80(s32 mode, Fx044Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->rot.vz = work->aim18.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_ULTRA_SOUND_WAVE_FRAMES;
     }
     return 0;
 }
@@ -34,7 +34,7 @@ s32 fx_044_op81(s32 mode, Fx044Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx044Work81);
     } else if (mode == 1) {
         fx_044_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
@@ -42,17 +42,17 @@ s32 fx_044_op81(s32 mode, Fx044Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos1C.vx = work->posC.vx;
         work->pos1C.vy = work->posC.vy;
         work->pos1C.vz = work->posC.vz;
-        work->pos1C.vy -= 0xC8;
+        work->pos1C.vy -= FX_ULTRA_SOUND_WAVE_RING_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTRA_SOUND_WAVE_RAINBOW_RING), (s32)&work->pos1C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTRA_SOUND_WAVE_SWIRL), (s32)&work->pos14);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTRA_SOUND_WAVE_WISPS), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_044_trails;
-            work->emit0->trailSlots = 0xD;
-            work->emit0->trailStride = 0x90;
+            work->emit0->trailSlots = FX_ULTRA_SOUND_WAVE_RAINBOW_RING_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_ULTRA_SOUND_WAVE_RAINBOW_RING_TRAIL_STRIDE;
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_ULTRA_SOUND_WAVE_HIT_FRAMES;
     }
     return 0;
 }

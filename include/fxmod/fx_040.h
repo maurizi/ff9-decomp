@@ -10,8 +10,14 @@
 #define FX_BUBBLES_CYAN_RING  0xA /* emitter: cyan-white gouraud ring */
 #define FX_BUBBLES_BUBBLES    0xB /* emitter: iridescent soap bubbles */
 
+/* fx_040 choreography (docs/fxdata.md, "Choreography literals"): op80's bubble streams, keyframe and length. */
+#define FX_BUBBLES_STREAMS    4     /* bubble emitters started from fx_040_emitBlocks, each flying to its own point by its particle callback */
+#define FX_BUBBLES_HEIGHT     0x190 /* the streams' destination (fx_040_aboveTarget) above the targets' centre */
+#define FX_BUBBLES_POP_FRAME  0x12  /* op80: FX_BUBBLES_BUBBLE_POP (left and right), CYAN_RING and BUBBLES start */
+#define FX_BUBBLES_FRAMES     0x3C  /* op80: the task ends at this frame */
+
 typedef struct {
-    Pool6CEntry *emit0[4];
+    Pool6CEntry *emit0[FX_BUBBLES_STREAMS];
     u8 pad10[8];
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
@@ -24,12 +30,12 @@ typedef struct {
     u8 pad48[8];
 } Fx040Work; /* 0x50 */
 
-extern u16 fx_040_emitBlocks[4]; /* file data indices */
-extern s32 fx_040_op80ParticleMotions[4]; /* particle callbacks */
+extern u16 fx_040_emitBlocks[FX_BUBBLES_STREAMS]; /* file data indices */
+extern s32 fx_040_op80ParticleMotions[FX_BUBBLES_STREAMS]; /* particle callbacks */
 extern Unk800F78A4 *fx_040_env;
 extern SVECTOR fx_040_origin; /* particle origin */
 extern SVECTOR fx_040_aboveTarget; /* above the target */
-extern SVECTOR fx_040_emitPos[4];
+extern SVECTOR fx_040_emitPos[FX_BUBBLES_STREAMS];
 
 s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);

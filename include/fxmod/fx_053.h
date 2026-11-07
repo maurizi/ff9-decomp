@@ -15,6 +15,15 @@
 #define FX_WHITE_DRAW_WHITE_RINGS     0x13 /* emitter: white gouraud rings */
 #define FX_WHITE_DRAW_GREEN_CRYSTAL_2 0x14 /* emitter: green crystal particles */
 
+/* fx_053 choreography (docs/fxdata.md, "Choreography literals"): op80's length; op81's keyframe and length; op82's release and length. */
+#define FX_WHITE_DRAW_FRAMES          0x28 /* op80: the task ends at this frame */
+#define FX_WHITE_DRAW_SPARKLES_FRAME  0xA  /* op81: FX_WHITE_DRAW_BLUE_SPARKLES_2 start */
+#define FX_WHITE_DRAW_TRAIL_FRAMES    0x32 /* op81: the task ends at this frame */
+#define FX_WHITE_DRAW_RELEASE_FRAME   4    /* op82: sets BTLFX_SIG_WAIT, releasing the script's wait (the next target's task starts) */
+#define FX_WHITE_DRAW_CRYSTAL_FRAMES  0x28 /* op82: the task ends at this frame */
+#define FX_WHITE_DRAW_TRAIL_TRAIL_SLOTS  6 /* FX_WHITE_DRAW_TRAIL's trail buffer fx_053_trails: slots of */
+#define FX_WHITE_DRAW_TRAIL_TRAIL_STRIDE 0x88 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

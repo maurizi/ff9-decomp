@@ -21,11 +21,11 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx043Work80);
     } else if (mode == 1) {
         fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        work->pos14.vy -= 0x64;
+        work->pos14.vy -= FX_INK_BLOT_HEIGHT;
         fx_043_particleTo.vx = work->pos14.vx;
         fx_043_particleTo.vy = work->pos14.vy;
         fx_043_particleTo.vz = work->pos14.vz;
@@ -39,14 +39,14 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_INK_BLOTS_2), (s32)&fx_043_emitPos);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_043_trails;
-            work->emit0->trailSlots = 0xB;
-            work->emit0->trailStride = 0x20;
+            work->emit0->trailSlots = FX_INK_BLOTS_2_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_INK_BLOTS_2_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             ((s32 *)work->emit0->file)[2] = (s32)fx_043_op80ParticleMotion;
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_INK_FRAMES;
     }
     return 0;
 }
@@ -56,19 +56,19 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx043Work81);
     } else if (mode == 1) {
         fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&fx_043_particleFrom, (s16 *)&work->aim20);
-        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->aim20, 0xC8, (s16 *)&work->pos18);
-        work->pos18.vy -= 0x64;
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->aim20, FX_INK_BLOTS_REACH, (s16 *)&work->pos18);
+        work->pos18.vy -= FX_INK_BLOT_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_INK_BLOTS), (s32)&work->pos18);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_043_trails2;
-            work->emit0->trailSlots = 0x34;
-            work->emit0->trailStride = 0x20;
+            work->emit0->trailSlots = FX_INK_BLOTS_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_INK_BLOTS_TRAIL_STRIDE;
         }
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_INK_GREY_RINGS), (s32)&work->pos10);
         if (work->emit0 != NULL) {
@@ -86,7 +86,7 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->rot.vz = work->aim20.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_INK_SPLAT_FRAMES;
     }
     return 0;
 }

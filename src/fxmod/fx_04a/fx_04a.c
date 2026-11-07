@@ -6,7 +6,7 @@ s32 fx_04a_op80(s32 mode, Fx04aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx04aWork);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_04a_env = env;
@@ -17,7 +17,7 @@ s32 fx_04a_op80(s32 mode, Fx04aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->hold0 == 0 && frame >= 0x20) {
+        if (work->hold0 == 0 && frame >= FX_GOBLIN_PUNCH_FRAMES) {
             return 1;
         }
     }

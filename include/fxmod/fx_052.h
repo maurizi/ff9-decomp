@@ -17,6 +17,26 @@
 #define FX_LIMIT_GLOVE_BLUE_RINGS    0xF /* emitter: white-cyan / white-blue / grey gouraud rings */
 #define FX_LIMIT_GLOVE_PINK_SPECKS   0x10 /* emitter: faint pink specks */
 
+/* fx_052 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, the orb / grid sphere and the length; op81's keyframes
+ * and length; op82's white flash. */
+#define FX_LIMIT_GLOVE_GLOW_FRAME     0x1E /* op80: FX_LIMIT_GLOVE_GOLD_GLOW starts */
+#define FX_LIMIT_GLOVE_ORB_FRAME      0x37 /* op80: the pink orb and glow dome appear (fading in), */
+#define FX_LIMIT_GLOVE_ORB_FRAMES     0x79 /* for this many frames */
+#define FX_LIMIT_GLOVE_FADE_FRAMES    0x18 /* fadeIn50: the orb and dome fade in over this many frames */
+#define FX_LIMIT_GLOVE_GRID_FRAME     0x23 /* frames after ORB_FRAME: FX_LIMIT_GLOVE_GRID_SPHERE appears and everything shrinks */
+#define FX_LIMIT_GLOVE_GLOW_2_FRAME   0x50 /* op80: FX_LIMIT_GLOVE_GOLD_GLOW_2 starts */
+#define FX_LIMIT_GLOVE_FRAMES         0xC8 /* op80: the task ends at this frame */
+#define FX_LIMIT_GLOVE_MODEL_COUNT    3    /* btlfx_initEffModels slots: PINK_ORB, GRID_SPHERE, GLOW_DOME */
+#define FX_LIMIT_GLOVE_GOLD_GLOW_TRAIL_SLOTS  0x14 /* the trail buffers fx_052_trails (GOLD_GLOW) and fx_052_trails2 (GOLD_GLOW_2): slots of */
+#define FX_LIMIT_GLOVE_GOLD_GLOW_TRAIL_STRIDE 0xB0 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_LIMIT_GLOVE_RINGS_FRAME    15   /* op81: FX_LIMIT_GLOVE_BLUE_RINGS start */
+#define FX_LIMIT_GLOVE_SPECKS_FRAME   40   /* op81: FX_LIMIT_GLOVE_PINK_SPECKS start */
+#define FX_LIMIT_GLOVE_BEAM_FRAMES    0x5A /* op81: the task ends at this frame */
+#define FX_LIMIT_GLOVE_FLASH_LEVEL    0xFF /* op82: additive white screen flash: up to this level, */
+#define FX_LIMIT_GLOVE_FLASH_FADE_FRAMES 0x10 /* fading in from frame 0 and out from FLASH_OUT_FRAME over this many frames */
+#define FX_LIMIT_GLOVE_FLASH_OUT_FRAME 20
+#define FX_LIMIT_GLOVE_FLASH_FRAMES   0x20 /* op82: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

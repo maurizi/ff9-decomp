@@ -17,6 +17,17 @@
 #define FX_WHIRL_SLASH_GLINTS      0xF /* emitter: fan + yellow glints, sparks */
 #define FX_WHIRL_SLASH_GOLD_RINGS  0x10 /* emitter: white-yellow-brown and white-red gouraud rings */
 
+/* fx_041 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length, the slash height; op81's length. */
+#define FX_WHIRL_SLASH_DUST_FRAME      3    /* op80: FX_WHIRL_SLASH_DUST_PUFF_2 (caster) and DUST_CLOUD (target) start */
+#define FX_WHIRL_SLASH_HIT_FRAME       4    /* op80: the target's hit motion, GLINTS and GOLD_RINGS; from here its idle motion restarts when one ends */
+#define FX_WHIRL_SLASH_DUST_PUFF_FRAME 0xF  /* op80: FX_WHIRL_SLASH_DUST_PUFF starts at the caster */
+#define FX_WHIRL_SLASH_SLASH_FRAME     0x12 /* op80: FX_WHIRL_SLASH_SLASH_TRAIL starts along FX_WHIRL_SLASH_PATH */
+#define FX_WHIRL_SLASH_FRAMES          0x28 /* op80: the task ends at this frame */
+#define FX_WHIRL_SLASH_HEIGHT          300  /* the slash path's height above the ground (op81 starts its rings there) */
+#define FX_WHIRL_SLASH_RINGS_FRAMES    0x28 /* op81: the task ends at this frame */
+#define FX_WHIRL_SLASH_SLASH_TRAIL_TRAIL_SLOTS  1 /* FX_WHIRL_SLASH_SLASH_TRAIL's trail buffer fx_041_trails: slots of */
+#define FX_WHIRL_SLASH_SLASH_TRAIL_TRAIL_STRIDE 0xD0 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s16 x, y, z;
 } Fx041Point;
