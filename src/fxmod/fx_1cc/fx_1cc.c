@@ -52,9 +52,9 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         }
         gte_stlvnl(m.t);
         gte_rtps();
-        code = 0x38;
-        if (abr != 0xFF) {
-            code = 0x3A;
+        code = GPU_POLY_G4;
+        if (abr != BTLFX_ABR_OPAQUE) {
+            code = GPU_POLY_G4 | GPU_ABE;
         }
         gte_stszotz(&otz);
         if (rot->pad != 0) {
@@ -114,11 +114,11 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
                 *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
-                    ex->btlfx_addPrim(0x8000000, otz, prim);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_G4), otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, otz, tpage);
+        ex->btlfx_addPrim(PRIM_TAG(DR_TPAGE), otz, tpage);
     }
     w--;
     h--;
@@ -161,10 +161,10 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     prim = (POLY_GT4 *)env->prim;
-    code = 0x3C;
+    code = GPU_POLY_GT4;
     env->prim = (u8 *)(prim + 14 * 14);
-    if (abr != 0xFF) {
-        code = 0x3E;
+    if (abr != BTLFX_ABR_OPAQUE) {
+        code = GPU_POLY_GT4 | GPU_ABE;
     }
     tpage |= TPAGE_ABR(abr);
     gte_rtv0tr_b();
@@ -267,7 +267,7 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
                 prim->u1 = prim->u3 = u1;
                 prim->v0 = prim->v1 = v0;
                 prim->v2 = prim->v3 = v1;
-                ex->btlfx_addPrim(0xC000000, otz, prim);
+                ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, prim);
                 gte_stsxy(&prim->x3);
                 prim++;
             }
@@ -474,22 +474,22 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter1;
 
     if (mode == 0) {
-        init->workSize = 0x88;
-        init->elemSize = 0x38;
+        init->workSize = sizeof(Fx1ccWork80);
+        init->elemSize = sizeof(Fx1ccObj);
         init->elemFn = (s32)fx_1cc_op80PoolTask;
-        init->poolCount = 0x20;
+        init->poolCount = FX_SEALION_APPEARS_POOL;
     } else if (mode == 1) {
         fx_1cc_env = env;
-        ex->btlfx_initEffModels(fx_1cc_effModels, 0x19);
-        tpage = 0x9A;
-        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL), tpage, 0x3DC0, 0x80, 0);
-        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL_2), tpage, 0x3DC0, 0x80, 0);
-        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL_3), tpage, 0x3DC0, 0x80, 0);
-        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN), 0xBA, 0x3D40, 0, 0x80);
-        work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN_2), 0xBA, 0x3D40, 0, 0x80);
-        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN_3), 0xBA, 0x3D40, 0, 0x80);
-        for (i = 0; i < 14; i++) {
-            work->model20[i] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_1cc_pieceFileIds[i]), tpage, 0x3DC0, 0x80, 0);
+        ex->btlfx_initEffModels(fx_1cc_effModels, FX_SEALION_APPEARS_MODEL_SLOTS);
+        tpage = FX_SEALION_APPEARS_ICE_TPAGE;
+        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL), tpage, FX_SEALION_APPEARS_ICE_CLUT, FX_SEALION_APPEARS_ICE_U, FX_SEALION_APPEARS_ICE_V);
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL_2), tpage, FX_SEALION_APPEARS_ICE_CLUT, FX_SEALION_APPEARS_ICE_U, FX_SEALION_APPEARS_ICE_V);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_ICE_CRYSTAL_3), tpage, FX_SEALION_APPEARS_ICE_CLUT, FX_SEALION_APPEARS_ICE_U, FX_SEALION_APPEARS_ICE_V);
+        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN), FX_SEALION_APPEARS_SHEEN_TPAGE, FX_SEALION_APPEARS_SHEEN_CLUT, FX_SEALION_APPEARS_SHEEN_U, FX_SEALION_APPEARS_SHEEN_V);
+        work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN_2), FX_SEALION_APPEARS_SHEEN_TPAGE, FX_SEALION_APPEARS_SHEEN_CLUT, FX_SEALION_APPEARS_SHEEN_U, FX_SEALION_APPEARS_SHEEN_V);
+        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_CRYSTAL_SHEEN_3), FX_SEALION_APPEARS_SHEEN_TPAGE, FX_SEALION_APPEARS_SHEEN_CLUT, FX_SEALION_APPEARS_SHEEN_U, FX_SEALION_APPEARS_SHEEN_V);
+        for (i = 0; i < FX_SEALION_APPEARS_PIECES; i++) {
+            work->model20[i] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_1cc_pieceFileIds[i]), tpage, FX_SEALION_APPEARS_ICE_CLUT, FX_SEALION_APPEARS_ICE_U, FX_SEALION_APPEARS_ICE_V);
         }
         work->state0 = 0;
         work->frame4 = 0;
@@ -519,16 +519,16 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0x400;
             rot.vz = 0x200;
             rot.vy = 0;
-            t = (frame << 12) / 6;
+            t = (frame << 12) / FX_SEALION_APPEARS_BULGE_FRAMES;
             fxm_drawBulgeGrid14(&work->pos58, &rot, 0x4400, t >> 5, 0x9A, 0x3D40, 0, 0x80, 0, 1);
             ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
-            if (frame >= 6) {
+            if (frame >= FX_SEALION_APPEARS_BULGE_FRAMES) {
                 work->state0 = 1;
                 entry->frame = -1;
             }
             break;
         case 1:
-            t = (frame << 12) / 10;
+            t = (frame << 12) / FX_SEALION_APPEARS_MIST_FRAMES;
             ang = t >> 2;
             rot.vx = 0x400;
             rot.vy = 0;
@@ -540,7 +540,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ringFile = (u8 *)ex->btlfx_getFileData(entry->file, FX_SEALION_APPEARS_SNOW_RING_2);
             ex->btlfx_drawRings(ringFile, &work->pos58, &rot, ((((ex->math_sin(ang) * 0x3000) >> 12) + 0x2000) * 3) >> 2, 0, BTLFX_ABR_ADD,
                               ex->math_cos(ang));
-            if (frame >= 10) {
+            if (frame >= FX_SEALION_APPEARS_MIST_FRAMES) {
                 work->state0 = 2;
                 entry->frame = -1;
                 BTLFX_COPY_SVEC(&work->pos68, &work->pos58);
@@ -579,7 +579,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
                 }
             }
-            if (frame >= 4) {
+            if (frame >= FX_SEALION_APPEARS_FLASH_FRAMES) {
                 work->state0 = 3;
                 entry->frame = -1;
             }
@@ -630,14 +630,14 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14);
-            if (frame >= 8) {
+            if (frame >= FX_SEALION_APPEARS_HOLD_FRAMES) {
                 work->state0 = 5;
                 entry->frame = -1;
             }
             break;
         case 5:
             ringAlpha = 0x1000;
-            t = (frame << 12) / 10;
+            t = (frame << 12) / FX_SEALION_APPEARS_BURST_FRAMES;
             ex->btlfx_fadeUnitById(0, (t << 7) >> 12);
             rot.vx = -0x400;
             rot.vy = 0;
@@ -646,7 +646,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14);
             rot.pad = 1;
-            if (frame >= 10) {
+            if (frame >= FX_SEALION_APPEARS_BURST_FRAMES) {
                 work->state0 = 6;
                 work->flag78 = 1;
                 entry->frame = -1;
@@ -708,7 +708,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
                 }
             }
-            if (frame >= 24) {
+            if (frame >= FX_SEALION_APPEARS_RINGS_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
