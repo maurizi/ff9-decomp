@@ -37,6 +37,29 @@
 #define FX_MADEEN_RAINBOW_SPHERE_2 0x8F /* summon data entry 15: textured model, sphere wrapped in red-green-blue stripe (rainbow) bands */
 #define FX_MADEEN_RAINBOW_BANDS    0x90 /* summon data entry 16: textured model, curved red-green-blue stripe (rainbow) bands */
 
+/* fx_0fb_1 choreography (docs/fxdata.md, "Choreography literals"): the mechanical names (op sizes, the rock pool,
+ * model slots and textures, GPU words); op80's seven states and their keys are still numeric. Shared names with
+ * group 0 (fx_0fb_0), own values. */
+#define FX_MADEEN_ROCK_COUNT        0x30  /* op80's pool: rocks (Fx0fb1Rock) */
+#define FX_MADEEN_MODEL_SLOTS       0x1F  /* btlfx_initEffModels slots */
+#define FX_MADEEN_PINK_CLOUD_BALL_TPAGE 0x96   /* Hi_RegisterTexEffModel texture: 8-bit page (0x180, 0x100), abr 0 */
+#define FX_MADEEN_PINK_CLOUD_BALL_CLUT  0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_MADEEN_LEAF_MOUND_TPAGE  0x9A   /* 8-bit page (0x280, 0x100), abr 0 */
+#define FX_MADEEN_LEAF_MOUND_CLUT   0x3E00 /* CLUT at (0x0, 0xF8) */
+#define FX_MADEEN_RAINBOW_TPAGE     0xBD   /* RAINBOW_BANDS, RAINBOW_SPHERE(_2), RAINBOW_ARCH: 8-bit page (0x340, 0x100), abr 1 */
+#define FX_MADEEN_RAINBOW_CLUT      0x3E40 /* CLUT at (0x0, 0xF9) */
+#define FX_MADEEN_RAINBOW_ARCH_CLUT 0x3EC0 /* RAINBOW_ARCH's CLUT at (0x0, 0xFB) */
+#define FX_MADEEN_Y_FRAME_TPAGE     0x3D   /* 4-bit page (0x340, 0x100), abr 1 */
+#define FX_MADEEN_Y_FRAME_CLUT      0x3E81 /* CLUT at (0x10, 0xFA) */
+#define FX_MADEEN_LOOP_RIBBON_TPAGE 0x138  /* 15-bit page (0x200, 0x100), abr 1 */
+#define FX_MADEEN_LOOP_RIBBON_CLUT  0xFFFF /* no CLUT */
+#define FX_MADEEN_BLUE_SWIRL_DISC_TPAGE 0x3A   /* 4-bit page (0x280, 0x100), abr 1 */
+#define FX_MADEEN_BLUE_SWIRL_DISC_CLUT  0x3D0A /* CLUT at (0xA0, 0xF4) */
+#define FX_MADEEN_MODEL_U           0      /* the models' texture origin (u, v) in their pages */
+#define FX_MADEEN_MODEL_V           0
+#define FX_MADEEN_MODEL_V2          0x80   /* v of the second half (RAINBOW_ARCH, Y_FRAME, LOOP_RIBBON, BLUE_SWIRL_DISC) */
+#define FX_MADEEN_RETURN_FRAMES     0x10  /* op82: the units turn back home after this many frames */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* unit home position */

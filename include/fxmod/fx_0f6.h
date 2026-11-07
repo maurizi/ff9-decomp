@@ -11,12 +11,17 @@
 #define FX_MEO_TWISTER_WIND_RINGS 0xD /* emitter: white / pale-cyan gouraud rings in a cone + a fan element */
 #define FX_MEO_TWISTER_FIRE_ORBS  0xE /* emitter: red / yellow / green gouraud rings + fiery orb particles */
 
+/* fx_0f6 choreography (docs/fxdata.md, "Choreography literals"): op80's keys and its sprite-line table. */
+#define FX_MEO_TWISTER_LINE_COUNT      4    /* fx_0f6_lines: sprite lines, each drawn over its own frame range, fading out */
+#define FX_MEO_TWISTER_FIRE_ORBS_FRAME 0x14 /* FIRE_ORBS start */
+#define FX_MEO_TWISTER_FRAMES          0x3C /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8;
     SVECTOR linePos10;
-} Fx0f6Work;
+} Fx0f6Work; /* 0x18 */
 
 typedef struct {
     u16 block0; /* file */
@@ -27,7 +32,7 @@ typedef struct {
     u16 alphaA; /* fade */
 } Fx0f6Layer;
 
-extern Fx0f6Layer fx_0f6_lines[4];
+extern Fx0f6Layer fx_0f6_lines[FX_MEO_TWISTER_LINE_COUNT];
 extern Unk800F78A4 *fx_0f6_env;
 
 #endif

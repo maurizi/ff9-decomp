@@ -5,7 +5,7 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x34;
+        *args = sizeof(Fx100Work80);
     } else if (mode == 1) {
         fx_100_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos14);
@@ -13,7 +13,7 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 4:
+        case FX_SOLUTION_DUST_PUFF_FRAME:
             ex->btlfx_getUnitBonePos(0x10, 0x22, (u16 *)&work->pos24);
             work->pos24.vy = 0;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_DUST_PUFF), (s32)&work->pos24);
@@ -21,18 +21,18 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
-        case 0xC:
+        case FX_SOLUTION_SPIRAL_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_SPIRAL_TRAIL), (s32)&work->pos1C);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_100_op80Trails;
-                work->emit4->trailSlots = 9;
-                work->emit4->trailStride = 0x90;
+                work->emit4->trailSlots = FX_SOLUTION_SPIRAL_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_SOLUTION_SPIRAL_TRAIL_STRIDE;
                 if (work->emit4 != NULL) {
                     work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             break;
-        case 0xE:
+        case FX_SOLUTION_HIT_FRAME:
             fxm_startHitMotionIfActive(0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_OLIVE_RINGS), (s32)&work->pos1C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_DUST_WISPS), (s32)&work->pos1C);
@@ -42,12 +42,12 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        if (frame >= 0xE) {
+        if (frame >= FX_SOLUTION_HIT_FRAME) {
             if (fxm_isMotionDone(0)) {
                 fxm_startUnitMotion(0, 0);
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_SOLUTION_HIT_OP_FRAMES;
     }
     return 0;
 }
@@ -58,7 +58,7 @@ s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx100Work81);
     } else if (mode == 1) {
         fx_100_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -71,11 +71,11 @@ s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_SPECK_TRAIL), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_100_op81Trails;
-                work->emit0->trailSlots = 0x1A;
-                work->emit0->trailStride = 0x60;
+                work->emit0->trailSlots = FX_SOLUTION_SPECK_TRAIL_SLOTS;
+                work->emit0->trailStride = FX_SOLUTION_SPECK_TRAIL_STRIDE;
             }
             break;
-        case 4:
+        case FX_SOLUTION_SMOKE_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_VIOLET_SMOKE), (s32)&work->posC);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_VIOLET_RINGS), (s32)&work->posC);
             if (work->emit4 != NULL) {
@@ -83,7 +83,7 @@ s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        return frame >= 0x28;
+        return frame >= FX_SOLUTION_SMOKE_OP_FRAMES;
     }
     return 0;
 }

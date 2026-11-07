@@ -11,6 +11,17 @@
 #define FX_BOOMERANG_SWIRL     0x2 /* emitter: orange and teal spiral swirls + yellow and pink gouraud rings */
 #define FX_BOOMERANG_CURVED_BLADE 0x7 /* 'so' model: gold curved boomerang blade, registered twice */
 
+/* fx_126 choreography (docs/fxdata.md, "Choreography literals"): the two blades' Bezier flight, the hit keys and
+ * op80's length. */
+#define FX_BOOMERANG_MODEL_SLOTS   2     /* btlfx_initEffModels slots: CURVED_BLADE twice */
+#define FX_BOOMERANG_TARGETS       4     /* pos7C / done9C: up to this many targets get the hit emitters */
+#define FX_BOOMERANG_REACH         0x6E0 /* the blades' far control point lies this far down -z */
+#define FX_BOOMERANG_SWING_WIDTH   0x692 /* their side control points this far left / right */
+#define FX_BOOMERANG_FLIGHT_FRAMES 0x18  /* the blades fly out and back (fx_126_quarticBezier) over frames 1 .. this */
+#define FX_BOOMERANG_HIT_FRAME     8     /* SWIRL and CRESCENTS on targets 0 and 3 */
+#define FX_BOOMERANG_HIT_2_FRAME   10    /* and on targets 1 and 2 */
+#define FX_BOOMERANG_FRAMES        0x20  /* op80's length (the op ends) */
+
 typedef struct {
     s32 model0; /* models */
     s32 model4;
@@ -26,8 +37,8 @@ typedef struct {
     SVECTOR pos68;
     SVECTOR pos70;
     u8 pad78[0x7C - 0x78];
-    SVECTOR pos7C[4]; /* unit body positions */
-    s32 done9C[4]; /* unit hit */
+    SVECTOR pos7C[FX_BOOMERANG_TARGETS]; /* unit body positions */
+    s32 done9C[FX_BOOMERANG_TARGETS]; /* unit hit */
 } Fx126Work; /* 0xAC */
 
 extern Unk800F78A4 *fx_126_env;

@@ -12,10 +12,37 @@
 #define FX_DETECT_BLUE_SPIKES 0x2 /* emitter: two fans, blue light spikes */
 #define FX_DETECT_GLYPH_TEXT  0x3 /* emitter: blocks of scrolling script glyphs (blue, green, purple, orange) */
 
+/* fx_0fa choreography (docs/fxdata.md, "Choreography literals"): op80's keys, the countdown slots of
+ * work->timers0 (by index) and the lengths written into them, the sphere's texture and its flashing VRAM rect. */
+#define FX_DETECT_MODEL_SLOTS      2    /* btlfx_initEffModels slots */
+#define FX_DETECT_TIMER_SLOTS      10   /* work->timers0 */
+#define FX_DETECT_T_RISE           0    /* timers0 slot: the sphere spirals up from the caster */
+#define FX_DETECT_T_SINK           1    /* the sphere spirals back down */
+#define FX_DETECT_T_SPHERE         2    /* the sphere draws (bobbing) while this runs */
+#define FX_DETECT_T_FLASH          4    /* the sphere texture flashes through fx_0fa_scrollSrc0 */
+#define FX_DETECT_T_FLICKER        5    /* a random flicker through fx_0fa_scrollSrc1 */
+#define FX_DETECT_T_AIM            6    /* flag: BLUE_SPIKES follow the sphere's aim */
+#define FX_DETECT_RISE_FRAMES      0x10 /* T_RISE from frame 0 */
+#define FX_DETECT_BLUE_SPIKES_FRAME 0x14 /* BLUE_SPIKES start, T_FLASH and T_AIM */
+#define FX_DETECT_FLASH_FRAMES     8    /* T_FLASH: two frames per fx_0fa_scrollSrc0 entry */
+#define FX_DETECT_GLYPH_TEXT_FRAME 0x20 /* GLYPH_TEXT starts; random flickers after this frame */
+#define FX_DETECT_FLICKER_FRAMES   4    /* T_FLICKER: one per fx_0fa_scrollSrc1 entry (1 in 8 frames starts one) */
+#define FX_DETECT_SINK_FRAME       0x40 /* T_SINK starts */
+#define FX_DETECT_SINK_FRAMES      0x10
+#define FX_DETECT_FRAMES           0x50 /* op80's length; T_SPHERE runs for all of it */
+#define FX_DETECT_METAL_SPHERE_TPAGE 0xFA   /* Hi_RegisterTexEffModel texture: 8-bit page (0x280, 0x100), abr 3 */
+#define FX_DETECT_METAL_SPHERE_CLUT  0x3DC0 /* CLUT at (0x0, 0xF7) */
+#define FX_DETECT_METAL_SPHERE_U     0x80   /* texture origin (u, v) in the page: VRAM (0x2C0, 0x180) */
+#define FX_DETECT_METAL_SPHERE_V     0x80
+#define FX_DETECT_SPHERE_VRAM_X    0x2C0 /* btlfx_drawScrollMove destination: the sphere's texture (page 0xFA at u, v 0x80) */
+#define FX_DETECT_SPHERE_VRAM_Y    0x180
+#define FX_DETECT_SPHERE_VRAM_W    0x40
+#define FX_DETECT_SPHERE_VRAM_H    0x40
+
 static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
 
 typedef struct {
-    s32 timers0[10]; /* countdowns and flags, by index (cleared at init) */
+    s32 timers0[FX_DETECT_TIMER_SLOTS]; /* countdowns and flags, by index (cleared at init) */
     SVECTOR homePos28; /* model home position */
     SVECTOR pos30; /* target position */
     s32 model38; /* model */

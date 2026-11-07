@@ -9,7 +9,7 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 unused;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx0f7Work);
     } else if (mode == 1) {
         work->emitC = NULL;
         work->emit10 = NULL;
@@ -25,15 +25,15 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
-            work->timer0 = 0x30;
+            work->timer0 = FX_SOLUTION_9_RUNES_FRAMES;
             break;
-        case 0x20:
+        case FX_SOLUTION_9_HALO_RINGS_FRAME:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_HALO_RINGS), (s32)&work->pos4);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 0x28:
+        case FX_SOLUTION_9_BLUE_RINGS_FRAME:
             ex->btlfx_stopEmitter(work->emitC);
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SOLUTION_9_BLUE_RINGS), (s32)&work->pos4);
             if (work->emit14 != NULL) {
@@ -55,16 +55,16 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer0 != 0) {
             work->timer0--;
-            for (i = 0; i < 4; i++) {
+            for (i = 0; i < FX_SOLUTION_9_RUNE_COUNT; i++) {
                 spark = &fx_0f7_sparks[i];
                 if (spark->delay0 == 0) {
                     alpha = 0x1000;
                     spark->x10 += spark->speedX18;
                     spark->age1C++;
-                    if (spark->age1C < 8) {
+                    if (spark->age1C < FX_SOLUTION_9_RUNE_FADE_FRAMES) {
                         alpha = (spark->alphaC * spark->age1C) >> 3;
                     }
-                    if (work->timer0 < 8) {
+                    if (work->timer0 < FX_SOLUTION_9_RUNE_FADE_FRAMES) {
                         alpha = (spark->alphaC * work->timer0) >> 3;
                     }
                     if (spark->kind4 == 0) {
@@ -79,7 +79,7 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x48;
+        return frame >= FX_SOLUTION_9_FRAMES;
     }
     return 0;
 }

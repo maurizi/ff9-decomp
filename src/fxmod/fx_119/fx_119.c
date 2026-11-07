@@ -4,7 +4,7 @@ s32 fx_119_op80(s32 mode, Fx119Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx119Work);
     } else if (mode == 1) {
         fx_119_env = env;
         env->camera->paused = 0;
@@ -14,7 +14,7 @@ s32 fx_119_op80(s32 mode, Fx119Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_MAGIC_TAG_FRAMES;
     }
     return 0;
 }

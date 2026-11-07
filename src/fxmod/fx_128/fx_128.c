@@ -1,7 +1,7 @@
 #include "fxmod/fx_128.h"
 
 static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)&fx_128_lerpTo, (frame << 12) / 12, (s16 *)pos);
+    BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)&fx_128_lerpTo, (frame << 12) / FX_DRAGON_BREATH_SPRAY_FRAMES, (s16 *)pos);
     out->pos0.vx = pos->vx << 12;
     out->pos0.vy = pos->vy << 12;
     out->pos0.vz = pos->vz << 12;
@@ -13,7 +13,7 @@ static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 owner, SVECTOR *po
 
 static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)((u8 *)fx_128_lerpToRand + (out->index1F - 1) * 8),
-                                             (frame << 12) / 12, (s16 *)pos);
+                                             (frame << 12) / FX_DRAGON_BREATH_SPRAY_FRAMES, (s16 *)pos);
     out->pos0.vx = pos->vx << 12;
     out->pos0.vy = pos->vy << 12;
     out->pos0.vz = pos->vz << 12;
@@ -28,7 +28,7 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx128Work80);
     } else if (mode == 1) {
         fx_128_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -63,7 +63,7 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->rot.vz = work->rot10.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_DRAGON_BREATH_CAST_FRAMES;
     }
     return 0;
 }
@@ -85,10 +85,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR *unused;
 
     if (mode == 0) {
-        *args = 0xB0;
+        *args = sizeof(Fx128Work81);
     } else if (mode == 1) {
         fx_128_env = env;
-        ex->btlfx_initEffModels(fx_128_effModels, 7);
+        ex->btlfx_initEffModels(fx_128_effModels, FX_DRAGON_BREATH_MODEL_SLOTS);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos50);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot58);
         if (env->targets->targetCount == mode) {
@@ -117,7 +117,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_rotPosPathInit((Fx128Path *)&fx_128_rotPosPath0, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_ROT_POS_PATH));
         fxm_posPathInit(&fx_128_posPath, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_POS_PATH));
         fxm_valuePathInit((Fx128Path *)&fx_128_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_VALUE_PATH));
-        for (j = 0; j < 5; j++) {
+        for (j = 0; j < FX_DRAGON_BREATH_SLICES; j++) {
             fxm_rotPosPathInit((Fx128Path *)&fx_128_rotPosPath1[j], (u16 *)ex->btlfx_getFileData(entry->file, fx_128_pathFileIds[j]));
             work->modelA0[j + 2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_128_modelFileIds[j]), 1);
         }
@@ -128,10 +128,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 0x19:
+        case FX_DRAGON_BREATH_BUBBLE_RINGS_FRAME:
             work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_BUBBLE_RINGS), (s32)&fx_128_emitPos0);
             break;
-        case 0x2D:
+        case FX_DRAGON_BREATH_BREATH_FRAME:
             work->pos78.vx = work->pos90.vx;
             work->pos78.vy = work->pos90.vy;
             work->pos78.vz = work->pos90.vz;
@@ -142,7 +142,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_128_lerpTo.vx = work->pos60.vx;
             fx_128_lerpTo.vy = work->pos60.vy;
             fx_128_lerpTo.vz = work->pos60.vz;
-            for (i = 0; i < 10; i++) {
+            for (i = 0; i < FX_DRAGON_BREATH_SPRAY_COUNT; i++) {
                 fx_128_lerpToRand[i].vx = work->pos60.vx;
                 fx_128_lerpToRand[i].vy = work->pos60.vy;
                 fx_128_lerpToRand[i].vz = work->pos60.vz;
@@ -163,8 +163,8 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_GREEN_TRAIL_2), (s32)&work->pos78);
             if (work->emit0[4] != NULL) {
                 work->emit0[4]->trails = (s32)fx_128_op81Trails0;
-                work->emit0[4]->trailSlots = 9;
-                work->emit0[4]->trailStride = 0x48;
+                work->emit0[4]->trailSlots = FX_DRAGON_BREATH_TRAIL_2_SLOTS;
+                work->emit0[4]->trailStride = FX_DRAGON_BREATH_TRAIL_STRIDE;
             }
             if (work->emit0[2] != NULL) {
                 work->emit0[2]->file->m.module.update = fx_128_op81ParticleMotion0;
@@ -173,36 +173,36 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[3]->file->m.module.update = fx_128_op81ParticleMotion1;
             }
             break;
-        case 0x3C:
+        case FX_DRAGON_BREATH_HIT_FRAME:
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_BUBBLES_2), (s32)&work->pos60);
             work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_ORB), (s32)&work->pos60);
             work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_GREEN_TRAIL), (s32)&work->pos60);
             work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAGON_BREATH_WHITE_RINGS), (s32)&work->pos68);
             if (work->emit0[7] != NULL) {
                 work->emit0[7]->trails = (s32)fx_128_op81Trails1;
-                work->emit0[7]->trailSlots = 8;
-                work->emit0[7]->trailStride = 0x48;
+                work->emit0[7]->trailSlots = FX_DRAGON_BREATH_TRAIL_SLOTS;
+                work->emit0[7]->trailStride = FX_DRAGON_BREATH_TRAIL_STRIDE;
             }
             if (work->emit0[5] != NULL) {
                 work->emit0[5]->otZ = 0x80;
             }
             break;
-        case 8:
-            work->timer98 = 4;
+        case FX_DRAGON_BREATH_DRAGON_FRAME:
+            work->timer98 = FX_DRAGON_BREATH_FADE_IN_FRAMES;
             break;
-        case 0x39:
-            work->timer9C = 8;
+        case FX_DRAGON_BREATH_FADE_OUT_FRAME:
+            work->timer9C = FX_DRAGON_BREATH_FADE_OUT_FRAMES;
             break;
         }
-        if (frame >= 8 && frame < 0x41) {
-            pathFrame = frame - 8;
+        if (frame >= FX_DRAGON_BREATH_DRAGON_FRAME && frame < FX_DRAGON_BREATH_FADE_OUT_FRAME + FX_DRAGON_BREATH_FADE_OUT_FRAMES) {
+            pathFrame = frame - FX_DRAGON_BREATH_DRAGON_FRAME;
             if (work->timer98 >= 0 || work->timer9C >= 0) {
                 if (work->timer98 >= 0) {
-                    work->fade4C = fxm_lerpRatio(-0x80, 0, 4 - work->timer98, 4);
+                    work->fade4C = fxm_lerpRatio(-0x80, 0, FX_DRAGON_BREATH_FADE_IN_FRAMES - work->timer98, FX_DRAGON_BREATH_FADE_IN_FRAMES);
                     work->timer98--;
                 }
                 if (work->timer9C >= 0) {
-                    work->fade4C = fxm_lerpRatio(0, -0x80, 8 - work->timer9C, 8);
+                    work->fade4C = fxm_lerpRatio(0, -0x80, FX_DRAGON_BREATH_FADE_OUT_FRAMES - work->timer9C, FX_DRAGON_BREATH_FADE_OUT_FRAMES);
                     work->timer9C--;
                 }
             }
@@ -218,7 +218,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos88.vz = work->pos2C.vz;
             ex->btlfx_aimAngles((s16 *)&work->pos70, (s16 *)&work->pos60, (s16 *)&ang);
             work->rot24.vy = ang.vy;
-            if (env->targets->targetCount == 1 && pathFrame >= 0x25 && work->rot24.vx <= ang.vx) {
+            if (env->targets->targetCount == 1 && pathFrame >= FX_DRAGON_BREATH_DIVE_FRAME && work->rot24.vx <= ang.vx) {
                 work->rot24.vx = ang.vx;
             }
             fxm_valuePathGet(&fx_128_valuePath, pathFrame, &morph);
@@ -227,7 +227,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer98 >= 0 || work->timer9C >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->modelA0[0], work->fade4C, work->fade4C, work->fade4C);
             }
-            for (i = 0; i < 5; i++) {
+            for (i = 0; i < FX_DRAGON_BREATH_SLICES; i++) {
                 fxm_rotPosPathGet(&fx_128_rotPosPath1[i], pathFrame, &work->rot24, &slicePos);
                 work->pos2C.vx = slicePos.vx;
                 work->pos2C.vy = slicePos.vy;
@@ -242,7 +242,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame >= 0x2D && work->emit0[4] != NULL) {
+        if (frame >= FX_DRAGON_BREATH_BREATH_FRAME && work->emit0[4] != NULL) {
             if (work->emit0[4]->state == BTLFX_EMIT_DONE) {
                 work->emit0[4] = NULL;
             }
@@ -252,8 +252,8 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[4]->rot.vz = work->rot80.vz;
             }
         }
-        if (frame >= 0x19) {
-            fxm_posPathGet(&fx_128_posPath, frame - 8, &offset);
+        if (frame >= FX_DRAGON_BREATH_BUBBLE_RINGS_FRAME) {
+            fxm_posPathGet(&fx_128_posPath, frame - FX_DRAGON_BREATH_DRAGON_FRAME, &offset);
             rot.vx = 0;
             rot.vy = work->rot24.vy;
             rot.vz = 0;
@@ -274,7 +274,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_moveEmitterTo((s32)work->emit0[0], (s32)&work->pos90);
         }
-        if (frame >= 0x82) {
+        if (frame >= FX_DRAGON_BREATH_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

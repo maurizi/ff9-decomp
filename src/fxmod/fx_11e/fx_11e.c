@@ -11,7 +11,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 model;
 
     if (mode == 0) {
-        *args = 0x60;
+        *args = sizeof(Fx11eWork);
     } else if (mode == 1) {
         target = *args;
         work->unit58 = target;
@@ -25,7 +25,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_playFileSound(8, entry->file, -1);
         ex->btlfx_playFileSound(9, entry->file, -1);
         if (fx_11e_modelsReady == 0) {
-            ex->btlfx_initEffModels(fx_11e_effModels, 8);
+            ex->btlfx_initEffModels(fx_11e_effModels, FX_VIRUS_FLY_MODEL_SLOTS);
             fx_11e_modelsReady = mode;
         }
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos50);
@@ -50,14 +50,14 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_FLY_FLIES), (s32)&work->pos50);
     } else {
         frame = entry->frame;
-        if ((u32)(frame - 0x1E) < 0x28) {
-            elapsed = frame - 0x1E;
+        if ((u32)(frame - FX_VIRUS_FLY_BUZZ_FRAME) < FX_VIRUS_FLY_BUZZ_FRAMES) {
+            elapsed = frame - FX_VIRUS_FLY_BUZZ_FRAME;
             ex->btlfx_getUnitBodyPos(work->unit58, 0, &unitPos.vx);
             work->posC.vx = unitPos.vx;
             work->posC.vz = unitPos.vz;
             work->posC.vx += work->radius38 * ex->math_sin(work->angle3C) / 4096;
             work->posC.vz += work->radius38 * ex->math_cos(work->angle3C) / 4096;
-            if (elapsed >= 0x19) {
+            if (elapsed >= FX_VIRUS_FLY_LEAVE_FRAME) {
                 work->posC.vy += -200 - ex->btlfx_rand() % 40;
                 work->radius38 += 200 + ex->btlfx_rand() % 100;
             } else {
@@ -84,7 +84,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->rot4.vy = aim.vy;
                 work->rot4.vz = aim.vz;
             }
-            if (elapsed == 0x18) {
+            if (elapsed == FX_VIRUS_FLY_LEAVE_FRAME - 1) {
                 work->rot4.vy += 0x800;
             }
             if (--work->timer40 == 0) {
@@ -115,10 +115,10 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->target = (s32)&work->pos48;
             }
         }
-        if (frame == 3) {
+        if (frame == FX_VIRUS_FLY_RELEASE_FRAME) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
-        return frame >= 0x50;
+        return frame >= FX_VIRUS_FLY_FRAMES;
     }
     return 0;
 }

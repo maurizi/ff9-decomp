@@ -10,7 +10,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx122Offset *ofs;
 
     if (mode == 0) {
-        *args = 0x50;
+        *args = sizeof(Fx122Work);
     } else if (mode == 1) {
         fx_122_env = env;
         env->camera->paused = 0;
@@ -26,7 +26,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             height = ex->btlfx_getUnitHeight(0);
             radius = ex->btlfx_getUnitRadius(BTLFX_UNIT_MODEL_RADIUS | 0);
             ofs = fx_122_offsets;
-            for (i = 0; i < 0x11; i++, ofs++) {
+            for (i = 0; i < FX_TENT_OFFSET_COUNT; i++, ofs++) {
                 if (ofs->height0 == height && ofs->radius2 == radius) {
                     if (ofs->offset4 & FX122_OFS_FORWARD) {
                         goto forward;
@@ -37,7 +37,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     goto found;
                 }
             }
-            if (height >= 0x258 || radius >= 0x2EE) {
+            if (height >= FX_TENT_TALL_HEIGHT || radius >= FX_TENT_WIDE_RADIUS) {
                 work->posC.vx = work->pos30.vx;
                 work->posC.vy = work->pos30.vy - height;
                 work->posC.vz = work->pos30.vz;
@@ -67,7 +67,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, work->model4C);
-        if (frame >= 0x19 && frame < 0x28) {
+        if (frame >= FX_TENT_SHAKE_FRAME && frame < FX_TENT_SHAKE_END_FRAME) {
             if ((frame & 1) && (ex->btlfx_rand() & 1)) {
                 work->posC.vx = work->pos30.vx + (ex->btlfx_rand() % 4 + 4);
             } else {
@@ -77,15 +77,15 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         switch (frame) {
         case 0:
-            work->timer48 = 8;
+            work->timer48 = FX_TENT_FADE_IN_FRAMES;
             break;
-        case 0x40:
-            work->timer4A = 0x10;
+        case FX_TENT_FADE_OUT_FRAME:
+            work->timer4A = FX_TENT_FADE_OUT_FRAMES;
             break;
         }
         fade = 0;
         if (work->timer48 >= 0) {
-            work->color2C = fxm_lerpRatio(-0x80, -0x40, 8 - work->timer48, 8);
+            work->color2C = fxm_lerpRatio(-0x80, -0x40, FX_TENT_FADE_IN_FRAMES - work->timer48, FX_TENT_FADE_IN_FRAMES);
             fade = 1;
             if (--work->timer48 == 0) {
                 work->pos40.vx = work->posC.vx;
@@ -100,14 +100,14 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer4A >= 0) {
             fade = 1;
-            work->color2C = fxm_lerpRatio(0x28, -0x80, 0x10 - work->timer4A, 0x10);
+            work->color2C = fxm_lerpRatio(0x28, -0x80, FX_TENT_FADE_OUT_FRAMES - work->timer4A, FX_TENT_FADE_OUT_FRAMES);
             work->timer4A--;
         }
         if (fade) {
-            ex->Hi_ModifyEffModelAbr(work->model4C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model4C, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model4C, work->color2C, work->color2C, work->color2C);
         }
-        if (frame >= 0x4F) {
+        if (frame >= FX_TENT_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

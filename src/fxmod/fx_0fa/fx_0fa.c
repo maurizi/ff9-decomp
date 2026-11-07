@@ -46,15 +46,15 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
 
     if (mode == 0) {
-        *args = 0x78;
+        *args = sizeof(Fx0faWork);
     } else if (mode == 1) {
         work->emit74 = NULL;
         fx_0fa_env = env;
-        ex->btlfx_initEffModels(fx_0fa_effModels, 2);
-        for (i = 9, timer = &work->timers0[9]; i >= 0; i--) {
+        ex->btlfx_initEffModels(fx_0fa_effModels, FX_DETECT_MODEL_SLOTS);
+        for (i = FX_DETECT_TIMER_SLOTS - 1, timer = &work->timers0[FX_DETECT_TIMER_SLOTS - 1]; i >= 0; i--) {
             *timer-- = 0;
         }
-        work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DETECT_METAL_SPHERE), 0xFA, 0x3DC0, 0x80, 0x80);
+        work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DETECT_METAL_SPHERE), FX_DETECT_METAL_SPHERE_TPAGE, FX_DETECT_METAL_SPHERE_CLUT, FX_DETECT_METAL_SPHERE_U, FX_DETECT_METAL_SPHERE_V);
         work->scale5C.vx = 0x333;
         work->scale5C.vy = 0x333;
         work->scale5C.vz = 0x333;
@@ -75,68 +75,68 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         switch (frame) {
         case 0:
-            work->timers0[0] = 0x10;
-            work->timers0[2] = 0x50;
+            work->timers0[FX_DETECT_T_RISE] = FX_DETECT_RISE_FRAMES;
+            work->timers0[FX_DETECT_T_SPHERE] = FX_DETECT_FRAMES;
             break;
-        case 0x14:
-            work->timers0[4] = 8;
-            work->timers0[6] = 1;
+        case FX_DETECT_BLUE_SPIKES_FRAME:
+            work->timers0[FX_DETECT_T_FLASH] = FX_DETECT_FLASH_FRAMES;
+            work->timers0[FX_DETECT_T_AIM] = 1;
             work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_BLUE_SPIKES), (s32)&work->pos44);
             break;
-        case 0x20:
+        case FX_DETECT_GLYPH_TEXT_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_GLYPH_TEXT), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 0x40:
-            work->timers0[1] = 0x10;
+        case FX_DETECT_SINK_FRAME:
+            work->timers0[FX_DETECT_T_SINK] = FX_DETECT_SINK_FRAMES;
             break;
-        case 0x50:
-            work->timers0[2] = 0;
+        case FX_DETECT_FRAMES:
+            work->timers0[FX_DETECT_T_SPHERE] = 0;
             break;
         }
-        if (work->timers0[0] != 0) {
-            work->timers0[0]--;
+        if (work->timers0[FX_DETECT_T_RISE] != 0) {
+            work->timers0[FX_DETECT_T_RISE]--;
             work->pos4C.vx = work->pos44.vx = work->homePos28.vx;
-            work->pos4C.vy = work->pos44.vy = work->homePos28.vy - ((ex->math_sin(work->timers0[0] << 7) * (0x10 - work->timers0[0])) >> 7);
-            work->pos4C.vz = work->pos44.vz = work->homePos28.vz + ((ex->math_cos(work->timers0[0] << 7) * (0x10 - work->timers0[0])) >> 7);
+            work->pos4C.vy = work->pos44.vy = work->homePos28.vy - ((ex->math_sin(work->timers0[FX_DETECT_T_RISE] << 7) * (FX_DETECT_RISE_FRAMES - work->timers0[FX_DETECT_T_RISE])) >> 7);
+            work->pos4C.vz = work->pos44.vz = work->homePos28.vz + ((ex->math_cos(work->timers0[FX_DETECT_T_RISE] << 7) * (FX_DETECT_RISE_FRAMES - work->timers0[FX_DETECT_T_RISE])) >> 7);
             ex->btlfx_aimAngles(&work->pos30.vx, &work->pos44.vx, &work->rot3C.vx);
             ex->btlfx_aimAngles(&work->pos44.vx, &work->pos30.vx, &work->aimRot6C.vx);
-            work->scale5C.vx = work->scale5C.vy = work->scale5C.vz = ex->math_cos(work->timers0[0] << 6) / 5;
+            work->scale5C.vx = work->scale5C.vy = work->scale5C.vz = ex->math_cos(work->timers0[FX_DETECT_T_RISE] << 6) / 5;
         }
-        if (work->timers0[1] != 0) {
-            work->timers0[1]--;
+        if (work->timers0[FX_DETECT_T_SINK] != 0) {
+            work->timers0[FX_DETECT_T_SINK]--;
             work->pos4C.vx = work->pos44.vx = work->homePos28.vx;
-            work->pos4C.vy = work->pos44.vy = work->homePos28.vy - ((ex->math_sin((0x10 - work->timers0[1]) << 7) * work->timers0[1]) >> 7);
-            work->pos4C.vz = work->pos44.vz = work->homePos28.vz + ((ex->math_cos((0x10 - work->timers0[1]) << 7) * work->timers0[1]) >> 7);
-            work->rot3C.vx -= work->timers0[1] * work->timers0[1] * 4;
-            work->scale5C.vx = work->scale5C.vy = work->scale5C.vz = ex->math_cos((0x10 - work->timers0[1]) << 6) / 5;
+            work->pos4C.vy = work->pos44.vy = work->homePos28.vy - ((ex->math_sin((FX_DETECT_SINK_FRAMES - work->timers0[FX_DETECT_T_SINK]) << 7) * work->timers0[FX_DETECT_T_SINK]) >> 7);
+            work->pos4C.vz = work->pos44.vz = work->homePos28.vz + ((ex->math_cos((FX_DETECT_SINK_FRAMES - work->timers0[FX_DETECT_T_SINK]) << 7) * work->timers0[FX_DETECT_T_SINK]) >> 7);
+            work->rot3C.vx -= work->timers0[FX_DETECT_T_SINK] * work->timers0[FX_DETECT_T_SINK] * 4;
+            work->scale5C.vx = work->scale5C.vy = work->scale5C.vz = ex->math_cos((FX_DETECT_SINK_FRAMES - work->timers0[FX_DETECT_T_SINK]) << 6) / 5;
         }
-        if (work->timers0[6] != 0 && work->emit74 != NULL) {
+        if (work->timers0[FX_DETECT_T_AIM] != 0 && work->emit74 != NULL) {
             work->emit74->rot.vx = work->aimRot6C.vx;
             work->emit74->rot.vy = work->aimRot6C.vy;
             work->emit74->rot.vz = work->aimRot6C.vz;
         }
-        if (work->timers0[2] != 0) {
-            work->timers0[2]--;
+        if (work->timers0[FX_DETECT_T_SPHERE] != 0) {
+            work->timers0[FX_DETECT_T_SPHERE]--;
             work->pos4C.vy = work->pos44.vy + (ex->math_sin(frame << 7) >> 8);
             ex->Hi_DrawEffModel(&work->rot3C, &work->pos4C, (s32)&work->scale5C, work->model38);
         }
-        if (work->timers0[4] != 0) {
-            work->timers0[4]--;
-            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, fx_0fa_scrollSrc0[work->timers0[4] >> 1].srcX0,
-                              fx_0fa_scrollSrc0[work->timers0[4] >> 1].srcY4);
+        if (work->timers0[FX_DETECT_T_FLASH] != 0) {
+            work->timers0[FX_DETECT_T_FLASH]--;
+            ex->btlfx_drawScrollMove(0, FX_DETECT_SPHERE_VRAM_X, FX_DETECT_SPHERE_VRAM_Y, FX_DETECT_SPHERE_VRAM_W, FX_DETECT_SPHERE_VRAM_H, fx_0fa_scrollSrc0[work->timers0[FX_DETECT_T_FLASH] >> 1].srcX0,
+                              fx_0fa_scrollSrc0[work->timers0[FX_DETECT_T_FLASH] >> 1].srcY4);
         }
-        if (work->timers0[5] != 0) {
-            work->timers0[5]--;
-            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, fx_0fa_scrollSrc1[work->timers0[5]].srcX0, fx_0fa_scrollSrc1[work->timers0[5]].srcY4);
-        } else if (frame > 0x20) {
+        if (work->timers0[FX_DETECT_T_FLICKER] != 0) {
+            work->timers0[FX_DETECT_T_FLICKER]--;
+            ex->btlfx_drawScrollMove(0, FX_DETECT_SPHERE_VRAM_X, FX_DETECT_SPHERE_VRAM_Y, FX_DETECT_SPHERE_VRAM_W, FX_DETECT_SPHERE_VRAM_H, fx_0fa_scrollSrc1[work->timers0[FX_DETECT_T_FLICKER]].srcX0, fx_0fa_scrollSrc1[work->timers0[FX_DETECT_T_FLICKER]].srcY4);
+        } else if (frame > FX_DETECT_GLYPH_TEXT_FRAME) {
             if (!(ex->btlfx_rand() & 7)) {
-                work->timers0[5] = 4;
+                work->timers0[FX_DETECT_T_FLICKER] = FX_DETECT_FLICKER_FRAMES;
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_DETECT_FRAMES;
     }
     return 0;
 }

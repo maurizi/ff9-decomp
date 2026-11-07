@@ -7,12 +7,12 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 target;
 
     if (mode == 0) {
-        *args = 0xAC;
+        *args = sizeof(Fx126Work);
     } else if (mode == 1) {
         fx_126_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->pos60);
         ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->pos58);
-        ex->btlfx_initEffModels(fx_126_effModels, 2);
+        ex->btlfx_initEffModels(fx_126_effModels, FX_BOOMERANG_MODEL_SLOTS);
         work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BOOMERANG_CURVED_BLADE), 0xFF);
         work->model4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BOOMERANG_CURVED_BLADE), 0xFF);
         work->rot28.vy = 0x700;
@@ -22,26 +22,26 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale38.vx = 0x2000;
         work->scale38.vy = 0x2000;
         work->scale38.vz = 0x2000;
-        work->pos50.vz = -0x6E0;
-        work->pos68.vx = 0x692;
-        work->pos70.vx = -0x692;
+        work->pos50.vz = -FX_BOOMERANG_REACH;
+        work->pos68.vx = FX_BOOMERANG_SWING_WIDTH;
+        work->pos70.vx = -FX_BOOMERANG_SWING_WIDTH;
         work->rot28.vx = 0;
         work->rot30.vx = 0;
         work->pos50.vx = 0;
         work->pos50.vy = 0;
         work->pos68.vy = 0;
         work->pos70.vy = 0;
-        work->pos68.vz = (work->pos58.vz - 0x6E0) >> 1;
-        work->pos70.vz = (work->pos60.vz - 0x6E0) >> 1;
-        for (target = 3; target >= 0; target--) {
+        work->pos68.vz = (work->pos58.vz - FX_BOOMERANG_REACH) >> 1;
+        work->pos70.vz = (work->pos60.vz - FX_BOOMERANG_REACH) >> 1;
+        for (target = FX_BOOMERANG_TARGETS - 1; target >= 0; target--) {
             work->done9C[target] = 0;
         }
     } else {
     frame = entry->frame;
-    if (frame >= 1 && frame <= 0x18) {
-        fx_126_quarticBezier(0x18, frame, &work->pos58, &work->pos70, &work->pos50, &work->pos68, &work->pos60, &work->pos8);
+    if (frame >= 1 && frame <= FX_BOOMERANG_FLIGHT_FRAMES) {
+        fx_126_quarticBezier(FX_BOOMERANG_FLIGHT_FRAMES, frame, &work->pos58, &work->pos70, &work->pos50, &work->pos68, &work->pos60, &work->pos8);
         ex->Hi_DrawEffModel(&work->rot28, &work->pos8, (s32)&work->scale38, work->model0);
-        fx_126_quarticBezier(0x18, frame, &work->pos60, &work->pos68, &work->pos50, &work->pos70, &work->pos58, &work->pos18);
+        fx_126_quarticBezier(FX_BOOMERANG_FLIGHT_FRAMES, frame, &work->pos60, &work->pos68, &work->pos50, &work->pos70, &work->pos58, &work->pos18);
         ex->Hi_DrawEffModel(&work->rot30, &work->pos18, (s32)&work->scale38, work->model4);
         work->rot28.vy -= 0x180;
         work->rot30.vy += 0x180;
@@ -53,7 +53,7 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[1].vz = work->pos18.vz;
     }
     switch (frame) {
-    case 8:
+    case FX_BOOMERANG_HIT_FRAME:
         work->done9C[0] = 1;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos7C[0]);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BOOMERANG_SWIRL), (s32)&work->pos7C[0]);
@@ -81,7 +81,7 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         break;
-    case 10:
+    case FX_BOOMERANG_HIT_2_FRAME:
         target = 1;
         if (target >= env->targets->targetCount) {
             target = env->targets->targetCount - 1;
@@ -116,7 +116,7 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         break;
     }
-    return frame >= 0x20;
+    return frame >= FX_BOOMERANG_FRAMES;
     }
     return 0;
 }

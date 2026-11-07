@@ -10,6 +10,11 @@
 #define FX_MIST_SWIRL 0x2 /* emitter: blue-grey mist puffs orbiting */
 #define FX_MIST_CLOUD 0x3 /* emitter: blue-grey mist puffs */
 
+/* fx_103 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_MIST_SPREAD      0x1F4 /* the two CLOUDs (from the caster's two arg bones) aim at points this far left / right of the target */
+#define FX_MIST_SWIRL_FRAME 0x10  /* SWIRL starts at the target */
+#define FX_MIST_FRAMES      0x50  /* op80's length (the op ends) */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;
@@ -20,7 +25,7 @@ typedef struct {
     SVECTOR pos30;
     Pool6CEntry *emit38;
     Pool6CEntry *emit3C;
-} Fx103Work;
+} Fx103Work; /* 0x40 */
 
 extern Unk800F78A4 *fx_103_env;
 

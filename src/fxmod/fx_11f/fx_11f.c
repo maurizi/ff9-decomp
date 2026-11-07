@@ -5,7 +5,7 @@ s32 fx_11f_op80(s32 mode, Fx11fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx11fWork);
     } else if (mode == 1) {
         fx_11f_env = env;
         env->camera->paused = 0;
@@ -16,19 +16,19 @@ s32 fx_11f_op80(s32 mode, Fx11fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xC) {
+        if (frame == FX_DARK_MATTER_VIOLET_RINGS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARK_MATTER_VIOLET_RINGS), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame == 0x12) {
+        if (frame == FX_DARK_MATTER_BOLT_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARK_MATTER_BOLT_TRAIL), (s32)&work->pos10);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DARK_MATTER_BOLT_RINGS), (s32)&work->pos10);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_11f_op80Trails;
-                work->emit8->trailSlots = 0x14;
-                work->emit8->trailStride = 0x90;
+                work->emit8->trailSlots = FX_DARK_MATTER_BOLT_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_DARK_MATTER_BOLT_TRAIL_STRIDE;
                 if (work->emit8 != NULL) {
                     work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
@@ -37,7 +37,7 @@ s32 fx_11f_op80(s32 mode, Fx11fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        return frame >= 0x32;
+        return frame >= FX_DARK_MATTER_FRAMES;
     }
     return 0;
 }

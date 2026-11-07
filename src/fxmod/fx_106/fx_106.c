@@ -2,10 +2,10 @@
 
 static s32 fx_106_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_106_env);
-    s32 t = (frame - 4) << 8;
+    s32 t = (frame - FX_MUCUS_ARC_START_FRAME) << 8;
 
     ex->btlfx_lerpVec((s16 *)&fx_106_pathStart, (s16 *)&fx_106_pathEnd, t, (s16 *)pos);
-    pos->vy -= (ex->math_sin(t >> 1) * 200) >> 12;
+    pos->vy -= (ex->math_sin(t >> 1) * FX_MUCUS_ARC_HEIGHT) >> 12;
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
@@ -19,7 +19,7 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx106Work80);
     } else if (mode == 1) {
         fx_106_env = env;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot8);
@@ -36,8 +36,8 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_BUBBLE_TRAIL), (s32)&work->pos20);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_106_op80Trails;
-            work->emit0->trailSlots = 0x23;
-            work->emit0->trailStride = 0x20;
+            work->emit0->trailSlots = FX_MUCUS_SLIME_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_MUCUS_SLIME_TRAIL_STRIDE;
             if (work->emit0 != NULL) {
                 ((Fx106EffHdr *)work->emit0->file)->motion8 = fx_106_op80ParticleMotion;
                 if (work->emit0 != NULL) {
@@ -49,7 +49,7 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_MUCUS_SPIT_FRAMES;
     }
     return 0;
 }
@@ -59,7 +59,7 @@ s32 fx_106_op81(s32 mode, Fx106Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx106Work81);
     } else if (mode == 1) {
         fx_106_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -71,20 +71,20 @@ s32 fx_106_op81(s32 mode, Fx106Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_YELLOW_RINGS), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_106_op81Trails0;
-            work->emit0->trailSlots = 0x33;
-            work->emit0->trailStride = 0x20;
+            work->emit0->trailSlots = FX_MUCUS_BUBBLE_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_MUCUS_BUBBLE_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_MUCUS_SPLASH_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUCUS_SPLASH_STREAK), (s32)&work->posC);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_106_op81Trails1;
-                work->emit8->trailSlots = 0x1E;
-                work->emit8->trailStride = 0x70;
+                work->emit8->trailSlots = FX_MUCUS_SPLASH_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_MUCUS_SPLASH_TRAIL_STRIDE;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_MUCUS_HIT_FRAMES;
     }
     return 0;
 }

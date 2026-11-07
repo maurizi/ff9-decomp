@@ -16,6 +16,18 @@
 #define FX_SOLUTION_VIOLET_SMOKE 0x7 /* emitter: violet smoke clouds */
 #define FX_SOLUTION_VIOLET_RINGS 0x8 /* emitter: violet gouraud rings, 24 frames */
 
+/* fx_100 choreography (docs/fxdata.md, "Choreography literals"): the two ops' keys and trail buffers. */
+#define FX_SOLUTION_DUST_PUFF_FRAME      4    /* op80: DUST_PUFF starts at the caster's bone 0x22, on the ground */
+#define FX_SOLUTION_SPIRAL_FRAME         0xC  /* SPIRAL_TRAIL starts at the target */
+#define FX_SOLUTION_HIT_FRAME            0xE  /* the target's hit motion, OLIVE_RINGS, DUST_WISPS, PINK_STREAK_ORBIT; from here the target returns to its idle motion */
+#define FX_SOLUTION_SPIRAL_TRAIL_SLOTS   9    /* SPIRAL_TRAIL's trail buffer (fx_100_op80Trails): slots */
+#define FX_SOLUTION_SPIRAL_TRAIL_STRIDE  0x90 /* bytes per slot */
+#define FX_SOLUTION_HIT_OP_FRAMES        0x28 /* op80's length */
+#define FX_SOLUTION_SPECK_TRAIL_SLOTS    0x1A /* op81: SPECK_TRAIL (frame 0, at the caster's bone 0x11) trail buffer (fx_100_op81Trails): slots */
+#define FX_SOLUTION_SPECK_TRAIL_STRIDE   0x60 /* bytes per slot */
+#define FX_SOLUTION_SMOKE_FRAME          4    /* VIOLET_SMOKE and VIOLET_RINGS start at the target */
+#define FX_SOLUTION_SMOKE_OP_FRAMES      0x28 /* op81's length */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -25,7 +37,8 @@ typedef struct {
     SVECTOR pos14; /* caster position */
     SVECTOR pos1C; /* target position */
     SVECTOR pos24;
-} Fx100Work80;
+    u8 unused2C[8]; /* op80's mode 0 asks for 0x34 */
+} Fx100Work80; /* 0x34 */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -33,7 +46,7 @@ typedef struct {
     Pool6CEntry *emit8;
     SVECTOR posC; /* target position */
     SVECTOR pos14;
-} Fx100Work81;
+} Fx100Work81; /* 0x1C */
 
 extern Unk800F78A4 *fx_100_env;
 extern s32 fx_100_op80Trails[];

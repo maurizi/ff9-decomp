@@ -9,10 +9,13 @@
  * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_MAGIC_TAG_GLOW 0x4 /* emitter: blue-white glow sprite + a fan element */
 
+/* fx_119 choreography (docs/fxdata.md, "Choreography literals"). */
+#define FX_MAGIC_TAG_FRAMES 0x28 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx119Work;
+} Fx119Work; /* 0xC */
 
 extern Unk800F78A4 *fx_119_env;
 

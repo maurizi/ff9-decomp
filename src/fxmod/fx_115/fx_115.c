@@ -9,10 +9,10 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 rgb;
 
     if (mode == 0) {
-        *args = 0xA4;
+        *args = sizeof(Fx115Work80);
     } else if (mode == 1) {
         fx_115_env = env;
-        ex->btlfx_initEffModels(fx_115_effModels, 2);
+        ex->btlfx_initEffModels(fx_115_effModels, FX_THROW_MODEL_SLOTS);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos10);
@@ -28,8 +28,8 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->modelA2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_THROW_PINWHEEL), 1);
     } else {
         frame = entry->frame;
-        if (frame < 8) {
-            t = (frame << 12) / 6;
+        if (frame < FX_THROW_PATH_FRAMES) {
+            t = (frame << 12) / FX_THROW_FLIGHT_FRAMES;
             ex->btlfx_lerpVec((s16 *)&work->pos0, (s16 *)&work->pos8, t, (s16 *)&pos);
             work->pos20.vx = pos.vx;
             work->pos20.vy = pos.vy;
@@ -37,11 +37,11 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->math_sin(t >> 1);
         }
         ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->modelA0);
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_THROW_AFTERIMAGES; i++) {
             if (frame >= i + 1) {
-                rgb = -(i * 20);
+                rgb = -(i * FX_THROW_AFTERIMAGE_DIM);
                 ex->Hi_DrawEffModel(&work->rot40[i], &work->pos60[i], (s32)&work->scale30, work->modelA2);
-                ex->Hi_ModifyEffModelAbr(work->modelA2, 3);
+                ex->Hi_ModifyEffModelAbr(work->modelA2, BTLFX_ABR_QUARTER);
                 ex->Hi_ModifyEffModelRGB(work->modelA2, rgb, rgb, rgb);
             }
         }
@@ -69,7 +69,7 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos60[0].vx = work->pos20.vx;
         work->pos60[0].vy = work->pos20.vy;
         work->pos60[0].vz = work->pos20.vz;
-        if (frame >= 6) {
+        if (frame >= FX_THROW_FLIGHT_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -81,7 +81,7 @@ s32 fx_115_op81(s32 mode, Fx115Work80_0bd *work, Unk800F78A4 *env, Unk80100C78En
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx115Work80_0bd);
     } else if (mode == 1) {
         fx_115_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
@@ -90,7 +90,7 @@ s32 fx_115_op81(s32 mode, Fx115Work80_0bd *work, Unk800F78A4 *env, Unk80100C78En
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_THROW_IMPACT_FRAMES;
     }
     return 0;
 }

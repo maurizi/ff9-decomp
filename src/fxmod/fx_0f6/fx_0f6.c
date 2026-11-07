@@ -8,7 +8,7 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx0f6Layer *lineRef;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx0f6Work);
     } else if (mode == 1) {
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
@@ -25,7 +25,7 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         lineRef = fx_0f6_lines;
         line = fx_0f6_lines;
-        for (i = 0; i < 4; i++, line++, lineRef++) {
+        for (i = 0; i < FX_MEO_TWISTER_LINE_COUNT; i++, line++, lineRef++) {
             if (line->done2 == 0 && frame >= line->start4 && frame < line->end6) {
                 ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, lineRef->block0), &work->linePos10, line->frame8,
                                   line->alphaA);
@@ -36,13 +36,13 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 line->frame8++;
             }
         }
-        if (frame == 0x14) {
+        if (frame == FX_MEO_TWISTER_FIRE_ORBS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MEO_TWISTER_FIRE_ORBS), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x100;
             }
         }
-        return frame >= 0x3C;
+        return frame >= FX_MEO_TWISTER_FRAMES;
     }
     return 0;
 }

@@ -72,7 +72,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x8C;
+        *args = sizeof(Fx123Work80);
     } else if (mode == 1) {
         fx_123_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos4C);
@@ -85,38 +85,38 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     frame = entry->frame;
     switch (frame) {
     case 0:
-        for (i = 0; i < 6; i++) {
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++) {
             work->emit0[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES_2), (s32)&fx_123_emitPos0[i]);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
         }
         break;
-    case 20:
-        for (i = 0; i < 6; i++) {
+    case FX_RAINING_SWORDS_FLAMES_2_FRAME:
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++) {
             work->emit18[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES_2), (s32)&fx_123_emitPos0[i]);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;
             }
         }
         break;
-    case 30:
-        for (i = 0; i < 6; i++) {
+    case FX_RAINING_SWORDS_FLAMES_3_FRAME:
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++) {
             work->emit30[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES_3), (s32)&fx_123_emitPos1[i]);
         }
         break;
-    case 43:
+    case FX_RAINING_SWORDS_SPECKS_FRAME:
         work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SPECKS), (s32)&work->pos54);
         break;
-    case 38:
-        for (i = 0; i < 6; i++) {
+    case FX_RAINING_SWORDS_FLAMES_STOP_FRAME:
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++) {
             ex->btlfx_stopEmitter(work->emit18[i]);
         }
         break;
     }
-    if (frame >= 0 && frame < 0x12) {
+    if (frame >= 0 && frame < FX_RAINING_SWORDS_FLAMES_FOLLOW_FRAMES) {
         bone = fx_123_op80Bones;
-        for (i = 0; i < 6; i++, bone++) {
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++, bone++) {
             ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
@@ -125,9 +125,9 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_moveEmitterTo((s32)work->emit0[i], (s32)&work->pos5C[i]);
         }
     }
-    if (frame >= 0x14 && frame < 0x26) {
+    if (frame >= FX_RAINING_SWORDS_FLAMES_2_FRAME && frame < FX_RAINING_SWORDS_FLAMES_STOP_FRAME) {
         bone = fx_123_op80Bones;
-        for (i = 0; i < 6; i++, bone++) {
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++, bone++) {
             ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit18[i] != NULL && work->emit18[i]->state == BTLFX_EMIT_DONE) {
@@ -136,9 +136,9 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_moveEmitterTo((s32)work->emit18[i], (s32)&work->pos5C[i]);
         }
     }
-    if (frame >= 0x1E && frame < 0x37) {
+    if (frame >= FX_RAINING_SWORDS_FLAMES_3_FRAME && frame < FX_RAINING_SWORDS_FLAMES_3_END_FRAME) {
         bone = fx_123_op80Bones;
-        for (i = 0; i < 6; i++, bone++) {
+        for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++, bone++) {
             ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit30[i] != NULL && work->emit30[i]->state == BTLFX_EMIT_DONE) {
@@ -147,7 +147,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_moveEmitterTo((s32)work->emit30[i], (s32)&work->pos5C[i]);
         }
     }
-    return frame >= 0x50;
+    return frame >= FX_RAINING_SWORDS_SUMMON_FRAMES;
     }
     return 0;
 }
@@ -167,39 +167,39 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 path;
 
     if (mode == 0) {
-        *args = 0x188;
+        *args = sizeof(Fx123Work81);
     } else if (mode == 1) {
         fx_123_env = env;
-        ex->btlfx_initEffModels(fx_123_effModels, 7);
+        ex->btlfx_initEffModels(fx_123_effModels, FX_RAINING_SWORDS_MODEL_SLOTS);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos64);
-        for (path = 0; path < 6; path++) {
+        for (path = 0; path < FX_RAINING_SWORDS_COUNT; path++) {
             fxm_rotPosPathInit((Fx123Path *)&fx_123_rotPosPath[path], (u16 *)ex->btlfx_getFileData(entry->file, fx_123_pathFileIds[path]));
             setVector(&work->rot6C[path], 0, 0, 0);
             setVector(&work->pos9C[path], 0, 0, 0);
-            work->model17A[path] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SWORD), 0x97, 0x3D40, 0x80, 0);
+            work->model17A[path] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SWORD), FX_RAINING_SWORDS_SWORD_TPAGE, FX_RAINING_SWORDS_SWORD_CLUT, FX_RAINING_SWORDS_SWORD_U, FX_RAINING_SWORDS_SWORD_V);
         }
         setVector(&work->scaleFC, 0x1000, 0x1000, 0x1000);
-        work->model186 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SWORD_RING), 0x97, 0x3D40, 0x80, 0);
+        work->model186 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SWORD_RING), FX_RAINING_SWORDS_SWORD_TPAGE, FX_RAINING_SWORDS_SWORD_CLUT, FX_RAINING_SWORDS_SWORD_U, FX_RAINING_SWORDS_SWORD_V);
         work->unk178 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
             work->pos140.vx = work->pos64.vx;
-            work->pos140.vy = work->pos64.vy - 0x1013;
-            work->pos140.vz = work->pos64.vz - 0x5F5;
+            work->pos140.vy = work->pos64.vy - FX_RAINING_SWORDS_RING_HEIGHT;
+            work->pos140.vz = work->pos64.vz - FX_RAINING_SWORDS_RING_BACK;
             work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_RINGS_2), (s32)&work->pos140);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
             break;
-        case 11:
-            for (j = 0; j < 6; j++) {
+        case FX_RAINING_SWORDS_RING_END_FRAME:
+            for (j = 0; j < FX_RAINING_SWORDS_COUNT; j++) {
                 work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_FLAMES), (s32)&fx_123_emitPos2[j]);
             }
             break;
-        case 19:
-            for (shot = fx_123_op81Shots, j = 0; j < 6; j++, shot++) {
+        case FX_RAINING_SWORDS_SHOT_FRAME:
+            for (shot = fx_123_op81Shots, j = 0; j < FX_RAINING_SWORDS_COUNT; j++, shot++) {
                 shot->pos0.vx = env->targets->centerX;
                 shot->pos0.vy = work->pos9C[j].vy;
                 shot->pos0.vz = env->targets->centerZ;
@@ -222,35 +222,35 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         env->camera->points[0].vx = work->pos64.vx;
         env->camera->points[0].vy = work->pos64.vy;
-        env->camera->points[0].vz = work->pos64.vz - 0x5F5;
-        if (frame >= 0 && frame < 0x32) {
+        env->camera->points[0].vz = work->pos64.vz - FX_RAINING_SWORDS_RING_BACK;
+        if (frame >= 0 && frame < FX_RAINING_SWORDS_SWORDS_FRAMES) {
             shotFrame = frame;
-            if (frame >= 3 && frame < 11) {
+            if (frame >= FX_RAINING_SWORDS_RING_FRAME && frame < FX_RAINING_SWORDS_RING_END_FRAME) {
                 pos.vx = work->pos64.vx;
-                pos.vy = work->pos64.vy - 0x1013;
-                pos.vz = work->pos64.vz - 0x5F5;
+                pos.vy = work->pos64.vy - FX_RAINING_SWORDS_RING_HEIGHT;
+                pos.vz = work->pos64.vz - FX_RAINING_SWORDS_RING_BACK;
                 setVector(&rot, 0, 0, 0);
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&work->scaleFC, work->model186);
-                for (i = 0; i < 6; i++) {
-                    fxm_rotPosPathGet(&fx_123_rotPosPath[i], 3, &work->rot6C[i], &work->pos148[i]);
+                for (i = 0; i < FX_RAINING_SWORDS_COUNT; i++) {
+                    fxm_rotPosPathGet(&fx_123_rotPosPath[i], FX_RAINING_SWORDS_RING_PATH_FRAME, &work->rot6C[i], &work->pos148[i]);
                     addVector(&work->pos148[i], &work->pos64);
                 }
             } else {
-                if (frame >= 11) {
-                    shotFrame = frame - 8;
+                if (frame >= FX_RAINING_SWORDS_RING_END_FRAME) {
+                    shotFrame = frame - (FX_RAINING_SWORDS_RING_END_FRAME - FX_RAINING_SWORDS_RING_FRAME);
                 }
-                for (shot = fx_123_op81Shots, i = 0; i < 6; i++, shot++) {
+                for (shot = fx_123_op81Shots, i = 0; i < FX_RAINING_SWORDS_COUNT; i++, shot++) {
                     if (shot->active18 == 0) {
                         continue;
                     }
-                    if (shotFrame >= 0 && shotFrame < 11) {
-                        pathFrame = frame >= 11 ? frame - 8 : frame;
+                    if (shotFrame >= 0 && shotFrame < FX_RAINING_SWORDS_PATH_FRAMES) {
+                        pathFrame = frame >= FX_RAINING_SWORDS_RING_END_FRAME ? frame - (FX_RAINING_SWORDS_RING_END_FRAME - FX_RAINING_SWORDS_RING_FRAME) : frame;
                         fxm_rotPosPathGet(&fx_123_rotPosPath[i], pathFrame, &work->rot6C[i], &work->pos148[i]);
                         copyVector(&work->pos9C[i], &work->pos148[i]);
                         addVector(&work->pos9C[i], &work->pos64);
                         addVector(&work->pos148[i], &work->pos64);
-                    } else if (shotFrame >= shot->frame1A + 13 && shotFrame < shot->frame1A + 17) {
-                        flyFrame = shotFrame - 13;
+                    } else if (shotFrame >= shot->frame1A + FX_RAINING_SWORDS_SHOT_DELAY && shotFrame < shot->frame1A + FX_RAINING_SWORDS_SHOT_DELAY + FX_RAINING_SWORDS_SHOT_FLY_FRAMES) {
+                        flyFrame = shotFrame - FX_RAINING_SWORDS_SHOT_DELAY;
                         if (flyFrame < shot->frame1A) {
                             continue;
                         }
@@ -260,8 +260,8 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                 emitter->otZ = 0x80;
                                 if (work->emit30[i] != NULL) {
                                     work->emit30[i]->trails = (s32)fx_123_op81Trails[i];
-                                    work->emit30[i]->trailSlots = 2;
-                                    work->emit30[i]->trailStride = 0x70;
+                                    work->emit30[i]->trailSlots = FX_RAINING_SWORDS_SHOT_TRAIL_SLOTS;
+                                    work->emit30[i]->trailStride = FX_RAINING_SWORDS_SHOT_TRAIL_STRIDE;
                                     if (work->emit30[i] != NULL) {
                                         *(s32 *)&work->emit30[i]->file->m.module.update = fx_123_pinParticles[i];
                                     }
@@ -273,7 +273,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ex->btlfx_lerpVec((s16 *)&shot->pos0, (s16 *)&shot->pos10, flyFrame << 10, (s16 *)&work->pos148[i]);
                         copyVector(&work->pos9C[i], &work->pos148[i]);
                     }
-                    if (shotFrame == shot->frame1A + 17) {
+                    if (shotFrame == shot->frame1A + FX_RAINING_SWORDS_SHOT_DELAY + FX_RAINING_SWORDS_SHOT_FLY_FRAMES) {
                         copyVector(&work->pos110[i], &work->pos148[i]);
                         work->pos110[i].vy += 0x154;
                         work->emit48[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_FLAME_SPIRAL), (s32)&work->pos110[i]);
@@ -282,37 +282,37 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                     }
                     copyVector(&fx_123_pinPos0[i], &work->pos9C[i]);
-                    if (shotFrame == shot->frame1A + 21) {
-                        shot->timer1E = 4;
+                    if (shotFrame == shot->frame1A + FX_RAINING_SWORDS_SHOT_FADE_FRAME) {
+                        shot->timer1E = FX_RAINING_SWORDS_SHOT_FADE_FRAMES;
                     }
-                    if (shotFrame >= shot->frame1A + 16) {
+                    if (shotFrame >= shot->frame1A + FX_RAINING_SWORDS_SLICE_FRAME) {
                         ex->Hi_SetEffModelSlice(work->model17A[i], work->pos9C[i].vy - 100);
                         ex->Hi_DrawSliceEffModel(&work->rot6C[i], &work->pos9C[i], (s32)&work->scaleFC, work->model17A[i]);
                     } else {
                         ex->Hi_DrawEffModel(&work->rot6C[i], &work->pos9C[i], (s32)&work->scaleFC, work->model17A[i]);
                     }
                     if (shot->timer1E >= 0) {
-                        work->fade10C = fxm_lerpRatio(0, -0x80, 4 - shot->timer1E, 4);
+                        work->fade10C = fxm_lerpRatio(0, -0x80, FX_RAINING_SWORDS_SHOT_FADE_FRAMES - shot->timer1E, FX_RAINING_SWORDS_SHOT_FADE_FRAMES);
                         if (shot->timer1E == 0) {
                             shot->active18 = 0;
                         } else {
                             shot->timer1E--;
                         }
-                        ex->Hi_ModifyEffModelAbr(work->model17A[i], 1);
+                        ex->Hi_ModifyEffModelAbr(work->model17A[i], BTLFX_ABR_ADD);
                         ex->Hi_ModifyEffModelRGB(work->model17A[i], work->fade10C, work->fade10C, work->fade10C);
                     }
                 }
             }
         }
-        if (frame >= 11 && frame < 29) {
-            for (j = 0; j < 6; j++) {
+        if (frame >= FX_RAINING_SWORDS_RING_END_FRAME && frame < FX_RAINING_SWORDS_FLAMES_END_FRAME) {
+            for (j = 0; j < FX_RAINING_SWORDS_COUNT; j++) {
                 if (work->emit0[j] != NULL && work->emit0[j]->state == BTLFX_EMIT_DONE) {
                     work->emit0[j] = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->emit0[j], (s32)&work->pos148[j]);
             }
         }
-        if (frame >= 0x50) {
+        if (frame >= FX_RAINING_SWORDS_RAIN_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -325,7 +325,7 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx123Work82);
     } else if (mode == 1) {
         work->pos14.vx = env->targets->centerX;
         work->pos14.vy = env->targets->centerY;
@@ -339,12 +339,12 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_SPECKS), (s32)&work->pos14);
             work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_BLUE_RINGS), (s32)&work->pos14);
             break;
-        case 0xC:
+        case FX_RAINING_SWORDS_RINGS_FRAME:
             work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_RINGS), (s32)&work->pos14);
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAINING_SWORDS_CYAN_SPECKS), (s32)&work->pos14);
             break;
         }
-        return frame >= 0x1E;
+        return frame >= FX_RAINING_SWORDS_HIT_FRAMES;
     }
     return 0;
 }
@@ -354,7 +354,7 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 4;
+        *args = sizeof(Fx123Work83);
     } else if (mode == 1) {
         fx_123_env = env;
         work->timer2 = -1;
@@ -363,22 +363,22 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->timer0 = 0x10;
+            work->timer0 = FX_RAINING_SWORDS_FLASH_IN_FRAMES;
             break;
-        case 20:
-            work->timer2 = 0x10;
+        case FX_RAINING_SWORDS_FLASH_OUT_FRAME:
+            work->timer2 = FX_RAINING_SWORDS_FLASH_OUT_FRAMES;
             break;
         }
         if (work->timer0 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->timer0, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, FX_RAINING_SWORDS_FLASH_IN_FRAMES - work->timer0, FX_RAINING_SWORDS_FLASH_IN_FRAMES, BTLFX_ABR_ADD, 0);
             work->timer0--;
         } else if (work->timer2 >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer2, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, FX_RAINING_SWORDS_FLASH_OUT_FRAMES - work->timer2, FX_RAINING_SWORDS_FLASH_OUT_FRAMES, BTLFX_ABR_ADD, 0);
             work->timer2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
         }
-        return frame >= 0x20;
+        return frame >= FX_RAINING_SWORDS_FLASH_FRAMES;
     }
     return 0;
 }

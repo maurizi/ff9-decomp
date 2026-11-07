@@ -51,13 +51,62 @@
 #define FX_ODIN_WHITE_FOLD_2        0x82 /* summon data entry 2: 'so' model, folded white sheet */
 #define FX_ODIN_WHITE_FOLD_3        0x83 /* summon data entry 3: 'so' model, folded white sheet */
 
+/* fx_105 choreography (docs/fxdata.md, "Choreography literals"): op80's keyed timeline (night sky, Odin's
+ * motions, the four camera shots, Zantetsuken's cut and flashes), the lengths written into its countdown fields,
+ * the helpers' meshes and textures. */
+#define FX_ODIN_MODEL_SLOTS        0xF   /* btlfx_initEffModels slots */
+#define FX_ODIN_STAR_COUNT         32    /* fx_105_stars: screen-space stars of the night sky */
+#define FX_ODIN_WIND_STREAK_COUNT  32    /* fx_105_windStreaks */
+#define FX_ODIN_CAM_KEY_SLOTS      16    /* fx_105_camKeys: camera key tracks (fxm_camKeyAdd) */
+#define FX_ODIN_STONE_RIBBONS      8     /* model138: the STONE_RIBBON models, each on its own delay (fx_105_modelTimers) */
+#define FX_ODIN_MOON_FRAMES        0x71  /* timer8 from frame 0: MOON follows camera point 2, fading in */
+#define FX_ODIN_NIGHT_FRAMES       0x93  /* timerC from frame 0: the blue night band over the screen */
+#define FX_ODIN_NIGHT_FADE_IN_FRAMES 0xF /* its fade-in (the fade-out is the last 8 frames) */
+#define FX_ODIN_STARS_FRAMES       0x78  /* timer30 from frame 0: the stars twinkle */
+#define FX_ODIN_STARS_DRIFT_FRAMES 0x28  /* and drift left for the last this many frames */
+#define FX_ODIN_APPEAR_FRAME       0xF   /* Odin appears (summon motion 0) */
+#define FX_ODIN_BLADE_RIBBON_FRAME 0x1E  /* timer4: the ribbon trail along Odin's bone 0x27 */
+#define FX_ODIN_BLADE_RIBBON_FRAMES 0x10
+#define FX_ODIN_DEBRIS_FRAME       0x21  /* SPECK_SPIRAL, PALE_CLOUD(_2) and two WHITE_DEBRIS (on bones 0x4C / 0x60) start */
+#define FX_ODIN_STONE_FRAME        0x41  /* flag10: the STONE_RIBBON models draw from this frame */
+#define FX_ODIN_GALLOP_FRAME       0x51  /* four DEBRIS_SPIRALs on Odin's bones and the wind streaks (timer24) */
+#define FX_ODIN_WIND_FRAMES        0x30  /* timer24 */
+#define FX_ODIN_MOTION_1_FRAME     0x55  /* summon motion 1 */
+#define FX_ODIN_MOTION_2_FRAME     0x7F  /* summon motion 2 */
+#define FX_ODIN_SHOT0_END_FRAME    0x93  /* the first shot ends: emitters stop, Odin hides, summon motion 3 */
+#define FX_ODIN_SHOT1_FRAME        0xA7  /* camera shot 1 (fxm_camKeyAdd); Odin shows again from 0x9C */
+#define FX_ODIN_DEBRIS_RINGS_FRAME 0xAB  /* DEBRIS_RINGS at camera point 2 */
+#define FX_ODIN_CUT_FRAME          0xD8  /* timer14: black screen, then the cut models */
+#define FX_ODIN_CUT_FRAMES         0x21
+#define FX_ODIN_CAM_RIBBON_FRAME   0xE0  /* timer28: the ribbon along CAM_RIBBON_PATH */
+#define FX_ODIN_CAM_RIBBON_FRAMES  8
+#define FX_ODIN_MOTION_4_FRAME     0xE7  /* summon motion 4 */
+#define FX_ODIN_FLASH_FRAME        0xEC  /* timer1C: the white flash band */
+#define FX_ODIN_FLASH_FRAMES       0x10
+#define FX_ODIN_SHOT2_FRAME        0xFB  /* camera shot 2; the frame after: summon motion 5, the targets' motions held, DEBRIS_CONEs */
+#define FX_ODIN_DIM_FRAMES         0x30  /* timer20 from that frame: the dimming band */
+#define FX_ODIN_LIGHT_FRAMES       0x3C  /* timer18 from that frame: the light band */
+#define FX_ODIN_SHOT3_FRAME        0x137 /* camera shot 3; the frame after: summon motion 6, DEBRIS_BURSTs */
+#define FX_ODIN_RELEASE_FRAME      0x146 /* the targets' motions are released */
+#define FX_ODIN_SMOKE_FRAME        0x165 /* Odin leaves: emitters stop, SMOKE_SPIRAL, the world ribbons (timer2C) */
+#define FX_ODIN_SMOKE_FRAMES       0x1C  /* timer2C */
+#define FX_ODIN_CAMERA_RESET_FRAME 0x185 /* camera point 0 is reset */
+#define FX_ODIN_FRAMES             0x1B0 /* op80's length (the op ends) */
+#define FX_ODIN_WIND_TPAGE         0x3A   /* fx_105_drawWindStreaks texture: 4-bit page (0x280, 0x100), abr 1 */
+#define FX_ODIN_WIND_CLUT          0x3D00 /* CLUT at (0x0, 0xF4) */
+#define FX_ODIN_RIBBON_TPAGE       0xB8   /* the camera / world ribbons' texture: 8-bit page (0x200, 0x100), abr 1 */
+#define FX_ODIN_CAM_RIBBON_CLUT    0x3D80 /* fx_105_drawCamRibbon's CLUT at (0x0, 0xF6) */
+#define FX_ODIN_WORLD_RIBBON_CLUT  0x3DC0 /* fx_105_drawWorldRibbon's CLUT at (0x0, 0xF7) */
+#define FX_ODIN_CAM_RIBBON_POINTS  0x11  /* fx_105_camRibbonPts */
+#define FX_ODIN_WORLD_RIBBON_POINTS 0x40 /* fx_105_worldRibbonPts */
+
 extern Unk800F78A4 *fx_105_env;
 typedef struct {
     s16 vx, vy, vz;
     s16 pad, unk8, unkA; /* unused */
 } Fx105Spark; /* 0xC */
 
-extern Fx105Spark fx_105_windStreaks[];
+extern Fx105Spark fx_105_windStreaks[FX_ODIN_WIND_STREAK_COUNT];
 
 void fx_105_drawScreenBand(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb);
 void fx_105_initWindStreaks(void);
@@ -71,14 +120,14 @@ typedef struct {
     s32 z;
 } Fx105RibbonPt; /* 0xC */
 
-extern Fx105RibbonPt fx_105_worldRibbonPts[];
+extern Fx105RibbonPt fx_105_worldRibbonPts[FX_ODIN_WORLD_RIBBON_POINTS];
 
 typedef struct {
     DVECTOR xy0;
     DVECTOR xy1;
 } Fx105BandPt; /* 8 */
 
-extern Fx105BandPt fx_105_camRibbonPts[];
+extern Fx105BandPt fx_105_camRibbonPts[FX_ODIN_CAM_RIBBON_POINTS];
 
 typedef struct {
     SVECTOR pos0;
@@ -150,7 +199,7 @@ typedef struct {
     Pool6CEntry *emit124;
     SVECTOR pos128;
     SVECTOR pos130;
-    s32 model138[8]; /* models */
+    s32 model138[FX_ODIN_STONE_RIBBONS]; /* models */
     s32 pos158[3];
     s32 pad164;
     SVECTOR rot168;
@@ -187,7 +236,7 @@ extern SVECTOR fx_105_modelRot;
 extern VECTOR fx_105_modelPos;
 extern VECTOR fx_105_modelScale;
 extern BtlModelBuf fx_105_effModels[];
-extern Fx105Drop fx_105_stars[32];
+extern Fx105Drop fx_105_stars[FX_ODIN_STAR_COUNT];
 static void fxm_camKeyUpdate(void);
 
 #define SUMMON105(env) ((Fx105Summon *)(env)->loader)
@@ -203,7 +252,7 @@ typedef struct {
 } Fx105Track; /* 0x14 */
 
 extern s32 fx_105_camFrame; /* frame */
-extern Fx105Track fx_105_camKeys[];
+extern Fx105Track fx_105_camKeys[FX_ODIN_CAM_KEY_SLOTS];
 #define FX_105_KEY_FREE (-1) /* timer4: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 static void fxm_camKeyReset(void);
 static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);

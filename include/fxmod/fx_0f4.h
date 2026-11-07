@@ -18,6 +18,27 @@
 #define FX_SHIFT_BREAK_LIGHTNING    0xD /* emitter: white-cyan gouraud rings + blue lightning streak particles */
 #define FX_SHIFT_BREAK_BACKDROP_2   0xE /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
+/* fx_0f4 choreography (docs/fxdata.md, "Choreography literals"): op80's keys, the two domes' rise and sink, their
+ * fades and texture. */
+#define FX_SHIFT_BREAK_MODEL_SLOTS        2    /* btlfx_initEffModels slots: DOME, DOME_2 */
+#define FX_SHIFT_BREAK_VIOLET_HALO_FRAME  0xF  /* VIOLET_HALO starts */
+#define FX_SHIFT_BREAK_DOME_FRAME         0x32 /* the domes draw from this frame, and BACKDROP replaces BACKDROP_2 */
+#define FX_SHIFT_BREAK_DOME_FRAMES        0x30 /* for this many frames */
+#define FX_SHIFT_BREAK_LIGHTNING_FRAME    0x36 /* LIGHTNING and WHITE_GLOW start */
+#define FX_SHIFT_BREAK_FADE_OUT_FRAME     0x52 /* the domes fade out from this frame */
+#define FX_SHIFT_BREAK_FADE_OUT_FRAMES    0x10 /* over this many (fadeOutTimer6A) */
+#define FX_SHIFT_BREAK_FADE_IN_FRAMES     3    /* fade-in length of fadeInTimer68 (never started here) */
+#define FX_SHIFT_BREAK_DOME_DELAY         4    /* DOME draws and grows this many frames after DOME_2 */
+#define FX_SHIFT_BREAK_DOME_RISE_FRAMES   0x10 /* DOME rises for this many frames of the dome phase, then sinks */
+#define FX_SHIFT_BREAK_DOME_2_RISE_FRAMES 0xC  /* DOME_2 likewise */
+#define FX_SHIFT_BREAK_DOME_MAX_WIDTH     0x666 /* the domes' x / z scale stops here */
+#define FX_SHIFT_BREAK_DOME_MAX_HEIGHT    0xCCC /* their y scale */
+#define FX_SHIFT_BREAK_FRAMES             0x78 /* op80's length (the op ends) */
+#define FX_SHIFT_BREAK_DOME_TPAGE         0x11A /* Hi_RegisterTexEffModel texture of DOME and DOME_2: 15-bit page (0x280, 0x100), abr 0 */
+#define FX_SHIFT_BREAK_DOME_CLUT          0x0  /* CLUT at (0x0, 0x0) */
+#define FX_SHIFT_BREAK_DOME_U             0x0  /* texture origin (u, v) in the page */
+#define FX_SHIFT_BREAK_DOME_V             0x80
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

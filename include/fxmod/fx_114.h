@@ -59,6 +59,44 @@
 #define FX_IFRIT_SUMMON_VEC_PATH_21  0x95 /* summon data entry 21: vector path (fxm_vecPathInit) */
 #define FX_IFRIT_SUMMON_POS_PATH_22  0x96 /* summon data entry 22: position path (fxm_posPathInit) */
 
+/* fx_114 choreography (docs/fxdata.md, "Choreography literals"): op80's camera shots and Ifrit's motion keys, the
+ * ops' sizes and lengths, trail buffers, model textures and the scrolled flame rect. The op80 effect keys inside
+ * the shots and ops 81 .. 83 are still numeric. */
+#define FX_IFRIT_MODEL_SLOTS        0x20  /* btlfx_initEffModels slots */
+#define FX_IFRIT_SHOT1_FRAME        0x2F  /* op80: camera shot 1 (position tracks 16 / 15); shot 0 (paths 22 / 10) before it */
+#define FX_IFRIT_MOTION_1_FRAME     0x30  /* summon motion 1 */
+#define FX_IFRIT_SHOT2_FRAME        0x61  /* camera shot 2 (tracks 17 / 13); summon motion 2 the frame after */
+#define FX_IFRIT_SHOT3_FRAME        0x7A  /* camera shot 3 (tracks 18 / 14); summon motion 3 the frame after */
+#define FX_IFRIT_SHOT4_FRAME        0xA7  /* camera shot 4 (POS_PATH / POS_PATH_2); the tracks run until the frame after */
+#define FX_IFRIT_SHOT4_END_FRAME    0xDE  /* shot 4's paths run until this frame */
+#define FX_IFRIT_FRAMES             0x118 /* op80's length (the op ends) */
+#define FX_IFRIT_SWIRL_TRAIL_SLOTS  1     /* the four FLAME_SWIRLs' trail buffers (fx_114_op80Trails1 .. 4): slots */
+#define FX_IFRIT_SWIRL_TRAIL_STRIDE 0xD0  /* bytes per slot */
+#define FX_IFRIT_EMBER_TRAIL_SLOTS  0x55  /* EMBER_TRAIL's (fx_114_op80Trails0): slots */
+#define FX_IFRIT_EMBER_TRAIL_STRIDE 0x28  /* bytes per slot */
+#define FX_IFRIT_OP81_FRAMES        0x14  /* op81's length */
+#define FX_IFRIT_OP82_FRAMES        0x1E  /* op82's length */
+#define FX_IFRIT_OP83_FRAMES        0x3C  /* op83's length */
+#define FX_IFRIT_OP85_FRAMES        0x10  /* op85's length */
+#define FX_IFRIT_FLAME_TPAGE        0x9A   /* Hi_RegisterTexEffModel texture of FIRE_COLUMN, FLAME_DOME, FLAME_RING: 8-bit page (0x280, 0x100), abr 0 */
+#define FX_IFRIT_FLAME_CLUT         0x3DC0 /* CLUT at (0x0, 0xF7) */
+#define FX_IFRIT_FLAME_U            0      /* texture origin (u, v) in the page */
+#define FX_IFRIT_FLAME_V            0
+#define FX_IFRIT_CYLINDER_TPAGE     0x117  /* texture of CYLINDER and WHITE_HAZE: 15-bit page (0x1C0, 0x100), abr 0 */
+#define FX_IFRIT_CYLINDER_CLUT      0x0
+#define FX_IFRIT_CYLINDER_U         0
+#define FX_IFRIT_CYLINDER_V         0
+#define FX_IFRIT_BLOCK_CLUSTER_TPAGE 0x17   /* texture of BLOCK_CLUSTER: 4-bit page (0x1C0, 0x100), abr 0 */
+#define FX_IFRIT_BLOCK_CLUSTER_CLUT  0x3D00 /* CLUT at (0x0, 0xF4) */
+#define FX_IFRIT_BLOCK_CLUSTER_U     0x80
+#define FX_IFRIT_BLOCK_CLUSTER_V     0xE0
+#define FX_IFRIT_FLAME_VRAM_X       0x280 /* btlfx_drawScrollMove rect: the flame models' 0x80 x 0x80 8-bit texels (page 0x9A) */
+#define FX_IFRIT_FLAME_VRAM_Y       0x100
+#define FX_IFRIT_FLAME_VRAM_W       0x40
+#define FX_IFRIT_FLAME_VRAM_H       0x80
+#define FX_IFRIT_FLAME_SRC_X        0x240 /* from this source */
+#define FX_IFRIT_FLAME_SRC_Y        0x100
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

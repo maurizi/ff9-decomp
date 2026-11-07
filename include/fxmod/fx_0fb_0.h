@@ -31,6 +31,41 @@
 #define FX_MADEEN_LEAF_MOUND      0x87 /* summon data entry 7: textured model, low mound with a green foliage texture */
 #define FX_MADEEN_RAINBOW_ARC     0x94 /* summon data entry 20: textured model, thin curved ribbon with a red-green-blue stripe (rainbow) texture */
 
+/* fx_0fb_0 choreography (docs/fxdata.md, "Choreography literals"): op80's seven states (ground ripple, rocks, the
+ * leaf mound, Madeen's appearance, charge, release, finale) and their lengths, the rock pool, the model textures,
+ * op81's length. The keys inside the states are still numeric. Shared names with group 1 (fx_0fb_1). */
+#define FX_MADEEN_STATE_RIPPLE      0     /* op80 state: the ground ripple grid and GOLD_LIGHT_BAND; the models register at its end */
+#define FX_MADEEN_STATE_ROCKS       1     /* ripple and flash, ROCKS fly up (pool tasks) */
+#define FX_MADEEN_STATE_MOUND       2     /* LEAF_MOUND rises */
+#define FX_MADEEN_STATE_APPEAR      3     /* Madeen appears on the mound, ROCK_DUST, BLUE_SPECKS; the camera pulls back */
+#define FX_MADEEN_STATE_CHARGE      4     /* VIOLET_TRAILs and BLUE_GLOW */
+#define FX_MADEEN_STATE_RELEASE     5     /* WHITE_RINGS, LIGHT_STREAKS, BLUE_RING_2 */
+#define FX_MADEEN_STATE_FINALE      6     /* BLUE_RINGS, the rainbow arc, the cloud models (op80 ends) */
+#define FX_MADEEN_RIPPLE_FRAMES     30    /* RIPPLE lasts this many frames (the (frame << 12) / N sheet phase) */
+#define FX_MADEEN_RIPPLE_FRAME      0xE   /* the ripple grid draws from this frame of RIPPLE */
+#define FX_MADEEN_ROCKS_FRAMES      55    /* ROCKS */
+#define FX_MADEEN_MOUND_FRAMES      40    /* MOUND */
+#define FX_MADEEN_APPEAR_FRAMES     25    /* APPEAR */
+#define FX_MADEEN_PULLBACK_FRAME    8     /* APPEAR: the camera pulls back from this frame to the end */
+#define FX_MADEEN_CHARGE_FRAMES     44    /* CHARGE */
+#define FX_MADEEN_GLOW_FRAME        0x26  /* CHARGE: the glow swells from this frame to the end */
+#define FX_MADEEN_RELEASE_FRAMES    21    /* RELEASE */
+#define FX_MADEEN_FINALE_FADE_FRAME 0x1C  /* FINALE: fades out from this frame */
+#define FX_MADEEN_FINALE_FRAMES     0x20  /* FINALE's length (op80 ends) */
+#define FX_MADEEN_ROCK_COUNT        0x32  /* op80's pool: rocks (Fx0fb0Rock) */
+#define FX_MADEEN_MODEL_SLOTS       0x1F  /* btlfx_initEffModels slots */
+#define FX_MADEEN_PINK_CLOUD_BALL_TPAGE 0x96   /* Hi_RegisterTexEffModel texture: 8-bit page (0x180, 0x100), abr 0 */
+#define FX_MADEEN_PINK_CLOUD_BALL_CLUT  0x3D40 /* CLUT at (0x0, 0xF5) */
+#define FX_MADEEN_LEAF_MOUND_TPAGE  0x9A   /* 8-bit page (0x280, 0x100), abr 0 */
+#define FX_MADEEN_LEAF_MOUND_CLUT   0x3E00 /* CLUT at (0x0, 0xF8) */
+#define FX_MADEEN_CLOUD_RING_TPAGE  0x7C   /* 4-bit page (0x300, 0x100), abr 3 */
+#define FX_MADEEN_CLOUD_RING_CLUT   0x3D02 /* CLUT at (0x20, 0xF4) */
+#define FX_MADEEN_RAINBOW_TPAGE     0xBD   /* RAINBOW_ARC: 8-bit page (0x340, 0x100), abr 1 */
+#define FX_MADEEN_RAINBOW_CLUT      0x3E40 /* CLUT at (0x0, 0xF9) */
+#define FX_MADEEN_MODEL_U           0      /* the models' texture origin (u, v) in their pages */
+#define FX_MADEEN_MODEL_V           0
+#define FX_MADEEN_BLESS_FRAMES      0x2E  /* op81's length */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR homePos4[8]; /* unit home positions */
@@ -51,7 +86,8 @@ typedef struct {
     u16 spinX1C; /* spin speed */
     u16 spinY1E;
     s32 model20; /* model */
-} Fx0fb0Rock;
+    u8 unused24[4]; /* op80's pool asks for 0x28 per rock */
+} Fx0fb0Rock; /* 0x28 */
 
 extern s32 fx_0fb_0_rocksReleased;
 extern s32 fx_0fb_0_unitsRestored;

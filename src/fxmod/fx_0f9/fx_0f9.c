@@ -5,7 +5,7 @@ s32 fx_0f9_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(SVECTOR);
     } else if (mode == 1) {
         work->vx = env->targets->centerX;
         work->vy = 0;
@@ -16,7 +16,7 @@ s32 fx_0f9_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
             emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
-        return entry->frame >= 0x40;
+        return entry->frame >= FX_FLEE_FRAMES;
     }
     return 0;
 }
