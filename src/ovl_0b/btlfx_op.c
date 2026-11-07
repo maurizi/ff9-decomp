@@ -2073,7 +2073,7 @@ void btlfx_updateSounds(void) {
     s32 i;
     Unk80104E30 *sounds = &g_btlfxSounds;
     Unk80104E30Entry *slot = sounds->slots;
-    for (i = 0; i < 6; i++, slot++) {
+    for (i = 0; i < BTLFX_SOUND_SLOTS; i++, slot++) {
         if (slot->sound != 0) {
             if (akao_isSePlaying(slot->sound) == 0) {
                 slot->sound = 0;
@@ -2095,7 +2095,7 @@ s32 btlfx_allocSound(s32 unit) {
     Unk80104E30 *sounds = &g_btlfxSounds;
     Unk80104E30Entry *slot = sounds->slots;
     s32 i;
-    for (i = 0; i < 6; i++, slot++, bit <<= 1) {
+    for (i = 0; i < BTLFX_SOUND_SLOTS; i++, slot++, bit <<= 1) {
         if (slot->sound == 0) {
             break;
         }
@@ -2105,7 +2105,7 @@ s32 btlfx_allocSound(s32 unit) {
             bestbit = bit;
         }
     }
-    if (i >= 6) {
+    if (i >= BTLFX_SOUND_SLOTS) {
         bit = bestbit;
         slot = best;
     }
@@ -2121,7 +2121,7 @@ s32 btlfx_allocSound(s32 unit) {
 }
 
 void btlfx_stopAllSounds(void) {
-    akao_stopSe(0, 0x3F);
+    akao_stopSe(0, BTLFX_SOUND_ALL);
 }
 
 Unk80104E34 *btlfx_findSound(s32 sound) {
@@ -2129,7 +2129,7 @@ Unk80104E34 *btlfx_findSound(s32 sound) {
     s32 i;
     if (sound != 0) {
         slot = g_btlfxSoundSlots;
-        for (i = 0; i < 6; i++, slot++) {
+        for (i = 0; i < BTLFX_SOUND_SLOTS; i++, slot++) {
             if (slot->sound == sound) {
                 return slot;
             }
@@ -2186,7 +2186,7 @@ void btlfx_setSoundUnit(s32 sound, s32 unit) {
 void btlfx_setAllSoundsUnit(s32 unit) {
     Unk80104E34 *slot = g_btlfxSoundSlots;
     s32 i;
-    for (i = 0; i < 6; i++, slot++) {
+    for (i = 0; i < BTLFX_SOUND_SLOTS; i++, slot++) {
         if (slot->sound != 0) {
             slot->unit = unit;
         }

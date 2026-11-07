@@ -401,7 +401,7 @@ void btl_initReturnInfo(void) {
 s32 btl_initEncounter(Battle11C0 *work, s32 battleId) {
     s32 id = (battleId & 0xFFFF) | DB_BATTLE;
     work->bundle = (u16 *)db_lookupRegistered(DB_GET_ADDR, id, 0);
-    work->encounter = (Battle11C020 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, 0x100000), 0);
+    work->encounter = (Battle11C020 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_BTL_SCENE), 0);
     work->script = (u8 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_FIELD), 0);
     work->texts = (u8 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_AREA), 0);
     btl_initScene();
@@ -2098,7 +2098,7 @@ void btl_onSoundRead(Unk800AE844 *progress) {
             g_gameState->gameData->soundBankSize = db_getSize(base);
         } else {
             addr = db_lookup(pack, DB_GET_ADDR, id, 0);
-            g_gameState->gameData->soundBankSize = db_lookup(base, DB_GET_AT, 0x1B0001, 0) - g_gameState->gameData->soundLoadDest;
+            g_gameState->gameData->soundBankSize = db_lookup(base, DB_GET_AT, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
         }
     }
     len = g_gameState->gameData->soundBankSize - progress->done;

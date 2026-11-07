@@ -2908,9 +2908,11 @@ typedef struct {
     s32 unit; /* unit id (pan source, btl_soundPan) */
 } Unk80104E30Entry;
 
+#define BTLFX_SOUND_SLOTS 6 /* effect sounds playing at once; slot i plays with SE mask 1 << i (btlfx_allocSound) */
+#define BTLFX_SOUND_ALL ((1 << BTLFX_SOUND_SLOTS) - 1) /* every slot's mask (btlfx_stopAllSounds) */
 typedef struct {
     s32 count; /* playing sounds */
-    Unk80104E30Entry slots[6];
+    Unk80104E30Entry slots[BTLFX_SOUND_SLOTS];
 } Unk80104E30;
 extern Unk80104E30 g_btlfxSounds;
 
@@ -2965,7 +2967,7 @@ typedef struct {
     u8 pad2[2];
     s32 unit; /* unit id (pan source) */
 } Unk80104E34; /* 8 */
-extern Unk80104E34 g_btlfxSoundSlots[6];
+extern Unk80104E34 g_btlfxSoundSlots[BTLFX_SOUND_SLOTS];
 
 extern u16 g_btlSoundBankIds[];
 extern u8 g_btlfxUnitKinds[];
