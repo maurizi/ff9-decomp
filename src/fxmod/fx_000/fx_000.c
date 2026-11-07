@@ -5,7 +5,7 @@ s32 fx_000_op80(s32 mode, Fx000Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx000Work);
     } else if (mode == 1) {
         fx_000_env = env;
         work->hold0 = 0;
@@ -19,13 +19,13 @@ s32 fx_000_op80(s32 mode, Fx000Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-            if (frame == 2) {
+            if (frame == FX_FIRE_FLAME_BURST_FRAME) {
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_FLAME_BURST), (s32)&work->pos8);
                 if (work->emit4 != NULL) {
                     work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame >= 0x3C) {
+            if (frame >= FX_FIRE_FRAMES) {
                 return 1;
             }
         }

@@ -10,6 +10,10 @@
 #define FX_FIRE_FLAME_BURST 0x6 /* emitter: flame explosion (burst, smoke, embers) rising around the target */
 #define FX_FIRE_HEAT_RING   0x7 /* emitter: white-red gouraud rings at the target's feet */
 
+/* fx_000 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_FIRE_FLAME_BURST_FRAME 2    /* op80: FX_FIRE_FLAME_BURST starts (the fireball and heat ring start at once) */
+#define FX_FIRE_FRAMES            0x3C /* op80: the task ends at this frame */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     Pool6CEntry *emit4;

@@ -46,7 +46,7 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
             }
         }
         it->frame8++;
-        if (it->frame8 >= 4) {
+        if (it->frame8 >= FX_BLIZZARA_CRYSTAL_GROW_FRAMES) {
             it->state4 = 1;
             it->frame8 = 0;
         }
@@ -82,7 +82,7 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         }
         break;
     case 2:
-        t = (it->frame8 << 12) / 20;
+        t = (it->frame8 << 12) / FX_BLIZZARA_PIECES_FRAMES;
         ang = t >> 2;
         scale.vx = scale.vy = (ex->math_cos(ang) * (it->size3C * 5 / 2)) >> 12;
         scale.vz = it->size3C;
@@ -104,7 +104,7 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         it->rot30.vx += it->spin38;
         it->rot30.vy += it->spin3A;
         it->frame8++;
-        if (it->frame8 >= 20) {
+        if (it->frame8 >= FX_BLIZZARA_PIECES_FRAMES) {
             return 1;
         }
         break;
@@ -180,19 +180,19 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 tint;
 
     if (mode == 0) {
-        init->workSize = 0x34;
-        init->elemSize = 0x44;
+        init->workSize = sizeof(Fx04dWork);
+        init->elemSize = sizeof(Fx04dItem);
         init->elemFn = (s32)fx_04d_op80PoolTask;
-        init->poolCount = 0xA;
+        init->poolCount = FX_BLIZZARA_CRYSTAL_COUNT;
     } else if (mode == 1) {
         fx_04d_env = env;
-        ex->btlfx_initEffModels(fx_04d_effModels, 6);
+        ex->btlfx_initEffModels(fx_04d_effModels, FX_BLIZZARA_MODEL_COUNT);
         work->model4 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARA_ICE_CRYSTAL), 0x9A, 0x3DC0, 0x80, 0);
         work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARA_CRYSTAL_PIECE_0), 0x9A, 0x3DC0, 0x80, 0);
         work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARA_CRYSTAL_PIECE_1), 0x9A, 0x3DC0, 0x80, 0);
         work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARA_CRYSTAL_PIECE_2), 0x9A, 0x3DC0, 0x80, 0);
         work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARA_ICE_REFLECTION), 0xBA, 0x3D40, 0, 0x80);
-        work->state0 = 0;
+        work->state0 = FX_BLIZZARA_STATE_CRYSTALS;
         work->count2A = 0;
         work->frameCount2C = 0;
         work->split28 = 0;
@@ -203,13 +203,13 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vx = work->pos18.vx;
         work->pos20.vy = work->pos18.vy;
         work->pos20.vz = work->pos18.vz;
-        work->pos18.vy -= 0x200;
+        work->pos18.vy -= FX_BLIZZARA_ICE_HEIGHT;
         emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARA_FROST_MIST), (s32)&work->pos18);
         if (emitter != NULL) {
             emitter->otZ = 0x64;
         }
         pieceRot = fx_04d_pieceRots;
-        for (i = 0; i < 10; i++, pieceRot++) {
+        for (i = 0; i < FX_BLIZZARA_CRYSTAL_COUNT; i++, pieceRot++) {
             pieceRot->vx += 0x5C;
             ((s16 *)pieceRot)[1] += 0x200;
         }
@@ -218,7 +218,7 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     state = work->state0;
     frame = entry->frame;
     switch (state) {
-    case 0:
+    case FX_BLIZZARA_STATE_CRYSTALS:
         it = ex->btlfx_poolSpawn((s16 *)entry->pool);
         if (it != NULL) {
             it->piece0 = work->count2A;
@@ -230,15 +230,15 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             it->size3C = fx_04d_pieceRots[it->piece0].pad * 31 >> 3;
         }
         work->scroll30 += 0x20;
-        if (frame >= 9) {
-            work->state0 = 1;
+        if (frame >= FX_BLIZZARA_CRYSTALS_FRAMES) {
+            work->state0 = FX_BLIZZARA_STATE_GLEAM;
             entry->frame = -1;
         }
         break;
-    case 1:
-        work->scroll30 += (ex->math_cos((frame << 10) / 14) << 5) >> 12;
-        if (frame >= 14) {
-            work->state0 = 2;
+    case FX_BLIZZARA_STATE_GLEAM:
+        work->scroll30 += (ex->math_cos((frame << 10) / FX_BLIZZARA_GLEAM_FRAMES) << 5) >> 12;
+        if (frame >= FX_BLIZZARA_GLEAM_FRAMES) {
+            work->state0 = FX_BLIZZARA_STATE_SHATTER;
             entry->frame = -1;
             work->split28 = state;
             emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARA_FREEZE_BURST), (s32)&work->pos18);
@@ -267,24 +267,26 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         break;
-    case 2:
+    case FX_BLIZZARA_STATE_SHATTER:
         if (frame < 5) {
             tint = (4 - frame) * 250 / 4;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 2, tint >> 1, tint);
         }
-        if (frame == 7) {
+        if (frame == FX_BLIZZARA_SHATTER_WAVE_FRAME) {
             finalEmitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARA_SHATTER_WAVE), (s32)&work->pos18);
             if (finalEmitter != NULL) {
                 finalEmitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        if (frame >= 21) {
+        if (frame >= FX_BLIZZARA_SHATTER_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
         break;
     }
-    ex->btlfx_drawScrollMove(work->scroll30, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+    ex->btlfx_drawScrollMove(work->scroll30, FX_BLIZZARA_REFLECTION_VRAM_X, FX_BLIZZARA_REFLECTION_VRAM_Y,
+                             FX_BLIZZARA_REFLECTION_VRAM_W, FX_BLIZZARA_REFLECTION_VRAM_H, FX_BLIZZARA_REFLECTION_SRC_X,
+                             FX_BLIZZARA_REFLECTION_SRC_Y);
     work->frameCount2C++;
     }
     return 0;

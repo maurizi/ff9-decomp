@@ -7,7 +7,7 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 zWord;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx046Work);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_046_env = env;
@@ -25,7 +25,7 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->hold0 == 0 && frame >= 0x3C) {
+        if (work->hold0 == 0 && frame >= FX_FIRE_FRAMES) {
             return 1;
         }
     }

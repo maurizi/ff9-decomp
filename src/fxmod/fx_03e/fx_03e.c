@@ -11,16 +11,16 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR rot;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx03eWork);
     } else if (mode == 1) {
         fx_03e_env = env;
-        ex->btlfx_initEffModels(fx_03e_effModels, 4);
+        ex->btlfx_initEffModels(fx_03e_effModels, FX_BLIZZARD_MODEL_COUNT);
         work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARD_ICE_BLOCK), 0xBA, 0x3DC0, 0, 0);
         work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARD_ICE_CRACKING), 0xBA, 0x3DC0, 0, 0);
         work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARD_ICE_SHARDS), 0xBA, 0x3DC0, 0, 0);
         work->model4 =
             (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZARD_ICE_REFLECTION), 0xB8, 0x3D40, 0x80, 0x80);
-        work->state0 = 0;
+        work->state0 = FX_BLIZZARD_STATE_SWIRL;
         work->frame24 = 0;
         work->pos14.vx = env->targets->centerX;
         work->pos14.vy = env->targets->centerY;
@@ -28,28 +28,28 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos1C.vx = work->pos14.vx;
         work->pos1C.vy = work->pos14.vy;
         work->pos1C.vz = work->pos14.vz;
-        work->pos14.vy -= 0x19F;
+        work->pos14.vy -= FX_BLIZZARD_ICE_HEIGHT;
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_BLIZZARD_STATE_SWIRL:
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARD_FROST_SWIRL), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_03e_trails;
-                    emitter->trailSlots = 0xA;
-                    emitter->trailStride = 0x5C;
+                    emitter->trailSlots = FX_BLIZZARD_FROST_SWIRL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_BLIZZARD_FROST_SWIRL_TRAIL_STRIDE;
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame >= 8) {
-                work->state0 = 1;
+            if (frame >= FX_BLIZZARD_SWIRL_FRAMES) {
+                work->state0 = FX_BLIZZARD_STATE_GROW;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_BLIZZARD_STATE_GROW:
             t = frame << 10;
-            scale.vx = scale.vy = scale.vz = ((0x1000 - ex->math_cos(t >> 2)) * 0xE00) >> 12;
+            scale.vx = scale.vy = scale.vz = ((0x1000 - ex->math_cos(t >> 2)) * FX_BLIZZARD_ICE_SCALE) >> 12;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -60,15 +60,15 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
             ex->Hi_ModifyEffModelAbr(work->model8, 0);
             ex->Hi_ModifyEffModelRGB(work->model8, 0, 0, 0);
-            if (frame >= 4) {
-                work->state0 = 2;
+            if (frame >= FX_BLIZZARD_GROW_FRAMES) {
+                work->state0 = FX_BLIZZARD_STATE_GLEAM;
                 entry->frame = -1;
             }
             break;
-        case 2:
-            scale.vz = 0xE00;
-            scale.vy = 0xE00;
-            scale.vx = 0xE00;
+        case FX_BLIZZARD_STATE_GLEAM:
+            scale.vz = FX_BLIZZARD_ICE_SCALE;
+            scale.vy = FX_BLIZZARD_ICE_SCALE;
+            scale.vx = FX_BLIZZARD_ICE_SCALE;
             rot.vx = 0;
             rot.vy = frame << 5;
             rot.vz = 0;
@@ -84,9 +84,11 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->model4, 1);
             ex->Hi_ModifyEffModelRGB(work->model4, (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) >> 5) - 0x80);
-            ex->btlfx_drawScrollMove(((0x1000 - ex->math_cos(t >> 1)) >> 9) + frame * 5, 0x240, 0x180, 0x40, 0x80, 0x240, 0x100);
-            if (frame >= 0x10) {
-                work->state0 = 3;
+            ex->btlfx_drawScrollMove(((0x1000 - ex->math_cos(t >> 1)) >> 9) + frame * 5, FX_BLIZZARD_REFLECTION_VRAM_X,
+                                     FX_BLIZZARD_REFLECTION_VRAM_Y, FX_BLIZZARD_REFLECTION_VRAM_W, FX_BLIZZARD_REFLECTION_VRAM_H,
+                                     FX_BLIZZARD_REFLECTION_SRC_X, FX_BLIZZARD_REFLECTION_SRC_Y);
+            if (frame >= FX_BLIZZARD_GLEAM_FRAMES) {
+                work->state0 = FX_BLIZZARD_STATE_SHATTER;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARD_FREEZE_BURST), (s32)&work->pos14);
                 if (emitter != NULL) {
@@ -101,23 +103,23 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARD_FROST_RING), (s32)&work->pos1C);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZARD_FREEZE_TINT_RGB);
             }
             break;
-        case 3:
-            scale.vz = 0xE00;
-            scale.vy = 0xE00;
-            scale.vx = 0xE00;
+        case FX_BLIZZARD_STATE_SHATTER:
+            scale.vz = FX_BLIZZARD_ICE_SCALE;
+            scale.vy = FX_BLIZZARD_ICE_SCALE;
+            scale.vx = FX_BLIZZARD_ICE_SCALE;
             rot.vx = 0;
             rot.vy = 0x200;
             rot.vz = 0;
             pos.vx = work->pos14.vx;
             pos.vy = work->pos14.vy;
             pos.vz = work->pos14.vz;
-            if (frame < 2) {
+            if (frame < FX_BLIZZARD_CRACK_FRAMES) {
                 morph = 0x2000 - (frame << 11);
             } else {
-                morph = 0x1000 - ((frame - 2) << 12) / 14;
+                morph = 0x1000 - ((frame - FX_BLIZZARD_CRACK_FRAMES) << 12) / FX_BLIZZARD_SHARDS_FRAMES;
             }
             if (morph > 0x1000) {
                 ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model8, work->modelC, morph - 0x1000);
@@ -127,13 +129,13 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->modelC, ((morph - 0x800) >> 5) - 0x80, ((morph - 0x800) >> 5) - 0x80,
                                          ((morph - 0x800) >> 5) - 0x80);
             }
-            if (frame == 1) {
+            if (frame == FX_BLIZZARD_SHATTER_WAVE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZARD_SHATTER_WAVE), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame >= 0xC) {
+            if (frame >= FX_BLIZZARD_SHATTER_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

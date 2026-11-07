@@ -20,6 +20,29 @@
 #define FX_BLIZZARA_CRYSTAL_PIECE_2 0x17 /* model: third piece of the split crystal */
 #define FX_BLIZZARA_SHATTER_WAVE    0x19 /* emitter: blue ripple wave */
 
+/* fx_004 choreography (docs/fxdata.md, "Choreography literals"): op80's states and their lengths, the crystal
+ * pool items' phases, and the VRAM rect of the reflection map. */
+#define FX_BLIZZARA_STATE_CRYSTALS 0 /* one FX_BLIZZARA_ICE_CRYSTAL pool item spawns per frame */
+#define FX_BLIZZARA_STATE_GLEAM    1 /* the crystals stand, the reflection map scrolls slower and slower */
+#define FX_BLIZZARA_STATE_SHATTER  2 /* split28 set: the crystals split into their three pieces and fly apart */
+#define FX_BLIZZARA_CRYSTALS_FRAMES    9    /* FX_BLIZZARA_STATE_CRYSTALS's length (spawns on frames 0..9) */
+#define FX_BLIZZARA_GLEAM_FRAMES       14   /* FX_BLIZZARA_STATE_GLEAM's length; at its end the freeze burst, frost ring and flares start */
+#define FX_BLIZZARA_SHATTER_WAVE_FRAME 0    /* FX_BLIZZARA_STATE_SHATTER: FX_BLIZZARA_SHATTER_WAVE starts */
+#define FX_BLIZZARA_SHATTER_FRAMES     21   /* FX_BLIZZARA_STATE_SHATTER's length (the op ends) */
+#define FX_BLIZZARA_CRYSTAL_COUNT      10   /* crystals: pool items, fx_004_pieceRots entries */
+#define FX_BLIZZARA_CRYSTAL_GROW_FRAMES 4   /* pool item: the crystal grows for this many frames, then holds until the split */
+#define FX_BLIZZARA_PIECES_FRAMES      20   /* pool item: the split pieces fly and fade for this many frames */
+#define FX_BLIZZARA_MODEL_COUNT        6    /* btlfx_initEffModels slots (5 registered: crystal, 3 pieces, reflection) */
+/* FX_BLIZZARA_ICE_REFLECTION samples (tpage 0xBA = 8-bit page (0x280, 0x100), v 0x80) the rect the file fills with a
+ * "dummy" placeholder; every frame btlfx_drawScrollMove copies the file's reflection texture from (SRC_X, SRC_Y)
+ * into it, scrolled vertically by scroll30. */
+#define FX_BLIZZARA_REFLECTION_VRAM_X  0x280
+#define FX_BLIZZARA_REFLECTION_VRAM_Y  0x180
+#define FX_BLIZZARA_REFLECTION_VRAM_W  0x40
+#define FX_BLIZZARA_REFLECTION_VRAM_H  0x80
+#define FX_BLIZZARA_REFLECTION_SRC_X   0x280
+#define FX_BLIZZARA_REFLECTION_SRC_Y   0x100
+
 typedef struct {
     s32 vx;
     s32 vy;
@@ -52,7 +75,8 @@ typedef struct {
     s16 count2A;
     s32 frameCount2C; /* incremented every update, never read */
     s32 scroll30;
-} Fx004Work;
+    u8 pad34[4]; /* unused: op80 asks for 0x38 bytes (fx_04d's work is 0x34) */
+} Fx004Work; /* 0x38 */
 
 extern SVECTOR fx_004_pieceRots[];
 extern Unk800F78A4 *fx_004_env;

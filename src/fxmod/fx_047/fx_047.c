@@ -7,7 +7,7 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 zWord;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx047Work);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_047_env = env;
@@ -17,7 +17,7 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ((s32 *)&work->posC)[1] = zWord;
         ((s32 *)&work->pos4)[0] = ((s32 *)&work->posC)[0];
         ((s32 *)&work->pos4)[1] = ((s32 *)&work->posC)[1];
-        work->pos4.vy -= 0x12C;
+        work->pos4.vy -= FX_FIRA_BURST_HEIGHT;
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRA_FLAME_BURST), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
@@ -29,26 +29,26 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-            if (frame == 5) {
+            if (frame == FX_FIRA_SMOKE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRA_SMOKE), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame == 0x11) {
+            if (frame == FX_FIRA_FLAME_SWIRL_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRA_FLAME_SWIRL), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                     emitter->trails = (s32)fx_047_trails;
-                    emitter->trailSlots = 0x1D;
-                    emitter->trailStride = 0xAC;
+                    emitter->trailSlots = FX_FIRA_FLAME_SWIRL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_FIRA_FLAME_SWIRL_TRAIL_STRIDE;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRA_FLAME_BURST_2), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame >= 0x32) {
+            if (frame >= FX_FIRA_FRAMES) {
                 return 1;
             }
         }

@@ -9,6 +9,9 @@
 #define FX_FIRE_FLAME_BURST 0x2 /* emitter: flame explosion (burst, smoke, embers) over the targets */
 #define FX_FIRE_HEAT_RING   0x3 /* emitter: white-red gouraud rings on the ground */
 
+/* fx_046 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_FIRE_FRAMES 0x3C /* op80: the task ends at this frame (the burst and heat ring start at once) */
+
 typedef struct {
     s32 hold0; /* nonzero: the op skips its frame logic and never ends itself, so the task stays alive until the
                 * effect script ends (runtime: Fire with it poked to 1 ran the op 165 times instead of 63). Zeroed

@@ -12,6 +12,14 @@
 #define FX_FIRA_SMOKE         0x4 /* emitter: grey smoke puffs */
 #define FX_FIRA_FLAME_BURST_2 0x5 /* emitter: second flame explosion */
 
+/* fx_047 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_FIRA_BURST_HEIGHT          0x12C /* FX_FIRA_FLAME_BURST plays this far above the targets' centre (pos4) */
+#define FX_FIRA_SMOKE_FRAME           5     /* op80: FX_FIRA_SMOKE starts */
+#define FX_FIRA_FLAME_SWIRL_FRAME     0x11  /* op80: FX_FIRA_FLAME_SWIRL and FX_FIRA_FLAME_BURST_2 start */
+#define FX_FIRA_FRAMES                0x32  /* op80: the task ends at this frame */
+#define FX_FIRA_FLAME_SWIRL_TRAIL_SLOTS  0x1D /* FX_FIRA_FLAME_SWIRL's trail buffer fx_047_trails: slots of */
+#define FX_FIRA_FLAME_SWIRL_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* above posC */

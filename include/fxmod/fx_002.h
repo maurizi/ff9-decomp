@@ -14,6 +14,16 @@
 #define FX_FIRA_GROUND_RING   0xD /* rings: red gouraud ring drawn flat on the ground */
 #define FX_FIRA_HEAT_RING     0xE /* emitter: white-red gouraud rings at the target's feet */
 
+/* fx_002 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, phases and length. */
+#define FX_FIRA_SMOKE_FRAME           5    /* op80: FX_FIRA_SMOKE starts (FX_FIRA_FLAME_BURST started in mode 1) */
+#define FX_FIRA_FLAME_SWIRL_FRAME     0x12 /* op80: FX_FIRA_FLAME_SWIRL, FX_FIRA_FLAME_BURST_2 and FX_FIRA_HEAT_RING start */
+#define FX_FIRA_SMOKE_2_FRAME         0x17 /* op80: FX_FIRA_SMOKE_2 starts */
+#define FX_FIRA_RING_PULSE_FRAME      0x17 /* op80: FX_FIRA_GROUND_RING stops growing and swells a second time */
+#define FX_FIRA_GROUND_RING_FRAMES    0x2C /* op80: FX_FIRA_GROUND_RING is drawn for this many frames */
+#define FX_FIRA_FRAMES                0x32 /* op80: the task ends at this frame */
+#define FX_FIRA_FLAME_SWIRL_TRAIL_SLOTS  0x15 /* FX_FIRA_FLAME_SWIRL's trail buffer fx_002_trails: slots of */
+#define FX_FIRA_FLAME_SWIRL_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target position */
