@@ -14,6 +14,13 @@
 #define FX_JET_FIRE_PALE_WISP_RING 0xB /* emitter: ring with a pale wisp texture */
 #define FX_JET_FIRE_WIND_GUST      0xC /* emitter: cyan wisp sprites */
 
+/* fx_12a choreography (docs/fxdata.md, "Choreography literals"): the ops' keyframes and lengths. */
+#define FX_JET_FIRE_JET_FRAME    6    /* op80: the JET_STREAMs and CYAN_WISP_RINGs start at the caster's two bones, aimed at the targets */
+#define FX_JET_FIRE_FRAMES       0x3C /* op80's length */
+#define FX_JET_FIRE_RING_FRAMES  0x28 /* op81's length (PALE_WISP_RING at the targets' centre) */
+#define FX_JET_FIRE_GUST_WAIT_FRAME 4 /* op82 (WIND_GUST at one target): BTLFX_SIG_WAIT is set again (the script goes on) */
+#define FX_JET_FIRE_GUST_FRAMES  0x28 /* op82's length */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -10,6 +10,11 @@
 #define FX_GOLEM_REVIVAL_PINK_GLOW  0x1 /* emitter: pink glow with a green ring, fan */
 #define FX_GOLEM_REVIVAL_SAND_CLOUD 0x2 /* emitter: orbiting pale sand clouds */
 
+/* fx_131 choreography (docs/fxdata.md, "Choreography literals"): the glow's bone, op80's keyframe and length. */
+#define FX_GOLEM_REVIVAL_GLOW_BONE   0xC  /* PINK_GLOW follows this bone of the caster */
+#define FX_GOLEM_REVIVAL_CLOUD_FRAME 8    /* SAND_CLOUD starts at the caster */
+#define FX_GOLEM_REVIVAL_FRAMES      0x58 /* op80's length */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;

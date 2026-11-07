@@ -9,15 +9,15 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 bounce;
 
     if (mode == 0) {
-        *args = 0x7C;
+        *args = sizeof(Fx129Work);
     } else if (mode == 1) {
         fx_129_env = env;
         ex->btlfx_initEffModels(fx_129_effModels, 1);
-        tex[0] = tex[2] = 0xF7;
-        tex[1] = 0x3CC0;
-        tex[3] = 0x3C80;
+        tex[0] = tex[2] = FX_PUMPKIN_HEAD_PUMPKIN_TPAGE;
+        tex[1] = FX_PUMPKIN_HEAD_PUMPKIN_CLUT;
+        tex[3] = FX_PUMPKIN_HEAD_PUMPKIN_2_CLUT;
         clut[0] = clut[2] = 0;
-        clut[1] = 0x80;
+        clut[1] = FX_PUMPKIN_HEAD_PUMPKIN_V;
         clut[3] = 0;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
         work->model0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_PUMPKIN_HEAD_PUMPKIN), tex, clut);
@@ -27,12 +27,12 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vx = work->pos4.vx = work->pos2C.vx;
         env->camera->points[0].vz = work->pos4.vz = work->pos2C.vz;
         env->camera->points[0].vy = work->pos4.vy = work->pos2C.vy;
-        work->scale1C.vz = 0x330;
-        work->scale1C.vy = 0x330;
-        work->scale1C.vx = 0x330;
+        work->scale1C.vz = FX_PUMPKIN_HEAD_SCALE;
+        work->scale1C.vy = FX_PUMPKIN_HEAD_SCALE;
+        work->scale1C.vx = FX_PUMPKIN_HEAD_SCALE;
         work->phase34 = 0;
         work->speed38 = 0;
-        work->height3C = -0x1B00;
+        work->height3C = FX_PUMPKIN_HEAD_DROP_HEIGHT;
         work->frame44 = 0;
         work->fade4C = 0;
         work->timer54 = 0;
@@ -44,18 +44,18 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale70.vz = work->scale64.vz;
     } else {
         frame = entry->frame;
-        if (work->phase34 < 9) {
+        if (work->phase34 < FX_PUMPKIN_HEAD_BOUNCE_PHASES) {
             t = ++work->frame44;
             switch (work->phase34 & 1) {
             case 0:
-                work->height40 = work->height3C + (((t * 0x60) * t) >> 1);
+                work->height40 = work->height3C + (((t * FX_PUMPKIN_HEAD_GRAVITY) * t) >> 1);
                 if (work->height40 >= 0) {
                     work->speed38 = work->frame44 * 0x180 / 10;
                     work->frame44 = 0;
                     work->height40 = 0;
-                    work->timer54 = 4;
+                    work->timer54 = FX_PUMPKIN_HEAD_SQUASH_FRAMES;
                     work->phase34++;
-                    work->scale1C.vy = 0x330 - work->speed38;
+                    work->scale1C.vy = FX_PUMPKIN_HEAD_SCALE - work->speed38;
                     switch (work->count58) {
                     case 0:
                         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PUMPKIN_HEAD_SMOKE_BURST), (s32)&work->pos2C);
@@ -69,7 +69,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 break;
             case 1:
-                bounce = -(work->speed38 * t) + (((t * 0x60) * t) >> 1);
+                bounce = -(work->speed38 * t) + (((t * FX_PUMPKIN_HEAD_GRAVITY) * t) >> 1);
                 if (bounce < work->height40) {
                     work->height40 = bounce;
                 } else {
@@ -82,11 +82,11 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (work->timer54 != 0) {
                 work->timer54--;
                 bounce = (ex->math_cos(work->timer54 << 9) * (work->speed38 >> 2)) >> 12;
-                work->scale1C.vy = 0x330 - ((bounce >= 0) ? bounce : -bounce);
+                work->scale1C.vy = FX_PUMPKIN_HEAD_SCALE - ((bounce >= 0) ? bounce : -bounce);
             }
         }
-        if (frame == 0xB) {
-            work->timer60 = 0x10;
+        if (frame == FX_PUMPKIN_HEAD_SHAKE_FRAME) {
+            work->timer60 = FX_PUMPKIN_HEAD_SHAKE_FRAMES;
         }
         if (work->timer60 != 0) {
             work->timer60--;
@@ -102,15 +102,15 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         env->camera->points[0].vy = work->pos4.vy = work->pos2C.vy + work->height40;
         ex->Hi_DrawEffModel(&work->rot14, &work->pos4, (s32)&work->scale1C, work->model0);
-        if (work->phase34 >= 9) {
-            if (work->fade4C < 0x10) {
+        if (work->phase34 >= FX_PUMPKIN_HEAD_BOUNCE_PHASES) {
+            if (work->fade4C < FX_PUMPKIN_HEAD_FADE_FRAMES) {
                 work->fade4C++;
             }
             work->color50 = -(work->fade4C * 16);
             ex->Hi_ModifyEffModelAbr(work->model0, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model0, work->color50, work->color50, work->color50);
         }
-        return frame >= 0x40;
+        return frame >= FX_PUMPKIN_HEAD_FRAMES;
     }
     return 0;
 }

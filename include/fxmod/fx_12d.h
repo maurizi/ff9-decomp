@@ -14,6 +14,20 @@
 #define FX_DEATH_PINK_GLOW_TRAIL 0xB /* emitter: spiralling 3D trail of pink glows */
 #define FX_DEATH_ANTLION         0xE /* model: the Antlion (1142 polys), drawn with the caster's texture pages while the unit is hidden */
 
+/* fx_12d choreography (docs/fxdata.md, "Choreography literals"): the ops' keyframes and lengths, the trail
+ * buffers, the Antlion model's texture list (the caster's six pages, reversed) and its sinking. */
+#define FX_DEATH_DUST_FRAME     4    /* op80: SAND_DUST starts (SAND_RING at init) */
+#define FX_DEATH_RING_FRAMES    0x28 /* op80's length */
+#define FX_DEATH_PINK_GLOW_TRAIL_TRAIL_SLOTS  8    /* PINK_GLOW_TRAIL's trail buffer fx_12d_op81Trails1: slots of */
+#define FX_DEATH_PINK_GLOW_TRAIL_TRAIL_STRIDE 0x60 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH_SWIRL_FRAME    8    /* op81: SAND_CLOUD and SAND_SWIRL start */
+#define FX_DEATH_SAND_SWIRL_TRAIL_SLOTS  0xC  /* SAND_SWIRL's trail buffer fx_12d_op81Trails0: slots of */
+#define FX_DEATH_SAND_SWIRL_TRAIL_STRIDE 0x70 /* this many bytes */
+#define FX_DEATH_SWIRL_FRAMES   0x3C /* op81's length */
+#define FX_DEATH_ANTLION_TEX_PAGES  6    /* op82: the caster's texture pages / uv offsets copied, reversed, into ANTLION's list */
+#define FX_DEATH_ANTLION_HOLD_FRAMES 0xC /* op82: ANTLION (sliced at its height) stays this many frames, then sinks 0xF a frame */
+#define FX_DEATH_ANTLION_FRAMES     0x50 /* op82's length (the models are cleared) */
+
 typedef struct {
     s32 unk0; /* unused */
     Pool6CEntry *emit4;
@@ -42,9 +56,9 @@ typedef struct {
 } Fx12dWork82;
 
 extern BtlTexInfo fx_12d_casterTexPages;
-extern s16 fx_12d_texInfo[6][2]; /* fx_12d_casterTexPages's entries in reverse order */
+extern s16 fx_12d_texInfo[FX_DEATH_ANTLION_TEX_PAGES][2]; /* fx_12d_casterTexPages's entries in reverse order */
 extern BtlTexInfo fx_12d_casterUvOffsets;
-extern s16 fx_12d_texPos[6][2]; /* fx_12d_casterUvOffsets's entries in reverse order */
+extern s16 fx_12d_texPos[FX_DEATH_ANTLION_TEX_PAGES][2]; /* fx_12d_casterUvOffsets's entries in reverse order */
 extern Unk800F78A4 *fx_12d_env;
 extern BtlModelBuf fx_12d_effModels[];
 extern SVECTOR fx_12d_casterPos;

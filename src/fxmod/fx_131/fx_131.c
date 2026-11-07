@@ -6,29 +6,29 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx131Work);
     } else if (mode == 1) {
         fx_131_env = env;
-        ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos8);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_GOLEM_REVIVAL_GLOW_BONE, (u16 *)&work->pos8);
         work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GOLEM_REVIVAL_PINK_GLOW), (s32)&work->pos8);
         if (work->emit18 != NULL) {
-            work->emit18->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit18->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         frame = entry->frame;
         if (work->emit18 != NULL && work->emit18->state == BTLFX_EMIT_DONE) {
             work->emit18 = NULL;
         }
-        ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos10);
+        ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, FX_GOLEM_REVIVAL_GLOW_BONE, (u16 *)&work->pos10);
         ex->btlfx_moveEmitterTo((s32)work->emit18, (s32)&work->pos10);
-        if (frame == 8) {
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos0);
+        if (frame == FX_GOLEM_REVIVAL_CLOUD_FRAME) {
+            ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos0);
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GOLEM_REVIVAL_SAND_CLOUD), (s32)&work->pos0);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
             }
         }
-        return frame >= 0x58;
+        return frame >= FX_GOLEM_REVIVAL_FRAMES;
     }
     return 0;
 }

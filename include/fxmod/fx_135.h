@@ -10,6 +10,10 @@
 #define FX_BAD_BREATH_GAS_CLOUD 0x7 /* emitter: cone of olive and purple gas blobs with green and pink glows */
 #define FX_BAD_BREATH_GAS_BURST 0x8 /* emitter: olive and purple gas blobs, glows and a yellow-green flash at the target */
 
+/* fx_135 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_BAD_BREATH_BURST_FRAME 8    /* GAS_BURST starts at the targets' centre (GAS_CLOUD at init, aimed there) */
+#define FX_BAD_BREATH_FRAMES      0x46 /* op80's length */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -64,11 +64,11 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0xA0;
+        *args = sizeof(Fx138Work80);
     } else if (mode == 1) {
         fx_138_env = env;
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
-        ex->btlfx_initEffModels(fx_138_effModels, 4);
+        ex->btlfx_initEffModels(fx_138_effModels, FX_LUCKY_SEVEN_MODEL_COUNT);
         ex->btlfx_getUnitPos(0, &work->pos70.vx);
         ex->btlfx_getUnitRot(0, &work->rot78.vx);
         fx_138_pathRot.vx = 0;
@@ -82,18 +82,18 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_138_pathOrigin.vx = work->pos24.vx;
         fx_138_pathOrigin.vy = work->pos24.vy;
         fx_138_pathOrigin.vz = work->pos24.vz;
-        work->unk34.vx = 0x800;
-        work->unk34.vy = 0x800;
-        work->unk34.vz = 0x800;
+        work->unk34.vx = FX_LUCKY_SEVEN_STRIPS_SCALE;
+        work->unk34.vy = FX_LUCKY_SEVEN_STRIPS_SCALE;
+        work->unk34.vz = FX_LUCKY_SEVEN_STRIPS_SCALE;
         reelAlias = fx_138_reels;
-        sel = fx_138_randSets[ex->btlfx_rand() % 6];
-        for (i = 0, reel = fx_138_reels; i < 3; i++, reelAlias++, reel++) {
+        sel = fx_138_randSets[ex->btlfx_rand() % FX_LUCKY_SEVEN_RAND_SETS];
+        for (i = 0, reel = fx_138_reels; i < FX_LUCKY_SEVEN_REELS; i++, reelAlias++, reel++) {
             reel->unk8 = 0x200;
             reel->unkE = sel[i];
             reelAlias->rot0.vx = fx_138_pathRot.vx;
             reel->rot0.vy = fx_138_pathRot.vy;
             reel->rot0.vz = fx_138_pathRot.vz;
-            work->model96[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_138_modelFileIds[i]), 0x99, 0x3D40, 0, 0);
+            work->model96[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_138_modelFileIds[i]), FX_LUCKY_SEVEN_REEL_TPAGE, FX_LUCKY_SEVEN_REEL_CLUT, FX_LUCKY_SEVEN_REEL_U, FX_LUCKY_SEVEN_REEL_V);
         }
         work->rot48.vx = fx_138_pathRot.vx;
         work->rot48.vy = fx_138_pathRot.vy;
@@ -101,13 +101,13 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos50.vx = work->pos24.vx;
         work->pos50.vy = work->pos24.vy;
         work->pos50.vz = work->pos24.vz;
-        work->scale60.vx = 0x800;
-        work->scale60.vy = 0x800;
-        work->scale60.vz = 0x800;
-        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_RAINBOW_STRIPS), 0x9A, 0x3E40, 0, 0x80);
+        work->scale60.vx = FX_LUCKY_SEVEN_STRIPS_SCALE;
+        work->scale60.vy = FX_LUCKY_SEVEN_STRIPS_SCALE;
+        work->scale60.vz = FX_LUCKY_SEVEN_STRIPS_SCALE;
+        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_RAINBOW_STRIPS), FX_LUCKY_SEVEN_RAINBOW_STRIPS_TPAGE, FX_LUCKY_SEVEN_RAINBOW_STRIPS_CLUT, FX_LUCKY_SEVEN_RAINBOW_STRIPS_U, FX_LUCKY_SEVEN_RAINBOW_STRIPS_V);
         work->unk88 = 0;
         work->unk8A = sel[3];
-        for (i = 0; i < 6; i++) {
+        for (i = 0; i < FX_LUCKY_SEVEN_PATHS; i++) {
             fxm_posPathInit(&fx_138_posPaths[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_138_pathFileIds[i]));
         }
         work->unk8C = -1;
@@ -120,9 +120,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_pointAhead(&fx_138_pathOrigin.vx, &work->rot78.vx, 0xCFF, &env->camera->points[2].vx);
     } else {
         frame = entry->frame;
-        if (frame == 1) {
+        if (frame == FX_LUCKY_SEVEN_STRIPS_FRAME) {
             work->active90 = frame;
-            work->timer92 = 4;
+            work->timer92 = FX_LUCKY_SEVEN_STRIPS_FRAMES;
         }
         if (work->active90 != 0 && work->timer92 >= 0) {
             ex->Hi_DrawEffModel(&work->rot48, &work->pos50, (s32)&work->scale60, work->model9C);
@@ -134,9 +134,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             }
         }
-        fxm_drawScrollMoveX(0x280 - (work->frame94 << 4), 0x280, 0x180, 0x40, 0x80, 0x240, 0x180);
+        fxm_drawScrollMoveX(0x280 - (work->frame94 << 4), FX_LUCKY_SEVEN_RAINBOW_VRAM_X, FX_LUCKY_SEVEN_RAINBOW_VRAM_Y, FX_LUCKY_SEVEN_RAINBOW_VRAM_W, FX_LUCKY_SEVEN_RAINBOW_VRAM_H, FX_LUCKY_SEVEN_RAINBOW_SRC_X, FX_LUCKY_SEVEN_RAINBOW_SRC_Y);
         work->frame94++;
-        if (frame >= 0x28) {
+        if (frame >= FX_LUCKY_SEVEN_REELS_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -152,7 +152,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 spriteFrame;
 
     if (mode == 0) {
-        *args = 0x34;
+        *args = sizeof(Fx138Work81);
     } else if (mode == 1) {
         fx_138_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
@@ -165,7 +165,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            for (i = 0; i < 6; i++) {
+            for (i = 0; i < FX_LUCKY_SEVEN_PATHS; i++) {
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_138_emitFileIds[i]), (s32)&fx_138_emitPos[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->tail->shape = -1;
@@ -178,33 +178,33 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit18 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_RAINBOW_TRAIL), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_138_op81Trails;
-                work->emit18->trailSlots = 0x18;
-                work->emit18->trailStride = 0x40;
+                work->emit18->trailSlots = FX_LUCKY_SEVEN_RAINBOW_TRAIL_TRAIL_SLOTS;
+                work->emit18->trailStride = FX_LUCKY_SEVEN_RAINBOW_TRAIL_TRAIL_STRIDE;
                 if (work->emit18 != NULL) {
                     work->emit18->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             break;
-        case 0xC:
+        case FX_LUCKY_SEVEN_BURST_FRAME:
             work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_FIRE_BURST), (s32)&work->pos20);
             if (work->emit1C != NULL) {
                 work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }
-        if (frame >= 0 && frame < 0xD) {
+        if (frame >= 0 && frame < FX_LUCKY_SEVEN_FLARE_FRAMES) {
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LUCKY_SEVEN_LENS_FLARE), &work->pos28, work->frame30, work->fade32);
-            if (frame >= 5) {
-                work->fade32 -= 0x200;
+            if (frame >= FX_LUCKY_SEVEN_FLARE_FADE_FRAME) {
+                work->fade32 -= 0x1000 / (FX_LUCKY_SEVEN_FLARE_FRAMES - FX_LUCKY_SEVEN_FLARE_FADE_FRAME);
             }
             work->frame30++;
             spriteFrame = work->frame30;
-            if (spriteFrame >= 6) {
-                spriteFrame = 5;
+            if (spriteFrame >= FX_LUCKY_SEVEN_FLARE_ANIM_FRAMES) {
+                spriteFrame = FX_LUCKY_SEVEN_FLARE_ANIM_FRAMES - 1;
             }
             work->frame30 = spriteFrame;
         }
-        return frame >= 0x3C;
+        return frame >= FX_LUCKY_SEVEN_FRAMES;
     }
     return 0;
 }

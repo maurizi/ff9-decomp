@@ -10,6 +10,10 @@
 #define FX_APPEARANCE_SMOKE_PUFF    0x1 /* emitter: pale yellow-green smoke puffs */
 #define FX_APPEARANCE_SPARKLE_HELIX 0x2 /* emitter: helix of white and yellow dot sparkles */
 
+/* fx_132 choreography (docs/fxdata.md, "Choreography literals"): op80's length (the emitters start at init, at the
+ * target raised by 4 * the signed byte fxArgs[0]). */
+#define FX_APPEARANCE_FRAMES 0x30 /* op80's length */
+
 extern Unk800F78A4 *fx_132_env;
 
 #endif
