@@ -574,7 +574,7 @@ void win_drawHelpTailFill(s32 x, s32 y, s32 otz, s32 idx) {
     Unk80068F48 *tailShape;
     setlen(g_primPtr, PRIM_LEN(POLY_F4));
     poly = (PolyF4Words *)g_primPtr;
-    poly->rgbc = GPU_RGBC(GPU_POLY_F4, 0xA8B078);
+    poly->rgbc = GPU_RGBC(GPU_POLY_F4, UI_RGB_HELP_FILL);
     tailShape = &g_winTailShapes[idx];
     poly->xy0 = (x + tailShape->x0) | ((y + tailShape->y0) << 16);
     poly->xy1 = (x + tailShape->x1) | ((y + tailShape->y1) << 16);
@@ -590,7 +590,7 @@ void ui_drawEtchedLine(s32 x, s32 y, s32 otz, s32 len) {
     LineF2W *line;
 
     col[0] = g_winLineColors[CONFIG_WINDOW_COLOR()][1];
-    col[1] = GPU_RGBC(GPU_LINE_F2, 0x403838);
+    col[1] = GPU_RGBC(GPU_LINE_F2, UI_RGB_ETCHED_MID);
     col[2] = g_winLineColors[CONFIG_WINDOW_COLOR()][0];
 
     for (i = 0; i < 3; i++) {
@@ -722,7 +722,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         text_formatNumber(cur, numText, 3, TEXT_NUM_ASCII);
         text_formatNumber(max, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         numText[3] = '/';
-        pkt = ui_buildDigits(x + 3, y + 2, ot, numText, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL), (SprtWords *)pkt);
+        pkt = ui_buildDigits(x + 3, y + 2, ot, numText, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL), (SprtWords *)pkt);
     }
     if (cur != 0) {
         barW = def->w - 6;
@@ -732,9 +732,9 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
             w = barW;
         }
         setlen(pkt, PRIM_LEN(TILE));
-        rgbc = GPU_RGBC(GPU_TILE, 0x70A838);
+        rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR);
         if (cur >= max) {
-            rgbc = GPU_RGBC(GPU_TILE, 0x2838A8);
+            rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR_FULL);
         }
         if (flag) {
             rgbc |= GPU_CODE(GPU_ABE);
@@ -771,7 +771,7 @@ void win_drawHelpFill(RECT *rect, s32 otz) {
 
     setlen(g_primPtr, PRIM_LEN(TILE));
     tile = (TileWords *)g_primPtr;
-    tile->rgbc = GPU_RGBC(GPU_TILE, 0xA8B078);
+    tile->rgbc = GPU_RGBC(GPU_TILE, UI_RGB_HELP_FILL);
     tile->xy = (u16)rect->x | (rect->y << 16);
     tile->wh = rect->w | (rect->h << 16);
     addPrim(&g_ot[otz], tile);
@@ -822,7 +822,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
     setlen(sprt, PRIM_LEN(SPRT));
     def = &g_uiSprites[i];
     if (flag) {
-        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
     } else {
         sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
@@ -1066,7 +1066,7 @@ void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
             tpage = 0x90;
         }
         setlen(g_primPtr, PRIM_LEN(SPRT));
-        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
         ((SprtWords *)g_primPtr)->xy = x | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
         ((SprtWords *)g_primPtr)->wh = (h << 16) | 0x20;

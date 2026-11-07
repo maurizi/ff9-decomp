@@ -2543,7 +2543,7 @@ void btlui_drawTargetCursors(void) {
     SprtWords *sprt;
     DR_TPAGE *tpage;
     if (cursors->count >= 2 && !(g_btluiVsyncTick & 3)) {
-        color = GPU_RGBC(GPU_SPRT, 0x404040);
+        color = GPU_RGBC(GPU_SPRT, UI_RGB_HALF);
     }
     for (i = 0; i < cursors->count; i++) {
         setlen(g_primPtr, PRIM_LEN(SPRT));
@@ -2874,7 +2874,7 @@ void btlui_drawListCursors(Window *win) {
     }
     color = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     if (cursors->partyCount >= 2 && !(g_btluiVsyncTick & 3)) {
-        color = GPU_RGBC(GPU_SPRT, 0x404040);
+        color = GPU_RGBC(GPU_SPRT, UI_RGB_HALF);
     }
     y = w->y + 5;
     x = w->x - 0xE;

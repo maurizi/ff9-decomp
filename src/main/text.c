@@ -289,7 +289,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     s32 ch;
     s32 w;
 
-    rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
+    rgbc = GPU_RGBC(GPU_SPRT, UI_RGB_HALF);
     if (mode == UI_LABEL_NORMAL) {
         rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
@@ -980,7 +980,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *str, s32 style, void *pkt) {
     s32 u;
 
     if (style == DIGITS_DIM) {
-        rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
     }
     while ((ch = *str) != 0) {
         if ((u8)ch != ' ') {

@@ -2804,6 +2804,15 @@ typedef struct {
 /* ui_buildDigits: pen advance of the small digit font */
 #define UI_SMALL_DIGIT_ADV  5 /* digits, '%' and blanks */
 #define UI_SMALL_SLASH_ADV  4 /* '/' */
+/* UI colours (GPU_RGBC rgb, 0xBBGGRR) */
+#define UI_RGB_DIM        0x606060 /* dimmed sprites and digits, drawn semi-transparent (ui_buildSprite flag, DIGITS_DIM,
+                                    * the AP gauge's numbers) */
+#define UI_RGB_HALF       0x404040 /* half brightness: UI_LABEL_DIM labels, and multi-target cursors every 4th frame
+                                    * (btlui_drawTargetCursors) */
+#define UI_RGB_HELP_FILL  0xA8B078 /* help window background (win_drawHelpFill, win_drawHelpTailFill) */
+#define UI_RGB_ETCHED_MID 0x403838 /* ui_drawEtchedLine: the middle line, between the window colour's two lines */
+#define UI_RGB_AP_BAR     0x70A838 /* ui_buildApGauge bar while learning */
+#define UI_RGB_AP_BAR_FULL 0x2838A8 /* ui_buildApGauge bar at cur == max */
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows
@@ -3559,7 +3568,7 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *def
     DrTpageWords *drMode;
     setlen(sprt, PRIM_LEN(SPRT));
     if (flag) {
-        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
     } else {
         sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
