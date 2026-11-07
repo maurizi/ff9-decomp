@@ -50,7 +50,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 *timerPtr;
 
     if (mode == 0) {
-        *args = 0x120;
+        *args = sizeof(Fx1f3Work80);
     } else if (mode == 1) {
         work->emit40[0] = NULL;
         work->emit40[1] = NULL;
@@ -60,14 +60,14 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit40[5] = NULL;
         work->emit40[6] = NULL;
         fx_1f3_env = env;
-        ex->btlfx_initEffModels(fx_1f3_effModels, 0x20);
-        for (i = 15, timerPtr = &work->timer0[15]; i >= 0; i--, timerPtr--) {
+        ex->btlfx_initEffModels(fx_1f3_effModels, FX_NEUTRON_RING_MODEL_SLOTS);
+        for (i = FX_NEUTRON_RING_TIMERS - 1, timerPtr = &work->timer0[FX_NEUTRON_RING_TIMERS - 1]; i >= 0; i--, timerPtr--) {
             *timerPtr = 0;
         }
         work->pos5C.vx = env->targets->centerX;
         work->pos5C.vz = env->targets->centerZ;
         work->pos5C.vy = -0x200;
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < FX_NEUTRON_RING_RINGS; i++) {
             fx_1f3_rings[i].timer12C = 0;
             fx_1f3_rings[i].bone130 = fx_1f3_ringDefs[i].bone0;
             fx_1f3_rings[i].radius13C = fx_1f3_ringDefs[i].radius4;
@@ -77,7 +77,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_1f3_rings[i].trail20, 2);
         }
-        for (i = 0, scaleMax = 0x600, scaleMin = 0x400; i < 8; i++, scaleMax += 0x200, scaleMin += 0x200) {
+        for (i = 0, scaleMax = 0x600, scaleMin = 0x400; i < FX_NEUTRON_RING_ARCS; i++, scaleMax += 0x200, scaleMin += 0x200) {
             fx_1f3_spinModels[i].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_TEAL_ARC), 1);
             fx_1f3_spinModels[i].scale10.vy = fx_1f3_spinModels[i].scale10.vx = fx_1f3_spinModels[i].scale10.vz = ex->btlfx_randRange(scaleMin, scaleMax);
             fx_1f3_spinModels[i].pos20.vx = work->pos5C.vx;
@@ -129,34 +129,34 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->timer0[7] = 0x4A;
-            work->timer0[9] = 0x20;
+            work->timer0[FX_NEUTRON_RING_T_RINGS] = FX_NEUTRON_RING_RINGS_FRAMES;
+            work->timer0[FX_NEUTRON_RING_T_CAM_DOWN] = FX_NEUTRON_RING_CAM_FRAMES;
             break;
-        case 0x22:
+        case FX_NEUTRON_RING_STREAKS_FRAME:
             ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, 0x2E, (u16 *)&work->pos64);
             work->emit40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_LIGHT_STREAKS_2), (s32)&work->pos64);
             if (work->emit40[0] != NULL) {
                 work->emit40[0]->otZ = 0x200;
             }
             break;
-        case 0x2A:
+        case FX_NEUTRON_RING_YELLOW_RINGS_2_FRAME:
             emitter = work->emit40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_YELLOW_RINGS_2), (s32)&work->pos64);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
-        case 0x52:
+        case FX_NEUTRON_RING_YELLOW_RINGS_FRAME:
             emitter = work->emit40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_YELLOW_RINGS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
-        case 0x62:
+        case FX_NEUTRON_RING_ORBIT_TRAIL_FRAME:
             work->emit40[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_ORBIT_TRAIL), (s32)&work->pos5C);
             if (work->emit40[2] != NULL) {
                 work->emit40[2]->trails = (s32)fx_1f3_op80Trails;
-                work->emit40[2]->trailSlots = 0x24;
-                work->emit40[2]->trailStride = 0xCC;
+                work->emit40[2]->trailSlots = FX_NEUTRON_RING_ORBIT_TRAIL_TRAIL_SLOTS;
+                work->emit40[2]->trailStride = FX_NEUTRON_RING_ORBIT_TRAIL_TRAIL_STRIDE;
                 if (work->emit40[2] != NULL) {
                     work->emit40[2]->otZ = 0x200;
                 }
@@ -166,46 +166,46 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter->otZ = 0x200;
             }
             break;
-        case 0x72:
-            work->timer0[0] = 0x80;
+        case FX_NEUTRON_RING_DISC_FRAME:
+            work->timer0[FX_NEUTRON_RING_T_DISC] = FX_NEUTRON_RING_DISC_FRAMES;
             break;
-        case 0x7E:
+        case FX_NEUTRON_RING_LIGHTNING_FRAME:
             emitter = work->emit40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_LIGHTNING_FLASH), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
-        case 0x92:
+        case FX_NEUTRON_RING_VIOLET_RINGS_FRAME:
             ex->btlfx_stopEmitter(work->emit40[6]);
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_RINGS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
-            work->timer0[1] = 0x10;
+            work->timer0[FX_NEUTRON_RING_T_DISC_SHRINK] = FX_NEUTRON_RING_DISC_SHRINK_FRAMES;
             break;
-        case 0x9A:
-            work->timer0[2] = 4;
+        case FX_NEUTRON_RING_FLASH_FRAME:
+            work->timer0[FX_NEUTRON_RING_T_FLASH] = FX_NEUTRON_RING_FLASH_FRAMES;
             break;
-        case 0x9D:
-            work->timer0[0] = 0;
+        case FX_NEUTRON_RING_STOP_FRAME:
+            work->timer0[FX_NEUTRON_RING_T_DISC] = 0;
             ex->btlfx_stopEmitter(work->emit40[2]);
             ex->btlfx_stopEmitter(work->emit40[3]);
             ex->btlfx_stopEmitter(work->emit40[4]);
             ex->btlfx_stopEmitter(work->emit40[6]);
             break;
-        case 0x9E:
-            work->timer0[3] = 8;
-            work->timer0[5] = 0x20;
-            work->timer0[6] = 0x20;
-            work->timer0[8] = 0x20;
-            work->timer0[4] = 0x60;
+        case FX_NEUTRON_RING_BURST_FRAME:
+            work->timer0[FX_NEUTRON_RING_T_WHITE] = FX_NEUTRON_RING_WHITE_FRAMES;
+            work->timer0[FX_NEUTRON_RING_T_BOWLS] = FX_NEUTRON_RING_GROW_FRAMES;
+            work->timer0[FX_NEUTRON_RING_T_TORI] = FX_NEUTRON_RING_GROW_FRAMES;
+            work->timer0[FX_NEUTRON_RING_T_DISCS] = FX_NEUTRON_RING_GROW_FRAMES;
+            work->timer0[FX_NEUTRON_RING_T_ARCS] = FX_NEUTRON_RING_ARCS_FRAMES;
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_COLOR_RINGS), (s32)&work->pos5C);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
-        case 0xBE:
-            work->timer0[10] = 0x20;
+        case FX_NEUTRON_RING_CAM_UP_FRAME:
+            work->timer0[FX_NEUTRON_RING_T_CAM_UP] = FX_NEUTRON_RING_CAM_FRAMES;
             break;
         }
         if (work->emit40[0] != NULL && work->emit40[0]->state == BTLFX_EMIT_DONE) {
@@ -232,53 +232,56 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit40[1] != NULL) {
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_BACKDROP), frame);
         }
-        if (work->timer0[1] != 0) {
-            work->timer0[1]--;
-            work->scale80.vx = work->scale80.vy = work->scale80.vz = fxm_easeLerp(2, 0x10, work->timer0[1], 0x3000, 0);
+        if (work->timer0[FX_NEUTRON_RING_T_DISC_SHRINK] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_DISC_SHRINK]--;
+            work->scale80.vx = work->scale80.vy = work->scale80.vz = fxm_easeLerp(2, FX_NEUTRON_RING_DISC_SHRINK_FRAMES, work->timer0[FX_NEUTRON_RING_T_DISC_SHRINK], 0x3000, 0);
         }
-        if (work->timer0[0] != 0) {
-            work->timer0[0]--;
+        if (work->timer0[FX_NEUTRON_RING_T_DISC] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_DISC]--;
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos5C, (s16 *)&work->rot90);
             ex->Hi_DrawEffModel(&work->rot90, (VECTOR *)&work->pos70, (s32)&work->scale80, work->model6C);
-            elapsed = 0x80 - work->timer0[0];
-            if (elapsed < 8) {
+            elapsed = FX_NEUTRON_RING_DISC_FRAMES - work->timer0[FX_NEUTRON_RING_T_DISC];
+            if (elapsed < FX_NEUTRON_RING_DISC_FADE_FRAMES) {
                 shade = (elapsed << 5) - 0x100;
                 ex->Hi_ModifyEffModelRGB(work->model6C, shade, shade, shade);
             }
-            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, FX_NEUTRON_RING_FIRE_VRAM_X, FX_NEUTRON_RING_FIRE_VRAM_Y, FX_NEUTRON_RING_FIRE_VRAM_W, FX_NEUTRON_RING_FIRE_VRAM_H,
+                                 FX_NEUTRON_RING_FIRE_VRAM_X, FX_NEUTRON_RING_FIRE_SRC_Y);
         }
-        if (work->timer0[5] != 0) {
-            work->timer0[5]--;
-            work->scaleB0.vx = work->scaleB0.vy = work->scaleB0.vz = fxm_easeLerp(2, 0x20, work->timer0[5], 0x100, 0x400);
+        if (work->timer0[FX_NEUTRON_RING_T_BOWLS] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_BOWLS]--;
+            work->scaleB0.vx = work->scaleB0.vy = work->scaleB0.vz = fxm_easeLerp(2, FX_NEUTRON_RING_GROW_FRAMES, work->timer0[FX_NEUTRON_RING_T_BOWLS], 0x100, 0x400);
             ex->Hi_DrawEffModel(&work->rotA0, (VECTOR *)&work->pos70, (s32)&work->scaleB0, work->model98);
             ex->Hi_DrawEffModel(&work->rotA8, (VECTOR *)&work->pos70, (s32)&work->scaleB0, work->model9C);
-            if (work->timer0[5] < 0x10) {
-                shade = -((0x10 - work->timer0[5]) * 0x10);
+            if (work->timer0[FX_NEUTRON_RING_T_BOWLS] < FX_NEUTRON_RING_GROW_FADE_FRAMES) {
+                shade = -((FX_NEUTRON_RING_GROW_FADE_FRAMES - work->timer0[FX_NEUTRON_RING_T_BOWLS]) * 0x10);
                 ex->Hi_ModifyEffModelRGB(work->model98, shade, shade, shade);
                 ex->Hi_ModifyEffModelRGB(work->model9C, shade, shade, shade);
             }
-            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, FX_NEUTRON_RING_FIRE_VRAM_X, FX_NEUTRON_RING_FIRE_VRAM_Y, FX_NEUTRON_RING_FIRE_VRAM_W, FX_NEUTRON_RING_FIRE_VRAM_H,
+                                 FX_NEUTRON_RING_FIRE_VRAM_X, FX_NEUTRON_RING_FIRE_SRC_Y);
         }
-        if (work->timer0[8] != 0) {
-            work->timer0[8]--;
-            work->scaleF8.vx = work->scaleF8.vy = work->scaleF8.vz = fxm_easeLerp(2, 0x20, work->timer0[8], 0x400, 0x1000);
+        if (work->timer0[FX_NEUTRON_RING_T_DISCS] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_DISCS]--;
+            work->scaleF8.vx = work->scaleF8.vy = work->scaleF8.vz = fxm_easeLerp(2, FX_NEUTRON_RING_GROW_FRAMES, work->timer0[FX_NEUTRON_RING_T_DISCS], 0x400, 0x1000);
             ex->Hi_DrawEffModel(&work->rotF0, (VECTOR *)&work->pos70, (s32)&work->scaleF8, work->modelE8);
             ex->Hi_DrawEffModel(&work->rotF0, (VECTOR *)&work->pos70, (s32)&work->scaleF8, work->modelEC);
-            if (work->timer0[8] < 0x10) {
-                shade = -((0x10 - work->timer0[8]) * 0x10);
+            if (work->timer0[FX_NEUTRON_RING_T_DISCS] < FX_NEUTRON_RING_GROW_FADE_FRAMES) {
+                shade = -((FX_NEUTRON_RING_GROW_FADE_FRAMES - work->timer0[FX_NEUTRON_RING_T_DISCS]) * 0x10);
                 ex->Hi_ModifyEffModelRGB(work->modelE8, shade, shade, shade);
                 ex->Hi_ModifyEffModelRGB(work->modelEC, shade, shade, shade);
             }
-            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, FX_NEUTRON_RING_GREY_DISC_VRAM_X, FX_NEUTRON_RING_FIRE_VRAM_Y, FX_NEUTRON_RING_FIRE_VRAM_W, FX_NEUTRON_RING_FIRE_VRAM_H,
+                                 FX_NEUTRON_RING_GREY_DISC_VRAM_X, FX_NEUTRON_RING_FIRE_SRC_Y);
         }
-        if (work->timer0[6] != 0) {
-            work->timer0[6]--;
-            work->scaleD8.vx = work->scaleD8.vy = fxm_easeLerp(2, 0x20, work->timer0[6], 0x400, 0xC00);
-            work->scaleD8.vz = fxm_easeLerp(2, 0x20, work->timer0[6], 0x400, 0x800);
+        if (work->timer0[FX_NEUTRON_RING_T_TORI] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_TORI]--;
+            work->scaleD8.vx = work->scaleD8.vy = fxm_easeLerp(2, FX_NEUTRON_RING_GROW_FRAMES, work->timer0[FX_NEUTRON_RING_T_TORI], 0x400, 0xC00);
+            work->scaleD8.vz = fxm_easeLerp(2, FX_NEUTRON_RING_GROW_FRAMES, work->timer0[FX_NEUTRON_RING_T_TORI], 0x400, 0x800);
             ex->Hi_DrawEffModel(&work->rotC8, (VECTOR *)&work->pos70, (s32)&work->scaleD8, work->modelC0);
             ex->Hi_DrawEffModel(&work->rotD0, (VECTOR *)&work->pos70, (s32)&work->scaleD8, work->modelC4);
-            if (work->timer0[6] < 0x10) {
-                shade = -((0x10 - work->timer0[6]) * 0x10);
+            if (work->timer0[FX_NEUTRON_RING_T_TORI] < FX_NEUTRON_RING_GROW_FADE_FRAMES) {
+                shade = -((FX_NEUTRON_RING_GROW_FADE_FRAMES - work->timer0[FX_NEUTRON_RING_T_TORI]) * 0x10);
                 ex->Hi_ModifyEffModelRGB(work->modelC0, shade, shade, shade);
                 ex->Hi_ModifyEffModelRGB(work->modelC4, shade, shade, shade);
             }
@@ -288,44 +291,45 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rotD0.vx = 0x200;
             work->rotC8.vz += 0x40;
             work->rotD0.vz += 0x40;
-            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, FX_NEUTRON_RING_TORUS_VRAM_X, FX_NEUTRON_RING_FIRE_VRAM_Y, FX_NEUTRON_RING_TORUS_VRAM_W, FX_NEUTRON_RING_FIRE_VRAM_H,
+                                 FX_NEUTRON_RING_TORUS_SRC_X, FX_NEUTRON_RING_FIRE_VRAM_Y);
         }
-        if (work->timer0[4] != 0) {
-            work->timer0[4]--;
-            for (i = 0; i < 8; i++) {
-                fx_1f3_spinModels[i].rot8.vz += fxm_easeLerp(2, 0x60, work->timer0[4], fx_1f3_spinModels[i].spin4, 0);
-                grow = fxm_easeLerp(2, 0x60, work->timer0[4], 0x40, 0);
+        if (work->timer0[FX_NEUTRON_RING_T_ARCS] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_ARCS]--;
+            for (i = 0; i < FX_NEUTRON_RING_ARCS; i++) {
+                fx_1f3_spinModels[i].rot8.vz += fxm_easeLerp(2, FX_NEUTRON_RING_ARCS_FRAMES, work->timer0[FX_NEUTRON_RING_T_ARCS], fx_1f3_spinModels[i].spin4, 0);
+                grow = fxm_easeLerp(2, FX_NEUTRON_RING_ARCS_FRAMES, work->timer0[FX_NEUTRON_RING_T_ARCS], 0x40, 0);
                 fx_1f3_spinModels[i].scale10.vz = 0x800;
                 fx_1f3_spinModels[i].scale10.vy += grow;
                 fx_1f3_spinModels[i].scale10.vx += grow;
                 ex->Hi_DrawEffModel(&fx_1f3_spinModels[i].rot8, (VECTOR *)&fx_1f3_spinModels[i].pos20, (s32)&fx_1f3_spinModels[i].scale10,
                                     fx_1f3_spinModels[i].model0);
-                if (work->timer0[4] < 0x40) {
-                    shade = -((0x40 - work->timer0[4]) * 4);
+                if (work->timer0[FX_NEUTRON_RING_T_ARCS] < FX_NEUTRON_RING_ARCS_FADE_FRAMES) {
+                    shade = -((FX_NEUTRON_RING_ARCS_FADE_FRAMES - work->timer0[FX_NEUTRON_RING_T_ARCS]) * 4);
                     ex->Hi_ModifyEffModelRGB(fx_1f3_spinModels[i].model0, shade, shade, shade);
                 }
             }
         }
-        if (work->timer0[7] != 0) {
-            work->timer0[7]--;
+        if (work->timer0[FX_NEUTRON_RING_T_RINGS] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_RINGS]--;
             env->otZ = 0x80;
-            if (work->timer0[7] >= 9) {
-                for (i = 0; i < 8; i++) {
+            if (work->timer0[FX_NEUTRON_RING_T_RINGS] >= FX_NEUTRON_RING_RING_FRAMES + 1) {
+                for (i = 0; i < FX_NEUTRON_RING_RING_SET; i++) {
                     if (fx_1f3_rings[i].timer12C == 0) {
                         ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, fx_1f3_rings[i].bone130, (BtlBone *)&fx_1f3_rings[i]);
-                        fx_1f3_rings[i].timer12C = 8;
+                        fx_1f3_rings[i].timer12C = FX_NEUTRON_RING_RING_FRAMES;
                         break;
                     }
                 }
-                for (i = 8; i < 16; i++) {
+                for (i = FX_NEUTRON_RING_RING_SET; i < FX_NEUTRON_RING_RINGS; i++) {
                     if (fx_1f3_rings[i].timer12C == 0) {
                         ex->btlfx_getUnitBoneMatrix(BTLFX_UNIT_CASTER, fx_1f3_rings[i].bone130, (BtlBone *)&fx_1f3_rings[i]);
-                        fx_1f3_rings[i].timer12C = 8;
+                        fx_1f3_rings[i].timer12C = FX_NEUTRON_RING_RING_FRAMES;
                         break;
                     }
                 }
             }
-            for (i = 0; i < 16; i++) {
+            for (i = 0; i < FX_NEUTRON_RING_RINGS; i++) {
                 if (fx_1f3_rings[i].timer12C != 0) {
                     fx_1f3_rings[i].timer12C--;
                     ex->btlfx_getUnitBonePos(BTLFX_UNIT_CASTER, fx_1f3_rings[i].bone130, (u16 *)&vert);
@@ -335,10 +339,10 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     gte_SetRotMatrix(&fx_1f3_rings[i].matrix0);
                     gte_SetTransMatrix(&fx_1f3_rings[i].matrix0);
                     trail = &fx_1f3_rings[i].trail20;
-                    trail->lastSlot0 = trail->count2 = 0x20;
+                    trail->lastSlot0 = trail->count2 = FX_NEUTRON_RING_RING_POINTS - 1;
                     trail->head1 = 0;
                     dst = trail->points4;
-                    for (j = 0; j < 0x21; j++, dst++) {
+                    for (j = 0; j < FX_NEUTRON_RING_RING_POINTS; j++, dst++) {
                         vert.vx = (ex->math_sin(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;
                         vert.vz = (ex->math_cos(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;
                         vert.vy = 0;
@@ -352,11 +356,11 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         dst->pad = 0xC0;
                     }
                     if (fx_1f3_rings[i].timer12C < 4) {
-                        fx_1f3_rings[i].angle134 += fxm_easeLerp(2, 8, fx_1f3_rings[i].timer12C, fx_1f3_rings[i].spin138, 0);
+                        fx_1f3_rings[i].angle134 += fxm_easeLerp(2, FX_NEUTRON_RING_RING_FRAMES, fx_1f3_rings[i].timer12C, fx_1f3_rings[i].spin138, 0);
                         shade = fx_1f3_rings[i].timer12C << 10;
                     } else {
                         fx_1f3_rings[i].angle134 += fx_1f3_rings[i].spin138;
-                        shade = (8 - fx_1f3_rings[i].timer12C) << 10;
+                        shade = (FX_NEUTRON_RING_RING_FRAMES - fx_1f3_rings[i].timer12C) << 10;
                     }
                     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_NEUTRON_RING_VIOLET_TRAIL), 0, NULL, 0, 0x1000, shade, BTLFX_ABR_ADD,
                                         (u8 *)&fx_1f3_rings[i].trail20, 2);
@@ -364,33 +368,33 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             env->otZ = 0;
         }
-        if (work->timer0[2] != 0) {
-            work->timer0[2]--;
-            fxm_tintScreenRatio(work->timer0[2], 4, 0xFF, 0, BTLFX_ABR_ADD, 0);
+        if (work->timer0[FX_NEUTRON_RING_T_FLASH] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_FLASH]--;
+            fxm_tintScreenRatio(work->timer0[FX_NEUTRON_RING_T_FLASH], FX_NEUTRON_RING_FLASH_FRAMES, 0xFF, 0, BTLFX_ABR_ADD, 0);
         }
-        if (work->timer0[3] != 0) {
-            work->timer0[3]--;
-            fxm_tintScreenRatio(work->timer0[3], 8, 0, 0xFF, BTLFX_ABR_ADD, 0);
+        if (work->timer0[FX_NEUTRON_RING_T_WHITE] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_WHITE]--;
+            fxm_tintScreenRatio(work->timer0[FX_NEUTRON_RING_T_WHITE], FX_NEUTRON_RING_WHITE_FRAMES, 0, 0xFF, BTLFX_ABR_ADD, 0);
         }
-        if (work->timer0[9] != 0) {
-            work->timer0[9]--;
+        if (work->timer0[FX_NEUTRON_RING_T_CAM_DOWN] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_CAM_DOWN]--;
             cam.vx = work->pos108.vx;
             cam.vz = work->pos108.vz;
-            cam.vy = fxm_easeLerp(1, 0x20, work->timer0[9], work->pos108.vy, work->pos118.vy);
+            cam.vy = fxm_easeLerp(1, FX_NEUTRON_RING_CAM_FRAMES, work->timer0[FX_NEUTRON_RING_T_CAM_DOWN], work->pos108.vy, work->pos118.vy);
             ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)&cam);
         }
-        if (work->timer0[10] != 0) {
-            work->timer0[10]--;
-            if (work->timer0[10] != 0) {
+        if (work->timer0[FX_NEUTRON_RING_T_CAM_UP] != 0) {
+            work->timer0[FX_NEUTRON_RING_T_CAM_UP]--;
+            if (work->timer0[FX_NEUTRON_RING_T_CAM_UP] != 0) {
                 cam2.vx = work->pos108.vx;
                 cam2.vz = work->pos108.vz;
-                cam2.vy = fxm_easeLerp(2, 0x20, work->timer0[10], work->pos118.vy, work->pos108.vy);
+                cam2.vy = fxm_easeLerp(2, FX_NEUTRON_RING_CAM_FRAMES, work->timer0[FX_NEUTRON_RING_T_CAM_UP], work->pos118.vy, work->pos108.vy);
             } else {
                 ex->btlfx_getUnitHomePos(BTLFX_UNIT_CASTER, (s16 *)&cam2);
             }
             ex->btlfx_setUnitPos(BTLFX_UNIT_CASTER, (s16 *)&cam2);
         }
-        return frame >= 0xFE;
+        return frame >= FX_NEUTRON_RING_FRAMES;
     }
     return 0;
 }
