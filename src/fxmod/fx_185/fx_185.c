@@ -6,7 +6,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx185Work80);
     } else if (mode == 1) {
         s32 spear = *args;
         fx_185_env = env;
@@ -15,10 +15,10 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         if (spear == 0) {
-            ex->btlfx_initEffModels(fx_185_effModels, 0x10);
+            ex->btlfx_initEffModels(fx_185_effModels, FX_185_SPEARS);
         }
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
-        work->pos0.vy = -0x7D0;
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos0);
+        work->pos0.vy = FX_SPEAR_DROP_HEIGHT;
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
         work->pos8.vz = env->targets->centerZ;
@@ -46,7 +46,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->Hi_SetEffModelSlice(work->model3C, work->pos18.vy);
         ex->Hi_DrawSliceEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model3C);
-        if (frame >= 4) {
+        if (frame >= FX_SPEAR_FRAMES) {
             if (work->index38 == FX_185_LAST_SPEAR) {
                 ex->btlfx_clearEffModels();
             }
@@ -60,7 +60,7 @@ s32 fx_185_op81(s32 mode, Fx185Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx185Work81);
     } else if (mode == 1) {
         work->pos4.vx = fx_185_targetPos.vx;
         work->pos4.vy = fx_185_targetPos.vy;
@@ -71,7 +71,7 @@ s32 fx_185_op81(s32 mode, Fx185Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_SPEAR_RING_FRAMES;
     }
     return 0;
 }

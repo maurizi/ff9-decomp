@@ -17,6 +17,37 @@
 #define FX_ARK_RED_FLASH_RING   0xB /* rings: red-white flat flash ring */
 #define FX_ARK_LENS_FLARE       0xD /* sprite line: lens-flare set during the white blast; runtime (docs/runtime-findings.md effect-data pass) */
 
+/* fx_17d_5 choreography (docs/fxdata.md, "Choreography literals"): op80's states (work->state0; the frame restarts at
+ * each) and their lengths and keyframes, the pool items' states (Fx17d5Spark.state0) and lengths, the scroll. */
+#define FX_ARK_STATE_GATHER  0    /* LENS_FLARE, CREAM_RING / LILAC_RING, homing trails spawn */
+#define FX_ARK_GATHER_FRAMES 0x41
+#define FX_ARK_LILAC_RING_FRAME 0x1B /* STATE_GATHER: LILAC_RING starts */
+#define FX_ARK_CREAM_RING_FRAME 0x1F /* STATE_GATHER: CREAM_RING starts */
+#define FX_ARK_TRAILS_FRAME  0x21 /* STATE_GATHER: 3 trails a frame from here, SPARK_POOL in all */
+#define FX_ARK_STATE_HOLD    1
+#define FX_ARK_HOLD_FRAMES   0x10
+#define FX_ARK_STATE_HOMING  2    /* the trails home in on the target, RED_FLASH_RING */
+#define FX_ARK_HOMING_FRAMES 0x20
+#define FX_ARK_STATE_STRIKE  3    /* strikers (pool) hit the target, the scroll, a growing tint; the state restarts */
+#define FX_ARK_STRIKE_FRAMES 0x48
+#define FX_ARK_STRIKE_TINT_FRAME 0x38 /* STATE_STRIKE: the additive tint grows from here */
+#define FX_ARK_SPARK_POOL    0x39 /* op80 pool items (Fx17d5Spark) */
+#define FX_ARK_SPARK_TRAIL   0    /* Fx17d5Spark.state0: a homing trail */
+#define FX_ARK_SPARK_STRIKE  1    /* a striker falling on the target, */
+#define FX_ARK_SPARK_STRIKE_FRAMES 7
+#define FX_ARK_SPARK_HIT     2    /* then a hit (PLANET, ORANGE_RING), */
+#define FX_ARK_SPARK_HIT_FRAMES 24
+#define FX_ARK_SPARK_FINAL_HIT 3  /* or the final hit (a darkening, bigger ring) */
+#define FX_ARK_SPARK_FINAL_HIT_FRAMES 32
+#define FX_ARK_MODEL_COUNT   5    /* btlfx_initEffModels slots */
+/* STATE_STRIKE scrolls (SRC_X, SRC_Y) 29 texels a frame through this rect (not checked against the models) */
+#define FX_ARK_STRIKE_VRAM_X 0x200
+#define FX_ARK_STRIKE_VRAM_Y 0x100
+#define FX_ARK_STRIKE_VRAM_W 0x40
+#define FX_ARK_STRIKE_VRAM_H 0x80
+#define FX_ARK_STRIKE_SRC_X  0x200
+#define FX_ARK_STRIKE_SRC_Y  0x180
+
 typedef struct {
     s32 vx, vy, vz;
 } Fx17d5Vec3;

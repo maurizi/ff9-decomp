@@ -17,6 +17,51 @@
 #define FX_ARK_WING_PLATE_2 0x82 /* summon data: 'so' model, flat plate with a grey metal texture and a dark centre bar */
 #define FX_ARK_TEAL_CYLINDER 0x83 /* summon data: 'so' model, cylinder with a dark teal patterned texture */
 
+/* fx_17d_3 choreography (docs/fxdata.md, "Choreography literals"): op80's shots (work->state0; the frame restarts at
+ * each; some switch the summon's motion at their end), their lengths and emitter keyframes, the trail buffers and
+ * the scrolling textures. */
+#define FX_ARK_STATE_CLOUDS   0    /* a white flash, CLOUD_TRAIL behind the Ark */
+#define FX_ARK_STATE_CLOUDS_2 1    /* CLOUD_TRAIL again; then summon motion 2 */
+#define FX_ARK_CLOUDS_FRAMES  0x18
+#define FX_ARK_STATE_VOLLEY   2    /* a SMOKE_TRAIL pair; then motion 4 */
+#define FX_ARK_STATE_VOLLEY_2 3    /* a SMOKE_TRAIL_3 pair; then motion 5 */
+#define FX_ARK_STATE_VOLLEY_3 4    /* a SMOKE_TRAIL_3 pair at VOLLEY_3_FRAME */
+#define FX_ARK_STATE_VOLLEY_4 5    /* SMOKE_TRAIL_2, SMOKE_CLOUDS and a SMOKE_TRAIL_3 */
+#define FX_ARK_STATE_VOLLEY_5 6    /* the same; then motion 6 */
+#define FX_ARK_VOLLEY_FRAMES  0x15 /* VOLLEY, VOLLEY_2, VOLLEY_4 and VOLLEY_5's length */
+#define FX_ARK_VOLLEY_3_FRAMES 0x18
+#define FX_ARK_STATE_DUST     7    /* DUST_CLOUD; the op ends */
+#define FX_ARK_DUST_FRAMES    0x20
+#define FX_ARK_SMOKE_FRAME    0xC  /* VOLLEY / VOLLEY_2: the second trail of the pair starts */
+#define FX_ARK_VOLLEY_3_FRAME 6
+#define FX_ARK_SMOKE_2_FRAME  0xB  /* VOLLEY_4 / VOLLEY_5: SMOKE_TRAIL_2 and SMOKE_CLOUDS start */
+#define FX_ARK_DUST_FRAME     0xA  /* STATE_DUST: DUST_CLOUD starts */
+#define FX_ARK_WHITE_RGB      0xFF, 0xFF, 0xFF /* STATE_CLOUDS frame 0: opaque */
+#define FX_ARK_MODEL_COUNT    5    /* btlfx_initEffModels slots */
+#define FX_ARK_CLOUD_TRAIL_TRAIL_SLOTS  0x10 /* CLOUD_TRAIL's trail buffer: slots of */
+#define FX_ARK_CLOUD_TRAIL_TRAIL_STRIDE 0xCC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_ARK_SMOKE_TRAIL_TRAIL_SLOTS  0x32 /* SMOKE_TRAIL / _2 / _3's */
+#define FX_ARK_SMOKE_TRAIL_TRAIL_STRIDE 0x1C
+/* scrolling textures (not checked against the models): SCROLL 0x18 texels a frame, SCROLL_2 0x10, SCROLL_3 0x10 */
+#define FX_ARK_SCROLL_VRAM_X   0x300
+#define FX_ARK_SCROLL_VRAM_Y   0x140
+#define FX_ARK_SCROLL_VRAM_W   0x20
+#define FX_ARK_SCROLL_VRAM_H   0x80
+#define FX_ARK_SCROLL_SRC_X    0x320
+#define FX_ARK_SCROLL_SRC_Y    0x140
+#define FX_ARK_SCROLL_2_VRAM_X 0x2C0
+#define FX_ARK_SCROLL_2_VRAM_Y 0x100
+#define FX_ARK_SCROLL_2_VRAM_W 0x40
+#define FX_ARK_SCROLL_2_VRAM_H 0x80
+#define FX_ARK_SCROLL_2_SRC_X  0x2C0
+#define FX_ARK_SCROLL_2_SRC_Y  0x180
+#define FX_ARK_SCROLL_3_VRAM_X 0x340
+#define FX_ARK_SCROLL_3_VRAM_Y 0x100
+#define FX_ARK_SCROLL_3_VRAM_W 0x20
+#define FX_ARK_SCROLL_3_VRAM_H 0x80
+#define FX_ARK_SCROLL_3_SRC_X  0x360
+#define FX_ARK_SCROLL_3_SRC_Y  0x100
+
 typedef struct {
     u8 pad0[0x54];
     struct {

@@ -17,16 +17,16 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx12cWork);
     } else if (mode == 1) {
         fx_12c_env = env;
-        ex->btlfx_initEffModels(fx_12c_effModels, 10);
-        for (i = 7, timer = &work->timer0[7]; i >= 0; i--) {
+        ex->btlfx_initEffModels(fx_12c_effModels, FX_EARTHQUAKE_MODEL_COUNT);
+        for (i = FX_EARTHQUAKE_TIMERS - 1, timer = &work->timer0[FX_EARTHQUAKE_TIMERS - 1]; i >= 0; i--) {
             *timer-- = 0;
         }
         work->pos20.vx = 0;
         work->pos20.vy = 0;
-        work->pos20.vz = -0x550;
+        work->pos20.vz = FX_EARTHQUAKE_GROUND_Z;
         fx_12c_bounceModels[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_CHUNK_0), 0xFF);
         fx_12c_bounceModels[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_CHUNK_1), 0xFF);
         fx_12c_bounceModels[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_CHUNK_2), 0xFF);
@@ -37,24 +37,24 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_12c_bounceModels[7].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_CHUNK_7), 0xFF);
         fx_12c_bounceModels[8].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_CHUNK_8), 0xFF);
         fx_12c_bounceModels[9].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_CHUNK_9), 0xFF);
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < FX_EARTHQUAKE_BOUNCING_ROCKS; i++) {
             setVector(&fx_12c_bounceModels[i].rot24, 0, 0, 0);
-            setVector(&fx_12c_bounceModels[i].scale4, 0xF00, 0, 0xF00);
-            setVector(&fx_12c_bounceModels[i].pos14, 0, 0, -0x550);
+            setVector(&fx_12c_bounceModels[i].scale4, FX_EARTHQUAKE_ROCK_SCALE, 0, FX_EARTHQUAKE_ROCK_SCALE);
+            setVector(&fx_12c_bounceModels[i].pos14, 0, 0, FX_EARTHQUAKE_GROUND_Z);
             fx_12c_bounceModels[i].speed2C = ex->btlfx_rand() & 0x3F;
             fx_12c_bounceModels[i].frame30 = -(ex->btlfx_rand() & 7);
         }
         fx_12c_intensity = 0;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)env->camera);
+        ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)env->camera);
         env->camera->points[0].vy = 0;
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 0:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, fx_12c_bgOt, 0, -0x550, -0x1000);
+        case FX_EARTHQUAKE_BG_FRAME:
+            ex->btlfx_drawBgOffscreen(FX_EARTHQUAKE_BG_VRAM_X, FX_EARTHQUAKE_BG_VRAM_Y, FX_EARTHQUAKE_BG_VRAM_W, FX_EARTHQUAKE_BG_VRAM_H, fx_12c_bgOt, 0, FX_EARTHQUAKE_GROUND_Z, -0x1000);
             break;
-        case 1:
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
+        case FX_EARTHQUAKE_DUST_FRAME:
+            ex->btlfx_getUnitArgBonePos(BTLFX_UNIT_CASTER, 0, (u16 *)&work->pos28);
             work->pos28.vy = 0;
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_DUST_RING), (s32)&work->pos28);
             if (emitter != NULL) {
@@ -62,38 +62,38 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_ROCK_DEBRIS), (s32)&work->pos28);
             break;
-        case 9:
+        case FX_EARTHQUAKE_RUBBLE_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTHQUAKE_RUBBLE), (s32)&work->pos20);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
-            work->timer0[3] = 0x40;
-            work->timer0[1] = 0x10;
+            work->timer0[FX_EARTHQUAKE_T_SHAKE] = FX_EARTHQUAKE_SHAKE_FRAMES;
+            work->timer0[FX_EARTHQUAKE_T_RISE] = FX_EARTHQUAKE_RISE_FRAMES;
             break;
-        case 17:
-            work->timer0[0] = 0x38;
+        case FX_EARTHQUAKE_ROCKS_FRAME:
+            work->timer0[FX_EARTHQUAKE_T_ROCKS] = FX_EARTHQUAKE_ROCKS_FRAMES;
             break;
-        case 41:
-            work->timer0[2] = 0x20;
+        case FX_EARTHQUAKE_FALL_FRAME:
+            work->timer0[FX_EARTHQUAKE_T_FALL] = FX_EARTHQUAKE_FALL_FRAMES;
             break;
         }
-        if (work->timer0[1] != 0) {
-            work->timer0[1]--;
+        if (work->timer0[FX_EARTHQUAKE_T_RISE] != 0) {
+            work->timer0[FX_EARTHQUAKE_T_RISE]--;
             fx_12c_intensity += 0x3C;
         }
-        if (work->timer0[2] != 0) {
-            work->timer0[2]--;
+        if (work->timer0[FX_EARTHQUAKE_T_FALL] != 0) {
+            work->timer0[FX_EARTHQUAKE_T_FALL]--;
             fx_12c_intensity -= 0x1E;
         }
-        if (work->timer0[0] != 0) {
-            work->timer0[0]--;
-            for (i = 0; i < 9; i++) {
+        if (work->timer0[FX_EARTHQUAKE_T_ROCKS] != 0) {
+            work->timer0[FX_EARTHQUAKE_T_ROCKS]--;
+            for (i = 0; i < FX_EARTHQUAKE_BOUNCING_ROCKS; i++) {
                 if ((t = ++fx_12c_bounceModels[i].frame30) >= 0) {
                     height = fx_12c_bounceModels[i].speed2C * t - ((t * (t << 8)) >> 1);
                     if (height < 0) {
                         height = 0;
                         fx_12c_bounceModels[i].speed2C = ex->btlfx_rand() % (fx_12c_intensity + 1);
-                        if (work->timer0[0] < 8) {
+                        if (work->timer0[FX_EARTHQUAKE_T_ROCKS] < FX_EARTHQUAKE_SETTLE_FRAMES) {
                             fx_12c_bounceModels[i].frame30 = -100;
                         } else {
                             fx_12c_bounceModels[i].frame30 = 0;
@@ -105,8 +105,8 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (work->timer0[3] != 0) {
-            n = --work->timer0[3];
+        if (work->timer0[FX_EARTHQUAKE_T_SHAKE] != 0) {
+            n = --work->timer0[FX_EARTHQUAKE_T_SHAKE];
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -116,9 +116,9 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             bright = fx_12c_intensity / 15;
             col.r = col.g = col.b = bright;
             ex->btlfx_drawScreenGrid(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
-            ex->btlfx_drawScreenTint((u32 *)&env->ot[4], 2, bright, bright, bright);
+            ex->btlfx_drawScreenTint((u32 *)&env->ot[4], BTLFX_ABR_SUB, bright, bright, bright);
         }
-        return frame >= 0x80;
+        return frame >= FX_EARTHQUAKE_FRAMES;
     }
     return 0;
 }

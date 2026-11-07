@@ -10,6 +10,11 @@
 #define FX_SPEAR_WHITE_RING 0x1 /* emitter: white-lilac gouraud ring + sprites that render transparent, fan */
 #define FX_SPEAR_SPEAR      0xB /* 'so' model: the thrown spear (registered after btlfx_setWeaponVisible(caster, 0)) (byte-identical to fx_184 entry 0x2) */
 
+/* fx_185 choreography (docs/fxdata.md, "Choreography literals"): the spears' drop and the ops' lengths. */
+#define FX_SPEAR_DROP_HEIGHT (-0x7D0) /* op80: a spear starts this high above the caster, falls on a random point near the targets */
+#define FX_SPEAR_FRAMES      4        /* op80's length: the spear lands at this frame (lerp t = frame << 10) */
+#define FX_SPEAR_RING_FRAMES 0x1E     /* op81's length (WHITE_RING at the last spear's point) */
+
 typedef struct {
     SVECTOR pos0; /* from */
     SVECTOR pos8; /* to */

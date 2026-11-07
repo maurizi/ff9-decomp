@@ -21,8 +21,35 @@
 #define FX_EARTHQUAKE_DUST_RING     0x11 /* emitter: ring with a sand-dust texture on the ground */
 #define FX_EARTHQUAKE_ROCK_DEBRIS   0x12 /* emitter: small rock debris frames thrown up */
 
+/* fx_12c choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, its countdown slots
+ * (work->timer0[FX_EARTHQUAKE_T_*]) and the lengths written into them, the rocks and the background copy. */
+#define FX_EARTHQUAKE_MODEL_COUNT     10   /* btlfx_initEffModels slots; fx_12c_bounceModels entries (ROCK_CHUNK_0..9) */
+#define FX_EARTHQUAKE_BOUNCING_ROCKS  9    /* the rocks that bounce (ROCK_CHUNK_9 is registered but never drawn) */
+#define FX_EARTHQUAKE_ROCK_SCALE      0xF00 /* the rocks' horizontal scale (vy is the bounce height) */
+#define FX_EARTHQUAKE_GROUND_Z        (-0x550) /* the rocks, RUBBLE and the background copy sit this far along z */
+#define FX_EARTHQUAKE_TIMERS          8    /* work->timer0[] countdowns (cleared at init): */
+#define FX_EARTHQUAKE_T_ROCKS         0    /* the rocks bounce while it runs */
+#define FX_EARTHQUAKE_T_RISE          1    /* the bounce strength fx_12c_intensity grows by 0x3C a frame */
+#define FX_EARTHQUAKE_T_FALL          2    /* it shrinks by 0x1E a frame */
+#define FX_EARTHQUAKE_T_SHAKE         3    /* the screen grid stretches and the screen darkens by the strength */
+#define FX_EARTHQUAKE_BG_FRAME        0    /* the background is copied offscreen into the rect the rocks' tops sample: */
+#define FX_EARTHQUAKE_BG_VRAM_X       0x1C0 /* page 0x117 (15-bit, (0x1C0, 0x100)) */
+#define FX_EARTHQUAKE_BG_VRAM_Y       0x100
+#define FX_EARTHQUAKE_BG_VRAM_W       0x100
+#define FX_EARTHQUAKE_BG_VRAM_H       0x100
+#define FX_EARTHQUAKE_DUST_FRAME      1    /* DUST_RING and ROCK_DEBRIS start at the caster's bone on the ground */
+#define FX_EARTHQUAKE_RUBBLE_FRAME    9    /* RUBBLE starts; T_SHAKE and T_RISE start */
+#define FX_EARTHQUAKE_SHAKE_FRAMES    0x40
+#define FX_EARTHQUAKE_RISE_FRAMES     0x10
+#define FX_EARTHQUAKE_ROCKS_FRAME     17   /* T_ROCKS starts */
+#define FX_EARTHQUAKE_ROCKS_FRAMES    0x38
+#define FX_EARTHQUAKE_SETTLE_FRAMES   8    /* a rock that lands with fewer T_ROCKS frames left stays down */
+#define FX_EARTHQUAKE_FALL_FRAME      41   /* T_FALL starts */
+#define FX_EARTHQUAKE_FALL_FRAMES     0x20
+#define FX_EARTHQUAKE_FRAMES          0x80 /* op80's length */
+
 typedef struct {
-    s32 timer0[8]; /* countdowns */
+    s32 timer0[FX_EARTHQUAKE_TIMERS]; /* countdowns (FX_EARTHQUAKE_T_*) */
     SVECTOR pos20; /* effect position */
     SVECTOR pos28; /* effect position */
 } Fx12cWork; /* 0x30 */
@@ -37,7 +64,7 @@ typedef struct {
 } Fx12cRock; /* 0x34 */
 
 extern Unk800F78A4 *fx_12c_env;
-extern Fx12cRock fx_12c_bounceModels[10];
+extern Fx12cRock fx_12c_bounceModels[FX_EARTHQUAKE_MODEL_COUNT];
 extern s32 fx_12c_intensity; /* bounce strength */
 extern BtlModelBuf fx_12c_effModels[];
 extern u32 fx_12c_bgOt[];

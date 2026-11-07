@@ -11,6 +11,22 @@
 #define FX_PUMPKIN_HEAD_SMOKE_BURST   0x3 /* emitter: pale smoke burst with a dark red glow, first bounce */
 #define FX_PUMPKIN_HEAD_PUMPKIN       0x7 /* model: round pumpkin head with a bow tie, drawn with the caster's texture list */
 
+/* fx_129 choreography (docs/fxdata.md, "Choreography literals"): the pumpkin's texture list, drop and bounces
+ * (fall / rise phases alternate in work->phase34), the target's shake and the op's length. */
+#define FX_PUMPKIN_HEAD_PUMPKIN_TPAGE  0xF7   /* PUMPKIN's BtlTexInfo list (Hi_RegisterTexListModel): 8-bit page (0x1C0, 0x100), */
+#define FX_PUMPKIN_HEAD_PUMPKIN_CLUT   0x3CC0 /* entry 0: CLUT (0, 0xF3), texel offset (0, V) */
+#define FX_PUMPKIN_HEAD_PUMPKIN_V      0x80
+#define FX_PUMPKIN_HEAD_PUMPKIN_2_CLUT 0x3C80 /* entry 1: same page, CLUT (0, 0xF2), no offset */
+#define FX_PUMPKIN_HEAD_SCALE         0x330   /* PUMPKIN's scale; the landing squash takes the bounce speed off its height */
+#define FX_PUMPKIN_HEAD_DROP_HEIGHT   (-0x1B00) /* the pumpkin starts this far above the target */
+#define FX_PUMPKIN_HEAD_GRAVITY       0x60    /* height += GRAVITY * t * t / 2 in the fall and rise phases */
+#define FX_PUMPKIN_HEAD_BOUNCE_PHASES 9       /* work->phase34: fall, rise, ... (4 bounces, then it rests and fades) */
+#define FX_PUMPKIN_HEAD_SQUASH_FRAMES 4       /* work->timer54: the squash after a landing */
+#define FX_PUMPKIN_HEAD_SHAKE_FRAME   0xB     /* the target starts to shake (vertical scale wobble) */
+#define FX_PUMPKIN_HEAD_SHAKE_FRAMES  0x10    /* work->timer60: for this many frames */
+#define FX_PUMPKIN_HEAD_FADE_FRAMES   0x10    /* after the bounces the pumpkin fades out (additive, darker) over this many frames */
+#define FX_PUMPKIN_HEAD_FRAMES        0x40    /* the op ends at this frame */
+
 typedef struct {
     s32 vx, vy, vz;
 } Fx129Vec3;

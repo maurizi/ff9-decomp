@@ -12,6 +12,29 @@
 #define FX_ARK_STREAK_SHELL 0x9E /* summon data: 'so' model, barrel-shaped shell with a grey streak texture */
 #define FX_ARK_ORANGE_SPARKLES_2 0x9F /* summon data: emitter, orange square sparkles */
 
+/* fx_17d_1 choreography (docs/fxdata.md, "Choreography literals"): op80's states (work->state0; the frame restarts at
+ * each), lengths and keyframes, the trail buffer, the backdrop grid's texture, the scrolling shell texture, the
+ * primitive helpers' words. */
+#define FX_ARK_STATE_FLARE   0    /* STREAK_SHELL, the screen fades from black, FIRE_RING, sparkles, a red tint */
+#define FX_ARK_FLARE_FRAMES  24
+#define FX_ARK_UNFADE_FRAMES 12   /* STATE_FLARE: the black fill fades over this many frames, then the red tint grows */
+#define FX_ARK_SPARKLE_FRAME 8    /* STATE_FLARE: SPARKLE_TRAIL and ORANGE_SPARKLES start */
+#define FX_ARK_SPARKLE_TRAIL_TRAIL_SLOTS  0xE0 /* SPARKLE_TRAIL's trail buffer: slots of */
+#define FX_ARK_SPARKLE_TRAIL_TRAIL_STRIDE 0x1C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_ARK_SIDE_FADE_FRAME 18 /* STATE_FLARE: the side fade bands from here */
+#define FX_ARK_STATE_RISE    1    /* the backdrop grid, the shell rises with the summon */
+#define FX_ARK_RISE_FRAMES   0x50 /* the op ends (the models are cleared) */
+#define FX_ARK_MODEL_COUNT   2    /* btlfx_initEffModels slots */
+#define FX_ARK_GRID_TPAGE    0x9B   /* STATE_RISE's backdrop grid (fx_17d_1_drawTexGrid): 8-bit page (0x2C0, 0x100), additive */
+#define FX_ARK_GRID_CLUT     0x3EC0 /* CLUT (0, 0xFB) */
+/* both states scroll (SRC_X, SRC_Y) through this rect (8 / 12 texels a frame; not checked against the model) */
+#define FX_ARK_SHELL_VRAM_X  0x340
+#define FX_ARK_SHELL_VRAM_Y  0x100
+#define FX_ARK_SHELL_VRAM_W  0x40
+#define FX_ARK_SHELL_VRAM_H  0x80
+#define FX_ARK_SHELL_SRC_X   0x340
+#define FX_ARK_SHELL_SRC_Y   0x180
+
 extern Unk800F78A4 *fx_17d_1_env;
 
 void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);

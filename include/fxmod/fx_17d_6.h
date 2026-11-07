@@ -19,6 +19,35 @@
 #define FX_ARK_ORANGE_DISC 0x8B /* summon data: 'so' model, flat disc with an orange-brown speckle texture */
 #define FX_ARK_GREY_SWIRL_DISC 0x8D /* summon data: 'so' model, flat disc with a grey swirl texture */
 
+/* fx_17d_6 choreography (docs/fxdata.md, "Choreography literals"): op80's states (work->state0; the frame restarts at
+ * each), lengths and keyframes, the trail buffer and scroll; op83's lightning bolt pool. */
+#define FX_ARK_STATE_GLOW    0    /* ORANGE_DISC, GREY_SWIRL_DISC, ORANGE_RING; then FLAME_BURST */
+#define FX_ARK_GLOW_FRAMES   0x42
+#define FX_ARK_STATE_BURST   1    /* ORANGE / RED_RINGs, PLANET_LIMB, CLOUD_TRAIL, GREY_RING, a white flash */
+#define FX_ARK_BURST_FRAMES  0x64
+#define FX_ARK_LIMB_FRAME    0x18 /* STATE_BURST: PLANET_LIMB starts */
+#define FX_ARK_CLOUD_TRAIL_FRAME 0x20 /* STATE_BURST: CLOUD_TRAIL starts */
+#define FX_ARK_GREY_RING_FRAME   0x32 /* STATE_BURST: GREY_RING starts */
+#define FX_ARK_FLASH_FRAME   0x54 /* STATE_BURST: the screen grid brightens from here */
+#define FX_ARK_STATE_RINGS   2    /* PEACH_RING and SPRITE_LINE */
+#define FX_ARK_RINGS_FRAMES  0x12
+#define FX_ARK_STATE_FAN     3    /* FAN_EMITTER_2 and PEACH_RING; then op83's bolts may strike (fx_17d_6_boltState) */
+#define FX_ARK_FAN_FRAMES    0xE
+#define FX_ARK_STATE_DONE    4    /* (the op has ended) */
+#define FX_ARK_MODEL_COUNT   3    /* btlfx_initEffModels slots */
+#define FX_ARK_CLOUD_TRAIL_TRAIL_SLOTS  0x28 /* CLOUD_TRAIL's trail buffer: slots of */
+#define FX_ARK_CLOUD_TRAIL_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* STATE_GLOW / STATE_RINGS scroll (SRC_X, SRC_Y) back 6 texels a frame through this rect (not checked against the models) */
+#define FX_ARK_SCROLL_VRAM_X 0x280
+#define FX_ARK_SCROLL_VRAM_Y 0x100
+#define FX_ARK_SCROLL_VRAM_W 0x20
+#define FX_ARK_SCROLL_VRAM_H 0x80
+#define FX_ARK_SCROLL_SRC_X  0x2A0
+#define FX_ARK_SCROLL_SRC_Y  0x100
+#define FX_ARK_BOLT_POOL     6    /* op83 pool items (Fx17d6Bolt) */
+#define FX_ARK_BOLT_FRAMES   6    /* a bolt's life (it fades over it) */
+#define FX_ARK_NOISE_ROWS    64   /* fx_17d_6_noise rows (three random offsets each) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
@@ -76,7 +105,7 @@ typedef struct {
 extern SVECTOR fx_17d_6_boltTo; /* to */
 extern SVECTOR fx_17d_6_boltFrom; /* from */
 extern s32 fx_17d_6_boltState; /* state */
-extern s32 fx_17d_6_noise[64][3]; /* noise */
+extern s32 fx_17d_6_noise[FX_ARK_NOISE_ROWS][3]; /* noise */
 
 static s32 fx_17d_6_op83PoolTask(s32 mode, Fx17d6Bolt *bolt, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 

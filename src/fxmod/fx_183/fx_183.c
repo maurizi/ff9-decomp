@@ -4,18 +4,18 @@ s32 fx_183_op80(s32 mode, Fx183Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx183Work80);
     } else if (mode == 1) {
         fx_183_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
+        ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
+        ex->btlfx_getUnitRot(BTLFX_UNIT_CASTER, (s16 *)&work->rot10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_LIGHT_STREAK), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_SPARKLE_CIRCLE), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(BTLFX_UNIT_CASTER, 0x80);
         }
     } else {
         s32 frame = entry->frame;
@@ -40,7 +40,7 @@ s32 fx_183_op80(s32 mode, Fx183Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->rot.vz = work->rot10.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_CHERRY_BLOSSOM_STREAK_FRAMES;
     }
     return 0;
 }
@@ -51,15 +51,15 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x4C;
+        *args = sizeof(Fx183Work81);
     } else if (mode == 1) {
         fx_183_env = env;
-        ex->btlfx_initEffModels(fx_183_effModels, 7);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);
+        ex->btlfx_initEffModels(fx_183_effModels, FX_CHERRY_BLOSSOM_MODEL_COUNT);
+        ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->pos8);
         work->pos18.vx = work->pos8.vx;
         work->pos18.vy = work->pos8.vy;
         work->pos18.vz = work->pos8.vz;
-        work->pos18.vy = -0x7D0;
+        work->pos18.vy = FX_CHERRY_BLOSSOM_DROP_HEIGHT;
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
         work->pos10.vz = env->targets->centerZ;
@@ -71,14 +71,14 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_SPEAR), 1);
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_CHERRY_BLOSSOM_IMPACT_FRAME) {
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_PINK_RING), (s32)&work->pos10);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_PETAL), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x80;
             }
         }
-        if (frame < 5) {
+        if (frame < FX_CHERRY_BLOSSOM_SPEAR_FRAMES) {
             ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos10, frame << 10, (s16 *)&dropPos);
             work->pos28.vx = dropPos.vx;
             work->pos28.vy = dropPos.vy;
@@ -86,7 +86,7 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetEffModelSlice(work->model48, work->pos28.vy);
             ex->Hi_DrawSliceEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model48);
         }
-        return frame >= 0x3C;
+        return frame >= FX_CHERRY_BLOSSOM_SPEAR_OP_FRAMES;
     }
     return 0;
 }
@@ -101,7 +101,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 pathFrame;
 
     if (mode == 0) {
-        *args = 0x5C;
+        *args = sizeof(Fx183Work82);
     } else if (mode == 1) {
         work->pos40.vx = env->targets->centerX;
         work->pos40.vy = env->targets->centerY;
@@ -116,10 +116,10 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->posC.vx = 0;
         work->posC.vy = 0;
         work->posC.vz = 0;
-        work->scale2C.vx = 0x1800;
-        work->scale2C.vy = 0x1800;
-        work->scale2C.vz = 0x1800;
-        for (j = 0; j < 6; j++) {
+        work->scale2C.vx = FX_CHERRY_BLOSSOM_PETAL_SCALE;
+        work->scale2C.vy = FX_CHERRY_BLOSSOM_PETAL_SCALE;
+        work->scale2C.vz = FX_CHERRY_BLOSSOM_PETAL_SCALE;
+        for (j = 0; j < FX_CHERRY_BLOSSOM_PATH_MODELS; j++) {
             fxm_rotPosPathInit(&fx_183_rotPosPath[j], (u16 *)ex->btlfx_getFileData(entry->file, fx_183_pathFileIds[j]));
             work->model50[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_183_modelFileIds[j]), 1);
         }
@@ -128,32 +128,32 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 0xF:
+        case FX_CHERRY_BLOSSOM_STORM_FRAME:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_PETAL_STORM), (s32)&work->pos40);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x80;
             }
             break;
         case 0:
-            work->timer48 = 4;
+            work->timer48 = FX_CHERRY_BLOSSOM_FADE_IN_FRAMES;
             break;
-        case 0x12:
-            work->timer4C = 8;
+        case FX_CHERRY_BLOSSOM_FADE_OUT_FRAME:
+            work->timer4C = FX_CHERRY_BLOSSOM_FADE_OUT_FRAMES;
             break;
         }
-        if (frame >= 0 && frame < 0x1A) {
+        if (frame >= 0 && frame < FX_CHERRY_BLOSSOM_PATH_FRAMES) {
             pathFrame = frame;
             if (work->timer48 >= 0 || work->timer4C >= 0) {
                 if (work->timer48 >= 0) {
-                    work->fade3C = fxm_lerpRatio(-0x80, 0, 4 - work->timer48, 4);
+                    work->fade3C = fxm_lerpRatio(-0x80, 0, FX_CHERRY_BLOSSOM_FADE_IN_FRAMES - work->timer48, FX_CHERRY_BLOSSOM_FADE_IN_FRAMES);
                     work->timer48--;
                 }
                 if (work->timer4C >= 0) {
-                    work->fade3C = fxm_lerpRatio(0, -0x80, 8 - work->timer4C, 8);
+                    work->fade3C = fxm_lerpRatio(0, -0x80, FX_CHERRY_BLOSSOM_FADE_OUT_FRAMES - work->timer4C, FX_CHERRY_BLOSSOM_FADE_OUT_FRAMES);
                     work->timer4C--;
                 }
             }
-            for (i = 0; i < 6; i++) {
+            for (i = 0; i < FX_CHERRY_BLOSSOM_PATH_MODELS; i++) {
                 fxm_rotPosPathGet(&fx_183_rotPosPath[i], pathFrame, &work->rot4, &pathPos);
                 work->posC.vx = pathPos.vx;
                 work->posC.vy = pathPos.vy;
@@ -177,7 +177,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame >= 0x50) {
+        if (frame >= FX_CHERRY_BLOSSOM_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -189,7 +189,7 @@ s32 fx_183_op83(s32 mode, Fx183Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx183Work83);
     } else if (mode == 1) {
         s32 unit = *args;
         work->unit14 = unit;
@@ -203,8 +203,8 @@ s32 fx_183_op83(s32 mode, Fx183Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHERRY_BLOSSOM_PETAL_VORTEX), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_183_op83Trails[work->unit14];
-            work->emit0->trailSlots = 0xC;
-            work->emit0->trailStride = 0x50;
+            work->emit0->trailSlots = FX_CHERRY_BLOSSOM_PETAL_TRAIL_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_CHERRY_BLOSSOM_PETAL_TRAIL_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = 0x80;
@@ -213,7 +213,7 @@ s32 fx_183_op83(s32 mode, Fx183Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->otZ = 0x80;
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_CHERRY_BLOSSOM_VORTEX_FRAMES;
     }
     return 0;
 }

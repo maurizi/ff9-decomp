@@ -24,6 +24,19 @@
 #define FX_PHOTON_STAR_FLASH    0x37 /* emitter: white star glow fading to yellow */
 #define FX_PHOTON_STAR_FLASH_2  0x38 /* emitter: white star glow fading to yellow */
 
+/* fx_12b choreography (docs/fxdata.md, "Choreography literals"): the light shards' phases (Fx12bShard.frame20 counts
+ * up from the shard's start frame), the shard counts, trail buffers and the ops' lengths. */
+#define FX_PHOTON_PATH_FRAME   2    /* shard: from this frame it follows its position path (fx_12b_pathParticle), */
+#define FX_PHOTON_ARC_FRAME    7    /* from this one it arcs to the target (fx_12b_arcParticle*) */
+#define FX_PHOTON_ARC_FRAMES   0xE  /* for this many frames (op80; op81's arc has no end) */
+#define FX_PHOTON_PUFF_FRAME   0x13 /* op80: FX_PHOTON_SMOKE_PUFF starts at the shard */
+#define FX_PHOTON_SHARD_PAIRS    6  /* op80: fx_12b_op80Shards0 / 1 entries (two shards start every 4 frames) */
+#define FX_PHOTON_SHARD_PAIRS_81 5  /* op81: fx_12b_op81Shards0 / 1 entries */
+#define FX_PHOTON_LIGHT_TRAIL_TRAIL_SLOTS  6    /* the LIGHT_TRAILs' trail buffers (fx_12b_op80Trails* / op81Trails*): slots of */
+#define FX_PHOTON_LIGHT_TRAIL_TRAIL_STRIDE 0xA4 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_PHOTON_FRAMES       0x3C /* op80's and op81's length */
+#define FX_PHOTON_ORB_FRAMES   0x28 /* op82's length (the energy orb at the target) */
+
 typedef struct {
     Pool6CEntry *emit0[5];
     SVECTOR pos14; /* target body position */
@@ -62,10 +75,10 @@ typedef struct {
     Fx12bPoint *keys4; /* keys */
 } Fx12bPath;
 
-extern Fx12bShard fx_12b_op80Shards0[];
-extern Fx12bShard fx_12b_op80Shards1[];
-extern Fx12bShard fx_12b_op81Shards0[];
-extern Fx12bShard fx_12b_op81Shards1[];
+extern Fx12bShard fx_12b_op80Shards0[FX_PHOTON_SHARD_PAIRS];
+extern Fx12bShard fx_12b_op80Shards1[FX_PHOTON_SHARD_PAIRS];
+extern Fx12bShard fx_12b_op81Shards0[FX_PHOTON_SHARD_PAIRS_81];
+extern Fx12bShard fx_12b_op81Shards1[FX_PHOTON_SHARD_PAIRS_81];
 extern Unk800F78A4 *fx_12b_env;
 extern s32 fx_12b_op81Trails0[];
 extern s32 fx_12b_op81Trails1[];

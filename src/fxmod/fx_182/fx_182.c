@@ -6,7 +6,7 @@ s32 fx_182_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     s32 frame;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(SVECTOR);
     } else if (mode == 1) {
         work->vx = env->targets->centerX;
         work->vz = env->targets->centerZ;
@@ -18,16 +18,16 @@ s32 fx_182_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x28) {
+        if (frame == FX_COUNTDOWN_FLASH_FRAME) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTDOWN_LENS_FLASH), (s32)work);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
-        if (frame >= 0x28) {
+        if (frame >= FX_COUNTDOWN_FLASH_FRAME) {
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_COUNTDOWN_BACKDROP), frame);
         }
-        return frame >= 0x50;
+        return frame >= FX_COUNTDOWN_FRAMES;
     }
     return 0;
 }

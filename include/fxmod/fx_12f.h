@@ -12,6 +12,11 @@
 #define FX_PAPER_STORM_PAPER_SWIRL  0x4 /* emitter: paper sheets spiralling up */
 #define FX_PAPER_STORM_GREEN_BURST  0x8 /* emitter: green spiky burst, sprites, yellow and red rings at each target */
 
+/* fx_12f choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_PAPER_STORM_SWIRL_FRAME 0x10 /* PAPER_SWIRL at the targets' centre, ORANGE_BURST at each target */
+#define FX_PAPER_STORM_BURST_FRAME 0x14 /* GREEN_BURST at each target */
+#define FX_PAPER_STORM_FRAMES      0x40 /* op80's length */
+
 typedef struct {
     SVECTOR rot0;
     SVECTOR pos8;
