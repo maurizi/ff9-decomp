@@ -91,14 +91,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR *unused1;
 
     if (mode == 0) {
-        *args = 0x128;
+        *args = sizeof(Fx1f2Work);
     } else if (mode == 1) {
         env->camera->points[1].vx = 0;
         env->camera->points[1].vz = -0x4000;
         env->camera->points[1].vy = -0x6000;
         fx_1f2_env = env;
-        ex->btlfx_initEffModels(fx_1f2_effModels, 0x20);
-        for (i = 0; i < 0x20; i++) {
+        ex->btlfx_initEffModels(fx_1f2_effModels, FX_GRAND_CROSS_MODEL_SLOTS);
+        for (i = 0; i < FX_GRAND_CROSS_TIMER_WORDS; i++) {
             ((s32 *)work)[i] = 0;
             ((s32 *)work)[i + 0x20] = 0;
         }
@@ -117,7 +117,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1f2_emitPos1.vx = 0;
         fx_1f2_emitPos1.vy = 0;
         fx_1f2_emitPos1.vz = 0;
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < FX_GRAND_CROSS_TRAILS; i++) {
             fx_1f2_trails[i].timer4C = 0;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_1f2_trails[i], 0);
@@ -214,7 +214,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1f2_orbitModels[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_BANDED_PLANET), 0xFF);
         fx_1f2_orbitModels[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_GREY_MOON), 0xFF);
         fx_1f2_orbitModels[3].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_ORANGE_PLANET), 0xFF);
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_GRAND_CROSS_ORBITS; i++) {
             fx_1f2_orbitModels[i].model4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_CLOUD_DOME), 1);
             fx_1f2_orbitModels[i].model8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_VORTEX_CONE), 1);
             fx_1f2_orbitModels[i].radiusC = 0xC00;
@@ -227,13 +227,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (frame) {
         case 0:
             work->spin2C = 0x20;
-            work->timer4C = 0x5F;
+            work->timer4C = FX_GRAND_CROSS_TRAILS_FRAMES;
             emitter = work->emit84 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_PALE_STREAKS), (s32)&work->pos120);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
-        case 0x2D:
+        case FX_GRAND_CROSS_RINGS_FRAME:
             work->timer54 = 0x32;
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_PINK_RINGS), (s32)&work->bonePos110[0]);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_BLUE_RINGS), (s32)&work->bonePos110[1]);
@@ -245,9 +245,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x4F:
             work->timerC = 0x10;
             break;
-        case 0x5F:
+        case FX_GRAND_CROSS_TRAILS_FRAMES:
             work->timer4C = 0;
-            for (i = 0; i < 0x10; i++) {
+            for (i = 0; i < FX_GRAND_CROSS_TRAILS; i++) {
                 fx_1f2_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1f2_trails[i], 0);
@@ -259,7 +259,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer8 = 0x50;
             work->timer44 = 0x40;
             break;
-        case 0x9F:
+        case FX_GRAND_CROSS_TWINKLE_FRAME:
             work->timer3C = 0x40;
             work->timer24 = 0x50;
             work->pos100.vy = -0x4C8;
@@ -282,13 +282,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer34 = 0x80;
             work->halfWidth38 = 0x200;
             break;
-        case 0xFF:
+        case FX_GRAND_CROSS_COLOR_RINGS_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_COLOR_RINGS), (s32)&fx_1f2_emitPos0);
             if (emitter != NULL) {
                 emitter->otZ = 0x200;
             }
             break;
-        case 0x11F:
+        case FX_GRAND_CROSS_BEIGE_RINGS_FRAME:
             emitter = work->emit88 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_BEIGE_RINGS), (s32)&fx_1f2_emitPos1);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
@@ -302,7 +302,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x13F:
             work->timer14 = 0x10;
             break;
-        case 0x14F:
+        case FX_GRAND_CROSS_PHASE_2_FRAME:
             work->spin2C = 0x40;
             fx_1f2_emitPos0.vx = 0;
             fx_1f2_emitPos0.vy = -0x4FD;
@@ -323,9 +323,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer20 = 0x40;
             work->timer34 = 0x50;
             break;
-        case 0x18F:
+        case FX_GRAND_CROSS_UNIT_TRAILS_FRAME:
             work->timer14 = 0x10;
-            for (i = 0; i < 0x10; i++) {
+            for (i = 0; i < FX_GRAND_CROSS_TRAILS; i++) {
                 fx_1f2_unitTrails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_GRAND_CROSS_WHITE_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1f2_unitTrails[i], 0);
@@ -339,7 +339,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x1A7:
             work->timer58 = 0x18;
             break;
-        case 0x1BF:
+        case FX_GRAND_CROSS_FRAMES:
             return 1;
         }
         ex->btlfx_aimAngles((s16 *)&fx_1f2_emitPos0, (s16 *)&env->camera->eye, (s16 *)&fx_1f2_faceAngles);
@@ -350,7 +350,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             FX1F2_DRAW(fx_1f2_model1);
             FX1F2_DRAW(fx_1f2_model2);
             FX1F2_DRAW(fx_1f2_model3);
-            for (i = 0; i < 4; i++) {
+            for (i = 0; i < FX_GRAND_CROSS_ORBITS; i++) {
                 rg = &fx_1f2_orbitModels[i];
                 rg->pos18.vx = (ex->math_sin(rg->rot10.vy) * rg->radiusC) >> 12;
                 lo_r0 = ex->math_cos(rg->rot10.vy) * rg->radiusC;
@@ -523,7 +523,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer34 != 0) {
             work->timer34--;
-            for (i = 0; i < 0x10; i++) {
+            for (i = 0; i < FX_GRAND_CROSS_TRAILS; i++) {
                 tr_sp = &fx_1f2_trails[i];
                 if (tr_sp->timer4C == 0 && work->timer34 >= 0xD) {
                     ex->math_rotMatrixYXZ(&fx_1f2_sparkRot, &m);
@@ -549,7 +549,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     step.vx = (out[0].vx - out[1].vx) / 9;
                     step.vy = (out[0].vy - out[1].vy) / 9;
                     step.vz = (out[0].vz - out[1].vz) / 9;
-                    for (j = 0; j < 9; j++) {
+                    for (j = 0; j < FX_GRAND_CROSS_TRAIL_POINTS; j++) {
                         fx_1f2_trails[i].pos50[j].vx = out[0].vx;
                         fx_1f2_trails[i].pos50[j].vy = out[0].vy;
                         fx_1f2_trails[i].pos50[j].vz = out[0].vz;
@@ -563,13 +563,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             env->otZ = 0x80;
-            for (i = 0; i < 0x10; i++) {
+            for (i = 0; i < FX_GRAND_CROSS_TRAILS; i++) {
                 tr_sp2 = &fx_1f2_trails[i];
                 if (tr_sp2->timer4C != 0) {
                     if (--tr_sp2->timer4C < 8) {
-                        s32 n = 9;
+                        s32 n = FX_GRAND_CROSS_TRAIL_POINTS;
 
-                        tr_sp2->lastSlot0 = tr_sp2->count2 = 8;
+                        tr_sp2->lastSlot0 = tr_sp2->count2 = FX_GRAND_CROSS_TRAIL_POINTS - 1;
                         tr_sp2->head1 = 0;
                         sv_sp2 = tr_sp2->points4;
                         for (j = 0; j < n; j++) {
@@ -592,7 +592,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer4C != 0) {
             work->timer4C--;
-            for (i = 0; i < 0x10; i++) {
+            for (i = 0; i < FX_GRAND_CROSS_TRAILS; i++) {
                 s32 n;
                 s32 dz;
                 s32 dx;
@@ -616,9 +616,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             }
                             gte_SetRotMatrix(&m);
                             gte_SetTransMatrix(&m);
-                            n = 9;
+                            n = FX_GRAND_CROSS_TRAIL_POINTS;
                             pt = &fx_1f2_trails[i];
-                            pt->lastSlot0 = pt->count2 = 8;
+                            pt->lastSlot0 = pt->count2 = FX_GRAND_CROSS_TRAIL_POINTS - 1;
                             pt->head1 = 0;
                             sv = pt->points4;
                             for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
@@ -647,7 +647,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         }
                     } else {
                         fx_1f2_trails[i].timer4C = (ex->btlfx_rand() & 3) + 8;
-                        for (j_u4ce = 0; j_u4ce < 9; j_u4ce++) {
+                        for (j_u4ce = 0; j_u4ce < FX_GRAND_CROSS_TRAIL_POINTS; j_u4ce++) {
                             fx_1f2_trails[i].pos50[j_u4ce].vx = 0;
                             fx_1f2_trails[i].pos50[j_u4ce].vy = 0;
                             fx_1f2_trails[i].pos50[j_u4ce].vz = 0;
@@ -659,12 +659,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else {
                     Fx1f2Trail *tp = &fx_1f2_trails[i];
 
-                    n = 9;
+                    n = FX_GRAND_CROSS_TRAIL_POINTS;
                     sv = tp->points4;
                     link = fx_1f2_trails[i].timer4C;
                     fx_1f2_trails[i].timer4C = fx_1f2_trails[i].pos50[link].pad;
                     pt = &fx_1f2_trails[i];
-                    pt->lastSlot0 = pt->count2 = 8;
+                    pt->lastSlot0 = pt->count2 = FX_GRAND_CROSS_TRAIL_POINTS - 1;
                     pt->head1 = 0;
                     for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
                         sv->vx = fx_1f2_trails[i].pos50[link].vx;
@@ -719,7 +719,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->timer4C = lastSlot;
                     ((SVECTOR *)out)[1].vx = fx_1f2_unitPos[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = fx_1f2_unitPos[i].vz + ex->btlfx_randRange(-0x40, 0x40);
-                    for (j_u58 = 0; j_u58 < 9; j_u58++) {
+                    for (j_u58 = 0; j_u58 < FX_GRAND_CROSS_TRAIL_POINTS; j_u58++) {
                         a_u58 = j_u58 + 1;
                         tr->pos50[j_u58].vx = ((SVECTOR *)out)[1].vx + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
                         tr->pos50[j_u58].vz = ((SVECTOR *)out)[1].vz + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
