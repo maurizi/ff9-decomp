@@ -18,6 +18,46 @@
 #define FX_PHOENIX_EMBERS           0x16 /* emitter: soft orange glowing mote sprites, the small embers drifting after the white-out (same call site as fx_0d3 entry 0xF, same kind); runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_PHOENIX_FLAME_FEATHERS   0x17 /* emitter: copper flame-feather quads (same call site as fx_0d3 entry 0x17, same kind) */
 
+/* fx_1fe choreography (docs/fxdata.md, "Choreography literals"): op81's three states, Phoenix's (fx_0d3) op81 states
+ * FEATHERS, BURST and TAIL with fx_0d3's names and the short form's own values, and the scrolled textures. */
+#define FX_PHOENIX_MODEL_COUNT    7    /* op81: btlfx_initEffModels slots */
+#define FX_PHOENIX_STATE_FEATHERS 1    /* op81 (the first state): FIRE_FEATHERS rise, the camera with them */
+#define FX_PHOENIX_STATE_BURST    2    /* op81: PINK_RINGS, FLAME_FEATHERS_2, GOLD_FEATHERS, FIRE_DISC / FIRE_DOME, the SMOKE_ARC
+                                        * wave, screen tints */
+#define FX_PHOENIX_STATE_TAIL     6    /* op81: white fade-out, EMBERS, FLAME_FEATHERS */
+#define FX_PHOENIX_FEATHERS_STATE_FRAMES 0x25 /* FX_PHOENIX_STATE_FEATHERS' length (the camera's rise ramp) */
+#define FX_PHOENIX_FIRE_FEATHERS_TRAIL_SLOTS  0x40 /* FX_PHOENIX_FIRE_FEATHERS' trail buffer: slots of */
+#define FX_PHOENIX_FIRE_FEATHERS_TRAIL_STRIDE 0x1C /* this many bytes */
+#define FX_PHOENIX_BLUE_FRAME      5    /* FX_PHOENIX_STATE_BURST: one frame of additive blue screen tint, */
+#define FX_PHOENIX_BLUE_RGB        0, 0, 0x64
+#define FX_PHOENIX_DARKEN_FRAME    6    /*   then one of subtractive tint, */
+#define FX_PHOENIX_DARKEN_RGB      0, 0x80, 0xFF
+#define FX_PHOENIX_FLASH_FRAME     7    /*   then an additive yellow-white flash fading over */
+#define FX_PHOENIX_FLASH_FRAMES    8    /*   this many frames */
+#define FX_PHOENIX_GOLD_FEATHERS_FRAME 7 /*  GOLD_FEATHERS start; FIRE_DISC and FIRE_DOME grow to the state's end, the SMOKE_ARC
+                                          *  wave rises */
+#define FX_PHOENIX_WAVE_FRAMES     20   /*   over this many frames, */
+#define FX_PHOENIX_SMOKE_ARCS      7    /*   SMOKE_ARC drawn this many times up the wave */
+#define FX_PHOENIX_WHITE_IN_FRAME  0x18 /*   the additive white fade-in starts (8 frames) */
+#define FX_PHOENIX_BURST_FRAMES    0x20 /* FX_PHOENIX_STATE_BURST's length */
+#define FX_PHOENIX_WHITE_OUT_FRAMES 0x18 /* FX_PHOENIX_STATE_TAIL: the white fades out over this many frames */
+#define FX_PHOENIX_FLAME_FEATHERS_3_FRAME 0x20 /* FX_PHOENIX_STATE_TAIL: FX_PHOENIX_FLAME_FEATHERS start (fx_0d3's FLAME_FEATHERS_3) */
+#define FX_PHOENIX_TAIL_FRAMES     0x57 /* FX_PHOENIX_STATE_TAIL's length (the op ends) */
+/* Scrolling textures (fx_0d3's rects): FIRE_DOME (tpage 0x9B = 8-bit page (0x2C0, 0x100)), FIRE_DISC (tpage 0x1A =
+ * 4-bit page (0x280, 0x100)). */
+#define FX_PHOENIX_DOME_VRAM_X  0x2C0
+#define FX_PHOENIX_DOME_VRAM_Y  0x100
+#define FX_PHOENIX_DOME_VRAM_W  0x40
+#define FX_PHOENIX_DOME_VRAM_H  0x80
+#define FX_PHOENIX_DOME_SRC_X   0x2C0
+#define FX_PHOENIX_DOME_SRC_Y   0x180
+#define FX_PHOENIX_DISC_VRAM_X  0x280
+#define FX_PHOENIX_DISC_VRAM_Y  0x100
+#define FX_PHOENIX_DISC_VRAM_W  0x20
+#define FX_PHOENIX_DISC_VRAM_H  0x80
+#define FX_PHOENIX_DISC_SRC_X   0x2A0
+#define FX_PHOENIX_DISC_SRC_Y   0x100
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */
