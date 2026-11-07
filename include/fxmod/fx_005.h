@@ -19,13 +19,35 @@
 #define FX_THUNDARA_STAR_GLINTS  0x1E /* sprites: three 16x16 star-glint sprites in the run-time page (0x1C0,0x100), twinkling orange to blue around the orbs; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_THUNDARA_ORB_DOTS     0x1F /* sprites: white dots scattering around the orb */
 
+/* fx_005 choreography (docs/fxdata.md, "Choreography literals"): the bolt pool items' lengths and look, op83's
+ * keyframes and length, and the strip sizes. */
+#define FX_THUNDARA_BOLT_FRAMES      8    /* pool item: a screen-space bolt shows for this many frames */
+#define FX_THUNDARA_FLAT_BOLT_FRAMES 6    /* pool item: a flat-strip bolt shows for this many frames */
+#define FX_THUNDARA_BOLT_TAIL_FRAMES 6    /* pool item: then waits this long for FX_THUNDARA_SPARK_DOTS */
+#define FX_THUNDARA_BOLT_WIDTH       0xFB /* line width of a screen-space bolt at its first frame (+ width15) */
+#define FX_THUNDARA_FLAT_BOLT_WIDTH  0xAA /* line width of a flat-strip bolt at its first frame */
+#define FX_THUNDARA_BOLT_TINT_RGB    0, 0xC, 0x46 /* additive screen tint (blue) with every other bolt's impact flash */
+#define FX_THUNDARA_BOLT_HEIGHT      0xC00 /* a bolt comes down from this far above its strike point */
+#define FX_THUNDARA_BOLT_REACH       0x640 /* horizontal offset of a strike bolt's top (+-0x80; scattered bolts 3/8) */
+#define FX_THUNDARA_SCHEDULE_FRAMES  0x10 /* op83: frames covered by fx_005_boltSchedule */
+#define FX_THUNDARA_DARKEN_FRAME     0xF  /* op83: one frame of subtractive grey screen tint */
+#define FX_THUNDARA_DARKEN_RGB       0x40, 0x40, 0x40
+#define FX_THUNDARA_FLASH_FRAME      0x10 /* op83: additive blue-white screen flash, fading over */
+#define FX_THUNDARA_FLASH_FRAMES     3    /* this many frames */
+#define FX_THUNDARA_ORB_FRAME        0x14 /* op83: FX_THUNDARA_IMPACT_RING and FX_THUNDARA_ORB_EMITTER start */
+#define FX_THUNDARA_FRAMES           0x30 /* op83: the task ends at this frame */
+#define FX_THUNDARA_STRIP_POINTS  16   /* points of a bolt strip (fx_005_strips, fxm_drawJaggedStrip16) */
+#define FX_THUNDARA_BRANCH_POINTS 4    /* points of a branch (fxm_drawJaggedStrip4) */
+#define FX_THUNDARA_JITTER_ROWS   0x40 /* fx_005_jitter rows of three random offsets (along, across, angle) */
+#define FX_THUNDARA_BOLT_SLOTS    0xC  /* pool items and fx_005_strips / fx_005_branches entries; strip10 = bolt count % slots */
+
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[16]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_THUNDARA_STRIP_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx005Strip; /* 0x84 */
 
 typedef struct {
@@ -50,7 +72,8 @@ typedef struct {
     s16 pad16;
     s32 *jitter18; /* jitter table */
     Pool6CEntry *emit1C;
-} Fx005Bolt;
+    u8 pad20[4]; /* unused: op83 asks for 0x24-byte items (fx_003's bolt has emit20 here) */
+} Fx005Bolt; /* 0x24 */
 #define FX_005_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 typedef struct {

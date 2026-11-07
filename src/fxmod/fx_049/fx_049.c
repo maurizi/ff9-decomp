@@ -12,11 +12,11 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx049Strip *strip, s3
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
-    strip->count2 = 0xF;
-    strip->lastSlot0 = 0xF;
+    strip->count2 = FX_THUNDARA_STRIP_POINTS - 1;
+    strip->lastSlot0 = FX_THUNDARA_STRIP_POINTS - 1;
     strip->head1 = 0;
-    for (i = 0; i < 16; i++) {
-        t = 0x1000 - (i << 12) / 15;
+    for (i = 0; i < FX_THUNDARA_STRIP_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_THUNDARA_STRIP_POINTS - 1);
         t += *tbl++;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *tbl++;
@@ -48,11 +48,11 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx049Strip *strip, s32
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
-    strip->count2 = 3;
-    strip->lastSlot0 = 3;
+    strip->count2 = FX_THUNDARA_BRANCH_POINTS - 1;
+    strip->lastSlot0 = FX_THUNDARA_BRANCH_POINTS - 1;
     strip->head1 = 0;
-    for (i = 0; i < 4; i++) {
-        t = 0x1000 - (i << 12) / 3;
+    for (i = 0; i < FX_THUNDARA_BRANCH_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_THUNDARA_BRANCH_POINTS - 1);
         t += *tbl++ / 2;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *tbl++ / 2;
@@ -128,7 +128,7 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
                 width = -0x20;
             }
             fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame * 0x97, 0x186, frame, bright,
-                          ((0x1000 - t) * (width + 0xFB)) >> 12, it->kind14);
+                          ((0x1000 - t) * (width + FX_THUNDARA_BOLT_WIDTH)) >> 12, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, bright, (0x1000 - t) >> 6, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18 + 3, it->branchAt13, bright, (0x1000 - t) >> 6, it->kind14);
             if (frame == 0) {
@@ -137,24 +137,24 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 if ((it->strip10 & 1) && it->width15 != FX_049_WIDTH_DEFAULT) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_THUNDARA_BOLT_TINT_RGB);
                     emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDARA_IMPACT_FLASH), (s32)&it->pos0);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     }
                 }
             }
-            if (frame >= 8) {
+            if (frame >= FX_THUNDARA_BOLT_FRAMES) {
                 it->state11 = 1;
                 ((s16 *)it)[-1] = -1;
             }
         } else {
-            t = (frame << 12) / 6;
+            t = (frame << 12) / FX_THUNDARA_FLAT_BOLT_FRAMES;
             bright = ex->math_cos(t >> 2);
             strip = &fx_049_strips[it->strip10];
             br = (Fx049Strip *)&fx_049_branches[it->strip10];
             fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame << 6, 0x186, frame, bright,
-                          ((0x1000 - t) * 0xAA) >> 12, it->kind14);
+                          ((0x1000 - t) * FX_THUNDARA_FLAT_BOLT_WIDTH) >> 12, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, bright, (0x1000 - t) >> 6, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18 + 3, it->branchAt13, bright, (0x1000 - t) >> 6, it->kind14);
             if (frame == 0) {
@@ -163,14 +163,14 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame >= 6) {
+            if (frame >= FX_THUNDARA_FLAT_BOLT_FRAMES) {
                 it->state11 = 1;
                 ((s16 *)it)[-1] = -1;
             }
         }
         break;
     case 1:
-        if (frame >= 6) {
+        if (frame >= FX_THUNDARA_BOLT_TAIL_FRAMES) {
             return 1;
         }
         break;
@@ -194,17 +194,17 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 tint;
 
     if (mode == 0) {
-        init->workSize = 0x10;
-        init->elemSize = 0x24;
+        init->workSize = sizeof(Fx049Work);
+        init->elemSize = sizeof(Fx049Bolt);
         init->elemFn = (s32)fx_049_op83PoolTask;
-        init->poolCount = 0xC;
+        init->poolCount = FX_THUNDARA_BOLT_SLOTS;
     } else if (mode == 1) {        work->pos0.vx = env->targets->centerX;
         work->pos0.vy = env->targets->centerY;
         work->pos0.vz = env->targets->centerZ;
         fx_049_env = env;
         work->pos0.vy = 0;
         dst = work->jitter8 = fx_049_jitter;
-        for (i = 0; i < 0x40; i++) {
+        for (i = 0; i < FX_THUNDARA_JITTER_ROWS; i++) {
             *dst++ = ex->btlfx_randCentered(0x100);
             *dst++ = ex->btlfx_randCentered(0x200);
             *dst++ = ex->btlfx_randCentered(0xF5);
@@ -214,7 +214,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         kind = 0;
-        if (frame < 0x10) {
+        if (frame < FX_THUNDARA_SCHEDULE_FRAMES) {
             kind = fx_049_boltSchedule[frame];
         }
         if (kind > 0) {
@@ -230,8 +230,8 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (it != NULL) {
                     BTLFX_COPY_SVEC(&it->pos0, &start);
                     BTLFX_COPY_SVEC(&end, &start);
-                    end.vy -= 0xC00;
-                    radius = ex->btlfx_randCentered(0x100) + 0x640;
+                    end.vy -= FX_THUNDARA_BOLT_HEIGHT;
+                    radius = ex->btlfx_randCentered(0x100) + FX_THUNDARA_BOLT_REACH;
                     if (kind != FX_049_BOLT_STRIKE) {
                         radius = radius * 3 / 8;
                     }
@@ -243,7 +243,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         it->pos0.vz = end.vz;
                     }
                     BTLFX_COPY_SVEC(&it->pos8, &end);
-                    it->strip10 = work->boltCountC % 12;
+                    it->strip10 = work->boltCountC % FX_THUNDARA_BOLT_SLOTS;
                     it->jitter18 = work->jitter8 + (ex->btlfx_rand() & 0x1F);
                     it->branchAt12 = ex->btlfx_rand() % 14;
                     it->branchAt13 = ex->btlfx_rand() % 14;
@@ -260,13 +260,13 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (it != NULL) {
                         BTLFX_COPY_SVEC(&it->pos0, &start);
                         BTLFX_COPY_SVEC(&end, &start);
-                        end.vy -= 0xC00;
+                        end.vy -= FX_THUNDARA_BOLT_HEIGHT;
                         radius = ex->btlfx_randCentered(0x80) + 0x80;
                         ang = ((work->boltCountC + kind) << 11) - 0x200 + ex->btlfx_randCentered(0x80);
                         end.vx += (ex->math_cos(ang) * radius) >> 12;
                         end.vz += (ex->math_sin(ang) * radius) >> 12;
                         BTLFX_COPY_SVEC(&it->pos8, &end);
-                        it->strip10 = work->boltCountC % 12;
+                        it->strip10 = work->boltCountC % FX_THUNDARA_BOLT_SLOTS;
                         it->jitter18 = work->jitter8 + (ex->btlfx_rand() & 0x1F);
                         it->branchAt12 = ex->btlfx_rand() % 14;
                         it->branchAt13 = ex->btlfx_rand() % 14;
@@ -281,26 +281,26 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDARA_IMPACT_RING), (s32)&work->pos0);
             }
         }
-        if (frame == 0xF) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x40, 0x40, 0x40);
+        if (frame == FX_THUNDARA_DARKEN_FRAME) {
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_THUNDARA_DARKEN_RGB);
         }
-        if (frame >= 0x10 && frame < 0x13) {
-            tint = 200 - (frame - 0x10) * 200 / 3;
+        if (frame >= FX_THUNDARA_FLASH_FRAME && frame < FX_THUNDARA_FLASH_FRAME + FX_THUNDARA_FLASH_FRAMES) {
+            tint = 200 - (frame - FX_THUNDARA_FLASH_FRAME) * 200 / FX_THUNDARA_FLASH_FRAMES;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 1, tint >> 1, tint);
         }
-        if (frame == 0x14) {
+        if (frame == FX_THUNDARA_ORB_FRAME) {
             drawEmitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_EMITTER), (s32)&work->pos0);
             if (drawEmitter != NULL) {
                 drawEmitter->elems->draw = (void (*)())fx_049_op83ElemDraw;
             }
         }
-        if (frame >= 0x22 && frame - 0x22 < env->targets->targetCount) {
-            ex->btlfx_getUnitBodyPos(frame - 0x22, 0, (s16 *)&end);
+        if (frame >= FX_THUNDARA_TARGET_BOLTS_FRAME && frame - FX_THUNDARA_TARGET_BOLTS_FRAME < env->targets->targetCount) {
+            ex->btlfx_getUnitBodyPos(frame - FX_THUNDARA_TARGET_BOLTS_FRAME, 0, (s16 *)&end);
             it = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (it != NULL) {
                 BTLFX_COPY_SVEC(&it->pos0, &end);
                 BTLFX_COPY_SVEC(&it->pos8, &work->pos0);
-                it->strip10 = work->boltCountC % 12;
+                it->strip10 = work->boltCountC % FX_THUNDARA_BOLT_SLOTS;
                 it->jitter18 = work->jitter8 + (ex->btlfx_rand() & 0x1F);
                 it->branchAt12 = ex->btlfx_rand() % 14;
                 it->branchAt13 = ex->btlfx_rand() % 14;
@@ -308,7 +308,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 it->width15 = FX_049_WIDTH_DEFAULT;
             }
         }
-        if (frame >= 0x30) {
+        if (frame >= FX_THUNDARA_FRAMES) {
             return 1;
         }
     }

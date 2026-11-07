@@ -13,13 +13,35 @@
 #define FX_THUNDER_IMPACT_RING  0xB /* rings: cyan gouraud rings at the strike */
 #define FX_THUNDER_IMPACT_FLASH 0xC /* emitter: four-point star flash, white rings, sparks */
 
+/* fx_003 choreography (docs/fxdata.md, "Choreography literals"): the bolt pool items' lengths and look, op83's
+ * keyframes and length, and the strip sizes. */
+#define FX_THUNDER_BOLT_HEIGHT     0xC00 /* a bolt comes down from this far above its strike point */
+#define FX_THUNDER_FLAT_BOLT_WIDTH 0xAA  /* line width of a flat-strip bolt at its first frame (shrinks to 0) */
+#define FX_THUNDER_BOLT_WIDTH      0xF1  /* line width of a screen-space bolt at its first frame */
+#define FX_THUNDER_BOLT_TAIL_FRAMES 0x10 /* pool item: after a screen-space bolt, wait for FX_THUNDER_SMOKE / the flash */
+#define FX_THUNDER_BOLT_TINT_RGB   0, 7, 0x20 /* additive screen tint (dark blue) as a screen-space bolt strikes */
+#define FX_THUNDER_BOLT_FRAMES      6     /* pool item: a screen-space bolt shows for this many frames */
+#define FX_THUNDER_FLAT_BOLT_FRAMES 4     /* pool item: a flat-strip bolt shows for this many frames (then ends) */
+#define FX_THUNDER_BOLT_REACH       0x640 /* horizontal offset of a bolt's top from its strike point (+-0x80) */
+#define FX_THUNDER_BOLT_COUNT       5     /* op83: bolts, on frames 0 and the four below */
+#define FX_THUNDER_BOLT_2_FRAME     3
+#define FX_THUNDER_BOLT_3_FRAME     5
+#define FX_THUNDER_BOLT_4_FRAME     6
+#define FX_THUNDER_BOLT_5_FRAME     7
+#define FX_THUNDER_SCATTERED_BOLT   3     /* op83: this bolt strikes off the target's centre (+-0x190) */
+#define FX_THUNDER_FRAMES           0xC   /* op83: the task ends at this frame */
+#define FX_THUNDER_STRIP_POINTS  16   /* points of a bolt strip (fx_003_strips, fxm_drawJaggedStrip16) */
+#define FX_THUNDER_BRANCH_POINTS 4    /* points of a branch (fxm_drawJaggedStrip4) */
+#define FX_THUNDER_JITTER_ROWS   0x40 /* fx_003_jitter rows of three random offsets (along, across, angle) */
+#define FX_THUNDER_BOLT_SLOTS    0xC  /* pool items and fx_003_strips / fx_003_branches entries; strip10 = bolt count % slots */
+
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[16]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_THUNDER_STRIP_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx003Strip; /* 0x84 */
 
 typedef struct {
