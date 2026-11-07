@@ -4,8 +4,8 @@ static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 t
     SVECTOR pathPos;
 
     fxm_posPathGet(&fx_041_path, frame, &pathPos);
-    pathPos.vy = -300;
-    fx_041_lastPathPos.vy = -300;
+    pathPos.vy = -FX_WHIRL_SLASH_HEIGHT;
+    fx_041_lastPathPos.vy = -FX_WHIRL_SLASH_HEIGHT;
     fx_041_lastPathPos.vx = pathPos.vx;
     fx_041_lastPathPos.vz = pathPos.vz;
     pathPos.vx += fx_041_targetPos.vx;
@@ -27,7 +27,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx041Work80);
     } else if (mode == 1) {
         fx_041_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
@@ -39,7 +39,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 3:
+        case FX_WHIRL_SLASH_DUST_FRAME:
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos28);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_DUST_PUFF_2), (s32)&work->pos28);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_DUST_CLOUD), (s32)&work->pos20);
@@ -50,7 +50,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             break;
-        case 4:
+        case FX_WHIRL_SLASH_HIT_FRAME:
             fxm_startHitMotionIfActive(0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_GLINTS), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_GOLD_RINGS), (s32)&work->pos18);
@@ -61,29 +61,29 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
             break;
-        case 0xF:
+        case FX_WHIRL_SLASH_DUST_PUFF_FRAME:
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos28);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_DUST_PUFF), (s32)&work->pos28);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             break;
-        case 0x12:
+        case FX_WHIRL_SLASH_SLASH_FRAME:
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_SLASH_TRAIL), (s32)&fx_041_emitPos);
             if (work->emit14 != NULL) {
                 work->emit14->trails = (s32)fx_041_trails;
-                work->emit14->trailSlots = 1;
-                work->emit14->trailStride = 0xD0;
+                work->emit14->trailSlots = FX_WHIRL_SLASH_SLASH_TRAIL_TRAIL_SLOTS;
+                work->emit14->trailStride = FX_WHIRL_SLASH_SLASH_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit14 != NULL) {
                 ((s32 *)work->emit14->file)[2] = (s32)fx_041_op80ParticleMotion;
             }
             break;
         }
-        if (frame >= 4 && fxm_isMotionDone(0)) {
+        if (frame >= FX_WHIRL_SLASH_HIT_FRAME && fxm_isMotionDone(0)) {
             fxm_startUnitMotion(0, 0);
         }
-        return frame >= 0x28;
+        return frame >= FX_WHIRL_SLASH_FRAMES;
     }
     return 0;
 }
@@ -92,7 +92,7 @@ s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx041Work81);
     } else if (mode == 1) {
         fx_041_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -104,7 +104,7 @@ s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_SMOKE), (s32)&work->pos14);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHIRL_SLASH_WIND_RINGS), (s32)&work->pos14);
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_WHIRL_SLASH_RINGS_FRAMES;
     }
     return 0;
 }

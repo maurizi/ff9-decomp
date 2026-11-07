@@ -10,6 +10,10 @@
 #define FX_DEVILS_CANDLE_FLAME          0x2 /* emitter: smoky yellow-grey flame quads */
 #define FX_DEVILS_CANDLE_FLAME_2        0x7 /* emitter: smoky yellow-grey flame quads */
 
+/* fx_017 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_DEVILS_CANDLE_FLAME_FRAME 0x14 /* op80: FX_DEVILS_CANDLE_FLAME (on the ground) and the blue starburst start */
+#define FX_DEVILS_CANDLE_FRAMES      0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

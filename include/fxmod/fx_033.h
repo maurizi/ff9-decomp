@@ -8,6 +8,17 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SNORT_SMOKE_STREAKS 0x5 /* emitter: two spiralling screen trails, the grey smoke streaks blowing past the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
+/* fx_033 choreography (docs/fxdata.md, "Choreography literals"): op80's knockback and length; fxm_easeLerp's curves. */
+#define FX_SNORT_KNOCKBACK_FRAME  0x18 /* op80: the target is pushed back from this frame (timer0 = frame), */
+#define FX_SNORT_KNOCKBACK_FRAMES 0x18 /* over this many (fxm_easeLerp n) */
+#define FX_SNORT_PUSH_DIST        0x2000 /* how far back (and up, / 64) the target is pushed at most */
+#define FX_SNORT_FRAMES           0x32 /* op80: the task ends at this frame */
+#define FX_SNORT_EASE_LINEAR      0    /* fxm_easeLerp ratio 1 - t / n */
+#define FX_SNORT_EASE_SQUARED     1    /* (1 - t / n)^2 */
+#define FX_SNORT_EASE_INV_SQUARED 2    /* 1 - (t / n)^2 */
+#define FX_SNORT_SMOKE_STREAKS_TRAIL_SLOTS  0x2E /* FX_SNORT_SMOKE_STREAKS's trail buffer fx_033_trails: slots of */
+#define FX_SNORT_SMOKE_STREAKS_TRAIL_STRIDE 0x4C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s32 timer0; /* knockback countdown */
     SVECTOR pos4;

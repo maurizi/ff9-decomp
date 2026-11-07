@@ -6,7 +6,7 @@ s32 fx_01b_op80(s32 mode, Fx01bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx01bWork);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_01b_env = env;
@@ -27,7 +27,7 @@ s32 fx_01b_op80(s32 mode, Fx01bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->hold0 == 0) {
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FLOAT_CLOUD_TEXTURE), frame);
-            if (frame >= 0x3C) {
+            if (frame >= FX_FLOAT_FRAMES) {
                 return 1;
             }
         }

@@ -12,6 +12,16 @@
 #define FX_DARKNESS_DARK_ORBS      0x4 /* emitter: blue orbs turning violet then red */
 #define FX_DARKNESS_MAGENTA_STREAK 0x5 /* emitter: fan drawn as a thin magenta horizontal light streak */
 
+/* fx_037 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_DARKNESS_STREAK_FRAME 8    /* op80: FX_DARKNESS_MAGENTA_STREAK starts */
+#define FX_DARKNESS_ORBS_FRAME   10   /* op80: FX_DARKNESS_DARK_ORBS and DARK_CRESCENTS start */
+#define FX_DARKNESS_GLOW_FRAME   20   /* op80: FX_DARKNESS_WHITE_GLOW starts */
+#define FX_DARKNESS_FRAMES       0x3C /* op80: the task ends at this frame */
+#define FX_DARKNESS_GREEN_HAZE_TRAIL_SLOTS  0x15 /* FX_DARKNESS_GREEN_HAZE's trail buffer fx_037_trails: slots of */
+#define FX_DARKNESS_GREEN_HAZE_TRAIL_STRIDE 0x60 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DARKNESS_MAGENTA_STREAK_TRAIL_SLOTS  0x2C /* FX_DARKNESS_MAGENTA_STREAK's trail buffer fx_037_trails2: slots of */
+#define FX_DARKNESS_MAGENTA_STREAK_TRAIL_STRIDE 0x8C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

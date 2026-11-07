@@ -19,6 +19,31 @@
 #define FX_DEATH_BLUE_TRAIL_2    0x1B /* emitter: spiralling trail with a blue flame strip */
 #define FX_DEATH_REAPER_2        0x1C /* 'so' model: the robed skull reaper with the scythe (same textures, other mesh), registered in op80 */
 
+/* fx_05e choreography (docs/fxdata.md, "Choreography literals"): op80's states (the reaper rises, poses, swings, fades), keyframes,
+ * tints, the scythe ribbons, trail buffers; the ribbon helper's GPU words. */
+#define FX_DEATH_STATE_RISE   0    /* op80: FX_DEATH_REAPER_2 rises out of the ground (slice model), soul orbs and blue trail start */
+#define FX_DEATH_RISE_FRAMES  0x18
+#define FX_DEATH_STATE_POSE   1    /* the summon model on its motion's frame 0 */
+#define FX_DEATH_POSE_FRAMES  8
+#define FX_DEATH_STATE_SWING  2    /* the swing: the scythe ribbons, the slash, darken, red flash, smoke */
+#define FX_DEATH_SWING_FRAMES 0x29
+#define FX_DEATH_RIBBON_FRAMES 24  /* FX_DEATH_STATE_SWING: the scythe ribbons fade in over this many frames */
+#define FX_DEATH_SLASH_FRAME  0x1F /* FX_DEATH_STATE_SWING: the slash emitter (fx_05e_facingBlocks, by facing) starts at the target */
+#define FX_DEATH_DARKEN_FRAME 0x20 /* the screen is darkened (FX_DEATH_DARKEN_RGB) */
+#define FX_DEATH_HIT_FRAME    0x21 /* red flash, FX_DEATH_GREEN_ORB and RED_RINGS start at the target */
+#define FX_DEATH_TRAIL_FRAME  0x26 /* FX_DEATH_BLUE_TRAIL and FX_DEATH_SMOKE start */
+#define FX_DEATH_STATE_FADE   3    /* the reaper narrows and fades, its motion played back from SWING_FRAMES; the op ends */
+#define FX_DEATH_FADE_FRAMES  8
+#define FX_DEATH_DARKEN_RGB   0xFF, 0xFF, 0 /* subtractive screen tint */
+#define FX_DEATH_HIT_TINT_RGB 0xDC, 0, 0x20 /* additive screen tint (red) */
+#define FX_DEATH_MODEL_COUNT  1    /* btlfx_initEffModels slots: REAPER_2 */
+#define FX_DEATH_RIBBON_SEGMENTS 16  /* fxm_drawRibbonTrail: segments of the two scythe ribbons (fx_05e_ribbonA / B) */
+#define FX_DEATH_RIBBON_CLEAR    1000 /* fxm_drawRibbonTrail n >= this: clear the first n - 999 segments' live flags instead */
+#define FX_DEATH_BLUE_TRAIL_2_TRAIL_SLOTS  0x18 /* FX_DEATH_BLUE_TRAIL_2's trail buffer fx_05e_trails: slots of */
+#define FX_DEATH_BLUE_TRAIL_2_TRAIL_STRIDE 0x3C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH_BLUE_TRAIL_TRAIL_SLOTS    0x18 /* FX_DEATH_BLUE_TRAIL's trail buffer fx_05e_trails2: slots of */
+#define FX_DEATH_BLUE_TRAIL_TRAIL_STRIDE   0x44 /* this many bytes */
+
 /* ribbon history: two edge points per step, edge0.pad = live */
 typedef struct {
     SVECTOR edge0;

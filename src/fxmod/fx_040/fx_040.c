@@ -73,7 +73,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
 
     if (mode == 0) {
-        *args = 0x50;
+        *args = sizeof(Fx040Work);
     } else if (mode == 1) {
         work->pos28.vx = env->targets->centerX;
         work->pos28.vy = env->targets->centerY;
@@ -82,7 +82,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_040_aboveTarget.vy = env->targets->centerY;
         fx_040_aboveTarget.vz = env->targets->centerZ;
         fx_040_env = env;
-        fx_040_aboveTarget.vy -= 0x190;
+        fx_040_aboveTarget.vy -= FX_BUBBLES_HEIGHT;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos40);
         fx_040_origin.vx = work->pos40.vx;
         fx_040_origin.vy = work->pos40.vy;
@@ -90,7 +90,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vx = work->pos40.vx;
         env->camera->points[0].vy = work->pos40.vy;
         env->camera->points[0].vz = work->pos40.vz;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_BUBBLES_STREAMS; i++) {
             work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_040_emitBlocks[i]), (s32)&fx_040_emitPos[i]);
             if (work->emit0[i] != NULL) {
                 ((s32 *)work->emit0[i]->file)[2] = fx_040_op80ParticleMotions[i];
@@ -98,7 +98,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x12) {
+        if (frame == FX_BUBBLES_POP_FRAME) {
             work->pos30.vx = env->targets->centerX;
             work->pos30.vy = env->targets->centerY;
             work->pos30.vz = env->targets->centerZ;
@@ -112,7 +112,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUBBLES_CYAN_RING), (s32)&work->pos28);
             work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BUBBLES_BUBBLES), (s32)&work->pos28);
         }
-        return frame >= 0x3C;
+        return frame >= FX_BUBBLES_FRAMES;
     }
     return 0;
 }

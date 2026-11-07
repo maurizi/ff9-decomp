@@ -14,6 +14,14 @@
 #define FX_BLOWUP_SPARK_DOTS_2    0xC /* emitter: faint spark dots (btlfx_emitDots), at the targets */
 #define FX_BLOWUP_SMOKE           0xD /* emitter: grey smoke puffs */
 
+/* fx_036 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length; op81's fade (the work is the level). */
+#define FX_BLOWUP_RED_RING_FRAME  1    /* op80: FX_BLOWUP_RED_RING starts at the caster's bone 1 */
+#define FX_BLOWUP_EXPLOSION_FRAME 5    /* op80: FX_BLOWUP_EXPLOSION, BIG_EXPLOSION and SMOKE start there */
+#define FX_BLOWUP_SPREAD_FRAME    9    /* op80: FX_BLOWUP_EXPLOSION_SMOKE (spawn points round the targets) and the spark dots start */
+#define FX_BLOWUP_FRAMES          0x28 /* op80: the task ends at this frame */
+#define FX_BLOWUP_FADE_LEVEL      0x80 /* op81: the caster's fade level starts here (btlfx_fadeUnitById), */
+#define FX_BLOWUP_FADE_STEP       8    /* drops this much per frame; the op ends below 0 */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

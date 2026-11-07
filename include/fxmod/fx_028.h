@@ -13,6 +13,11 @@
 #define FX_ELIXIR_PINK_BLOSSOM  0x6 /* emitter: pink flower-shaped glow + bubble specks */
 #define FX_ELIXIR_SPARKLE_RINGS 0x7 /* emitter: rings of red / green dots + green-pink crosses */
 
+/* fx_028 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_ELIXIR_SPARKLE_RINGS_FRAME 6    /* op80: FX_ELIXIR_SPARKLE_RINGS start */
+#define FX_ELIXIR_GREEN_GLOW_FRAME    12   /* op80: FX_ELIXIR_GREEN_GLOW and FX_ELIXIR_BUBBLES start */
+#define FX_ELIXIR_FRAMES              0x3C /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

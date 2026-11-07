@@ -15,7 +15,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
     s32 size;
 
     if (mode == 1) {
-        it->state0 = 0;
+        it->state0 = FX_COMET_STATE_FALL;
         it->emit14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COMET_ROCK_DEBRIS), (s32)&it->pos4);
         if (it->emit14 != NULL) {
             it->emit14->otZ = 0x10;
@@ -23,8 +23,8 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         return 0;
     }
     switch (it->state0) {
-    case 0:
-        t = (frame << 12) / 15;
+    case FX_COMET_STATE_FALL:
+        t = (frame << 12) / FX_COMET_FALL_FRAMES;
         if (frame == 0) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_TAIL), 0, NULL, -1, 0x1000, 0, 1,
                               (u8 *)&fx_038_strips[it->strip20], 0);
@@ -59,14 +59,14 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         if (it->emit14 != NULL && it->emit14->state == BTLFX_EMIT_DONE) {
             it->emit14 = NULL;
         }
-        if (frame >= 15) {
-            it->state0 = 1;
+        if (frame >= FX_COMET_FALL_FRAMES) {
+            it->state0 = FX_COMET_STATE_IMPACT;
             ((s16 *)it)[-1] = -1;
             if (it->emit14 != NULL) {
                 it->emit14->frame = it->emit14->tail->anim.duration;
             }
             it->pos4.vy = 0;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x18, 0x18, 0x18);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_COMET_IMPACT_DARKEN_RGB);
             it->emit14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COMET_IMPACT_SMOKE), (s32)&it->pos4);
             if (it->emit14 != NULL) {
                 it->emit14->otZ = 0x46;
@@ -76,11 +76,11 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             it->rotC.vz = 0;
         }
         break;
-    case 1:
-        t = (frame << 12) / 18;
-        if (frame < 4) {
-            s32 tint = 0x46 - frame * 0x46 / 4;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+    case FX_COMET_STATE_IMPACT:
+        t = (frame << 12) / FX_COMET_IMPACT_FRAMES;
+        if (frame < FX_COMET_FLASH_FRAMES) {
+            s32 tint = FX_COMET_FLASH_LEVEL - frame * FX_COMET_FLASH_LEVEL / FX_COMET_FLASH_FRAMES;
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
         }
         spinAng = t >> 2;
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_GLOW), &it->pos4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(spinAng), 0, 0);
@@ -93,7 +93,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         pos.vx = it->pos4.vx;
         pos.vy = it->pos4.vy;
         pos.vz = it->pos4.vz;
-        if (frame < 8) {
+        if (frame < FX_COMET_GLOW_DISH_FRAMES) {
             s32 flashAng;
 
             t = frame << 9;
@@ -107,7 +107,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             ex->Hi_ModifyEffModelRGB(work->model14, ((fade * 2 - 0x1000) >> 5) - 0x80, ((fade * 2 - 0x1000) >> 5) - 0x80,
                                      ((fade * 2 - 0x1000) >> 5) - 0x80);
         }
-        t = (frame << 12) / 18;
+        t = (frame << 12) / FX_COMET_IMPACT_FRAMES;
         fade = 0x1000 - t;
         growAng = t >> 2;
         scale.vx = scale.vz = (ex->math_sin(growAng) / 3 + 0xAAA) * 3 / 4;
@@ -119,17 +119,17 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         ringRot.vz = 0;
         ringRot.vy = 0;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_BLUE_RING), &it->pos4, &ringRot, ex->math_sin(growAng) + 0xAAA, 8, 1, fade);
-        if (frame < 12) {
+        if (frame < FX_COMET_FIRE_GLOW_FRAMES) {
             s32 burstT;
 
             ringRot.pad = 1;
             ringRot.vx = 0x400;
             ringRot.vz = 0;
             ringRot.vy = 0;
-            burstT = (frame << 12) / 12;
+            burstT = (frame << 12) / FX_COMET_FIRE_GLOW_FRAMES;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_COMET_FIRE_GLOW), &it->pos4, &ringRot, ex->math_cos(burstT >> 2) * 3, 6, 1, ex->math_cos(burstT >> 2), 0, 0);
         }
-        if (frame >= 18) {
+        if (frame >= FX_COMET_IMPACT_FRAMES) {
             return 1;
         }
         break;
@@ -144,28 +144,29 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx038Item *it;
 
     if (mode == 0) {
-        init->workSize = 0x1C;
-        init->elemSize = 0x24;
+        init->workSize = sizeof(Fx038Work);
+        init->elemSize = sizeof(Fx038Item);
         init->elemFn = (s32)fx_038_op80PoolTask;
-        init->poolCount = 3;
+        init->poolCount = FX_COMET_ROCK_COUNT;
     } else if (mode == 1) {
         work->hold0 = 0;
         work->countC = 0;
         fx_038_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
-        ex->btlfx_initEffModels(fx_038_effModels, 3);
-        work->model10 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COMET_ROCK), 0x97, 0x3C80, 0, 0);
+        ex->btlfx_initEffModels(fx_038_effModels, FX_COMET_MODEL_COUNT);
+        work->model10 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COMET_ROCK), FX_COMET_ROCK_TPAGE, FX_COMET_ROCK_CLUT, 0, 0);
         work->model18 =
-            ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COMET_SHOCK_RING), 0x137, 0xFFFF, -0x40, 0x80);
+            ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COMET_SHOCK_RING), FX_COMET_SHOCK_RING_TPAGE, FX_COMET_SHOCK_RING_CLUT,
+                                       FX_COMET_SHOCK_RING_U, FX_COMET_SHOCK_RING_V);
         work->model14 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_COMET_GLOW_DISH));
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
             spawn = 0;
-            if (frame < 0x18) {
+            if (frame < FX_COMET_SPAWN_FRAMES) {
                 spawn = fx_038_spawnFrames[frame];
             }
-            if (spawn != 0 && work->countC < 3) {
+            if (spawn != 0 && work->countC < FX_COMET_ROCK_COUNT) {
                 work->countC++;
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
@@ -179,7 +180,7 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_COMET_HAZE_TEXTURE), frame);
-            if (work->countC >= 3 && frame >= 0x3E) {
+            if (work->countC >= FX_COMET_ROCK_COUNT && frame >= FX_COMET_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

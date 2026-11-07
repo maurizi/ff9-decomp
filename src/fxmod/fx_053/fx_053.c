@@ -5,7 +5,7 @@ s32 fx_053_op80(s32 mode, Fx053Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx053Work80);
     } else if (mode == 1) {
         fx_053_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -40,7 +40,7 @@ s32 fx_053_op80(s32 mode, Fx053Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->rot.vz = work->rot10.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_WHITE_DRAW_FRAMES;
     }
     return 0;
 }
@@ -50,7 +50,7 @@ s32 fx_053_op81(s32 mode, Fx053Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx053Work81);
     } else if (mode == 1) {
         work->posC.vx = env->targets->centerX;
         work->posC.vy = env->targets->centerY;
@@ -59,15 +59,15 @@ s32 fx_053_op81(s32 mode, Fx053Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHITE_DRAW_TRAIL), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_053_trails;
-            work->emit0->trailSlots = 6;
-            work->emit0->trailStride = 0x88;
+            work->emit0->trailSlots = FX_WHITE_DRAW_TRAIL_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_WHITE_DRAW_TRAIL_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xA) {
+        if (frame == FX_WHITE_DRAW_SPARKLES_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHITE_DRAW_BLUE_SPARKLES_2), (s32)&work->posC);
         }
-        return frame >= 0x32;
+        return frame >= FX_WHITE_DRAW_TRAIL_FRAMES;
     }
     return 0;
 }
@@ -77,7 +77,7 @@ s32 fx_053_op82(s32 mode, Fx053Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx053Work82);
     } else if (mode == 1) {
         s32 target = *args;
 
@@ -101,10 +101,10 @@ s32 fx_053_op82(s32 mode, Fx053Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_WHITE_DRAW_RELEASE_FRAME) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
-        return frame >= 0x28;
+        return frame >= FX_WHITE_DRAW_CRYSTAL_FRAMES;
     }
     return 0;
 }

@@ -9,6 +9,10 @@
 #define FX_ANGELS_SNACK_OLIVE_RINGS 0x2 /* emitter: dark olive and white-yellow-grey-violet gouraud rings */
 #define FX_ANGELS_SNACK_GOLD_FLARES 0x7 /* emitter: golden lens flares, pink star glints, sparkles */
 
+/* fx_02d choreography (docs/fxdata.md, "Choreography literals"): op80's length and height (the work is the emitters' position). */
+#define FX_ANGELS_SNACK_FRAMES 0x28 /* op80: the task ends at this frame */
+#define FX_ANGELS_SNACK_HEIGHT 0xC8 /* the emitters' height above the ground, over the targets' centre */
+
 extern Unk800F78A4 *fx_02d_env;
 
 #endif

@@ -11,6 +11,11 @@
 #define FX_GRADUAL_PETRIFY_STONE_DUST   0x3 /* emitter: grey dust clouds + grey streaks */
 #define FX_GRADUAL_PETRIFY_STONE_DUST_2 0x9 /* emitter: grey dust clouds */
 
+/* fx_031 choreography (docs/fxdata.md, "Choreography literals"): op80's flash, keyframe and length. */
+#define FX_GRADUAL_PETRIFY_FLASH_FRAMES 8    /* op80: additive white flash fading over this many frames; then the stone dust and GOLD_RINGS_2 start */
+#define FX_GRADUAL_PETRIFY_FRAMES       0x28 /* op80: the task ends at this frame */
+#define FX_GRADUAL_PETRIFY_DUST_2_DROP  0x80 /* FX_GRADUAL_PETRIFY_STONE_DUST_2's position (pos8): this far below the target body position */
+
 typedef struct {
     SVECTOR pos0; /* target body position */
     SVECTOR pos8;

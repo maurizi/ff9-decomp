@@ -13,7 +13,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     MATRIX m7;
 
     if (mode == 0) {
-        *args = 0x58;
+        *args = sizeof(Fx032Work);
     } else if (mode == 1) {
         fx_032_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
@@ -21,7 +21,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_matrixPointAhead(&m0, (s16)env->targets->fxParam, (s32)env->camera);
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_GLOWING_EYES_SPARKS_FRAME) {
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m0);
             ex->btlfx_matrixPointAhead(&m0, (s16)env->targets->fxParam, (s32)&work->pos8);
             work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SPARK_DOTS), (s32)&work->pos8);
@@ -35,7 +35,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_matrixPointAhead(&m3, (s16)env->targets->fxParam, (s32)&work->pos38);
             work->emit54 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_GLOW_RINGS_2), (s32)&work->pos38);
         }
-        if (frame >= 5) {
+        if (frame >= FX_GLOWING_EYES_SPARKS_FRAME + 1) {
             if (work->emit48 != NULL) {
                 if (work->emit48->state == BTLFX_EMIT_DONE) {
                     work->emit48 = NULL;
@@ -77,11 +77,11 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (frame == 0x10) {
+        if (frame == FX_GLOWING_EYES_SMOKE_FRAME) {
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SMOKE), (s32)&work->pos0);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GLOWING_EYES_SWIRL), (s32)&work->pos0);
         }
-        return frame >= 0x28;
+        return frame >= FX_GLOWING_EYES_FRAMES;
     }
     return 0;
 }

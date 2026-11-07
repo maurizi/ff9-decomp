@@ -16,6 +16,33 @@
 #define FX_DAGGERS_MAGIC_LIGHT_RING     0xF /* model: ring, green light-arc texture */
 #define FX_DAGGERS_MAGIC_SPARKLE_BURST  0x10 /* emitter: white/yellow/green sparkle sprites */
 
+/* fx_001 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, the fountain's grow / morph
+ * phases and fades, and its scrolling texture. */
+#define FX_DAGGERS_MAGIC_BLUE_SWIRL_FRAME      6    /* op80: FX_DAGGERS_MAGIC_BLUE_SWIRL and FX_DAGGERS_MAGIC_GOLD_RINGS start */
+#define FX_DAGGERS_MAGIC_FOUNTAIN_FRAME        22   /* WHITE_RINGS / SPARKLE_BURST start, the fountain fades in and grows, its texture animates */
+#define FX_DAGGERS_MAGIC_FOUNTAIN_GROW_FRAMES  10   /* FX_DAGGERS_MAGIC_LIGHT_FOUNTAIN grows (scale vy 0 -> 0x800) over this many frames, then */
+#define FX_DAGGERS_MAGIC_RING_MORPH_FRAMES     24   /* morphs into FX_DAGGERS_MAGIC_LIGHT_RING over this many */
+#define FX_DAGGERS_MAGIC_SPARKLES_FRAME        28   /* FX_DAGGERS_MAGIC_SPARKLES start */
+#define FX_DAGGERS_MAGIC_FADE_OUT_FRAME        36   /* the fountain starts fading out */
+#define FX_DAGGERS_MAGIC_SPARKLE_SHOWER_FRAME  42   /* FX_DAGGERS_MAGIC_SPARKLE_SHOWER starts */
+#define FX_DAGGERS_MAGIC_FRAMES                0x46 /* op80: the task ends at this frame */
+#define FX_DAGGERS_MAGIC_FADE_IN_FRAMES        0x12 /* fadeIn64: model brightness -0x80 -> 0 over this many frames */
+#define FX_DAGGERS_MAGIC_FADE_OUT_FRAMES       0x18 /* fadeOut68: 0 -> -0x80 over this many */
+#define FX_DAGGERS_MAGIC_SPARKLES_HEIGHT       0x1C2 /* FX_DAGGERS_MAGIC_SPARKLES' position (pos54) above the target */
+#define FX_DAGGERS_MAGIC_MODEL_COUNT           2    /* btlfx_initEffModels slots: LIGHT_FOUNTAIN, LIGHT_RING */
+#define FX_DAGGERS_MAGIC_BLUE_SWIRL_TRAIL_SLOTS  9    /* FX_DAGGERS_MAGIC_BLUE_SWIRL's trail buffer fx_001_trails: slots of */
+#define FX_DAGGERS_MAGIC_BLUE_SWIRL_TRAIL_STRIDE 0xA0 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* LIGHT_FOUNTAIN and LIGHT_RING share one texture: 4-bit page (0x2C0, 0x100), clut (0x90, 0xF4); from
+ * FOUNTAIN_FRAME on, each frame MoveImage copies one of the LIGHT_ANIM_FRAMES rects of fx_001_texAnimXY into the
+ * page at (VRAM_X, VRAM_Y), animating the light. */
+#define FX_DAGGERS_MAGIC_LIGHT_TPAGE           0x1B
+#define FX_DAGGERS_MAGIC_LIGHT_CLUT            0x3D09
+#define FX_DAGGERS_MAGIC_LIGHT_VRAM_X          0x2C0
+#define FX_DAGGERS_MAGIC_LIGHT_VRAM_Y          0x100
+#define FX_DAGGERS_MAGIC_LIGHT_VRAM_W          0x20
+#define FX_DAGGERS_MAGIC_LIGHT_VRAM_H          0x80
+#define FX_DAGGERS_MAGIC_LIGHT_ANIM_FRAMES     15   /* fx_001_texAnimXY entries, cycled frame % this */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

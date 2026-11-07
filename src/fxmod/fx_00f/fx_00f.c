@@ -6,7 +6,7 @@ s32 fx_00f_op80(s32 mode, Fx00fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx00fWork);
     } else if (mode == 1) {
         fx_00f_env = env;
         work->hold0 = 0;
@@ -19,13 +19,13 @@ s32 fx_00f_op80(s32 mode, Fx00fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (emitter != NULL) {
             emitter->otZ = 0x20;
             emitter->trails = (s32)fx_00f_trails;
-            emitter->trailSlots = 0x14;
-            emitter->trailStride = 0x34;
+            emitter->trailSlots = FX_FULL_LIFE_LIGHT_TRAILS_TRAIL_SLOTS;
+            emitter->trailStride = FX_FULL_LIFE_LIGHT_TRAILS_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-            if (frame == 6) {
+            if (frame == FX_FULL_LIFE_WINGS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FULL_LIFE_WINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
@@ -35,7 +35,7 @@ s32 fx_00f_op80(s32 mode, Fx00fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame >= 0x28) {
+            if (frame >= FX_FULL_LIFE_FRAMES) {
                 return 1;
             }
         }

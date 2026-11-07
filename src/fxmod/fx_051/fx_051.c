@@ -5,7 +5,7 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx051Work);
     } else if (mode == 1) {
         s32 target = *args;
 
@@ -28,13 +28,13 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_051_emitRot.vy = work->rot10.vy;
     } else {
         frame = entry->frame;
-        if (frame == 0x12) {
+        if (frame == FX_MIGHTY_GUARD_HALO_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIGHTY_GUARD_GOLD_HALO), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(work->target18, 0x80);
             }
         }
-        if (frame >= 0x12 && work->emit4 != NULL) {
+        if (frame >= FX_MIGHTY_GUARD_HALO_FRAME && work->emit4 != NULL) {
             if (work->emit4->state == BTLFX_EMIT_DONE) {
                 work->emit4 = NULL;
             }
@@ -44,10 +44,10 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = fx_051_emitRot.vz;
             }
         }
-        if (frame == 0xC) {
+        if (frame == FX_MIGHTY_GUARD_RELEASE_FRAME) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
-        return frame >= 0x32;
+        return frame >= FX_MIGHTY_GUARD_FRAMES;
     }
     return 0;
 }

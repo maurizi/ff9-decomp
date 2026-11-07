@@ -5,28 +5,28 @@ s32 fx_055_op80(s32 mode, Fx055Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx055Work);
     } else if (mode == 1) {
         fx_055_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHAKRA_STAR_GLINTS), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_055_trails;
-            work->emit0->trailSlots = 0xA;
-            work->emit0->trailStride = 0x90;
+            work->emit0->trailSlots = FX_CHAKRA_STAR_GLINTS_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_CHAKRA_STAR_GLINTS_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xF) {
+        if (frame == FX_CHAKRA_DOT_RINGS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHAKRA_DOT_RINGS), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        return frame >= 0x32;
+        return frame >= FX_CHAKRA_FRAMES;
     }
     return 0;
 }

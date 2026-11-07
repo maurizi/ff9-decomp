@@ -11,6 +11,13 @@
 #define FX_SHELL_BLUE_RINGS     0x3 /* emitter: pale blue gouraud rings */
 #define FX_SHELL_BARRIER_RING_2 0x4 /* emitter: teal specks + ring with a blue lattice texture */
 
+/* fx_03f choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, length and ring offset. */
+#define FX_SHELL_RING_OFFSET     0xFA /* the barrier rings' positions: this far above (pos18) and below (pos28) the target body */
+#define FX_SHELL_RING_2_FRAME    0xA  /* op80: FX_SHELL_BARRIER_RING_2 starts above and below */
+#define FX_SHELL_RING_STOP_FRAME 0xB  /* op80: the first two FX_SHELL_BARRIER_RING emitters are stopped */
+#define FX_SHELL_BLUE_RINGS_FRAME 0x14 /* op80: FX_SHELL_BLUE_RINGS start */
+#define FX_SHELL_FRAMES          0x2D /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -11,6 +11,10 @@
 #define FX_MAGIC_BREAK_VIOLET_WAVES 0x3 /* emitter: fan drawn as wavy violet energy bolts */
 #define FX_MAGIC_BREAK_RUNE_RING   0x4 /* emitter: violet circuit-pattern ring + red sphere */
 
+/* fx_02e choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_MAGIC_BREAK_RUNE_RING_FRAME 0x24 /* op80: FX_MAGIC_BREAK_RUNE_RING and VIOLET_WAVES start at the target, turned to the camera from then on */
+#define FX_MAGIC_BREAK_FRAMES          0x46 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

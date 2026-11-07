@@ -4,7 +4,7 @@ s32 fx_03c_op80(s32 mode, Fx03cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx03cWork);
     } else if (mode == 1) {
         fx_03c_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
@@ -13,11 +13,11 @@ s32 fx_03c_op80(s32 mode, Fx03cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WIND_WIND_TRAILS), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_03c_trails;
-            work->emit0->trailSlots = 0x2B;
-            work->emit0->trailStride = 0x40;
+            work->emit0->trailSlots = FX_WIND_WIND_TRAILS_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_WIND_WIND_TRAILS_TRAIL_STRIDE;
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_WIND_FRAMES;
     }
     return 0;
 }

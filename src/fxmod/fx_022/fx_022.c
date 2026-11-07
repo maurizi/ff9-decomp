@@ -5,7 +5,7 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx022Work);
     } else if (mode == 1) {
         fx_022_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
@@ -24,7 +24,7 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->target = (s32)&work->posC;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_TENTACLE_GONE_FRAMES;
     }
     return 0;
 }

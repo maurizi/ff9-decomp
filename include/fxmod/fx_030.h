@@ -11,6 +11,11 @@
 #define FX_POLLEN_POLLEN_PUFF 0x3 /* emitter: yellow-brown pollen puff + grey puff */
 #define FX_POLLEN_POLLEN_DOTS_2 0x8 /* emitter: faint pollen dots (btlfx_emitDots) */
 
+/* fx_030 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe, length and aim point. */
+#define FX_POLLEN_DUST_PUFF_FRAME 6     /* op80: FX_POLLEN_DUST_PUFF starts at each target */
+#define FX_POLLEN_FRAMES          0x32  /* op80: the task ends at this frame */
+#define FX_POLLEN_AIM_DEPTH       0x1F4 /* pos8, where the pollen is aimed: the targets' centre on the ground, this much further in z */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;

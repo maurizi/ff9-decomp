@@ -12,6 +12,13 @@
 #define FX_AQUA_BREATH_BLUE_RING   0x7 /* emitter: light blue / white gouraud ring */
 #define FX_AQUA_BREATH_BUBBLE      0x8 /* emitter: one large bubble + small glints */
 
+/* fx_01c choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_AQUA_BREATH_WAVE_FRAME  30   /* op80: FX_AQUA_BREATH_WAVE_RING and BUBBLES start; from here they are aimed at the target */
+#define FX_AQUA_BREATH_DROPS_FRAME 50   /* op80: FX_AQUA_BREATH_WATER_DROPS start at the target */
+#define FX_AQUA_BREATH_FRAMES      0x50 /* op80: the task ends at this frame */
+#define FX_AQUA_BREATH_BUBBLES_TRAIL_SLOTS  8 /* FX_AQUA_BREATH_BUBBLES's trail buffer fx_01c_trails: slots of */
+#define FX_AQUA_BREATH_BUBBLES_TRAIL_STRIDE 0x90 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

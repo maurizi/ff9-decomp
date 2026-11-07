@@ -6,7 +6,7 @@ s32 fx_01e_op80(s32 mode, Fx01eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx01eWork);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_01e_env = env;
@@ -15,8 +15,8 @@ s32 fx_01e_op80(s32 mode, Fx01eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_1000_NEEDLES_NEEDLE_TRAILS), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_01e_trails;
-            work->emit4->trailSlots = 0x64;
-            work->emit4->trailStride = 0x1C;
+            work->emit4->trailSlots = FX_1000_NEEDLES_NEEDLE_TRAILS_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_1000_NEEDLES_NEEDLE_TRAILS_TRAIL_STRIDE;
         }
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos10, (s16 *)&work->aim18);
     } else {
@@ -27,13 +27,13 @@ s32 fx_01e_op80(s32 mode, Fx01eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vy = work->aim18.vy;
                 work->emit4->rot.vz = work->aim18.vz;
             }
-            if (frame == 8) {
+            if (frame == FX_1000_NEEDLES_BURST_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_1000_NEEDLES_NEEDLE_BURST), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0xC);
                 }
             }
-            if (frame >= 0x3C) {
+            if (frame >= FX_1000_NEEDLES_FRAMES) {
                 return 1;
             }
         }

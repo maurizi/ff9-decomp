@@ -5,7 +5,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx04bWork80);
     } else if (mode == 1) {
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
@@ -14,15 +14,15 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 10:
+        case FX_SANDSTORM_TRAIL_FRAME:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SANDSTORM_SAND_TRAIL), (s32)&work->pos8);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_04b_trails;
-                work->emit0->trailSlots = 0x82;
-                work->emit0->trailStride = 0x18;
+                work->emit0->trailSlots = FX_SANDSTORM_SAND_TRAIL_TRAIL_SLOTS;
+                work->emit0->trailStride = FX_SANDSTORM_SAND_TRAIL_TRAIL_STRIDE;
             }
             break;
-        case 40:
+        case FX_SANDSTORM_TRAIL_2_FRAME:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
             fx_04b_casterPos.vx = work->pos10.vx;
             fx_04b_casterPos.vy = work->pos10.vy;
@@ -30,13 +30,13 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SANDSTORM_SAND_TRAIL_2), (s32)&work->pos18);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_04b_trails2;
-                work->emit4->trailSlots = 0xA0;
-                work->emit4->trailStride = 0x18;
+                work->emit4->trailSlots = FX_SANDSTORM_SAND_TRAIL_2_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_SANDSTORM_SAND_TRAIL_2_TRAIL_STRIDE;
             }
             ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->aim20);
             break;
         }
-        if (frame >= 10) {
+        if (frame >= FX_SANDSTORM_TRAIL_FRAME) {
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
@@ -47,7 +47,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame >= 40) {
+        if (frame >= FX_SANDSTORM_TRAIL_2_FRAME) {
             if (work->emit4 != NULL) {
                 if (work->emit4->state == BTLFX_EMIT_DONE) {
                     work->emit4 = NULL;
@@ -59,7 +59,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 100;
+        return frame >= FX_SANDSTORM_FRAMES;
     }
     return 0;
 }
@@ -69,7 +69,7 @@ s32 fx_04b_op81(s32 mode, Fx04bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx04bWork81);
     } else if (mode == 1) {
         s32 target = *args;
 
@@ -79,7 +79,7 @@ s32 fx_04b_op81(s32 mode, Fx04bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         ex->btlfx_getUnitPos(target, (s16 *)&work->pos4);
-        work->pos4.vy -= 0xC8;
+        work->pos4.vy -= FX_SANDSTORM_CLOUD_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SANDSTORM_SAND_CLOUD), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->target14, 0x80);
@@ -97,7 +97,7 @@ s32 fx_04b_op81(s32 mode, Fx04bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->rot.vz = work->aimC.vz;
             }
         }
-        return frame >= 0x3C;
+        return frame >= FX_SANDSTORM_CLOUD_FRAMES;
     }
     return 0;
 }

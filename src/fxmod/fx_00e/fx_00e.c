@@ -11,7 +11,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 bright;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx00eWork);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_00e_env = env;
@@ -20,8 +20,8 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18[0] = work->pos8.vx;
         work->pos18[1] = work->pos8.vy;
         work->pos18[2] = work->pos8.vz;
-        ex->btlfx_initEffModels(fx_00e_effModels, 2);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BERSERK_CONE), 0x138, 0xFFFF, 0, 0x80);
+        ex->btlfx_initEffModels(fx_00e_effModels, FX_BERSERK_MODEL_COUNT);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BERSERK_CONE), FX_BERSERK_CONE_TPAGE, FX_BERSERK_CONE_CLUT, 0, FX_BERSERK_CONE_V);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BERSERK_FIRE_RINGS), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
@@ -43,13 +43,13 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vy = (frame << 8) + 0x1000;
             scale.vz = scaleXZ;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)work->pos18, (s32)&scale, work->model24);
-            ex->Hi_ModifyEffModelAbr(work->model24, 1);
+            ex->Hi_ModifyEffModelAbr(work->model24, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model24, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             scale.vy >>= 1;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)work->pos18, (s32)&scale, work->model24);
-            ex->Hi_ModifyEffModelAbr(work->model24, 1);
+            ex->Hi_ModifyEffModelAbr(work->model24, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model24, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
-            if (frame >= 0x20) {
+            if (frame >= FX_BERSERK_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

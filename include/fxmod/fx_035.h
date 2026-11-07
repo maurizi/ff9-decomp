@@ -10,6 +10,11 @@
 #define FX_DEVILS_CANDLE_FLAME_2 0x8 /* emitter: teal / tan flame quads */
 #define FX_DEVILS_CANDLE_FIRE    0x9 /* emitter: red-orange-yellow flame tongues + red glow */
 
+/* fx_035 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length (the names of fx_017, the other
+ * Devil's Candle module). */
+#define FX_DEVILS_CANDLE_FLAME_FRAME 0x14 /* op80: FX_DEVILS_CANDLE_FLAME and FX_DEVILS_CANDLE_FIRE start on the ground */
+#define FX_DEVILS_CANDLE_FRAMES      0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -9,20 +9,20 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
     VECTOR scale;
 
     if (mode == 1) {
-        it->state0 = 0;
+        it->state0 = FX_MATRA_MAGIC_STATE_FLY;
         it->speed4 = (ex->btlfx_rand() & 0x1F) + 0x27;
         it->turn8 = ex->btlfx_rand() & 0x1F;
         it->target20.pad = 0x249;
     } else {
         switch (it->state0) {
-        case 0:
+        case FX_MATRA_MAGIC_STATE_FLY:
             if (frame == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_MISSILE_TRAIL), (s32)&it->posC, NULL, -1, 0, 0, 0, it->trail1C,
                                   0);
             }
             it->speed4 += 0x20;
-            if (it->speed4 > 0x300) {
-                it->speed4 = 0x300;
+            if (it->speed4 > FX_MATRA_MAGIC_MAX_SPEED) {
+                it->speed4 = FX_MATRA_MAGIC_MAX_SPEED;
             }
             it->turn8 += 0x66;
             if (it->turn8 >= 0x1000) {
@@ -50,15 +50,16 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             vec.vx = work->pos4.vx - it->posC.vx;
             vec.vy = work->pos4.vy - it->posC.vy;
             vec.vz = work->pos4.vz - it->posC.vz;
-            if (vec.vx * vec.vx + vec.vy * vec.vy + vec.vz * vec.vz < 0x40000 || frame >= 0x11) {
-                it->state0 = 1;
+            if (vec.vx * vec.vx + vec.vy * vec.vy + vec.vz * vec.vz < FX_MATRA_MAGIC_HIT_RADIUS * FX_MATRA_MAGIC_HIT_RADIUS ||
+                frame >= FX_MATRA_MAGIC_FLY_FRAMES) {
+                it->state0 = FX_MATRA_MAGIC_STATE_BLAST;
                 ((s16 *)it)[-1] = -1;
                 if (work->frame20 & 1) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x10, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_MATRA_MAGIC_HIT_TINT_RGB);
                 }
             }
             break;
-        case 1:
+        case FX_MATRA_MAGIC_STATE_BLAST:
             ang.vx = 0x400;
             ang.vy = 0;
             ang.vz = frame << 5;
@@ -68,14 +69,14 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             env->otZ = 0x40;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_SMOKE), &vec, NULL, 0x4000, frame, 1, -1, 0, 0);
             env->otZ = 0;
-            if (frame < 0x10) {
+            if (frame < FX_MATRA_MAGIC_BLAST_FRAMES) {
                 BTLFX_COPY_SVEC(&vec, &it->posC);
                 vec.vy = 0;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_BLAST), &vec, &ang, 0x1800, frame, 1, -1, 0, 0);
             }
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_MISSILE_TRAIL), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
                               it->trail1C, 0);
-            if (frame >= 0x18) {
+            if (frame >= FX_MATRA_MAGIC_SMOKE_FRAMES) {
                 return 1;
             }
             break;
@@ -91,10 +92,10 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s16 baseYaw;
 
     if (mode == 0) {
-        init->workSize = 0x28;
-        init->elemSize = 0x28;
+        init->workSize = sizeof(Fx058Work);
+        init->elemSize = sizeof(Fx058Item);
         init->elemFn = (s32)fx_058_op80PoolTask;
-        init->poolCount = 0x20;
+        init->poolCount = FX_MATRA_MAGIC_MISSILES;
     } else if (mode == 1) {
         work->hold0 = 0;
         work->count1C = 0;
@@ -104,10 +105,10 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         work->rot14.vy += 0x800;
-        ex->btlfx_initEffModels(fx_058_effModels, 1);
+        ex->btlfx_initEffModels(fx_058_effModels, FX_MATRA_MAGIC_MODEL_COUNT);
         work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MATRA_MAGIC_STAR_GLOW), 1);
     } else if (work->hold0 == 0) {
-        if (work->count1C < 0x20) {
+        if (work->count1C < FX_MATRA_MAGIC_MISSILES) {
             work->count1C++;
             it = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (it != NULL) {
@@ -125,7 +126,7 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         work->frame20++;
-        if (work->count1C >= 0x20) {
+        if (work->count1C >= FX_MATRA_MAGIC_MISSILES) {
             return 1;
         }
     }

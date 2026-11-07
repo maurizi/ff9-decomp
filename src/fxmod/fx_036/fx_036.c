@@ -21,7 +21,7 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x2C;
+        *args = sizeof(Fx036Work);
     } else if (mode == 1) {
         fx_036_targetPos.vx = env->targets->centerX;
         fx_036_targetPos.vy = env->targets->centerY;
@@ -30,19 +30,19 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 1:
+        case FX_BLOWUP_RED_RING_FRAME:
             ex->btlfx_getUnitBonePos(0x10, 1, (u16 *)&work->pos1C);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_RED_RING), (s32)&work->pos1C);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
-        case 5:
+        case FX_BLOWUP_EXPLOSION_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_EXPLOSION), (s32)&work->pos1C);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_BIG_EXPLOSION), (s32)&work->pos1C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_SMOKE), (s32)&work->pos1C);
             break;
-        case 9:
+        case FX_BLOWUP_SPREAD_FRAME:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLOWUP_EXPLOSION_SMOKE), (s32)&work->pos24);
             if (work->emit10 != NULL) {
                 work->emit10->tail->shape = -1;
@@ -55,7 +55,7 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        return frame >= 0x28;
+        return frame >= FX_BLOWUP_FRAMES;
     }
     return 0;
 }
@@ -64,13 +64,13 @@ s32 fx_036_op81(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 2;
+        *args = sizeof(s16);
     } else if (mode == 1) {
         fx_036_env = env;
-        *work = 0x80;
+        *work = FX_BLOWUP_FADE_LEVEL;
     } else {
         ex->btlfx_fadeUnitById(0x10, *work);
-        *work -= 8;
+        *work -= FX_BLOWUP_FADE_STEP;
         return *work < 0;
     }
     return 0;

@@ -11,6 +11,10 @@
 #define FX_SILENCE_NEBULA_TEXTURE 0x4 /* layer table: render-to-texture (btlfx_drawLayerTexture): 4 layers into VRAM (0x240,0x190) 112x112, a blue-violet starry nebula sampled by the glowing ball on the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SILENCE_RUNE_SEAL  0xA /* emitter: grey stone ring carved with runes */
 
+/* fx_02a choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_SILENCE_GLYPH_FRAME 8    /* op80: FX_SILENCE_GLYPH and FX_SILENCE_RUNE_SEAL start, FX_SILENCE_NEBULA_TEXTURE is rendered from here */
+#define FX_SILENCE_FRAMES      0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target body position */
