@@ -18,9 +18,9 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx1e9Work80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_TRANCE_STATE_CHARGE;
         fx_1e9_env = env;
         ex->btlfx_getUnitPos(BTLFX_UNIT_CASTER, (s16 *)&work->posC);
         ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos14);
@@ -28,14 +28,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_1e9_stopBolts = 0;
         ex->btlfx_initEffModels(fx_1e9_effModels, 1);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TRANCE_AURA_CYLINDER), 0xB7, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TRANCE_AURA_CYLINDER), FX_TRANCE_AURA_CYLINDER_TPAGE, FX_TRANCE_AURA_CYLINDER_CLUT, FX_TRANCE_AURA_CYLINDER_U, FX_TRANCE_AURA_CYLINDER_V);
     } else {
     glow = 0;
     frame = entry->frame;
     switch (work->state0) {
-    case 0:
+    case FX_TRANCE_STATE_CHARGE:
         t = frame << 8;
-        growSize = (ex->math_sin(t >> 2) * 0x10FF) >> 12;
+        growSize = (ex->math_sin(t >> 2) * FX_TRANCE_RING_SCALE) >> 12;
         env->otZ = 0x7C;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, growSize, 0, BTLFX_ABR_ADD, t);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, t);
@@ -45,11 +45,11 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vy = 0;
         rot.pad = 1;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, growSize, 0, BTLFX_ABR_ADD, t);
-        scale.vx = scale.vz = 0x174;
+        scale.vx = scale.vz = FX_TRANCE_AURA_WIDTH;
         scale.vy = ex->math_sin(t >> 2) / 6;
         glow = t;
-        if (frame >= 0x10) {
-            work->state0 = 1;
+        if (frame >= FX_TRANCE_CHARGE_FRAMES) {
+            work->state0 = FX_TRANCE_STATE_HOLD;
             entry->frame = -1;
             env->state->signals[0] = 0;
             ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0);
@@ -60,10 +60,10 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->frame1C = 0;
         }
         break;
-    case 1:
+    case FX_TRANCE_STATE_HOLD:
         pulseFrame = ++work->frame1C;
-        t = ((pulseFrame % 10) << 12) / 10;
-        pulseSize = (ex->math_sin(t) >> 4) + 0x10FF;
+        t = ((pulseFrame % FX_TRANCE_PULSE_FRAMES) << 12) / FX_TRANCE_PULSE_FRAMES;
+        pulseSize = (ex->math_sin(t) >> 4) + FX_TRANCE_RING_SCALE;
         env->otZ = 0x7C;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, pulseSize, 0, BTLFX_ABR_ADD, 0x1000);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, 0x1000);
@@ -73,14 +73,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vy = 0;
         rot.pad = 1;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, pulseSize, 0, BTLFX_ABR_ADD, 0x1000);
-        scale.vx = scale.vz = 0x174;
+        scale.vx = scale.vz = FX_TRANCE_AURA_WIDTH;
         scale.vy = (ex->math_sin(t) >> 7) + 0x2AA;
         glow = 0x1000;
         if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
             work->emit8 = NULL;
         }
         if (frame != 0 && t == 0 && env->state->signals[0] != 0) {
-            work->state0 = 2;
+            work->state0 = FX_TRANCE_STATE_RELEASE;
             entry->frame = -1;
             env->camera->paused = 0;
             ex->btlfx_fadeUnitById(BTLFX_UNIT_CASTER, 0x80);
@@ -95,11 +95,11 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         break;
-    case 2:
-        t = (frame << 12) / 47;
+    case FX_TRANCE_STATE_RELEASE:
+        t = (frame << 12) / FX_TRANCE_RELEASE_FRAMES;
         fade = 0x1000 - t;
         env->otZ = 0x7C;
-        fadeSize = t + 0x10FF;
+        fadeSize = t + FX_TRANCE_RING_SCALE;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, fadeSize, 0, BTLFX_ABR_ADD, fade);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, fade);
         env->otZ = 0;
@@ -108,17 +108,17 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vy = 0;
         rot.pad = 1;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, fadeSize, 0, BTLFX_ABR_ADD, fade);
-        if (frame < 0x10) {
+        if (frame < FX_TRANCE_GLOW_FRAMES) {
             ang = (frame << 8) >> 2;
             glow = ex->math_cos(ang);
-            scale.vx = scale.vz = (ex->math_sin(ang) >> 3) + 0x174;
+            scale.vx = scale.vz = (ex->math_sin(ang) >> 3) + FX_TRANCE_AURA_WIDTH;
             scale.vy = ex->math_cos(ang) / 6;
         }
-        if (frame == 3) {
+        if (frame == FX_TRANCE_MOTION_FRAME) {
             ex->btlfx_resetIdleMotion(0, 0x10);
             work->unk20 = 0;
         }
-        if (frame >= 0x2F) {
+        if (frame >= FX_TRANCE_RELEASE_FRAMES) {
             fx_1e9_stopBolts = 1;
             ex->btlfx_clearEffModels();
             return 1;
@@ -140,7 +140,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
         ex->Hi_ModifyEffModelRGB(work->model24, shade, shade, shade);
     }
-    ex->btlfx_drawScrollMove(work->frame4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
+    ex->btlfx_drawScrollMove(work->frame4 * 4, FX_TRANCE_AURA_VRAM_X, FX_TRANCE_AURA_VRAM_Y, FX_TRANCE_AURA_VRAM_W, FX_TRANCE_AURA_VRAM_H, FX_TRANCE_AURA_SRC_X, FX_TRANCE_AURA_SRC_Y);
     work->frame4++;
     }
     return 0;
@@ -162,11 +162,11 @@ static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *spark, Unk800F78A4 *env, Un
         pt->pad = 0x14;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)spark, 0, (SVECTOR *)zero, pt);
         if (spark->index16 == 0) {
-            TRAIL(spark)->lastSlot0 = TRAIL(spark)->count2 = 8;
+            TRAIL(spark)->lastSlot0 = TRAIL(spark)->count2 = FX_TRANCE_BOLT_POINTS - 1;
             TRAIL(spark)->head1 = 0;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_TRAIL), 0, NULL, 5, 0x1000, alpha, BTLFX_ABR_ADD, (u8 *)spark->pos18 - 4, 0);
         }
-        if (frame >= 8) {
+        if (frame >= FX_TRANCE_SPARK_FRAMES) {
             return 1;
         }
     }
@@ -179,16 +179,16 @@ void fx_1e9_resetBolts(void) {
 
 void fx_1e9_spawnBolt(Fx1e9Inst *inst, SVECTOR *origin, s32 dist, SVECTOR *from, SVECTOR *to) {
     Fx1e9Trail *tr = &fx_1e9_bolts[fx_1e9_nextBolt];
-    SVECTOR *pt = &tr->pos4[8];
+    SVECTOR *pt = &tr->pos4[FX_TRANCE_BOLT_POINTS - 1];
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e9_env);
     SVECTOR dir;
     Fx1e9Spark *spark;
     s32 i;
     s32 t;
 
-    tr->lastSlot0 = tr->count2 = 8;
+    tr->lastSlot0 = tr->count2 = FX_TRANCE_BOLT_POINTS - 1;
     tr->head1 = 0;
-    for (i = 0; i < 9; i++, pt--) {
+    for (i = 0; i < FX_TRANCE_BOLT_POINTS; i++, pt--) {
         t = 0x1000 - (i << 9);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&dir);
         dir.vx += ex->btlfx_randCentered(0x20);
@@ -197,7 +197,7 @@ void fx_1e9_spawnBolt(Fx1e9Inst *inst, SVECTOR *origin, s32 dist, SVECTOR *from,
         spark = ex->btlfx_poolSpawn(inst->pool10);
         if (spark != NULL) {
             spark->index14 = fx_1e9_nextBolt;
-            spark->index16 = 8 - i;
+            spark->index16 = FX_TRANCE_BOLT_POINTS - 1 - i;
             spark->pos18 = pt;
             spark->posX0 = pt->vx << 12;
             spark->posY4 = pt->vy << 12;
@@ -211,7 +211,7 @@ void fx_1e9_spawnBolt(Fx1e9Inst *inst, SVECTOR *origin, s32 dist, SVECTOR *from,
         }
     }
     fx_1e9_nextBolt++;
-    fx_1e9_nextBolt %= 8;
+    fx_1e9_nextBolt %= FX_TRANCE_BOLT_COUNT;
 }
 
 s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, EffInit *init) {
@@ -219,10 +219,10 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
     SVECTOR from;
 
     if (mode == 0) {
-        init->workSize = 0x10;
-        init->elemSize = 0x1C;
+        init->workSize = sizeof(Fx1e9Work82);
+        init->elemSize = sizeof(Fx1e9Spark);
         init->elemFn = (s32)fx_1e9_op82PoolTask;
-        init->poolCount = 0x48;
+        init->poolCount = FX_TRANCE_BOLT_COUNT * FX_TRANCE_BOLT_POINTS;
     } else if (mode == 1) {
         fx_1e9_env = env;
         fx_1e9_resetBolts();
@@ -235,7 +235,7 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
             BTLFX_COPY_SVEC(&from, &work->angle8);
             work->angle8.vx += 0x300 + (ex->btlfx_rand() & 0x7F);
             work->angle8.vy += 0x400 + (ex->btlfx_rand() & 0x7F);
-            fx_1e9_spawnBolt(inst, &work->pos0, 0x80, &from, &work->angle8);
+            fx_1e9_spawnBolt(inst, &work->pos0, FX_TRANCE_BOLT_REACH, &from, &work->angle8);
         }
         work->angle8.vx &= 0xFFF;
         work->angle8.vy &= 0xFFF;

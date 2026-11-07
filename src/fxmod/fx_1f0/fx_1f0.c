@@ -71,23 +71,23 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 fade;
 
     if (mode == 0) {
-        *args = 0xB8;
+        *args = sizeof(Fx1f0Work);
     } else if (mode == 1) {
         fx_1f0_env = env;
-        ex->btlfx_initEffModels(fx_1f0_effModels, 4);
-        for (i = 15; i >= 0; i--) {
+        ex->btlfx_initEffModels(fx_1f0_effModels, FX_APPEARANCE_MODEL_SLOTS);
+        for (i = FX_APPEARANCE_TIMERS - 1; i >= 0; i--) {
             work->timer0[i] = 0;
         }
         work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BLUE_SMOKE_COLUMN), 1);
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BLUE_SMOKE_TWIST), 1);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BROWN_SMOKE_COLUMN), 1);
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_APPEARANCE_BROWN_SMOKE_TWIST), 1);
-        work->scale80.vx = 0x19B0;
-        work->scale80.vy = 0x19B0;
-        work->scale80.vz = 0x19B0;
-        work->scale90.vx = 0x1400;
-        work->scale90.vy = 0x1400;
-        work->scale90.vz = 0x1400;
+        work->scale80.vx = FX_APPEARANCE_BLUE_SMOKE_SCALE;
+        work->scale80.vy = FX_APPEARANCE_BLUE_SMOKE_SCALE;
+        work->scale80.vz = FX_APPEARANCE_BLUE_SMOKE_SCALE;
+        work->scale90.vx = FX_APPEARANCE_BROWN_SMOKE_SCALE;
+        work->scale90.vy = FX_APPEARANCE_BROWN_SMOKE_SCALE;
+        work->scale90.vz = FX_APPEARANCE_BROWN_SMOKE_SCALE;
         work->pos70.vx = 0;
         work->pos70.vy = 0;
         work->pos70.vz = 0;
@@ -99,9 +99,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rotA8.vz = 0;
         work->spinB0 = 0;
         work->spinB4 = 0;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_APPEARANCE_UNITS; i++) {
             fx_1f0_units[i].delay0 = -1;
-            fx_1f0_units[i].timer4 = 0x80;
+            fx_1f0_units[i].timer4 = FX_APPEARANCE_UNIT_FRAMES;
             fx_1f0_units[i].emit28 = NULL;
         }
         for (i = 0; i < env->targets->targetCount; i++) {
@@ -123,28 +123,28 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->timer0[0] = 0x32;
+            work->timer0[FX_APPEARANCE_T_HOLD] = FX_APPEARANCE_HOLD_FRAMES;
             break;
-        case 0x32:
-            work->timer0[1] = 0xA0;
+        case FX_APPEARANCE_FLIGHT_FRAME:
+            work->timer0[FX_APPEARANCE_T_FLIGHT] = FX_APPEARANCE_FLIGHT_FRAMES;
             break;
-        case 0xC0:
-            work->timer0[7] = 0x18;
-            work->timer0[8] = 0x18;
-            work->timer0[6] = 0x18;
+        case FX_APPEARANCE_SMOKE_FRAME:
+            work->timer0[FX_APPEARANCE_T_SMOKE_GROW] = FX_APPEARANCE_SMOKE_FRAMES;
+            work->timer0[FX_APPEARANCE_T_SMOKE_SPIN] = FX_APPEARANCE_SMOKE_FRAMES;
+            work->timer0[FX_APPEARANCE_T_SMOKE] = FX_APPEARANCE_SMOKE_FRAMES;
             break;
-        case 0xC8:
-            work->timer0[9] = 0x20;
+        case FX_APPEARANCE_FLASH_FRAME:
+            work->timer0[FX_APPEARANCE_T_FLASH] = FX_APPEARANCE_FLASH_FRAMES;
             break;
         }
-        if (work->timer0[0] != 0) {
-            work->timer0[0]--;
+        if (work->timer0[FX_APPEARANCE_T_HOLD] != 0) {
+            work->timer0[FX_APPEARANCE_T_HOLD]--;
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_setUnitPos(i, (s16 *)&fx_1f0_units[i].startPos8);
             }
         }
-        if (work->timer0[1] != 0) {
-            work->timer0[1]--;
+        if (work->timer0[FX_APPEARANCE_T_FLIGHT] != 0) {
+            work->timer0[FX_APPEARANCE_T_FLIGHT]--;
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (fx_1f0_units[i].emit28 != NULL && fx_1f0_units[i].emit28->state == BTLFX_EMIT_DONE) {
                     fx_1f0_units[i].emit28 = NULL;
@@ -164,9 +164,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         work->ctrlPts40[3].vx = fx_1f0_units[i].homePos10.vx;
                         work->ctrlPts40[3].vy = fx_1f0_units[i].homePos10.vy;
                         work->ctrlPts40[3].vz = fx_1f0_units[i].homePos10.vz;
-                        fxm_easeBlend4(0, 0x80, fx_1f0_units[i].timer4, work->ctrlPts40, &fx_1f0_units[i].pos20);
+                        fxm_easeBlend4(0, FX_APPEARANCE_UNIT_FRAMES, fx_1f0_units[i].timer4, work->ctrlPts40, &fx_1f0_units[i].pos20);
                         ex->btlfx_moveEmitterTo((s32)fx_1f0_units[i].emit28, (s32)&fx_1f0_units[i].pos20);
-                        if (fx_1f0_units[i].timer4 < 0x10 && fx_1f0_units[i].emit28 != NULL) {
+                        if (fx_1f0_units[i].timer4 < FX_APPEARANCE_UNIT_FADE_FRAMES && fx_1f0_units[i].emit28 != NULL) {
                             fx_1f0_units[i].emit28->alpha = fx_1f0_units[i].timer4 << 8;
                         }
                         ex->btlfx_setUnitPos(i, (s16 *)&fx_1f0_units[i].pos20);
@@ -180,7 +180,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 if (fx_1f0_units[i].delay0 > 0) {
                     ex->btlfx_setUnitPos(i, (s16 *)&fx_1f0_units[i].startPos8);
-                    if (fx_1f0_units[i].delay0 == 8) {
+                    if (fx_1f0_units[i].delay0 == FX_APPEARANCE_RINGS_LEAD) {
                         fx_1f0_units[i].emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_APPEARANCE_GREY_RINGS), (s32)&fx_1f0_units[i].emitPos18);
                         if (fx_1f0_units[i].emit28 != NULL) {
                             fx_1f0_units[i].emit28->otZ = 0x80;
@@ -190,8 +190,8 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             emitter->otZ = 0x80;
                         }
                     }
-                    if (fx_1f0_units[i].delay0 < 8 && fx_1f0_units[i].emit28 != NULL) {
-                        fx_1f0_units[i].emit28->alpha = (8 - fx_1f0_units[i].delay0) << 9;
+                    if (fx_1f0_units[i].delay0 < FX_APPEARANCE_RINGS_LEAD && fx_1f0_units[i].emit28 != NULL) {
+                        fx_1f0_units[i].emit28->alpha = (FX_APPEARANCE_RINGS_LEAD - fx_1f0_units[i].delay0) << 9;
                     }
                     fx_1f0_units[i].delay0--;
                 }
@@ -202,39 +202,41 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vz = fx_1f0_units[0].pos20.vz;
         work->rotA0.vy = work->rotA0.vy + work->spinB0 + 0x20;
         work->rotA8.vy = work->rotA8.vy - work->spinB4 - 0x20;
-        if (work->timer0[4] | work->timer0[5] | work->timer0[6]) {
-            ex->btlfx_drawScrollMove(frame, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
-            ex->btlfx_drawScrollMove(frame * 2, 0x1C0, 0x120, 0x38, 0x70, 0x1C0, 0x190);
+        if (work->timer0[FX_APPEARANCE_T_SMOKE_4] | work->timer0[FX_APPEARANCE_T_SMOKE_5] | work->timer0[FX_APPEARANCE_T_SMOKE]) {
+            ex->btlfx_drawScrollMove(frame, FX_APPEARANCE_BLUE_SMOKE_VRAM_X, FX_APPEARANCE_BLUE_SMOKE_VRAM_Y, FX_APPEARANCE_BLUE_SMOKE_VRAM_W,
+                                 FX_APPEARANCE_BLUE_SMOKE_VRAM_H, FX_APPEARANCE_BLUE_SMOKE_SRC_X, FX_APPEARANCE_BLUE_SMOKE_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * 2, FX_APPEARANCE_BROWN_SMOKE_VRAM_X, FX_APPEARANCE_BROWN_SMOKE_VRAM_Y, FX_APPEARANCE_BROWN_SMOKE_VRAM_W,
+                                 FX_APPEARANCE_BROWN_SMOKE_VRAM_H, FX_APPEARANCE_BROWN_SMOKE_SRC_X, FX_APPEARANCE_BROWN_SMOKE_SRC_Y);
         }
-        if (work->timer0[6] != 0) {
-            work->timer0[6]--;
-            morph = fxm_easeLerp(0, 0x18, work->timer0[6], 0, 0x1000);
+        if (work->timer0[FX_APPEARANCE_T_SMOKE] != 0) {
+            work->timer0[FX_APPEARANCE_T_SMOKE]--;
+            morph = fxm_easeLerp(0, FX_APPEARANCE_SMOKE_FRAMES, work->timer0[FX_APPEARANCE_T_SMOKE], 0, 0x1000);
             ex->Hi_DrawMorphEffModel(&work->rotA0, &work->pos70, (s32)&work->scale80, work->model64, work->model60, morph);
             ex->Hi_DrawMorphEffModel(&work->rotA8, &work->pos70, (s32)&work->scale90, work->model6C, work->model68, morph);
-            if (work->timer0[6] > 0x10) {
-                shade = -((work->timer0[6] - 0x10) << 4);
+            if (work->timer0[FX_APPEARANCE_T_SMOKE] > FX_APPEARANCE_SMOKE_FRAMES - FX_APPEARANCE_SMOKE_FADE_FRAMES) {
+                shade = -((work->timer0[FX_APPEARANCE_T_SMOKE] - (FX_APPEARANCE_SMOKE_FRAMES - FX_APPEARANCE_SMOKE_FADE_FRAMES)) << 4);
                 ex->Hi_ModifyEffModelRGB(work->model64, shade, shade, shade);
                 ex->Hi_ModifyEffModelRGB(work->model6C, shade, shade, shade);
             }
-            if (work->timer0[6] < 8) {
-                shade = -((8 - work->timer0[6]) << 4);
+            if (work->timer0[FX_APPEARANCE_T_SMOKE] < FX_APPEARANCE_SMOKE_FADE_FRAMES) {
+                shade = -((FX_APPEARANCE_SMOKE_FADE_FRAMES - work->timer0[FX_APPEARANCE_T_SMOKE]) << 4);
                 ex->Hi_ModifyEffModelRGB(work->model64, shade, shade, shade);
                 ex->Hi_ModifyEffModelRGB(work->model6C, shade, shade, shade);
             }
         }
-        if (work->timer0[7] != 0) {
-            work->timer0[7]--;
-            work->scale80.vx = work->scale80.vy = work->scale80.vz = fxm_easeLerp(1, 0x18, work->timer0[7], 0x19B0, 0x3000);
-            work->scale90.vx = work->scale90.vy = work->scale90.vz = fxm_easeLerp(1, 0x18, work->timer0[7], 0x1400, 0x2C00);
+        if (work->timer0[FX_APPEARANCE_T_SMOKE_GROW] != 0) {
+            work->timer0[FX_APPEARANCE_T_SMOKE_GROW]--;
+            work->scale80.vx = work->scale80.vy = work->scale80.vz = fxm_easeLerp(1, FX_APPEARANCE_SMOKE_FRAMES, work->timer0[FX_APPEARANCE_T_SMOKE_GROW], FX_APPEARANCE_BLUE_SMOKE_SCALE, 0x3000);
+            work->scale90.vx = work->scale90.vy = work->scale90.vz = fxm_easeLerp(1, FX_APPEARANCE_SMOKE_FRAMES, work->timer0[FX_APPEARANCE_T_SMOKE_GROW], FX_APPEARANCE_BROWN_SMOKE_SCALE, 0x2C00);
         }
-        if (work->timer0[8] != 0) {
-            work->timer0[8]--;
-            work->spinB0 = fxm_easeLerp(1, 0x18, work->timer0[8], 0, 0x80);
-            work->spinB4 = fxm_easeLerp(1, 0x18, work->timer0[8], 0, 0x80);
+        if (work->timer0[FX_APPEARANCE_T_SMOKE_SPIN] != 0) {
+            work->timer0[FX_APPEARANCE_T_SMOKE_SPIN]--;
+            work->spinB0 = fxm_easeLerp(1, FX_APPEARANCE_SMOKE_FRAMES, work->timer0[FX_APPEARANCE_T_SMOKE_SPIN], 0, 0x80);
+            work->spinB4 = fxm_easeLerp(1, FX_APPEARANCE_SMOKE_FRAMES, work->timer0[FX_APPEARANCE_T_SMOKE_SPIN], 0, 0x80);
         }
-        if (work->timer0[9] != 0) {
-            fade = work->timer0[9] - 1;
-            work->timer0[9] = fade;
+        if (work->timer0[FX_APPEARANCE_T_FLASH] != 0) {
+            fade = work->timer0[FX_APPEARANCE_T_FLASH] - 1;
+            work->timer0[FX_APPEARANCE_T_FLASH] = fade;
             scale.vz = scale.vy = scale.vx = (fade << 2) + 0x1000;
             col.r = col.g = col.b = fade * 3;
             rot.vx = 0;
@@ -242,7 +244,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
-        return frame >= 0x108;
+        return frame >= FX_APPEARANCE_FRAMES;
     }
     return 0;
 }

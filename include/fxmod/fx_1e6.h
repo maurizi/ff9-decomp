@@ -19,6 +19,27 @@
 #define FX_CORRECT_PATH_KEYS         0xD /* table: position path keys for fxm_posPathInit (op 0x80) */
 #define FX_CORRECT_RED_TRAIL         0xE /* trail: red streak strip drawn along the path */
 
+/* fx_1e6 choreography (docs/fxdata.md, "Choreography literals"): op80's red trail along the path, op81's gold ball
+ * (shakes, opens, streamers burst out of it, fades). */
+#define FX_CORRECT_TRAIL_POINTS     0x21 /* op80: RED_TRAIL strip points (fx_1e6_buildTrail's size: 4 + points * 8 bytes) */
+#define FX_CORRECT_TRAIL_FADE_FRAME 0x18 /* op80: the strip fades (alphaC -0x400 a frame) */
+#define FX_CORRECT_TRAIL_FRAMES     0x20 /* op80: the strip is drawn (growing 4 path keys a frame) until this frame */
+#define FX_CORRECT_OP80_FRAMES      0x3C /* op80: the task ends at this frame */
+#define FX_CORRECT_MODEL_SLOTS      2    /* op81: btlfx_initEffModels slots (GOLD_BALL, GOLD_BALL_OPEN) */
+#define FX_CORRECT_FADE_IN_FRAMES   4    /* op81: from frame 0 the ball brightens (additive, -0x80 -> 0) over this many frames */
+#define FX_CORRECT_SHAKE_FRAMES     8    /* op81: the ball drops 4 a frame and rocks (an 8-step tilt cycle) for this many frames */
+#define FX_CORRECT_STREAMERS_FRAME  8    /* op81: the three STREAMERs, three SPIRAL_STREAMERs and YELLOW_STARS start above the caster */
+#define FX_CORRECT_STREAMER_TRAIL_SLOTS 5    /* op81: STREAMER / _2 / _3 trail buffers (fx_1e6_op81Trails0..2): slots of */
+#define FX_CORRECT_STREAMER_TRAIL_STRIDE 0x90 /*   this many bytes */
+#define FX_CORRECT_SPIRAL_TRAIL_SLOTS   0x10 /* op81: SPIRAL_STREAMER / _2 / _3 trail buffers (fx_1e6_op81Trails3..5): slots of */
+#define FX_CORRECT_SPIRAL_TRAIL_STRIDE  0x18 /*   this many bytes */
+#define FX_CORRECT_OPEN_FRAME       9    /* op81: the ball morphs into GOLD_BALL_OPEN, */
+#define FX_CORRECT_OPEN_FRAMES      3    /*   over this many frames */
+#define FX_CORRECT_FADE_OUT_FRAME   0x13 /* op81: the ball darkens (additive, 0 -> -0x80), */
+#define FX_CORRECT_FADE_OUT_FRAMES  0x10 /*   over this many frames */
+#define FX_CORRECT_BALL_FRAMES      0x23 /* op81: the ball is drawn until this frame */
+#define FX_CORRECT_FRAMES           0x3C /* op81: the models are cleared and the task ends at this frame */
+
 typedef struct {
     s16 x, y, z;
 } Fx1e6Point;
