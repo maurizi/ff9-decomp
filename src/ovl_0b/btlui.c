@@ -550,7 +550,7 @@ void btlui_pruneMenuQueue(void) {
 
 void btlui_initMenu(void) {
     s32 i;
-    Unk80104F88 *ui = btlui_alloc(0x12D8);
+    Unk80104F88 *ui = btlui_alloc(sizeof(Unk80104F88));
     g_btlUi = ui;
     ui->menuState = BTLUI_MENU_NONE;
     ui->cmdUnit = NULL;
@@ -968,7 +968,7 @@ void btlui_removeItem(s32 itemId) {
 }
 
 void btlui_initItemLists(void) {
-    Unk80104FA8 *lists = btlui_alloc(0x2E0);
+    Unk80104FA8 *lists = btlui_alloc(sizeof(Unk80104FA8));
     g_btluiItems = lists;
     memset((s32)lists->reserved, 0, sizeof(lists->reserved));
     btlui_buildItemLists();
@@ -3415,7 +3415,7 @@ void btlui_drawCachedRows(void) {
 
 void btlui_initPanel(void) {
     s32 i;
-    g_btluiPanel = btlui_alloc(0x8C);
+    g_btluiPanel = btlui_alloc(sizeof(*g_btluiPanel));
     btlui_updatePanel();
     for (i = 0; i < 5; i++) {
         g_btluiPanel->labels[i] = g_btluiPanelLabels[i];
@@ -3692,7 +3692,7 @@ u8 btlui_anyOnSecondPort(void) {
 
 void btlui_initPrims(void) {
     s32 i;
-    g_btluiPrims = btlui_alloc(0x368);
+    g_btluiPrims = btlui_alloc(sizeof(*g_btluiPrims));
     for (i = 0; i < 2; i++) {
         btlui_initCachedCmdIcons(i);
         btlui_initCachedHeader(i);

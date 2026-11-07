@@ -1450,7 +1450,7 @@ void btlfx_heapFree(void *mem) {
 }
 
 void btlfx_initParticleSystem(void) {
-    btlfx_initParticles(0x3000, g_btlfxParticleBuf, &g_btlfxParticles);
+    btlfx_initParticles(sizeof(g_btlfxParticleBuf), g_btlfxParticleBuf, &g_btlfxParticles);
     btlfx_initEmitters(0x920, &g_btlfxEmitters);
 }
 
