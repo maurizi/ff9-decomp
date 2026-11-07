@@ -227,8 +227,8 @@ s32 fld_setupActorModel(s32 modelId, void *actor) {
 }
 
 s32 fld_remapModelId(s32 modelId) {
-    if ((modelId & 0xFFFF) == 0xB9 && g_evtGlobalVars.h[0] >= 0x283C) {
-        modelId = 0x2004C;
+    if ((modelId & 0xFFFF) == FLD_MODEL_GARNET_LONG && g_evtGlobalVars.h[0] >= STORY_GARNET_HAIRCUT) {
+        modelId = DB_MODEL | FLD_MODEL_GARNET_SHORT;
     }
     return modelId;
 }

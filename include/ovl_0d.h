@@ -909,6 +909,10 @@ enum {
 #define TM_RECORD_FILL_Y 0x41
 #define TM_RECORD_FILL_W 0x46
 #define TM_RECORD_FILL_H 0x1E
+/* the dark fill behind the stock grid and inside the record frame (tm_drawStock, both TILEs) */
+#define TM_PANEL_FILL_R 0x20
+#define TM_PANEL_FILL_G 0x18
+#define TM_PANEL_FILL_B 0x18
 #define TM_STOCK_CARD_X 0xC2   /* the card under the cursor, its copies piled TM_PILE_DX right and 1 down each */
 #define TM_STOCK_CARD_Y 0x81
 #define TM_PILE_DX 4

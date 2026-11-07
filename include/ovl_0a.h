@@ -393,6 +393,20 @@ typedef struct {
                                 /* below it, and outside an active map sound bank loads leave it free */
 #define FLD_WORK_SWIRL_SIZE (FLD_WORK_SIZE - FLD_WORK_SWIRL)
 #define FLD_WORK_SOUND_PARK 0x146F00 /* the field's own sound bank is copied here through VRAM and uploaded from it */
+#define FLD_SOUND_BANK (DB_SOUND_BANK | 0x164) /* that bank: fld_readSoundBank finds it among the registered dbs */
+
+/* fld_needsSplashImage: the one field exit that shows the splash TIM (fld_showSplashImage: 60 frames fade in, 120
+ * hold, 60 fade out). Field names are the scripts' debug names (tools/field_maps.py list). The image itself:
+ * runtime: pending R46 (docs/wip/r46_runtime_overlays.md) */
+#define FLD_SPLASH_FROM_FIELD 52 /* "Prima Vista/Meeting" (disc 1: the opening on the theater ship) */
+#define FLD_SPLASH_TO_FIELD 100 /* "Alexandria/Main Street" */
+#define FLD_SPLASH_TIM (DB_TIM | 20000)
+
+/* fld_remapModelId: Garnet's long-haired field model gives way to the short-haired one from the story point where
+ * main's chr_calcAppearance switches to CHR_KIND_GARNET_SHORT (docs/field-models.md: both dir-10 models, 76 listed
+ * itself only in field 2171) */
+#define FLD_MODEL_GARNET_LONG 185
+#define FLD_MODEL_GARNET_SHORT 76
 /* fld_updateEncounter */
 #define FLD_ENCOUNTER_FADE 0xF /* frames: field music and the slot sounds fade out ... */
 #define FLD_ENCOUNTER_MUSIC_WAIT 7 /* ... and the battle music loads this many frames after the encounter starts */
@@ -1721,5 +1735,8 @@ s32 vib_update(void); /* main */
 /* TexAnim.lastFrame (ff9.h): no frame uploaded yet, so the next update uploads whatever frame pos is on (also main
  * event.c and ovl_0b write 0x1000 there) */
 #define TEXANIM_LAST_FRAME_NONE 0x1000
+/* story counter (g_evtGlobalVars.h[0]) from which Garnet has short hair: main chr_calcAppearance (CHR_KIND_GARNET_SHORT,
+ * written 10300 there) and fld_remapModelId */
+#define STORY_GARNET_HAIRCUT 10300
 
 #endif

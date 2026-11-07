@@ -207,8 +207,8 @@ void fld_initMap(void) {
 }
 
 s32 fld_readSoundBank(void) {
-    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, 0x90164, 0);
-    s32 size = (s32)db_lookupRegistered(DB_GET_SIZE, 0x90164, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, FLD_SOUND_BANK, 0);
+    s32 size = (s32)db_lookupRegistered(DB_GET_SIZE, FLD_SOUND_BANK, 0);
 
     file_copyViaVram((s32)(g_loadAreaEnd + FLD_WORK_SOUND_PARK), addr, size, NULL);
     DrawSync(0);

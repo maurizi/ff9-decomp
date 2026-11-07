@@ -4372,9 +4372,9 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
     ((TILE *)prim)->y0 = TM_STOCK_GRID_Y;
     ((TILE *)prim)->w = TM_STOCK_SIDE * TM_STOCK_CELL - 1;
     ((TILE *)prim)->h = TM_STOCK_SIDE * TM_STOCK_CELL - 1;
-    ((TILE *)prim)->r0 = 0x20;
-    ((TILE *)prim)->g0 = 0x18;
-    ((TILE *)prim)->b0 = 0x18;
+    ((TILE *)prim)->r0 = TM_PANEL_FILL_R;
+    ((TILE *)prim)->g0 = TM_PANEL_FILL_G;
+    ((TILE *)prim)->b0 = TM_PANEL_FILL_B;
     AddPrim(ot + TM_OT_PANEL, prim);
     prim = (SPRT *)((TILE *)prim + 1);
     setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 2, 0, 0));
@@ -4497,9 +4497,9 @@ void *tm_drawStock(u32 *ot, SPRT *prim, TmState *tm) {
         ((TILE *)prim)->y0 = TM_RECORD_FILL_Y;
         ((TILE *)prim)->w = TM_RECORD_FILL_W;
         ((TILE *)prim)->h = TM_RECORD_FILL_H;
-        ((TILE *)prim)->r0 = 0x20;
-        ((TILE *)prim)->g0 = 0x18;
-        ((TILE *)prim)->b0 = 0x18;
+        ((TILE *)prim)->r0 = TM_PANEL_FILL_R;
+        ((TILE *)prim)->g0 = TM_PANEL_FILL_G;
+        ((TILE *)prim)->b0 = TM_PANEL_FILL_B;
         AddPrim(ot + TM_OT_BOARD, prim);
         prim = (SPRT *)((TILE *)prim + 1);
         setDrawTPage((DR_TPAGE *)prim, 0, 0, GetTPage(0, 0, TM_VRAM_BG_RIGHT_X, 0));

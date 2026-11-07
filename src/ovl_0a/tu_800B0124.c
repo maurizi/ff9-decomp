@@ -1729,7 +1729,7 @@ void fld_showSplashImage(void) {
     s32 duration;
     u32 state;
 
-    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44E20, 0);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, FLD_SPLASH_TIM, 0);
     file_getTimRects((void *)tim, &clut, &img);
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
@@ -1819,7 +1819,7 @@ s32 fld_needsSplashImage(void) {
     GameData *gd = g_gameState->gameData;
     FieldScene *sc = gd->ctx.field->area->scene;
 
-    if (sc->exitReason == FLD_EXIT_FIELD && (s16)gd->fieldId == 0x34 && sc->nextId == 100) {
+    if (sc->exitReason == FLD_EXIT_FIELD && (s16)gd->fieldId == FLD_SPLASH_FROM_FIELD && sc->nextId == FLD_SPLASH_TO_FIELD) {
         return 1;
     }
     return 0;
