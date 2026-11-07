@@ -4,7 +4,7 @@ s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx1ebWork80);
     } else if (mode == 1) {
         fx_1eb_env = env;
         ex->btlfx_getUnitBodyPos(BTLFX_UNIT_CASTER, 0, (s16 *)&work->pos8);
@@ -40,7 +40,7 @@ s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->rot.vz = work->rot10.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_SIX_DRAGONS_STREAK_FRAMES;
     }
     return 0;
 }
@@ -51,7 +51,7 @@ s32 fx_1eb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         fx_1eb_env = env;
     } else {
-        return entry->frame >= 0xA;
+        return entry->frame >= FX_SIX_DRAGONS_WAIT_FRAMES;
     }
     return 0;
 }
@@ -68,10 +68,10 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 pathFrame;
 
     if (mode == 0) {
-        *args = 0x60;
+        *args = sizeof(Fx1ebWork82);
     } else if (mode == 1) {
         fx_1eb_env = env;
-        ex->btlfx_initEffModels(fx_1eb_effModels, 6);
+        ex->btlfx_initEffModels(fx_1eb_effModels, FX_SIX_DRAGONS_MODEL_SLOTS);
         work->pos44.vx = env->targets->centerX;
         work->pos44.vy = env->targets->centerY;
         work->pos44.vz = env->targets->centerZ;
@@ -85,7 +85,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale30.vy = 0xAAA;
         work->scale30.vz = 0xAAA;
         fxm_valuePathInit(&fx_1eb_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_VALUE_PATH));
-        for (j = 0; j < 3; j++) {
+        for (j = 0; j < FX_SIX_DRAGONS_DRAGONS; j++) {
             fxm_rotPosPathInit(&fx_1eb_rotPosPath[j], (u16 *)ex->btlfx_getFileData(entry->file, fx_1eb_pathFileIds[j]));
             work->model52[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1eb_modelFileIds[j]), 1);
         }
@@ -99,32 +99,32 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_WHITE_RINGS_2), (s32)&work->pos44);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_SMOKE), (s32)&work->pos44);
             break;
-        case 30:
-            work->timer4C = 0xA;
+        case FX_SIX_DRAGONS_FADE_FRAME:
+            work->timer4C = FX_SIX_DRAGONS_FADE_FRAMES;
             break;
-        case 10:
+        case FX_SIX_DRAGONS_BUBBLES_FRAME:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_BLUE_BUBBLES), (s32)&work->pos44);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_WHITE_RINGS), (s32)&work->pos44);
             break;
-        case 20:
+        case FX_SIX_DRAGONS_AURA_FRAME:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_GREEN_AURA), (s32)&work->pos44);
             break;
-        case 22:
+        case FX_SIX_DRAGONS_STONE_FRAME:
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SIX_DRAGONS_STONE_TRAIL), (s32)&work->pos44);
             if (work->emit14 != NULL) {
                 work->emit14->trails = (s32)fx_1eb_op82Trails;
-                work->emit14->trailSlots = 6;
-                work->emit14->trailStride = 0x60;
+                work->emit14->trailSlots = FX_SIX_DRAGONS_STONE_TRAIL_SLOTS;
+                work->emit14->trailStride = FX_SIX_DRAGONS_STONE_TRAIL_STRIDE;
             }
             break;
         }
-        if (frame >= 0 && frame < 0x28) {
+        if (frame >= 0 && frame < FX_SIX_DRAGONS_DRAGONS_FRAMES) {
             pathFrame = frame;
             if (work->timer4C >= 0) {
-                work->rgb40 = fxm_lerpRatio(0, -0x80, 0xA - work->timer4C, 0xA);
+                work->rgb40 = fxm_lerpRatio(0, -0x80, FX_SIX_DRAGONS_FADE_FRAMES - work->timer4C, FX_SIX_DRAGONS_FADE_FRAMES);
                 work->timer4C--;
             }
-            for (i = 0; i < 3; i++) {
+            for (i = 0; i < FX_SIX_DRAGONS_DRAGONS; i++) {
                 fxm_rotPosPathGet(&fx_1eb_rotPosPath[i], pathFrame, &work->rot18, &pathPos);
                 work->pos20.vx = pathPos.vx;
                 work->pos20.vy = pathPos.vy;
@@ -132,8 +132,8 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos20.vx += work->pos44.vx;
                 work->pos20.vy += work->pos44.vy;
                 work->pos20.vz += work->pos44.vz;
-                if (i == 0 && pathFrame >= 0x16) {
-                    fxm_valuePathGet(&fx_1eb_valuePath, pathFrame - 0x16, &morph);
+                if (i == 0 && pathFrame >= FX_SIX_DRAGONS_STONE_FRAME) {
+                    fxm_valuePathGet(&fx_1eb_valuePath, pathFrame - FX_SIX_DRAGONS_STONE_FRAME, &morph);
                     ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i],
                                              work->model58, morph);
                 } else {
@@ -148,7 +148,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame >= 0x18) {
+        if (frame >= FX_SIX_DRAGONS_RINGS_FADE_FRAME) {
             work->alpha50 -= 0x200;
             if (work->emit0 != NULL) {
                 work->emit0->alpha = work->alpha50;
@@ -157,7 +157,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_stopEmitter(work->emit0);
             }
         }
-        if (frame >= 0x3C) {
+        if (frame >= FX_SIX_DRAGONS_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -169,7 +169,7 @@ s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx1ebWork83);
     } else if (mode == 1) {
         s32 unit = *args;
         work->unitC = unit;
@@ -183,7 +183,7 @@ s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unitC, 0x80);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_SIX_DRAGONS_ORBS_FRAMES;
     }
     return 0;
 }

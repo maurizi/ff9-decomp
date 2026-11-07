@@ -33,12 +33,12 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     VECTOR *modelScale;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = FX_DEATH3_WORK_WORDS * sizeof(s32);
     } else if (mode == 1) {
         fx_1f1_env = env;
         ex->btlfx_clearUnitStatus(BTLFX_UNIT_CASTER);
-        ex->btlfx_initEffModels(fx_1f1_effModels, 8);
-        for (i = 15; i >= 0; i--) {
+        ex->btlfx_initEffModels(fx_1f1_effModels, FX_DEATH3_MODEL_SLOTS);
+        for (i = FX_DEATH3_WORK_WORDS - 1; i >= 0; i--) {
             work[i] = 0;
         }
         for (i = 0; i < env->targets->targetCount; i++) {
@@ -50,16 +50,16 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
             setVector(&fx_1f1_units[i].rot28, 0, 0, 0);
             setVector(&fx_1f1_units[i].scale30, 0x1100, 0x1000, 0x1100);
             setVector(&fx_1f1_units[i].scale40, 0x1000, 0x1000, 0x1000);
-            setVector(&fx_1f1_units[i].pos50, unit->posC.vx, -0x800, unit->posC.vz);
+            setVector(&fx_1f1_units[i].pos50, unit->posC.vx, FX_DEATH3_CYLINDER_TOP, unit->posC.vz);
             delay = fx_1f1_unitDelays[i];
-            unit->timer4 = 0x20;
+            unit->timer4 = FX_DEATH3_UNIT_FRAMES;
             unit->unk14 = 0;
             unit->delay0 = delay;
         }
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            work[0] = 0x50;
+            work[0] = FX_DEATH3_FRAMES;
         }
         if (work[0] != 0) {
             work[0]--;
@@ -68,7 +68,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                 if (unit->delay0 == 0) {
                     if (unit->timer4 != 0) {
                         unit->timer4--;
-                        if (unit->timer4 == 0x1F) {
+                        if (unit->timer4 == FX_DEATH3_UNIT_FRAMES - 1) {
                             ex->btlfx_getUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
                             unit->height8 = unit->posC.vy;
                             unit->posC.vy = 0;
@@ -87,22 +87,22 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                         modelScale = fx_1f1_unitModels[i].scale10;
                         ex->Hi_DrawEffModel(models[i].rot0, modelPos, (s32)modelScale, unit->model18);
                         ex->Hi_DrawEffModel(models[i].rot0 + 1, modelPos, (s32)(modelScale + 1), unit->model1C);
-                        if (unit->timer4 >= 0x10) {
-                            shade = (0x10 - unit->timer4) * 0x10;
+                        if (unit->timer4 >= FX_DEATH3_PHASE_FRAMES) {
+                            shade = (FX_DEATH3_PHASE_FRAMES - unit->timer4) * 0x10;
                             ex->Hi_ModifyEffModelRGB(unit->model18, shade, shade, shade);
                             ex->Hi_ModifyEffModelRGB(unit->model1C, shade, shade, shade);
-                            unit->pos50.vy = fxm_easeLerp(2, 0x10, unit->timer4 - 0x10, -0x800, 0);
-                            unitPos.vy = fxm_easeLerp(2, 0x10, unit->timer4 - 0x10, unit->height8, 0);
+                            unit->pos50.vy = fxm_easeLerp(2, FX_DEATH3_PHASE_FRAMES, unit->timer4 - FX_DEATH3_PHASE_FRAMES, FX_DEATH3_CYLINDER_TOP, 0);
+                            unitPos.vy = fxm_easeLerp(2, FX_DEATH3_PHASE_FRAMES, unit->timer4 - FX_DEATH3_PHASE_FRAMES, unit->height8, 0);
                             unitPos.vx = unit->posC.vx;
                             unitPos.vz = unit->posC.vz;
                             ex->btlfx_setUnitPos(i, (s16 *)&unitPos);
                         }
-                        if (unit->timer4 < 0x10) {
-                            shade = (unit->timer4 - 0x10) * 0x10;
+                        if (unit->timer4 < FX_DEATH3_PHASE_FRAMES) {
+                            shade = (unit->timer4 - FX_DEATH3_PHASE_FRAMES) * 0x10;
                             ex->Hi_ModifyEffModelRGB(unit->model18, shade, shade, shade);
                             ex->Hi_ModifyEffModelRGB(unit->model1C, shade, shade, shade);
                             ex->btlfx_fadeUnitById(i, unit->timer4 * 8);
-                            unitPos.vy = unit->pos50.vy = fxm_easeLerp(1, 0x10, unit->timer4, 0, -0x800);
+                            unitPos.vy = unit->pos50.vy = fxm_easeLerp(1, FX_DEATH3_PHASE_FRAMES, unit->timer4, 0, FX_DEATH3_CYLINDER_TOP);
                             unitPos.vx = unit->pos50.vx;
                             unitPos.vz = unit->pos50.vz;
                             ex->btlfx_setUnitPos(i, (s16 *)&unitPos);
@@ -120,9 +120,11 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                 }
             }
         }
-        ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
-        ex->btlfx_drawScrollMove(frame * 4, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-        return frame >= 0x50;
+        ex->btlfx_drawScrollMove(frame * 8, FX_DEATH3_RUNES_VRAM_X, FX_DEATH3_RUNES_VRAM_Y, FX_DEATH3_RUNES_VRAM_W, FX_DEATH3_RUNES_VRAM_H,
+                                 FX_DEATH3_RUNES_SRC_X, FX_DEATH3_RUNES_VRAM_Y);
+        ex->btlfx_drawScrollMove(frame * 4, FX_DEATH3_RUNES_VRAM_X, FX_DEATH3_RUNES_2_VRAM_Y, FX_DEATH3_RUNES_VRAM_W, FX_DEATH3_RUNES_VRAM_H,
+                                 FX_DEATH3_RUNES_SRC_X, FX_DEATH3_RUNES_2_VRAM_Y);
+        return frame >= FX_DEATH3_FRAMES;
     }
     return 0;
 }
