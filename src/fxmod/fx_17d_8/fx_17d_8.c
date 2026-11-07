@@ -98,8 +98,8 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = frame << 7;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelRGB(work->model64, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
-            spriteX = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), spriteX, 0x78, 0, 0xFF, t);
+            spriteX = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) + FX_ARK_STARFIELD_X;
+            ex->btlfx_drawSpriteAtOt(FX_ARK_STARFIELD_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), spriteX, FX_ARK_STARFIELD_Y, 0, 0xFF, t);
             work->camPos20.vx -= 0x2E;
             env->camera->points[2].vx = work->camPos20.vx;
             env->camera->points[2].vy = work->camPos20.vy;
@@ -126,7 +126,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vy = work->camPos20.vy;
             env->camera->points[2].vz = work->camPos20.vz;
             fx_17d_8_particleDrift = 0x400;
-            if (frame % 3 == 0) {
+            if (frame % FX_ARK_PUFF_INTERVAL == 0) {
                 puff = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (puff != NULL) {
                     puff->rotC.vx = 0x400;
@@ -141,15 +141,15 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos54, NULL, t >> 1, 0, BTLFX_ABR_ADD, t);
             env->otZ = 0;
-            slideX = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), slideX, 0x78, 0, 0xFF, 0x1000);
+            slideX = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) + FX_ARK_STARFIELD_X;
+            ex->btlfx_drawSpriteAtOt(FX_ARK_STARFIELD_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), slideX, FX_ARK_STARFIELD_Y, 0, 0xFF, 0x1000);
             if (frame >= FX_ARK_PLANET_FRAMES) {
                 work->state0 = FX_ARK_STATE_GLOW;
                 entry->frame = -1;
             }
             break;
         case FX_ARK_STATE_GLOW:
-            t = (frame << 12) / 24;
+            t = (frame << 12) / FX_ARK_GLOW_FRAMES;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
             dimT = t / 2;
             ex->Hi_ModifyEffModelRGB(work->model68, ((0x800 - dimT) >> 5) - 0x80, ((0x800 - dimT) >> 5) - 0x80,
@@ -158,12 +158,12 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             coreRgb = ((0x1000 - dimT) >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model6C, coreRgb, coreRgb, coreRgb);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
-            sc.vx = sc.vy = (0x1000 - ex->math_sin(t >> 2)) / 3 + 0xF5;
-            sc.vz = 0x800;
+            sc.vx = sc.vy = (0x1000 - ex->math_sin(t >> 2)) / 3 + FX_ARK_BEAM_WIDTH;
+            sc.vz = FX_ARK_BEAM_LENGTH;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model70);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
             fx_17d_8_particleDrift = (t >> 1) + 0x400;
-            if (frame % 3 == 0) {
+            if (frame % FX_ARK_PUFF_INTERVAL == 0) {
                 puff2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (puff2 != NULL) {
                     puff2->rotC.vx = 0x400;
@@ -175,7 +175,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     puff2->scale2 = 0x1000;
                 }
             }
-            if (frame == 1) {
+            if (frame == FX_ARK_GOLD_SPARKS_FRAME) {
                 work->pos10.vx = work->pos54.vx;
                 work->pos10.vy = work->pos54.vy;
                 work->pos10.vz = work->pos54.vz;
@@ -189,8 +189,8 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     emitter->otZ = 0x80;
                 }
             }
-            gridCol.r = gridCol.g = gridCol.b = 0x84;
-            gridScale.vy = gridScale.vx = 0x1020;
+            gridCol.r = gridCol.g = gridCol.b = FX_ARK_GRID_BRIGHT;
+            gridScale.vy = gridScale.vx = FX_ARK_GRID_SCALE;
             gridRot.vx = 0;
             gridRot.vy = 0;
             gridRot.vz = 0;
@@ -200,7 +200,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_FIRE_RING), &work->pos54, NULL, (t >> 1) + 0x800, 0, BTLFX_ABR_ADD,
                               ex->math_cos(t >> 2));
             env->otZ = 0;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 0xFF, 0x1000);
+            ex->btlfx_drawSpriteAtOt(FX_ARK_STARFIELD_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), FX_ARK_STARFIELD_X, FX_ARK_STARFIELD_Y, 0, 0xFF, 0x1000);
             if (frame >= FX_ARK_GLOW_FRAMES) {
                 work->state0 = FX_ARK_STATE_BEAM;
                 entry->frame = -1;
@@ -216,12 +216,12 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelRGB(work->model6C, outRgb, outRgb, outRgb);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             shrinkAng = t >> 2;
-            sc.vx = sc.vy = ((0x1000 - ex->math_sin(shrinkAng)) * 0xF5) >> 12;
-            sc.vz = 0x800;
+            sc.vx = sc.vy = ((0x1000 - ex->math_sin(shrinkAng)) * FX_ARK_BEAM_WIDTH) >> 12;
+            sc.vz = FX_ARK_BEAM_LENGTH;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model70);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
             fx_17d_8_particleDrift = shrinkAng + 0xC00;
-            if (!(frame & 3) && frame < FX_ARK_BEAM_FRAMES) {
+            if (!(frame & (FX_ARK_BEAM_PUFF_INTERVAL - 1)) && frame < FX_ARK_BEAM_FRAMES) {
                 puff = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (puff != NULL) {
                     puff->rotC.vx = 0x400;
@@ -233,7 +233,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     puff->scale2 = 0x1000 - t;
                 }
             }
-            if (frame == 0x16) {
+            if (frame == FX_ARK_VIEW_SAVE_FRAME) {
                 {
                     s32 q0, q1, q2, q3;
                     q0 = ((s32 *)env->viewMatrix)[0];
@@ -257,14 +257,14 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ((s32 *)&work->viewMtx7C)[7] = q3;
                 }
             }
-            gridCol3.r = gridCol3.g = gridCol3.b = 0x84;
-            gridScale3.vy = gridScale3.vx = 0x1020;
+            gridCol3.r = gridCol3.g = gridCol3.b = FX_ARK_GRID_BRIGHT;
+            gridScale3.vy = gridScale3.vx = FX_ARK_GRID_SCALE;
             gridRot3.vx = 0;
             gridRot3.vy = 0;
             gridRot3.vz = 0;
             gridScale3.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot3, &gridScale3, &gridCol3, 0, NULL);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 0xFF, 0x1000);
+            ex->btlfx_drawSpriteAtOt(FX_ARK_STARFIELD_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), FX_ARK_STARFIELD_X, FX_ARK_STARFIELD_Y, 0, 0xFF, 0x1000);
             if (frame >= FX_ARK_BEAM_FRAMES) {
                 work->state0 = FX_ARK_STATE_END;
                 entry->frame = -1;
@@ -316,7 +316,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ((s32 *)env->viewMatrix)[5] = r1;
             ((s32 *)env->viewMatrix)[6] = r2;
             ((s32 *)env->viewMatrix)[7] = r3;
-            t = (frame << 12) / 20;
+            t = (frame << 12) / FX_ARK_END_FRAMES;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelAbr(work->model64, BTLFX_ABR_ADD);
             fade = 0x1000 - t;
@@ -337,14 +337,14 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ((s32 *)env->viewMatrix)[5] = w1;
             ((s32 *)env->viewMatrix)[6] = w2;
             ((s32 *)env->viewMatrix)[7] = w3;
-            gridCol3.r = gridCol3.g = gridCol3.b = 0x84;
+            gridCol3.r = gridCol3.g = gridCol3.b = FX_ARK_GRID_BRIGHT;
             gridRot3.vx = 0;
             gridRot3.vy = 0;
             gridRot3.vz = 0;
-            gridScale4.vy = gridScale4.vx = 0x1020;
+            gridScale4.vy = gridScale4.vx = FX_ARK_GRID_SCALE;
             gridScale4.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot3, &gridScale4, &gridCol3, 0, NULL);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), -0x2C, 0x78, 0, 1, fade);
+            ex->btlfx_drawSpriteAtOt(FX_ARK_STARFIELD_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STARFIELD), FX_ARK_STARFIELD_X, FX_ARK_STARFIELD_Y, 0, 1, fade);
             if (frame >= FX_ARK_END_FRAMES) {
                 ex->btlfx_poolClear(entry->pool);
                 ex->btlfx_clearEffModels();
@@ -352,8 +352,8 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        ex->btlfx_drawScrollMove(work->frame4 * 4, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
-        ex->btlfx_drawScrollMove(0x2710 - work->frame4 * 4, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
+        ex->btlfx_drawScrollMove(work->frame4 * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+        ex->btlfx_drawScrollMove(0x2710 - work->frame4 * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_2_VRAM_X, FX_ARK_SCROLL_2_VRAM_Y, FX_ARK_SCROLL_2_VRAM_W, FX_ARK_SCROLL_2_VRAM_H, FX_ARK_SCROLL_2_SRC_X, FX_ARK_SCROLL_2_SRC_Y);
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ARK_BACKDROP), work->frame4);
         work->frame4++;
     }

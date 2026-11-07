@@ -46,6 +46,20 @@
 #define FX_ARK_SCROLL_2_SRC_X  0x320
 #define FX_ARK_SCROLL_2_SRC_Y  0x100
 
+/* fx_17d_8 choreography, deep pass (docs/fxchoreo_deep_c.md): keys inside op80's states, the starfield sprite */
+#define FX_ARK_SCROLL_SPEED     4     /* SCROLL / SCROLL_2 texels a frame (on work->frame4) */
+#define FX_ARK_STARFIELD_SCALE  0xC00 /* STARFIELD sprite's scale, */
+#define FX_ARK_STARFIELD_X      (-0x2C) /* resting screen position (STARS / PLANET slide it in from the right) */
+#define FX_ARK_STARFIELD_Y      0x78
+#define FX_ARK_PUFF_INTERVAL    3     /* PLANET / GLOW: a puff every 3 frames */
+#define FX_ARK_BEAM_PUFF_INTERVAL 4   /* STATE_BEAM: every 4 */
+#define FX_ARK_GOLD_SPARKS_FRAME 1    /* STATE_GLOW: GOLD_SPARKS starts, aimed along the beam */
+#define FX_ARK_BEAM_WIDTH       0xF5  /* ORANGE_BEAM / BEAM_HAZE's x/y scale (GLOW: narrowing to it; BEAM: shrinking from it) */
+#define FX_ARK_BEAM_LENGTH      0x800 /* their z scale (fx_17d_7's beam the same) */
+#define FX_ARK_GRID_BRIGHT      0x84  /* GLOW / BEAM / END: the screen grid's brightness, */
+#define FX_ARK_GRID_SCALE       0x1020 /* and scale */
+#define FX_ARK_VIEW_SAVE_FRAME  0x16  /* STATE_BEAM: the view matrix is saved here; STATE_END draws PLANET with it (frozen) */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */
