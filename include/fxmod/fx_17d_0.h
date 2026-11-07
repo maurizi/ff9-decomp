@@ -44,6 +44,27 @@
 #define FX_ARK_PART_FRAMES   0x10 /* a trail's life */
 #define FX_ARK_SPHERE_SCALE  0x4000 /* STAR_SPHERE's scale (AAA in STATE_ARK) */
 
+/* fx_17d_0 choreography, deep pass (docs/fxchoreo_deep_c.md): the keys inside op80's states and the streak field */
+#define FX_ARK_GRID_FRAME        0x19 /* STATE_STREAKS: the screen grid (btlfx_drawScreenGrid) brightens from here, 12 a frame */
+#define FX_ARK_STREAK_R          0x80 /* the streak field's colour (all three streak states) */
+#define FX_ARK_STREAK_G          0xC8
+#define FX_ARK_STREAK_B          0xFF
+#define FX_ARK_RED_ROCK_SCALE    0xC00 /* RED_ROCK_LAYER sprite's scale (STATE_SPACE, STATE_PIECES) */
+#define FX_ARK_PIECE_LOOP_FRAMES 10   /* STATE_PIECES: the gathering pieces cycle the first 10 keys of their tracks */
+#define FX_ARK_SCALED_PIECE      16   /* fx_17d_0_drawPieces: the piece whose track also keys a scale (9 values a key) */
+#define FX_ARK_SHED_PIECES_FIRST 16   /* pieces FIRST..END-1 are no longer drawn from SHED_FRAME of their track */
+#define FX_ARK_SHED_PIECES_END   19
+#define FX_ARK_SHED_FRAME        0x28 /* (only reached in STATE_ARK, where the track frame is the state frame) */
+#define FX_ARK_PART_TRAILS       0x20 /* fx_17d_0_partTrails buffers, picked round-robin by count58 */
+#define FX_ARK_BAND_OPEN_FRAMES  7    /* STATE_ARK: the white band opens over 7 frames from BAND_FRAME, */
+#define FX_ARK_BAND_HEIGHT       0xE0 /* to this height (fx_17d_0_drawCenterBandY, centred on y 0x70) */
+#define FX_ARK_BAND_RGB          0xF0, 0xF0, 0xF0
+#define FX_ARK_SPHERE_ARK_SCALE  0xAAA /* STAR_SPHERE's scale in STATE_ARK */
+#define FX_ARK_STREAK_NO_PREV    0x7F7F7F7F /* fxm_drawStreakField: a streak's stored last screen xy: none (just respawned) */
+#define FX_ARK_STREAK_NEAR_Z     (-0x80) /* streaks live between NEAR_Z and FAR_Z; moving nearer past NEAR_Z respawns at FAR_Z */
+#define FX_ARK_STREAK_FAR_Z      0x200
+#define FX_ARK_STREAK_FADE_Z     0x80 /* a streak is drawn only at otz < FADE_Z, fading in from there */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 speed2;
@@ -61,7 +82,7 @@ typedef struct {
 
 extern Fx17d0Piece fx_17d_0_pieceFiles[FX_ARK_PIECES];
 extern Unk800F78A4 *fx_17d_0_env;
-extern u8 fx_17d_0_partTrails[][0x24];
+extern u8 fx_17d_0_partTrails[FX_ARK_PART_TRAILS][0x24];
 
 void fx_17d_0_drawCenterBandY(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b);
 static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts);

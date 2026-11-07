@@ -48,12 +48,12 @@ static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts) {
     s32 ang;
 
     for (i = 0, cur = pts; i < n; i++, last++, cur++, pts++) {
-        *last = 0x7F7F7F7F;
+        *last = FX_ARK_STREAK_NO_PREV;
         rad = ex->btlfx_randRange(radius >> 2, radius >> 1);
         ang = ex->btlfx_rand() & 0xFFF;
         pts->vx = (ex->math_cos(ang) * rad) >> 12;
         cur->vy = (ex->math_sin(ang) * rad) >> 12;
-        cur->vz = ex->btlfx_rand() % 640 - 0x80;
+        cur->vz = ex->btlfx_rand() % (FX_ARK_STREAK_FAR_Z - FX_ARK_STREAK_NEAR_Z) + FX_ARK_STREAK_NEAR_Z;
     }
 }
 
@@ -97,21 +97,21 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, SVECTOR *rot,
     cur = pts;
     last = (u32 *)(cur + n);
     for (i = 0, curCopy = cur, line = prim; i < n; i++, last++, curCopy++, cur++, line++, prim++) {
-        live = *last != 0x7F7F7F7F;
+        live = *last != FX_ARK_STREAK_NO_PREV;
         gte_ldv0(cur);
         gte_rtps();
         curCopy->vz -= dz;
-        if (dz > 0 && curCopy->vz < -0x80) {
-            curCopy->vz = 0x200;
-            *last = 0x7F7F7F7F;
+        if (dz > 0 && curCopy->vz < FX_ARK_STREAK_NEAR_Z) {
+            curCopy->vz = FX_ARK_STREAK_FAR_Z;
+            *last = FX_ARK_STREAK_NO_PREV;
         } else if (dz < 0 && curCopy->vz > 0x180) {
             curCopy->vz = -0x100;
-            *last = 0x7F7F7F7F;
+            *last = FX_ARK_STREAK_NO_PREV;
         } else {
             gte_stsxy(&line->x0);
             gte_stszotz(&otz);
-            if (otz < 0x80 && live) {
-                gte_DpqColorFar_nst(&col, ((0x80 - otz) << 12) >> 7);
+            if (otz < FX_ARK_STREAK_FADE_Z && live) {
+                gte_DpqColorFar_nst(&col, ((FX_ARK_STREAK_FADE_Z - otz) << 12) >> 7);
                 gte_strgb(&prim->r0);
                 *(s32 *)&line->x1 = *last;
                 *(s32 *)&line->r1 = 0;
@@ -143,8 +143,8 @@ void fx_17d_0_drawPieces(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s3
         if (key >= track[1]) {
             key = track[1] - 1;
         }
-        if (i < 16 || i >= 19 || frame < 0x28) {
-            if (i != 16) {
+        if (i < FX_ARK_SHED_PIECES_FIRST || i >= FX_ARK_SHED_PIECES_END || frame < FX_ARK_SHED_FRAME) {
+            if (i != FX_ARK_SCALED_PIECE) {
                 track = track + 2 + key * 6;
                 sc.vx = sc.vy = sc.vz = scale;
             } else {
@@ -255,9 +255,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s32 swayAng;
 
             t = frame << 7;
-            col.r = 0x80;
-            col.g = 0xC8;
-            col.b = 0xFF;
+            col.r = FX_ARK_STREAK_R;
+            col.g = FX_ARK_STREAK_G;
+            col.b = FX_ARK_STREAK_B;
             swayAng = t >> 1;
             rot.vx = ((0x1000 - ex->math_cos(swayAng)) >> 1) / 3;
             rot.vy = ex->math_sin(t >> 2) >> 2;
@@ -267,10 +267,10 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot38.vz = rot.vz >> 1;
             fxm_drawStreakField((u32 *)env->ot + 8, FX_ARK_STREAKS, 0x80, ((ex->math_sin(swayAng) * 0x18) >> 12) - 1, &rot, fx_17d_0_streakPoints,
                           &col, t, 1);
-            if (frame >= 0x19) {
+            if (frame >= FX_ARK_GRID_FRAME) {
                 code = 1;
                 abr = 1;
-                gridBright = (frame - 0x18) * 12;
+                gridBright = (frame - (FX_ARK_GRID_FRAME - 1)) * 12;
                 gridScale = 0;
             }
             if (frame >= FX_ARK_STREAKS_FRAMES) {
@@ -289,9 +289,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = (frame << 12) / FX_ARK_SPACE_FRAMES;
             phase = t >> 2;
             alpha = ex->math_sin(phase);
-            col.r = 0x80;
-            col.g = 0xC8;
-            col.b = 0xFF;
+            col.r = FX_ARK_STREAK_R;
+            col.g = FX_ARK_STREAK_G;
+            col.b = FX_ARK_STREAK_B;
             swayAng = t >> 1;
             rot.vx = (0x1000 - ((0x1000 - ex->math_cos(swayAng)) >> 1)) / 3;
             gridScale = t >> 7;
@@ -305,7 +305,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             abr = 1;
             spriteX = ((0x1000 - ex->math_sin(phase)) >> 5) + 0xA0;
             spriteY = 0x6E - ((0x1000 - ((0x1000 - ex->math_cos(swayAng)) >> 1)) >> 3);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), spriteX, spriteY, 0, 0xFF, t);
+            ex->btlfx_drawSpriteAtOt(FX_ARK_RED_ROCK_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), spriteX, spriteY, 0, 0xFF, t);
             gridBright = 0x60 - gridScale;
             if (frame >= FX_ARK_SPACE_FRAMES) {
                 work->state0 = code;
@@ -358,9 +358,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos10.vx = 0;
             work->pos10.vy = 0x200 - ((ex->math_cos(pieceScale) * 0x300) >> 12);
             work->pos10.vz = ex->math_cos(pieceScale);
-            col.r = 0x80;
-            col.g = 0xC8;
-            col.b = 0xFF;
+            col.r = FX_ARK_STREAK_R;
+            col.g = FX_ARK_STREAK_G;
+            col.b = FX_ARK_STREAK_B;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = work->frame4 * 4;
@@ -372,10 +372,10 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (t > 0xC00) {
                 pieceScale = pieceScale - (ex->math_cos(t - 0xC00) - 0x1000);
             }
-            fx_17d_0_drawPieces(entry, &work->pos10, frame % 10, (s32)work->model5C, work->model86, pieceScale);
+            fx_17d_0_drawPieces(entry, &work->pos10, frame % FX_ARK_PIECE_LOOP_FRAMES, (s32)work->model5C, work->model86, pieceScale);
             if (frame < FX_ARK_PIECES_FRAMES) {
                 spriteY = (frame >> 2) + 0x6E;
-                ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), 0xA0, spriteY, 0, 0xFF, alpha);
+                ex->btlfx_drawSpriteAtOt(FX_ARK_RED_ROCK_SCALE, (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_ROCK_LAYER), 0xA0, spriteY, 0, 0xFF, alpha);
             }
             code = 1;
             abr = 1;
@@ -479,18 +479,17 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         part->pos8.vx += (ex->math_cos(ang) * radius) >> 12;
                         part->pos8.vy = part->pos8.vy + (((ex->math_sin(ang) * radius) >> 12) - 0x19A);
                         part->speed2 = ex->btlfx_rand() & 0x7F;
-                        part->index4 = work->count58 & 0x1F;
+                        part->index4 = work->count58 & (FX_ARK_PART_TRAILS - 1);
                         work->count58++;
                     }
                 }
             }
             if (frame >= FX_ARK_BAND_FRAME) {
                 fx_17d_0_drawCenterBandY((u32 *)env->ot + 1, 1,
-                              ((0x1000 - ex->math_cos((((frame - FX_ARK_BAND_FRAME) << 12) / 7) >> 2)) * 0xE0) >> 12, 0xF0, 0xF0,
-                              0xF0);
+                              ((0x1000 - ex->math_cos((((frame - FX_ARK_BAND_FRAME) << 12) / FX_ARK_BAND_OPEN_FRAMES) >> 2)) * FX_ARK_BAND_HEIGHT) >> 12, FX_ARK_BAND_RGB);
             }
             if (frame >= FX_ARK_WHITE_FRAME) {
-                s32 tint = ((frame - 0xA3) * 0xFF) / 6;
+                s32 tint = ((frame - FX_ARK_WHITE_FRAME) * 0xFF) / (FX_ARK_FRAMES - FX_ARK_WHITE_FRAME);
 
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, BTLFX_ABR_ADD, tint, tint, tint);
             }
@@ -533,7 +532,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pos.vz = work->pos18.vz;
             modelScale = FX_ARK_SPHERE_SCALE;
             if (work->state0 == FX_ARK_STATE_ARK) {
-                modelScale = 0xAAA;
+                modelScale = FX_ARK_SPHERE_ARK_SCALE;
             }
             sc.vx = sc.vy = sc.vz = modelScale;
             ex->Hi_DrawEffModel(&work->rot38, &pos, (s32)&sc, work->modelBA);
