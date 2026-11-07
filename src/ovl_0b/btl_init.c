@@ -291,45 +291,45 @@ void btl_initWeapon(Character *chr, BtlUnit *unit) {
     unit->weaponModel->motion = 0;
     switch (chr->info.b.kind) {
     case CHR_KIND_ZIDANE_DAGGER:
-        chr->weaponBone = BTL_WEAPON_BONE_ZIDANE;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_ZIDANE;
         break;
     case CHR_KIND_ZIDANE:
-        chr->weaponBone = BTL_WEAPON_BONE_ZIDANE;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_ZIDANE;
         break;
     case CHR_KIND_GARNET_LONG:
     case CHR_KIND_GARNET_SHORT:
-        chr->weaponBone = BTL_WEAPON_BONE_GARNET;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_GARNET;
         break;
     case CHR_KIND_GARNET_LONG_RACKET:
     case CHR_KIND_GARNET_SHORT_RACKET:
-        chr->weaponBone = BTL_WEAPON_BONE_GARNET;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_GARNET;
         break;
     case CHR_KIND_QUINA:
-        chr->weaponBone = BTL_WEAPON_BONE_QUINA;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_QUINA;
         break;
     case CHR_KIND_EIKO:
     case CHR_KIND_EIKO_RACKET:
-        chr->weaponBone = BTL_WEAPON_BONE_EIKO;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_EIKO;
         break;
     case CHR_KIND_FREYA:
-        chr->weaponBone = BTL_WEAPON_BONE_FREYA;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_FREYA;
         break;
     case CHR_KIND_CINNA:
-        chr->weaponBone = BTL_WEAPON_BONE_CINNA;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_CINNA;
         break;
     case CHR_KIND_MARCUS:
-        chr->weaponBone = BTL_WEAPON_BONE_MARCUS;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_MARCUS;
         break;
     case CHR_KIND_BLANK:
     case CHR_KIND_BLANK_ALT:
-        chr->weaponBone = BTL_WEAPON_BONE_BLANK;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_BLANK;
         break;
     case CHR_KIND_VIVI:
     case CHR_KIND_STEINER:
     case CHR_KIND_STEINER_DARK:
     case CHR_KIND_AMARANT:
     case CHR_KIND_BEATRIX:
-        chr->weaponBone = BTL_WEAPON_BONE_DEFAULT;
+        chr->weaponBone = BTL_RIGHT_HAND_BONE_DEFAULT;
         break;
     }
     unit->weaponModel->parent = unit->model;

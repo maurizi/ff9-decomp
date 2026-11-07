@@ -1238,10 +1238,10 @@ s32 btlfx_stepUnitSound(u8 *work, s32 env, s32 entry) {
     BtlUnit *unit = btl_getUnit(work[0]);
     switch (work[1]) {
     case 0:
-        btl_playUnitSound(unit, 0x456, SND_VOL_MAX);
+        btl_playUnitSound(unit, SE_BTL_JUMP_LEAP, SND_VOL_MAX);
         break;
     case 1:
-        btl_playUnitSound(unit, 0xAC0, SND_VOL_MAX);
+        btl_playUnitSound(unit, SE_BTL_SPEAR_RETURN, SND_VOL_MAX);
         break;
     }
     return 1;

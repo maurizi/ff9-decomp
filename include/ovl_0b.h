@@ -1333,17 +1333,18 @@ extern s32 g_btlbgScrollCount;
 #define BTL_SCENE_CAM_CAST_ENEMY 4 /* the same aimed at enemies */
 #define BTL_SCENE_CAM_ENEMY_TYPE 5 /* + enemy type: that type's camera (btl_setupEnemies, BtlEnemyType camera) */
 /* Character.weaponBone per character kind (btl_initWeapon): the bone of the character's battle model the weapon
- * model hangs from (BtlModel.parentBone). Evidence: [code]; which bone it is in each skeleton (a hand?) is
- * runtime: pending R46 (docs/wip/r46_runtime_core.md) */
-#define BTL_WEAPON_BONE_ZIDANE  0xD
-#define BTL_WEAPON_BONE_GARNET  0xF
-#define BTL_WEAPON_BONE_QUINA   0xE
-#define BTL_WEAPON_BONE_EIKO    0xF
-#define BTL_WEAPON_BONE_FREYA   6
-#define BTL_WEAPON_BONE_CINNA   0x19
-#define BTL_WEAPON_BONE_MARCUS  6
-#define BTL_WEAPON_BONE_BLANK   0xE
-#define BTL_WEAPON_BONE_DEFAULT 0x10 /* Vivi, Steiner, Amarant, Beatrix */
+ * model hangs from (BtlModel.parentBone), the right hand: the last bone of an arm chain in each skeleton.
+ * Evidence: [code] + runtime R46 (docs/runtime-findings.md "R46 runtime pass", Core 1: Zidane, Vivi, Garnet, Eiko,
+ * Steiner, Freya, Quina, Amarant seen; Cinna, Marcus and Blank are inferred from the same table, not run) */
+#define BTL_RIGHT_HAND_BONE_ZIDANE  0xD
+#define BTL_RIGHT_HAND_BONE_GARNET  0xF
+#define BTL_RIGHT_HAND_BONE_QUINA   0xE
+#define BTL_RIGHT_HAND_BONE_EIKO    0xF
+#define BTL_RIGHT_HAND_BONE_FREYA   6 /* Freya's skeleton lists the arms first */
+#define BTL_RIGHT_HAND_BONE_CINNA   0x19 /* inferred */
+#define BTL_RIGHT_HAND_BONE_MARCUS  6 /* inferred */
+#define BTL_RIGHT_HAND_BONE_BLANK   0xE /* inferred */
+#define BTL_RIGHT_HAND_BONE_DEFAULT 0x10 /* Vivi, Steiner, Amarant, Beatrix (Beatrix inferred) */
 /* VRAM area of the common effect textures: FILE_BTLFX_COMMON's four 64x128 pages (btlfx_reloadCommonData); an upload
  * inside it sets BTLFX_HDR_COMMON_VRAM (btlfx_markCommonVram). Evidence: [code] */
 #define VRAM_BTLFX_COMMON_X 0x300
@@ -1355,6 +1356,10 @@ extern s32 g_btlbgScrollCount;
 #define BTLFX_COMMON_CLUTS(type) ((type)(RAM_BTLFX_MODULE(u32 *) + BTLFX_COMMON_PAGES * BTLFX_COMMON_PAGE_WORDS)) /* then
                                   * two 256-entry CLUT rows (btlfx_initCommonData loads them to y 0xF0) */
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
+/* btlfx_getCommonSprite's offset table: RAM_BTLFX_MODULE + 0x2000, the resident effect data btlfx_runScript reads back
+ * from VRAM (0x300, 0x150) with StoreImage; it is FILE_BTLFX_COMMON offset 0x4800 (the lower rows of the second
+ * common page), the common sprite table. Entries are relative to its start. Evidence: [code] + runtime R46 Core 7 */
+#define BTLFX_COMMON_SPRITES(type) PSX_RAM(type, 0x801E9700)
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle
  * textures, 9-0x12 battle cameras (g_btlfxCmdCameras, g_btlfxBounceCamera*), 0x13 and 0x15-0x1F AKAO sounds
@@ -5258,11 +5263,12 @@ typedef struct {
 #define BTLFX_CASTPH_START 1 /* BTL_MOTION_CAST_START, turning to the target; then the cast emitter starts */
 #define BTLFX_CASTPH_LOOP  2 /* casting until the script signals (signals.b[2]) */
 #define BTLFX_CASTPH_END   3 /* the emitter fades out, the caster returns to READY */
-/* Unk800E4C88.castMode (BTLFX_HDR_CAST_MODE): what a summon cast does to the screen while it fades in */
-#define BTLFX_CAST_MODE_FLASH_ADD 0 /* additive white tint, then every unit faded out */
-#define BTLFX_CAST_MODE_FLASH_SUB 1 /* subtractive (darkening) tint, then every unit faded out */
-#define BTLFX_CAST_MODE_DIM_ALL   2 /* every unit dimmed to half */
-#define BTLFX_CAST_MODE_DIM_PARTY 3 /* the party dimmed to half */
+/* Unk800E4C88.castMode (BTLFX_HDR_CAST_MODE): what a summon cast does to the screen while it fades in.
+ * Evidence: [code] + runtime R46 (castMode logged for 12 summons, screenshots in the cast loop) */
+#define BTLFX_CAST_MODE_WHITE_OUT 0 /* additive white tint (screen washed out), then every unit faded out: Ifrit, Atomos, Bahamut */
+#define BTLFX_CAST_MODE_BLACK_OUT 1 /* subtractive tint (screen almost black), then every unit faded out: Ramuh, Odin, Fenrir, Phoenix */
+#define BTLFX_CAST_MODE_DIM_ALL   2 /* every unit dimmed to half; no summon uses it */
+#define BTLFX_CAST_MODE_DIM_PARTY 3 /* the party dimmed to half (translucent): Shiva, Leviathan, Ark, Carbuncle, Madeen */
 /* btlfx_opCast timing (frames) */
 #define BTLFX_CAST_MIN_FRAMES 27 /* the cast lasts at least this long, whatever the script signals */
 #define BTLFX_SUMMON_FADE_DELAY 9 /* the summon tint / unit fade starts this many frames into the cast loop */

@@ -229,6 +229,9 @@
 #define SE_FLEE_1 0xB5A /* btl_victory: the party escapes (three sounds together) */
 #define SE_FLEE_2 0xB5B
 #define SE_FLEE_3 0xB5C
+/* btlfx_stepUnitSound (effect unit op 0x57) choice 0 / 1. Evidence: runtime R46 (medium: timing from screenshots, not heard) */
+#define SE_BTL_JUMP_LEAP 0x456 /* effect 0x189 "Jump": the take-off, just before the jumper leaps off screen */
+#define SE_BTL_SPEAR_RETURN 0xAC0 /* effect 0x184 "Spear" (Freya's trance Jump): coming back down after the damage */
 
 /* Music ids (SND_MUSIC_PLAY / SND_MUSIC_LOAD), only where the code says which song */
 #define MUSIC_NONE 0xFFFF /* GameData.musicId / savedMusicId, FieldScene / WorldMapObj battleMusic: no song */

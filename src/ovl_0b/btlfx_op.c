@@ -117,7 +117,7 @@ s32 btlfx_moveUnitHome(s32 unitId, s32 frame, s16 *startPos, s32 stopped) {
 }
 
 u16 *btlfx_getCommonSprite(s32 index) {
-    s32 *table = PSX_RAM(s32 *, 0x801E9700);
+    s32 *table = BTLFX_COMMON_SPRITES(s32 *);
     return (u16 *)(table[index] + (s32)table);
 }
 
@@ -437,13 +437,13 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                     }
                 }
                 switch (work->castMode) {
-                case BTLFX_CAST_MODE_FLASH_ADD:
+                case BTLFX_CAST_MODE_WHITE_OUT:
                     btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, fade, fade, fade);
                     if (fadeStep == BTLFX_SUMMON_FADE_FRAMES) {
                         btlfx_fadeUnitGroup(BTLFX_FADE_ALL, 0);
                     }
                     break;
-                case BTLFX_CAST_MODE_FLASH_SUB:
+                case BTLFX_CAST_MODE_BLACK_OUT:
                     btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, fade, fade, fade);
                     if (fadeStep == BTLFX_SUMMON_FADE_FRAMES) {
                         btlfx_fadeUnitGroup(BTLFX_FADE_ALL, 0);

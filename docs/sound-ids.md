@@ -70,6 +70,8 @@ Runtime evidence (snd_playSe traced in Redux while pressing buttons): `docs/runt
 | 0x27C/0x27B/0x27A | SE_ENCOUNTER_1..3 | code: played together as a random battle starts (field, world map) |
 | 0x79/0x78 | SE_ENEMY_DEATH_1/2 | code: btl_updateKo, enemy units only, as the body fades |
 | 0xB5A..0xB5C | SE_FLEE_1..3 | code: btl_victory, BTL_END_ESCAPE |
+| 0x456 | SE_BTL_JUMP_LEAP | runtime (medium): btlfx_stepUnitSound choice 0, Jump's take-off (effect 0x189) |
+| 0xAC0 | SE_BTL_SPEAR_RETURN | runtime (medium): btlfx_stepUnitSound choice 1, Spear's landing back (effect 0x184) |
 
 Ids used by a single screen keep their names in that overlay's header: ovl_65 rewards (`SE_EXP_COUNT`,
 `SE_LEVEL_UP`, ...), ovl_3c `SE_SHOP`, ovl_15 `BJ_SE_WIN`/`BJ_SE_LOSE` (0x6C/0x6B, the same samples as
