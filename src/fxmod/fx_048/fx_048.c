@@ -52,9 +52,9 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         }
         gte_stlvnl(m.t);
         gte_rtps();
-        code = 0x38;
-        if (abr != 0xFF) {
-            code = 0x3A;
+        code = GPU_POLY_G4;
+        if (abr != BTLFX_ABR_OPAQUE) {
+            code = GPU_POLY_G4 | GPU_ABE;
         }
         gte_stszotz(&otz);
         if (rot->pad != 0) {
@@ -114,11 +114,11 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
                 *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
-                    ex->btlfx_addPrim(0x8000000, otz, prim);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_G4), otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, otz, tpage);
+        ex->btlfx_addPrim(PRIM_TAG(DR_TPAGE), otz, tpage);
     }
     w--;
     h--;
@@ -160,16 +160,16 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 ringT;
 
     if (mode == 0) {
-        *args = 0x38;
+        *args = sizeof(Fx048Work);
     } else if (mode == 1) {
         work->pos0.vx = env->targets->centerX;
         fx_048_env = env;
         work->pos0.vy = env->targets->centerY;
         work->pos0.vz = env->targets->centerZ;
-        work->pos0.vy -= 0x200;
+        work->pos0.vy -= FX_FIRAGA_BLAST_HEIGHT;
         BTLFX_COPY_SVEC(&work->pos8, &work->pos0);
         work->pos8.vy = 0;
-        ex->btlfx_initEffModels(fx_048_effModels, 6);
+        ex->btlfx_initEffModels(fx_048_effModels, FX_FIRAGA_MODEL_COUNT);
         work->model14[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FIRAGA_FLAME_RIBBON_0), 1);
         work->model14[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FIRAGA_FLAME_RIBBON_1), 1);
         work->model14[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FIRAGA_FLAME_RIBBON_2), 1);
@@ -179,21 +179,21 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_EMBER_TRAIL), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->trails = (s32)fx_048_trails;
-            emitter->trailSlots = 0x12;
-            emitter->trailStride = 0x24;
+            emitter->trailSlots = FX_FIRAGA_EMBER_TRAIL_SLOTS;
+            emitter->trailStride = FX_FIRAGA_EMBER_TRAIL_STRIDE;
             emitter->otZ = 0x20;
         }
         work->emit2C = NULL;
         work->emit30 = NULL;
         work->frame34 = 0;
-        work->state10 = 0;
+        work->state10 = FX_FIRAGA_STATE_GLOW;
     } else {
         alpha = 0;
         size = 0;
         frame = entry->frame;
         switch (work->state10) {
-        case 0:
-            t = (frame << 12) / 24;
+        case FX_FIRAGA_STATE_GLOW:
+            t = (frame << 12) / FX_FIRAGA_GLOW_FRAMES;
             alpha = t / 3;
             size = 0x1800;
             rot.vz = 0;
@@ -203,8 +203,8 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_FIRAGA_GLOW), &work->pos8, NULL, 0x1000, 0, 1, t);
             env->otZ = 0;
-            if (frame >= 0x18) {
-                work->state10 = 1;
+            if (frame >= FX_FIRAGA_GLOW_FRAMES) {
+                work->state10 = FX_FIRAGA_STATE_FLASH;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_FLAME_BURST), (s32)work);
                 if (emitter != NULL) {
@@ -212,10 +212,10 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             break;
-        case 1:
+        case FX_FIRAGA_STATE_FLASH:
             t = frame << 9;
             ex->btlfx_drawScreenTint((u32 *)env->ot + 0x800, 1, (t * 70) >> 12, 0, 0);
-            if (frame == 4) {
+            if (frame == FX_FIRAGA_SPARKS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_EMBERS), (s32)work);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
@@ -235,18 +235,18 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_FIRAGA_GLOW), &work->pos8, NULL, 0x1000, 0, 1,
                               ex->math_cos(t >> 2));
             env->otZ = 0;
-            if (frame >= 8) {
-                work->state10 = 2;
+            if (frame >= FX_FIRAGA_FLASH_FRAMES) {
+                work->state10 = FX_FIRAGA_STATE_PILLAR;
                 entry->frame = -1;
             }
             break;
-        case 2:
-            t = (frame << 12) / 46;
-            if (frame < 4) {
+        case FX_FIRAGA_STATE_PILLAR:
+            t = (frame << 12) / FX_FIRAGA_PILLAR_FRAMES;
+            if (frame < FX_FIRAGA_WHITE_FLASH_FRAMES) {
                 flash = ex->math_cos(frame << 8) * 0xFF;
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, flash >> 12, flash >> 13, flash >> 15);
             }
-            if (frame < 0x20) {
+            if (frame < FX_FIRAGA_RED_TINT_FRAMES) {
                 ex->btlfx_drawScreenTint((u32 *)env->ot + OT_LAST, 0xFF,
                                          ((ex->math_cos(frame << 5) / 2 + 0x800) * (ex->btlfx_rand() % 50 + 7)) >> 12, 0,
                                          0);
@@ -271,9 +271,9 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.pad = 1;
             rot.vz = spin;
-            pillarOn = frame < 0x1D;
+            pillarOn = frame < FX_FIRAGA_PILLAR_RING_FRAMES;
             if (pillarOn) {
-                ringT = (frame << 12) / 29;
+                ringT = (frame << 12) / FX_FIRAGA_PILLAR_RING_FRAMES;
                 ringAng = ringT >> 2;
                 alpha = ex->math_cos(ringAng);
                 ringPos.vx = work->pos8.vx;
@@ -289,8 +289,9 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                               ex->math_cos(t >> 2) / 2 * 3 + 0x2000, 0, 1, ex->math_cos(t >> 2));
             env->otZ = 0;
             if (pillarOn) {
-                ex->btlfx_drawScrollMove(spin, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
-                tmp = ((frame << 12) / 29) >> 2;
+                ex->btlfx_drawScrollMove(spin, FX_FIRAGA_PILLAR_FLAME_VRAM_X, FX_FIRAGA_PILLAR_FLAME_VRAM_Y, FX_FIRAGA_PILLAR_FLAME_VRAM_W,
+                                     FX_FIRAGA_PILLAR_FLAME_VRAM_H, FX_FIRAGA_PILLAR_FLAME_SRC_X, FX_FIRAGA_PILLAR_FLAME_SRC_Y);
+                tmp = ((frame << 12) / FX_FIRAGA_PILLAR_RING_FRAMES) >> 2;
                 pillarScale.vx = pillarScale.vz = ex->math_sin(tmp) / 4 + 0x80;
                 pillarScale.vy = ex->math_sin(tmp) * 3 / 2 + 0x1000;
                 pillarRot.vx = 0;
@@ -305,19 +306,19 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->model24, (ex->math_cos(tmp) >> 5) - 0x80, (ex->math_cos(tmp) >> 5) - 0x80,
                                          (ex->math_cos(tmp) >> 5) - 0x80);
             }
-            if (frame == 2) {
+            if (frame == FX_FIRAGA_FLAME_BURST_2_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_FLAME_BURST_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
-            if (frame == 0xE) {
+            if (frame == FX_FIRAGA_SMOKE_BURST_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_SMOKE_BURST), (s32)work);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
             }
-            if (frame == 3) {
+            if (frame == FX_FIRAGA_RED_HAZE_FRAME) {
                 emitter = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_RED_HAZE), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
@@ -350,8 +351,8 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit30->rot.vz = segRot.vz;
                 }
             }
-            if (frame < 0x24) {
-                segT = (frame << 12) / 36;
+            if (frame < FX_FIRAGA_COLUMN_FRAMES) {
+                segT = (frame << 12) / FX_FIRAGA_COLUMN_FRAMES;
                 ang = -frame << 7;
                 wobbleAng = -frame * 0x19B;
                 segRot.vx = 0x800;
@@ -361,14 +362,14 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 grow = (segT << 7) >> 12;
                 coilStep = grow + 0x80;
                 coilRadius = grow + 0x100;
-                if (frame < 0x10) {
-                    radiusBase = 0x4E2;
-                    radiusTop = (frame * 0x4E2) / 16;
+                if (frame < FX_FIRAGA_COLUMN_GROW_FRAMES) {
+                    radiusBase = FX_FIRAGA_COLUMN_RADIUS;
+                    radiusTop = (frame * FX_FIRAGA_COLUMN_RADIUS) / FX_FIRAGA_COLUMN_GROW_FRAMES;
                     wobble = 0xB9;
                 } else {
-                    tmp = ((frame - 0x10) << 10) / 20;
-                    radiusBase = ex->math_sin(tmp) / 4 + 0x4E2;
-                    radiusTop = ((ex->math_sin(tmp) * 3) >> 2) + 0x4E2;
+                    tmp = ((frame - FX_FIRAGA_COLUMN_GROW_FRAMES) << 10) / (FX_FIRAGA_COLUMN_FRAMES - FX_FIRAGA_COLUMN_GROW_FRAMES);
+                    radiusBase = ex->math_sin(tmp) / 4 + FX_FIRAGA_COLUMN_RADIUS;
+                    radiusTop = ((ex->math_sin(tmp) * 3) >> 2) + FX_FIRAGA_COLUMN_RADIUS;
                     radiusFlare = tmp / 3;
                     wobble = (tmp * 2) / 3 + 0xB9;
                 }
@@ -376,14 +377,14 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 segHeight = (segT >> 5) + 0xE00;
                 dy = frame * 6 + 8;
                 bright = ex->math_cos(tmp) / 2;
-                if (frame < 6) {
-                    riseDist = (ex->math_sin((frame << 10) / 6) * 0xB86) >> 12;
+                if (frame < FX_FIRAGA_COLUMN_RISE_FRAMES) {
+                    riseDist = (ex->math_sin((frame << 10) / FX_FIRAGA_COLUMN_RISE_FRAMES) * 0xB86) >> 12;
                 } else {
                     riseDist = 0xA28 - tmp;
                 }
                 sparkCount = 0;
-                for (i = 0; i < 0x12; i++) {
-                    segT = (i << 12) / 18;
+                for (i = 0; i < FX_FIRAGA_COLUMN_SEGMENTS; i++) {
+                    segT = (i << 12) / FX_FIRAGA_COLUMN_SEGMENTS;
                     segPos.vx = work->pos8.vx;
                     segPos.vy = work->pos8.vy;
                     segPos.vz = work->pos8.vz;
@@ -406,7 +407,7 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     segRot.vy += dy;
                     ex->Hi_DrawEffModel(&segRot, &segPos, (s32)&segScale, work->model14[i & 3]);
                     ex->Hi_ModifyEffModelRGB(work->model14[i & 3], ((bright * ex->math_cos(segAng)) >> 17) - 0x80, ((bright * (0x1000 - segT)) >> 17) - 0x80, ((bright * (0x1000 - segT)) >> 17) - 0x80);
-                    if (!(ex->btlfx_rand() & 3) && sparkCount < 3) {
+                    if (!(ex->btlfx_rand() & 3) && sparkCount < FX_FIRAGA_COLUMN_SPARKS) {
                         env->otZ = 0x100;
                         sparkPos.vx = segPos.vx;
                         sparkPos.vy = segPos.vy;
@@ -421,13 +422,13 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             }
-            if (frame >= 0x2E) {
-                work->state10 = 3;
+            if (frame >= FX_FIRAGA_PILLAR_FRAMES) {
+                work->state10 = FX_FIRAGA_STATE_TAIL;
                 entry->frame = -1;
             }
             break;
-        case 3:
-            if (frame >= 0x10) {
+        case FX_FIRAGA_STATE_TAIL:
+            if (frame >= FX_FIRAGA_TAIL_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -438,7 +439,9 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vz = frame << 8;
             rot.pad = 1;
             rot.vy = 0;
-            fxm_drawTexelQuads(&work->pos8, &rot, 0x117, 0, 0x30, 2, work->frame34 & 7, 0x100, 0x10, 0x10, (size * 2) / 3, alpha, 1,
+            fxm_drawTexelQuads(&work->pos8, &rot, FX_FIRAGA_FLOOR_GLOW_TPAGE, FX_FIRAGA_FLOOR_GLOW_X, FX_FIRAGA_FLOOR_GLOW_Y,
+                          FX_FIRAGA_FLOOR_GLOW_COLS, work->frame34 & FX_FIRAGA_FLOOR_GLOW_FRAME_MASK, FX_FIRAGA_FLOOR_GLOW_CELL,
+                          FX_FIRAGA_FLOOR_GLOW_GRID, FX_FIRAGA_FLOOR_GLOW_GRID, (size * 2) / 3, alpha, 1,
                           fx_048_texels, 0);
         }
         work->frame34++;

@@ -27,6 +27,52 @@
 #define FX_FIRAGA_FLAME_RIBBON_2 0x18 /* 'so' model: flat flame-textured ribbon piece */
 #define FX_FIRAGA_FLAME_RIBBON_3 0x19 /* 'so' model: flat flame-textured ribbon piece */
 
+/* fx_007 choreography (docs/fxdata.md, "Choreography literals"): op80's states, their lengths and keyframes, the
+ * flame column's shape, and the VRAM rects of the pillar's flame texture and the floor glow frames. */
+#define FX_FIRAGA_STATE_GLOW   0 /* FX_FIRAGA_GLOW grows at the target */
+#define FX_FIRAGA_STATE_FLASH  1 /* red screen flash, FX_FIRAGA_FLAME_BURST and the sparks */
+#define FX_FIRAGA_STATE_PILLAR 2 /* FX_FIRAGA_FLAME_PILLAR, FX_FIRAGA_PILLAR_RING and the coiled flame column */
+#define FX_FIRAGA_STATE_TAIL   3 /* draws nothing, waits for the emitters */
+#define FX_FIRAGA_GLOW_FRAMES         0x18 /* FX_FIRAGA_STATE_GLOW's length; at its end FX_FIRAGA_FLAME_BURST starts */
+#define FX_FIRAGA_FLASH_FRAMES        8    /* FX_FIRAGA_STATE_FLASH's length */
+#define FX_FIRAGA_SPARKS_FRAME        4    /* FX_FIRAGA_STATE_FLASH: FX_FIRAGA_EMBERS, GOLD_SPARKS and GOLD_SPARKS_2 start */
+#define FX_FIRAGA_PILLAR_FRAMES       0x2E /* FX_FIRAGA_STATE_PILLAR's length */
+#define FX_FIRAGA_WHITE_FLASH_FRAMES  4    /* FX_FIRAGA_STATE_PILLAR: additive white screen flash */
+#define FX_FIRAGA_RED_TINT_FRAMES     0x20 /* FX_FIRAGA_STATE_PILLAR: flickering opaque red screen tint */
+#define FX_FIRAGA_FLAME_BURST_2_FRAME 2    /* FX_FIRAGA_STATE_PILLAR: FX_FIRAGA_FLAME_BURST_2 starts */
+#define FX_FIRAGA_RED_HAZE_FRAME      3    /* FX_FIRAGA_STATE_PILLAR: FX_FIRAGA_RED_HAZE and FX_FIRAGA_EMBER_CONE start */
+#define FX_FIRAGA_SMOKE_BURST_FRAME   0xE  /* FX_FIRAGA_STATE_PILLAR: FX_FIRAGA_SMOKE_BURST starts */
+#define FX_FIRAGA_PILLAR_RING_FRAMES  0x1D /* FX_FIRAGA_STATE_PILLAR: FX_FIRAGA_PILLAR_RING and FX_FIRAGA_FLAME_PILLAR are drawn */
+#define FX_FIRAGA_COLUMN_FRAMES       0x24 /* FX_FIRAGA_STATE_PILLAR: the FX_FIRAGA_FLAME_RIBBON_n column is drawn */
+#define FX_FIRAGA_COLUMN_GROW_FRAMES  0x10 /* the column's radius grows, then swells for the rest of COLUMN_FRAMES */
+#define FX_FIRAGA_COLUMN_RISE_FRAMES  6    /* the column rises to its full height */
+#define FX_FIRAGA_COLUMN_RADIUS       0x2BC /* the column's base radius (segment x / z scale) */
+#define FX_FIRAGA_COLUMN_SEGMENTS     18   /* ribbon pieces coiled up the column (FX_FIRAGA_FLAME_RIBBON_0..3 in turn) */
+#define FX_FIRAGA_COLUMN_SPARKS       3    /* at most this many FX_FIRAGA_COLUMN_SPARK rings per frame */
+#define FX_FIRAGA_TAIL_FRAMES         0x10 /* FX_FIRAGA_STATE_TAIL's length (the op ends) */
+#define FX_FIRAGA_MODEL_COUNT         6    /* btlfx_initEffModels slots: 4 ribbons, FLAME_PILLAR, FLAME_DISC */
+#define FX_FIRAGA_EMBER_TRAIL_SLOTS   0x12 /* FX_FIRAGA_EMBER_TRAIL's trail buffer fx_007_trails: slots of */
+#define FX_FIRAGA_EMBER_TRAIL_STRIDE  0x24 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* FX_FIRAGA_FLAME_PILLAR samples (tpage 0x37 = 4-bit page (0x1C0, 0x100), u / v 0x80) the rect the file fills with a
+ * "ring_1 dummy" placeholder; while the pillar shows, btlfx_drawScrollMove copies the file's flame texture from
+ * (SRC_X, SRC_Y) into it, scrolled by the spin. */
+#define FX_FIRAGA_PILLAR_FLAME_VRAM_X 0x1E0
+#define FX_FIRAGA_PILLAR_FLAME_VRAM_Y 0x180
+#define FX_FIRAGA_PILLAR_FLAME_VRAM_W 0x20
+#define FX_FIRAGA_PILLAR_FLAME_VRAM_H 0x80
+#define FX_FIRAGA_PILLAR_FLAME_SRC_X  0x1E0
+#define FX_FIRAGA_PILLAR_FLAME_SRC_Y  0x100
+/* The floor glow (states GLOW to PILLAR): a gouraud grid flat at the target whose vertex colours are a 16x16 frame
+ * of the file's dark-red glow animation, read back with StoreImage: 8 frames in 2 columns at
+ * (0x1C0 + X, 0x100 + Y) of the 15-bit page TPAGE. */
+#define FX_FIRAGA_FLOOR_GLOW_TPAGE    0x117 /* 15-bit page (0x1C0, 0x100) */
+#define FX_FIRAGA_FLOOR_GLOW_X        0
+#define FX_FIRAGA_FLOOR_GLOW_Y        0x30
+#define FX_FIRAGA_FLOOR_GLOW_COLS     2    /* frames per row */
+#define FX_FIRAGA_FLOOR_GLOW_FRAME_MASK 7  /* frame34 & mask: 8 frames */
+#define FX_FIRAGA_FLOOR_GLOW_CELL     0x100 /* grid cell size */
+#define FX_FIRAGA_FLOOR_GLOW_GRID     0x10 /* grid cells (and frame texels) per side */
+
 /* PsyQ gte_stszotz: SZ3 / 4 */
 #define gte_stszotz(r0) __asm__ volatile( \
     "mfc2\t$12, $19;" \
