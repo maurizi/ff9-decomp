@@ -232,6 +232,8 @@ void w_musicRequestSend(u32 request) {
     }
 }
 
+/* stops the world sounds in three runs of numbers; each run leaves out its last sound (WM_SE_TENT_START,
+ * WM_SE_WIND_LOOP, WM_SE_CHEST_LAND) */
 void wm_stopAllSe(void) {
     WmSeIds se;
     s32 i;
@@ -242,7 +244,7 @@ void wm_stopAllSe(void) {
     s32 j2;
     s32 m2;
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < WM_SE_TENT_START; i++) {
         if (w_musicGetID(i, &se) & 0xFF) {
             m0 = se.channelMask;
             for (j0 = 0; j0 < se.count; j0++) {
@@ -251,7 +253,7 @@ void wm_stopAllSe(void) {
             }
         }
     }
-    for (i = 20; i < 26; i++) {
+    for (i = WM_SE_FLEET_LOOP; i < WM_SE_WIND_LOOP; i++) {
         if (w_musicGetID(i, &se) & 0xFF) {
             m1 = se.channelMask;
             for (j1 = 0; j1 < se.count; j1++) {
@@ -260,7 +262,7 @@ void wm_stopAllSe(void) {
             }
         }
     }
-    for (i = 30; i < 42; i++) {
+    for (i = WM_SE_DEAD_PEPPER; i < WM_SE_CHEST_LAND; i++) {
         if (w_musicGetID(i, &se) & 0xFF) {
             m2 = se.channelMask;
             for (j2 = 0; j2 < se.count; j2++) {

@@ -19,7 +19,7 @@ s32 bgi_pointInTriangle(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 *
     z = 2;
     if (tri->normal >= 0) {
         pl = &g_fieldBgi.normals[tri->normal];
-        if ((u32)(pl->ny + 0x50F4) <= 0xA1E8) {
+        if (BGI_IS_STEEP(pl->ny)) {
             cx = pl->nx;
             cz = pl->nz;
             if (ABS(cx) > ABS(cz)) {
@@ -178,7 +178,7 @@ s32 bgi_findEdgeCrossing(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 
     y = 1;
     if (tri->normal >= 0) {
         pl = &g_fieldBgi.normals[tri->normal];
-        if ((u32)(pl->ny + 0x50F4) <= 0xA1E8) {
+        if (BGI_IS_STEEP(pl->ny)) {
             cx = pl->nx;
             cz = pl->nz;
             if (ABS(cx) > ABS(cz)) {

@@ -215,7 +215,7 @@ void wm_updateLogic(void) {
     } else {
         g_worldPlayerPosChanged = 0;
     }
-    g_worldDebugStep = 10;
+    g_worldDebugStep = WM_STEP_MUSIC;
     w_musicUpdate();
     if ((u8)(g_worldLoadedFrames - 1) < 199) {
         g_worldLoadedFrames++;
@@ -227,27 +227,27 @@ void wm_updateDraw(void) {
 
     if (mode == WM_STATE_RUNNING) {
         if (g_worldNaviMode != mode) { /* mode is 2 here: WM_NAVI_FULL */
-            g_worldDebugStep = 0x64;
+            g_worldDebugStep = WM_STEP_DRAW_ACTORS;
             SetGeomScreen(g_gameState->gameData->projDist);
             g_worldTimeActorDraw = VSync(1);
             if (g_worldActorHideLevel < 2 && g_worldDrawActors != 0) {
                 wm_drawActors();
             }
             g_worldTimeActorDraw = VSync(1) - g_worldTimeActorDraw;
-            g_worldDebugStep = 0x65;
+            g_worldDebugStep = WM_STEP_DRAW_MAP;
             g_worldTimeMapDraw = VSync(1);
             wm_drawMap();
             g_worldTimeMapDraw = VSync(1) - g_worldTimeMapDraw;
-            g_worldDebugStep = 0x66;
+            g_worldDebugStep = WM_STEP_DRAW_NAVI;
             wm_naviDraw();
-            g_worldDebugStep = 0x67;
+            g_worldDebugStep = WM_STEP_DRAW_EFFECTS;
             wm_drawEffects();
-            g_worldDebugStep = 0x68;
+            g_worldDebugStep = WM_STEP_DRAW_RAIN;
             if (g_worldPointFxOn != 0 && g_worldNaviMode != WM_NAVI_FULL) {
                 g_worldPrimPtr = wrain_draw(g_worldPrimPtr);
             }
         } else {
-            g_worldDebugStep = 0x6A;
+            g_worldDebugStep = WM_STEP_DRAW_NAVI_FULL;
             wm_naviDraw();
         }
     }

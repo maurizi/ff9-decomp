@@ -198,25 +198,25 @@ s32 wm_getWeatherByPos(void) {
     s32 weather;
     s32 dist;
 
-    dx = (g_worldPlayer->pos.vx >> 8) - 0x508;
-    dz = (g_worldPlayer->pos.vz >> 8) + 0x3AD;
-    weather = SquareRoot0(dx * dx + dz * dz) < 0x56; /* WM_WEATHER_SUNSET or WM_WEATHER_CLEAR */
-    dx = (g_worldPlayer->pos.vx >> 8) - 0x50B;
-    dz = (g_worldPlayer->pos.vz >> 8) + 0x3A0;
-    if (SquareRoot0(dx * dx + dz * dz) < 0x3B) {
+    dx = (g_worldPlayer->pos.vx >> 8) - WM_WEATHER_SUNSET_A_X;
+    dz = (g_worldPlayer->pos.vz >> 8) - WM_WEATHER_SUNSET_A_Z;
+    weather = SquareRoot0(dx * dx + dz * dz) < WM_WEATHER_SUNSET_A_R; /* WM_WEATHER_SUNSET or WM_WEATHER_CLEAR */
+    dx = (g_worldPlayer->pos.vx >> 8) - WM_WEATHER_DARK_X;
+    dz = (g_worldPlayer->pos.vz >> 8) - WM_WEATHER_DARK_Z;
+    if (SquareRoot0(dx * dx + dz * dz) < WM_WEATHER_DARK_R) {
         weather = WM_WEATHER_DARK;
     }
-    dx = (g_worldPlayer->pos.vx >> 8) - 0x1F4;
-    dz = (g_worldPlayer->pos.vz >> 8) + 0x316;
-    if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
+    dx = (g_worldPlayer->pos.vx >> 8) - WM_WEATHER_SUNSET_B_X;
+    dz = (g_worldPlayer->pos.vz >> 8) - WM_WEATHER_SUNSET_B_Z;
+    if (SquareRoot0(dx * dx + dz * dz) < WM_WEATHER_SUNSET_B_R) {
         weather = WM_WEATHER_SUNSET;
     }
     if (g_worldDataSet == WM_DATASET_DISC4) {
-        dx = (g_worldPlayer->pos.vx >> 8) - 0x2FE;
-        dz = (g_worldPlayer->pos.vz >> 8) + 0x140;
+        dx = (g_worldPlayer->pos.vx >> 8) - WM_WEATHER_IIFA_X;
+        dz = (g_worldPlayer->pos.vz >> 8) - WM_WEATHER_IIFA_Z;
         dist = SquareRoot0(dx * dx + dz * dz);
         g_worldWeatherPointDist = dist;
-        if (dist < 0x65) {
+        if (dist < WM_WEATHER_IIFA_R) {
             weather = WM_WEATHER_DARK_PURPLE;
         }
     }

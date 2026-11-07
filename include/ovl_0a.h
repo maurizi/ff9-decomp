@@ -214,6 +214,8 @@ typedef struct {
 #define FLD_MVF_STOPPED 0x4 /* fld_movieStop ran */
 #define FLD_MVF_FLUSH_CACHE 0x8 /* movie overlay loaded: fld_endFrame flushes the I-cache and clears it */
 #define FLD_MVF_END_FADE 0x20 /* the volume fade (akao_sendCmdE5) for the last frames was sent */
+#define FLD_MOVIE_FRAME_LIMIT 99999 /* fld_movieUpdate: a last frame at or above this is no end frame (ovl_64 MBG_LAST_FRAME_NONE) */
+#define FLD_MOVIE_END_FADE_FRAMES 4 /* ... else the sound fades out over the movie's last 4 frames (4 ticks a frame) */
 #define FLD_MVF_CAMERA 0x40 /* models and sprites use the movie's geometry offset (mbg_getGeomOffset); one frame at the start */
 #define FLD_MVF_END_DONE 0x100 /* the end-of-movie flag restore was done or queued */
 #define FLD_MVF_PER_MOVIE 0x1FF /* bits 0-8 (the above and the unused 0x10/0x80): fld_movieFinish clears them all */
@@ -691,6 +693,11 @@ typedef struct {
     s32 nz;
     s32 invNy;
 } BgiNormal; /* 0x10 */
+/* a walkmesh triangle is steep when its normal's ny (16.16) is within +-BGI_STEEP_NY (0.316: the plane is steeper
+ * than about 72 degrees). bgi.c then works in the plane across the larger of nx / nz instead of x/z; bgi_move keeps
+ * an actor's own y on it instead of solving the plane for y. */
+#define BGI_STEEP_NY 0x50F4
+#define BGI_IS_STEEP(ny) ((u32)((ny) + BGI_STEEP_NY) <= 2 * BGI_STEEP_NY)
 
 typedef struct {
     u16 flags; /* flags */

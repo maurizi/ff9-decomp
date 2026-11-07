@@ -1237,9 +1237,9 @@ void fld_movieUpdate(void) {
         if ((g_fieldMovieFlags & FLD_MVF_RUNNING) && (mbg_getStatus() & MBG_STATUS_PLAYING)) {
             done = mbg_update(0);
             lastFrame = mbg_getLastFrame();
-            if (!(g_fieldMovieFlags & FLD_MVF_END_FADE) && (u32)lastFrame < 99999) {
+            if (!(g_fieldMovieFlags & FLD_MVF_END_FADE) && (u32)lastFrame < FLD_MOVIE_FRAME_LIMIT) {
                 remain = lastFrame - g_mbgFrame;
-                if (remain < 4) {
+                if (remain < FLD_MOVIE_END_FADE_FRAMES) {
                     akao_sendCmdE5(remain * 4, 0);
                     g_fieldMovieFlags |= FLD_MVF_END_FADE;
                 }

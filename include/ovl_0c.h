@@ -260,6 +260,20 @@
 #define WM_WEATHER_DARK_PURPLE 3 /* purple light, dark sea; one point, world data set 4 only; wm_isDarkWeather */
 #define WM_WEATHER_AUTO 4 /* WM_REQ_WEATHER: turn auto weather on */
 #define WM_WEATHER_KEEP 5
+/* wm_getWeatherByPos: circles in world units >> 8 (centre x, z and radius), later ones win. Nearest navi places from
+ * g_worldNaviPlaces (the place names of 5 and 41: runtime: pending R46) */
+#define WM_WEATHER_SUNSET_A_X 0x508 /* 18 from navi place 5 (328239, -245345) */
+#define WM_WEATHER_SUNSET_A_Z (-0x3AD)
+#define WM_WEATHER_SUNSET_A_R 0x56
+#define WM_WEATHER_DARK_X 0x50B /* inside SUNSET_A, 31 from navi place 5 */
+#define WM_WEATHER_DARK_Z (-0x3A0)
+#define WM_WEATHER_DARK_R 0x3B
+#define WM_WEATHER_SUNSET_B_X 0x1F4 /* 105 from navi place 41 (101014, -204347), 114 from place 38 "Wind Shrine" */
+#define WM_WEATHER_SUNSET_B_Z (-0x316)
+#define WM_WEATHER_SUNSET_B_R 0xB4
+#define WM_WEATHER_IIFA_X 0x2FE /* WM_DATASET_DISC4 only: 15 from navi place 36 "Iifa Tree" (200097, -82107) */
+#define WM_WEATHER_IIFA_Z (-0x140)
+#define WM_WEATHER_IIFA_R 0x65 /* WM_WEATHER_DARK_PURPLE inside */
 
 /* WmMoveMode.controlType (wm_controlPlayer: wm_controlWalk / wm_controlFly / wm_controlSteer) */
 #define WM_CTRL_WALK 0
@@ -1684,6 +1698,15 @@ extern s32 g_worldPlayerTurn;
 
 extern u8 g_worldActorHideLevel;
 extern s32 g_worldDebugStep; /* debug: last update step */
+/* g_worldDebugStep: written before each step of wm_update / wm_updateDraw (read by nothing; a crash leaves the step
+ * that was running) */
+#define WM_STEP_MUSIC 10 /* wm_update: w_musicUpdate, the last step */
+#define WM_STEP_DRAW_ACTORS 0x64
+#define WM_STEP_DRAW_MAP 0x65
+#define WM_STEP_DRAW_NAVI 0x66
+#define WM_STEP_DRAW_EFFECTS 0x67
+#define WM_STEP_DRAW_RAIN 0x68
+#define WM_STEP_DRAW_NAVI_FULL 0x6A /* the full-screen navigation map, drawn alone */
 extern s32 g_worldDrawActors;
 extern u8 g_worldPointFxOn;
 extern u8 g_worldStartup;

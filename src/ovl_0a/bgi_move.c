@@ -594,7 +594,7 @@ s32 bgi_moveActor(BgiActor *actor) {
     }
     if (node->normal >= 0) {
         pl = &g_fieldBgi.normals[node->normal];
-        if ((u32)(pl->ny + 0x50F4) > 0xA1E8) {
+        if (!BGI_IS_STEEP(pl->ny)) {
             nxTerm = fld_fixMul(pl->nx, actor->actor->pos.vx << 16);
             actor->actor->pos.vy = fld_fixMul(node->d - nxTerm - fld_fixMul(pl->nz, actor->actor->pos.vz << 16), pl->invNy) >> 16;
             actor->actor->pos.vy += (s16)g_fieldBgi.floors[node->floor].curPos[1] - g_fieldBgi.floors[node->floor].orgPos[1];
