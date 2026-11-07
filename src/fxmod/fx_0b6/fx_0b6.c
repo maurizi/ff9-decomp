@@ -5,7 +5,7 @@ s32 fx_0b6_op80(s32 mode, Fx0b6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(Fx0b6Work);
     } else if (mode == 1) {
         fx_0b6_env = env;
         ex->btlfx_getUnitArgBonePos(0, 0, (u16 *)&work->pos0);
@@ -22,7 +22,7 @@ s32 fx_0b6_op80(s32 mode, Fx0b6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0xC8);
         }
     } else {
-        return entry->frame >= 0x42;
+        return entry->frame >= FX_SCORCH_FRAMES;
     }
     return 0;
 }

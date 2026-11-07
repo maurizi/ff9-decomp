@@ -11,6 +11,9 @@
 #define FX_HEAVY_RED_STREAKS 0x2 /* emitter: two orbiting fans of small red streaks */
 #define FX_HEAVY_GREEN_SWIRL 0x6 /* emitter: green swirl ring particle + pink-white gouraud rings */
 
+/* fx_0b7 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_HEAVY_FRAMES 0x45 /* op80: the task ends at this frame */
+
 typedef struct {
     SVECTOR pos0; /* caster position */
 } Fx0b7Work;

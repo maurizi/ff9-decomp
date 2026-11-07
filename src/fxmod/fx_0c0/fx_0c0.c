@@ -5,7 +5,7 @@ s32 fx_0c0_op80(s32 mode, Fx0c0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0c0Work);
     } else if (mode == 1) {
         fx_0c0_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos10);
@@ -20,7 +20,7 @@ s32 fx_0c0_op80(s32 mode, Fx0c0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x24) {
+        if (frame == FX_SHOCK_FLAME_RING_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHOCK_FLAME_RING), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHOCK_SPARKLES_2), (s32)&work->pos18);
             if (work->emit8 != NULL) {
@@ -30,7 +30,7 @@ s32 fx_0c0_op80(s32 mode, Fx0c0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        return frame >= 0x46;
+        return frame >= FX_SHOCK_FRAMES;
     }
     return 0;
 }

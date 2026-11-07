@@ -12,6 +12,12 @@
 #define FX_POWER_BREAK_ENERGY_ORB   0xC /* emitter: yellow energy orb particle */
 #define FX_POWER_BREAK_SPARKLES     0xD /* emitter: gold sparkle sprites, fan */
 
+/* fx_0d0 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe, length and trail buffer. */
+#define FX_POWER_BREAK_STREAK_FRAME 0x24 /* op80: FX_POWER_BREAK_RED_SWIRL and FX_POWER_BREAK_LIGHT_STREAK start at the caster */
+#define FX_POWER_BREAK_FRAMES       0x46 /* op80: the task ends at this frame */
+#define FX_POWER_BREAK_LIGHT_STREAK_TRAIL_SLOTS  8    /* FX_POWER_BREAK_LIGHT_STREAK's trail buffer fx_0d0_trails: slots of */
+#define FX_POWER_BREAK_LIGHT_STREAK_TRAIL_STRIDE 0x60 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

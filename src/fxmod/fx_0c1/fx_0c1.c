@@ -1,7 +1,7 @@
 #include "fxmod/fx_0c1.h"
 
 static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    BTLFX_EXPORTS(fx_0c1_env)->btlfx_lerpVec((s16 *)&fx_0c1_pathFrom, (s16 *)&fx_0c1_pathTo, (frame << 12) / 9, (s16 *)pos);
+    BTLFX_EXPORTS(fx_0c1_env)->btlfx_lerpVec((s16 *)&fx_0c1_pathFrom, (s16 *)&fx_0c1_pathTo, (frame << 12) / FX_NO_MERCY_FLASH_PATH_FRAMES, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -17,13 +17,13 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x50;
+        *args = sizeof(Fx0c1Work);
     } else if (mode == 1) {
         fx_0c1_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot18);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x17, &bone);
+        ex->btlfx_getUnitBoneMatrix(0x10, FX_NO_MERCY_BONE, &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->pos28);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_BLUE_RING), (s32)&work->pos28);
         if (work->emit0 != NULL) {
@@ -31,13 +31,13 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x24) {
-            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos38);
+        if (frame == FX_NO_MERCY_DASH_FRAME) {
+            ex->btlfx_getUnitBonePos(0x10, FX_NO_MERCY_BONE, (u16 *)&work->pos38);
             fx_0c1_pathFrom.vx = work->pos38.vx;
             fx_0c1_pathFrom.vy = work->pos38.vy;
             fx_0c1_pathFrom.vz = work->pos38.vz;
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot18);
-            ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot18, 0x12C, (s16 *)&work->pos30);
+            ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot18, FX_NO_MERCY_DUST_REACH, (s16 *)&work->pos30);
             ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos20, (s16 *)&bone);
             ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&bone, 0, (s16 *)&fx_0c1_pathTo);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_DUST_PLUME), (s32)&work->pos30);
@@ -53,13 +53,13 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->rot40.vy = work->rot48.vy;
             work->rot40.vz = work->rot48.vz;
         }
-        if (frame == 0x2D) {
+        if (frame == FX_NO_MERCY_IMPACT_FRAME) {
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_IMPACT_BURST), (s32)&work->pos20);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame >= 0x24) {
+        if (frame >= FX_NO_MERCY_DASH_FRAME) {
             if (work->emit4 != NULL) {
                 if (work->emit4->state == BTLFX_EMIT_DONE) {
                     work->emit4 = NULL;
@@ -81,7 +81,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x46;
+        return frame >= FX_NO_MERCY_FRAMES;
     }
     return 0;
 }

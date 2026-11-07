@@ -5,7 +5,7 @@ s32 fx_0d1_op80(s32 mode, Fx0d1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx0d1Work);
     } else if (mode == 1) {
         fx_0d1_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
@@ -20,13 +20,13 @@ s32 fx_0d1_op80(s32 mode, Fx0d1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x24) {
+        if (frame == FX_MENTAL_BREAK_GLOW_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_PINK_GLOW), (s32)&work->pos1C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = 0x100;
             }
         }
-        if (frame == 0x38) {
+        if (frame == FX_MENTAL_BREAK_CROSS_FRAME) {
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_GLOW_CROSS), (s32)&work->pos1C);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MENTAL_BREAK_RINGS), (s32)&work->pos1C);
             if (work->emitC != NULL) {
@@ -36,7 +36,7 @@ s32 fx_0d1_op80(s32 mode, Fx0d1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit10->otZ = 0x100;
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_MENTAL_BREAK_FRAMES;
     }
     return 0;
 }

@@ -9,6 +9,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_FOCUS_GLOW_RING 0x1 /* emitter: orange gouraud ring, fans */
 
+/* fx_0c7 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_FOCUS_FRAMES 0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* unit 0x10 body position */

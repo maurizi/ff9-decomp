@@ -5,7 +5,7 @@ s32 fx_0c5_op80(s32 mode, Fx0c5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0c5Work);
     } else if (mode == 1) {
         fx_0c5_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -15,13 +15,13 @@ s32 fx_0c5_op80(s32 mode, Fx0c5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x12) {
+        if (frame == FX_AURA_SWIRL_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AURA_SWIRL), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        return frame >= 0x32;
+        return frame >= FX_AURA_FRAMES;
     }
     return 0;
 }

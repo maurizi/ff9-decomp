@@ -4,7 +4,7 @@ s32 fx_0be_op80(s32 mode, Fx0beWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0beWork80);
     } else if (mode == 1) {
         fx_0be_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -17,7 +17,7 @@ s32 fx_0be_op80(s32 mode, Fx0beWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_IAI_STRIKE_FRAMES;
     }
     return 0;
 }
@@ -27,7 +27,7 @@ s32 fx_0be_op81(s32 mode, Fx0beWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(Fx0beWork81);
     } else if (mode == 1) {
         fx_0be_env = env;
     } else {
@@ -36,7 +36,7 @@ s32 fx_0be_op81(s32 mode, Fx0beWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vx = work->pos0.vx;
         env->camera->points[0].vy = work->pos0.vy;
         env->camera->points[0].vz = work->pos0.vz;
-        return frame >= 0xC;
+        return frame >= FX_IAI_STRIKE_CAMERA_FRAMES;
     }
     return 0;
 }

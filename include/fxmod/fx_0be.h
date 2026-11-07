@@ -10,6 +10,10 @@
 #define FX_IAI_STRIKE_SLASH_ARCS    0x4 /* emitter: blue and pink slash arcs */
 #define FX_IAI_STRIKE_SPARKLE_BURST 0x8 /* emitter: violet / blue ring, blue and gold sparkle sprites, fan */
 
+/* fx_0be choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths. */
+#define FX_IAI_STRIKE_FRAMES        0x1E /* op80: the task ends at this frame */
+#define FX_IAI_STRIKE_CAMERA_FRAMES 0xC  /* op81: the camera looks at unit 0x10 (btlfx_getUnitPos) until this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

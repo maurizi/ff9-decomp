@@ -66,7 +66,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     u16 *file;
 
     if (mode == 0) {
-        *args = 0x3C;
+        *args = sizeof(Fx0b4Work);
     } else if (mode == 1) {
         fx_0b4_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos2C);
@@ -74,8 +74,8 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0b4_pathOrigin.vx = work->pos34.vx;
         fx_0b4_pathOrigin.vy = work->pos34.vy;
         fx_0b4_pathOrigin.vz = work->pos34.vz;
-        for (k = 0, tq = fx_0b4_timers; k < 6; k++, tq++) {
-            tq->start0 = k * 2 + 0x14;
+        for (k = 0, tq = fx_0b4_timers; k < FX_AERO_PATHS; k++, tq++) {
+            tq->start0 = k * FX_AERO_PATH_GAP_FRAMES + FX_AERO_PATH_FIRST_FRAME;
             fxm_rotPosPathInit(&fx_0b4_paths[k], ex->btlfx_getFileData(entry->file, fx_0b4_pathBlocks[k]));
         }
         return 0;
@@ -85,32 +85,32 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_GREEN_GLINTS), (s32)&work->pos34);
             break;
-        case 8:
+        case FX_AERO_WIND_RING_FRAME:
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_WIND_RING), (s32)&work->pos34);
             break;
-        case 20:
+        case FX_AERO_WIND_TRAIL_FRAME:
             work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_WIND_TRAIL), (s32)&work->pos34);
             if (work->emit18 != NULL) {
                 work->emit18->trails = (s32)fx_0b4_trails2;
-                work->emit18->trailSlots = 0x12;
-                work->emit18->trailStride = 0x98;
+                work->emit18->trailSlots = FX_AERO_WIND_TRAIL_TRAIL_SLOTS;
+                work->emit18->trailStride = FX_AERO_WIND_TRAIL_TRAIL_STRIDE;
             }
             break;
-        case 25:
+        case FX_AERO_GREEN_BURST_FRAME:
             work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_GREEN_BURST), (s32)&work->pos2C);
             break;
-        case 45:
+        case FX_AERO_GREEN_RING_FRAME:
             work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_GREEN_RING), (s32)&work->pos34);
             break;
         }
         tm = fx_0b4_timers;
-        for (i = 0, cnt = &tm->count2; i < 6; i++, cnt += 2, tm++) {
+        for (i = 0, cnt = &tm->count2; i < FX_AERO_PATHS; i++, cnt += 2, tm++) {
             if (frame == tm->start0) {
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_0b4_emitBlocks[i]), (s32)&fx_0b4_emitStartPos[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->trails = (s32)fx_0b4_trails[i];
-                    work->emit0[i]->trailSlots = 0x18;
-                    work->emit0[i]->trailStride = 0x90;
+                    work->emit0[i]->trailSlots = FX_AERO_PATH_TRAIL_SLOTS;
+                    work->emit0[i]->trailStride = FX_AERO_PATH_TRAIL_STRIDE;
                 }
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->file->m.module.update = fx_0b4_op80ParticleMotions[i];
@@ -132,7 +132,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (frame >= 8) {
+        if (frame >= FX_AERO_WIND_RING_FRAME) {
             if (work->emit20 != NULL) {
                 if (work->emit20->state == BTLFX_EMIT_DONE) {
                     work->emit20 = NULL;
@@ -144,7 +144,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (frame >= 0x14) {
+        if (frame >= FX_AERO_WIND_TRAIL_FRAME) {
             if (work->emit18 != NULL) {
                 if (work->emit18->state == BTLFX_EMIT_DONE) {
                     work->emit18 = NULL;
@@ -156,7 +156,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (frame >= 0x2D) {
+        if (frame >= FX_AERO_GREEN_RING_FRAME) {
             if (work->emit28 != NULL) {
                 if (work->emit28->state == BTLFX_EMIT_DONE) {
                     work->emit28 = NULL;
@@ -168,7 +168,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x5A;
+        return frame >= FX_AERO_FRAMES;
     }
     return 0;
 }

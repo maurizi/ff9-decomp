@@ -4,7 +4,7 @@ s32 fx_0bb_op80(s32 mode, Fx0bbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx0bbWork80);
     } else if (mode == 1) {
         fx_0bb_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
@@ -13,7 +13,7 @@ s32 fx_0bb_op80(s32 mode, Fx0bbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x78;
+        return entry->frame >= FX_MUSTARD_BOMB_FIREBALLS_FRAMES;
     }
     return 0;
 }
@@ -23,7 +23,7 @@ s32 fx_0bb_op81(s32 mode, Fx0bbWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0bbWork81);
     } else if (mode == 1) {
         fx_0bb_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -33,14 +33,14 @@ s32 fx_0bb_op81(s32 mode, Fx0bbWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (frame == 5) {
+        if (frame == FX_MUSTARD_BOMB_EXPLOSION_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MUSTARD_BOMB_EXPLOSION_RINGS), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_MUSTARD_BOMB_BACKDROP), frame);
-        return frame >= 0x32;
+        return frame >= FX_MUSTARD_BOMB_BLAST_FRAMES;
     }
     return 0;
 }

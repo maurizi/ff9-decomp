@@ -12,6 +12,14 @@
 #define FX_NO_MERCY_FLASH_BURST  0xC /* emitter: white star flash with a lens flare, grey-blue smoke, sparkles */
 #define FX_NO_MERCY_IMPACT_BURST 0xD /* emitter: white / blue / orange rings, white glow, grey-blue smoke */
 
+/* fx_0c1 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, length and the flash path. */
+#define FX_NO_MERCY_BONE         0x17 /* unit 0x10's bone FX_NO_MERCY_BLUE_RING and the flash path start from */
+#define FX_NO_MERCY_DASH_FRAME   0x24 /* op80: FX_NO_MERCY_DUST_PLUME and FX_NO_MERCY_FLASH_BURST start */
+#define FX_NO_MERCY_FLASH_PATH_FRAMES 9 /* FX_NO_MERCY_FLASH_BURST's particles move from the bone to the caster in this many frames */
+#define FX_NO_MERCY_DUST_REACH   0x12C /* op80: FX_NO_MERCY_DUST_PLUME starts this far in front of unit 0x10 */
+#define FX_NO_MERCY_IMPACT_FRAME 0x2D /* op80: FX_NO_MERCY_IMPACT_BURST starts at the caster */
+#define FX_NO_MERCY_FRAMES       0x46 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -13,6 +13,11 @@
 #define FX_MUSTARD_BOMB_EXPLOSION_RINGS 0x9 /* emitter: yellow-orange-red and blue gouraud rings (+ a textured ring, texture not in the file) */
 #define FX_MUSTARD_BOMB_BLAST_RINGS     0xA /* emitter: cone of yellow / orange / brown gouraud rings */
 
+/* fx_0bb choreography (docs/fxdata.md, "Choreography literals"): the ops' keyframe and lengths. */
+#define FX_MUSTARD_BOMB_FIREBALLS_FRAMES   0x78 /* op80 (FX_MUSTARD_BOMB_FIREBALLS): the task ends at this frame */
+#define FX_MUSTARD_BOMB_EXPLOSION_FRAME    5    /* op81: FX_MUSTARD_BOMB_EXPLOSION_RINGS start */
+#define FX_MUSTARD_BOMB_BLAST_FRAMES       0x32 /* op81 (blast rings, FX_MUSTARD_BOMB_BACKDROP): the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */

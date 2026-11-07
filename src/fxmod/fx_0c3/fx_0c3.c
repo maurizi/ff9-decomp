@@ -4,14 +4,14 @@ s32 fx_0c3_op80(s32 mode, Fx0c3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0c3Work);
     } else if (mode == 1) {
         fx_0c3_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURSE_FLAME_PILLAR), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURSE_SPIRIT_WISPS), (s32)&work->pos8);
     } else {
-        return entry->frame >= 0x32;
+        return entry->frame >= FX_CURSE_FRAMES;
     }
     return 0;
 }

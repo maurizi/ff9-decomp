@@ -10,6 +10,9 @@
 #define FX_CURSE_FLAME_PILLAR 0x6 /* emitter: orange-green flame sprite and grey smoke wisps (same call site as fx_0c3 entry 0x8) */
 #define FX_CURSE_SPIRIT_WISPS 0x8 /* emitter: blue and magenta wisps (+ two rings, texture not in the file) (same call site as fx_0c3 entry 0x6) */
 
+/* fx_0c4 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_CURSE_FRAMES 0x50 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
