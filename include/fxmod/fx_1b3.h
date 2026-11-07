@@ -39,6 +39,108 @@
 #define FX_DEATH1_LIGHTNING_TRAILS_2_TRAIL_SLOTS  0x24 /* FX_DEATH1_LIGHTNING_TRAILS_2's trail buffer: slots of */
 #define FX_DEATH1_LIGHTNING_TRAILS_2_TRAIL_STRIDE 0x6C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
 
+/* fx_1b3 choreography (deep pass). op80 is one frame switch that starts emitters, splits models into pieces and loads
+ * the countdowns work->timers0[FX_DEATH1_T_*]; each countdown drives one piece below the switch. The split models
+ * (summon data 0x80 .. 0x92, on the caster's textures) break where fx_1b3_splitTrigger passes, by its mode. */
+#define FX_DEATH1_MODEL_COUNT   0x14 /* btlfx_initEffModels slots */
+#define FX_DEATH1_TIMERS        32   /* work->timers0 and work->emit80 slots */
+#define FX_DEATH1_ARCS          16   /* fx_1b3_trails: lightning arcs (Fx1b3Trail) carved from SCRATCH_BUF */
+#define FX_DEATH1_ARC_POINTS    9    /* points of an arc */
+#define FX_DEATH1_ARC_WIDTH     0x80
+#define FX_DEATH1_ARC_FADE_FRAMES 4  /* an arc (life 4 + rand) is drawn, fading, over its last frames */
+#define FX_DEATH1_ARC_TAIL_FRAMES 0xD /* no new arcs in the last frames of T_ARCS */
+#define FX_DEATH1_LIMB_ARCS     5    /* ARCS_LIMBS / ARCS_LIMBS_2: arcs, each along 4 bone links (2 points a link) */
+#define FX_DEATH1_LIMB_LINKS    4
+#define FX_DEATH1_RING_ARCS     6    /* ARCS_RINGS: arcs, rings round bone 3 or 9 */
+#define FX_DEATH1_ARCS_SCATTER  0    /* T_ARC_KIND: straight arcs from random bones (fx_1b3_trailBones0), */
+#define FX_DEATH1_ARCS_LIMBS    1    /* along fx_1b3_trailBones1, */
+#define FX_DEATH1_ARCS_LIMBS_2  2    /* along fx_1b3_trailBones2, */
+#define FX_DEATH1_ARCS_RINGS    3    /* rings round two bones */
+#define FX_DEATH1_SPLIT_GROUPS  8    /* Fx1b3Split: primitive groups (even: quads, odd: triangles) */
+#define FX_DEATH1_BREAK_SWEEP_X 0    /* fx_1b3_splitTrigger.mode0: pieces within radius (x, z) fly +x, */
+#define FX_DEATH1_BREAK_SWEEP_Z 1    /* fly -z, */
+#define FX_DEATH1_BREAK_LEVEL   2    /* pieces within radius in y fly away from the point, */
+#define FX_DEATH1_BREAK_COLUMN  3    /* pieces within radius (x, z) fly out and up, */
+#define FX_DEATH1_BREAK_SLICE   4    /* pieces within radius in x fly out and up, */
+#define FX_DEATH1_BREAK_OUTSIDE 5    /* pieces outside radius (x, y) fly outwards */
+#define FX_DEATH1_PIECE_FRAMES      0x40 /* a broken piece's flight (BREAK_SWEEP_X / Z, OUTSIDE), */
+#define FX_DEATH1_PIECE_LONG_FRAMES 0x80 /* (BREAK_LEVEL, COLUMN) */
+#define FX_DEATH1_T_FLASH       0    /* countdown: the opening additive flash fades */
+#define FX_DEATH1_T_GLOW        1    /* countdown: a constant additive grey */
+#define FX_DEATH1_T_ARCS        2    /* countdown: lightning arcs, of the kind in T_ARC_KIND */
+#define FX_DEATH1_T_ARC_KIND    3
+#define FX_DEATH1_T_SWEEP       4    /* countdown: the trigger sweeps round the floor, breaking three splits0 models */
+#define FX_DEATH1_T_SWEEP_FIRST 5    /* the first of those three */
+#define FX_DEATH1_T_LEVEL_A     6    /* countdown: a level descends through splits1[0] */
+#define FX_DEATH1_T_LEVEL_B     7    /* countdown: a level rises through splits1[1], a column crosses splits2 */
+#define FX_DEATH1_T_SLICE       8    /* countdown: splits3 drawn, */
+#define FX_DEATH1_T_SLICE_RUN   9    /* while this runs a slice crosses them */
+#define FX_DEATH1_T_BURST       10   /* countdown: splits4 break from the outside in */
+#define FX_DEATH1_T_ZOOM        11   /* countdown: screen-grid zoom */
+#define FX_DEATH1_T_WHITE       12   /* countdown: the closing white fades */
+#define FX_DEATH1_T_CRACKS      13   /* countdown: the floor texture steps through four crack frames */
+#define FX_DEATH1_FLASH_FRAMES  0x10
+#define FX_DEATH1_RINGS_FRAME   8    /* TEAL_RINGS and GOLD_RAYS start */
+#define FX_DEATH1_NEBULA_FRAME  0x10 /* DARK_NEBULA starts, T_GLOW */
+#define FX_DEATH1_GLOW_FRAMES   0x90 /* (cut short at ARCS_FRAME) */
+#define FX_DEATH1_ARCS_FRAME    0x30 /* LIGHTNING_TRAILS start, scattered arcs */
+#define FX_DEATH1_ARCS_FRAMES   0x40
+#define FX_DEATH1_SWEEP_1_FRAME 0x60 /* the four emitters stop; first sweep (splits0[0..2]), GREEN_SMOKE and ROCK_DEBRIS follow the trigger */
+#define FX_DEATH1_SWEEP_2_FRAME 0x9C /* second sweep (splits0[3..5]) */
+#define FX_DEATH1_SWEEP_3_FRAME 0xD8 /* third sweep (splits0[6..8]) */
+#define FX_DEATH1_SWEEPS        3
+#define FX_DEATH1_SWEEP_MODELS  3    /* splits0 models broken by one sweep */
+#define FX_DEATH1_SWEEP_FRAMES  0x3C
+#define FX_DEATH1_SWEEP_3_FRAMES 0x4B
+#define FX_DEATH1_SWEEP_RADIUS  0x1A08 /* the trigger's circle */
+#define FX_DEATH1_SWEEP_DRAW_FRAMES   0x40 /* splits0[0..5] drawn this long once their sweep starts, */
+#define FX_DEATH1_SWEEP_3_DRAW_FRAMES 0x64 /* splits0[6..8] */
+#define FX_DEATH1_CRACKS_FRAMES 0x20 /* T_CRACKS, loaded at each sweep; a frame copied at these frames left: */
+#define FX_DEATH1_CRACK_1_LEFT  0x1F
+#define FX_DEATH1_CRACK_2_LEFT  0x17
+#define FX_DEATH1_CRACK_3_LEFT  0x13
+#define FX_DEATH1_CRACK_4_LEFT  0xF
+#define FX_DEATH1_FLOOR_VRAM_X  0x380 /* btlfx_drawScrollMove rect: 0x50 x 0x50 8-bit texels of page 0x8E (the split models' texture list) */
+#define FX_DEATH1_FLOOR_VRAM_Y  0
+#define FX_DEATH1_FLOOR_VRAM_W  0x28
+#define FX_DEATH1_FLOOR_VRAM_H  0x50
+#define FX_DEATH1_ARCS_LIMBS_FRAME   0xFE  /* limb arcs (trailBones1) */
+#define FX_DEATH1_LIMB_ARCS_FRAMES   0x48
+#define FX_DEATH1_STREAKS_1_FRAME    0x106 /* YELLOW_STREAKS at bone 0x3A */
+#define FX_DEATH1_BLAST_1_FRAME      0x11E /* the third sweep's emitters stop; EXPLOSIONS and ROCKS at bone 0x3A */
+#define FX_DEATH1_LEVEL_A_FRAME      (FX_DEATH1_BLAST_1_FRAME + 1) /* splits1[0] split, T_LEVEL_A, T_ZOOM */
+#define FX_DEATH1_LEVEL_FRAMES       0x80 /* T_LEVEL_A / T_LEVEL_B and the splits1 / splits2 draw countdowns */
+#define FX_DEATH1_LEVEL_STEP         0x80 /* the level moves this far a frame, */
+#define FX_DEATH1_LEVEL_TOP_Y        0x990 /* from here */
+#define FX_DEATH1_LEVEL_SIDE_X       0x3CF /* x of the level point: + for splits1[0], - for splits1[1] */
+#define FX_DEATH1_SWIRL_1_FRAME      0x136 /* TAN_STREAKS, ROCK_DEBRIS_2, SCREEN_TRAIL_2 at bone 0x3A (BACKDROP drawn while a screen trail runs) */
+#define FX_DEATH1_ARCS_LIMBS_2_FRAME 0x14F /* limb arcs (trailBones2) */
+#define FX_DEATH1_STREAKS_2_FRAME    0x157 /* YELLOW_STREAKS at bone 0x18 */
+#define FX_DEATH1_BLAST_2_FRAME      0x16F /* T_LEVEL_A ends; EXPLOSIONS and ROCKS at bone 0x18 */
+#define FX_DEATH1_LEVEL_B_FRAME      (FX_DEATH1_BLAST_2_FRAME + 1) /* splits1[1] and splits2 split, T_LEVEL_B, T_ZOOM */
+#define FX_DEATH1_SWIRL_2_FRAME      0x187 /* the first swirl stops; TAN_STREAKS, ROCK_DEBRIS_2, SCREEN_TRAIL at bone 0x18 */
+#define FX_DEATH1_ARCS_RINGS_FRAME   0x1A8 /* ring arcs */
+#define FX_DEATH1_RING_ARCS_FRAMES   0x30
+#define FX_DEATH1_SLICE_FRAME        0x1C0 /* T_LEVEL_B ends; splits3 split, T_SLICE */
+#define FX_DEATH1_SLICE_DRAW_FRAMES  0x3C
+#define FX_DEATH1_BLAST_3_FRAME      (FX_DEATH1_SLICE_FRAME + 1) /* EXPLOSIONS and ROCKS at bone 3 */
+#define FX_DEATH1_SLICE_RUN_FRAME    (FX_DEATH1_SLICE_FRAME + 2) /* T_SLICE_RUN, T_ZOOM */
+#define FX_DEATH1_SLICE_FRAMES       0x22 /* T_SLICE_RUN, and a sliced piece's flight */
+#define FX_DEATH1_BURST_SPLIT_FRAME  0x1E2 /* splits4 split */
+#define FX_DEATH1_BURST_MODELS       3
+#define FX_DEATH1_FINALE_FRAME       (FX_DEATH1_BURST_SPLIT_FRAME + 1) /* LIGHTNING_TRAILS_2, TEAL_RINGS_2, RIPPLE_RINGS, TAN_STREAKS_2 */
+#define FX_DEATH1_BURST_FRAME        (FX_DEATH1_BURST_SPLIT_FRAME + 2) /* T_SLICE ends, T_BURST */
+#define FX_DEATH1_HIDE_FRAME         (FX_DEATH1_BURST_SPLIT_FRAME + 3) /* the caster (unit 0x10) faded out */
+#define FX_DEATH1_BURST_FRAMES       0xE0
+#define FX_DEATH1_BURST_CLOSED_LEFT  0x80 /* T_BURST: the unbroken radius shrinks to 0 by these frames left */
+#define FX_DEATH1_CORE_HEIGHT        0x514 /* the burst centre's height (emitPos0, camera point 1) */
+#define FX_DEATH1_CORE_Z             0x800 /* and its z (from the caster) */
+#define FX_DEATH1_ORANGE_RINGS_FRAME 0x264
+#define FX_DEATH1_WHITE_FRAME        0x27C /* T_WHITE */
+#define FX_DEATH1_WHITE_FADE_FRAMES  0x20
+#define FX_DEATH1_FRAMES             0x29C /* script cue, op80 ends */
+#define FX_DEATH1_ZOOM_FRAMES        0x10
+
 typedef struct {
     s16 velX0; /* velocity */
     s16 velY2;
@@ -57,9 +159,9 @@ typedef struct {
 typedef struct {
     s32 model0; /* model */
     s32 timer4; /* frames left */
-    s32 count8[8]; /* primitive counts */
-    SVECTOR *verts28[8]; /* vertices */
-    Fx1b3Piece *pieces48[8]; /* pieces */
+    s32 count8[FX_DEATH1_SPLIT_GROUPS]; /* primitive counts */
+    SVECTOR *verts28[FX_DEATH1_SPLIT_GROUPS]; /* vertices */
+    Fx1b3Piece *pieces48[FX_DEATH1_SPLIT_GROUPS]; /* pieces */
 } Fx1b3Split;
 
 extern u8 *fx_1b3_splitBufPtr;
@@ -82,15 +184,15 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR points4[9]; /* drawn points */
+    SVECTOR points4[FX_DEATH1_ARC_POINTS]; /* drawn points */
     s32 timer4C; /* frames left */
-    SVECTOR pos50[9]; /* points */
-    SVECTOR vel98[9]; /* point velocities */
+    SVECTOR pos50[FX_DEATH1_ARC_POINTS]; /* points */
+    SVECTOR vel98[FX_DEATH1_ARC_POINTS]; /* point velocities */
 } Fx1b3Trail; /* 0xE0 */
 
 typedef struct {
-    s32 timers0[32]; /* timers: 0 tint, 1 flash, 2 trails, 3 trail kind, 4 sweep, 5 sweep split, 6..0xD */
-    Pool6CEntry *emit80[32];
+    s32 timers0[FX_DEATH1_TIMERS]; /* countdowns, by FX_DEATH1_T_* index */
+    Pool6CEntry *emit80[FX_DEATH1_TIMERS];
     SVECTOR pos100; /* body position */
     SVECTOR pos108; /* unit position */
     SVECTOR pos110;
@@ -135,11 +237,11 @@ extern u8 *fx_1b3_splitBuf;
 extern Fx1b3Trail *fx_1b3_trails;
 extern s32 fx_1b3_op80Trails0;
 extern s32 fx_1b3_op80Trails1;
-extern Fx1b3Split fx_1b3_splits0[9];
+extern Fx1b3Split fx_1b3_splits0[FX_DEATH1_SWEEPS * FX_DEATH1_SWEEP_MODELS];
 extern Fx1b3Split fx_1b3_splits1[2];
 extern Fx1b3Split fx_1b3_splits2;
 extern Fx1b3Split fx_1b3_splits3[2];
-extern Fx1b3Split fx_1b3_splits4[3];
+extern Fx1b3Split fx_1b3_splits4[FX_DEATH1_BURST_MODELS];
 extern SVECTOR fx_1b3_emitPos0;
 extern BtlModelBuf fx_1b3_effModels[];
 
