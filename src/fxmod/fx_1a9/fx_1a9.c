@@ -14,7 +14,7 @@ s32 fx_1a9_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x38;
+        return entry->frame >= FX_VIRUS_POWDER_FRAMES;
     }
     return 0;
 }

@@ -12,6 +12,10 @@
 #define FX_APPEARANCE_WATER_WAVE  0x6 /* emitter: green-teal water wave particles, 16 frames */
 #define FX_APPEARANCE_WATER_SPOUT 0x7 /* emitter: green / blue water spout, 10 frames (byte-identical to fx_1b8 entry 0xE) */
 
+/* fx_1b9 choreography (docs/fxdata.md, "Choreography literals"): the ripples' keyframe and op80's length. */
+#define FX_APPEARANCE_RIPPLES_FRAME 8    /* RIPPLES start at unit 0x10's feet (the other three at frame 0) */
+#define FX_APPEARANCE_FRAMES        0x50 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -20,7 +24,7 @@ typedef struct {
     SVECTOR pos10;
     SVECTOR pos18;
     SVECTOR pos20;
-} Fx1b9Work;
+} Fx1b9Work; /* 0x28 */
 
 extern Unk800F78A4 *fx_1b9_env;
 

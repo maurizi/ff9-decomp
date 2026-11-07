@@ -47,22 +47,22 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 for (i = 0; i < 5; i++) {
                     work->model40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1af_modelFileIds[i]), 0);
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x80, 0x80, 0xAA);
             }
             break;
         case 1:
             t = (frame << 12) / 180;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x40, 0x40, 0x55);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x40, 0x40, 0x55);
             }
             if (frame == 1) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x2A, 0x2A, 0x38);
             }
             if (frame == 0x14) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x2A, 0x2A, 0x38);
             }
             if (frame == 0x28) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x2A, 0x2A, 0x38);
             }
             if (frame >= 0) {
                 sliceY = t;

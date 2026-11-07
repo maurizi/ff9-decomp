@@ -10,11 +10,15 @@
 #define FX_IAI_STRIKE_SLASH_ARCS    0x4 /* emitter: blue and pink slash arcs (byte-identical to fx_0be entry 0x4) */
 #define FX_IAI_STRIKE_SPARKLE_BURST 0x8 /* emitter: violet / blue ring, blue and gold sparkle sprites, fan (byte-identical to fx_0be entry 0x8) */
 
+/* fx_19b choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths (fx_0be's names). */
+#define FX_IAI_STRIKE_FRAMES        0 /* op80: the task ends on its first update (the emitters run on) */
+#define FX_IAI_STRIKE_CAMERA_FRAMES 7 /* op81: the camera looks at unit 0x10 (btlfx_getUnitPos) until this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8;
-} Fx19bWork;
+} Fx19bWork; /* 0x10 */
 
 extern Unk800F78A4 *fx_19b_env;
 

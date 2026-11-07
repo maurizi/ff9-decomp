@@ -80,7 +80,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             fxm_vecPathGet(&fx_1b2_vecPath, pathFrame, &work->scale28);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model6C);
-            ex->Hi_ModifyEffModelAbr(work->model6C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model6C, BTLFX_ABR_ADD);
             if (work->timer60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
@@ -196,7 +196,7 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->timer30--;
             }
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model34);
-            ex->Hi_ModifyEffModelAbr(work->model34, 1);
+            ex->Hi_ModifyEffModelAbr(work->model34, BTLFX_ABR_ADD);
             if (work->timer2C > 0 || work->timer30 >= 0) {
                 bright = work->fade28 + 6;
                 ex->Hi_ModifyEffModelRGB(work->model34, bright, bright, bright);

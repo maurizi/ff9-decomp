@@ -47,14 +47,14 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             swellAng = t >> 2;
             ringSize = (ex->math_sin(swellAng) * 0x1400) >> 12;
             env->otZ = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, ringSize, 0, 1, t);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, t);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, ringSize, 0, BTLFX_ABR_ADD, t);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, t);
             env->otZ = 0;
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, ringSize, 0, 1, t);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, ringSize, 0, BTLFX_ABR_ADD, t);
             sc.vx = sc.vz = 0x200;
             sc.vy = ex->math_sin(swellAng) / 5;
             glow = t;
@@ -72,14 +72,14 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = ((++work->frame1C % 10) << 12) / 10;
             pulseSize = (ex->math_sin(t) >> 4) + 0x1400;
             env->otZ = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, pulseSize, 0, 1, 0x1000);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, 0x1000);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, pulseSize, 0, BTLFX_ABR_ADD, 0x1000);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, 0x1000);
             env->otZ = 0;
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, pulseSize, 0, 1, 0x1000);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, pulseSize, 0, BTLFX_ABR_ADD, 0x1000);
             sc.vx = sc.vz = 0x200;
             sc.vy = (ex->math_sin(t) >> 7) + 0x333;
             glow = 0x1000;
@@ -129,26 +129,26 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->otZ = 0x20;
                 burstT = ((frame - 0x8C) << 12) / 40;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RING), &work->pos14, &rot2,
-                                  ex->math_sin(burstT >> 2) * 5, 0, 1, ex->math_cos(burstT >> 2));
+                                  ex->math_sin(burstT >> 2) * 5, 0, BTLFX_ABR_ADD, ex->math_cos(burstT >> 2));
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RING), &work->pos14, &rot2,
-                                  ex->math_sin(burstT >> 2) * 2, 0, 1, ex->math_cos(burstT >> 2));
+                                  ex->math_sin(burstT >> 2) * 2, 0, BTLFX_ABR_ADD, ex->math_cos(burstT >> 2));
                 rot2.vx += 0x200;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RING), &work->pos14, &rot2,
-                                  ex->math_sin(burstT >> 2) * 3, 0, 1, ex->math_cos(burstT >> 2));
+                                  ex->math_sin(burstT >> 2) * 3, 0, BTLFX_ABR_ADD, ex->math_cos(burstT >> 2));
                 rot2.vx -= 0x400;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RING), &work->pos14, &rot2,
-                                  ex->math_sin(burstT >> 2) * 3, 0, 1, ex->math_cos(burstT >> 2));
+                                  ex->math_sin(burstT >> 2) * 3, 0, BTLFX_ABR_ADD, ex->math_cos(burstT >> 2));
                 env->otZ = 0;
             }
             fade = 0x1000 - t;
             env->otZ = 0x100;
             ringGrow = t + 0x1400;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, ringGrow, 0, 1, fade);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, fade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, ringGrow, 0, BTLFX_ABR_ADD, fade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, fade);
             if (frame < 6) {
                 flashAng = (frame << 10) / 6;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL,
-                                  ex->math_sin(flashAng) * 2, 0, 1, ex->math_cos(flashAng));
+                                  ex->math_sin(flashAng) * 2, 0, BTLFX_ABR_ADD, ex->math_cos(flashAng));
             }
             env->otZ = 0;
             if (frame == 0x1E) {
@@ -157,13 +157,13 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 4) {
                 tintBase = ex->math_cos(frame << 8) * 0xFF;
                 fade = tintBase >> 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, fade, tintBase >> 14, tintBase >> 13);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, fade, tintBase >> 14, tintBase >> 13);
             }
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, ringGrow, 0, 1, fade);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, ringGrow, 0, BTLFX_ABR_ADD, fade);
             if (frame < 0x16) {
                 shrinkAng = (frame << 12) / 22 >> 2;
                 glow = ex->math_cos(shrinkAng);
@@ -215,7 +215,7 @@ static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *spark, Unk800F78A4 *env, Un
         if (spark->index16 == 0) {
             TRAIL(spark)->lastSlot0 = TRAIL(spark)->count2 = 0xE;
             TRAIL(spark)->head1 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_TRAIL), 0, NULL, 5, 0x1000, fade, 1, (u8 *)spark->point18 - 4, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_TRAIL), 0, NULL, 5, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)spark->point18 - 4, 0);
         }
         if (frame >= 0xC) {
             return 1;

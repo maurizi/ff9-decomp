@@ -19,7 +19,7 @@ static void fx_1a8_op80ElemDraw0(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, 
     drawPos.vz = pos->vz;
     ex->Hi_DrawEffModel(rot, &drawPos, (s32)&modelScale, fx_1a8_elemModels[0]);
     if (fade < 0x1000) {
-        ex->Hi_ModifyEffModelAbr(fx_1a8_elemModels[0], 1);
+        ex->Hi_ModifyEffModelAbr(fx_1a8_elemModels[0], BTLFX_ABR_ADD);
         bright = (fade >> 5) - 0x80;
         ex->Hi_ModifyEffModelRGB(fx_1a8_elemModels[0], bright, bright, bright);
     }
@@ -44,7 +44,7 @@ static void fx_1a8_op80ElemDraw1(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, 
     drawPos.vz = pos->vz;
     ex->Hi_DrawEffModel(rot, &drawPos, (s32)&modelScale, fx_1a8_elemModels[1]);
     if (fade < 0x1000) {
-        ex->Hi_ModifyEffModelAbr(fx_1a8_elemModels[1], 1);
+        ex->Hi_ModifyEffModelAbr(fx_1a8_elemModels[1], BTLFX_ABR_ADD);
         bright = (fade >> 5) - 0x80;
         ex->Hi_ModifyEffModelRGB(fx_1a8_elemModels[1], bright, bright, bright);
     }
@@ -230,7 +230,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 0x10) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_FLAME_TRAIL), (s32)&work->pos8, NULL, 0, 0x555,
-                                    ex->math_cos((frame << 8) >> 2), 1, fx_1a8_trailPoints, 0);
+                                    ex->math_cos((frame << 8) >> 2), BTLFX_ABR_ADD, fx_1a8_trailPoints, 0);
             }
             if (frame == 0) {
                 work->rot2C.vx = 0x600;
@@ -296,7 +296,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 work->state0 = 2;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 2, 0x46, 0x46, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], BTLFX_ABR_SUB, 0x46, 0x46, 0x46);
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1a8_targetPos);
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_GOLD_RAYS), (s32)&work->pos10);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ODIN_CRIMSON_RINGS_2), (s32)&work->pos10);
@@ -364,7 +364,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (t > 0xC00) {
                 s32 modelBright;
 
-                ex->Hi_ModifyEffModelAbr(work->model28, 1);
+                ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
                 modelBright = ((0x1000 - (t - 0xC00) * 4) >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model28, modelBright, modelBright, modelBright);
             }
@@ -377,7 +377,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 6) {
                 at = 0xFF - (frame * 0xFF) / 6;
-                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 1, at, at >> 1, at >> 1);
+                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], BTLFX_ABR_ADD, at, at >> 1, at >> 1);
             }
             if (frame < 0x10) {
                 work->pos40.vx = fx_1a8_targetPos.vx;
@@ -458,7 +458,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ringRot.pad = 0;
                 env->otZ = 0x200;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ODIN_CRIMSON_RINGS), &work->pos10, &ringRot,
-                                  ex->math_sin((frame << 8) >> 2), 0, 1, ex->math_cos((frame << 8) >> 2));
+                                  ex->math_sin((frame << 8) >> 2), 0, BTLFX_ABR_ADD, ex->math_cos((frame << 8) >> 2));
                 env->otZ = 0;
             }
             if (frame == 0xC) {

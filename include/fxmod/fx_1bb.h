@@ -9,6 +9,10 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_CLIMHAZZARD_FLAME_RINGS 0x1 /* emitter: rings textured with a yellow-red flame wall + white / pale-yellow gouraud rings, 16 frames (byte-identical to fx_18d entry 0x1) */
 
+/* fx_1bb choreography (docs/fxdata.md, "Choreography literals"): the rings' height and op80's length. */
+#define FX_CLIMHAZZARD_RINGS_HEIGHT 0x190 /* FLAME_RINGS start this high over the target centre */
+#define FX_CLIMHAZZARD_FRAMES       0x20  /* op80's length (the op ends) */
+
 extern Unk800F78A4 *fx_1bb_env;
 
 #endif

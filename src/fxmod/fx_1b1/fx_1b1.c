@@ -5,11 +5,11 @@ s32 fx_1b1_op80(s32 mode, Fx1b1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx1b1Work);
     } else if (mode == 1) {
         fx_1b1_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        work->pos8.vy += 0xC8;
+        work->pos8.vy += FX_GOLEM_DEATH_CLOUD_HEIGHT;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GOLEM_DEATH_DUST_CLOUD), (s32)&work->pos8);
         if (work->emit0 != NULL) {
@@ -17,13 +17,13 @@ s32 fx_1b1_op80(s32 mode, Fx1b1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x18) {
+        if (frame == FX_GOLEM_DEATH_CLOUD_2_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GOLEM_DEATH_DUST_CLOUD_2), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_GOLEM_DEATH_FRAMES;
     }
     return 0;
 }

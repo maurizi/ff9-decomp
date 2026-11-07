@@ -30,8 +30,8 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *it, Unk800F78A4 *env, Unk801
         ex->btlfx_aimAngles((s16 *)&it->posC, (s16 *)&it->target20, (s16 *)&ang);
         ex->btlfx_turnToward((s16 *)&ang, (s16 *)&it->rot14, it->turn8);
         ex->btlfx_pointAhead((s16 *)&it->posC, (s16 *)&it->rot14, it->speed4, (s16 *)&it->posC);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_VIOLET_ORB), &it->posC, 0, size + 0x800, frame, 1, -1, 0, 0);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_PARTICLE), &it->posC, 0, size + 0x800, frame, 2, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_VIOLET_ORB), &it->posC, 0, size + 0x800, frame, BTLFX_ABR_ADD, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_PARTICLE), &it->posC, 0, size + 0x800, frame, BTLFX_ABR_SUB, -1, 0, 0);
         if (it->emit1C != NULL && it->emit1C->state == BTLFX_EMIT_DONE) {
             it->emit1C = NULL;
         }
@@ -113,7 +113,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ringRot.vy = 0;
             ringRot.pad = 1;
             env->otZ = 0x20;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_RING), &work->pos4, &ringRot, ringScale, 0, 1, ringAlpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_RING), &work->pos4, &ringRot, ringScale, 0, BTLFX_ABR_ADD, ringAlpha);
             env->otZ = 0;
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_BACKDROP), frame);
             if (frame >= 0x10) {

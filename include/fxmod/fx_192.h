@@ -9,6 +9,9 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_DEATH_GREEN_SMOKE 0x1 /* emitter: grey-green smoke puffs in a spiral, 24 frames */
 
+/* fx_192 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_DEATH_FRAMES 0x40 /* op80's length (the op ends; GREEN_SMOKE starts at the caster at init) */
+
 extern Unk800F78A4 *fx_192_env;
 
 #endif

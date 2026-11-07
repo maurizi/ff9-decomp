@@ -161,7 +161,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1E:
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             break;
         }
         if ((u32)(frame - 0x1F) < 0x3C) {

@@ -231,10 +231,10 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 1 || frame == 0xF) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x40, 0x40, 0x40);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x40, 0x40, 0x40);
             }
             if (frame == 0x17) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             }
             if (frame >= 0x18) {
                 ex->btlfx_initParticleSystem();
@@ -266,17 +266,17 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->trailStride = 0x8C;
                     emitter->otZ = 0x140;
                 }
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x80, 0x80, 0x80);
             }
             break;
         case 1:
             t = (frame << 12) / 60;
             if (frame < 8) {
                 tint = (ex->math_cos((frame << 10) >> 3) << 7) >> 12;
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, tint, tint, tint);
             }
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x20, 0x40, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x20, 0x40, 0xFF);
             }
             if (frame > 0) {
                 for (i = 0; i < 7; i++) {

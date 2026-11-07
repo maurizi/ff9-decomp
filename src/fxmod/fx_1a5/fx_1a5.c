@@ -5,7 +5,7 @@ s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx1a5Work);
     } else if (mode == 1) {
         s32 unit = *args;
         work->unit10 = unit;
@@ -25,16 +25,16 @@ s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xF) {
+        if (frame == FX_REVIVE_FEATHERS_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REVIVE_FEATHERS), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(work->unit10, 0x20);
             }
         }
-        if (frame == 0xA) {
+        if (frame == FX_REVIVE_SIGNAL_FRAME) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
-        return frame >= 0x28;
+        return frame >= FX_REVIVE_FRAMES;
     }
     return 0;
 }

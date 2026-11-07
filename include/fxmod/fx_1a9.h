@@ -9,6 +9,9 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_VIRUS_POWDER_PUFFS 0x3 /* emitter: violet, blue and orange powder puffs bursting into specks + pink dots */
 
+/* fx_1a9 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_VIRUS_POWDER_FRAMES 0x38 /* op80's length (the op ends; POWDER_PUFFS start at init) */
+
 extern Unk800F78A4 *fx_1a9_env;
 extern SVECTOR fx_1a9_emitPos0;
 

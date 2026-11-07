@@ -250,7 +250,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 0;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             emitter = work->emit80[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING_TRAILS), (s32)&work->pos100);
@@ -340,7 +340,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 1;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
@@ -405,7 +405,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 2;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
@@ -475,7 +475,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timers0[3] = 3;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                     (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
@@ -578,17 +578,17 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->timers0[0] != 0) {
             work->timers0[0]--;
             tint = ex->btlfx_lerpRatio(0x40, 0, work->timers0[0], 0x10);
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, tint, tint, tint);
         }
         if (work->timers0[12] != 0) {
             work->timers0[12]--;
             tint = ex->btlfx_lerpRatio(0xFF, 0, work->timers0[12], 0x20);
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, tint, tint, tint);
         }
         if (work->timers0[1] != 0) {
             work->timers0[1]--;
             tint = 0x40;
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, tint, tint, tint);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, tint, tint, tint);
         }
         if (work->timers0[2] != 0) {
             work->timers0[2]--;
@@ -715,7 +715,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                         trailAlpha = fx_1b3_trails[i].timer4C << 10;
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH1_LIGHTNING), 0, NULL, frame, 0x1000,
-                                            trailAlpha, 1, (u8 *)&fx_1b3_trails[i], 0);
+                                            trailAlpha, BTLFX_ABR_ADD, (u8 *)&fx_1b3_trails[i], 0);
                     }
                 }
             }

@@ -161,7 +161,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_buildPathTrail(&fx_1bd_pathTrail.path0, fx_1bd_op82Trails[i], 0x50, fx_1bd_pathTrail.start8, fx_1bd_pathTrail.countA, fx_1bd_pathTrail.alpha10,
                               fx_1bd_pathTrail.alpha12, 0);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_TRAIL), 0, NULL, 0, fx_1bd_pathTrail.scaleE,
-                                    fx_1bd_pathTrail.alphaC, 1, fx_1bd_op82Trails[i], 0);
+                                    fx_1bd_pathTrail.alphaC, BTLFX_ABR_ADD, fx_1bd_op82Trails[i], 0);
             }
         }
         if (frame >= 26 && frame < 30) {
@@ -417,7 +417,7 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 4 && frame < 37) {
             fxm_vecTrackGet(&fx_1bd_vecTrack0, frame - 4, &work->xform70.scale18);
             ex->Hi_DrawEffModel(&work->xform70.rot0, &work->xform70.pos8, (s32)&work->xform70.scale18, work->model148);
-            ex->Hi_ModifyEffModelAbr(work->model148, 1);
+            ex->Hi_ModifyEffModelAbr(work->model148, BTLFX_ABR_ADD);
             if (work->timer10E >= 0) {
                 work->fade98 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer10E, 0x10);
                 ex->Hi_ModifyEffModelRGB(work->model148, work->fade98, work->fade98, work->fade98);
@@ -425,7 +425,7 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             fxm_vecTrackGet(&fx_1bd_vecTrack1, frame - 4, &work->xform9C.scale18);
             ex->Hi_DrawEffModel(&work->xform9C.rot0, &work->xform9C.pos8, (s32)&work->xform9C.scale18, work->model14A);
-            ex->Hi_ModifyEffModelAbr(work->model14A, 1);
+            ex->Hi_ModifyEffModelAbr(work->model14A, BTLFX_ABR_ADD);
             if (work->timer110 >= 0 || work->timer112 >= 0) {
                 if (work->timer110 >= 0) {
                     work->fadeC4 = fxm_lerpRatio(-0x80, 0, 3 - work->timer110, 3);
@@ -449,7 +449,7 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->xformCC.pos8.vz += trackOfs.vz;
             fxm_vecTrackGet(&fx_1bd_vecTrack2, frame - 4, &work->xformCC.scale18);
             ex->Hi_DrawEffModel(&work->xformCC.rot0, &work->xformCC.pos8, (s32)&work->xformCC.scale18, work->model14C);
-            ex->Hi_ModifyEffModelAbr(work->model14C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model14C, BTLFX_ABR_ADD);
             if (work->timer114 >= 0 || work->timer116 >= 0) {
                 if (work->timer114 >= 0) {
                     work->fadeC8 = fxm_lerpRatio(-0x80, 0, 6 - work->timer114, 6);

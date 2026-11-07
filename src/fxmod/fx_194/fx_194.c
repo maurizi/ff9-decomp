@@ -70,7 +70,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             if (frame >= 0x13 && frame < 0x19) {
                 s32 tint = fx_194_flashLevels[frame - 0x13] * 0xFF / 100;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
             }
             camPos.vx = work->camPos14.vx;
             camPos.vy = work->camPos14.vy;
@@ -88,7 +88,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = frame << 7;
             if (frame < 4) {
                 s32 tint = 0xFF - ((frame * 0xFF) >> 2);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
             }
             t >>= 2;
             fx_194_waveAmp = (ex->math_cos(t) * 0xC) >> 12;

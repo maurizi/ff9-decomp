@@ -277,14 +277,14 @@ void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32
                 gte_rtps();
                 if (isft) {
                     ex->btlfx_addPrim(0x09000000, depth, poly);
-                    ex->btlfx_addPrimAbr(0x05000000, depth, shadePoly, 2);
+                    ex->btlfx_addPrimAbr(0x05000000, depth, shadePoly, BTLFX_ABR_SUB);
                     gte_stsxy(&poly->x3);
                     *(s32 *)&shadePoly->x3 = *(s32 *)&poly->x3;
                     poly++;
                     shadePoly++;
                 } else {
                     ex->btlfx_addPrim(0x0C000000, depth, edgePoly);
-                    ex->btlfx_addPrimAbr(0x08000000, depth, edgeShadePoly, 2);
+                    ex->btlfx_addPrimAbr(0x08000000, depth, edgeShadePoly, BTLFX_ABR_SUB);
                     gte_stsxy(&edgePoly->x3);
                     *(s32 *)&edgeShadePoly->x3 = *(s32 *)&edgePoly->x3;
                     edgePoly++;
@@ -441,10 +441,10 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawRippleGrid((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, 1, fx_196_rippleColors, 0x18, frame << 8, 0x186,
                                   0x100);
                 if (frame == 0x2B) {
-                    ex->btlfx_drawScreenTint((u32 *)&env->ot[2], 0, 0x20, 0xAA, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)&env->ot[2], BTLFX_ABR_HALF, 0x20, 0xAA, 0xFF);
                 }
                 if (frame == 0x2D || frame == 0x32) {
-                    ex->btlfx_drawScreenTint((u32 *)&env->ot[2], 0, 0, 0x64, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)&env->ot[2], BTLFX_ABR_HALF, 0, 0x64, 0xFF);
                 }
                 if (frame >= 0x2B) {
                     s32 fadeFrame;

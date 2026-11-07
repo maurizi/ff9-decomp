@@ -26,10 +26,10 @@ s32 fx_18c_op80(s32 mode, Fx18cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx18cWork);
     } else if (mode == 1) {
         fx_18c_env = env;
-        for (i = 2; i >= 0; i--) {
+        for (i = FX_LIGHT_TIMERS - 1; i >= 0; i--) {
             fx_18c_timers[i] = 0;
         }
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos0);
@@ -39,33 +39,33 @@ s32 fx_18c_op80(s32 mode, Fx18cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            fx_18c_timers[1] = 0x28;
-            fx_18c_timers[0] = 0x10;
+            fx_18c_timers[FX_LIGHT_T_HOVER] = FX_LIGHT_HOVER_FRAMES;
+            fx_18c_timers[FX_LIGHT_T_RISE] = FX_LIGHT_RISE_FRAMES;
             break;
-        case 24:
-            fx_18c_timers[2] = 0x10;
+        case FX_LIGHT_DROP_FRAME:
+            fx_18c_timers[FX_LIGHT_T_DROP] = FX_LIGHT_DROP_FRAMES;
             break;
-        case 40:
+        case FX_LIGHT_HOME_FRAME:
             ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos0);
             ex->btlfx_setUnitPos(0, (s16 *)&work->pos0);
             break;
         }
-        if (fx_18c_timers[0] != 0) {
-            fx_18c_timers[0]--;
-            work->pos8.vy = fxm_easeLerp(2, 0x10, fx_18c_timers[0], work->pos0.vy, work->pos0.vy - 0x320);
+        if (fx_18c_timers[FX_LIGHT_T_RISE] != 0) {
+            fx_18c_timers[FX_LIGHT_T_RISE]--;
+            work->pos8.vy = fxm_easeLerp(2, FX_LIGHT_RISE_FRAMES, fx_18c_timers[FX_LIGHT_T_RISE], work->pos0.vy, work->pos0.vy - FX_LIGHT_LIFT_HEIGHT);
         }
-        if (fx_18c_timers[2] != 0) {
-            fx_18c_timers[2]--;
-            work->pos8.vy = fxm_easeLerp(0, 0x10, fx_18c_timers[2], work->pos0.vy - 0x320, work->pos0.vy);
+        if (fx_18c_timers[FX_LIGHT_T_DROP] != 0) {
+            fx_18c_timers[FX_LIGHT_T_DROP]--;
+            work->pos8.vy = fxm_easeLerp(0, FX_LIGHT_DROP_FRAMES, fx_18c_timers[FX_LIGHT_T_DROP], work->pos0.vy - FX_LIGHT_LIFT_HEIGHT, work->pos0.vy);
         }
-        if (fx_18c_timers[1] != 0) {
-            fx_18c_timers[1]--;
+        if (fx_18c_timers[FX_LIGHT_T_HOVER] != 0) {
+            fx_18c_timers[FX_LIGHT_T_HOVER]--;
             pos.vx = work->pos0.vx + (ex->math_sin(frame << 6) >> 7);
             pos.vy = work->pos8.vy + (ex->math_sin(frame << 8) >> 5);
             pos.vz = work->pos0.vz + (ex->math_sin(frame << 6) >> 7);
             ex->btlfx_setUnitPos(0, (s16 *)&pos);
         }
-        return frame >= 0x48;
+        return frame >= FX_LIGHT_FRAMES;
     }
     return 0;
 }

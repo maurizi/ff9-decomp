@@ -257,55 +257,55 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scratch.pad = 1;
                 scratch.vx = ex->math_cos(t >> 2);
                 for (i = 0; i < 4; i++) {
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH_PINK_RINGS), &work->pos28, &scratch, 0x4000, 0, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH_PINK_RINGS), &work->pos28, &scratch, 0x4000, 0, BTLFX_ABR_ADD,
                                       ex->math_sin(t >> 1));
                     scratch.vx += 0x200;
                 }
                 scratch.vx = 0;
                 scratch.vy = ex->math_cos(t >> 2);
                 for (i = 0; i < 4; i++) {
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH_PINK_RINGS), &work->pos28, &scratch, 0x4000, 0, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DEATH_PINK_RINGS), &work->pos28, &scratch, 0x4000, 0, BTLFX_ABR_ADD,
                                       ex->math_sin(t >> 1));
                     scratch.vy += 0x200;
                 }
             }
             env->otZ = 0;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0x40, 0x40, 0x55);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_SUB, 0x40, 0x40, 0x55);
             }
             if (frame == 1) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x80, 0x80, 0xAA);
             }
             if (frame == 0x14) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_SUB, 0x80, 0x80, 0xAA);
             }
             if (frame == 0x15) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x80, 0x80, 0xAA);
             }
             if (frame == 0x16) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x40, 0x40, 0x55);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x40, 0x40, 0x55);
             }
             if ((u32)(frame - 0x20) < 8) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xC8 - (frame - 0x20) * 0x19, 0xC8 - (frame - 0x20) * 0x19, 0xC8 - (frame - 0x20) * 0x19);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0xC8 - (frame - 0x20) * 0x19, 0xC8 - (frame - 0x20) * 0x19, 0xC8 - (frame - 0x20) * 0x19);
             }
             if (frame == 0x2A || frame == 0x30) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_SUB, 0x80, 0x80, 0xAA);
             }
             if (frame == 0x2B || frame == 0x31) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x80, 0x80, 0xAA);
             }
             if (frame >= 0x4A) {
                 gridBright = ((frame - 0x4A) * 0xFF) / 16;
                 gridGrow = gridBright * 2 + gridBright;
             }
             if (frame == 0x3C || frame == 0x46 || frame == 0x50) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_SUB, 0, 0x80, 0xFF);
             }
             if (frame == 0x3D || frame == 0x47 || frame == 0x51) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x80, 0x80, 0xAA);
             }
             if (frame >= 0x46 && (ex->btlfx_rand() & 3) == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x40, 0x40, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0x40, 0x40, 0x20);
             }
             if (frame >= 0x3C) {
                 ex->btlfx_sampleGradient(fx_1b0_colorGradient, &work->color38, frame - 0x3C);
@@ -358,7 +358,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x59) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
             }
             if (frame >= 0x5A) {
                 work->state0 = 1;
@@ -384,11 +384,11 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             fx_1b0_updatePieces();
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_SUB, 0, 0xFF, 0xFF);
             }
             if (frame < 8) {
                 tint = 0xFF - (frame * 0xFF) / 8;
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, tint, tint, tint >> 1);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, tint, tint, tint >> 1);
             }
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_ROCK_TRAIL), (s32)&work->pos28);

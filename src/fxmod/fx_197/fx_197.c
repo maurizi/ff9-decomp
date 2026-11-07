@@ -294,7 +294,7 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             if (frame >= 3) {
                 it->state0 = 1;
                 ((s16 *)it)[-1] = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, 0x20, 0x46);
                 it->posC.vx = fx_197_pieceOffsets[it->index2].vx;
                 it->posC.vy = fx_197_pieceOffsets[it->index2].vy;
                 it->posC.vz = fx_197_pieceOffsets[it->index2].vz;
@@ -365,11 +365,11 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18[it->index2][2]);
             if (frame >= 0xE) {
                 t = 0x1000 - ((frame - 0xE) << 12) / 6;
-                ex->Hi_ModifyEffModelAbr(work->model18[it->index2][2], 1);
+                ex->Hi_ModifyEffModelAbr(work->model18[it->index2][2], BTLFX_ABR_ADD);
                 rgb = (t / 2 >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model18[it->index2][2], rgb, rgb, rgb);
             } else {
-                ex->Hi_ModifyEffModelAbr(work->model18[it->index2][2], 1);
+                ex->Hi_ModifyEffModelAbr(work->model18[it->index2][2], BTLFX_ABR_ADD);
                 rgb = -0x40;
                 ex->Hi_ModifyEffModelRGB(work->model18[it->index2][2], rgb, rgb, rgb);
             }
@@ -547,15 +547,15 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 19) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0x80, 0x80, 0x80);
             }
             if (frame == 20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, 0x80, 0xFF);
                 fx_197_overlayOn = 0;
             }
             if (frame >= 20 && frame < 36) {
                 tint = 0x80 - (((frame - 20) << 7) >> 4);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, tint >> 2, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, tint >> 2, tint);
             }
             ex->btlfx_drawScrollMove(frame * 2, 0x2C0, 0x180, 0x40, 0x80, 0x2C0, 0x100);
             if (frame >= 126) {

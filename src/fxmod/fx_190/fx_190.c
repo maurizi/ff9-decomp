@@ -7,12 +7,12 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR *aim;
 
     if (mode == 0) {
-        *args = 0x74;
+        *args = sizeof(Fx190Work);
     } else if (mode == 1) {
         work->count0 = 0;
         fx_190_env = env;
-        ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&work->pos44);
-        ex->btlfx_getUnitBonePos(0x10, 0x2C, (u16 *)&work->pos4C);
+        ex->btlfx_getUnitBonePos(0x10, FX_VIRAL_SMOKE_GREEN_BONE, (u16 *)&work->pos44);
+        ex->btlfx_getUnitBonePos(0x10, FX_VIRAL_SMOKE_BROWN_BONE, (u16 *)&work->pos4C);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos34);
         work->pos3C.vx = env->targets->centerX;
         work->pos3C.vz = env->targets->centerZ;
@@ -32,9 +32,9 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-        case 0x12:
-        case 0x24:
-        case 0x36:
+        case FX_VIRAL_SMOKE_PUFF_INTERVAL:
+        case 2 * FX_VIRAL_SMOKE_PUFF_INTERVAL:
+        case (FX_VIRAL_SMOKE_PUFF_COUNT - 1) * FX_VIRAL_SMOKE_PUFF_INTERVAL:
             work->emit54[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRAL_SMOKE_GREEN_PUFFS), (s32)&work->pos44);
             work->emit64[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRAL_SMOKE_BROWN_PUFFS), (s32)&work->pos4C);
             work->rot14[work->count0].vy += work->rotC.vy;
@@ -43,7 +43,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->count0++;
             break;
         }
-        if (frame == 0xF) {
+        if (frame == FX_VIRAL_SMOKE_HELIX_FRAME) {
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRAL_SMOKE_PUFF_HELIX), (s32)&work->pos3C);
         }
         for (i = 0; i < work->count0; i++) {
@@ -66,7 +66,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit64[i]->rot.vz = aim->vz;
             }
         }
-        return frame >= 0x60;
+        return frame >= FX_VIRAL_SMOKE_FRAMES;
     }
     return 0;
 }

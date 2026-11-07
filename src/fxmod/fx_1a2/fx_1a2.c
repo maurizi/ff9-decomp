@@ -320,12 +320,12 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         fxm_drawRibbonTrail(&ribbon1, &ribbon2, 0x1F, &fx_1a2_colors1, &fx_1a2_colors2, 0x1000, fx_1a2_ribbonEdges1, 1);
         fxm_drawRibbonTrail(&ribbon2, &ribbon3, 0x1F, &fx_1a2_colors2, &fx_1a2_colors0, 0x1000, fx_1a2_ribbonEdges2, 1);
         env->otZ = 0x20;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS_2), &ribbon2, NULL, 0x400, 0, 1, ex->math_sin(t >> 2) >> 1);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS_2), &ribbon2, NULL, 0x400, 0, BTLFX_ABR_ADD, ex->math_sin(t >> 2) >> 1);
         ringRot.pad = 0;
         ringRot.vy = 0;
         ringRot.vx = 0;
         ringRot.vz = frame << 4;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS), &ribbon2, &ringRot, 0x800, 0, 1, ex->math_sin(t >> 2));
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS), &ribbon2, &ringRot, 0x800, 0, BTLFX_ABR_ADD, ex->math_sin(t >> 2));
         env->otZ = 0;
         ((s32 *)&w->pos18)[0] = ((s32 *)&ribbon2)[0];
         ((s32 *)&w->pos18)[1] = ((s32 *)&ribbon2)[1];
@@ -486,7 +486,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->pos20 = w->pos8.vx;
                 w->pos24 = w->pos8.vz;
                 w->pos22 -= 0x1AE;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x3C, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x10, 0x3C, 0x46);
                 ex->btlfx_fadeUnitById(0, 0);
                 ex->btlfx_fadeUnitById(0x11, -2);
                 ex->btlfx_setUnitPos(0x11, (s16 *)&w->pos8);
@@ -573,7 +573,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model50);
             if ((u32)(frame - 0x20) < 0x10) {
                 fade = 0x1000 - ((frame - 0x20) << 8);
-                ex->Hi_ModifyEffModelAbr(w->model50, 1);
+                ex->Hi_ModifyEffModelAbr(w->model50, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(w->model50, (fade >> 5) - 0x80, (fade >> 5) - 0x80, (fade >> 5) - 0x80);
             }
         }

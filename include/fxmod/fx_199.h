@@ -9,10 +9,14 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_DARKSIDE_SPARKLE_BURST 0x1 /* emitter: yellow / blue ring, blue sparkle sprites, fan (byte-identical to fx_0bc entry 0x1) */
 
+/* fx_199 choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths (fx_0bc's names). */
+#define FX_DARKSIDE_FRAMES        0x32 /* op80: the task ends at this frame */
+#define FX_DARKSIDE_CAMERA_FRAMES 7    /* op81: the camera looks at unit 0x10 (btlfx_getUnitPos) until this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx199Work;
+} Fx199Work; /* 0xC */
 
 extern Unk800F78A4 *fx_199_env;
 
