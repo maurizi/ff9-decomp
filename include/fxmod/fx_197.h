@@ -16,6 +16,58 @@
 #define FX_SHIVA_ICICLE 0xD8 /* 'so' model: long ice shard, pale cracked-ice texture (0xC0+ = battle load buffer, entry 0x18) */
 #define FX_SHIVA_ICICLE_2 0xD9 /* 'so' model: long ice shard, dark cracked-ice texture (0xC0+ = battle load buffer, entry 0x19) */
 
+/* fx_197 choreography (docs/fxdata.md, "Choreography literals"; fx_026's names). */
+#define FX_SHIVA_MODELS 0x20 /* btlfx_initEffModels slots */
+#define FX_SHIVA_BARRIER_STATE_BUILD 0 /* op81: the pieces fly in (pool items) */
+#define FX_SHIVA_BARRIER_STATE_SHATTER 1 /* the shatter line sweeps down, the pieces and the core break */
+#define FX_SHIVA_BUILD_FRAMES 0x10 /* FX_SHIVA_BARRIER_STATE_BUILD's length */
+#define FX_SHIVA_SHATTER_OP_FRAMES 0x7E /* FX_SHIVA_BARRIER_STATE_SHATTER's length (the op ends) */
+#define FX_SHIVA_BARRIER_POOL_COUNT 7 /* op81 poolCount */
+#define FX_SHIVA_PIECE_COUNT 6 /* barrier pieces (pool items 0-5, fx_197_pieceModelFileIds rows) */
+#define FX_SHIVA_PIECE_CORE 6 /* pool item piece index of the core (model6C[6]) */
+#define FX_SHIVA_PIECE_STATE_FLY 0 /* piece pool item: flies along its fx_197_piecePathFileIds track, */
+#define FX_SHIVA_PIECE_FLY_FRAMES 3 /* for this many frames; then a blue tint and FX_SHIVA_SHATTER_RINGS */
+#define FX_SHIVA_PIECE_STATE_STAND 1 /* grows through its stages (FX_SHIVA_PIECE_FORM_FRAMES) until the shatter */
+#define FX_SHIVA_PIECE_STATE_SHATTER 2 /* breaks into shards and fades out */
+#define FX_SHIVA_PIECE_STAGES 3 /* morph-stage models per piece (fx_197_pieceModelFileIds rows) */
+#define FX_SHIVA_PIECE_FORM_FRAMES 0x10 /* FX_SHIVA_PIECE_STATE_STAND: fx_197_pieceModelFrames entries; then the piece's model6C is drawn too */
+#define FX_SHIVA_PIECE_FADE_FRAME 0xE /* FX_SHIVA_PIECE_STATE_SHATTER: fades out from this frame, */
+#define FX_SHIVA_PIECE_FADE_FRAMES 6 /* over this many; the item ends */
+#define FX_SHIVA_PIECE_SHARD_LIFE 0x14 /* frames a piece's shard flies (fxm_shatterInit life) */
+#define FX_SHIVA_CORE_STATE_STAND 0 /* core pool item: fades in (8 frames), waits for the shatter */
+#define FX_SHIVA_CORE_STATE_SHATTER 1 /* breaks into shards */
+#define FX_SHIVA_CORE_FADE_FRAME 0x37 /* FX_SHIVA_CORE_STATE_SHATTER: fades out from this frame (over 32, << 12 >> 5), */
+#define FX_SHIVA_CORE_FRAMES 0x57 /* ends at this one */
+#define FX_SHIVA_CORE_SHARD_LIFE 0x57 /* frames a core shard flies */
+#define FX_SHIVA_PIECE_TINT_RGB 0, 0x20, 0x46 /* additive screen tint (blue) as a piece lands */
+#define FX_SHIVA_SHATTER_LINE_Y 0x400 /* op81: the shatter line's start height; it sweeps up 0x80 per frame, triangles below it break off */
+#define FX_SHIVA_CYAN_RING_FRAME 0x12 /* FX_SHIVA_BARRIER_STATE_SHATTER: FX_SHIVA_CYAN_RING starts */
+#define FX_SHIVA_DARKEN_FRAME 0x13 /* the screen is darkened (FX_SHIVA_DARKEN_RGB) */
+#define FX_SHIVA_SHATTER_FRAME 0x14 /* the pieces 0-4 and the core shatter, the debris and blue trail start, blue flash */
+#define FX_SHIVA_SHATTER_5_FRAME 0x18 /* piece 5 shatters */
+#define FX_SHIVA_STAR_GLINTS_FRAME 0x20 /* FX_SHIVA_STAR_GLINTS start */
+#define FX_SHIVA_ICE_CHUNKS_FRAME 0x2C /* FX_SHIVA_ICE_CHUNKS start */
+#define FX_SHIVA_FLASH_FADE_FRAMES 16 /* the blue flash fades over this many frames ((frame - SHATTER_FRAME) << 7 >> 4) */
+#define FX_SHIVA_DARKEN_RGB 0x80, 0x80, 0x80 /* subtractive screen tint */
+#define FX_SHIVA_FLASH_RGB 0, 0x80, 0xFF /* additive screen tint (blue) */
+#define FX_SHIVA_FLASH_LEVEL 0x80 /* the fading flash's blue (green = blue / 4) */
+#define FX_SHIVA_BLUE_TRAIL_TRAIL_SLOTS 0xC /* FX_SHIVA_BLUE_TRAIL's trail buffer fx_197_op81Trails: slots of */
+#define FX_SHIVA_BLUE_TRAIL_TRAIL_STRIDE 0x4C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* The icicles' 8-bit page (0x280, 0x100): every op81 frame btlfx_drawScrollMove copies (ICICLE_2_SRC_X, _Y) into
+ * ICICLE_2's rect, scrolled; in the shatter state also ICICLE's texture into the v 128 rect below (BARRIER_VRAM). */
+#define FX_SHIVA_ICICLE_2_VRAM_X 0x280
+#define FX_SHIVA_ICICLE_2_VRAM_Y 0x100
+#define FX_SHIVA_ICICLE_2_VRAM_W 0x40
+#define FX_SHIVA_ICICLE_2_VRAM_H 0x80
+#define FX_SHIVA_ICICLE_2_SRC_X 0x280
+#define FX_SHIVA_ICICLE_2_SRC_Y 0x180
+#define FX_SHIVA_BARRIER_VRAM_X 0x2C0
+#define FX_SHIVA_BARRIER_VRAM_Y 0x180
+#define FX_SHIVA_BARRIER_VRAM_W 0x40
+#define FX_SHIVA_BARRIER_VRAM_H 0x80
+#define FX_SHIVA_BARRIER_SRC_X 0x2C0
+#define FX_SHIVA_BARRIER_SRC_Y 0x100
+
 typedef struct {
     SVECTOR vert0; /* pad: already split off */
     SVECTOR vert8;
@@ -73,9 +125,9 @@ typedef struct {
     s32 frame4; /* frame */
     SVECTOR pos8; /* position */
     SVECTOR pos10;
-    s32 model18[6][3]; /* models of the six pieces */
+    s32 model18[FX_SHIVA_PIECE_COUNT][FX_SHIVA_PIECE_STAGES]; /* models of the six pieces */
     s32 pad60[3];
-    s32 model6C[7];
+    s32 model6C[FX_SHIVA_PIECE_COUNT + 1];
 } Fx197Work81; /* 0x88 */
 
 typedef struct {
@@ -100,8 +152,8 @@ extern Fx197Tri fx_197_shatterTris6[];
 extern BtlModelBuf fx_197_effModels[];
 extern s32 fx_197_model0;
 extern s32 fx_197_model1;
-extern s32 fx_197_pieceModelFileIds[6][3];
-extern s32 fx_197_modelFileIds[7];
+extern s32 fx_197_pieceModelFileIds[FX_SHIVA_PIECE_COUNT][FX_SHIVA_PIECE_STAGES];
+extern s32 fx_197_modelFileIds[FX_SHIVA_PIECE_COUNT + 1];
 extern SVECTOR fx_197_basePos;
 extern s32 fx_197_spawnPieces[];
 extern s32 fx_197_overlayOn; /* 1 in the module image, which is reloaded for every cast (runtime, round 33) */

@@ -47,7 +47,7 @@ static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *base, SVECTO
     s32 t;
 
     start.vx = fx_191_op80Origin.vx + base->vx;
-    t = (fx_191_op80Frame << 12) / 12;
+    t = (fx_191_op80Frame << 12) / FX_LANCER_STREAK_FRAMES;
     start.vy = fx_191_op80Origin.vy + base->vy;
     start.vz = fx_191_op80Origin.vz + base->vz;
     ex->btlfx_lerpVec((s16 *)&start, (s16 *)to, t, (s16 *)&cur);
@@ -106,7 +106,7 @@ static s32 fxm_followPathParticle0(Pool30Entry *pt, SVECTOR *pos, SVECTOR *ofs, 
 static s32 fxm_followPathParticle1(Pool30Entry *pt, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_191_posPath1, (fx_191_op81Frame - 5) * 3, &pathPos);
+    fxm_posPathGet(&fx_191_posPath1, (fx_191_op81Frame - FX_LANCER_GOLD_TRAIL_2_FRAME) * 3, &pathPos);
     pathPos.vx += fx_191_op81PathOrigin.vx;
     pathPos.vy += fx_191_op81PathOrigin.vy;
     pathPos.vz += fx_191_op81PathOrigin.vz;
@@ -131,7 +131,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx191Work80);
     } else if (mode == 1) {
         fx_191_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
@@ -139,12 +139,12 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_191_op80Origin.vx = work->pos10.vx;
         fx_191_op80Origin.vy = work->pos10.vy;
         fx_191_op80Origin.vz = work->pos10.vz;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < FX_LANCER_STREAKS; i++) {
             work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_191_emitFileIds[i]), (s32)&fx_191_emitPos0);
             if (work->emit0[i] != NULL) {
                 work->emit0[i]->trails = (s32)fx_191_op80Trails[i];
-                work->emit0[i]->trailSlots = 4;
-                work->emit0[i]->trailStride = 0x60;
+                work->emit0[i]->trailSlots = FX_LANCER_STREAK_TRAIL_SLOTS;
+                work->emit0[i]->trailStride = FX_LANCER_STREAK_TRAIL_STRIDE;
             }
             if (work->emit0[i] != NULL) {
                 work->emit0[i]->file->m.module.update = fx_191_op80ParticleMotions[i];
@@ -163,7 +163,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         fx_191_op80Frame = frame;
-        return frame >= 0x28;
+        return frame >= FX_LANCER_STREAKS_FRAMES;
     }
     return 0;
 }
@@ -174,7 +174,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        *args = 0x60;
+        *args = sizeof(Fx191Work81);
     } else if (mode == 1) {
         fx_191_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
@@ -184,8 +184,8 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_GOLD_TRAIL), (s32)&fx_191_emitPos0);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_191_op81Trails0;
-            work->emit0->trailSlots = 2;
-            work->emit0->trailStride = 0x70;
+            work->emit0->trailSlots = FX_LANCER_GOLD_TRAIL_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_LANCER_GOLD_TRAIL_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->file->m.module.update = fx_191_op81ParticleMotion0;
@@ -199,12 +199,12 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         fx_191_op81Frame = frame;
         switch (frame) {
-        case 5:
+        case FX_LANCER_GOLD_TRAIL_2_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LANCER_GOLD_TRAIL_2), (s32)&fx_191_emitPos1);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_191_op81Trails1;
-                work->emit4->trailSlots = 2;
-                work->emit4->trailStride = 0x70;
+                work->emit4->trailSlots = FX_LANCER_GOLD_TRAIL_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_LANCER_GOLD_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit4 != NULL) {
                 work->emit4->file->m.module.update = fx_191_op81ParticleMotion1;
@@ -213,7 +213,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 3:
+        case FX_LANCER_CYAN_SPARKS_FRAME:
             work->pos30.vx = -0x140;
             work->pos30.vy = 0x8C;
             work->pos38.vx = 0x154;
@@ -235,7 +235,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 8:
+        case FX_LANCER_RED_SPARKS_FRAME:
             work->pos40.vx = 0xFA;
             work->pos40.vy = -0x12C;
             work->pos48.vx = -0x12C;
@@ -258,8 +258,8 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        if (frame >= 3) {
-            t = (frame - 3) << 10;
+        if (frame >= FX_LANCER_CYAN_SPARKS_FRAME) {
+            t = (frame - FX_LANCER_CYAN_SPARKS_FRAME) << 10;
             if (t > 0x1000) {
                 t = 0x1000;
             }
@@ -271,8 +271,8 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit8->target = (s32)&work->target50;
             }
         }
-        if (frame >= 8) {
-            t = (frame - 8) << 10;
+        if (frame >= FX_LANCER_RED_SPARKS_FRAME) {
+            t = (frame - FX_LANCER_RED_SPARKS_FRAME) << 10;
             if (t > 0x1000) {
                 t = 0x1000;
             }
@@ -284,7 +284,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit10->target = (s32)&work->target58;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_LANCER_FRAMES;
     }
     return 0;
 }

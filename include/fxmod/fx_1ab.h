@@ -16,6 +16,20 @@
 #define FX_WATERGA_BACKDROP_3     0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_WATERGA_WATER_SPLASH_2 0x8 /* emitter: sphere of dark-blue water splash sprites, 24 frames */
 
+/* fx_1ab choreography (docs/fxdata.md, "Choreography literals"): the water sphere rising out of the ground with the
+ * ring spreading at its foot (fade in / out countdowns), the splashes' keyframes, op80's length. */
+#define FX_WATERGA_MODELS         2     /* btlfx_initEffModels slots (WATER_SPHERE, WATER_RING) */
+#define FX_WATERGA_SPLASH_FRAME   8     /* WATER_SPLASH at the targets' centre (WHITE_FOAM at frame 0) */
+#define FX_WATERGA_SPHERE_FRAME   15    /* the sphere and ring draw from this frame */
+#define FX_WATERGA_SPHERE_DEPTH   0x4B0 /* the sphere starts this far below the ground (pos14.vy) */
+#define FX_WATERGA_RISE_FRAMES    8     /* and rises for this many frames, then sinks slowly while it narrows */
+#define FX_WATERGA_FADE_IN_FRAMES 3     /* both models fade in over this many frames (timer80) */
+#define FX_WATERGA_SPLASH_2_FRAME 32    /* WATER_SPLASH_2 */
+#define FX_WATERGA_SPLASH_2_HEIGHT 0x258 /* this high over the targets' centre */
+#define FX_WATERGA_FADE_OUT_FRAME 47    /* both models fade out */
+#define FX_WATERGA_FADE_OUT_FRAMES 0x10 /* over this many frames (timer82); they stop drawing at the end */
+#define FX_WATERGA_FRAMES         0x64  /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

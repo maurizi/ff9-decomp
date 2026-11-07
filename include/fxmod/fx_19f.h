@@ -29,6 +29,44 @@
 #define FX_RAMUH_CAMERA_KEYS        0x2B /* table: per-frame camera point 0 (op82; byte-identical to fx_0ba entry 0x2E) */
 #define FX_RAMUH_CAMERA_KEYS_2      0x2C /* table: per-frame camera point 1 (op82; byte-identical to fx_0ba entry 0x2F) */
 
+/* fx_19f choreography (docs/fxdata.md, "Choreography literals"; fx_0ba's names). */
+#define FX_RAMUH_BOLT_MODEL_COUNT 5 /* op81: btlfx_initEffModels slots */
+#define FX_RAMUH_STATE_GATHER 0 /* op81: Ramuh's motion keys, GREY_RING, the glow */
+#define FX_RAMUH_STATE_CHARGE 1 /* op81: subtractive white flash, then a blue one */
+#define FX_RAMUH_STATE_STRIKE 2 /* op81: the bolt: sparks, rings, ribbons and a run of screen tints */
+#define FX_RAMUH_STATE_TAIL 3 /* op81: the emitters fade and stop */
+#define FX_RAMUH_GLOW_FRAME 7 /* FX_RAMUH_STATE_GATHER: the glow pulses from here */
+#define FX_RAMUH_GATHER_FRAMES 0xF /* FX_RAMUH_STATE_GATHER's length */
+#define FX_RAMUH_CHARGE_FRAMES 9 /* FX_RAMUH_STATE_CHARGE's length; at its end a subtractive tint (leaves blue) */
+#define FX_RAMUH_STRIKE_FRAMES 0x2B /* FX_RAMUH_STATE_STRIKE's length (BOLT_SPARKS start at its end) */
+#define FX_RAMUH_SPARK_BURST_FRAME 0xE /* FX_RAMUH_STATE_STRIKE: FX_RAMUH_BOLT_SPARK_BURST starts */
+#define FX_RAMUH_CHARGE_END_RGB 0xFF, 0xFF, 0 /* subtractive tint as STATE_CHARGE ends */
+#define FX_RAMUH_FLASH_FRAME 0x10 /*   additive blue flash fading over */
+#define FX_RAMUH_FLASH_FRAMES 6 /*   this many frames (yellow tint on its first) */
+#define FX_RAMUH_FLASH_RGB 0x80, 0x80, 0
+#define FX_RAMUH_GLOW_RINGS_FRAME 0x14 /*   FX_RAMUH_BLUE_GLOW_RINGS start */
+#define FX_RAMUH_DARKEN_FRAME 0x16 /*   one frame of subtractive tint, */
+#define FX_RAMUH_DARKEN_RGB 0x80, 0x80, 0x20
+#define FX_RAMUH_YELLOW_FRAME 0x17 /*   then additive yellow fading over */
+#define FX_RAMUH_YELLOW_FRAMES 3 /*   this many frames */
+#define FX_RAMUH_BLUE_FRAME 0x1D /*   one frame of additive blue */
+#define FX_RAMUH_BLUE_RGB 0x20, 0x64, 0xFF
+#define FX_RAMUH_DARKEN_2_FRAME 0x21 /*   one frame of subtractive tint, */
+#define FX_RAMUH_DARKEN_2_RGB 0x40, 0x40, 0
+#define FX_RAMUH_GREY_FRAME 0x22 /*   one of additive grey */
+#define FX_RAMUH_GREY_RGB 0x40, 0x40, 0x40
+#define FX_RAMUH_SKY_FRAME 0x21 /*   additive sky-blue fade-in over */
+#define FX_RAMUH_SKY_FRAMES 0xA /*   this many frames */
+#define FX_RAMUH_TAIL_FRAMES 0x14 /* FX_RAMUH_STATE_TAIL's length (the op ends); on its first frame a cyan tint */
+#define FX_RAMUH_TAIL_RGB 0x20, 0xFF, 0xFF
+#define FX_RAMUH_BOLT_SLOTS 0x20 /* op83: pool items */
+#define FX_RAMUH_COLUMN_VRAM_X 0x260 /* btlfx_drawScrollMove: u 0x80 of BLUE_AURA_COLUMN's 4-bit page (tpage 0x19, (0x240, 0x100)) */
+#define FX_RAMUH_COLUMN_VRAM_Y 0x100
+#define FX_RAMUH_COLUMN_VRAM_W 0x20
+#define FX_RAMUH_COLUMN_VRAM_H 0x80
+#define FX_RAMUH_COLUMN_SRC_X 0x240
+#define FX_RAMUH_COLUMN_SRC_Y 0x100 /* scrolled from u 0 of that page */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
@@ -82,7 +120,7 @@ typedef struct {
     u8 alpha15; /* brightness at t = 0 (fxm_drawJaggedTrail alpha, fades with t) */
     u8 pad16[2];
     s32 *noise18; /* noise */
-} Fx19fBolt;
+} Fx19fBolt; /* 0x1C */
 
 extern Fx19fTrail17 fx_19f_boltTrails[];
 extern Fx19fTrail4 fx_19f_branchTrails[];
@@ -94,7 +132,7 @@ typedef struct {
     s32 *noise0; /* noise */
     s32 count4; /* spawn count */
     s32 kind8; /* kind */
-} Fx19fWork83;
+} Fx19fWork83; /* 0xC */
 
 typedef struct {
     s32 frame0; /* frame */

@@ -30,6 +30,25 @@
 #define FX_MOONLIGHT_SLASH_CYAN_SPARKLES_2  0x15 /* emitter: cyan sparkle dots + faint green-grey particles */
 #define FX_MOONLIGHT_SLASH_COLOR_GLOWS      0x17 /* emitter: three sprite elements, 24 frames, blue, violet and green glows at run time (played by forcing the effect id on Zidane's Attack, Zidane as the caster: a real enemy cast may place it differently); runtime (docs/runtime-findings.md effect-data pass 2, low) (look pending: low) */
 
+/* fx_1a2 choreography (docs/fxdata.md, "Choreography literals"; partial: textures, pool, trails). */
+#define FX_MOONLIGHT_SLASH_BAND_TPAGE  0xB8   /* Hi_RegisterTexEffModel texture of LIGHT_BAND, LIGHT_BAND_2, LIGHT_RING: 8-bit page (0x200, 0x100), abr 1 */
+#define FX_MOONLIGHT_SLASH_BAND_CLUT   0x3DC0 /* CLUT (0x0, 0xF7) */
+#define FX_MOONLIGHT_SLASH_BAND_U      0x80
+#define FX_MOONLIGHT_SLASH_BAND_V      0
+#define FX_MOONLIGHT_SLASH_BLADE_TPAGE 0xBA   /* BLADE, BLADE_2, BLADE_3: 8-bit page (0x280, 0x100), abr 1 */
+#define FX_MOONLIGHT_SLASH_BLADE_CLUT  0x3E40 /* CLUT (0x0, 0xF9) */
+#define FX_MOONLIGHT_SLASH_BLADE_U     0
+#define FX_MOONLIGHT_SLASH_BLADE_V     0xE0
+#define FX_MOONLIGHT_SLASH_ARMOR_TPAGE 0x98   /* ARMOR, ARMOR_2: 8-bit page (0x200, 0x100), abr 0 */
+#define FX_MOONLIGHT_SLASH_ARMOR_CLUT  0x3E00 /* CLUT (0x0, 0xF8) */
+#define FX_MOONLIGHT_SLASH_ARMOR_U     0
+#define FX_MOONLIGHT_SLASH_ARMOR_V     0x80
+#define FX_MOONLIGHT_SLASH_ROCKS       0x20   /* op80: pool items (init->poolCount), bouncing rocks */
+#define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_TRAIL_SLOTS  0x10 /* FX_MOONLIGHT_SLASH_CRESCENT_TRAIL's trail buffer fx_1a2_op80Trails0: slots of */
+#define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_TRAIL_STRIDE 0x4C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2_TRAIL_SLOTS  8 /* FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2's trail buffer fx_1a2_op80Trails1: slots of */
+#define FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2_TRAIL_STRIDE 0x4C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;
@@ -64,7 +83,7 @@ typedef struct {
     SVECTOR posC; /* position */
     SVECTOR rot14; /* rotation */
     s32 scale1C; /* scale */
-} Fx1a2Rock;
+} Fx1a2Rock; /* 0x20 */
 
 typedef struct {
     u8 pad0[0x48];

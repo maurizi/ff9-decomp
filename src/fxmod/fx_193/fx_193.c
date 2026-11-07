@@ -1,22 +1,22 @@
 #include "fxmod/fx_193.h"
 
 static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    return fxm_wobbleParticle(e, pos, &fx_193_op80From0, &fx_193_op80To0, -0x320, frame, frames);
+    return fxm_wobbleParticle(e, pos, &fx_193_op80From0, &fx_193_op80To0, -FX_COUNTER_HORN_WOBBLE, frame, frames);
 }
 
 static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    return fxm_wobbleParticle(e, pos, &fx_193_op80From1, &fx_193_op80To1, 0x320, frame, frames);
+    return fxm_wobbleParticle(e, pos, &fx_193_op80From1, &fx_193_op80To1, FX_COUNTER_HORN_WOBBLE, frame, frames);
 }
 
 static s32 fxm_wobbleParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
-    s32 t = (frame << 12) / 7;
+    s32 t = (frame << 12) / FX_COUNTER_HORN_TRAIL_FRAMES;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_193_env);
 
     if (t > 0x1000) {
         t = 0x1000;
     }
     ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)pos);
-    if (frame >= 4) {
+    if (frame >= FX_COUNTER_HORN_WOBBLE_HALF_FRAME) {
         amp /= 2;
     }
     pos->vx += amp * ex->math_sin(t) / 4096;
@@ -33,7 +33,7 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx193Work80);
     } else if (mode == 1) {
         fx_193_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -43,19 +43,19 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_193_op80To1.vx = work->pos8.vx;
         fx_193_op80To1.vy = work->pos8.vy;
         fx_193_op80To1.vz = work->pos8.vz;
-        ex->btlfx_getUnitBonePos(0x10, 0xE, (u16 *)&fx_193_op80From0);
-        ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&fx_193_op80From1);
+        ex->btlfx_getUnitBonePos(0x10, FX_COUNTER_HORN_TRAIL_BONE, (u16 *)&fx_193_op80From0);
+        ex->btlfx_getUnitBonePos(0x10, FX_COUNTER_HORN_TRAIL_2_BONE, (u16 *)&fx_193_op80From1);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_RED_TRAIL), (s32)&fx_193_emitPos);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_RED_TRAIL_2), (s32)&fx_193_emitPos);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_193_op80Trails0;
-            work->emit0->trailSlots = 4;
-            work->emit0->trailStride = 0xF0;
+            work->emit0->trailSlots = FX_COUNTER_HORN_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_COUNTER_HORN_TRAIL_STRIDE;
         }
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_193_op80Trails1;
-            work->emit4->trailSlots = 4;
-            work->emit4->trailStride = 0xF0;
+            work->emit4->trailSlots = FX_COUNTER_HORN_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_COUNTER_HORN_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->file->m.module.update = fx_193_op80ParticleMotion0;
@@ -64,7 +64,7 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->file->m.module.update = fx_193_op80ParticleMotion1;
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_COUNTER_HORN_TRAILS_FRAMES;
     }
     return 0;
 }
@@ -74,7 +74,7 @@ s32 fx_193_op81(s32 mode, Fx193Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx193Work81);
     } else if (mode == 1) {
         fx_193_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
@@ -84,13 +84,13 @@ s32 fx_193_op81(s32 mode, Fx193Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_DARK_RING), (s32)&work->pos18);
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_COUNTER_HORN_DUST_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_DUST_CLOUD), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_COUNTER_HORN_FRAMES;
     }
     return 0;
 }

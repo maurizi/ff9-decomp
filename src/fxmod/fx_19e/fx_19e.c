@@ -4,7 +4,7 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx19eWork);
     } else if (mode == 1) {
         work->pos4.vx = env->targets->centerX;
         work->pos4.vy = env->targets->centerY;
@@ -15,7 +15,7 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit0->otZ = 0x80;
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_STOCK_BREAK_FRAMES;
     }
     return 0;
 }
@@ -24,7 +24,7 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx19eWork81);
     } else if (mode == 1) {
         fx_19e_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
@@ -33,10 +33,10 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos18.vz = env->targets->centerZ;
         ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->pos18, (s16 *)&work->angle8);
         work->angle8.vy += 0x800;
-        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->angle8, 0x514, (s16 *)&work->pos10);
+        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->angle8, FX_STOCK_BREAK_LEAP_REACH, (s16 *)&work->pos10);
     } else {
         s32 frame = entry->frame;
-        return fxm_moveUnitArc(0x10, &work->pos10, frame, 7, 0, &work->pos20) != 0;
+        return fxm_moveUnitArc(0x10, &work->pos10, frame, FX_STOCK_BREAK_LEAP_FRAMES, 0, &work->pos20) != 0;
     }
     return 0;
 }

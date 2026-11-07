@@ -10,12 +10,17 @@
 #define FX_GOLEM_DEATH_DUST_CLOUD   0x1 /* emitter: tan dust cloud quads, 17 frames (sprites render black) */
 #define FX_GOLEM_DEATH_DUST_CLOUD_2 0x5 /* emitter: orbiting tan dust cloud quads, 17 frames (sprites render black) */
 
+/* fx_1b1 choreography (docs/fxdata.md, "Choreography literals"): the dust clouds' keyframes and op80's length. */
+#define FX_GOLEM_DEATH_CLOUD_HEIGHT  0xC8 /* DUST_CLOUD starts this far below the target's body position (+vy) */
+#define FX_GOLEM_DEATH_CLOUD_2_FRAME 0x18 /* DUST_CLOUD_2 starts at the target's feet */
+#define FX_GOLEM_DEATH_FRAMES        0x50 /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8;
     SVECTOR pos10;
-} Fx1b1Work;
+} Fx1b1Work; /* 0x18 */
 
 extern Unk800F78A4 *fx_1b1_env;
 

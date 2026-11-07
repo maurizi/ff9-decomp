@@ -1,7 +1,7 @@
 #include "fxmod/fx_1a3.h"
 
 static s32 fx_1a3_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    s32 t = (frame - 4) << 9;
+    s32 t = (frame - FX_TROUBLE_MUCUS_BLOBS_FRAME) << 9;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a3_env);
 
     if (t > 0x1000) {
@@ -22,7 +22,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx1a3Work80);
     } else if (mode == 1) {
         fx_1a3_env = env;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot8);
@@ -31,7 +31,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1a3_motionTo.vy = work->pos10.vy;
         fx_1a3_motionTo.vz = work->pos10.vz;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
-        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot8, 0x190, (s16 *)&work->pos20);
+        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot8, FX_TROUBLE_MUCUS_AHEAD, (s16 *)&work->pos20);
         fx_1a3_motionFrom.vx = work->pos20.vx;
         fx_1a3_motionFrom.vy = work->pos20.vy;
         fx_1a3_motionFrom.vz = work->pos20.vz;
@@ -39,8 +39,8 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_MUCUS_BUBBLE_TRAIL), (s32)&work->pos20);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a3_op80Trails;
-            work->emit0->trailSlots = 0x23;
-            work->emit0->trailStride = 0x20;
+            work->emit0->trailSlots = FX_TROUBLE_MUCUS_SLIME_BLOBS_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_TROUBLE_MUCUS_SLIME_BLOBS_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->file->m.module.update = fx_1a3_op80ParticleMotion;
@@ -52,7 +52,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_TROUBLE_MUCUS_BLOBS_FRAMES;
     }
     return 0;
 }
@@ -62,32 +62,32 @@ s32 fx_1a3_op81(s32 mode, Fx1a3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx1a3Work81);
     } else if (mode == 1) {
         fx_1a3_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
         work->pos14.vx = work->posC.vx;
         work->pos14.vy = work->posC.vy;
         work->pos14.vz = work->posC.vz;
-        work->pos14.vy -= 0x190;
+        work->pos14.vy -= FX_TROUBLE_MUCUS_BUBBLES_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_MUCUS_BUBBLE_TRAIL_2), (s32)&work->pos14);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_MUCUS_YELLOW_RINGS), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a3_op81Trails0;
-            work->emit0->trailSlots = 0x33;
-            work->emit0->trailStride = 0x20;
+            work->emit0->trailSlots = FX_TROUBLE_MUCUS_BUBBLE_TRAIL_2_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_TROUBLE_MUCUS_BUBBLE_TRAIL_2_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
-        if (frame == 4) {
+        if (frame == FX_TROUBLE_MUCUS_SPLASH_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TROUBLE_MUCUS_SPLASH_STREAK), (s32)&work->posC);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_1a3_op81Trails1;
-                work->emit8->trailSlots = 0x1E;
-                work->emit8->trailStride = 0x70;
+                work->emit8->trailSlots = FX_TROUBLE_MUCUS_SPLASH_STREAK_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_TROUBLE_MUCUS_SPLASH_STREAK_TRAIL_STRIDE;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_TROUBLE_MUCUS_FRAMES;
     }
     return 0;
 }

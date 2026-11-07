@@ -57,7 +57,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     s32 dirAng;
 
     if (mode == 0) {
-        *args = 0xDC;
+        *args = sizeof(Fx1beWork80);
     } else if (mode == 1) {
         fx_1be_env = env;
         ex->btlfx_initEffModels(fx_1be_effModels, 5);

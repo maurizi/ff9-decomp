@@ -10,7 +10,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 alpha;
 
     if (mode == 0) {
-        *args = 0x44;
+        *args = sizeof(Fx1a4Work80);
     } else if (mode == 1) {
         fx_1a4_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos14);
@@ -26,7 +26,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos1C);
         switch (frame) {
-        case 0x1E:
+        case FX_DEATH0_BURST_FRAME:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_DUST_BURST), (s32)&fx_1a4_emitPos0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_FIRE_DEBRIS), (s32)&fx_1a4_emitPos1);
             if (work->emit4 != NULL) {
@@ -36,25 +36,25 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
-        case 0x49:
+        case FX_DEATH0_DEBRIS_FRAME:
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_ROCK_DEBRIS), (s32)&work->pos1C);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH0_PINK_RINGS), (s32)&work->pos1C);
             break;
-        case 0x4C:
+        case FX_DEATH0_SINK_FRAME:
             if (work->flag38 != 0) {
                 work->timer3E = -1;
-                work->timer3C = 0x60;
+                work->timer3C = FX_DEATH0_SINK_FRAMES;
                 ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos24);
                 work->pos24.vy = 0;
             }
             break;
-        case 0x6A:
-            work->timer40 = 0x20;
+        case FX_DEATH0_FADE_FRAME:
+            work->timer40 = FX_DEATH0_FADE_FRAMES;
             break;
         }
         if (work->timer3C >= 0) {
             work->timer3C--;
-            riseFrame = 0x60 - work->timer3C;
+            riseFrame = FX_DEATH0_SINK_FRAMES - work->timer3C;
             risePos.vx = work->pos24.vx;
             risePos.vy = work->pos24.vy + riseFrame * riseFrame;
             risePos.vz = work->pos24.vz;
@@ -62,23 +62,23 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->timer3E >= 0) {
             work->timer3E--;
-            hopFrame = 0x10 - work->timer3E;
+            hopFrame = FX_DEATH0_HOP_FRAMES - work->timer3E;
             hopPos.vx = work->pos2C.vx;
             hopPos.vy = work->pos2C.vy - (hopFrame * 0x50 - hopFrame * 5 * hopFrame);
             hopPos.vz = work->pos2C.vz;
             ex->btlfx_setUnitPos(0x10, (s16 *)&hopPos);
         }
         if (work->timer40 >= 0) {
-            work->fade34 = fxm_lerpRatio(0, -0x80, 0x20 - work->timer40, 0x20);
+            work->fade34 = fxm_lerpRatio(0, -0x80, FX_DEATH0_FADE_FRAMES - work->timer40, FX_DEATH0_FADE_FRAMES);
             alpha = work->fade34 + 0x80;
-            if (alpha < 0x46) {
-                ex->btlfx_fadeUnitById(0x10, 0x46);
+            if (alpha < FX_DEATH0_FADE_MIN) {
+                ex->btlfx_fadeUnitById(0x10, FX_DEATH0_FADE_MIN);
             } else {
                 ex->btlfx_fadeUnitById(0x10, alpha);
             }
             work->timer40--;
         }
-        if (frame >= 0x1E) {
+        if (frame >= FX_DEATH0_BURST_FRAME) {
             if (work->emit4 != NULL && work->emit4->state == BTLFX_EMIT_DONE) {
                 work->emit4 = NULL;
             }
@@ -88,7 +88,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_moveEmitterTo((s32)work->emit8, (s32)&work->pos1C);
         }
-        return frame >= 0x96;
+        return frame >= FX_DEATH0_FRAMES;
     }
     return 0;
 }
@@ -98,13 +98,13 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x5C;
+        *args = sizeof(Fx1a4Work81);
     } else if (mode == 1) {
         fx_1a4_env = env;
         if (env->targets->fxArgs[1] != 0) {
             return 1;
         }
-        ex->btlfx_initEffModels(fx_1a4_effModels, 3);
+        ex->btlfx_initEffModels(fx_1a4_effModels, FX_DEATH0_MODELS);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos44);
         work->rot8.vx = 0x800;
         work->rot8.vy = 0;
@@ -141,16 +141,16 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
-        case 0x2D:
-            work->timer52 = 0x15;
+        case FX_DEATH0_FLAMES_FADE_FRAME:
+            work->timer52 = FX_DEATH0_FLAMES_FADE_FRAMES;
             break;
         }
-        if (frame >= 0 && frame < 0x42) {
+        if (frame >= 0 && frame < FX_DEATH0_FLAMES_FADE_FRAME + FX_DEATH0_FLAMES_FADE_FRAMES) {
             ex->Hi_DrawEffModel(&work->rot8, &work->pos20, (s32)&work->scale30, work->model54);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos20, (s32)&work->scale30, work->model56);
             ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model58);
             if (work->timer52 >= 0) {
-                work->color40 = fxm_lerpRatio(0, -0x80, 0x15 - work->timer52, 0x15);
+                work->color40 = fxm_lerpRatio(0, -0x80, FX_DEATH0_FLAMES_FADE_FRAMES - work->timer52, FX_DEATH0_FLAMES_FADE_FRAMES);
                 ex->Hi_ModifyEffModelRGB(work->model54, work->color40, work->color40, work->color40);
                 ex->Hi_ModifyEffModelRGB(work->model56, work->color40, work->color40, work->color40);
                 ex->Hi_ModifyEffModelRGB(work->model58, work->color40, work->color40, work->color40);
@@ -159,7 +159,7 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot8.vy += 0x80;
             work->rot10.vy += 0x80;
             work->rot18.vy += 0x40;
-            if (frame >= 0xC) {
+            if (frame >= FX_DEATH0_GROW_FRAMES) {
                 if (work->scale30.vx >= 0x40) {
                     work->scale30.vx -= 0x40;
                 } else {
@@ -178,11 +178,11 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->scale30.vy = work->scale30.vy > 0x1000 ? 0x1000 : work->scale30.vy;
                 work->scale30.vz = work->scale30.vz > 0xCCC ? 0xCCC : work->scale30.vz;
             }
-            ex->btlfx_drawScrollMove(work->speed4E * 0x64 - work->frame4C * work->speed4E, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
-            ex->btlfx_drawScrollMove(work->speed50 * 0x64 - work->frame4C * work->speed50, 0x200, 0x180, 0x20, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->speed4E * 0x64 - work->frame4C * work->speed4E, FX_DEATH0_COLUMN_VRAM_X, FX_DEATH0_COLUMN_VRAM_Y, FX_DEATH0_FLAME_VRAM_W, FX_DEATH0_FLAME_VRAM_H, FX_DEATH0_COLUMN_SRC_X, FX_DEATH0_COLUMN_SRC_Y);
+            ex->btlfx_drawScrollMove(work->speed50 * 0x64 - work->frame4C * work->speed50, FX_DEATH0_COIL_VRAM_X, FX_DEATH0_COIL_VRAM_Y, FX_DEATH0_FLAME_VRAM_W, FX_DEATH0_FLAME_VRAM_H, FX_DEATH0_COIL_SRC_X, FX_DEATH0_COIL_SRC_Y);
             work->frame4C++;
         }
-        if (frame >= 0x64) {
+        if (frame >= FX_DEATH0_FLAMES_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

@@ -18,6 +18,34 @@
 #define FX_DEATH0_FLAME_COIL     0xE /* 'so' model: helix coil, flame texture */
 #define FX_DEATH0_FLAME_COIL_2   0xF /* 'so' model: helix coil, flame texture */
 
+/* fx_1a4 choreography (docs/fxdata.md, "Choreography literals"): op80's streaks and debris at the caster's argument
+ * bone, the caster sinking into the ground and fading; op81's flame column and coils (scrolled flame textures)
+ * growing over the caster and fading; countdowns, VRAM rects, keyframes and lengths. */
+#define FX_DEATH0_BURST_FRAME  0x1E  /* op80: DUST_BURST and FIRE_DEBRIS, following the argument bone from then on */
+#define FX_DEATH0_DEBRIS_FRAME 0x49  /* op80: ROCK_DEBRIS and PINK_RINGS */
+#define FX_DEATH0_SINK_FRAME   0x4C  /* op80: the caster sinks (when fxArgs[1] == 0) */
+#define FX_DEATH0_SINK_FRAMES  0x60  /* over this many frames (timer3C, drop = frame^2) */
+#define FX_DEATH0_HOP_FRAMES   0x10  /* timer3E's hop length (never started: it is only ever reset to -1) */
+#define FX_DEATH0_FADE_FRAME   0x6A  /* op80: the caster fades */
+#define FX_DEATH0_FADE_FRAMES  0x20  /* over this many frames (timer40) */
+#define FX_DEATH0_FADE_MIN     0x46  /* down to this unit alpha */
+#define FX_DEATH0_FRAMES       0x96  /* op80's length (the op ends) */
+#define FX_DEATH0_MODELS       3     /* op81: btlfx_initEffModels slots (FLAME_COLUMN, FLAME_COIL, FLAME_COIL_2) */
+#define FX_DEATH0_GROW_FRAMES  0xC   /* op81: the models widen and rise while frame < this, then narrow */
+#define FX_DEATH0_FLAMES_FADE_FRAME  0x2D /* op81: the models fade */
+#define FX_DEATH0_FLAMES_FADE_FRAMES 0x15 /* over this many frames (timer52), then stop drawing */
+#define FX_DEATH0_COLUMN_VRAM_X 0x1E0 /* btlfx_drawScrollMove: FLAME_COLUMN's 4-bit texture (tpage 0x17, u 0x80, v 0x80) */
+#define FX_DEATH0_COLUMN_VRAM_Y 0x180
+#define FX_DEATH0_COLUMN_SRC_X  0x1E0 /* scrolled from the rect above it */
+#define FX_DEATH0_COLUMN_SRC_Y  0x100
+#define FX_DEATH0_COIL_VRAM_X   0x200 /* FLAME_COIL / _2's texture (tpage 0x18, u 0, v 0x80) */
+#define FX_DEATH0_COIL_VRAM_Y   0x180
+#define FX_DEATH0_COIL_SRC_X    0x200
+#define FX_DEATH0_COIL_SRC_Y    0x100
+#define FX_DEATH0_FLAME_VRAM_W  0x20  /* both rects' size */
+#define FX_DEATH0_FLAME_VRAM_H  0x80
+#define FX_DEATH0_FLAMES_FRAMES 0x64  /* op81's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

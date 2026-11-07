@@ -40,7 +40,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
     if (src == NULL) {
         level = 1;
     }
-    colIn.cd = level != 0xFF ? 0x3E : 0x3C;
+    colIn.cd = level != 0xFF ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     if (src != NULL) {
         tpLo = getTPage(2, 0, src->x, src->y);
         tpHi = getTPage(2, 0, src->x + 0x80, src->y);
@@ -49,7 +49,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
         src->x = env->drawEnv->clip.x + (x - (src->w >> 1));
         src->y = env->drawEnv->clip.y + (y - (src->h >> 1));
         move = (u32 *)env->prim;
-        env->prim = (u8 *)move + 0x18;
+        env->prim = (u8 *)move + sizeof(DR_MOVE);
         ex->SetDrawMove(move, src, sx, sy);
         cx = (src->w >> 1) + (sx & 0x3F);
         cy = (src->h >> 1) + (sy & 0xFF);
@@ -93,14 +93,14 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
             if (outUv.vx < 0) {
                 outUv.vx = 0;
             }
-            if (outUv.vx >= 0x140) {
-                outUv.vx = 0x13F;
+            if (outUv.vx >= SCREEN_W) {
+                outUv.vx = SCREEN_W - 1;
             }
             if (outUv.vy < 0) {
                 outUv.vy = 0;
             }
-            if (outUv.vy >= 0xF0) {
-                outUv.vy = 0xEF;
+            if (outUv.vy >= SCREEN_H_NTSC) {
+                outUv.vy = SCREEN_H_NTSC - 1;
             }
             *(s32 *)&pts[1][i] = *(s32 *)&outUv;
             if (i != 0) {
@@ -138,7 +138,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
                 *(s32 *)&prim->x2 = *(s32 *)&inPrev;
                 *(s32 *)&prim->x3 = *(s32 *)&outPrev;
                 if (ot < 0x1000) {
-                    addPrimLenIn(&env->ot[ot], prim, 0xC000000);
+                    addPrimLenIn(&env->ot[ot], prim, PRIM_TAG(POLY_GT4));
                 }
                 prim++;
             }
@@ -155,7 +155,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
         }
     }
     if (src != NULL && ot < 0x1000) {
-        addPrimLenIn(&env->ot[ot], move, 0x5000000);
+        addPrimLenIn(&env->ot[ot], move, PRIM_TAG(DR_MOVE));
     }
 }
 
@@ -176,7 +176,7 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx18bWork);
     } else if (mode == 1) {
         fx_18b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
@@ -188,34 +188,34 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 40;
+        case FX_SILENT_VOICE_STATE_SWELL:
+            t = (frame << 12) / FX_SILENT_VOICE_SWELL_FRAMES;
             fx_18b_waveAmp = ex->math_sin(t >> 2) / 320;
             fx_18b_wavePhase -= 0x200;
-            if (frame >= 0x28) {
-                work->state0 = 1;
+            if (frame >= FX_SILENT_VOICE_SWELL_FRAMES) {
+                work->state0 = FX_SILENT_VOICE_STATE_EBB;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 40;
+        case FX_SILENT_VOICE_STATE_EBB:
+            t = (frame << 12) / FX_SILENT_VOICE_EBB_FRAMES;
             fx_18b_waveAmp = ex->math_cos(t >> 2) / 320;
             fx_18b_wavePhase += 0x200;
-            if (frame == 1) {
+            if (frame == FX_SILENT_VOICE_SWIRLS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENT_VOICE_SWIRLS), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame >= 0x28) {
+            if (frame >= FX_SILENT_VOICE_EBB_FRAMES) {
                 return 1;
             }
             break;
         }
         rect.x = VRAM_BTLFX_SCRATCH_X;
         rect.y = VRAM_BTLFX_SCRATCH_Y;
-        rect.w = 0x100;
-        rect.h = 0x100;
+        rect.w = FX_SILENT_VOICE_GRID_W;
+        rect.h = FX_SILENT_VOICE_GRID_H;
         fxm_drawRadialScreenGrid(1, 0xA0, 0x68, 0x10, 0x10, 8, 0x88, 0x88, &rect, fx_18b_op80GridVertex);
         work->frame4++;
     }

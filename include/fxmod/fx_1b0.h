@@ -18,6 +18,48 @@
 #define FX_DEATH_DUST_RINGS_2    0xE /* emitter: pale-yellow / cyan / magenta gouraud rings + rings textured with tan dust */
 #define FX_DEATH_PINK_RINGS      0x11 /* rings: pale-pink to crimson gouraud rings, 24 frames */
 
+/* fx_1b0 choreography (docs/fxdata.md, "Choreography literals"): op80's charge (rotating ring cages, flicker pairs,
+ * the caster swapped for eight models tinted along fx_1b0_colorGradient, blue pulses, a brightening screen grid),
+ * then the models' faces burst into pieces; the states, tints, piece pool, trail buffers and lengths (fx_1b6's
+ * names). */
+#define FX_DEATH_MODELS        8     /* split models (fx_1b0_modelFileIds) */
+#define FX_DEATH_MODEL_SLOTS   0xA   /* btlfx_initEffModels slots */
+#define FX_DEATH_PIECES        0x7BC /* flying face pieces (Fx1b0Split pieces4C) */
+#define FX_DEATH_PIECE_FRAMES  0x80  /* a piece flies this many frames, then its face is cleared */
+#define FX_DEATH_STATE_CHARGE  0     /* work->state0: rings, flickers, the models appear */
+#define FX_DEATH_STATE_SHATTER 1     /* the models break into pieces */
+#define FX_DEATH_RINGS         4     /* PINK_RINGS drawn per axis (each turned 0x200 further) */
+#define FX_DEATH_RINGS_FRAMES  0x3D  /* the ring cages draw while frame < this */
+#define FX_DEATH_HALF_RGB      0x40, 0x40, 0x55 /* subtractive on frame 0, additive on FLICKER_FRAME + 2 */
+#define FX_DEATH_FLASH_RGB     0x80, 0x80, 0xAA /* additive flash (frame 1, after each subtractive flicker) and the flickers' darkening */
+#define FX_DEATH_DUST_FRAME    0x10  /* DUST_RINGS */
+#define FX_DEATH_FLICKER_FRAME 0x14  /* subtractive / additive flicker pair */
+#define FX_DEATH_GLARE_FRAME   0x20  /* an additive grey glare fades out from this frame */
+#define FX_DEATH_GLARE_FRAMES  8     /* over this many frames */
+#define FX_DEATH_FIRE_FRAME    0x28  /* FIRE_RINGS */
+#define FX_DEATH_FLICKER_2_FRAME 0x2A /* flicker pairs */
+#define FX_DEATH_FLICKER_3_FRAME 0x30
+#define FX_DEATH_LIGHTNING_FRAME 0x31 /* LIGHTNING_TRAIL (orbiting particles) and COLOUR_RINGS */
+#define FX_DEATH_LIGHTNING_TRAIL_TRAIL_SLOTS  0x20 /* its trail buffer fx_1b0_op80Trails0: slots of */
+#define FX_DEATH_LIGHTNING_TRAIL_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH_MODELS_FRAME  0x3B  /* the caster is hidden, the models registered; they draw from the next frame */
+#define FX_DEATH_PULSE_FRAME   0x3C  /* blue pulses (subtractive blue then FLASH; BLUE_FLARE on the first two) */
+#define FX_DEATH_PULSE_INTERVAL 0xA  /* three of them, this many frames apart */
+#define FX_DEATH_BLUE_DARKEN_RGB 0, 0x80, 0xFF
+#define FX_DEATH_SPARK_RGB     0x40, 0x40, 0x20 /* random additive sparkle from the second pulse on */
+#define FX_DEATH_GRID_FRAME    0x4A  /* the screen grid brightens and grows from this frame */
+#define FX_DEATH_GRID_FRAMES   16    /* at this rate (0xFF per this many frames) */
+#define FX_DEATH_WHITE_RGB     0xFF, 0xFF, 0xFF /* additive white on STATE_CHARGE's last frame */
+#define FX_DEATH_CHARGE_FRAMES 0x5A  /* STATE_CHARGE's length (and its ramp) */
+#define FX_DEATH_CYAN_DARKEN_RGB 0, 0xFF, 0xFF /* subtractive on STATE_SHATTER's first frame */
+#define FX_DEATH_WHITE_FADE_FRAMES 8 /* an additive white fades out over this many frames */
+#define FX_DEATH_ROCK_TRAIL_TRAIL_SLOTS  0x18 /* ROCK_TRAIL's trail buffer fx_1b0_op80Trails1: slots of */
+#define FX_DEATH_ROCK_TRAIL_TRAIL_STRIDE 0x8C /* this many bytes */
+#define FX_DEATH_ROCKS_FRAME   1     /* ROCKS */
+#define FX_DEATH_ROCKS_TRAIL_SLOTS  0x1C /* its trail buffer fx_1b0_op80Trails2: slots of */
+#define FX_DEATH_ROCKS_TRAIL_STRIDE 0x8C /* this many bytes */
+#define FX_DEATH_SHATTER_FRAMES 0x80 /* STATE_SHATTER's length (the op ends) */
+
 typedef struct {
     s32 posX0; /* position, 20.12 */
     s32 posY4;
@@ -32,11 +74,11 @@ typedef struct {
 typedef struct {
     s16 count0; /* model count */
     s16 count2; /* face count */
-    s32 counts4[8]; /* faces per model */
+    s32 counts4[FX_DEATH_MODELS]; /* faces per model */
     SVECTOR (*faces24)[3]; /* faces */
     SVECTOR (*nextFace28)[3]; /* next free face */
-    SVECTOR (*modelFaces2C[8])[3]; /* faces of each model */
-    Fx1b0Piece pieces4C[0x7BC];
+    SVECTOR (*modelFaces2C[FX_DEATH_MODELS])[3]; /* faces of each model */
+    Fx1b0Piece pieces4C[FX_DEATH_PIECES];
 } Fx1b0Split;
 
 extern Unk800F78A4 *fx_1b0_env;
@@ -78,12 +120,12 @@ typedef struct {
     SVECTOR pos28; /* caster body position */
     SVECTOR unk30; /* write-only (pos28 on the ground) */
     CVECTOR color38; /* model colour */
-    s32 model3C[8]; /* split models */
+    s32 model3C[FX_DEATH_MODELS]; /* split models */
 } Fx1b0Work80; /* 0x5C */
 s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 extern u8 fx_1b0_colorGradient[]; /* colour fade table */
-extern s16 fx_1b0_modelFileIds[8]; /* model files */
+extern s16 fx_1b0_modelFileIds[FX_DEATH_MODELS]; /* model files */
 extern s32 fx_1b0_op80Trails0[];
 extern s32 fx_1b0_op80Trails1[];
 extern s32 fx_1b0_op80Trails2[];

@@ -29,6 +29,20 @@
 #define FX_IFRIT_BLOCK_CLUSTER       0x2B /* model: cluster of block chunks, orange streak texture (byte-identical to fx_114 entry 0x20) */
 #define FX_IFRIT_SPOKED_RING         0x2C /* model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12); runtime (docs/runtime-findings.md effect-data pass 2): ablating it alone changes only a few hundred scattered px (look pending) */
 
+/* fx_1bd choreography (docs/fxdata.md, "Choreography literals"; partial: textures, sizes). */
+#define FX_IFRIT_HAZE_TPAGE  0x117  /* Hi_RegisterTexEffModel texture of WHITE_HAZE: 15-bit page (0x1C0, 0x100), abr 0 */
+#define FX_IFRIT_HAZE_CLUT   0      /* unused by a 15-bit page */
+#define FX_IFRIT_HAZE_U      0
+#define FX_IFRIT_HAZE_V      0
+#define FX_IFRIT_BLOCK_TPAGE 0x17   /* BLOCK_CLUSTER: 4-bit page (0x1C0, 0x100), abr 0 */
+#define FX_IFRIT_BLOCK_CLUT  0x3D00 /* CLUT (0x0, 0xF4) */
+#define FX_IFRIT_BLOCK_U     0x80
+#define FX_IFRIT_BLOCK_V     0xE0
+#define FX_IFRIT_FLAME_TPAGE 0x9A   /* FLAME_DOME, FLAME_RING: 8-bit page (0x280, 0x100), abr 0 */
+#define FX_IFRIT_FLAME_CLUT  0x3DC0 /* CLUT (0x0, 0xF7) */
+#define FX_IFRIT_FLAME_U     0
+#define FX_IFRIT_FLAME_V     0
+
 typedef struct {
     s16 x, y, z;
 } Fx1bdPoint;

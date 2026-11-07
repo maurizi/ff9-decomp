@@ -19,6 +19,34 @@
 #define FX_DEATH_BLUE_BEAM           0xB /* emitter: blue cone-beam fan + grey gouraud rings */
 #define FX_DEATH_BLUE_STREAK         0xC /* emitter: one fan, thin blue streak */
 
+/* fx_1b7 choreography (docs/fxdata.md, "Choreography literals"): op80's charge (rings, lightning trail, beams,
+ * dark / bright flicker pairs, white flash), then the caster swapped for eight models whose faces split off as
+ * pieces blown sideways behind a rising sweep line; the states, tints, piece pool and lengths (fx_1b6's names). */
+#define FX_DEATH_MODELS        8     /* btlfx_initEffModels slots, split models (fx_1b7_modelFileIds) */
+#define FX_DEATH_PIECES        0x6A4 /* flying face pieces (Fx1b7Split pieces4C) */
+#define FX_DEATH_PIECE_FRAMES  0x20  /* a piece flies this many frames, then its face is cleared */
+#define FX_DEATH_STATE_CHARGE  0     /* work->state0: the charge emitters and flickers */
+#define FX_DEATH_STATE_SHATTER 1     /* the models break into pieces */
+#define FX_DEATH_LIGHTNING_FRAME 7   /* RED_LIGHTNING_TRAIL (VIOLET_RINGS at frame 0) */
+#define FX_DEATH_RED_LIGHTNING_TRAIL_TRAIL_SLOTS  0x20 /* its trail buffer fx_1b7_op80Trails0: slots of */
+#define FX_DEATH_RED_LIGHTNING_TRAIL_TRAIL_STRIDE 0xAC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_DEATH_GLOW_FRAME    0xB   /* YELLOW_GLOW */
+#define FX_DEATH_STREAK_FRAME  0x10  /* BLUE_STREAK (stopped when the models take over) */
+#define FX_DEATH_RINGS_FRAME   0x1D  /* ORANGE_RINGS */
+#define FX_DEATH_BEAM_FRAME    0x20  /* BLUE_BEAM */
+#define FX_DEATH_FLARE_FRAME   0x27  /* FLARE_STREAK */
+#define FX_DEATH_DARKEN_RGB    0x40, 0x80, 0x80 /* subtractive flicker on frames 1, 0xF, 0x14, 0x24 */
+#define FX_DEATH_FLICKER_RGB   0x64, 0x64, 0x40 /* additive flicker on the frame after each */
+#define FX_DEATH_WHITE_RGB     0xFF, 0xFF, 0xFF /* additive white on STATE_CHARGE's last frame */
+#define FX_DEATH_CHARGE_FRAMES 0x2C  /* STATE_CHARGE's length */
+#define FX_DEATH_FLASH_RGB     0xC0, 0xAA, 0x20 /* additive flash as the models replace the caster */
+#define FX_DEATH_FLASH_2_RGB   0x60, 0x55, 0x10 /* additive flash on STATE_SHATTER's first frame */
+#define FX_DEATH_GLARE_FRAME   4     /* STATE_SHATTER: a yellowish additive glare fades out from this frame */
+#define FX_DEATH_GLARE_FRAMES  24    /* over this many frames */
+#define FX_DEATH_SMOKE_TRAIL_TRAIL_SLOTS  0x1C /* SMOKE_TRAIL's trail buffer fx_1b7_op80Trails1: slots of */
+#define FX_DEATH_SMOKE_TRAIL_TRAIL_STRIDE 0xAC /* this many bytes */
+#define FX_DEATH_SHATTER_FRAMES 0x82 /* STATE_SHATTER's length (its ramp; the op ends) */
+
 typedef struct {
     s32 posX0; /* position, 20.12 */
     s32 posY4;
@@ -33,11 +61,11 @@ typedef struct {
 typedef struct {
     s16 count0; /* model count */
     s16 count2; /* face count */
-    s32 counts4[8]; /* faces per model */
+    s32 counts4[FX_DEATH_MODELS]; /* faces per model */
     SVECTOR (*faces24)[3]; /* faces */
     SVECTOR (*nextFace28)[3]; /* next free face */
-    SVECTOR (*modelFaces2C[8])[3]; /* faces of each model */
-    Fx1b7Piece pieces4C[0x6A4];
+    SVECTOR (*modelFaces2C[FX_DEATH_MODELS])[3]; /* faces of each model */
+    Fx1b7Piece pieces4C[FX_DEATH_PIECES];
 } Fx1b7Split;
 
 extern Fx1b7Piece *fx_1b7_pieces;
@@ -68,10 +96,10 @@ typedef struct {
     SVECTOR pos30;
     SVECTOR pos38;
     Pool6CEntry *emit40;
-    s32 model44[8]; /* split models */
+    s32 model44[FX_DEATH_MODELS]; /* split models */
 } Fx1b7Work80; /* 0x64 */
 
-extern s16 fx_1b7_modelFileIds[8]; /* model files */
+extern s16 fx_1b7_modelFileIds[FX_DEATH_MODELS]; /* model files */
 extern Unk80100C78Entry *fx_1b7_task;
 extern BtlModelBuf fx_1b7_effModels[];
 extern s32 fx_1b7_op80Trails0[];

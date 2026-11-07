@@ -4,7 +4,7 @@ s32 fx_19a_op80(s32 mode, Fx19aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx19aWork80);
     } else if (mode == 1) {
         fx_19a_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
@@ -13,7 +13,7 @@ s32 fx_19a_op80(s32 mode, Fx19aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x1E;
+        return entry->frame >= FX_MINUS_STRIKE_FRAMES;
     }
     return 0;
 }
@@ -23,7 +23,7 @@ s32 fx_19a_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     s32 frame;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(SVECTOR);
     } else if (mode == 1) {
         fx_19a_env = env;
     } else {
@@ -32,7 +32,7 @@ s32 fx_19a_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         env->camera->points[0].vx = work->vx;
         env->camera->points[0].vy = work->vy;
         env->camera->points[0].vz = work->vz;
-        return frame >= 7;
+        return frame >= FX_MINUS_STRIKE_CAMERA_FRAMES;
     }
     return 0;
 }

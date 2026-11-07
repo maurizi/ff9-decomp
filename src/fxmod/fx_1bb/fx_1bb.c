@@ -4,15 +4,15 @@ s32 fx_1bb_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(SVECTOR);
     } else if (mode == 1) {
         work->vx = env->targets->centerX;
         work->vz = env->targets->centerZ;
-        work->vy = -0x190;
+        work->vy = -FX_CLIMHAZZARD_RINGS_HEIGHT;
         fx_1bb_env = env;
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CLIMHAZZARD_FLAME_RINGS), (s32)work);
     } else {
-        return entry->frame >= 0x20;
+        return entry->frame >= FX_CLIMHAZZARD_FRAMES;
     }
     return 0;
 }

@@ -39,7 +39,7 @@ s32 fx_1a7_op80ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
 static s32 fxm_lineOrbitParticle0(Pool30Entry *pt, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
-    ex->btlfx_lerpVec((s16 *)&fx_1a7_op80MotionFrom, (s16 *)&fx_1a7_op80MotionTo, (frame << 12) / 12, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_1a7_op80MotionFrom, (s16 *)&fx_1a7_op80MotionTo, (frame << 12) / FX_MIND_BLAST_BOLT_FRAMES, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
     pt->pos.vx = pos->vx << 12;
@@ -90,7 +90,7 @@ s32 fx_1a7_op81ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
 static s32 fxm_lineOrbitParticle1(Pool30Entry *pt, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
-    ex->btlfx_lerpVec((s16 *)&fx_1a7_op81MotionFrom, (s16 *)&fx_1a7_op81MotionTo, (frame << 12) / 12, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_1a7_op81MotionFrom, (s16 *)&fx_1a7_op81MotionTo, (frame << 12) / FX_MIND_BLAST_BOLT_FRAMES, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
     pt->pos.vx = pos->vx << 12;
@@ -111,7 +111,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x3C;
+        *args = sizeof(Fx1a7Work80);
     } else if (mode == 1) {
         fx_1a7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos2C);
@@ -121,8 +121,8 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_WAVE_TRAIL), (s32)&fx_1a7_emitPos);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a7_op80Trails0;
-            work->emit0->trailSlots = 0x10;
-            work->emit0->trailStride = 0x60;
+            work->emit0->trailSlots = FX_MIND_BLAST_WAVE_TRAIL_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_MIND_BLAST_WAVE_TRAIL_TRAIL_STRIDE;
         }
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_GREEN_RINGS), (s32)&fx_1a7_emitPos);
         if (work->emit4 != NULL) {
@@ -130,22 +130,22 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&boneMtx);
-        ex->btlfx_matrixPointAhead(&boneMtx, 0x190, (s32)&work->pos34);
-        if (frame == 0x32) {
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&launchMtx);
-            ex->btlfx_matrixPointAhead(&launchMtx, 0xC8, (s32)&fx_1a7_op80MotionFrom);
-            fx_1a7_op80MotionFrom.vy -= 0xC8;
+        ex->btlfx_getUnitBoneMatrix(0x10, FX_MIND_BLAST_BONE, (BtlBone *)&boneMtx);
+        ex->btlfx_matrixPointAhead(&boneMtx, FX_MIND_BLAST_CHARGE_AHEAD, (s32)&work->pos34);
+        if (frame == FX_MIND_BLAST_LAUNCH_FRAME) {
+            ex->btlfx_getUnitBoneMatrix(0x10, FX_MIND_BLAST_BONE, (BtlBone *)&launchMtx);
+            ex->btlfx_matrixPointAhead(&launchMtx, FX_MIND_BLAST_LAUNCH_AHEAD, (s32)&fx_1a7_op80MotionFrom);
+            fx_1a7_op80MotionFrom.vy -= FX_MIND_BLAST_LAUNCH_HEIGHT;
         }
-        if (frame >= 0x32) {
-            elapsed = frame - 0x32;
-            for (i = 0; i < 9; i++) {
+        if (frame >= FX_MIND_BLAST_LAUNCH_FRAME) {
+            elapsed = frame - FX_MIND_BLAST_LAUNCH_FRAME;
+            for (i = 0; i < FX_MIND_BLAST_BOLTS; i++) {
                 if (elapsed == fx_1a7_op80StartFrames[i]) {
                     work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a7_op80EmitFileIds[i]), (s32)&fx_1a7_emitPos);
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->trails = (s32)fx_1a7_op80Trails1[i];
-                        work->emit8[i]->trailSlots = 1;
-                        work->emit8[i]->trailStride = 0x38;
+                        work->emit8[i]->trailSlots = FX_MIND_BLAST_BOLT_TRAIL_SLOTS;
+                        work->emit8[i]->trailStride = FX_MIND_BLAST_BOLT_TRAIL_STRIDE;
                     }
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->file->m.module.update = fx_1a7_op80ParticleMotions[i];
@@ -158,7 +158,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame >= 0 && frame < 0x18) {
+        if (frame >= 0 && frame < FX_MIND_BLAST_CHARGE_FRAMES) {
             if (work->emit0 != NULL && work->emit0->state == BTLFX_EMIT_DONE) {
                 work->emit0 = NULL;
             }
@@ -168,7 +168,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->pos34);
         }
-        return frame >= 0x50;
+        return frame >= FX_MIND_BLAST_FRAMES;
     }
     return 0;
 }
@@ -181,7 +181,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 radiusJitter;
 
     if (mode == 0) {
-        *args = 0x64;
+        *args = sizeof(Fx1a7Work81);
     } else if (mode == 1) {
         fx_1a7_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos34);
@@ -196,30 +196,30 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos54.vx = work->pos3C.vx;
         work->pos54.vy = work->pos3C.vy;
         work->pos54.vz = work->pos3C.vz;
-        work->pos54.vy -= 0xC8;
+        work->pos54.vy -= FX_MIND_BLAST_TRAIL_2_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_WAVE_TRAIL_2), (s32)&work->pos54);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a7_op81Trails0;
-            work->emit0->trailSlots = 0x16;
-            work->emit0->trailStride = 0x38;
+            work->emit0->trailSlots = FX_MIND_BLAST_WAVE_TRAIL_2_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_MIND_BLAST_WAVE_TRAIL_2_TRAIL_STRIDE;
         }
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_TEAL_RINGS), (s32)&work->pos44);
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->angle4C);
-        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->angle4C, -0x190, (s16 *)&work->pos5C);
+        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->angle4C, -FX_MIND_BLAST_ORB_BEHIND, (s16 *)&work->pos5C);
         fx_1a7_op81MotionTo.vx = work->pos5C.vx;
         fx_1a7_op81MotionTo.vy = work->pos5C.vy;
         fx_1a7_op81MotionTo.vz = work->pos5C.vz;
     } else {
         frame = entry->frame;
-        if (frame >= 0x14) {
-            elapsed = frame - 0x14;
-            for (i = 0; i < 9; i++) {
+        if (frame >= FX_MIND_BLAST_BACKLASH_FRAME) {
+            elapsed = frame - FX_MIND_BLAST_BACKLASH_FRAME;
+            for (i = 0; i < FX_MIND_BLAST_BOLTS; i++) {
                 if (elapsed == fx_1a7_op81StartFrames[i]) {
                     work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a7_op81EmitFileIds[i]), (s32)&fx_1a7_emitPos);
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->trails = (s32)fx_1a7_op81Trails1[i];
-                        work->emit8[i]->trailSlots = 1;
-                        work->emit8[i]->trailStride = 0xB0;
+                        work->emit8[i]->trailSlots = FX_MIND_BLAST_BACKLASH_TRAIL_SLOTS;
+                        work->emit8[i]->trailStride = FX_MIND_BLAST_BACKLASH_TRAIL_STRIDE;
                     }
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->file->m.module.update = fx_1a7_op81ParticleMotions[i];
@@ -240,16 +240,16 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame == 0x1C) {
+        if (frame == FX_MIND_BLAST_ORB_FRAME) {
             work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_WAVE_TRAIL_3), (s32)&work->pos34);
             if (work->emit2C != NULL) {
                 work->emit2C->trails = (s32)fx_1a7_op81Trails2;
-                work->emit2C->trailSlots = 0xD;
-                work->emit2C->trailStride = 0xB0;
+                work->emit2C->trailSlots = FX_MIND_BLAST_WAVE_TRAIL_3_TRAIL_SLOTS;
+                work->emit2C->trailStride = FX_MIND_BLAST_WAVE_TRAIL_3_TRAIL_STRIDE;
             }
             work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_VIOLET_ORB), (s32)&work->pos5C);
         }
-        return frame >= 0x28;
+        return frame >= FX_MIND_BLAST_BACKLASH_FRAMES;
     }
     return 0;
 }

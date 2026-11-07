@@ -56,7 +56,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x94;
+        *args = sizeof(Fx1b4Work80);
     } else if (mode == 1) {
         work->pos44.vx = env->targets->centerX;
         work->pos44.vy = env->targets->centerY;
@@ -68,12 +68,12 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos8C.vx = work->pos44.vx;
         work->pos8C.vy = work->pos44.vy;
         work->pos8C.vz = work->pos44.vz;
-        work->pos8C.vy -= 0x258;
+        work->pos8C.vy -= FX_FLARE_STAR_HEIGHT;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            for (i = 0; i < 8; i++) {
+            for (i = 0; i < FX_FLARE_STAR_PATHS; i++) {
                 fxm_posPathInit(&fx_1b4_posPath[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1b4_pathFileIds[i]));
                 fxm_posPathGet(&fx_1b4_posPath[i], 0, &work->pos4C[i]);
                 pathPos = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
@@ -83,30 +83,30 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1b4_emitFileIds0[i]), (s32)&work->pos4C[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->trails = (s32)fx_1b4_op80Trails0[i];
-                    work->emit0[i]->trailSlots = 5;
-                    work->emit0[i]->trailStride = 0x30;
+                    work->emit0[i]->trailSlots = FX_FLARE_STAR_GATHER_TRAIL_SLOTS;
+                    work->emit0[i]->trailStride = FX_FLARE_STAR_GATHER_TRAIL_STRIDE;
                 }
             }
             break;
-        case 0x17:
-            for (i = 0; i < 8; i++) {
+        case FX_FLARE_STAR_STREAKS_FRAME:
+            for (i = 0; i < FX_FLARE_STAR_PATHS; i++) {
                 fxm_posPathInit(&fx_1b4_op80ParticlePaths[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1b4_pathFileIds[i]));
                 work->emit20[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1b4_emitFileIds1[i]), (s32)&fx_1b4_emitPos);
                 if (work->emit20[i] != NULL) {
                     work->emit20[i]->trails = (s32)fx_1b4_op80Trails1[i];
-                    work->emit20[i]->trailSlots = 8;
-                    work->emit20[i]->trailStride = 0x70;
+                    work->emit20[i]->trailSlots = FX_FLARE_STAR_STREAK_TRAIL_SLOTS;
+                    work->emit20[i]->trailStride = FX_FLARE_STAR_STREAK_TRAIL_STRIDE;
                     if (work->emit20[i] != NULL) {
                         work->emit20[i]->file->m.module.update = fx_1b4_op80ParticleMotions[i];
                     }
                 }
             }
             break;
-        case 0x25:
+        case FX_FLARE_STAR_RINGS_FRAME:
             work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_PINK_RINGS_2), (s32)&work->pos8C);
             break;
         }
-        return frame >= 0x3C;
+        return frame >= FX_FLARE_STAR_GATHER_FRAMES;
     }
     return 0;
 }
@@ -125,13 +125,13 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 elapsed;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx1b4Work81);
     } else if (mode == 1) {
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
         fx_1b4_env = env;
         work->pos10.vz = env->targets->centerZ;
-        work->pos10.vy -= 0x258;
+        work->pos10.vy -= FX_FLARE_STAR_HEIGHT;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -145,13 +145,13 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[1]->otZ = 0x80;
             }
             break;
-        case 0x1C:
+        case FX_FLARE_STAR_FLAME_FRAME:
             work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_FLAME_TRAIL), (s32)&work->pos10);
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_YELLOW_RINGS), (s32)&work->pos10);
             if (work->emit0[2] != NULL) {
                 work->emit0[2]->trails = (s32)fx_1b4_op81Trails;
-                work->emit0[2]->trailSlots = 0xC0;
-                work->emit0[2]->trailStride = 0x30;
+                work->emit0[2]->trailSlots = FX_FLARE_STAR_FLAME_TRAIL_TRAIL_SLOTS;
+                work->emit0[2]->trailStride = FX_FLARE_STAR_FLAME_TRAIL_TRAIL_STRIDE;
                 if (work->emit0[2] != NULL) {
                     work->emit0[2]->otZ = 0x80;
                 }
@@ -160,11 +160,11 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[3]->otZ = 0x100;
             }
             break;
-        case 0x1E:
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+        case FX_FLARE_STAR_WHITE_FRAME:
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, FX_FLARE_STAR_WHITE_RGB);
             break;
         }
-        if ((u32)(frame - 0x1F) < 0x3C) {
+        if ((u32)(frame - FX_FLARE_STAR_DIM_FRAME) < FX_FLARE_STAR_DIM_FRAMES) {
             dm = (DrMode2Words *)env->prim;
             env->prim += sizeof(DrMode2Words);
             setlen(dm, 2);
@@ -180,8 +180,8 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
-        elapsed = frame - 0x5B;
-        if ((u32)elapsed < 0xF) {
+        elapsed = frame - FX_FLARE_STAR_DIM_2_FRAME;
+        if ((u32)elapsed < FX_FLARE_STAR_DIM_2_FRAMES) {
             dm2 = (DrMode2Words *)env->prim;
             env->prim += sizeof(DrMode2Words);
             setlen(dm2, 2);
@@ -196,7 +196,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot2, &scale2, &col2, 1, 0);
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_BACKDROP), frame);
-        return frame >= 0x8C;
+        return frame >= FX_FLARE_STAR_FLARE_FRAMES;
     }
     return 0;
 }
@@ -206,13 +206,13 @@ s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx1b4Work82);
     } else if (mode == 1) {
         work->pos1C.vx = env->targets->centerX;
         work->pos1C.vy = env->targets->centerY;
         fx_1b4_env = env;
         work->pos1C.vz = env->targets->centerZ;
-        work->pos1C.vy -= 0x258;
+        work->pos1C.vy -= FX_FLARE_STAR_HEIGHT;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -224,27 +224,27 @@ s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[0]->otZ = 0x100;
             }
             break;
-        case 20:
+        case FX_FLARE_STAR_BURST_FRAME:
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_RED_RINGS), (s32)&work->pos1C);
             work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_SMOKE_TRAIL), (s32)&work->pos1C);
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_RED_ORB), (s32)&work->pos1C);
             work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_ORANGE_GLOW), (s32)&work->pos1C);
             if (work->emit0[4] != NULL) {
                 work->emit0[4]->trails = (s32)fx_1b4_op82Trails0;
-                work->emit0[4]->trailSlots = 0x21;
-                work->emit0[4]->trailStride = 0x90;
+                work->emit0[4]->trailSlots = FX_FLARE_STAR_SMOKE_TRAIL_TRAIL_SLOTS;
+                work->emit0[4]->trailStride = FX_FLARE_STAR_SMOKE_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit0[5] != NULL) {
                 work->emit0[5]->trails = (s32)fx_1b4_op82Trails1;
-                work->emit0[5]->trailSlots = 0x58;
-                work->emit0[5]->trailStride = 0x30;
+                work->emit0[5]->trailSlots = FX_FLARE_STAR_RED_ORB_TRAIL_SLOTS;
+                work->emit0[5]->trailStride = FX_FLARE_STAR_RED_ORB_TRAIL_STRIDE;
             }
             if (work->emit0[3] != NULL) {
                 work->emit0[3]->otZ = 0x80;
             }
             break;
         }
-        return frame >= 0x50;
+        return frame >= FX_FLARE_STAR_BURST_FRAMES;
     }
     return 0;
 }
@@ -254,13 +254,13 @@ s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx1b4Work83);
     } else if (mode == 1) {
         work->pos4.vx = env->targets->centerX;
         work->pos4.vy = env->targets->centerY;
         fx_1b4_env = env;
         work->pos4.vz = env->targets->centerZ;
-        work->pos4.vy -= 0x258;
+        work->pos4.vy -= FX_FLARE_STAR_HEIGHT;
     } else {
         frame = entry->frame;
         if (frame == 0) {
@@ -269,7 +269,7 @@ s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->otZ = 0x100;
             }
         }
-        return frame >= 0x3C;
+        return frame >= FX_FLARE_STAR_SHARDS_FRAMES;
     }
     return 0;
 }

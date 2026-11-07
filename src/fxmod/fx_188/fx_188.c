@@ -30,8 +30,8 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *it, Unk800F78A4 *env, Unk801
         ex->btlfx_aimAngles((s16 *)&it->posC, (s16 *)&it->target20, (s16 *)&ang);
         ex->btlfx_turnToward((s16 *)&ang, (s16 *)&it->rot14, it->turn8);
         ex->btlfx_pointAhead((s16 *)&it->posC, (s16 *)&it->rot14, it->speed4, (s16 *)&it->posC);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_VIOLET_ORB), &it->posC, 0, size + 0x800, frame, 1, -1, 0, 0);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_PARTICLE), &it->posC, 0, size + 0x800, frame, 2, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_VIOLET_ORB), &it->posC, 0, size + 0x800, frame, BTLFX_ABR_ADD, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_PARTICLE), &it->posC, 0, size + 0x800, frame, BTLFX_ABR_SUB, -1, 0, 0);
         if (it->emit1C != NULL && it->emit1C->state == BTLFX_EMIT_DONE) {
             it->emit1C = NULL;
         }
@@ -57,16 +57,16 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 cell;
 
     if (mode == 0) {
-        init->workSize = 0x20;
-        init->elemSize = 0x28;
+        init->workSize = sizeof(Fx188Work);
+        init->elemSize = sizeof(Fx188Elem);
         init->elemFn = (s32)fx_188_op80PoolTask;
-        init->poolCount = 0xC;
+        init->poolCount = FX_LV3_DEF_LESS_ORBS;
     } else if (mode == 1) {
         work->state0 = 0;
         work->count1C = 0;
         fx_188_env = env;
         BTLFX_COPY_SVEC(&work->pos4, &env->targets->centerX);
-        work->pos4.vy -= 0x200;
+        work->pos4.vy -= FX_LV3_DEF_LESS_HEIGHT;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         fx_188_particleScale = 0x1000;
@@ -74,9 +74,9 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
+        case FX_LV3_DEF_LESS_STATE_ORBS:
             if (frame & 1) {
-                if (work->count1C < 0xC) {
+                if (work->count1C < FX_LV3_DEF_LESS_ORBS) {
                     work->count1C++;
                     it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (it != NULL) {
@@ -92,18 +92,18 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
             }
-            if (frame >= 0x3E) {
-                work->state0 = 1;
+            if (frame >= FX_LV3_DEF_LESS_ORBS_FRAMES) {
+                work->state0 = FX_LV3_DEF_LESS_STATE_RING;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_LV3_DEF_LESS_STATE_RING:
             ringAlpha = frame << 9;
-            if (frame < 8) {
+            if (frame < FX_LV3_DEF_LESS_RING_GROW_FRAMES) {
                 ringScale = 0x1000;
                 fx_188_particleScale = ex->math_cos(frame << 7);
             } else {
-                ringScale = ex->math_cos((frame - 8) << 7);
+                ringScale = ex->math_cos((frame - FX_LV3_DEF_LESS_RING_GROW_FRAMES) << 7);
                 ringAlpha = 0x1000;
                 fx_188_particleScale = 0;
             }
@@ -113,11 +113,11 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ringRot.vy = 0;
             ringRot.pad = 1;
             env->otZ = 0x20;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_RING), &work->pos4, &ringRot, ringScale, 0, 1, ringAlpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_RING), &work->pos4, &ringRot, ringScale, 0, BTLFX_ABR_ADD, ringAlpha);
             env->otZ = 0;
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_BACKDROP), frame);
-            if (frame >= 0x10) {
-                work->state0 = 2;
+            if (frame >= FX_LV3_DEF_LESS_RING_FRAMES) {
+                work->state0 = FX_LV3_DEF_LESS_STATE_END;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_SMOKE_RINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
@@ -134,9 +134,9 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_ORANGE_TRAILS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_188_op80Trails;
-                    emitter->trailSlots = 0x19;
+                    emitter->trailSlots = FX_LV3_DEF_LESS_ORANGE_TRAILS_TRAIL_SLOTS;
                     emitter->otZ = 0x20;
-                    emitter->trailStride = 0x54;
+                    emitter->trailStride = FX_LV3_DEF_LESS_ORANGE_TRAILS_TRAIL_STRIDE;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_CRYSTAL_SHARDS), (s32)&work->pos4);
                 if (emitter != NULL) {
@@ -144,9 +144,9 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             break;
-        case 2:
-            if (frame >= 0x20) {
-                work->state0 = 2;
+        case FX_LV3_DEF_LESS_STATE_END:
+            if (frame >= FX_LV3_DEF_LESS_END_FRAMES) {
+                work->state0 = FX_LV3_DEF_LESS_STATE_END;
                 return 1;
             }
             break;

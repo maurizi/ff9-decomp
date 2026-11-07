@@ -6,7 +6,7 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx1a1Work);
     } else if (mode == 1) {
         work->count4 = 0;
         work->timer0 = 0;
@@ -19,23 +19,23 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vz = env->targets->centerZ;
         work->pos18.vy = 0;
         ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos18, (s16 *)&work->angle28);
-        work->pos18.vx += (ex->math_sin(work->angle28.vy + 0x800) * 0x514) >> 12;
-        work->pos18.vz += (ex->math_cos(work->angle28.vy + 0x800) * 0x514) >> 12;
+        work->pos18.vx += (ex->math_sin(work->angle28.vy + 0x800) * FX_CLIMHAZZARD_DASH_REACH) >> 12;
+        work->pos18.vz += (ex->math_cos(work->angle28.vy + 0x800) * FX_CLIMHAZZARD_DASH_REACH) >> 12;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->count4 = 5;
-            work->timer0 = 5;
+            work->count4 = FX_CLIMHAZZARD_DASH_FRAMES;
+            work->timer0 = FX_CLIMHAZZARD_DASH_FRAMES;
             break;
-        case 2:
-            work->count4 = 5;
-            work->timer0 = 5;
+        case FX_CLIMHAZZARD_DASH_2_FRAME:
+            work->count4 = FX_CLIMHAZZARD_DASH_2_FRAMES;
+            work->timer0 = FX_CLIMHAZZARD_DASH_2_FRAMES;
             work->pos10.vx = work->pos20.vx;
             work->pos10.vy = work->pos20.vy;
             work->pos10.vz = work->pos20.vz;
             break;
-        case 10:
+        case FX_CLIMHAZZARD_RINGS_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CLIMHAZZARD_FLAME_RINGS), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -51,7 +51,7 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[0].vz = work->pos20.vz;
             env->camera->points[0].vy = 0;
         }
-        return frame >= 0x20;
+        return frame >= FX_CLIMHAZZARD_FRAMES;
     }
     return 0;
 }

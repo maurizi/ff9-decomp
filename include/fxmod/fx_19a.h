@@ -9,6 +9,10 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_MINUS_STRIKE_SLASH_ARC 0x4 /* emitter: blue slash arc, blue sparkle sprites, pale yellow ring, fan (byte-identical to fx_0bd entry 0x4) */
 
+/* fx_19a choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths (fx_0bd's names). */
+#define FX_MINUS_STRIKE_FRAMES        0x1E /* op80: the task ends at this frame */
+#define FX_MINUS_STRIKE_CAMERA_FRAMES 7    /* op81: the camera looks at unit 0x10 (btlfx_getUnitPos) until this frame */
+
 extern Unk800F78A4 *fx_19a_env;
 
 /* propagated */
@@ -16,7 +20,7 @@ extern Unk800F78A4 *fx_19a_env;
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */
-} Fx19aWork80;
+} Fx19aWork80; /* 0xC */
 s32 fx_19a_op80(s32 mode, Fx19aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

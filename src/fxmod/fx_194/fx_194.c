@@ -14,14 +14,14 @@ static void fx_194_op80GridVertex(SVECTOR *v) {
 void fx_194_shakeCamPoint(s32 frame, s32 amp, SVECTOR *point) {
     s32 pull;
 
-    if (frame == 2) {
+    if (frame == FX_SHOCKWAVE_PULL_FRAME) {
         pull = (amp * 16) >> 7;
         point->vx -= pull;
         point->vz -= pull;
         point->vy -= pull;
     }
-    if (frame >= 0x13 && frame < 0x19) {
-        SVECTOR *ofs = &fx_194_shakeOffsets[frame - 0x13];
+    if (frame >= FX_SHOCKWAVE_FLASH_FRAME && frame < FX_SHOCKWAVE_FLASH_FRAME + FX_SHOCKWAVE_FLASH_FRAMES) {
+        SVECTOR *ofs = &fx_194_shakeOffsets[frame - FX_SHOCKWAVE_FLASH_FRAME];
         point->vx += (ofs->vx * amp) >> 7;
         point->vy += (ofs->vy * amp) >> 7;
         point->vz += (ofs->vz * amp) >> 7;
@@ -42,7 +42,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 unused2;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx194Work);
     } else if (mode == 1) {
         work->state0 = 0;
         fx_194_env = env;
@@ -67,28 +67,28 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         state = work->state0;
         switch (state) {
-        case 0:
-            if (frame >= 0x13 && frame < 0x19) {
-                s32 tint = fx_194_flashLevels[frame - 0x13] * 0xFF / 100;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+        case FX_SHOCKWAVE_STATE_BLAST:
+            if (frame >= FX_SHOCKWAVE_FLASH_FRAME && frame < FX_SHOCKWAVE_FLASH_FRAME + FX_SHOCKWAVE_FLASH_FRAMES) {
+                s32 tint = fx_194_flashLevels[frame - FX_SHOCKWAVE_FLASH_FRAME] * 0xFF / 100;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
             }
             camPos.vx = work->camPos14.vx;
             camPos.vy = work->camPos14.vy;
             camPos.vz = work->camPos14.vz;
-            fx_194_shakeCamPoint(frame, 0x300, &camPos);
+            fx_194_shakeCamPoint(frame, FX_SHOCKWAVE_SHAKE, &camPos);
             env->camera->points[3].vx = camPos.vx;
             env->camera->points[3].vy = camPos.vy;
             env->camera->points[3].vz = camPos.vz;
-            if (frame >= 0x18) {
-                work->state0 = 1;
+            if (frame >= FX_SHOCKWAVE_FLASH_FRAME + FX_SHOCKWAVE_FLASH_FRAMES - 1) {
+                work->state0 = FX_SHOCKWAVE_STATE_WAVE;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_SHOCKWAVE_STATE_WAVE:
             t = frame << 7;
-            if (frame < 4) {
+            if (frame < FX_SHOCKWAVE_WHITE_FADE_FRAMES) {
                 s32 tint = 0xFF - ((frame * 0xFF) >> 2);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, tint, tint, tint);
             }
             t >>= 2;
             fx_194_waveAmp = (ex->math_cos(t) * 0xC) >> 12;
@@ -102,7 +102,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x73, 0x20, 0x17, 0xA, 0xA, 5, 5, &rot, &scale, &col, state,
                               fx_194_op80GridVertex);
-            if (frame >= 0x20) {
+            if (frame >= FX_SHOCKWAVE_WAVE_FRAMES) {
                 return 1;
             }
             break;
@@ -130,7 +130,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[3].vz = work->pos4.vz;
     } else {
         s32 frame = entry->frame;
-        if (work->state0 == 0 && frame >= 0x20) {
+        if (work->state0 == FX_SHOCKWAVE_STATE_BLAST && frame >= FX_SHOCKWAVE_GLOW_FRAMES) {
             return 1;
         }
     }

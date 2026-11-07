@@ -7,11 +7,11 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 pathFrame;
 
     if (mode == 0) {
-        *args = 0x70;
+        *args = sizeof(Fx1b2Work80);
     } else if (mode == 1) {
         work->pos18.vx = 0;
         work->pos18.vy = 0;
-        work->pos18.vz = -0x44C;
+        work->pos18.vz = -FX_TIDAL_WAVE_MODEL_Z;
         work->rot10.vx = 0;
         work->rot10.vy = 0;
         work->rot10.vz = 0;
@@ -23,7 +23,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos54.vz = work->pos18.vz;
         fx_1b2_env = env;
         fxm_vecPathInit(&fx_1b2_vecPath, (u8 *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_PATH));
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_CURL), 0x117, 0, 0, 0);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_CURL), FX_TIDAL_WAVE_CURL_TPAGE, FX_TIDAL_WAVE_CURL_CLUT, FX_TIDAL_WAVE_CURL_U, FX_TIDAL_WAVE_CURL_V);
         work->rot3C.vx = -0x200;
         work->rot3C.vy = 0;
         work->rot3C.vz = 0;
@@ -35,8 +35,8 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit8 = NULL;
     } else {
         frame = entry->frame;
-        if (!(frame & 0xF)) {
-            work->timer5C = 0xB;
+        if (!(frame & (FX_TIDAL_WAVE_INTERVAL - 1))) {
+            work->timer5C = FX_TIDAL_WAVE_CURL_FRAMES;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_ORBS), (s32)&work->pos54);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_PALE_RINGS), (s32)&work->pos54);
             if (work->emit0 != NULL) {
@@ -46,41 +46,41 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitC->otZ = 0x180;
             }
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (work->count64 != 2) {
+                if (work->count64 != FX_TIDAL_WAVE_LAST_WAVE) {
                     fxm_startHitMotionIfActive(i);
                 }
             }
             work->count64++;
-            if (!(frame & 0xF)) {
-                ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos44);
-                ex->btlfx_getUnitBonePos(0x10, 0x29, (u16 *)&work->pos4C);
+            if (!(frame & (FX_TIDAL_WAVE_INTERVAL - 1))) {
+                ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_BONE, (u16 *)&work->pos44);
+                ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_2_BONE, (u16 *)&work->pos4C);
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_TRAIL), (s32)&work->pos44);
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_TRAIL), (s32)&work->pos4C);
                 if (work->emit4 != NULL) {
                     work->emit4->trails = (s32)fx_1b2_op80Trails0[work->index68];
-                    work->emit4->trailSlots = 0x3C;
-                    work->emit4->trailStride = 0x28;
+                    work->emit4->trailSlots = FX_TIDAL_WAVE_WATER_TRAIL_TRAIL_SLOTS;
+                    work->emit4->trailStride = FX_TIDAL_WAVE_WATER_TRAIL_TRAIL_STRIDE;
                 }
                 if (work->emit8 != NULL) {
                     work->emit8->trails = (s32)fx_1b2_op80Trails1[work->index68];
-                    work->emit8->trailSlots = 0x3C;
-                    work->emit8->trailStride = 0x28;
+                    work->emit8->trailSlots = FX_TIDAL_WAVE_WATER_TRAIL_TRAIL_SLOTS;
+                    work->emit8->trailStride = FX_TIDAL_WAVE_WATER_TRAIL_TRAIL_STRIDE;
                 }
                 work->index68++;
             }
         }
         if (work->timer5C >= 0) {
-            pathFrame = 0xB - work->timer5C;
-            if (pathFrame == 8) {
-                work->timer60 = 4;
+            pathFrame = FX_TIDAL_WAVE_CURL_FRAMES - work->timer5C;
+            if (pathFrame == FX_TIDAL_WAVE_CURL_FADE_FRAME) {
+                work->timer60 = FX_TIDAL_WAVE_CURL_FADE_FRAMES;
             }
             if (work->timer60 >= 0) {
-                work->fade38 = fxm_lerpRatio(0, -0x80, 4 - work->timer60, 4);
+                work->fade38 = fxm_lerpRatio(0, -0x80, FX_TIDAL_WAVE_CURL_FADE_FRAMES - work->timer60, FX_TIDAL_WAVE_CURL_FADE_FRAMES);
                 work->timer60--;
             }
             fxm_vecPathGet(&fx_1b2_vecPath, pathFrame, &work->scale28);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model6C);
-            ex->Hi_ModifyEffModelAbr(work->model6C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model6C, BTLFX_ABR_ADD);
             if (work->timer60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
@@ -112,7 +112,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit8->rot.vz = work->rot3C.vz;
             }
         }
-        return frame >= 0x2C;
+        return frame >= FX_TIDAL_WAVE_FRAMES;
     }
     return 0;
 }
@@ -122,35 +122,35 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx1b2Work81);
     } else if (mode == 1) {
         fx_1b2_env = env;
-        ex->btlfx_initEffModels(fx_1b2_effModels, 3);
+        ex->btlfx_initEffModels(fx_1b2_effModels, FX_TIDAL_WAVE_MODELS);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 6:
+        case FX_TIDAL_WAVE_FOAM_FRAME:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_FOAM), (s32)&work->posC);
             break;
-        case 9:
-            ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos14);
-            ex->btlfx_getUnitBonePos(0x10, 0x29, (u16 *)&work->pos1C);
+        case FX_TIDAL_WAVE_RED_TRAIL_FRAME:
+            ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_BONE, (u16 *)&work->pos14);
+            ex->btlfx_getUnitBonePos(0x10, FX_TIDAL_WAVE_TRAIL_2_BONE, (u16 *)&work->pos1C);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_RED_TRAIL), (s32)&work->pos14);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_RED_TRAIL), (s32)&work->pos1C);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_1b2_op81Trails0;
-                work->emit4->trailSlots = 0xA;
-                work->emit4->trailStride = 0x80;
+                work->emit4->trailSlots = FX_TIDAL_WAVE_RED_TRAIL_TRAIL_SLOTS;
+                work->emit4->trailStride = FX_TIDAL_WAVE_RED_TRAIL_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_1b2_op81Trails1;
-                work->emit8->trailSlots = 0xA;
-                work->emit8->trailStride = 0x80;
+                work->emit8->trailSlots = FX_TIDAL_WAVE_RED_TRAIL_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_TIDAL_WAVE_RED_TRAIL_TRAIL_STRIDE;
             }
             break;
         }
-        return frame >= 0x28;
+        return frame >= FX_TIDAL_WAVE_TRAILS_FRAMES;
     }
     return 0;
 }
@@ -161,9 +161,9 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 bright;
 
     if (mode == 0) {
-        *args = 0x38;
+        *args = sizeof(Fx1b2Work82);
     } else if (mode == 1) {
-        work->pos8.vz = -0x44C;
+        work->pos8.vz = -FX_TIDAL_WAVE_MODEL_Z;
         work->rot0.vx = 0;
         work->rot0.vy = 0;
         work->rot0.vz = 0;
@@ -173,30 +173,30 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale18.vy = 0x1000;
         work->scale18.vz = 0x1000;
         fx_1b2_env = env;
-        work->model34 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_SURGE), 0x119, 0, 0, 0);
+        work->model34 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_SURGE), FX_TIDAL_WAVE_SURGE_TPAGE, FX_TIDAL_WAVE_SURGE_CLUT, FX_TIDAL_WAVE_SURGE_U, FX_TIDAL_WAVE_SURGE_V);
         work->timer2C = -1;
         work->timer30 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->timer2C = 8;
+            work->timer2C = FX_TIDAL_WAVE_SURGE_FADE_IN_FRAMES;
             break;
-        case 0x28:
-            work->timer30 = 0xA;
+        case FX_TIDAL_WAVE_SURGE_FADE_OUT_FRAME:
+            work->timer30 = FX_TIDAL_WAVE_SURGE_FADE_OUT_FRAMES;
             break;
         }
-        if (frame >= 0 && frame < 0x32) {
+        if (frame >= 0 && frame < FX_TIDAL_WAVE_SURGE_FADE_OUT_FRAME + FX_TIDAL_WAVE_SURGE_FADE_OUT_FRAMES) {
             if (work->timer2C >= 0) {
-                work->fade28 = fxm_lerpRatio(-0x80, 0, 8 - work->timer2C, 8);
+                work->fade28 = fxm_lerpRatio(-0x80, 0, FX_TIDAL_WAVE_SURGE_FADE_IN_FRAMES - work->timer2C, FX_TIDAL_WAVE_SURGE_FADE_IN_FRAMES);
                 work->timer2C--;
             }
             if (work->timer30 >= 0) {
-                work->fade28 = fxm_lerpRatio(0, -0x80, 0xA - work->timer30, 0xA);
+                work->fade28 = fxm_lerpRatio(0, -0x80, FX_TIDAL_WAVE_SURGE_FADE_OUT_FRAMES - work->timer30, FX_TIDAL_WAVE_SURGE_FADE_OUT_FRAMES);
                 work->timer30--;
             }
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model34);
-            ex->Hi_ModifyEffModelAbr(work->model34, 1);
+            ex->Hi_ModifyEffModelAbr(work->model34, BTLFX_ABR_ADD);
             if (work->timer2C > 0 || work->timer30 >= 0) {
                 bright = work->fade28 + 6;
                 ex->Hi_ModifyEffModelRGB(work->model34, bright, bright, bright);
@@ -204,7 +204,7 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->model34, 6, 6, 6);
             }
         }
-        if (frame >= 0x50) {
+        if (frame >= FX_TIDAL_WAVE_SURGE_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -223,9 +223,9 @@ s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, fx_1b2_bgOt, 0, -0x3E8, 0x1770);
+            ex->btlfx_drawBgOffscreen(FX_TIDAL_WAVE_BG_VRAM_X, FX_TIDAL_WAVE_BG_VRAM_Y, FX_TIDAL_WAVE_BG_VRAM_W, FX_TIDAL_WAVE_BG_VRAM_H, fx_1b2_bgOt, 0, -0x3E8, 0x1770);
         }
-        return frame >= 5;
+        return frame >= FX_TIDAL_WAVE_BG_FRAMES;
     }
     return 0;
 }

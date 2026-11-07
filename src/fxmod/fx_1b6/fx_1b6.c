@@ -11,7 +11,7 @@ void fx_1b6_initSplit(Fx1b6Split *split, SVECTOR (*faces)[3]) {
     split->count2 = 0;
     split->nextFace24 = faces;
     split->faces20 = faces;
-    for (i = 0; i < 0x708; i++) {
+    for (i = 0; i < FX_DEATH_PIECES; i++) {
         piece->frame18 = -1;
         piece++;
     }
@@ -25,7 +25,7 @@ static s32 fxm_splitModelAdd(s32 model) {
     s32 i;
     s32 slot;
 
-    n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / 24;
+    n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / (3 * sizeof(SVECTOR));
     ex->Hi_SplitMdlVertex(model, -1, (s32)face);
     slot = split->count0;
     split->modelFaces28[slot] = face;
@@ -44,7 +44,7 @@ Fx1b6Piece *fx_1b6_findFreePiece(void) {
     Fx1b6Piece *piece = fx_1b6_pieces;
     s32 i;
 
-    for (i = 0; i < 0x708; i++, piece++) {
+    for (i = 0; i < FX_DEATH_PIECES; i++, piece++) {
         if (piece->frame18 < 0) {
             return piece;
         }
@@ -110,7 +110,7 @@ void fx_1b6_updatePieces(void) {
     ex = BTLFX_EXPORTS(fx_1b6_env);
     scale.vx = scale.vy = scale.vz = 0xE80;
     rot.vz = 0;
-    for (i = 0; i < 0x708; i++, piece++) {
+    for (i = 0; i < FX_DEATH_PIECES; i++, piece++) {
         if (piece->frame18 >= 0) {
             face = &split->faces20[piece->face1A];
             center.vx = piece->posX0 >> 12;
@@ -153,7 +153,7 @@ void fx_1b6_updatePieces(void) {
             (*face)[2].vy = world.vy;
             (*face)[2].vz = world.vz;
             piece->frame18++;
-            if (piece->frame18 >= 0x3C) {
+            if (piece->frame18 >= FX_DEATH_PIECE_FRAMES) {
                 piece->frame18 = -1;
                 (*face)[2].vz = 0;
                 *(s32 *)&(*face)[2].vx = 0;
@@ -178,7 +178,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x64;
+        *args = sizeof(Fx1b6Work80);
     } else if (mode == 1) {
         fx_1b6_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
@@ -212,8 +212,8 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 24;
+        case FX_DEATH_STATE_CHARGE:
+            t = (frame << 12) / FX_DEATH_CHARGE_FRAMES;
             if (work->emit5C != NULL) {
                 if (work->emit5C->state == BTLFX_EMIT_DONE) {
                     work->emit5C = NULL;
@@ -230,25 +230,25 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit60->alpha = t;
                 }
             }
-            if (frame == 1 || frame == 0xF) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x40, 0x40, 0x40);
+            if (frame == FX_DEATH_FLICKER_FRAME || frame == FX_DEATH_FLICKER_2_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, FX_DEATH_FLICKER_RGB);
             }
-            if (frame == 0x17) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xFF, 0xFF, 0xFF);
+            if (frame == FX_DEATH_CHARGE_FRAMES - 1) {
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, FX_DEATH_WHITE_RGB);
             }
-            if (frame >= 0x18) {
+            if (frame >= FX_DEATH_CHARGE_FRAMES) {
                 ex->btlfx_initParticleSystem();
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x64);
-                work->state0 = 1;
+                work->state0 = FX_DEATH_STATE_SHATTER;
                 entry->frame = -1;
-                ex->btlfx_initEffModels(fx_1b6_effModels, 7);
-                for (i = 0; i < 7; i++) {
+                ex->btlfx_initEffModels(fx_1b6_effModels, FX_DEATH_MODELS);
+                for (i = 0; i < FX_DEATH_MODELS; i++) {
                     work->model28[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1b6_modelFileIds[i]), 0);
                 }
                 buf = ((Fx1b6Summon *)env->loader)->summon54->workBuf50 + 0x19000;
                 fx_1b6_initSplit((Fx1b6Split *)buf, (SVECTOR (*)[3])(buf + 0xC5A8));
-                for (i = 0; i < 7; i++) {
+                for (i = 0; i < FX_DEATH_MODELS; i++) {
                     fxm_splitModelAdd(work->model28[i]);
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_STAR_SPECKS), (s32)&work->pos54);
@@ -262,27 +262,27 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SPIRAL_TRAIL), (s32)&work->pos4C);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_1b6_op80Trails;
-                    emitter->trailSlots = 0x20;
-                    emitter->trailStride = 0x8C;
+                    emitter->trailSlots = FX_DEATH_SPIRAL_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_DEATH_SPIRAL_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x140;
                 }
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, FX_DEATH_FLASH_RGB);
             }
             break;
-        case 1:
-            t = (frame << 12) / 60;
-            if (frame < 8) {
+        case FX_DEATH_STATE_SHATTER:
+            t = (frame << 12) / FX_DEATH_SHATTER_FRAMES;
+            if (frame < FX_DEATH_WHITE_FADE_FRAMES) {
                 tint = (ex->math_cos((frame << 10) >> 3) << 7) >> 12;
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, tint, tint, tint);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, tint, tint, tint);
             }
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x20, 0x40, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, FX_DEATH_BLUE_RGB);
             }
             if (frame > 0) {
-                for (i = 0; i < 7; i++) {
+                for (i = 0; i < FX_DEATH_MODELS; i++) {
                     ex->Hi_DrawEffModel(&work->rot14, (VECTOR *)work->pos8, (s32)work->scale1C, work->model28[i]);
                 }
-                if (frame < 0x31) {
+                if (frame < FX_DEATH_SWEEP_FRAMES) {
                     fx_1b6_sweepLine = 0x514 - ((t * 0x960) >> 12);
                 } else {
                     fx_1b6_sweepLine = -0x1000;
@@ -292,7 +292,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_1b6_updatePieces();
                 FX1B6_RESET_STACK(&sp);
             }
-            if (frame >= 0x3C) {
+            if (frame >= FX_DEATH_SHATTER_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

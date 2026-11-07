@@ -34,7 +34,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x4C;
+        *args = sizeof(Fx1a6Work80);
     } else if (mode == 1) {
         s32 shot = *args;
         fx_1a6_env = env;
@@ -60,8 +60,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos18, (s16 *)&work->angle38);
         ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos20, (s16 *)&work->angle40);
-        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->angle38, 0x12C, (s16 *)&work->pos28);
-        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->angle38, 0xC8, (s16 *)&fx_1a6_motionFrom[work->index48]);
+        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->angle38, FX_WATER_GUN_SPRAY_AHEAD, (s16 *)&work->pos28);
+        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->angle38, FX_WATER_GUN_STREAM_AHEAD, (s16 *)&fx_1a6_motionFrom[work->index48]);
         fx_1a6_motionTo[work->index48].vx = work->pos18.vx;
         fx_1a6_motionTo[work->index48].vy = work->pos18.vy;
         fx_1a6_motionTo[work->index48].vz = work->pos18.vz;
@@ -70,13 +70,13 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                        (s32)&fx_1a6_emitPos0[work->index48]);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a6_op80Trails0[work->index48];
-            work->emit0->trailSlots = 0xF;
-            work->emit0->trailStride = 0x18;
+            work->emit0->trailSlots = FX_WATER_GUN_SPRAY_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_WATER_GUN_SPRAY_TRAIL_STRIDE;
         }
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_1a6_op80Trails1[work->index48];
-            work->emit4->trailSlots = 0x1D;
-            work->emit4->trailStride = 0x40;
+            work->emit4->trailSlots = FX_WATER_GUN_STREAM_TRAIL_SLOTS;
+            work->emit4->trailStride = FX_WATER_GUN_STREAM_TRAIL_STRIDE;
         }
         if (work->emit4 != NULL) {
             work->emit4->file->m.module.update = fx_1a6_op80ParticleMotions[work->index48];
@@ -90,7 +90,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 6:
+        case FX_WATER_GUN_HIT_FRAME:
             if (work->index48 != FX_1A6_LAST_SHOT) {
                 fxm_startHitMotionIfActive(0);
             }
@@ -98,8 +98,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_SPLASH), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_1a6_op80Trails2[work->index48];
-                work->emit8->trailSlots = 0x56;
-                work->emit8->trailStride = 0x40;
+                work->emit8->trailSlots = FX_WATER_GUN_WATER_JET_TRAIL_SLOTS;
+                work->emit8->trailStride = FX_WATER_GUN_WATER_JET_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -108,7 +108,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 8:
+        case FX_WATER_GUN_SOUND_FRAME:
             ex->btlfx_playFileSound(8, entry->file, -1);
             ex->btlfx_playFileSound(0xD, entry->file, -1);
             ex->btlfx_playFileSound(0xE, entry->file, -1);
@@ -124,7 +124,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->rot.vz = work->angle40.vz;
             }
         }
-        if (frame >= 6) {
+        if (frame >= FX_WATER_GUN_HIT_FRAME) {
             if (work->emitC != NULL) {
                 if (work->emitC->state == BTLFX_EMIT_DONE) {
                     work->emitC = NULL;
@@ -135,11 +135,11 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emitC->rot.vz = work->angle38.vz;
                 }
             }
-            if (frame >= 6 && work->index48 != 2 && fxm_isMotionDone(0) != 0) {
+            if (frame >= FX_WATER_GUN_HIT_FRAME && work->index48 != FX_1A6_LAST_SHOT && fxm_isMotionDone(0) != 0) {
                 fxm_startUnitMotion(0, 0);
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_WATER_GUN_FRAMES;
     }
     return 0;
 }
@@ -148,13 +148,13 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx1a6Work);
     } else if (mode == 1) {
         fx_1a6_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATER_GUN_BUBBLES), (s32)&work->pos4);
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_WATER_GUN_BUBBLES_FRAMES;
     }
     return 0;
 }

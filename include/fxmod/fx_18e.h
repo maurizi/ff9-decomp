@@ -9,12 +9,17 @@
  * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_CHARGE_BLUE_GLOW 0x1 /* emitter: orbiting blue / cyan glow fans + white star glints + white rings */
 
+/* fx_18e choreography (docs/fxdata.md, "Choreography literals"): the glow's keyframe and place, op80's length. */
+#define FX_CHARGE_GLOW_FRAME 8     /* BLUE_GLOW starts ahead of the caster's bone 0x10 */
+#define FX_CHARGE_GLOW_AHEAD 0x12C /* this far ahead of it (btlfx_matrixPointAhead) */
+#define FX_CHARGE_FRAMES     0x1E  /* op80's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
     SVECTOR posC;
     SVECTOR pos14;
-} Fx18eWork;
+} Fx18eWork; /* 0x1C */
 
 extern Unk800F78A4 *fx_18e_env;
 

@@ -273,23 +273,23 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     SVECTOR *spawnPos;
 
     if (mode == 0) {
-        init->workSize = 0x54;
-        init->elemSize = 0x20;
+        init->workSize = sizeof(Fx1a2Work80);
+        init->elemSize = sizeof(Fx1a2Rock);
         init->elemFn = (s32)fx_1a2_op80PoolTask;
-        init->poolCount = 0x20;
+        init->poolCount = FX_MOONLIGHT_SLASH_ROCKS;
     } else if (mode == 1) {
         w->state0 = 0;
         w->frame4 = 0;
         fx_1a2_env = env;
         ex->btlfx_initEffModels(fx_1a2_effModels, 10);
-        w->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_LIGHT_BAND_2), 0xB8, 0x3DC0, 0x80, 0);
-        w->model40 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_LIGHT_RING), 0xB8, 0x3DC0, 0x80, 0);
-        w->model30[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLADE_3), 0xBA, 0x3E40, 0, 0xE0);
-        w->model30[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLADE_2), 0xBA, 0x3E40, 0, 0xE0);
-        w->model30[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLADE), 0xBA, 0x3E40, 0, 0xE0);
-        w->model44 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_LIGHT_BAND), 0xB8, 0x3DC0, 0x80, 0);
-        w->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_ARMOR), 0x98, 0x3E00, 0, 0x80);
-        w->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_ARMOR_2), 0x98, 0x3E00, 0, 0x80);
+        w->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_LIGHT_BAND_2), FX_MOONLIGHT_SLASH_BAND_TPAGE, FX_MOONLIGHT_SLASH_BAND_CLUT, FX_MOONLIGHT_SLASH_BAND_U, FX_MOONLIGHT_SLASH_BAND_V);
+        w->model40 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_LIGHT_RING), FX_MOONLIGHT_SLASH_BAND_TPAGE, FX_MOONLIGHT_SLASH_BAND_CLUT, FX_MOONLIGHT_SLASH_BAND_U, FX_MOONLIGHT_SLASH_BAND_V);
+        w->model30[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLADE_3), FX_MOONLIGHT_SLASH_BLADE_TPAGE, FX_MOONLIGHT_SLASH_BLADE_CLUT, FX_MOONLIGHT_SLASH_BLADE_U, FX_MOONLIGHT_SLASH_BLADE_V);
+        w->model30[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLADE_2), FX_MOONLIGHT_SLASH_BLADE_TPAGE, FX_MOONLIGHT_SLASH_BLADE_CLUT, FX_MOONLIGHT_SLASH_BLADE_U, FX_MOONLIGHT_SLASH_BLADE_V);
+        w->model30[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_BLADE), FX_MOONLIGHT_SLASH_BLADE_TPAGE, FX_MOONLIGHT_SLASH_BLADE_CLUT, FX_MOONLIGHT_SLASH_BLADE_U, FX_MOONLIGHT_SLASH_BLADE_V);
+        w->model44 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_LIGHT_BAND), FX_MOONLIGHT_SLASH_BAND_TPAGE, FX_MOONLIGHT_SLASH_BAND_CLUT, FX_MOONLIGHT_SLASH_BAND_U, FX_MOONLIGHT_SLASH_BAND_V);
+        w->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_ARMOR), FX_MOONLIGHT_SLASH_ARMOR_TPAGE, FX_MOONLIGHT_SLASH_ARMOR_CLUT, FX_MOONLIGHT_SLASH_ARMOR_U, FX_MOONLIGHT_SLASH_ARMOR_V);
+        w->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_ARMOR_2), FX_MOONLIGHT_SLASH_ARMOR_TPAGE, FX_MOONLIGHT_SLASH_ARMOR_CLUT, FX_MOONLIGHT_SLASH_ARMOR_U, FX_MOONLIGHT_SLASH_ARMOR_V);
         rot.vx = rot.vz = 0x97;
         rot.vy = rot.pad = 0x3D40;
         bonePos.vy = bonePos.vx = bonePos.vz = 0;
@@ -320,12 +320,12 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         fxm_drawRibbonTrail(&ribbon1, &ribbon2, 0x1F, &fx_1a2_colors1, &fx_1a2_colors2, 0x1000, fx_1a2_ribbonEdges1, 1);
         fxm_drawRibbonTrail(&ribbon2, &ribbon3, 0x1F, &fx_1a2_colors2, &fx_1a2_colors0, 0x1000, fx_1a2_ribbonEdges2, 1);
         env->otZ = 0x20;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS_2), &ribbon2, NULL, 0x400, 0, 1, ex->math_sin(t >> 2) >> 1);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS_2), &ribbon2, NULL, 0x400, 0, BTLFX_ABR_ADD, ex->math_sin(t >> 2) >> 1);
         ringRot.pad = 0;
         ringRot.vy = 0;
         ringRot.vx = 0;
         ringRot.vz = frame << 4;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS), &ribbon2, &ringRot, 0x800, 0, 1, ex->math_sin(t >> 2));
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_WHITE_RINGS), &ribbon2, &ringRot, 0x800, 0, BTLFX_ABR_ADD, ex->math_sin(t >> 2));
         env->otZ = 0;
         ((s32 *)&w->pos18)[0] = ((s32 *)&ribbon2)[0];
         ((s32 *)&w->pos18)[1] = ((s32 *)&ribbon2)[1];
@@ -426,15 +426,15 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_CRESCENT_TRAIL), (s32)&w->pos8);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1a2_op80Trails0;
-                emitter->trailSlots = 0x10;
-                emitter->trailStride = 0x4C;
+                emitter->trailSlots = FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_TRAIL_SLOTS;
+                emitter->trailStride = FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_TRAIL_STRIDE;
                 emitter->otZ = 0x40;
             }
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2), (s32)&w->pos8);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_1a2_op80Trails1;
-                emitter->trailSlots = 8;
-                emitter->trailStride = 0x4C;
+                emitter->trailSlots = FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2_TRAIL_SLOTS;
+                emitter->trailStride = FX_MOONLIGHT_SLASH_CRESCENT_TRAIL_2_TRAIL_STRIDE;
                 emitter->otZ = 0x40;
             }
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MOONLIGHT_SLASH_CYAN_RINGS), (s32)(spawnPos = &w->pos8));
@@ -486,7 +486,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->pos20 = w->pos8.vx;
                 w->pos24 = w->pos8.vz;
                 w->pos22 -= 0x1AE;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x3C, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x10, 0x3C, 0x46);
                 ex->btlfx_fadeUnitById(0, 0);
                 ex->btlfx_fadeUnitById(0x11, -2);
                 ex->btlfx_setUnitPos(0x11, (s16 *)&w->pos8);
@@ -573,7 +573,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model50);
             if ((u32)(frame - 0x20) < 0x10) {
                 fade = 0x1000 - ((frame - 0x20) << 8);
-                ex->Hi_ModifyEffModelAbr(w->model50, 1);
+                ex->Hi_ModifyEffModelAbr(w->model50, BTLFX_ABR_ADD);
                 ex->Hi_ModifyEffModelRGB(w->model50, (fade >> 5) - 0x80, (fade >> 5) - 0x80, (fade >> 5) - 0x80);
             }
         }
