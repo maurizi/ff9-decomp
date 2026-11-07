@@ -5241,6 +5241,22 @@ typedef struct {
 #define BTLFX_CAST_ENEMY 1 /* enemy caster: no motions, a cast emitter on the body */
 #define BTLFX_CAST_NONE  2 /* party command without a cast (BTL_FXK_NO_CAST or kind 0xF) */
 #define BTLFX_CAST_ITEM  3 /* party item use (BTL_FXK_ITEM): BTL_MOTION_ITEM, then READY */
+/* Unk800E4C88.phase */
+#define BTLFX_CASTPH_STEP  0 /* stepping forward (btlfx_stepForward) */
+#define BTLFX_CASTPH_START 1 /* BTL_MOTION_CAST_START, turning to the target; then the cast emitter starts */
+#define BTLFX_CASTPH_LOOP  2 /* casting until the script signals (signals.b[2]) */
+#define BTLFX_CASTPH_END   3 /* the emitter fades out, the caster returns to READY */
+/* Unk800E4C88.castMode (BTLFX_HDR_CAST_MODE): what a summon cast does to the screen while it fades in */
+#define BTLFX_CAST_MODE_FLASH_ADD 0 /* additive white tint, then every unit faded out */
+#define BTLFX_CAST_MODE_FLASH_SUB 1 /* subtractive (darkening) tint, then every unit faded out */
+#define BTLFX_CAST_MODE_DIM_ALL   2 /* every unit dimmed to half */
+#define BTLFX_CAST_MODE_DIM_PARTY 3 /* the party dimmed to half */
+/* btlfx_opCast timing (frames) */
+#define BTLFX_CAST_MIN_FRAMES 27 /* the cast lasts at least this long, whatever the script signals */
+#define BTLFX_SUMMON_FADE_DELAY 9 /* the summon tint / unit fade starts this many frames into the cast loop */
+#define BTLFX_SUMMON_FADE_FRAMES 16 /* and takes this long (fade = step * 255 >> 4) */
+#define BTLFX_CAST_BG_FADE_FRAMES 0x14 /* btlfx_startFadeBackground length */
+#define BTLFX_SUMMON_BG_FADE_FRAMES 0xC /* the same for a summon */
 
 /* btlfx_opDrawOnUnit effect state (sprite sheet on a unit) */
 typedef struct {
