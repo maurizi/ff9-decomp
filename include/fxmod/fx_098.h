@@ -30,6 +30,55 @@
 #define FX_BLIZZAGA_MIST_HIGH       0x28 /* emitter: grey frost mist higher up (same call site as fx_097 entry 0x27) */
 #define FX_BLIZZAGA_ICE_SPARKLES_2  0x29 /* emitter: small blue ice sparkles while the crystal grows (same call site as fx_097 entry 0x29) */
 
+/* fx_098 choreography (docs/fxdata.md, "Choreography literals"): op80's states, their lengths and keyframes, the
+ * crystal / shard / piece counts and sizes, the screen tints, and the VRAM rect of the reflection map. */
+#define FX_BLIZZAGA_STATE_BULGE   0 /* the ground bulges (grid drawn with the reflection map) */
+#define FX_BLIZZAGA_STATE_RISE    1 /* the bulge rises, FX_BLIZZAGA_SNOW_RING_2 spreads */
+#define FX_BLIZZAGA_STATE_CRYSTAL 2 /* FX_BLIZZAGA_ICE_CRYSTAL + CRYSTAL_SHEEN appear with a white-blue flash */
+#define FX_BLIZZAGA_STATE_SHARDS  3 /* a shard pool item every other frame around the crystal */
+#define FX_BLIZZAGA_STATE_SPIKES  4 /* FX_BLIZZAGA_ICE_SPIKES */
+#define FX_BLIZZAGA_STATE_HOLD    5 /* the crystal stands; at the end it shatters */
+#define FX_BLIZZAGA_STATE_SHATTER 6 /* the pieces fly, FX_BLIZZAGA_SHATTER_WAVE */
+#define FX_BLIZZAGA_BULGE_FRAMES        6    /* BULGE's length */
+#define FX_BLIZZAGA_RISE_FRAMES         10   /* RISE's length; at its end the mists and ICE_SPARKLES_2 start */
+#define FX_BLIZZAGA_CRYSTAL_FRAMES      4    /* CRYSTAL's length */
+#define FX_BLIZZAGA_CRYSTAL_FLASH_FRAMES 6   /* CRYSTAL: additive white-blue flash fading over this many frames */
+#define FX_BLIZZAGA_SPIKES_FRAMES       8    /* SPIKES's length */
+#define FX_BLIZZAGA_HOLD_FRAMES         10   /* HOLD's length; at its end the flares, bursts and pieces start */
+#define FX_BLIZZAGA_SHATTER_WAVE_FRAME  5    /* SHATTER: FX_BLIZZAGA_SHATTER_WAVE starts */
+#define FX_BLIZZAGA_SHATTER_FLASH_FRAMES 8   /* SHATTER: additive white-blue flash (fades by >> 3) */
+#define FX_BLIZZAGA_RING_FADE_FRAMES    18   /* SHATTER: the snow / frost rings fade out */
+#define FX_BLIZZAGA_SHATTER_FRAMES      0x18 /* SHATTER's length (the op ends) */
+#define FX_BLIZZAGA_SHARD_COUNT         6    /* shards spawned in SHARDS (fx_098_shardRot entries) */
+#define FX_BLIZZAGA_WIDE_SHARDS         3    /* shards 0..2 are ICE_CRYSTAL_3 / CRYSTAL_SHEEN_3 and break into the second piece set */
+#define FX_BLIZZAGA_CRYSTAL_PIECES      6    /* the main crystal's pieces: model20[0..5] */
+#define FX_BLIZZAGA_SHARD_PIECES        4    /* a shard's pieces: model20[6..9], the wide shards' model20[10..13] */
+#define FX_BLIZZAGA_PIECE_MODELS        14   /* model20 / fx_098_pieceBlocks entries */
+#define FX_BLIZZAGA_SHARD_GROW_FRAMES   4    /* pool item: a shard grows */
+#define FX_BLIZZAGA_SHARD_RING_FRAMES   12   /* pool item: FX_BLIZZAGA_SNOW_RING_2 at the shard's tip */
+#define FX_BLIZZAGA_PIECE_FRAMES        22   /* pool item: a piece flies and fades */
+#define FX_BLIZZAGA_SHARD_SCALE         0xC00 /* a shard's full scale */
+#define FX_BLIZZAGA_CRYSTAL_SCALE       0x2800 /* the main crystal's x / y scale */
+#define FX_BLIZZAGA_CRYSTAL_SCALE_Z     0x1A00
+#define FX_BLIZZAGA_BURST_HEIGHT        0x400 /* pos60 (SNOW_BURST, FREEZE_BURST, SHATTER_WAVE ...) is this far above pos58 */
+#define FX_BLIZZAGA_MIST_HEIGHT         0x800 /* pos68 (FX_BLIZZAGA_MIST_HIGH) is this far above pos58 */
+#define FX_BLIZZAGA_POOL_COUNT          0x20 /* shard and piece pool items */
+#define FX_BLIZZAGA_MODEL_COUNT         0x19 /* btlfx_initEffModels slots (20 registered: 3 crystals, 3 sheens, 14 pieces) */
+#define FX_BLIZZAGA_BULGE_GRID          14   /* fxm_drawBulgeGrid14: quads per side */
+#define FX_BLIZZAGA_DARKEN_RGB          0xFF, 0xFF, 0    /* subtractive screen tint (the screen turns blue): RISE's end, HOLD's end */
+#define FX_BLIZZAGA_BLUE_TINT_RGB       0, 0, 0x80       /* additive, with the RISE-end darken */
+#define FX_BLIZZAGA_WHITE_FLASH_RGB     0xFF, 0xFF, 0xFF /* additive, the first frame of CRYSTAL and SHATTER */
+/* CRYSTAL_SHEEN models (tpage 0xBA, v 0x80) and the bulge grid (BULGE_TPAGE, v 0x80) sample the rect the file fills
+ * with a "dummy" placeholder; btlfx_drawScrollMove copies the file's reflection texture from (SRC_X, SRC_Y) into it. */
+#define FX_BLIZZAGA_BULGE_TPAGE         0x9A   /* 8-bit page (0x280, 0x100) */
+#define FX_BLIZZAGA_BULGE_CLUT          0x3D40 /* CLUT (0, 0xF5) */
+#define FX_BLIZZAGA_REFLECTION_VRAM_X   0x280
+#define FX_BLIZZAGA_REFLECTION_VRAM_Y   0x180
+#define FX_BLIZZAGA_REFLECTION_VRAM_W   0x40
+#define FX_BLIZZAGA_REFLECTION_VRAM_H   0x80
+#define FX_BLIZZAGA_REFLECTION_SRC_X    0x280
+#define FX_BLIZZAGA_REFLECTION_SRC_Y    0x100
+
 extern s16 fx_098_pieceDist[];
 extern Unk800F78A4 *fx_098_env;
 
@@ -88,7 +137,7 @@ typedef struct {
 } Fx098Work80; /* 0x88 */
 
 extern BtlModelBuf fx_098_effModels[];
-extern s32 fx_098_pieceBlocks[14];
+extern s32 fx_098_pieceBlocks[FX_BLIZZAGA_PIECE_MODELS];
 s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 
 /* propagated */

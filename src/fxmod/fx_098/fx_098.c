@@ -52,9 +52,9 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         }
         gte_stlvnl(m.t);
         gte_rtps();
-        code = 0x38;
-        if (abr != 0xFF) {
-            code = 0x3A;
+        code = GPU_POLY_G4;
+        if (abr != BTLFX_ABR_OPAQUE) {
+            code = GPU_POLY_G4 | GPU_ABE;
         }
         gte_stszotz(&otz);
         if (rot->pad != 0) {
@@ -114,11 +114,11 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
                 *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
-                    ex->btlfx_addPrim(0x8000000, otz, prim);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_G4), otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, otz, tpage);
+        ex->btlfx_addPrim(PRIM_TAG(DR_TPAGE), otz, tpage);
     }
     w--;
     h--;
@@ -161,10 +161,10 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     prim = (POLY_GT4 *)env->prim;
-    code = 0x3C;
-    env->prim = (u8 *)(prim + 14 * 14);
-    if (abr != 0xFF) {
-        code = 0x3E;
+    code = GPU_POLY_GT4;
+    env->prim = (u8 *)(prim + FX_BLIZZAGA_BULGE_GRID * FX_BLIZZAGA_BULGE_GRID);
+    if (abr != BTLFX_ABR_OPAQUE) {
+        code = GPU_POLY_GT4 | GPU_ABE;
     }
     tpage |= TPAGE_ABR(abr);
     gte_rtv0tr_b();
@@ -175,10 +175,10 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    for (row = 0; row < 14; row++) {
+    for (row = 0; row < FX_BLIZZAGA_BULGE_GRID; row++) {
         right = (row << 6) - 0x180;
         rowX = row << 6;
-        for (col = 0; col < 14; col++) {
+        for (col = 0; col < FX_BLIZZAGA_BULGE_GRID; col++) {
             vtx[0].vz = vtx[1].vz = vtx[2].vz = vtx[3].vz = 0;
             vtx[0].vx = vtx[2].vx = rowX - 0x1C0;
             vtx[1].vx = vtx[3].vx = right;
@@ -267,7 +267,7 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
                 prim->u1 = prim->u3 = u1;
                 prim->v0 = prim->v1 = v0;
                 prim->v2 = prim->v3 = v1;
-                ex->btlfx_addPrim(0xC000000, otz, prim);
+                ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, prim);
                 gte_stsxy(&prim->x3);
                 prim++;
             }
@@ -330,8 +330,8 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
             {
                 s32 ang = it->frame8 << 10;
 
-                scale.vx = scale.vy = (ang * 0xC00) >> 12;
-                scale.vz = (ex->math_sin(ang >> 2) * 0xC00) >> 12;
+                scale.vx = scale.vy = (ang * FX_BLIZZAGA_SHARD_SCALE) >> 12;
+                scale.vz = (ex->math_sin(ang >> 2) * FX_BLIZZAGA_SHARD_SCALE) >> 12;
             }
             BTLFX_COPY_SVEC(&rot, baseRot);
             rot.vx -= 0x800;
@@ -340,13 +340,13 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
                 it->emit34->rot.vy = rot.vy;
                 it->emit34->rot.vz = rot.vz;
             }
-            if (++it->frame8 >= 4) {
+            if (++it->frame8 >= FX_BLIZZAGA_SHARD_GROW_FRAMES) {
                 it->state0 = 2;
                 it->frame8 = 0;
             }
             break;
         case 2:
-            scale.vx = scale.vy = scale.vz = 0xC00;
+            scale.vx = scale.vy = scale.vz = FX_BLIZZAGA_SHARD_SCALE;
             BTLFX_COPY_SVEC(&rot, baseRot);
             rot.vx -= 0x800;
             if (it->emit34 != NULL) {
@@ -354,13 +354,13 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
                 it->emit34->rot.vy = rot.vy;
                 it->emit34->rot.vz = rot.vz;
             }
-            if (frame < 12) {
+            if (frame < FX_BLIZZAGA_SHARD_RING_FRAMES) {
                 rot.pad = 1;
                 center.vx = it->posC.vx;
                 center.vy = it->posC.vy;
                 center.vz = it->posC.vz;
                 {
-                    s32 ang = (frame << 10) / 12;
+                    s32 ang = (frame << 10) / FX_BLIZZAGA_SHARD_RING_FRAMES;
                     s32 ringScale;
 
                     ex->btlfx_pointAhead((s16 *)&center, (s16 *)&rot, 0x41A, (s16 *)&ringPos);
@@ -369,14 +369,14 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
                     ex->btlfx_drawRings((u8 *)data, &ringPos, &rot, ringScale, 0, 1, ex->math_cos(ang) * 2 / 3);
                 }
             }
-            pieceIdx = 6;
+            pieceIdx = FX_BLIZZAGA_CRYSTAL_PIECES;
             if (work->shatter78 != 0) {
                 it->frame8 = 0;
-                if (it->index4 < 3) {
-                    pieceIdx = 10;
+                if (it->index4 < FX_BLIZZAGA_WIDE_SHARDS) {
+                    pieceIdx = FX_BLIZZAGA_CRYSTAL_PIECES + FX_BLIZZAGA_SHARD_PIECES;
                 }
                 BTLFX_COPY_SVEC(&origin, &it->pos18);
-                for (k = 0; k < 4; k++, pieceIdx++) {
+                for (k = 0; k < FX_BLIZZAGA_SHARD_PIECES; k++, pieceIdx++) {
                     piece = it;
                     if (k != 0) {
                         piece = ex->btlfx_poolSpawn((s16 *)entry->pool);
@@ -420,7 +420,7 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
         VECTOR pos;
         VECTOR scale;
 
-        t = ((it->frame8 << 12) / 22) >> 2;
+        t = ((it->frame8 << 12) / FX_BLIZZAGA_PIECE_FRAMES) >> 2;
         bright = ex->math_cos(t);
         it->posC.vx += it->pos18.vx;
         it->posC.vy += it->pos18.vy;
@@ -429,7 +429,7 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
         it->rot20.vx += it->spinX28;
         it->rot20.vy += it->spinY2A;
         bright = (bright * 3) >> 1;
-        if (it->state0 < 6) {
+        if (it->state0 < FX_BLIZZAGA_CRYSTAL_PIECES) {
             scale.vx = scale.vy = (ex->math_cos(t) * 0x2400) >> 12;
             scale.vz = (ex->math_cos(t) * 0x1800) >> 12;
         } else {
@@ -442,7 +442,7 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
         ex->Hi_DrawEffModel(&it->rot20, &pos, (s32)&scale, it->model2C);
         ex->Hi_ModifyEffModelAbr(it->model2C, 1);
         ex->Hi_ModifyEffModelRGB(it->model2C, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
-        if (++it->frame8 >= 22) {
+        if (++it->frame8 >= FX_BLIZZAGA_PIECE_FRAMES) {
             return 1;
         }
     }
@@ -476,13 +476,13 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *flashEmitter;
 
     if (mode == 0) {
-        init->workSize = 0x88;
-        init->elemSize = 0x38;
+        init->workSize = sizeof(Fx098Work80);
+        init->elemSize = sizeof(Fx098Item);
         init->elemFn = (s32)fx_098_op80PoolTask;
-        init->poolCount = 0x20;
+        init->poolCount = FX_BLIZZAGA_POOL_COUNT;
     } else if (mode == 1) {
         fx_098_env = env;
-        ex->btlfx_initEffModels(fx_098_effModels, 0x19);
+        ex->btlfx_initEffModels(fx_098_effModels, FX_BLIZZAGA_MODEL_COUNT);
         tpage = 0x9A;
         work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_ICE_CRYSTAL), tpage, 0x3DC0, 0x80, 0);
         work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_ICE_CRYSTAL_2), tpage, 0x3DC0, 0x80, 0);
@@ -490,10 +490,10 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_CRYSTAL_SHEEN), 0xBA, 0x3D40, 0, 0x80);
         work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_CRYSTAL_SHEEN_2), 0xBA, 0x3D40, 0, 0x80);
         work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_CRYSTAL_SHEEN_3), 0xBA, 0x3D40, 0, 0x80);
-        for (i = 0; i < 14; i++) {
+        for (i = 0; i < FX_BLIZZAGA_PIECE_MODELS; i++) {
             work->model20[i] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_098_pieceBlocks[i]), tpage, 0x3DC0, 0x80, 0);
         }
-        work->state0 = 0;
+        work->state0 = FX_BLIZZAGA_STATE_BULGE;
         work->frame4 = 0;
         work->shardCount7A = 0;
         work->shatter78 = 0;
@@ -505,7 +505,7 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos60.vx = work->pos58.vx;
         work->pos60.vy = work->pos58.vy;
         work->pos60.vz = work->pos58.vz;
-        work->pos60.vy -= 0x400;
+        work->pos60.vy -= FX_BLIZZAGA_BURST_HEIGHT;
         BTLFX_COPY_SVEC(&work->unk70, &work->pos58);
         work->unk70.vy -= 0x80;
     } else {
@@ -513,40 +513,44 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vx = work->pos58.vx;
         pos.vy = work->pos58.vy;
         pos.vz = work->pos58.vz;
-        sc.vx = sc.vy = 0x2800;
-        sc.vz = 0x1A00;
+        sc.vx = sc.vy = FX_BLIZZAGA_CRYSTAL_SCALE;
+        sc.vz = FX_BLIZZAGA_CRYSTAL_SCALE_Z;
         alpha = 0;
         switch (work->state0) {
-        case 0:
+        case FX_BLIZZAGA_STATE_BULGE:
             rot.vx = 0x400;
             rot.vz = 0x200;
             rot.vy = 0;
-            t = (frame << 12) / 6;
-            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x3400, t >> 5, 0x9A, 0x3D40, 0, 0x80, 0, 1);
-            ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
-            if (frame >= 6) {
-                work->state0 = 1;
+            t = (frame << 12) / FX_BLIZZAGA_BULGE_FRAMES;
+            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x3400, t >> 5, FX_BLIZZAGA_BULGE_TPAGE, FX_BLIZZAGA_BULGE_CLUT, 0, 0x80, 0, 1);
+            ex->btlfx_drawScrollMove(work->frame4 * 3, FX_BLIZZAGA_REFLECTION_VRAM_X, FX_BLIZZAGA_REFLECTION_VRAM_Y,
+                                     FX_BLIZZAGA_REFLECTION_VRAM_W, FX_BLIZZAGA_REFLECTION_VRAM_H, FX_BLIZZAGA_REFLECTION_SRC_X,
+                                     FX_BLIZZAGA_REFLECTION_SRC_Y);
+            if (frame >= FX_BLIZZAGA_BULGE_FRAMES) {
+                work->state0 = FX_BLIZZAGA_STATE_RISE;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 10;
+        case FX_BLIZZAGA_STATE_RISE:
+            t = (frame << 12) / FX_BLIZZAGA_RISE_FRAMES;
             ang = t >> 2;
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = 0x200;
-            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x3400, 0x80, 0x9A, 0x3D40, 0, 0x80, -((ex->math_sin(ang) * 700) >> 12), 1);
-            ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            fxm_drawBulgeGrid14(&work->pos58, &rot, 0x3400, 0x80, FX_BLIZZAGA_BULGE_TPAGE, FX_BLIZZAGA_BULGE_CLUT, 0, 0x80, -((ex->math_sin(ang) * 700) >> 12), 1);
+            ex->btlfx_drawScrollMove(work->frame4 * 3, FX_BLIZZAGA_REFLECTION_VRAM_X, FX_BLIZZAGA_REFLECTION_VRAM_Y,
+                                     FX_BLIZZAGA_REFLECTION_VRAM_W, FX_BLIZZAGA_REFLECTION_VRAM_H, FX_BLIZZAGA_REFLECTION_SRC_X,
+                                     FX_BLIZZAGA_REFLECTION_SRC_Y);
             alpha = t;
             rot.pad = 1;
             data = (u8 *)ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SNOW_RING_2);
             ex->btlfx_drawRings(data, &work->pos58, &rot, ((((ex->math_sin(ang) * 0x2400) >> 12) + 0x1800) * 3) >> 2, 0, 1,
                               ex->math_cos(ang));
-            if (frame >= 10) {
-                work->state0 = 2;
+            if (frame >= FX_BLIZZAGA_RISE_FRAMES) {
+                work->state0 = FX_BLIZZAGA_STATE_CRYSTAL;
                 entry->frame = -1;
                 BTLFX_COPY_SVEC(&work->pos68, &work->pos58);
-                work->pos68.vy -= 0x800;
+                work->pos68.vy -= FX_BLIZZAGA_MIST_HEIGHT;
                 flashEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_MIST), (s32)&work->pos58);
                 if (flashEmitter != NULL) {
                     flashEmitter->otZ = 0x80;
@@ -559,11 +563,11 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (flashEmitter != NULL) {
                     flashEmitter->otZ = 0x80;
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_BLIZZAGA_DARKEN_RGB);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZAGA_BLUE_TINT_RGB);
             }
             break;
-        case 2:
+        case FX_BLIZZAGA_STATE_CRYSTAL:
             alpha = 0x1000;
             t = frame << 10;
             t = 0x2000 - t;
@@ -574,19 +578,19 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model8);
             ex->Hi_ModifyEffModelRGB(work->model8, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14);
-            if (frame < 6) {
-                t = 0xFF - (frame * 0xFF) / 6;
+            if (frame < FX_BLIZZAGA_CRYSTAL_FLASH_FRAMES) {
+                t = 0xFF - (frame * 0xFF) / FX_BLIZZAGA_CRYSTAL_FLASH_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, t >> 2, (t * 2) / 3, t);
                 if (frame == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF, 0xFF, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZAGA_WHITE_FLASH_RGB);
                 }
             }
-            if (frame >= 4) {
-                work->state0 = 3;
+            if (frame >= FX_BLIZZAGA_CRYSTAL_FRAMES) {
+                work->state0 = FX_BLIZZAGA_STATE_SHARDS;
                 entry->frame = -1;
             }
             break;
-        case 3:
+        case FX_BLIZZAGA_STATE_SHARDS:
             alpha = 0x1000;
             if (frame & 1) {
                 shard = ex->btlfx_poolSpawn((s16 *)entry->pool);
@@ -594,7 +598,7 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     shard->flying2 = 0;
                     shard->index4 = work->shardCount7A;
                     shardRot = &fx_098_shardRot[work->shardCount7A];
-                    if (work->shardCount7A >= 3) {
+                    if (work->shardCount7A >= FX_BLIZZAGA_WIDE_SHARDS) {
                         shard->model2C = work->modelC;
                         shard->model30 = work->model18;
                     } else {
@@ -619,8 +623,8 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14);
-            if (work->shardCount7A >= 6) {
-                work->state0 = 4;
+            if (work->shardCount7A >= FX_BLIZZAGA_SHARD_COUNT) {
+                work->state0 = FX_BLIZZAGA_STATE_SPIKES;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_ICE_SPIKES), (s32)&work->pos58);
                 work->emit84 = emitter;
@@ -629,7 +633,7 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 4:
+        case FX_BLIZZAGA_STATE_SPIKES:
             alpha = 0x1000;
             rot.vx = -0x400;
             rot.vy = 0;
@@ -637,12 +641,12 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14);
-            if (frame >= 8) {
-                work->state0 = 5;
+            if (frame >= FX_BLIZZAGA_SPIKES_FRAMES) {
+                work->state0 = FX_BLIZZAGA_STATE_HOLD;
                 entry->frame = -1;
             }
             break;
-        case 5:
+        case FX_BLIZZAGA_STATE_HOLD:
             alpha = 0x1000;
             rot.vx = -0x400;
             rot.vy = 0;
@@ -651,11 +655,11 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14);
             rot.pad = 1;
-            if (frame >= 10) {
-                work->state0 = 6;
+            if (frame >= FX_BLIZZAGA_HOLD_FRAMES) {
+                work->state0 = FX_BLIZZAGA_STATE_SHATTER;
                 work->shatter78 = 1;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_BLIZZAGA_DARKEN_RGB);
                 ex->btlfx_stopEmitter(work->emit84);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_ICE_FLARES), (s32)&work->pos58);
                 if (emitter != NULL) {
@@ -681,7 +685,7 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vx = -0x400;
                 rot.vy = 0;
                 rot.vz = -0x400;
-                for (j = 0; j < 6; j++) {
+                for (j = 0; j < FX_BLIZZAGA_CRYSTAL_PIECES; j++) {
                     piece = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (piece != NULL) {
                         piece->flying2 = 1;
@@ -705,27 +709,27 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 6:
+        case FX_BLIZZAGA_STATE_SHATTER:
             rot.vx = -0x400;
             rot.vz = -0x400;
             rot.vy = 0;
-            if (frame < 18) {
-                alpha = ex->math_cos((frame << 10) / 18);
+            if (frame < FX_BLIZZAGA_RING_FADE_FRAMES) {
+                alpha = ex->math_cos((frame << 10) / FX_BLIZZAGA_RING_FADE_FRAMES);
             }
-            if (frame == 5) {
+            if (frame == FX_BLIZZAGA_SHATTER_WAVE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIZZAGA_SHATTER_WAVE), (s32)&work->pos60);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame < 8) {
+            if (frame < FX_BLIZZAGA_SHATTER_FLASH_FRAMES) {
                 tint = 0xFF - ((frame * 0xFF) >> 3);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 2, (tint * 2) / 3, tint);
                 if (frame == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF, 0xFF, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_BLIZZAGA_WHITE_FLASH_RGB);
                 }
             }
-            if (frame >= 24) {
+            if (frame >= FX_BLIZZAGA_SHATTER_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -738,7 +742,9 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 work->scroll80++;
             }
-            ex->btlfx_drawScrollMove(work->scroll80, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(work->scroll80, FX_BLIZZAGA_REFLECTION_VRAM_X, FX_BLIZZAGA_REFLECTION_VRAM_Y,
+                                     FX_BLIZZAGA_REFLECTION_VRAM_W, FX_BLIZZAGA_REFLECTION_VRAM_H, FX_BLIZZAGA_REFLECTION_SRC_X,
+                                     FX_BLIZZAGA_REFLECTION_SRC_Y);
         }
         if (alpha != 0) {
             vec.vx = 0x400;
