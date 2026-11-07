@@ -8,10 +8,10 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 elapsed;
 
     if (mode == 0) {
-        *args = 0x88;
+        *args = sizeof(Fx1abWork);
     } else if (mode == 1) {
         fx_1ab_env = env;
-        ex->btlfx_initEffModels(fx_1ab_effModels, 2);
+        ex->btlfx_initEffModels(fx_1ab_effModels, FX_WATERGA_MODELS);
         work->pos70.vx = env->targets->centerX;
         work->pos70.vy = env->targets->centerY;
         work->pos70.vz = env->targets->centerZ;
@@ -24,7 +24,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale24.vx = 0x400;
         work->scale24.vy = 0x800;
         work->scale24.vz = 0x400;
-        work->pos14.vy = 0x4B0;
+        work->pos14.vy = FX_WATERGA_SPHERE_DEPTH;
         work->rot38.vx = 0;
         work->rot38.vy = 0;
         work->rot38.vz = 0;
@@ -47,41 +47,41 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATERGA_WHITE_FOAM), (s32)&work->pos70);
             break;
-        case 8:
+        case FX_WATERGA_SPLASH_FRAME:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATERGA_WATER_SPLASH), (s32)&work->pos70);
             break;
-        case 32:
+        case FX_WATERGA_SPLASH_2_FRAME:
             work->pos78.vx = work->pos70.vx;
             work->pos78.vy = work->pos70.vy;
             work->pos78.vz = work->pos70.vz;
-            work->pos78.vy = -0x258;
+            work->pos78.vy = -FX_WATERGA_SPLASH_2_HEIGHT;
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WATERGA_WATER_SPLASH_2), (s32)&work->pos78);
             break;
-        case 15:
-            work->timer80 = 3;
+        case FX_WATERGA_SPHERE_FRAME:
+            work->timer80 = FX_WATERGA_FADE_IN_FRAMES;
             break;
-        case 47:
-            work->timer82 = 0x10;
+        case FX_WATERGA_FADE_OUT_FRAME:
+            work->timer82 = FX_WATERGA_FADE_OUT_FRAMES;
             break;
         }
-        if (frame >= 0xF && frame < 0x3F) {
-            elapsed = frame - 0xF;
+        if (frame >= FX_WATERGA_SPHERE_FRAME && frame < FX_WATERGA_FADE_OUT_FRAME + FX_WATERGA_FADE_OUT_FRAMES) {
+            elapsed = frame - FX_WATERGA_SPHERE_FRAME;
             ex->Hi_SetEffModelSlice(work->model84, work->pos14.vy);
             ex->Hi_DrawSliceEffModel(&work->rotC, &work->pos14, (s32)&work->scale24, work->model84);
             ex->Hi_DrawEffModel(&work->rot38, &work->pos40, (s32)&work->scale50, work->model86);
             if (work->timer80 >= 0 || work->timer82 >= 0) {
                 if (work->timer80 >= 0) {
-                    work->color34 = fxm_lerpRatio(-0x80, 0, 3 - work->timer80, 3);
+                    work->color34 = fxm_lerpRatio(-0x80, 0, FX_WATERGA_FADE_IN_FRAMES - work->timer80, FX_WATERGA_FADE_IN_FRAMES);
                     work->timer80--;
                 }
                 if (work->timer82 >= 0) {
-                    work->color34 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer82, 0x10);
+                    work->color34 = fxm_lerpRatio(0, -0x80, FX_WATERGA_FADE_OUT_FRAMES - work->timer82, FX_WATERGA_FADE_OUT_FRAMES);
                     work->timer82--;
                 }
                 ex->Hi_ModifyEffModelRGB(work->model84, work->color34, work->color34, work->color34);
                 ex->Hi_ModifyEffModelRGB(work->model86, work->color34, work->color34, work->color34);
             }
-            if (elapsed < 8) {
+            if (elapsed < FX_WATERGA_RISE_FRAMES) {
                 work->pos14.vy -= 0x145;
             } else {
                 if (work->scale24.vy > 0x400) {
@@ -91,7 +91,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->scale50.vx += 0x40;
             work->scale50.vz += 0x40;
-            if (elapsed >= 8) {
+            if (elapsed >= FX_WATERGA_RISE_FRAMES) {
                 work->scale50.vy -= 8;
             } else {
                 work->scale50.vy += 0xAA;
@@ -101,7 +101,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_WATERGA_BACKDROP), frame);
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_WATERGA_BACKDROP_3), frame);
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_WATERGA_BACKDROP_2), frame);
-        if (frame >= 0x64) {
+        if (frame >= FX_WATERGA_FRAMES) {
             ex->btlfx_clearEffModels();
             return 1;
         }

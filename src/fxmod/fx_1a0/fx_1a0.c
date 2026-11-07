@@ -63,22 +63,22 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *args = 0x48;
+        *args = sizeof(Fx1a0Work80);
     } else if (mode == 1) {
         fx_1a0_env = env;
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            for (i = 0; i < 6; i++) {
+            for (i = 0; i < FX_FLAME_SLASH_BURSTS; i++) {
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_SLASH_FIRE_BURST), (s32)&fx_1a0_emitPos[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->otZ = 0x20;
                 }
             }
         }
-        if (frame >= 0 && frame < 0xC) {
+        if (frame >= 0 && frame < FX_FLAME_SLASH_BURSTS_FOLLOW_FRAMES) {
             bone = fx_1a0_op80Bones;
-            for (i = 0; i < 6; i++, bone++) {
+            for (i = 0; i < FX_FLAME_SLASH_BURSTS; i++, bone++) {
                 ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, (BtlBone *)&m);
                 ex->btlfx_matrixPointAhead(&m, bone->dist2, (s32)&work->pos18[i]);
                 if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
@@ -87,7 +87,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_moveEmitterTo((s32)work->emit0[i], (s32)&work->pos18[i]);
             }
         }
-        return frame >= 0x14;
+        return frame >= FX_FLAME_SLASH_BURSTS_FRAMES;
     }
     return 0;
 }
@@ -97,7 +97,7 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx1a0Work81);
     } else if (mode == 1) {
         s32 pathIdx = args[0];
         s32 extraEmit = args[1];
@@ -118,8 +118,8 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                            (s32)&fx_1a0_emitPos1[work->index14]);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_1a0_op81Trails[work->index14];
-                work->emit0->trailSlots = 1;
-                work->emit0->trailStride = 0x70;
+                work->emit0->trailSlots = FX_FLAME_SLASH_PATH_TRAIL_SLOTS;
+                work->emit0->trailStride = FX_FLAME_SLASH_PATH_TRAIL_STRIDE;
             }
             if (work->emit0 != NULL) {
                 work->emit0->file->m.module.update = fx_1a0_op81ParticleMotions[work->index14];
@@ -138,7 +138,7 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        return frame >= 0x14;
+        return frame >= FX_FLAME_SLASH_PATH_FRAMES;
     }
     return 0;
 }
@@ -147,13 +147,13 @@ s32 fx_1a0_op82(s32 mode, Fx1a0Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx1a0Work82);
     } else if (mode == 1) {
         fx_1a0_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_SLASH_FLAME_RINGS), (s32)&work->pos4);
     } else {
-        return entry->frame >= 0x14;
+        return entry->frame >= FX_FLAME_SLASH_RINGS_FRAMES;
     }
     return 0;
 }

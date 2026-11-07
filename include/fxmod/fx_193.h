@@ -14,11 +14,24 @@
 #define FX_COUNTER_HORN_DARK_RING     0xE /* emitter: dark red textured ring */
 #define FX_COUNTER_HORN_RED_TRAIL_2   0xF /* emitter: 3D trail, red-white flame streak (byte-identical to entry 0x1) */
 
+/* fx_193 choreography (docs/fxdata.md, "Choreography literals"): op80's two horn trails (particles lerped from the
+ * caster's horn bones to the target with a sideways wobble, trail buffers), op81's rings and dust, the lengths. */
+#define FX_COUNTER_HORN_TRAIL_BONE   0xE   /* unit 0x10's bone RED_TRAIL starts from */
+#define FX_COUNTER_HORN_TRAIL_2_BONE 0x10  /* the one RED_TRAIL_2 starts from */
+#define FX_COUNTER_HORN_WOBBLE       0x320 /* the trails' sideways sine amplitude (RED_TRAIL to -x, RED_TRAIL_2 to +x) */
+#define FX_COUNTER_HORN_WOBBLE_HALF_FRAME 4 /* halved from this particle frame on */
+#define FX_COUNTER_HORN_TRAIL_FRAMES 7     /* the particles reach the target in this many frames */
+#define FX_COUNTER_HORN_TRAIL_SLOTS  4     /* each trail's buffer (fx_193_op80Trails0 / 1): slots of */
+#define FX_COUNTER_HORN_TRAIL_STRIDE 0xF0  /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_COUNTER_HORN_TRAILS_FRAMES 0x1E /* op80's length (the op ends) */
+#define FX_COUNTER_HORN_DUST_FRAME   4     /* op81: DUST_CLOUD at the target's feet (the rings at init) */
+#define FX_COUNTER_HORN_FRAMES       0x28  /* op81's length (the op ends) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* target body position */
-} Fx193Work80;
+} Fx193Work80; /* 0x10 */
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -27,7 +40,7 @@ typedef struct {
     Pool6CEntry *emitC;
     SVECTOR pos10; /* target body position */
     SVECTOR pos18; /* target position */
-} Fx193Work81;
+} Fx193Work81; /* 0x20 */
 
 extern Unk800F78A4 *fx_193_env;
 extern SVECTOR fx_193_op80From0;

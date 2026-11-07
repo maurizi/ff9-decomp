@@ -12,6 +12,17 @@
 #define FX_FLAME_SLASH_FLAME_FLASH 0x4 /* emitter: white-hot flash turning red and fading + grey smoke */
 #define FX_FLAME_SLASH_FLAME_RINGS 0x13 /* emitter: rings textured with a dark flame wall + red gouraud rings + red specks */
 
+/* fx_1a0 choreography (docs/fxdata.md, "Choreography literals"): op80's fire bursts on the caster's blade bones,
+ * op81's path-following flames (one per path index, trail buffers), the ops' lengths. */
+#define FX_FLAME_SLASH_BURSTS           6    /* op80: FIRE_BURST emitters, one per entry of fx_1a0_op80Bones */
+#define FX_FLAME_SLASH_BURSTS_FOLLOW_FRAMES 0xC /* op80: they follow their bones (btlfx_moveEmitterTo) while frame < this */
+#define FX_FLAME_SLASH_BURSTS_FRAMES    0x14 /* op80's length (the op ends) */
+#define FX_FLAME_SLASH_PATHS            6    /* op81: path indices (args[0]): file paths, emitters, particle motions, trails */
+#define FX_FLAME_SLASH_PATH_TRAIL_SLOTS  1    /* op81: each path emitter's trail buffer fx_1a0_op81Trails[i]: slots of */
+#define FX_FLAME_SLASH_PATH_TRAIL_STRIDE 0x70 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_FLAME_SLASH_PATH_FRAMES      0x14 /* op81's length (the op ends) */
+#define FX_FLAME_SLASH_RINGS_FRAMES     0x14 /* op82 (FLAME_RINGS at the target): its length */
+
 typedef struct {
     s16 x, y, z;
 } Fx1a0Point;
@@ -28,8 +39,8 @@ typedef struct {
 } Fx1a0Bone;
 
 typedef struct {
-    Pool6CEntry *emit0[6];
-    SVECTOR pos18[6];
+    Pool6CEntry *emit0[FX_FLAME_SLASH_BURSTS];
+    SVECTOR pos18[FX_FLAME_SLASH_BURSTS];
 } Fx1a0Work80; /* 0x48 */
 
 typedef struct {
@@ -44,19 +55,19 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-} Fx1a0Work82;
+} Fx1a0Work82; /* 0xC */
 
-extern Fx1a0Bone fx_1a0_op80Bones[6];
-extern s16 fx_1a0_op81EmitFileIds[6];
-extern s16 fx_1a0_pathFileIds[6];
-extern s32 (*fx_1a0_op81ParticleMotions[6])();
+extern Fx1a0Bone fx_1a0_op80Bones[FX_FLAME_SLASH_BURSTS];
+extern s16 fx_1a0_op81EmitFileIds[FX_FLAME_SLASH_PATHS];
+extern s16 fx_1a0_pathFileIds[FX_FLAME_SLASH_PATHS];
+extern s32 (*fx_1a0_op81ParticleMotions[FX_FLAME_SLASH_PATHS])();
 extern Unk800F78A4 *fx_1a0_env;
-extern s32 fx_1a0_op81Trails[6][0x1C];
-extern Fx1a0Path fx_1a0_posPaths[6];
-extern s32 fx_1a0_pathFrames[6]; /* frames */
+extern s32 fx_1a0_op81Trails[FX_FLAME_SLASH_PATHS][FX_FLAME_SLASH_PATH_TRAIL_SLOTS * FX_FLAME_SLASH_PATH_TRAIL_STRIDE / 4];
+extern Fx1a0Path fx_1a0_posPaths[FX_FLAME_SLASH_PATHS];
+extern s32 fx_1a0_pathFrames[FX_FLAME_SLASH_PATHS]; /* frames */
 extern SVECTOR fx_1a0_pathOrigin;
-extern SVECTOR fx_1a0_emitPos[6];
-extern SVECTOR fx_1a0_emitPos1[6];
+extern SVECTOR fx_1a0_emitPos[FX_FLAME_SLASH_BURSTS];
+extern SVECTOR fx_1a0_emitPos1[FX_FLAME_SLASH_PATHS];
 
 s32 fx_1a0_op81ParticleMotion0(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 s32 fx_1a0_op81ParticleMotion1(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
