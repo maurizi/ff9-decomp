@@ -148,8 +148,10 @@
  * (WmMoveMode.allowedCells: the Reef chocobo adds 0x33 0x35-0x37 0x3D, Mountain 0x31 0x32, Ocean 0x30 0x38 0x39, the
  * flying ones 0x3A-0x3C 0x3E; the boat only 0x35 0x36 0x39). Evidence: R37 in docs/runtime-findings.md; the chocobo
  * track cells, 0x17, 0x2D/0x2E, 0x30 and 0x33 from R41b (airship sweep of the topography grid, walker teleported onto
- * each). 0x1E/0x23 (beach splash like WM_TOPO_BEACH) stay numbers. */
+ * each). */
 #define WM_TOPO_BEACH        0x22 /* runtime: sand at the water's edge; walking spawns WM_FX_BEACH_SPLASH */
+#define WM_TOPO_BEACH_2      0x1E /* code: walking spawns WM_FX_BEACH_SPLASH too (its ground: runtime: pending R46) */
+#define WM_TOPO_BEACH_3      0x23 /* likewise */
 #define WM_TOPO_FOREST       0x24 /* runtime: the walker sinks into the trees (wm_getTerrainHeightOffset class 0), */
 #define WM_TOPO_FOREST_2     0x25 /* walking spawns WM_FX_FOREST_LEAVES; 0x24-0x26 are always handled together and */
 #define WM_TOPO_FOREST_3     0x26 /* raise WM_PARAM_EVENT_BATTLE */
@@ -183,6 +185,10 @@
  * on a nearby cell). */
 #define WM_TOPO_NO_LANDING   0x2D /* plateaus around Ipsen's Castle (areas 43 Yuanshao Peninsula, 42) */
 #define WM_TOPO_NO_LANDING_2 0x2E /* Seaways Canyon / Gusty Valley plateaus (areas 41, 45) */
+/* wm_findGetoffPos also refuses a spot whose ground differs too much in height: in WM_MOVE_WALK from the
+ * player's own height, for the Hilda Garde / Invincible from the ride height (WM_PARAM_RIDE_Y) */
+#define WM_GETOFF_WALK_MAX_DY 0x1F5
+#define WM_GETOFF_AIRSHIP_MAX_DY 0x15F
 
 /* g_worldMapDebugFlags bits: each gates one group of debug prints */
 #define WM_DEBUG_MUSIC 0x4 /* w_music */
@@ -388,7 +394,7 @@ typedef struct WmEffect {
 #define WM_FX_AIRSHIP_SPRAY 18 /* airship low over water cells, drawn at g_worldSprayLevel (14 and 19 are drawn the same way) */
 #define WM_FX_WATER_RIPPLE 22 /* under the moving player on a water cell, at the surface; flat, drawn with g_worldEffectSpeed */
 #define WM_FX_CHOCOBO_SPRAY 6 /* code: the flying gold chocobo low over water cells (as WM_FX_AIRSHIP_SPRAY) */
-#define WM_FX_BEACH_SPLASH 7 /* runtime: small light-blue specks at the feet, walking on WM_TOPO_BEACH (and 0x1E, 0x23) */
+#define WM_FX_BEACH_SPLASH 7 /* runtime: small light-blue specks at the feet, walking on WM_TOPO_BEACH (and _2, _3) */
 #define WM_FX_BOAT_SIDE_WAKE 10 /* code: spawned in pairs beside WM_FX_BOAT_WAKE on odd frames */
 #define WM_FX_CHOCOBO_SAND 14 /* code: the flying gold chocobo low over WM_TOPO_SAND; drawn like WM_FX_AIRSHIP_SPRAY */
 #define WM_FX_FOREST_LEAVES 16 /* runtime: green leaves around the walker in a forest, two every other frame */
@@ -1325,7 +1331,7 @@ extern MATRIX g_worldBlockFxLightMatrix;
 extern MATRIX g_worldBackdropLightMatrix;
 extern MATRIX g_worldMapLightMatrix;
 extern u8 g_worldMapLoaded;
-extern WmActorType g_worldActorTypeInfo[];
+extern WmActorType g_worldActorTypeInfo[22];
 extern EvtObject *g_worldPlayer; /* player actor */
 extern WmMoveMode *g_worldMoveModeInfo;
 extern s32 g_worldWidth; /* map width (wraps) */

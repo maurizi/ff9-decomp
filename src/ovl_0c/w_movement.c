@@ -586,7 +586,7 @@ void wm_initMovement(void) {
             g_worldPolyCache[i].cells[j] = -1;
         }
     }
-    for (i = 0; i < 22; i++) {
+    for (i = 0; i < (s32)ARRAY_COUNT(g_worldActorTypeInfo); i++) {
         g_worldActorTypeInfo[i].cellAttr = 0;
         g_worldActorTypeInfo[i].rideOffset = 0;
         g_worldActorTypeInfo[i].floorY = 0;
@@ -1458,7 +1458,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
             if (ok) {
                 switch (g_worldMoveMode) {
                 case WM_MOVE_WALK:
-                    if (abs(tryPos.vy - g_worldPlayer->pos.vy) >= 0x1F5) {
+                    if (abs(tryPos.vy - g_worldPlayer->pos.vy) >= WM_GETOFF_WALK_MAX_DY) {
                         ok = 0;
                     }
                     break;
@@ -1469,7 +1469,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
                     break;
                 case WM_MOVE_HILDA_GARDE:
                 case WM_MOVE_INVINCIBLE:
-                    if (abs(tryPos.vy - w_frameGetParameter(WM_PARAM_RIDE_Y)) >= 0x15F) {
+                    if (abs(tryPos.vy - w_frameGetParameter(WM_PARAM_RIDE_Y)) >= WM_GETOFF_AIRSHIP_MAX_DY) {
                         ok = 0;
                     }
                     break;
@@ -1632,7 +1632,7 @@ void wm_controlWalk(void) {
         }
         if (!(g_worldFrameCount & 3)) {
             k = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
-            if (k == 0x1E || k == WM_TOPO_BEACH || k == 0x23) {
+            if (k == WM_TOPO_BEACH_2 || k == WM_TOPO_BEACH || k == WM_TOPO_BEACH_3) {
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, WM_FX_BEACH_SPLASH, WM_FX_SCALE_BEACH_SPLASH);
             }
             if (((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == WM_TOPO_SAND) {
