@@ -43,6 +43,53 @@
 #define FX_IFRIT_FLAME_U     0
 #define FX_IFRIT_FLAME_V     0
 
+/* fx_1bd choreography (deep pass). Flames of Hell is fx_114's ops 82 and 83 behind a short camera op80; the names are
+ * fx_114's, the values this module's (op83 has the long form's timings, op82 its own). */
+#define FX_IFRIT_MODEL_SLOTS        0x20  /* btlfx_initEffModels slots */
+#define FX_IFRIT_FRAMES             0x5A  /* op80's length: the shot-0 camera keys run (the op ends) */
+#define FX_IFRIT_CAM_KEY_SLOTS      64    /* fx_1bd_camKeys: camera key tracks (fxm_camChanAdd / fxm_camChanUpdate) */
+#define FX_IFRIT_CAM_CHANNELS       4     /* fx_1bd_camChanFrames: frame counters per channel */
+#define FX_IFRIT_TARGET_Z           0x320 /* ops 82 / 83: z of the impact point (haze, crater pieces, dome, rings) */
+#define FX_IFRIT_OP82_FRAMES        0x32  /* op82's length */
+#define FX_IFRIT_HAZE_FRAMES        0x2E  /* op82: WHITE_HAZE drawn, then freed */
+#define FX_IFRIT_CLUSTER_FREE_FRAME 33    /* op82: BLOCK_CLUSTER freed (never drawn in op82) */
+#define FX_IFRIT_HAZE_VRAM_X        0x1C0 /* btlfx_drawBgOffscreen rect: WHITE_HAZE's texture (page 0x117) */
+#define FX_IFRIT_HAZE_VRAM_Y        0x100
+#define FX_IFRIT_HAZE_VRAM_W        0x80
+#define FX_IFRIT_HAZE_VRAM_H        0xA0
+#define FX_IFRIT_OP82_RING_FRAME    22    /* op82: ORANGE_RING_2 starts */
+#define FX_IFRIT_TRAILS_FRAME       21    /* op82: the FIRE_TRAILs drawn along their paths, growing 2 points a frame */
+#define FX_IFRIT_TRAILS_FRAMES      10
+#define FX_IFRIT_TRAIL_COUNT        13    /* FIRE_TRAILs, one per TRAIL_PATHS entry */
+#define FX_IFRIT_TRAIL_BYTES        0x50  /* fx_1bd_op82Trails: buffer per trail */
+#define FX_IFRIT_TRAIL_FADE_IN_FRAMES  4  /* timer60, from TRAILS_FRAME */
+#define FX_IFRIT_TRAIL_FADE_OUT_FRAME  15 /* timer62 set here, but it only counts inside the trail window, so it overrides the fade-in from TRAILS_FRAME */
+#define FX_IFRIT_TRAIL_FADE_OUT_FRAMES 6
+#define FX_IFRIT_OP82_ZOOM_FRAME    26    /* op82: the screen grid zooms in, the projection distance shrinks */
+#define FX_IFRIT_OP82_ZOOM_FRAMES   4
+#define FX_IFRIT_PROJ_DIST          0x208 /* the zoom's projection distance at its first frame */
+#define FX_IFRIT_OP83_FRAMES        0x3C  /* op83's length */
+#define FX_IFRIT_ROCK_PIECES        23    /* op83: crater pieces (PIECE_MODELS / PIECE_TRACKS entries; model118[1..]) */
+#define FX_IFRIT_RINGS_FRAME        3     /* op83: ORANGE_RINGS start */
+#define FX_IFRIT_DOME_FRAME         4     /* op83: HEAT_DOME, FLAME_DOME and FLAME_RING drawn (tracks at frame - this) */
+#define FX_IFRIT_DOME_FADE_IN_FRAMES 3    /* timer110: FLAME_DOME fades in */
+#define FX_IFRIT_RING_FADE_IN_FRAMES 6    /* timer114: FLAME_RING fades in */
+#define FX_IFRIT_DOME_FADE_FRAME    21    /* timer10E / 112 / 116: all three fade out */
+#define FX_IFRIT_DOME_FADE_FRAMES   0x10
+#define FX_IFRIT_DOME_END_FRAME     (FX_IFRIT_DOME_FADE_FRAME + FX_IFRIT_DOME_FADE_FRAMES)
+#define FX_IFRIT_ROCKS_FRAME        6     /* op83: SPOKED_RING and the crater pieces drawn until ROCKS_END_FRAME */
+#define FX_IFRIT_ROCKS_END_FRAME    20
+#define FX_IFRIT_ROCK_DELAY         2     /* piece time = frame - this (track keys, launch frames frame0) */
+#define FX_IFRIT_ROCK_SPIN_FRAMES   2     /* a launched piece spins for this many frames */
+#define FX_IFRIT_ROCK_FLY_FRAMES    30    /* launch speed = distance from the crater / this */
+#define FX_IFRIT_ROCK_FLOOR_Y       50    /* a piece below this height has landed (done2) */
+#define FX_IFRIT_FLAME_VRAM_X       0x280 /* btlfx_drawScrollMove rect: the flame models' 0x80 x 0x80 8-bit texels (page 0x9A) */
+#define FX_IFRIT_FLAME_VRAM_Y       0x100
+#define FX_IFRIT_FLAME_VRAM_W       0x40
+#define FX_IFRIT_FLAME_VRAM_H       0x80
+#define FX_IFRIT_FLAME_SRC_X        0x240 /* from this source */
+#define FX_IFRIT_FLAME_SRC_Y        0x100
+
 typedef struct {
     s16 x, y, z;
 } Fx1bdPoint;
@@ -103,7 +150,7 @@ typedef struct {
 } Fx1bdWork82; /* 0x6C */
 
 extern Fx1bdLine fx_1bd_pathTrail;
-extern u8 fx_1bd_op82Trails[13][0x50]; /* trails */
+extern u8 fx_1bd_op82Trails[FX_IFRIT_TRAIL_COUNT][FX_IFRIT_TRAIL_BYTES]; /* trails */
 extern u32 fx_1bd_bgOt[];
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
@@ -165,7 +212,7 @@ typedef struct {
     s16 timer112;
     s16 timer114;
     s16 timer116;
-    u16 model118[24]; /* models */
+    u16 model118[1 + FX_IFRIT_ROCK_PIECES]; /* models: SPOKED_RING, then the crater pieces */
     u16 model148;
     u16 model14A;
     u16 model14C;
@@ -189,7 +236,7 @@ typedef struct {
 #define FX1BD_ROCK_SPIN_Z_POS 0x4
 #define FX1BD_ROCK_SPIN_Z_NEG 0x8 /* set instead of SPIN_Z_POS, never tested */
 
-extern Fx1bdRock fx_1bd_op83Pieces[23];
+extern Fx1bdRock fx_1bd_op83Pieces[FX_IFRIT_ROCK_PIECES];
 extern u8 fx_1bd_op83TexSelect[];
 extern s16 fx_1bd_texInfo0[];
 extern s16 fx_1bd_texPos0[];
@@ -200,7 +247,7 @@ extern s16 fx_1bd_texPos2[];
 extern s16 fx_1bd_texInfo3[];
 extern s16 fx_1bd_texPos3[];
 extern Fx1bdTrack6 fx_1bd_vecTrack0;
-extern Fx1bdTrack12 fx_1bd_rotPosTrack[23];
+extern Fx1bdTrack12 fx_1bd_rotPosTrack[FX_IFRIT_ROCK_PIECES];
 extern Fx1bdTrack6 fx_1bd_posTrack;
 extern Fx1bdTrack6 fx_1bd_vecTrack1;
 extern Fx1bdTrack6 fx_1bd_vecTrack2;
