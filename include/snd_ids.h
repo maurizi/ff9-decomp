@@ -260,6 +260,15 @@
                                        * fld_soundBankReadCallback, e.g. 504, 511) (medium) */
 #define AKAO_BANK_FIELD_SE_COUNT 100
 
+/* the AKAO tick: root counter RCntCNT2 interrupts at this target and runs akao_tick (akao_init); akao_tick adds it
+ * back when its elapsed-time reading wrapped */
+#define AKAO_TICK_RCNT_TARGET 0x44E8
+
+/* akao_uploadSeBank / akao_sendCmdEC: SPU destination of a resident one-shot sound (the effect sound bank btlfx_loadSoundBank
+ * uploads, AKAO_CMD_STREAM_PLAY_ONE_SHOT data): the battle SE bank area, or 40 KB above it with upper != 0 */
+#define AKAO_SPU_RESIDENT_LO 0x4F100
+#define AKAO_SPU_RESIDENT_HI 0x59100
+
 /* SPU registers (psx-spx names) */
 #define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(SPU_VOICE_BASE + (r) + (v) * 16))
@@ -268,8 +277,20 @@
 #define AKAO_SPU_SILENCE 0x1010 /* g_akaoSilenceSample, 0x40 bytes (akao_init) */
 #define AKAO_SPU_SILENCE_LOOP (AKAO_SPU_SILENCE + 0x20) /* idle and finished stream voices loop here (akao_initState,
                                                          * akao_streamSetVoice); the stream's end IRQ is 8 bytes in */
-#define AKAO_SPU_STREAM_BLOCK(n) (0x1100 + (n) * 0x800) /* the stream's 0x800-byte SPU buffers: mono A/B = 0/2, stereo
-                                                         * left/right = 0/1 then 2/3, the four-voice ring 4-7 */
+#define AKAO_STREAM_BLOCK_SIZE 0x800 /* one SPU stream buffer; uploads, refills and read steps are multiples */
+#define AKAO_SPU_STREAM_BLOCK(n) (0x1100 + (n) * AKAO_STREAM_BLOCK_SIZE) /* the stream's SPU buffers */
+/* their layout: each refill half (A = 0, B = 1) holds one block per channel (AKAO_STREAM_L / _R; a mono stream
+ * uses L only and both voices play it); a four-voice ring stream has two voice pairs per half (pair 0: voice and
+ * voice + 1, pair 1: voice - 2 and voice - 1), so its half B starts at block 4 */
+#define AKAO_STREAM_L 0
+#define AKAO_STREAM_R 1
+#define AKAO_SPU_STREAM_BUF(half, ch) AKAO_SPU_STREAM_BLOCK((half) * 2 + (ch))
+#define AKAO_SPU_STREAM_BUF4(half, pair, ch) AKAO_SPU_STREAM_BLOCK((half) * 4 + (pair) * 2 + (ch))
+/* akao_streamSetVoice modes: the voice's volume */
+#define AKAO_STREAM_VOICE_PAN 0 /* g_akaoStream.volume through the pan curve (mono streams) */
+#define AKAO_STREAM_VOICE_LEFT 1 /* half the SE volume, left only (stereo left channel) */
+#define AKAO_STREAM_VOICE_RIGHT 2 /* half the SE volume, right only */
+#define AKAO_STREAM_VOICE_CENTER 3 /* 3/8 of the SE volume on both sides (resident mono stream, akao_streamPlayResident) */
 #define SPU_VOICE_ALL 0xFFFFFF /* the 24 voice bits */
 #define SPU_NUM_VOICES 24
 /* AKAO channels and voices [code]: a sequence has AKAO_NUM_CHANNELS channels (g_akaoChannels, g_akaoSubChannels,

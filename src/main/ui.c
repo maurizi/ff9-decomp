@@ -574,7 +574,7 @@ void win_drawHelpTailFill(s32 x, s32 y, s32 otz, s32 idx) {
     Unk80068F48 *tailShape;
     setlen(g_primPtr, PRIM_LEN(POLY_F4));
     poly = (PolyF4Words *)g_primPtr;
-    poly->rgbc = GPU_RGBC(GPU_POLY_F4, 0xA8B078);
+    poly->rgbc = GPU_RGBC(GPU_POLY_F4, UI_RGB_HELP_FILL);
     tailShape = &g_winTailShapes[idx];
     poly->xy0 = (x + tailShape->x0) | ((y + tailShape->y0) << 16);
     poly->xy1 = (x + tailShape->x1) | ((y + tailShape->y1) << 16);
@@ -590,7 +590,7 @@ void ui_drawEtchedLine(s32 x, s32 y, s32 otz, s32 len) {
     LineF2W *line;
 
     col[0] = g_winLineColors[CONFIG_WINDOW_COLOR()][1];
-    col[1] = GPU_RGBC(GPU_LINE_F2, 0x403838);
+    col[1] = GPU_RGBC(GPU_LINE_F2, UI_RGB_ETCHED_MID);
     col[2] = g_winLineColors[CONFIG_WINDOW_COLOR()][0];
 
     for (i = 0; i < 3; i++) {
@@ -661,10 +661,10 @@ void ui_drawMemberSummary(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
     Character *chr = g_gameState->gameData->party[slot];
     if (chr != NULL && mode >= 0) {
         if (mode < 3) {
-            ui_drawPortrait(x, y, otz, slot, 0x29, chr->hp == 0);
+            ui_drawPortrait(x, y, otz, slot, UI_PORTRAIT_SUMMARY_H, chr->hp == 0);
             ui_drawMemberStats(x + UI_MEMBER_STATS_X, y, otz, slot);
         } else if (mode < 5) {
-            ui_drawPortrait(x, y, otz, slot, 0x29, chr->hp == 0);
+            ui_drawPortrait(x, y, otz, slot, UI_PORTRAIT_SUMMARY_H, chr->hp == 0);
             ui_drawCharStatuses(x + UI_MEMBER_STATS_X, y, otz, slot);
         }
     }
@@ -722,7 +722,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         text_formatNumber(cur, numText, 3, TEXT_NUM_ASCII);
         text_formatNumber(max, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         numText[3] = '/';
-        pkt = ui_buildDigits(x + 3, y + 2, ot, numText, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL), (SprtWords *)pkt);
+        pkt = ui_buildDigits(x + 3, y + 2, ot, numText, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL), (SprtWords *)pkt);
     }
     if (cur != 0) {
         barW = def->w - 6;
@@ -732,9 +732,9 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
             w = barW;
         }
         setlen(pkt, PRIM_LEN(TILE));
-        rgbc = GPU_RGBC(GPU_TILE, 0x70A838);
+        rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR);
         if (cur >= max) {
-            rgbc = GPU_RGBC(GPU_TILE, 0x2838A8);
+            rgbc = GPU_RGBC(GPU_TILE, UI_RGB_AP_BAR_FULL);
         }
         if (flag) {
             rgbc |= GPU_CODE(GPU_ABE);
@@ -771,7 +771,7 @@ void win_drawHelpFill(RECT *rect, s32 otz) {
 
     setlen(g_primPtr, PRIM_LEN(TILE));
     tile = (TileWords *)g_primPtr;
-    tile->rgbc = GPU_RGBC(GPU_TILE, 0xA8B078);
+    tile->rgbc = GPU_RGBC(GPU_TILE, UI_RGB_HELP_FILL);
     tile->xy = (u16)rect->x | (rect->y << 16);
     tile->wh = rect->w | (rect->h << 16);
     addPrim(&g_ot[otz], tile);
@@ -822,7 +822,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
     setlen(sprt, PRIM_LEN(SPRT));
     def = &g_uiSprites[i];
     if (flag) {
-        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
     } else {
         sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
@@ -1066,7 +1066,7 @@ void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
             tpage = 0x90;
         }
         setlen(g_primPtr, PRIM_LEN(SPRT));
-        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
         ((SprtWords *)g_primPtr)->xy = x | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
         ((SprtWords *)g_primPtr)->wh = (h << 16) | 0x20;
@@ -1088,8 +1088,8 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     SprtWords *topSprt;
     SprtWords *lowSprt;
 
-    h0 = 0x20;
-    if (h < 0x20) {
+    h0 = UI_PORTRAIT_TOP_H;
+    if (h < UI_PORTRAIT_TOP_H) {
         h0 = h;
     }
     if (g_gameState->mode == GS_MODE_WORLD) {
@@ -1108,12 +1108,12 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     g_primPtr += sizeof(SprtWords);
     topSprt->xy = (x & 0xFFFF) | (y << 16);
     topSprt->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
-    topSprt->wh = (h0 << 16) | 0x20;
+    topSprt->wh = (h0 << 16) | UI_PORTRAIT_W;
     addPrim(&g_ot[otz], topSprt);
     SetDrawTPage(g_primPtr, 1, 1, 0x88);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
-    if (h > 0x20) {
+    if (h > UI_PORTRAIT_TOP_H) {
         u = ((slot & 1) << 5) + 0x20;
         v = (slot >> 1) * 14 - 0x20;
         h -= h0;
@@ -1121,9 +1121,9 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
         ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
         lowSprt = (SprtWords *)g_primPtr;
         g_primPtr += sizeof(SprtWords);
-        lowSprt->xy = (x & 0xFFFF) | ((y + 0x20) << 16);
+        lowSprt->xy = (x & 0xFFFF) | ((y + UI_PORTRAIT_TOP_H) << 16);
         lowSprt->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
-        lowSprt->wh = (h << 16) | 0x20;
+        lowSprt->wh = (h << 16) | UI_PORTRAIT_W;
         addPrim(&g_ot[otz], lowSprt);
         SetDrawTPage(g_primPtr, 1, 1, 0x89);
         addPrim(&g_ot[otz], g_primPtr);
@@ -1233,15 +1233,15 @@ void ui_getPartyPortraitRects(s32 slot, RECT *clutRect, RECT *topRect, RECT *low
     topRect->x = slot * 16 + 0x200;
     topRect->y = 0xE0;
     topRect->w = 0x10;
-    topRect->h = 0x20;
+    topRect->h = UI_PORTRAIT_TOP_H;
     lowRect->x = (slot & 1) * 16 + 0x250;
     lowRect->y = (slot >> 1) * 14 + 0xE0;
     lowRect->w = 0x10;
-    lowRect->h = 0xE;
+    lowRect->h = UI_PORTRAIT_LOW_H;
 }
 
 void ui_drawPartyPortrait(s32 x, s32 y, s32 otz, s32 slot, u8 flag) {
-    ui_drawPortrait(x, y, otz, slot, 0x2E, flag);
+    ui_drawPortrait(x, y, otz, slot, UI_PORTRAIT_H, flag);
 }
 
 void ui_loadPartyPortraits(u8 *portraitData) {

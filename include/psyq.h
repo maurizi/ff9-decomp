@@ -397,6 +397,11 @@ int sprintf(char *buf, const char *fmt, ...);
 #define CdlStatNoDisk 0
 #define CdlOtherFormat 1
 #define CdlCdromFormat 2
+/* CdGetSector word counts: the parts of a Mode 2 sector as the CD controller hands them over */
+#define CD_HEADER_WORDS 3 /* 4-byte header (CdlLOC position + mode) and the 8-byte XA subheader (file, channel, ...
+                           * twice) */
+#define CD_FORM1_WORDS 0x200 /* 2048 bytes of Form 1 user data */
+#define CD_FORM2_WORDS 0x245 /* 2324 bytes of Form 2 user data */
 /* libapi event classes and specs of the memory card */
 #define SwCARD 0xF4000001
 #define HwCARD 0xF0000011
@@ -405,6 +410,11 @@ int sprintf(char *buf, const char *fmt, ...);
 #define EvSpTIMOUT 0x0100
 #define EvSpNEW 0x2000
 #define EvMdNOINTR 0x2000
+/* libapi root counters (SetRCnt/StartRCnt/GetRCnt/OpenEvent) */
+#define RCntCNT2 0xF2000002 /* root counter 2: an event class and a counter spec */
+#define RCntMdINTR 0x1000 /* SetRCnt mode: interrupt at the target */
+#define EvSpINT 0x0002 /* event spec: interrupt */
+#define EvMdINTR 0x1000 /* event mode: call the handler */
 /* sys/file.h open() modes; FCREAT takes the block count in bits 16+ */
 #define FREAD 0x0001
 #define FWRITE 0x0002

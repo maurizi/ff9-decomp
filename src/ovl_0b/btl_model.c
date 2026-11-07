@@ -149,7 +149,7 @@ void btl_updateTexAnims(TexAnimSet *set) {
                 }
                 pos += anim->speed;
             } else {
-                pos += 0x1000;
+                pos += ONE;
             }
             if ((pos >> 12) < anim->frameCount) {
                 anim->pos = pos;
@@ -314,7 +314,7 @@ void btl_setupEnemies(void) {
     src = (BtlCmd8 *)&recs[hdr->typeCount];
     for (; i < hdr->typeCount; i++) {
         btl_initEnemyType(rec, en);
-        en->camera = btl_getSceneData(i + 5);
+        en->camera = btl_getSceneData(i + BTL_SCENE_CAM_ENEMY_TYPE);
         en->nameOfs = ofs->text + 4;
         ofs++;
         en->firstAbility = nextAbility;

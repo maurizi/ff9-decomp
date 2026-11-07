@@ -472,11 +472,11 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     u32 active;
 
     if (restore == 0) {
-        akao_copy(&g_akaoSavedSeq, g_akaoSeq, 0x7C);
-        akao_copy(g_akaoSavedChannels, g_akaoChannels, 0x2680);
+        akao_copy(&g_akaoSavedSeq, g_akaoSeq, sizeof(AkaoSeq));
+        akao_copy(g_akaoSavedChannels, g_akaoChannels, AKAO_NUM_CHANNELS * sizeof(AkaoChannel));
     } else {
-        akao_swap(&g_akaoSavedSeq, g_akaoSeq, 0x7C);
-        akao_swap(g_akaoSavedChannels, g_akaoChannels, 0x2680);
+        akao_swap(&g_akaoSavedSeq, g_akaoSeq, sizeof(AkaoSeq));
+        akao_swap(g_akaoSavedChannels, g_akaoChannels, AKAO_NUM_CHANNELS * sizeof(AkaoChannel));
     }
     flags = g_akaoSeq->flags & ~(AKAO_SEQ_INSTR_MAIN | AKAO_SEQ_INSTR_ALT);
     g_akaoSeq->flags = flags;
@@ -575,8 +575,8 @@ void akao_cmdSaveMusic(void) {
     AkaoChannel *chan;
 
     if (g_akaoSeq->activeMask != 0) {
-        akao_copy(g_akaoSeq, &g_akaoSavedSeq, 0x7C);
-        akao_copy(g_akaoChannels, g_akaoSavedChannels, 0x2680);
+        akao_copy(g_akaoSeq, &g_akaoSavedSeq, sizeof(AkaoSeq));
+        akao_copy(g_akaoChannels, g_akaoSavedChannels, AKAO_NUM_CHANNELS * sizeof(AkaoChannel));
         for (i = 0, chan = g_akaoSavedChannels; i < AKAO_NUM_CHANNELS; i++, chan++) {
             akao_shiftInstrumentDown(g_akaoSavedSeq.flags, chan);
         }
@@ -588,8 +588,8 @@ void akao_cmdPushMusic(AkaoArgs *args) {
     if (g_akaoSeq->activeMask != 0 && (g_akaoSubSeq == NULL || g_akaoSubSeq->musicId == 0)) {
         g_akaoSubSeq = &g_akaoSavedSeq;
         g_akaoSubChannels = g_akaoSavedChannels;
-        akao_copy(g_akaoSeq, &g_akaoSavedSeq, 0x7C);
-        akao_copy(g_akaoChannels, g_akaoSubChannels, 0x2680);
+        akao_copy(g_akaoSeq, &g_akaoSavedSeq, sizeof(AkaoSeq));
+        akao_copy(g_akaoChannels, g_akaoSubChannels, AKAO_NUM_CHANNELS * sizeof(AkaoChannel));
     }
     akao_startSeq(args->arg0, -1);
     seq = g_akaoSeq;
@@ -610,8 +610,8 @@ void akao_cmdCrossfadeMusic(AkaoArgs *args) {
         if (g_akaoSeq->activeMask != 0 && (g_akaoSubSeq == NULL || g_akaoSubSeq->musicId == 0)) {
             g_akaoSubSeq = &g_akaoSavedSeq;
             g_akaoSubChannels = g_akaoSavedChannels;
-            akao_copy(g_akaoSeq, &g_akaoSavedSeq, 0x7C);
-            akao_copy(g_akaoChannels, g_akaoSubChannels, 0x2680);
+            akao_copy(g_akaoSeq, &g_akaoSavedSeq, sizeof(AkaoSeq));
+            akao_copy(g_akaoChannels, g_akaoSubChannels, AKAO_NUM_CHANNELS * sizeof(AkaoChannel));
         }
         akao_startSeq(args->arg0, -1);
         g_akaoSeq->musicId = args->arg2;

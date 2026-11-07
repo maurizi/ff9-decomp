@@ -16,7 +16,7 @@ void btl_startBattle(void) {
     evt_update();
     btl_loadModelsStep(1);
     fade_in(0x20);
-    btlcam_playScene(btl_getSceneData(0));
+    btlcam_playScene(btl_getSceneData(BTL_SCENE_CAM_INTRO));
     battle->phase = BTL_PHASE_INTRO;
 }
 

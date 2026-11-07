@@ -55,42 +55,42 @@ void Hi_GetMdlVertexPtr(s32 modelId, u16 meshIndex, s32 prims, s32 *out, s32 pri
 
 u16 btlfx_getMeshPrims(BtlModel *model, u16 meshIndex, s32 prims, s32 *out, s32 primType) {
     BtlMesh *mesh = &model->header->meshes[meshIndex];
-    if (primType == 0) {
+    if (primType == BTL_MESH_PRIM_FT4) {
         *out = prims;
         return mesh->nFT4;
     }
     prims += mesh->nFT4 << 5;
-    if (primType == 1) {
+    if (primType == BTL_MESH_PRIM_FT3) {
         *out = prims;
         return mesh->nFT3;
     }
     prims += mesh->nFT3 * 0x18;
-    if (primType == 2) {
+    if (primType == BTL_MESH_PRIM_GT4) {
         *out = prims;
         return mesh->nGT4;
     }
     prims += mesh->nGT4 << 5;
-    if (primType == 3) {
+    if (primType == BTL_MESH_PRIM_GT3) {
         *out = prims;
         return mesh->nGT3;
     }
     prims += mesh->nGT3 * 0x18;
-    if (primType == 4) {
+    if (primType == BTL_MESH_PRIM_G4) {
         *out = prims;
         return mesh->nG4;
     }
     prims += mesh->nG4 << 5;
-    if (primType == 5) {
+    if (primType == BTL_MESH_PRIM_G3) {
         *out = prims;
         return mesh->nG3;
     }
     prims += mesh->nG3 * 0x18;
-    if (primType == 6) {
+    if (primType == BTL_MESH_PRIM_F4) {
         *out = prims;
         return mesh->nF4;
     }
     prims += mesh->nF4 << 5;
-    if (primType == 7) {
+    if (primType == BTL_MESH_PRIM_F3) {
         *out = prims;
         return mesh->nF3;
     }

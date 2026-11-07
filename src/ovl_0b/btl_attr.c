@@ -40,7 +40,7 @@ s32 btl_setKoMotion(BtlUnit *unit) {
     PSX_NULLABLE(unit->model->texAnims)[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     PSX_NULLABLE(unit->model->texAnims)[0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     PSX_NULLABLE(unit->model->texAnims)[0].pos = 0;
-    PSX_NULLABLE(unit->model->texAnims)[0].lastFrame = 0x1000;
+    PSX_NULLABLE(unit->model->texAnims)[0].lastFrame = TEXANIM_FORCE_UPLOAD;
     unit->obj->frame = 0;
     if (unit->status & BTL_STATUS_AUTO_LIFE) {
         unit->koState = BTL_KO_REVIVING;
@@ -449,7 +449,7 @@ void btl_setUnitAttr(BtlUnit *unit, s32 attr, u32 value) {
         playOfs = value * 20;
         ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->flags |= BTL_TEXANIM_PLAY;
         ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->pos = 0;
-        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->lastFrame = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->lastFrame = TEXANIM_FORCE_UPLOAD;
         break;
     case BTL_ATTR_TEXANIM_STOP:
         stopOfs = value * 20;
@@ -459,7 +459,7 @@ void btl_setUnitAttr(BtlUnit *unit, s32 attr, u32 value) {
         onceOfs = value * 20;
         ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->pos = 0;
-        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->lastFrame = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->lastFrame = TEXANIM_FORCE_UPLOAD;
         break;
     case BTL_ATTR_WEAK_STANCE:
         unit->flags = (unit->flags & ~BTL_UNIT_WEAK_STANCE) | ((value & 1) << BTL_UNIT_WEAK_STANCE_BIT);

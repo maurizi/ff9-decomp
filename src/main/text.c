@@ -21,7 +21,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 ch) {
     start = w >> 4;
     width = (w & 0xF) + 1;
     src = (u8 *)g_nameGlyphs + (ch << 6);
-    memset(rowPixels, 0, 0x10);
+    memset(rowPixels, 0, sizeof(rowPixels));
     for (row = 0; row < 12; row++) {
         for (i = 0; i < 4; i++) {
             bits = src[row * 4 + i];
@@ -289,7 +289,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     s32 ch;
     s32 w;
 
-    rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
+    rgbc = GPU_RGBC(GPU_SPRT, UI_RGB_HALF);
     if (mode == UI_LABEL_NORMAL) {
         rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
@@ -528,28 +528,28 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     case TEXT_DPAD_LEFT_RIGHT:
         pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_LEFT | DPAD_ARROW_RIGHT, 0, w, pkt);
         break;
-    case TEXT_CHAR_NAME + 0:
+    case TEXT_CHAR_NAME + CHR_ZIDANE:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[0], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 1:
+    case TEXT_CHAR_NAME + CHR_VIVI:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[1], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 2:
+    case TEXT_CHAR_NAME + CHR_DAGGER:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[2], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 3:
+    case TEXT_CHAR_NAME + CHR_STEINER:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[3], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 4:
+    case TEXT_CHAR_NAME + CHR_FREYA:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[4], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 5:
+    case TEXT_CHAR_NAME + CHR_QUINA:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[5], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 6:
+    case TEXT_CHAR_NAME + CHR_EIKO:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[6], w, pkt);
         break;
-    case TEXT_CHAR_NAME + 7:
+    case TEXT_CHAR_NAME + CHR_AMARANT:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[7], w, pkt);
         break;
     case TEXT_PARTY_NAME + 0:
@@ -642,28 +642,28 @@ s32 text_getCodeWidth(s32 code) {
     case TEXT_DPAD_LEFT_RIGHT:
         width = g_uiSprites[UI_SPRITE_DPAD].w;
         break;
-    case TEXT_CHAR_NAME + 0:
+    case TEXT_CHAR_NAME + CHR_ZIDANE:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[0]);
         break;
-    case TEXT_CHAR_NAME + 1:
+    case TEXT_CHAR_NAME + CHR_VIVI:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[1]);
         break;
-    case TEXT_CHAR_NAME + 2:
+    case TEXT_CHAR_NAME + CHR_DAGGER:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[2]);
         break;
-    case TEXT_CHAR_NAME + 3:
+    case TEXT_CHAR_NAME + CHR_STEINER:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[3]);
         break;
-    case TEXT_CHAR_NAME + 4:
+    case TEXT_CHAR_NAME + CHR_FREYA:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[4]);
         break;
-    case TEXT_CHAR_NAME + 5:
+    case TEXT_CHAR_NAME + CHR_QUINA:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[5]);
         break;
-    case TEXT_CHAR_NAME + 6:
+    case TEXT_CHAR_NAME + CHR_EIKO:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[6]);
         break;
-    case TEXT_CHAR_NAME + 7:
+    case TEXT_CHAR_NAME + CHR_AMARANT:
         width = text_measureWidth((s32)&g_gameState->gameData->characters[7]);
         break;
     case TEXT_PARTY_NAME + 0:
@@ -834,7 +834,7 @@ TextSize text_measure(u8 *str) {
     s32 idx;
     Font *tbl;
 
-    memset(&size, 0, 4);
+    memset(&size, 0, sizeof(size));
     w = 0;
     maxw = 0;
     font = g_gameState->gameData->font;
@@ -980,7 +980,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *str, s32 style, void *pkt) {
     s32 u;
 
     if (style == DIGITS_DIM) {
-        rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
     }
     while ((ch = *str) != 0) {
         if ((u8)ch != ' ') {

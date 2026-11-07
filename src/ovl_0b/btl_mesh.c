@@ -515,9 +515,9 @@ void btl_applyModelTextures(BtlModel *model, s16 *texPages, s16 *uvOffsets) {
     s32 du;
     s32 dv;
 
-    model->scaleX = 0x1000;
-    model->scaleY = 0x1000;
-    model->scaleZ = 0x1000;
+    model->scaleX = ONE;
+    model->scaleY = ONE;
+    model->scaleZ = ONE;
     model->flags |= BTL_MODEL_SCALED;
     h = model->header;
     model->texPages = (BtlTexWord *)texPages;
@@ -618,11 +618,11 @@ void btl_applyModelScale(BtlModel *model) {
 
     if (model->flags & BTL_MODEL_SCALED) {
         x = model->scaleX;
-        scaleMat.w[0] = 0x1000;
+        scaleMat.w[0] = ONE;
         scaleMat.w[1] = 0;
-        scaleMat.w[2] = 0x1000;
+        scaleMat.w[2] = ONE;
         scaleMat.w[3] = 0;
-        scaleMat.w[4] = 0x1000;
+        scaleMat.w[4] = ONE;
         scaleMat.m.m[0][0] = x;
         gte_SetRotMatrix(&model->matrix);
         gte_ldclmv(&scaleMat.m);

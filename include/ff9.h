@@ -176,10 +176,11 @@ typedef union {
 #define CHR_INFO_ROW_SHIFT 12
 #define CHR_INFO_ROW 0x1F000
 
+#define CHR_NAME_SIZE 0xA /* Character.name buffer (chr_setDefaultName fills it with 0xFF first) */
 /* Character record: GameData.characters[9]; GameData.party[] points at the party members. Field names checked
  * against the main menu at runtime (docs/runtime-findings.md). */
 typedef struct {
-    u8 name[0xA]; /* 0xFF-terminated text, read up to 7 chars */
+    u8 name[CHR_NAME_SIZE]; /* 0xFF-terminated text, read up to 7 chars */
     u8 classFlags; /* chr_getClassFlags(row): 0x2 checked by Protect Girls (btl_findCover) and ability 0x61, 0x8 (CHR_CLASS_ZIDANE) by ability 0x62, 0x10 picks the alternate default set / appearance */
     u8 level;
     u32 exp;      /* capped at 9999999 */
@@ -2374,8 +2375,9 @@ extern s32 g_padPortMask[];
 #define GS_MODE_BATTLE 2 /* ovl_0b btl_entry */
 #define GS_MODE_WORLD 3 /* ovl_0c wm_entry */
 #define GS_MODE_ENDING 4 /* ovl_15 ending_main */
-/* 5: no overlay and no case in game_main; vib_update and ovl_64/ovl_0a treat it like the field. 6: no overlay either;
- * msg_beginDraw treats it like the battle (docs/wip/constants_runtime_main.md) */
+/* 5 and 6 have no overlay and no case in game_main (docs/wip/constants_runtime_main.md); named by how code treats them */
+#define GS_MODE_FIELD_LIKE 5 /* vib_update and ovl_64/ovl_0a treat it like the field */
+#define GS_MODE_BATTLE_LIKE 6 /* msg_beginDraw treats it like the battle */
 #define GS_MODE_GAME_OVER 7 /* ovl_65 fld_gameOver (field exit FLD_EXIT_GAME_OVER) */
 #define GS_MODE_BATTLE_END 8 /* ovl_65 battleEnd_main, set by ovl_0b when a battle ends */
 #define GS_MODE_TETRA_MASTER 9 /* ovl_0d tm_main; as prevMode it makes evt_init/evt_createModels rebuild the field models */
@@ -2430,6 +2432,8 @@ extern s32 g_padPortMask[];
 #define HP_MAX 9999 /* max HP (chr_calcMaxHp, chr_calcEquipStats) */
 #define MP_MAX 999 /* max MP (chr_calcMaxMp, chr_calcEquipStats) */
 #define STAT_MAX 99 /* strength and magic cap (chr_calcBaseStrength / Magic, btl_calcCmd BTL_FORMULA_STRENGTH_UP / MAGIC_UP) */
+#define SPEED_SPIRIT_MAX 50 /* speed and spirit cap (chr_calcBaseSpeed / Spirit) */
+#define STONES_MAX 99 /* magic stones cap (chr_calcMaxStones) */
 #define DEF_STAT_MAX 999 /* attack, defence, evade, magic defence, magic evade (chr_calcEquipStats) */
 #define DAMAGE_MAX 9999 /* cap on one HP or MP change, damage or healing (btl_calcCmd, the fieldCalc_* item formulas) */
 #define RECORD_MAX 9999 /* tallies: card wins/losses/draws, GameData.stealCount, GameData.dragonKills */
@@ -2803,6 +2807,21 @@ typedef struct {
 /* ui_buildDigits: pen advance of the small digit font */
 #define UI_SMALL_DIGIT_ADV  5 /* digits, '%' and blanks */
 #define UI_SMALL_SLASH_ADV  4 /* '/' */
+/* party portraits (ui_drawPortrait h): a 0x20-line top sprite and a 0xE-line lower sprite (ui_getPartyPortraitRects) */
+#define UI_PORTRAIT_W 0x20
+#define UI_PORTRAIT_TOP_H 0x20
+#define UI_PORTRAIT_LOW_H 0xE
+#define UI_PORTRAIT_H (UI_PORTRAIT_TOP_H + UI_PORTRAIT_LOW_H) /* whole (ui_drawPartyPortrait) */
+#define UI_PORTRAIT_SUMMARY_H 0x29 /* cropped, in ui_drawMemberSummary rows */
+/* UI colours (GPU_RGBC rgb, 0xBBGGRR) */
+#define UI_RGB_DIM        0x606060 /* dimmed sprites and digits, drawn semi-transparent (ui_buildSprite flag, DIGITS_DIM,
+                                    * the AP gauge's numbers) */
+#define UI_RGB_HALF       0x404040 /* half brightness: UI_LABEL_DIM labels, and multi-target cursors every 4th frame
+                                    * (btlui_drawTargetCursors) */
+#define UI_RGB_HELP_FILL  0xA8B078 /* help window background (win_drawHelpFill, win_drawHelpTailFill) */
+#define UI_RGB_ETCHED_MID 0x403838 /* ui_drawEtchedLine: the middle line, between the window colour's two lines */
+#define UI_RGB_AP_BAR     0x70A838 /* ui_buildApGauge bar while learning */
+#define UI_RGB_AP_BAR_FULL 0x2838A8 /* ui_buildApGauge bar at cur == max */
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows
@@ -3558,7 +3577,7 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *def
     DrTpageWords *drMode;
     setlen(sprt, PRIM_LEN(SPRT));
     if (flag) {
-        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, UI_RGB_DIM);
     } else {
         sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
@@ -4041,6 +4060,16 @@ typedef struct DirInfo {
     s32 tableSector; /* sector of the directory's file table in FF9.IMG (file_loadDirTables reads the tables from sector 0 and indexes them by (tableSector - dirs[0].tableSector) << 11) */
     s32 firstSector; /* first sector of the directory's files (dir 13: the battle data base, btl_initMode) */
 } DirInfo;
+
+#define IMG_NUM_DIRS 15 /* FF9.IMG directories (GameState.dirs, dirTables) */
+/* the block game_allocState lays out at RAM_GAME_STATE: the allocator (g_allocTop) starts after it */
+typedef struct {
+    GameState state; /* g_gameState */
+    DISPENV dispEnv[2]; /* GameState.dispEnv */
+    DRAWENV drawEnv[2]; /* GameState.drawEnv */
+    DirInfo dirs[IMG_NUM_DIRS]; /* GameState.dirs */
+    void *dirTables[IMG_NUM_DIRS]; /* GameState.dirTables */
+} GameStateBlock; /* 0x250 */
 
 /* file_loadDirTables: 8-byte entries of directory lists 8 and 11 */
 typedef struct {
@@ -4943,8 +4972,10 @@ typedef struct {
     u8 pad5[0xC - 5];
     s32 pos; /* TexAnim.pos: frame position (20.12) */
     u8 pad10[0x12 - 0x10];
-    s16 lastFrame; /* TexAnim.lastFrame: 0x1000 forces the next frame's upload */
+    s16 lastFrame; /* TexAnim.lastFrame: TEXANIM_FORCE_UPLOAD forces the next frame's upload */
 } Unk8004AFF0Sub; /* 0x14 */
+#define TEXANIM_FORCE_UPLOAD 0x1000 /* TexAnim.lastFrame: a frame no animation reaches, so the next update uploads its
+                                     * frame (texture animation started or restarted: event ops, btl_attr, hi_model) */
 /* TexAnim.flags (ovl_0a fldmdl_updateTexAnims; set by EVT_OP_TEX_ANIM_PLAY and ops C1/C2) */
 #define TEXANIM_ACTIVE 0x1
 #define TEXANIM_ONESHOT 0x2 /* cleared with TEXANIM_ACTIVE at the end */

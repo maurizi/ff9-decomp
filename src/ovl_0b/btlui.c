@@ -526,7 +526,7 @@ void btlui_pruneMenuQueue(void) {
     s32 cnt = g_btlUi->queueCount;
     BtlUnit *unit;
     s32 i;
-    memset(seen, 0, 4);
+    memset(seen, 0, sizeof(seen));
     while (cnt != 0) {
         unit = g_btlUi->queue[head];
         if (BtlUnitCanAct(unit) && unit->cmdIssued != 1) {
@@ -550,7 +550,7 @@ void btlui_pruneMenuQueue(void) {
 
 void btlui_initMenu(void) {
     s32 i;
-    Unk80104F88 *ui = btlui_alloc(0x12D8);
+    Unk80104F88 *ui = btlui_alloc(sizeof(Unk80104F88));
     g_btlUi = ui;
     ui->menuState = BTLUI_MENU_NONE;
     ui->cmdUnit = NULL;
@@ -748,7 +748,7 @@ void btlui_addEquipAbilities(Unk80104F88Entry *entry) {
     Character *chr = entry->chr;
     s32 i;
     s32 j;
-    memset((s32)entry->fromEquip, 0, 0xC0);
+    memset((s32)entry->fromEquip, 0, sizeof(entry->fromEquip));
     for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         u8 item = chr->equip[i];
         if (item != ITEM_NONE) {
@@ -803,9 +803,9 @@ void btlui_applyTargetable(void) {
 void btlui_pollEscape(void) {
     Unk80104E68 *state = (Unk80104E68 *)&g_btluiState;
     if (state->atbOn != 0) {
-        if ((g_padHeld & (BTN_L1 | BTN_R1)) == 0x300000) {
+        if ((g_padHeld & (BTN_L1 | BTN_R1)) == (BTN_L1 | BTN_R1)) {
             g_gameState->gameData->ctx.battle->escapeHeld = 1;
-            if (state->escapeFrames++ >= 0x3D) {
+            if (state->escapeFrames++ >= BTLUI_ESCAPE_HOLD_FRAMES) {
                 state->escapeFrames = 0;
                 btl_tryEscape(1);
             } else {
@@ -968,9 +968,9 @@ void btlui_removeItem(s32 itemId) {
 }
 
 void btlui_initItemLists(void) {
-    Unk80104FA8 *lists = btlui_alloc(0x2E0);
+    Unk80104FA8 *lists = btlui_alloc(sizeof(Unk80104FA8));
     g_btluiItems = lists;
-    memset((s32)lists->reserved, 0, 0x100);
+    memset((s32)lists->reserved, 0, sizeof(lists->reserved));
     btlui_buildItemLists();
 }
 
@@ -2192,7 +2192,7 @@ s32 btlui_cycleTarget(s32 forward) {
     if (target == NULL) {
         return 0;
     }
-    memset((s32)list, 0, 0x10);
+    memset((s32)list, 0, sizeof(list));
     count = 0;
     for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
         if (((unit->flags >> BTL_UNIT_TARGETABLE_BIT) & 1) && (unit->flags & BTL_UNIT_PARTY) == g_btlTarget.side && (!(unit->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
@@ -2543,7 +2543,7 @@ void btlui_drawTargetCursors(void) {
     SprtWords *sprt;
     DR_TPAGE *tpage;
     if (cursors->count >= 2 && !(g_btluiVsyncTick & 3)) {
-        color = GPU_RGBC(GPU_SPRT, 0x404040);
+        color = GPU_RGBC(GPU_SPRT, UI_RGB_HALF);
     }
     for (i = 0; i < cursors->count; i++) {
         setlen(g_primPtr, PRIM_LEN(SPRT));
@@ -2874,7 +2874,7 @@ void btlui_drawListCursors(Window *win) {
     }
     color = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     if (cursors->partyCount >= 2 && !(g_btluiVsyncTick & 3)) {
-        color = GPU_RGBC(GPU_SPRT, 0x404040);
+        color = GPU_RGBC(GPU_SPRT, UI_RGB_HALF);
     }
     y = w->y + 5;
     x = w->x - 0xE;
@@ -3415,7 +3415,7 @@ void btlui_drawCachedRows(void) {
 
 void btlui_initPanel(void) {
     s32 i;
-    g_btluiPanel = btlui_alloc(0x8C);
+    g_btluiPanel = btlui_alloc(sizeof(*g_btluiPanel));
     btlui_updatePanel();
     for (i = 0; i < 5; i++) {
         g_btluiPanel->labels[i] = g_btluiPanelLabels[i];
@@ -3692,7 +3692,7 @@ u8 btlui_anyOnSecondPort(void) {
 
 void btlui_initPrims(void) {
     s32 i;
-    g_btluiPrims = btlui_alloc(0x368);
+    g_btluiPrims = btlui_alloc(sizeof(*g_btluiPrims));
     for (i = 0; i < 2; i++) {
         btlui_initCachedCmdIcons(i);
         btlui_initCachedHeader(i);

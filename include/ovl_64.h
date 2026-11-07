@@ -94,6 +94,25 @@ typedef struct {
 #define MBG_SLICE_W_24 0x18
 #define MBG_FRAME_TRIES 1000 /* mbg_streamGetFrame polls before giving up on a frame */
 #define MBG_MDEC_IN_WORDS 0x4000 /* a frame whose run-level data (DecDCTBufSize) needs more is dropped */
+/* MBG_init modes and the work buffers they carve (g_mbgPlayer.mdecIn0..mdecOut1). Evidence: [code] */
+#define MBG_INIT_ONE_BUF 1 /* all in buf[0]: MDEC in x2, CD ring, audio, MDEC out x2 (field, opening, blackjack) */
+#define MBG_INIT_TWO_BUFS 2 /* buf[0]: MDEC in x2, MDEC out x2; buf[1]: CD ring, audio */
+#define MBG_MDEC_IN_SIZE (MBG_MDEC_IN_WORDS * 4) /* one run-level input buffer */
+#define MBG_MDEC_OUT_SIZE (MBG_SLICE_W_24 * 240 * 2) /* one decoded 16-pixel slice at 24 bits, 240 lines */
+#define MBG_RING_SLOT_SECTORS 8 /* mbg_streamSetRing: sectors per frame slot */
+#define MBG_RING_SECTORS 0x40 /* and in the ring (8 slots) */
+/* a video sector is read whole (CD_FORM2_WORDS) MBG_SECTOR_HDR bytes before its slot position, so each sector's
+ * header is overwritten by the next one's data and a slot's data is contiguous (mbg_streamReadyCallback) */
+#define MBG_SECTOR_HDR 0x20
+#define MBG_SECTOR_DATA (CD_FORM2_WORDS * 4 - MBG_SECTOR_HDR) /* 0x8F4 */
+#define MBG_RING_BUF_SIZE ((MBG_RING_SECTORS / MBG_RING_SLOT_SECTORS + 1) * sizeof(Ovl64RingHdr) + \
+                           MBG_RING_SECTORS * MBG_SECTOR_DATA) /* the CD ring: a header per slot plus one, then data
+                                                                * (mbg_streamSetRing) */
+#define MBG_AUDIO_SECTORS 0xC /* mbg_streamSetAudioBuffer: audio sectors buffered */
+#define MBG_AUDIO_BUF_SIZE (MBG_AUDIO_SECTORS * 0x800)
+#define MBG_NO_LAST_FRAME 99999 /* mbg_streamStart lastFrame from mbg_play: none, play to the stream's end */
+#define MBG_SHORT_FRAME_PERIOD 50 /* mbg_update: every 50th movie frame waits one vblank less (g_mbgPlayer.shortFrame) */
+#define MBG_DECODE_TIMEOUT 0x800000 /* busy-wait polls for the MDEC frame before mbg_update gives up and resets it */
 #define MBG_VOLUME_DELAY 3 /* g_mbgPlayer.volumeDelay default (mbg_setVolume with < 0) */
 #define MBG_VOLUME_FADE 4 /* g_mbgPlayer.volumeFade default */
 #define MBG_SWITCH_NONE 0
@@ -146,7 +165,11 @@ typedef struct {
     u16 height; /* frame height */
     u8 pad14[0x20 - 0x14];
 } Ovl64RingHdr; /* 0x20 */
-/* Ovl64RingHdr.status (mbg_streamPeekFrame reports free 0, ready 1, filling 2, busy 3) */
+/* Ovl64RingHdr.status (mbg_streamPeekFrame reports it as MBG_PEEK_*) */
+#define MBG_PEEK_FREE 0
+#define MBG_PEEK_READY 1
+#define MBG_PEEK_FILLING 2
+#define MBG_PEEK_BUSY 3
 #define MBG_RING_FREE 0x1000 /* mbg_streamSetRing / mbg_streamClearRing / mbg_streamFreeFrame */
 #define MBG_RING_FILLING 0x2000 /* with MBG_RING_BUSY: the reader started writing sectors into the slot */
 #define MBG_RING_BUSY 0x4000 /* in use (filling or ready) */

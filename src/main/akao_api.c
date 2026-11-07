@@ -569,9 +569,9 @@ s32 akao_uploadSeBank(s32 *data, s32 upper) {
 
     if (err == 0) {
         akao_waitSpuTransfer();
-        addr = 0x59100;
+        addr = AKAO_SPU_RESIDENT_HI;
         if (upper == 0) {
-            addr = 0x4F100;
+            addr = AKAO_SPU_RESIDENT_LO;
         }
         h = data;
         data += 0x10;
@@ -594,9 +594,9 @@ void akao_sendCmdED(s32 volume, s32 flag) {
 void akao_sendCmdEC(s32 *data, s32 volume, s32 upper, s32 loop) {
     s32 x;
     if (akao_checkHeader(data) == 0) {
-        x = 0x59100;
+        x = AKAO_SPU_RESIDENT_HI;
         if (upper == 0) {
-            x = 0x4F100;
+            x = AKAO_SPU_RESIDENT_LO;
         }
         g_akaoArgs.arg0 = (s32)data;
         g_akaoArgs.arg1 = (volume & 0xFF) << 8;

@@ -6,14 +6,14 @@ s32 btlcam_getNextVariant(void) {
 
 void btlcam_init(void) {
     g_btlfxEnv->camera = &g_btlCamera;
-    bzero(&g_btlCamera, 0xD0);
+    bzero(&g_btlCamera, sizeof(g_btlCamera));
     g_btlCamera.baseProjDist = 0x200;
     g_btlCamera.projDist = 0x200;
 }
 
 void btlcam_beginEffect(void) {
-    bzero(&g_btlCamScript, 0x64);
-    bcopy(g_btlfxEnv->targets, &g_btlCamTargets, 0x4C);
+    bzero(&g_btlCamScript, sizeof(g_btlCamScript));
+    bcopy(g_btlfxEnv->targets, &g_btlCamTargets, sizeof(g_btlCamTargets));
     g_btlCamera.flags = 0;
     g_btlCamera.effectPick = btlfx_rand() & 1;
     if (g_btlfxEnv->state->flags & BTLFX_HDR_PARTNER) {
@@ -27,8 +27,8 @@ void btlcam_playScene(s32 script) {
     g_btlCamera.mode = BTLCAM_MODE_SCENE;
     g_btlCamera.paused = 0;
     g_btlCamera.flags = 0;
-    bzero(&g_btlCamScript, 0x64);
-    bzero(&g_btlCamTargets, 0x4C);
+    bzero(&g_btlCamScript, sizeof(g_btlCamScript));
+    bzero(&g_btlCamTargets, sizeof(g_btlCamTargets));
     btlcam_loadScript(script);
     if (g_btlCamera.focusUnit != 0) {
         btlcam_getUnitAnchors(g_btlCamera.focusUnit, g_btlCamScript.casterAnchors);
@@ -47,7 +47,7 @@ void btlcam_play(s32 script) {
 }
 
 void btlcam_playSeq(s32 script) {
-    bzero(&g_btlCamScript, 0x64);
+    bzero(&g_btlCamScript, sizeof(g_btlCamScript));
     g_btlCamera.effectPick = btlfx_rand() & 1;
     btlcam_getUnitAnchors(g_gameState->gameData->ctx.battle->seq.camCaster, g_btlCamScript.casterAnchors);
     btlcam_getUnitAnchors((BtlUnit *)g_gameState->gameData->ctx.battle->seq.camTarget, g_btlCamScript.targetAnchors);
@@ -66,7 +66,7 @@ void btlcam_focusCaster(void) {
 void btlcam_endEffect(void) {
     if (g_btlCamScript.keepCamera == 0) {
         g_btlCamera.variant = g_btlCamScript.savedVariant;
-        btlcam_loadScript(btl_getSceneData(1));
+        btlcam_loadScript(btl_getSceneData(BTL_SCENE_CAM_IDLE));
         g_btlCamera.projDist = g_btlCamera.baseProjDist;
     }
     g_btlCamera.flags = 1;
@@ -354,7 +354,7 @@ s32 btlcam_step(void) {
                         g_btlCamera.paths[j].wrapModes = 0;
                     }
                     g_btlCamera.variant = g_btlCamScript.savedVariant;
-                    btlcam_loadScript(btl_getSceneData(1));
+                    btlcam_loadScript(btl_getSceneData(BTL_SCENE_CAM_IDLE));
                     g_btlCamera.projDist = g_btlCamera.baseProjDist;
                     return 1;
                 }
@@ -380,8 +380,8 @@ s32 btlcam_step(void) {
         btlcam_evalPath(0, &g_btlCamera.paths[1], &sv.vx);
         if (g_btlCamScript.setHomeView == 1) {
             g_btlCamScript.setHomeView = 2;
-            bcopy(&g_btlCamera.eye, &g_btlCamera.points[4], 8);
-            bcopy(&sv, &g_btlCamera.points[5], 8);
+            bcopy(&g_btlCamera.eye, &g_btlCamera.points[4], sizeof(g_btlCamera.points[4]));
+            bcopy(&sv, &g_btlCamera.points[5], sizeof(g_btlCamera.points[5]));
         }
         btlcam_applyTargetView(&g_btlCamera.eye, &sv);
         btlcam_applyBob(&g_btlCamera.eye.vx, &sv.vx);
@@ -428,7 +428,7 @@ void btlcam_setPathKey(Unk800C412C *path, Unk800C3F78 *key) {
     s32 k;
     Unk800F5758 *presets;
 
-    bcopy(&path->keys[1], &path->keys[0], 0xC);
+    bcopy(&path->keys[1], &path->keys[0], sizeof(path->keys[0]));
     path->keys[1].anchor = key->anchor;
     path->keys[1].anchorFlags = key->anchorFlags;
     if (key->preset != 0) {
@@ -494,14 +494,14 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
             if (path->frames == 0 || path->framesLeft == 0) {
                 wa[i] = 0;
             } else {
-                k = (u32)((0x1000 - path->frames * g_btlCamScript.easeSpeed) << 17) / (u32)(path->frames * path->frames);
+                k = (u32)((ONE - path->frames * g_btlCamScript.easeSpeed) << 17) / (u32)(path->frames * path->frames);
                 switch (modes & BTLCAM_MODE2_MASK) {
                 case BTLCAM_EASE_LINEAR:
                     wa[i] = (0x10000000 / path->frames * path->framesLeft) >> 16;
                     break;
                 case BTLCAM_EASE_IN:
                     steps = path->frames - path->framesLeft;
-                    wa[i] = 0x1000 - ((k * steps * steps) >> 17) - steps * g_btlCamScript.easeSpeed;
+                    wa[i] = ONE - ((k * steps * steps) >> 17) - steps * g_btlCamScript.easeSpeed;
                     break;
                 case BTLCAM_EASE_OUT:
                     steps = path->framesLeft;
@@ -509,7 +509,7 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
                     break;
                 }
             }
-            wb[i] = 0x1000 - wa[i];
+            wb[i] = ONE - wa[i];
             modes >>= BTLCAM_MODE2_BITS;
         }
     }
@@ -887,18 +887,18 @@ void btlcam_applyTargetView(SVECTOR *eye, SVECTOR *at) {
             g_btlCamera.targetView = 1;
             g_btlCamera.viewBlend = 2;
             g_btlCamScript.viewHold = 0;
-            bcopy(eye, &g_btlCamera.viewFromEye, 8);
-            bcopy(at, &g_btlCamera.viewFromAt, 8);
+            bcopy(eye, &g_btlCamera.viewFromEye, sizeof(g_btlCamera.viewFromEye));
+            bcopy(at, &g_btlCamera.viewFromAt, sizeof(g_btlCamera.viewFromAt));
         }
         if (g_btlCamera.targetView == 1 && ((g_btlCamera.mode == BTLCAM_MODE_EFFECT && !(g_btlfxEnv->state->flags & BTLFX_HDR_CAMERA)) || g_btlCamera.mode == BTLCAM_MODE_SEQ)) {
             if (g_btlCamera.viewState != 2) {
                 if (g_btlCamera.prevViewState != 0 || g_btlCamera.viewBlend == 0) {
-                    bcopy(&g_btlCamera.points[4], eye, 8);
-                    bcopy(&g_btlCamera.points[5], at, 8);
+                    bcopy(&g_btlCamera.points[4], eye, sizeof(g_btlCamera.points[4]));
+                    bcopy(&g_btlCamera.points[5], at, sizeof(g_btlCamera.points[5]));
                     g_btlCamera.viewState = 2;
                 } else {
                     wFrom = g_btlCamera.viewBlend * 0x555;
-                    wTo = 0x1000 - wFrom;
+                    wTo = ONE - wFrom;
                     LoadAverageShort12(&g_btlCamera.viewFromEye, &g_btlCamera.points[4], wFrom, wTo, eye);
                     LoadAverageShort12(&g_btlCamera.viewFromAt, &g_btlCamera.points[5], wFrom, wTo, at);
                 }

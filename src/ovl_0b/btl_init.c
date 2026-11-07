@@ -190,7 +190,7 @@ u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
             if ((unit->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
                 unit->atb = 0;
                 unit->atbSpeed = 0;
-                memset(&rot, 0, 8);
+                memset(&rot, 0, sizeof(rot));
                 rot.vx = unit->rot[0];
                 rot.vy = unit->rot[1];
                 rot.vz = unit->rot[2];
@@ -291,45 +291,45 @@ void btl_initWeapon(Character *chr, BtlUnit *unit) {
     unit->weaponModel->motion = 0;
     switch (chr->info.b.kind) {
     case CHR_KIND_ZIDANE_DAGGER:
-        chr->weaponBone = 0xD;
+        chr->weaponBone = BTL_WEAPON_BONE_ZIDANE;
         break;
     case CHR_KIND_ZIDANE:
-        chr->weaponBone = 0xD;
+        chr->weaponBone = BTL_WEAPON_BONE_ZIDANE;
         break;
     case CHR_KIND_GARNET_LONG:
     case CHR_KIND_GARNET_SHORT:
-        chr->weaponBone = 0xF;
+        chr->weaponBone = BTL_WEAPON_BONE_GARNET;
         break;
     case CHR_KIND_GARNET_LONG_RACKET:
     case CHR_KIND_GARNET_SHORT_RACKET:
-        chr->weaponBone = 0xF;
+        chr->weaponBone = BTL_WEAPON_BONE_GARNET;
         break;
     case CHR_KIND_QUINA:
-        chr->weaponBone = 0xE;
+        chr->weaponBone = BTL_WEAPON_BONE_QUINA;
         break;
     case CHR_KIND_EIKO:
     case CHR_KIND_EIKO_RACKET:
-        chr->weaponBone = 0xF;
+        chr->weaponBone = BTL_WEAPON_BONE_EIKO;
         break;
     case CHR_KIND_FREYA:
-        chr->weaponBone = 6;
+        chr->weaponBone = BTL_WEAPON_BONE_FREYA;
         break;
     case CHR_KIND_CINNA:
-        chr->weaponBone = 0x19;
+        chr->weaponBone = BTL_WEAPON_BONE_CINNA;
         break;
     case CHR_KIND_MARCUS:
-        chr->weaponBone = 6;
+        chr->weaponBone = BTL_WEAPON_BONE_MARCUS;
         break;
     case CHR_KIND_BLANK:
     case CHR_KIND_BLANK_ALT:
-        chr->weaponBone = 0xE;
+        chr->weaponBone = BTL_WEAPON_BONE_BLANK;
         break;
     case CHR_KIND_VIVI:
     case CHR_KIND_STEINER:
     case CHR_KIND_STEINER_DARK:
     case CHR_KIND_AMARANT:
     case CHR_KIND_BEATRIX:
-        chr->weaponBone = 0x10;
+        chr->weaponBone = BTL_WEAPON_BONE_DEFAULT;
         break;
     }
     unit->weaponModel->parent = unit->model;

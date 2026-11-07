@@ -41,6 +41,15 @@ typedef struct {
     u8 (*uvs)[2]; /* indexed by the textured sources' uv indices */
     u8 (*colors)[4]; /* indexed by the gouraud sources' colour indices */
 } BtlMesh; /* 0x28 */
+/* btlfx_getMeshPrims primType (Hi_GetMdlVertexPtr): the primitive blocks of a mesh in packed order */
+#define BTL_MESH_PRIM_FT4 0
+#define BTL_MESH_PRIM_FT3 1
+#define BTL_MESH_PRIM_GT4 2
+#define BTL_MESH_PRIM_GT3 3
+#define BTL_MESH_PRIM_G4  4
+#define BTL_MESH_PRIM_G3  5
+#define BTL_MESH_PRIM_F4  6
+#define BTL_MESH_PRIM_F3  7
 
 /* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */
 typedef struct {
@@ -1313,12 +1322,37 @@ extern s32 g_btlbgScrollCount;
                                  * maps; the field SE banks load at the same SPU address): DIR_SOUND_BANKS file btl_loadSoundsStep
                                  * always reads first and loads with akao_loadBankRetry (no slot), before the slot banks.
                                  * Evidence: [code]; [runtime] R41b (one load per battle; instrument 192 keyed by Zidane's attack SE) */
+#define BTLUI_ESCAPE_HOLD_FRAMES 0x3D /* btlui_pollEscape: L1+R1 held (ATB running) calls btl_tryEscape(1) once per this many
+                                       * frames + 1, btl_tryEscape(0) on the others */
+/* btl_getSceneData indexes: the encounter's camera scripts. Evidence: [code] */
+#define BTL_SCENE_CAM_INTRO 0 /* battle start (btl_cmd intro, btlcam_playScene) */
+#define BTL_SCENE_CAM_IDLE 1 /* the resting camera, back after an effect camera (btlcam_endEffect, btlcam_step) */
+#define BTL_SCENE_CAM_VICTORY 2 /* victory pose (btl_update, scene with BTL_SCENE_VICTORY_BIT) */
+#define BTL_SCENE_CAM_CAST_PARTY 3 /* a party member's spell aimed at the party, outside trance (btlfx command camera) */
+#define BTL_SCENE_CAM_CAST_ENEMY 4 /* the same aimed at enemies */
+#define BTL_SCENE_CAM_ENEMY_TYPE 5 /* + enemy type: that type's camera (btl_setupEnemies, BtlEnemyType camera) */
+/* Character.weaponBone per character kind (btl_initWeapon): the bone of the character's battle model the weapon
+ * model hangs from (BtlModel.parentBone). Evidence: [code]; which bone it is in each skeleton (a hand?) is
+ * runtime: pending R46 (docs/wip/r46_runtime_core.md) */
+#define BTL_WEAPON_BONE_ZIDANE  0xD
+#define BTL_WEAPON_BONE_GARNET  0xF
+#define BTL_WEAPON_BONE_QUINA   0xE
+#define BTL_WEAPON_BONE_EIKO    0xF
+#define BTL_WEAPON_BONE_FREYA   6
+#define BTL_WEAPON_BONE_CINNA   0x19
+#define BTL_WEAPON_BONE_MARCUS  6
+#define BTL_WEAPON_BONE_BLANK   0xE
+#define BTL_WEAPON_BONE_DEFAULT 0x10 /* Vivi, Steiner, Amarant, Beatrix */
 /* VRAM area of the common effect textures: FILE_BTLFX_COMMON's four 64x128 pages (btlfx_reloadCommonData); an upload
  * inside it sets BTLFX_HDR_COMMON_VRAM (btlfx_markCommonVram). Evidence: [code] */
 #define VRAM_BTLFX_COMMON_X 0x300
 #define VRAM_BTLFX_COMMON_Y 0x100
 #define VRAM_BTLFX_COMMON_W 0x80
 #define VRAM_BTLFX_COMMON_H 0x100
+#define BTLFX_COMMON_PAGES 4 /* FILE_BTLFX_COMMON as staged at RAM_BTLFX_MODULE: four 64x128 16-bit pages */
+#define BTLFX_COMMON_PAGE_WORDS 0x1000 /* one page in u32 words */
+#define BTLFX_COMMON_CLUTS(type) ((type)(RAM_BTLFX_MODULE(u32 *) + BTLFX_COMMON_PAGES * BTLFX_COMMON_PAGE_WORDS)) /* then
+                                  * two 256-entry CLUT rows (btlfx_initCommonData loads them to y 0xF0) */
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle
@@ -1733,7 +1767,7 @@ typedef struct {
     Battle1330 *group; /* enemy group chosen by btl_pickEnemyGroup */
     Battle1334 *enemyTypes; /* the encounter's enemy type records */
     u16 *seqTable; /* enemy battle sequences: counts, offsets, animations (btlseq_init) */
-    s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData) */
+    s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData: BTL_SCENE_CAM_*) */
 } Battle132C;
 
 /* Battle132C (Battle.scene).flags: bits 0-1 the ambush, bits 2 and up the encounter flags (btl_initSceneFlags).
@@ -2892,9 +2926,11 @@ typedef struct {
     s32 unit; /* unit id (pan source, btl_soundPan) */
 } Unk80104E30Entry;
 
+#define BTLFX_SOUND_SLOTS 6 /* effect sounds playing at once; slot i plays with SE mask 1 << i (btlfx_allocSound) */
+#define BTLFX_SOUND_ALL ((1 << BTLFX_SOUND_SLOTS) - 1) /* every slot's mask (btlfx_stopAllSounds) */
 typedef struct {
     s32 count; /* playing sounds */
-    Unk80104E30Entry slots[6];
+    Unk80104E30Entry slots[BTLFX_SOUND_SLOTS];
 } Unk80104E30;
 extern Unk80104E30 g_btlfxSounds;
 
@@ -2949,7 +2985,7 @@ typedef struct {
     u8 pad2[2];
     s32 unit; /* unit id (pan source) */
 } Unk80104E34; /* 8 */
-extern Unk80104E34 g_btlfxSoundSlots[6];
+extern Unk80104E34 g_btlfxSoundSlots[BTLFX_SOUND_SLOTS];
 
 extern u16 g_btlSoundBankIds[];
 extern u8 g_btlfxUnitKinds[];
@@ -5216,6 +5252,22 @@ typedef struct {
 #define BTLFX_CAST_ENEMY 1 /* enemy caster: no motions, a cast emitter on the body */
 #define BTLFX_CAST_NONE  2 /* party command without a cast (BTL_FXK_NO_CAST or kind 0xF) */
 #define BTLFX_CAST_ITEM  3 /* party item use (BTL_FXK_ITEM): BTL_MOTION_ITEM, then READY */
+/* Unk800E4C88.phase */
+#define BTLFX_CASTPH_STEP  0 /* stepping forward (btlfx_stepForward) */
+#define BTLFX_CASTPH_START 1 /* BTL_MOTION_CAST_START, turning to the target; then the cast emitter starts */
+#define BTLFX_CASTPH_LOOP  2 /* casting until the script signals (signals.b[2]) */
+#define BTLFX_CASTPH_END   3 /* the emitter fades out, the caster returns to READY */
+/* Unk800E4C88.castMode (BTLFX_HDR_CAST_MODE): what a summon cast does to the screen while it fades in */
+#define BTLFX_CAST_MODE_FLASH_ADD 0 /* additive white tint, then every unit faded out */
+#define BTLFX_CAST_MODE_FLASH_SUB 1 /* subtractive (darkening) tint, then every unit faded out */
+#define BTLFX_CAST_MODE_DIM_ALL   2 /* every unit dimmed to half */
+#define BTLFX_CAST_MODE_DIM_PARTY 3 /* the party dimmed to half */
+/* btlfx_opCast timing (frames) */
+#define BTLFX_CAST_MIN_FRAMES 27 /* the cast lasts at least this long, whatever the script signals */
+#define BTLFX_SUMMON_FADE_DELAY 9 /* the summon tint / unit fade starts this many frames into the cast loop */
+#define BTLFX_SUMMON_FADE_FRAMES 16 /* and takes this long (fade = step * 255 >> 4) */
+#define BTLFX_CAST_BG_FADE_FRAMES 0x14 /* btlfx_startFadeBackground length */
+#define BTLFX_SUMMON_BG_FADE_FRAMES 0xC /* the same for a summon */
 
 /* btlfx_opDrawOnUnit effect state (sprite sheet on a unit) */
 typedef struct {

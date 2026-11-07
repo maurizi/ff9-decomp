@@ -60,7 +60,7 @@ void btlfx_matrixAngles(MATRIX *mat, s16 *outRot) {
     gte_SetTransMatrix(mat);
     origin[1] = 0;
     origin[0] = 0;
-    btlfx_transformPoint(0x1000, 0, (s32)dir);
+    btlfx_transformPoint(ONE, 0, (s32)dir);
     btlfx_aimAngles((s16 *)origin, dir, outRot);
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
@@ -186,7 +186,7 @@ void btlfx_forwardAngles(s16 *outRot, XY32 *axis, s32 spin) {
     gte_ldtr0();
     origin[1] = 0;
     origin[0] = 0;
-    btlfx_transformPoint(0, 0x1000, (s32)dir);
+    btlfx_transformPoint(0, ONE, (s32)dir);
     btlfx_aimAngles((s16 *)origin, dir, outRot);
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
@@ -228,14 +228,14 @@ void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
 
 void btlfx_addPrim(u32 code, s32 depth, void *prim) {
     s32 z = (depth - g_btlfxEnv->otZ) >> 2;
-    if ((u32)z < 0x1000) {
+    if ((u32)z < OT_LEN) {
         addPrimLen(&g_btlfxEnv->ot[z], prim, code);
     }
 }
 
 void btlfx_addPrimAbr(s32 code, s32 depth, void *prim, s32 abr) {
     u32 i = (depth - g_btlfxEnv->otZ) >> 2;
-    if (i < 0x1000) {
+    if (i < OT_LEN) {
         ((void (*)())btlfx_linkPrimAbr)(code, &g_btlfxEnv->ot[i], prim, abr);
     }
 }
@@ -337,7 +337,7 @@ void btlfx_drawTrail3D(s32 ring, s32 *anchor, s32 pointCount, s32 texV, s32 texU
     s32 inv;
 
     if (alpha < 0) {
-        alpha = 0x1000;
+        alpha = ONE;
     }
     gte_DpqColorFar_nst(c1, alpha);
     prim = g_btlfxEnv->prim;
@@ -353,7 +353,7 @@ void btlfx_drawTrail3D(s32 ring, s32 *anchor, s32 pointCount, s32 texV, s32 texU
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (pointCount != 0) {
-        inv = 0x1000 / pointCount;
+        inv = ONE / pointCount;
         ctx.fadeStep = inv;
         ctx.fade = inv;
         ctx.anchorXY = anchor[0];
@@ -375,7 +375,7 @@ void btlfx_drawTrailFlat(s32 ring, s32 pointCount, s32 texV, s32 texU, s32 texH,
     s32 sinYaw;
 
     if (alpha < 0) {
-        alpha = 0x1000;
+        alpha = ONE;
     }
     gte_DpqColorFar_nst(c1, alpha);
     gte_strgb(&ctx.color);
@@ -542,12 +542,12 @@ void btlfx_drawParticles(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
         }
     } else {
         if (alpha < 0) {
-            alpha = 0x1000;
+            alpha = ONE;
         }
         alpha = (alpha >> 5) & 0xFF;
         ctx.color = alpha | (alpha << 8) | (alpha << 16);
     }
-    scaleVec.vz = 0x1000;
+    scaleVec.vz = ONE;
     if (ctx.frame & BTLFX_SPRF_SCALE) {
         scaleData = data + off;
         scaleVec.vx = *(u16 *)scaleData;
@@ -561,7 +561,7 @@ void btlfx_drawParticles(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
         off += 4;
     } else {
         if (scale < 0) {
-            scale = 0x1000;
+            scale = ONE;
         }
         scaleVec.vx = scaleVec.vy = scale;
     }
@@ -617,7 +617,7 @@ void btlfx_drawSprite(u8 *data, SVECTOR *pos, s32 frame, s32 abr, s32 alpha) {
         }
     } else {
         if (alpha < 0) {
-            alpha = 0x1000;
+            alpha = ONE;
         }
         alpha = (alpha >> 5) & 0xFF;
         ctx.color = alpha | (alpha << 8) | (alpha << 16);
@@ -641,7 +641,7 @@ void btlfx_drawSprite(u8 *data, SVECTOR *pos, s32 frame, s32 abr, s32 alpha) {
     ctx.y = sxy.vy;
     ctx.prim = g_btlfxEnv->prim;
     z = (z - g_btlfxEnv->otZ) >> 2;
-    if ((u32)z < 0x1000) {
+    if ((u32)z < OT_LEN) {
         g_btlfxEnv->prim = btlfx_emitScreenSprites(data, &ctx, prim, &g_btlfxEnv->ot[z]);
     }
 }
@@ -675,7 +675,7 @@ void btlfx_drawSpriteAtOt(u32 otIndex, u8 *data, s32 x, s32 y, s32 frame, s32 ab
         }
     } else {
         if (alpha < 0) {
-            alpha = 0x1000;
+            alpha = ONE;
         }
         alpha = (alpha >> 5) & 0xFF;
         ctx.color = alpha | (alpha << 8) | (alpha << 16);
@@ -692,7 +692,7 @@ void btlfx_drawSpriteAtOt(u32 otIndex, u8 *data, s32 x, s32 y, s32 frame, s32 ab
     ctx.x = x;
     ctx.y = y;
     ctx.prim = g_btlfxEnv->prim;
-    if (otIndex < 0x1000) {
+    if (otIndex < OT_LEN) {
         g_btlfxEnv->prim = btlfx_emitScreenSprites(data, &ctx, prim, &g_btlfxEnv->ot[otIndex]);
     }
 }
@@ -844,7 +844,7 @@ void btlfx_drawSprites(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fram
     gte_SetTransMatrix(&mat);
     ctx.fade = alpha;
     z = (z - g_btlfxEnv->otZ) >> 2;
-    if ((u32)z < 0x1000 && ctx.count != 0) {
+    if ((u32)z < OT_LEN && ctx.count != 0) {
         if (size == 0x14) {
             btlfx_emitSprites(data, &ctx, prim, &g_btlfxEnv->ot[z]);
         } else if (size == 0xC) {
@@ -895,7 +895,7 @@ void btlfx_drawRings(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame,
     cnt = h->count;
     w = h->w;
     scales = (Unk800D23D8Scale *)(h + 1);
-    scaleVec.vz = 0x1000;
+    scaleVec.vz = ONE;
     if (((Unk800D23D8Hdr *)scales)[-1].flags & BTLFX_RINGS_SCALED) {
         sc = &scales[frame];
         scaleVec.vx = sc->x;
@@ -910,7 +910,7 @@ void btlfx_drawRings(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame,
     } else {
         s1 = (u16 *)scales;
         if (scale < 0) {
-            scale = 0x1000;
+            scale = ONE;
         }
         scaleVec.vx = scaleVec.vy = scale;
     }
@@ -939,7 +939,7 @@ void btlfx_drawRings(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame,
         if (alpha >= 0) {
             gte_DpqColorFar_nst(col, alpha);
         } else {
-            gte_DpqColorFar_nst(col, 0x1000);
+            gte_DpqColorFar_nst(col, ONE);
         }
         gte_strgb(&quadCtx.color);
         frameData = quadCtx.frame;
@@ -969,7 +969,7 @@ void btlfx_drawRings(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame,
             gouraudCtx.colors = gouraudCtx.colors2;
         }
         if (alpha < 0) {
-            alpha = 0x1000;
+            alpha = ONE;
         }
         gouraudCtx.scale = (u32 *)s1 + (nf * m2 * (cnt + 1) + 1);
         gouraudCtx.sizes = gouraudCtx.scale + 1;
@@ -1030,7 +1030,7 @@ void btlfx_drawFan(Unk800D2938 *fan, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 
     base = (u16 *)((u8 *)fan + (k + 0x14));
     k = frame * 4;
     frameScale = (u16 *)((u8 *)base + k);
-    scaleVec.vy = 0x1000;
+    scaleVec.vy = ONE;
     scaleVec.vz = frameScale[0];
     scaleVec.vx = frameScale[1];
     if (scale >= 0) {
@@ -1319,7 +1319,7 @@ void btlfx_drawLayerTexture(BtlBgLayers *bg, s32 frame) {
                 if (elapsed < fd->duration) {
                     fade = (elapsed << 12) / fd->duration;
                 } else {
-                    fade = 0x1000;
+                    fade = ONE;
                 }
                 if (fd->dataOfs != 0) {
                     btlfx_drawLayerSprite((u8 *)bg + fd->dataOfs + 4, fd->x, fd->y, elapsed, layer->abr, fade);
@@ -1374,7 +1374,7 @@ s32 btlfx_ease(s32 elapsed, s32 duration, s32 mode) {
         ratio = (elapsed << 12) / duration;
         break;
     case 1:
-        ratio = 0x1000 - math_cos((elapsed << 11) / duration);
+        ratio = ONE - math_cos((elapsed << 11) / duration);
         break;
     case 2:
         ratio = math_sin((elapsed << 11) / duration);

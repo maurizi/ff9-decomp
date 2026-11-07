@@ -6,13 +6,13 @@ void chr_init(s32 ch) {
     u32 *tbl;
     s32 defSet;
 
-    memset(chr, 0, 0x90);
+    memset(chr, 0, sizeof(*chr));
     tbl = g_chrInitInfo;
     init = tbl + ch;
     chr->info.w = *init;
     chr->status = 0;
     chr->classFlags = chr_getClassFlags(chr->info.b.row);
-    memset(chr->equipBonus, 0, 10);
+    memset(chr->equipBonus, 0, sizeof(chr->equipBonus));
     chr_clearAbilities(ch);
     defSet = chr_getDefaultSet(chr);
     chr_setDefaultName(chr->name, defSet);
@@ -464,7 +464,7 @@ u8 party_hasChanged(void) {
 INCLUDE_RODATA("asm/us/main/nonmatchings/chr", g_chrDefaultNames);
 
 void chr_setDefaultName(u8 *dst, s32 id) {
-    memset(dst, 0xFF, 10);
+    memset(dst, 0xFF, CHR_NAME_SIZE);
     text_copy(dst, (u8 *)text_getFrom((u8 *)g_chrDefaultNames, id));
 }
 
@@ -682,8 +682,8 @@ s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
         chr->equipBonus[0] += chr_sumEquipBonus(chr->equip, 0);
     }
     stat = cls->speed + lv / 10 + (chr->equipBonus[0] >> 5);
-    if (stat >= 51) {
-        stat = 50;
+    if (stat >= SPEED_SPIRIT_MAX + 1) {
+        stat = SPEED_SPIRIT_MAX;
     }
     return stat;
 }
@@ -742,8 +742,8 @@ s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
         bonus[3] += extra + chr_sumEquipBonus(chr->equip, 3);
     }
     stat = cls->spirit + lv * 3 / 20 + (bonus[3] >> 5);
-    if (stat >= 51) {
-        stat = 50;
+    if (stat >= SPEED_SPIRIT_MAX + 1) {
+        stat = SPEED_SPIRIT_MAX;
     }
     return stat;
 }
@@ -764,8 +764,8 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
         bonus[4] += extra;
     }
     stat = cls->stones + lv * 4 / 10 + (bonus[4] >> 5);
-    if (stat >= 100) {
-        stat = 99;
+    if (stat >= STONES_MAX + 1) {
+        stat = STONES_MAX;
     }
     return stat;
 }
