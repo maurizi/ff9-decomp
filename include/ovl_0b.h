@@ -41,6 +41,15 @@ typedef struct {
     u8 (*uvs)[2]; /* indexed by the textured sources' uv indices */
     u8 (*colors)[4]; /* indexed by the gouraud sources' colour indices */
 } BtlMesh; /* 0x28 */
+/* btlfx_getMeshPrims primType (Hi_GetMdlVertexPtr): the primitive blocks of a mesh in packed order */
+#define BTL_MESH_PRIM_FT4 0
+#define BTL_MESH_PRIM_FT3 1
+#define BTL_MESH_PRIM_GT4 2
+#define BTL_MESH_PRIM_GT3 3
+#define BTL_MESH_PRIM_G4  4
+#define BTL_MESH_PRIM_G3  5
+#define BTL_MESH_PRIM_F4  6
+#define BTL_MESH_PRIM_F3  7
 
 /* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */
 typedef struct {
