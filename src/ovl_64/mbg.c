@@ -179,32 +179,32 @@ s32 MBG_init(s32 mode, u8 **buf) {
         g_mbgState = 0;
     }
     switch (mode) {
-    case 1:
+    case MBG_INIT_ONE_BUF:
         base = buf[0];
         g_mbgPlayer.mdecIn0 = base;
-        off = 0x10000;
+        off = MBG_MDEC_IN_SIZE;
         g_mbgPlayer.mdecIn1 = base + off;
-        off = 0x20000;
+        off = 2 * MBG_MDEC_IN_SIZE;
         g_mbgPlayer.ringBuf = base + off;
-        off = 0x43E20;
+        off = 2 * MBG_MDEC_IN_SIZE + MBG_RING_BUF_SIZE;
         g_mbgPlayer.audioBuf = base + off;
-        off = 0x49E20;
+        off = 2 * MBG_MDEC_IN_SIZE + MBG_RING_BUF_SIZE + MBG_AUDIO_BUF_SIZE;
         g_mbgPlayer.mdecOut0 = base + off;
-        off = 0x4CB20;
+        off = 2 * MBG_MDEC_IN_SIZE + MBG_RING_BUF_SIZE + MBG_AUDIO_BUF_SIZE + MBG_MDEC_OUT_SIZE;
         g_mbgPlayer.mdecOut1 = base + off;
         break;
-    case 2:
+    case MBG_INIT_TWO_BUFS:
         base = buf[0];
         g_mbgPlayer.mdecIn0 = base;
-        off = 0x10000;
+        off = MBG_MDEC_IN_SIZE;
         g_mbgPlayer.mdecIn1 = base + off;
-        off = 0x20000;
+        off = 2 * MBG_MDEC_IN_SIZE;
         g_mbgPlayer.mdecOut0 = base + off;
-        off = 0x22D00;
+        off = 2 * MBG_MDEC_IN_SIZE + MBG_MDEC_OUT_SIZE;
         g_mbgPlayer.mdecOut1 = base + off;
         base = buf[1];
         g_mbgPlayer.ringBuf = base;
-        off = 0x23E20;
+        off = MBG_RING_BUF_SIZE;
         g_mbgPlayer.audioBuf = base + off;
         break;
     }
@@ -330,8 +330,8 @@ s32 mbg_play(u32 movie, s32 idx) {
     cb = mbg_mdecOutCallback;
     DecDCTReset(0);
     DecDCToutCallback(cb);
-    mbg_streamSetRing((Ovl64RingHdr *)g_mbgPlayer.ringBuf, 8, 0x40);
-    mbg_streamSetAudioBuffer((u8 *)g_mbgPlayer.audioBuf, 2, 0xC);
+    mbg_streamSetRing((Ovl64RingHdr *)g_mbgPlayer.ringBuf, MBG_RING_SLOT_SECTORS, MBG_RING_SECTORS);
+    mbg_streamSetAudioBuffer((u8 *)g_mbgPlayer.audioBuf, 2, MBG_AUDIO_SECTORS);
     if (mbg_streamReset() != 0) {
         ok = 0;
     } else {

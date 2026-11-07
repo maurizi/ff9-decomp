@@ -94,6 +94,16 @@ typedef struct {
 #define MBG_SLICE_W_24 0x18
 #define MBG_FRAME_TRIES 1000 /* mbg_streamGetFrame polls before giving up on a frame */
 #define MBG_MDEC_IN_WORDS 0x4000 /* a frame whose run-level data (DecDCTBufSize) needs more is dropped */
+/* MBG_init modes and the work buffers they carve (g_mbgPlayer.mdecIn0..mdecOut1). Evidence: [code] */
+#define MBG_INIT_ONE_BUF 1 /* all in buf[0]: MDEC in x2, CD ring, audio, MDEC out x2 (field, opening, blackjack) */
+#define MBG_INIT_TWO_BUFS 2 /* buf[0]: MDEC in x2, MDEC out x2; buf[1]: CD ring, audio */
+#define MBG_MDEC_IN_SIZE (MBG_MDEC_IN_WORDS * 4) /* one run-level input buffer */
+#define MBG_MDEC_OUT_SIZE (MBG_SLICE_W_24 * 240 * 2) /* one decoded 16-pixel slice at 24 bits, 240 lines */
+#define MBG_RING_SLOT_SECTORS 8 /* mbg_streamSetRing: sectors per frame slot */
+#define MBG_RING_SECTORS 0x40 /* and in the ring (8 slots) */
+#define MBG_RING_BUF_SIZE 0x23E20 /* the CD ring's buffer (its slot headers and MBG_RING_SECTORS sectors take 0x20120) */
+#define MBG_AUDIO_SECTORS 0xC /* mbg_streamSetAudioBuffer: audio sectors buffered */
+#define MBG_AUDIO_BUF_SIZE (MBG_AUDIO_SECTORS * 0x800)
 #define MBG_VOLUME_DELAY 3 /* g_mbgPlayer.volumeDelay default (mbg_setVolume with < 0) */
 #define MBG_VOLUME_FADE 4 /* g_mbgPlayer.volumeFade default */
 #define MBG_SWITCH_NONE 0

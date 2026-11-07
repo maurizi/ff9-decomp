@@ -1313,6 +1313,18 @@ extern s32 g_btlbgScrollCount;
                                  * maps; the field SE banks load at the same SPU address): DIR_SOUND_BANKS file btl_loadSoundsStep
                                  * always reads first and loads with akao_loadBankRetry (no slot), before the slot banks.
                                  * Evidence: [code]; [runtime] R41b (one load per battle; instrument 192 keyed by Zidane's attack SE) */
+/* Character.weaponBone per character kind (btl_initWeapon): the bone of the character's battle model the weapon
+ * model hangs from (BtlModel.parentBone). Evidence: [code]; which bone it is in each skeleton (a hand?) is
+ * runtime: pending R46 (docs/wip/r46_runtime_core.md) */
+#define BTL_WEAPON_BONE_ZIDANE  0xD
+#define BTL_WEAPON_BONE_GARNET  0xF
+#define BTL_WEAPON_BONE_QUINA   0xE
+#define BTL_WEAPON_BONE_EIKO    0xF
+#define BTL_WEAPON_BONE_FREYA   6
+#define BTL_WEAPON_BONE_CINNA   0x19
+#define BTL_WEAPON_BONE_MARCUS  6
+#define BTL_WEAPON_BONE_BLANK   0xE
+#define BTL_WEAPON_BONE_DEFAULT 0x10 /* Vivi, Steiner, Amarant, Beatrix */
 /* VRAM area of the common effect textures: FILE_BTLFX_COMMON's four 64x128 pages (btlfx_reloadCommonData); an upload
  * inside it sets BTLFX_HDR_COMMON_VRAM (btlfx_markCommonVram). Evidence: [code] */
 #define VRAM_BTLFX_COMMON_X 0x300
