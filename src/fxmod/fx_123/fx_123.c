@@ -298,7 +298,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         } else {
                             shot->timer1E--;
                         }
-                        ex->Hi_ModifyEffModelAbr(work->model17A[i], 1);
+                        ex->Hi_ModifyEffModelAbr(work->model17A[i], BTLFX_ABR_ADD);
                         ex->Hi_ModifyEffModelRGB(work->model17A[i], work->fade10C, work->fade10C, work->fade10C);
                     }
                 }
@@ -376,7 +376,7 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_tintScreenLerp(0xFF, 0, 0x10 - work->timer2, 0x10, 1, 0);
             work->timer2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_ADD, 0xFF, 0xFF, 0xFF);
         }
         return frame >= 0x20;
     }

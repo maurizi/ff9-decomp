@@ -10,10 +10,10 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 offset;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx0f3Work);
     } else if (mode == 1) {
         work->variant4 = *args;
-        work->state0 = 0;
+        work->state0 = FX_SCOOP_ART_STATE_SWEEP;
         fx_0f3_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         work->emit24 = NULL;
@@ -21,8 +21,8 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         state = work->state0;
         frame = entry->frame;
         switch (state) {
-        case 0:
-            t = (frame << 12) / 12;
+        case FX_SCOOP_ART_STATE_SWEEP:
+            t = (frame << 12) / FX_SCOOP_ART_SWEEP_FRAMES;
             BTLFX_COPY_SVEC(&headPos, &work->pos8);
             switch (work->variant4) {
             case 0:
@@ -45,11 +45,11 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             BTLFX_COPY_SVEC(&work->headPos10, &headPos);
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, -1, 0, 0, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, -1, 0, 0, BTLFX_ABR_ADD,
                                   fx_0f3_strips[work->variant4], 0);
             }
             env->otZ = 0x40;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, 0, 0x5000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, 0, 0x5000, 0x1000, BTLFX_ABR_ADD,
                               fx_0f3_strips[work->variant4], 0);
             env->otZ = 0;
             if (frame == 0) {
@@ -59,8 +59,8 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_GOLD_SPARK), (s32)&work->pos18);
                 if (work->emit24 != NULL) {
                     work->emit24->trails = (s32)fx_0f3_op80Trails[work->variant4];
-                    work->emit24->trailSlots = 4;
-                    work->emit24->trailStride = 0xAC;
+                    work->emit24->trailSlots = FX_SCOOP_ART_SPARK_TRAIL_SLOTS;
+                    work->emit24->trailStride = FX_SCOOP_ART_SPARK_TRAIL_STRIDE;
                     if (work->emit24 != NULL) {
                         work->emit24->otZ = 0x40;
                     }
@@ -70,29 +70,29 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit24 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->emit24, (s32)&work->headPos10);
-            if (frame == 6 && work->variant4 == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 2, 0x40, 0x40, 0x40);
+            if (frame == FX_SCOOP_ART_DARKEN_FRAME && work->variant4 == 0) {
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, BTLFX_ABR_SUB, FX_SCOOP_ART_DARKEN_RGB);
             }
-            if (frame == 7) {
+            if (frame == FX_SCOOP_ART_FLASH_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_BLUE_RINGS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, 0x5D, 0x5D, 0x5D);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, BTLFX_ABR_ADD, FX_SCOOP_ART_FLASH_RGB);
             }
-            if (frame >= 0xC) {
-                work->state0 = 1;
+            if (frame >= FX_SCOOP_ART_SWEEP_FRAMES) {
+                work->state0 = FX_SCOOP_ART_STATE_FADE;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit24);
             }
             return 0;
-        case 1:
-            t = (frame << 12) / 29;
+        case FX_SCOOP_ART_STATE_FADE:
+            t = (frame << 12) / FX_SCOOP_ART_FADE_FRAMES;
             env->otZ = 0x40;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, 0, 0x5000,
-                              ex->math_cos(t >> 2), 1, fx_0f3_strips[work->variant4], 0);
+                              ex->math_cos(t >> 2), BTLFX_ABR_ADD, fx_0f3_strips[work->variant4], 0);
             env->otZ = 0;
-            if (frame < 0x1D) {
+            if (frame < FX_SCOOP_ART_FADE_FRAMES) {
                 break;
             }
             return 1;

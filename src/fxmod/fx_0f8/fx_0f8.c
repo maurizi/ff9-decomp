@@ -5,7 +5,7 @@ s32 fx_0f8_op80(s32 mode, Fx0f8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x1C;
+        *args = sizeof(Fx0f8Work80);
     } else if (mode == 1) {
         fx_0f8_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
@@ -27,7 +27,7 @@ s32 fx_0f8_op80(s32 mode, Fx0f8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0->rot.vz = work->aimRot14.vz;
             }
         }
-        return frame >= 0x46;
+        return frame >= FX_GRAND_LETHAL_FLARES_FRAMES;
     }
     return 0;
 }
@@ -42,17 +42,17 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0f8Spawn *spawn;
 
     if (mode == 0) {
-        *args = 0x50;
+        *args = sizeof(Fx0f8Work81);
     } else if (mode == 1) {
         work->pos28.vx = env->targets->centerX;
         work->pos28.vy = env->targets->centerY;
         work->pos28.vz = env->targets->centerZ;
         fx_0f8_env = env;
-        for (initSpawn = fx_0f8_spawns, i = 0; i < 4; i++, initSpawn++) {
+        for (initSpawn = fx_0f8_spawns, i = 0; i < FX_GRAND_LETHAL_SPAWN_COUNT; i++, initSpawn++) {
             (work->emitPos30 + i)->vx = work->pos28.vx;
             (work->emitPos30 + i)->vy = work->pos28.vy;
             (work->emitPos30 + i)->vz = work->pos28.vz;
-            initSpawn->frame2 = i * 4;
+            initSpawn->frame2 = i * FX_GRAND_LETHAL_SPAWN_INTERVAL;
             rot.vx = 0;
             rot.vy = i << 10;
             rot.vz = 0;
@@ -60,11 +60,11 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (frame == 0xF) {
+        if (frame == FX_GRAND_LETHAL_VORTEX_FRAME) {
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_FLAME_VORTEX), (s32)&work->pos28);
             work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_FLAME_FLASH), (s32)&work->pos28);
         }
-        for (spawn = fx_0f8_spawns, j = 0; j < 4; j++, spawn++) {
+        for (spawn = fx_0f8_spawns, j = 0; j < FX_GRAND_LETHAL_SPAWN_COUNT; j++, spawn++) {
             if (frame == spawn->frame2) {
                 work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, spawn->block0), (s32)&work->emitPos30[j]);
                 work->emit10[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_FLAME_FLASH), (s32)&work->emitPos30[j]);
@@ -72,7 +72,7 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP), frame);
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP_2), frame);
-        return frame >= 0x2D;
+        return frame >= FX_GRAND_LETHAL_BLAST_FRAMES;
     }
     return 0;
 }

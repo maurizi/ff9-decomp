@@ -37,14 +37,14 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t = frame << 8;
         growScale = (ex->math_sin(t >> 2) * 0x10FF) >> 12;
         env->otZ = 0x7C;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, growScale, 0, 1, t);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, t);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, growScale, 0, BTLFX_ABR_ADD, t);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, t);
         env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, growScale, 0, 1, t);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, growScale, 0, BTLFX_ABR_ADD, t);
         scale.vx = scale.vz = 0x174;
         scale.vy = ex->math_sin(t >> 2) / 6;
         glowBright = t;
@@ -65,14 +65,14 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t = ((tick % 10) << 12) / 10;
         pulseScale = (ex->math_sin(t) >> 4) + 0x10FF;
         env->otZ = 0x7C;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, pulseScale, 0, 1, 0x1000);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, pulseScale, 0, BTLFX_ABR_ADD, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, 0x1000);
         env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, pulseScale, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, pulseScale, 0, BTLFX_ABR_ADD, 0x1000);
         scale.vx = scale.vz = 0x174;
         scale.vy = (ex->math_sin(t) >> 7) + 0x2AA;
         glowBright = 0x1000;
@@ -104,14 +104,14 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fade = 0x1000 - t;
         env->otZ = 0x7C;
         fadeScale = t + 0x10FF;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, fadeScale, 0, 1, fade);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, 1, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_WHITE_RINGS), &work->pos14, NULL, fadeScale, 0, BTLFX_ABR_ADD, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, fade);
         env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, fadeScale, 0, 1, fade);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_LILAC_RINGS), &work->posC, &rot, fadeScale, 0, BTLFX_ABR_ADD, fade);
         if (frame < 0x10) {
             ang = (frame << 8) >> 2;
             glowBright = ex->math_cos(ang);
@@ -171,7 +171,7 @@ s32 fx_101_op82PoolTask(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78En
         if (p->index16 == 0) {
             ((Fx101Bolt *)((s32 *)p->pos18 - 4))->lastSlot0 = ((Fx101Bolt *)((s32 *)p->pos18 - 4))->count2 = 0xB;
             ((Fx101Bolt *)((s32 *)p->pos18 - 4))->head1 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_TRAIL), 0, 0, 5, 0x1000, fade, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANCE_VIOLET_TRAIL), 0, 0, 5, 0x1000, fade, BTLFX_ABR_ADD,
                               (u8 *)p->pos18 - 4, 0);
         }
         if (frame >= 8) {

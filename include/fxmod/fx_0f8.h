@@ -14,28 +14,35 @@
 #define FX_GRAND_LETHAL_FLAME_FLASH  0xD /* emitter: white / cyan / blue / grey gouraud rings with a large flame-tile sprite at run time: the bright yellow-orange fire glow filling the screen; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_GRAND_LETHAL_FLAME_VORTEX 0xE /* emitter: white swirl sprite with textured rings, the orange flame vortex swirling round the target; runtime (docs/runtime-findings.md effect-data pass 2) */
 
+/* fx_0f8 choreography (docs/fxdata.md, "Choreography literals"): the two ops' lengths and op81's spawn table. */
+#define FX_GRAND_LETHAL_FLARES_FRAMES   0x46 /* op80's length: PINK_FLARES aimed from the caster at the target */
+#define FX_GRAND_LETHAL_SPAWN_COUNT     4    /* op81: fx_0f8_spawns, one emitter (+ a FLAME_FLASH) each, around the target */
+#define FX_GRAND_LETHAL_SPAWN_INTERVAL  4    /* spawn i starts on frame i * this */
+#define FX_GRAND_LETHAL_VORTEX_FRAME    0xF  /* FLAME_VORTEX and FLAME_FLASH start at the target */
+#define FX_GRAND_LETHAL_BLAST_FRAMES    0x2D /* op81's length */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
     SVECTOR centerC;
     SVECTOR aimRot14;
-} Fx0f8Work80;
+} Fx0f8Work80; /* 0x1C */
 
 typedef struct {
-    Pool6CEntry *emit0[4];
-    Pool6CEntry *emit10[4];
+    Pool6CEntry *emit0[FX_GRAND_LETHAL_SPAWN_COUNT];
+    Pool6CEntry *emit10[FX_GRAND_LETHAL_SPAWN_COUNT];
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
     SVECTOR pos28;
-    SVECTOR emitPos30[4];
-} Fx0f8Work81;
+    SVECTOR emitPos30[FX_GRAND_LETHAL_SPAWN_COUNT];
+} Fx0f8Work81; /* 0x50 */
 
 typedef struct {
     u16 block0; /* file */
     u16 frame2; /* frame */
 } Fx0f8Spawn;
 
-extern Fx0f8Spawn fx_0f8_spawns[4];
+extern Fx0f8Spawn fx_0f8_spawns[FX_GRAND_LETHAL_SPAWN_COUNT];
 extern Unk800F78A4 *fx_0f8_env;
 
 #endif

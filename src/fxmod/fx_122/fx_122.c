@@ -104,7 +104,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer4A--;
         }
         if (fade) {
-            ex->Hi_ModifyEffModelAbr(work->model4C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model4C, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model4C, work->color2C, work->color2C, work->color2C);
         }
         if (frame >= 0x4F) {

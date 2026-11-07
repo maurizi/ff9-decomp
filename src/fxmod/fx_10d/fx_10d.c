@@ -40,7 +40,7 @@ s32 fx_10d_op80(s32 mode, Fx10dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= i + 1) {
                 rgb = -(i * 16);
                 ex->Hi_DrawEffModel(&work->rot40[i], &work->pos58[i], (s32)&work->scale30, work->model8A);
-                ex->Hi_ModifyEffModelAbr(work->model8A, 3);
+                ex->Hi_ModifyEffModelAbr(work->model8A, BTLFX_ABR_QUARTER);
                 ex->Hi_ModifyEffModelRGB(work->model8A, rgb, rgb, rgb);
             }
         }

@@ -38,8 +38,8 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     gt4 = (POLY_GT4 *)env->prim;
-    ft4 = (POLY_FT4 *)(gt4 + 32);
-    env->prim = (u8 *)(ft4 + 96);
+    ft4 = (POLY_FT4 *)(gt4 + 2 * FX_STELLAR_CIRCLE_5_CYL_SEGMENTS);
+    env->prim = (u8 *)(ft4 + (FX_STELLAR_CIRCLE_5_CYL_RINGS - 2) * FX_STELLAR_CIRCLE_5_CYL_SEGMENTS);
     if (flicker == 0) {
         colFlat.r = colFlat.g = colFlat.b = bright;
         colLit.r = colLit.g = colLit.b = bright;
@@ -56,8 +56,8 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
         colLit.b = (colLit.b * bright) >> 7;
     }
     *(s32 *)&colDark = 0;
-    colFlat.cd = abr != 0xFF ? 0x2E : 0x2C;
-    colDark.cd = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
+    colDark.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     tpage |= TPAGE_ABR(abr);
     colLit.cd = colDark.cd;
     gte_rtv0tr_b();
@@ -72,15 +72,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     rout = dr;
     rin = 0;
     iNext = 1;
-    z1 = 0x90;
+    z1 = FX_STELLAR_CIRCLE_5_CYL_RING_DEPTH;
     z0 = 0;
-    for (; i < 8; i++, rin += dr, rout += dr, iNext++, z1 += 0x90, z0 += 0x90) {
+    for (; i < FX_STELLAR_CIRCLE_5_CYL_RINGS; i++, rin += dr, rout += dr, iNext++, z1 += FX_STELLAR_CIRCLE_5_CYL_RING_DEPTH, z0 += FX_STELLAR_CIRCLE_5_CYL_RING_DEPTH) {
         seg += dseg;
         ang += dang;
         rad0 = ex->btlfx_lerp(r0, r1, i << 9);
         rad1 = ex->btlfx_lerp(r0, r1, iNext << 9);
         ang1 = ang + dang;
-        for (j = 0; j < 16; j++) {
+        for (j = 0; j < FX_STELLAR_CIRCLE_5_CYL_SEGMENTS; j++) {
             seg += dseg;
             cx = (ex->math_cos(ang1) * (rout / 8)) >> 12;
             sinv = ex->math_sin(ang1);
@@ -111,13 +111,13 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
             tileU = j & 3;
             u0 = u + (tileU << 5);
             v0 = v + (tileV << 5);
-            u1 = u0 + 0x20;
+            u1 = u0 + FX_STELLAR_CIRCLE_5_CYL_TILE;
             if (tileU == 3) {
-                u1 = u0 + 0x1F;
+                u1 = u0 + FX_STELLAR_CIRCLE_5_CYL_TILE - 1;
             }
-            v1 = v0 + 0x20;
+            v1 = v0 + FX_STELLAR_CIRCLE_5_CYL_TILE;
             if (tileV == 3) {
-                v1 = v0 + 0x1F;
+                v1 = v0 + FX_STELLAR_CIRCLE_5_CYL_TILE - 1;
             }
             gte_nclip();
             if (i == 0) {
@@ -126,7 +126,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
             } else {
                 ft = 1;
-                if (i >= 7) {
+                if (i >= FX_STELLAR_CIRCLE_5_CYL_RINGS - 1) {
                     *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
                     ft = 0;
                     *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
@@ -158,11 +158,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -192,21 +192,21 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx0f5Work80);
     } else if (mode == 1) {
         fx_0f5_env = env;
         ex->btlfx_initEffModels(fx_0f5_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_STELLAR_CIRCLE_5_CLOUD_DOME), 1);
-        work->state0 = 0;
+        work->state0 = FX_STELLAR_CIRCLE_5_STATE_OPEN;
         work->frame4 = 0;
         BTLFX_COPY_SVEC(&work->center8, &env->targets->centerX);
         work->rot18.vx = 0x400;
         work->rot18.vy = 0x20;
         work->rot18.vz = 0;
     } else {
-        radius = (work->frame4 << 9) / 72;
+        radius = (work->frame4 << 9) / FX_STELLAR_CIRCLE_5_FRAMES;
         frame = entry->frame;
-        ang = 0x1000 - ex->math_cos((work->frame4 << 10) / 72);
+        ang = 0x1000 - ex->math_cos((work->frame4 << 10) / FX_STELLAR_CIRCLE_5_FRAMES);
         work->pos10.vx = work->center8.vx + ((ex->math_cos(ang) * radius) >> 12);
         work->pos10.vz = work->center8.vz + ((ex->math_sin(ang) * radius) >> 12);
         work->pos10.vy = work->center8.vy;
@@ -214,16 +214,16 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vx = 0;
         rot.vy = work->frame4 * 32;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 12;
+        case FX_STELLAR_CIRCLE_5_STATE_OPEN:
+            t = (frame << 12) / FX_STELLAR_CIRCLE_5_OPEN_FRAMES;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->frame4 * 40, 300,
-                          0xC8, 1, 0);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8, FX_STELLAR_CIRCLE_5_TUBE_END_RADIUS, 0x80, FX_STELLAR_CIRCLE_5_TUBE_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_CLUT, FX_STELLAR_CIRCLE_5_TUBE_U, FX_STELLAR_CIRCLE_5_TUBE_V, t >> 6, work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST,
+                          0xC8, BTLFX_ABR_ADD, 0);
             scale.vx = scale.vy = 0x2000;
             scale.vz = ex->math_sin(t >> 2) * 2;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
-                          work->frame4 * 40, 300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, FX_STELLAR_CIRCLE_5_TUBE_2_END_RADIUS, t >> 5, FX_STELLAR_CIRCLE_5_TUBE_2_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_2_CLUT, FX_STELLAR_CIRCLE_5_TUBE_2_U, FX_STELLAR_CIRCLE_5_TUBE_2_V, t >> 6,
+                          work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST, 0x80, BTLFX_ABR_ADD, 1);
             scale.vx = scale.vz = t;
             scale.vy = 0x1000 - ex->math_cos(t >> 2);
             pos.vx = work->pos10.vx;
@@ -232,27 +232,27 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             growRgb = (t >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model20, growRgb, growRgb, growRgb);
-            if (frame >= 12) {
-                work->state0 = 1;
+            if (frame >= FX_STELLAR_CIRCLE_5_OPEN_FRAMES) {
+                work->state0 = FX_STELLAR_CIRCLE_5_STATE_WIDEN;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 12;
+        case FX_STELLAR_CIRCLE_5_STATE_WIDEN:
+            t = (frame << 12) / FX_STELLAR_CIRCLE_5_WIDEN_FRAMES;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t + 0x1000;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->frame4 * 40, 300,
-                          0xC8, 1, 0);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8, FX_STELLAR_CIRCLE_5_TUBE_END_RADIUS, 0x80, FX_STELLAR_CIRCLE_5_TUBE_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_CLUT, FX_STELLAR_CIRCLE_5_TUBE_U, FX_STELLAR_CIRCLE_5_TUBE_V, (t >> 5) + 0x40, work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST,
+                          0xC8, BTLFX_ABR_ADD, 0);
             scale.vx = scale.vy = 0x2000;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
-                          work->frame4 * 40, 300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x1C8 - (t >> 5), FX_STELLAR_CIRCLE_5_TUBE_2_END_RADIUS, 0x80, FX_STELLAR_CIRCLE_5_TUBE_2_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_2_CLUT, FX_STELLAR_CIRCLE_5_TUBE_2_U, FX_STELLAR_CIRCLE_5_TUBE_2_V, (t >> 5) + 0x40,
+                          work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST, 0x80, BTLFX_ABR_ADD, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
             pos.vz = work->pos10.vz;
             scale.vy = scale.vx = scale.vz = 0x1000;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
-            if (frame >= 12) {
-                work->state0 = 2;
+            if (frame >= FX_STELLAR_CIRCLE_5_WIDEN_FRAMES) {
+                work->state0 = FX_STELLAR_CIRCLE_5_STATE_SWELL;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_STELLAR_CIRCLE_5_SMOKE), (s32)&work->pos10);
                 if (emitter != NULL) {
@@ -260,33 +260,33 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 2:
+        case FX_STELLAR_CIRCLE_5_STATE_SWELL:
             t = frame << 7;
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
             spread = (t >> 5) + 0xC0;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, spread,
-                          work->frame4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), FX_STELLAR_CIRCLE_5_TUBE_END_RADIUS, 0x80, FX_STELLAR_CIRCLE_5_TUBE_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_CLUT, FX_STELLAR_CIRCLE_5_TUBE_U, FX_STELLAR_CIRCLE_5_TUBE_V, spread,
+                          work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST, (t >> 5) + 0xA0, BTLFX_ABR_ADD, 0);
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, spread, work->frame4 * 40,
-                          300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, FX_STELLAR_CIRCLE_5_TUBE_2_END_RADIUS, 0x80, FX_STELLAR_CIRCLE_5_TUBE_2_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_2_CLUT, FX_STELLAR_CIRCLE_5_TUBE_2_U, FX_STELLAR_CIRCLE_5_TUBE_2_V, spread, work->frame4 * 40,
+                          FX_STELLAR_CIRCLE_5_CYL_TWIST, 0x80, BTLFX_ABR_ADD, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
             pos.vz = work->pos10.vz;
             scale.vy = scale.vx = scale.vz = 0x1000;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
-            if (frame >= 0x20) {
-                work->state0 = 3;
+            if (frame >= FX_STELLAR_CIRCLE_5_SWELL_FRAMES) {
+                work->state0 = FX_STELLAR_CIRCLE_5_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 3:
+        case FX_STELLAR_CIRCLE_5_STATE_FADE:
             scale.vx = scale.vy = scale.vz = 0x2800;
             t = frame << 8;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
-                          work->frame4 * 40, 300, 0x120, 1, 0);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x88, FX_STELLAR_CIRCLE_5_TUBE_END_RADIUS, ex->math_cos(t >> 2) >> 5, FX_STELLAR_CIRCLE_5_TUBE_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_CLUT, FX_STELLAR_CIRCLE_5_TUBE_U, FX_STELLAR_CIRCLE_5_TUBE_V, 0x140,
+                          work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST, 0x120, BTLFX_ABR_ADD, 0);
             scale.vx = scale.vy = scale.vz = 0x2800;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
-                          work->frame4 * 40, 300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, FX_STELLAR_CIRCLE_5_TUBE_2_END_RADIUS, ex->math_cos(t >> 2) >> 5, FX_STELLAR_CIRCLE_5_TUBE_2_TPAGE, FX_STELLAR_CIRCLE_5_TUBE_2_CLUT, FX_STELLAR_CIRCLE_5_TUBE_2_U, FX_STELLAR_CIRCLE_5_TUBE_2_V, 0x140,
+                          work->frame4 * 40, FX_STELLAR_CIRCLE_5_CYL_TWIST, 0x80, BTLFX_ABR_ADD, 1);
             scale.vx = scale.vz = 0x1000;
             scale.vy = ex->math_cos(t >> 2);
             pos.vx = work->pos10.vx;
@@ -295,16 +295,16 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             fadeRgb = ((0x1000 - t) >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model20, fadeRgb, fadeRgb, fadeRgb);
-            if (frame >= 0x10) {
+            if (frame >= FX_STELLAR_CIRCLE_5_FADE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
             break;
         }
         work->rot18.vz -= work->frame4 * 2 + 0x10;
-        ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
-        ex->btlfx_drawScrollMove(10000 - work->frame4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-        ex->btlfx_drawScrollMove(work->frame4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, FX_STELLAR_CIRCLE_5_TUBE_VRAM_X, FX_STELLAR_CIRCLE_5_TUBE_VRAM_Y, FX_STELLAR_CIRCLE_5_TUBE_VRAM_W, FX_STELLAR_CIRCLE_5_TUBE_VRAM_H, FX_STELLAR_CIRCLE_5_TUBE_SRC_X, FX_STELLAR_CIRCLE_5_TUBE_SRC_Y);
+        ex->btlfx_drawScrollMove(10000 - work->frame4 * 6, FX_STELLAR_CIRCLE_5_TUBE_2_VRAM_X, FX_STELLAR_CIRCLE_5_TUBE_2_VRAM_Y, FX_STELLAR_CIRCLE_5_TUBE_2_VRAM_W, FX_STELLAR_CIRCLE_5_TUBE_2_VRAM_H, FX_STELLAR_CIRCLE_5_TUBE_2_SRC_X, FX_STELLAR_CIRCLE_5_TUBE_2_SRC_Y);
+        ex->btlfx_drawScrollMove(work->frame4 * 8, FX_STELLAR_CIRCLE_5_DOME_VRAM_X, FX_STELLAR_CIRCLE_5_DOME_VRAM_Y, FX_STELLAR_CIRCLE_5_DOME_VRAM_W, FX_STELLAR_CIRCLE_5_DOME_VRAM_H, FX_STELLAR_CIRCLE_5_DOME_SRC_X, FX_STELLAR_CIRCLE_5_DOME_SRC_Y);
         work->frame4++;
     }
     return 0;

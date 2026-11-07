@@ -403,8 +403,8 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0xE3) {
             tint = 0x40 - ((frame - 0xE3) << 6) / 16;
         }
-        ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, tint, tint, tint);
-        ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->color15C, work->color15D, work->color15E);
+        ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, tint, tint, tint);
+        ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, work->color15C, work->color15D, work->color15E);
     }
     if (frame >= 0 && frame < 0x2C) {
         work->pos68.vx = work->pos28.vx;
@@ -412,7 +412,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos68.vz = work->pos28.vz;
         fxm_vecPathGet(&fx_114_vecPath, frame + 0x10, (VECTOR *)&work->scale78);
         ex->Hi_DrawEffModel(&work->rot60, (VECTOR *)&work->pos68, (s32)&work->scale78, work->model178);
-        ex->Hi_ModifyEffModelAbr(work->model178, 1);
+        ex->Hi_ModifyEffModelAbr(work->model178, BTLFX_ABR_ADD);
         work->pos134.vx = work->pos68.vx;
         work->pos134.vy = work->pos68.vy;
         work->pos134.vz = work->pos68.vz;
@@ -425,7 +425,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= 0x28 && frame < 0x2E) {
         fxm_vecTrackGet(&fx_114_vecTrack3, frame, (VECTOR *)&work->scaleA0);
         ex->Hi_DrawEffModel(&work->rot88, (VECTOR *)&work->pos90, (s32)&work->scaleA0, work->model17A);
-        ex->Hi_ModifyEffModelAbr(work->model17A, 1);
+        ex->Hi_ModifyEffModelAbr(work->model17A, BTLFX_ABR_ADD);
         if (work->timer172 >= 0) {
             work->colorB0 = fxm_lerpRatio(0, -0xFF, 6 - work->timer172, 6);
             ex->Hi_ModifyEffModelRGB(work->model17A, work->colorB0, work->colorB0, work->colorB0);
@@ -437,7 +437,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->colorDC >= -0x7F) {
             fxm_vecTrackGet(&fx_114_vecTrack0, frame + 0x10, (VECTOR *)&work->scaleCC);
             ex->Hi_DrawEffModel(&work->rotB4, (VECTOR *)&work->posBC, (s32)&work->scaleCC, work->model17C);
-            ex->Hi_ModifyEffModelAbr(work->model17C, 1);
+            ex->Hi_ModifyEffModelAbr(work->model17C, BTLFX_ABR_ADD);
             if (work->timer174 >= 0) {
                 work->colorDC = fxm_lerpRatio(0, -0x80, 0xD - work->timer174, 0xD);
                 ex->Hi_ModifyEffModelRGB(work->model17C, work->colorDC, work->colorDC, work->colorDC);
@@ -449,8 +449,8 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_vecTrackGet(&fx_114_vecTrack2, frame + 0x10, (VECTOR *)&work->scale124);
             ex->Hi_DrawEffModel(&work->rotE0, (VECTOR *)&work->posE8, (s32)&work->scaleF8, work->model17E);
             ex->Hi_DrawEffModel(&work->rot10C, (VECTOR *)&work->pos114, (s32)&work->scale124, work->model180);
-            ex->Hi_ModifyEffModelAbr(work->model17E, 1);
-            ex->Hi_ModifyEffModelAbr(work->model180, 1);
+            ex->Hi_ModifyEffModelAbr(work->model17E, BTLFX_ABR_ADD);
+            ex->Hi_ModifyEffModelAbr(work->model180, BTLFX_ABR_ADD);
             if (work->timer176 >= 0) {
                 work->color108 = fxm_lerpRatio(0, -0x80, 0xD - work->timer176, 0xD);
                 ex->Hi_ModifyEffModelRGB(work->model17E, work->color108, work->color108, work->color108);
@@ -537,7 +537,7 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 1 && frame < 0xD) {
             fxm_vecTrackGet(&fx_114_vecTrack3, frame - 1, &work->scale20);
             ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model46);
-            ex->Hi_ModifyEffModelAbr(work->model46, 1);
+            ex->Hi_ModifyEffModelAbr(work->model46, BTLFX_ABR_ADD);
             if (work->timer44 >= 0) {
                 work->color30 = rgb = fxm_lerpRatio(0, -0xFF, 0xC - work->timer44, 0xC);
                 ex->Hi_ModifyEffModelRGB(work->model46, rgb, rgb, rgb);
@@ -639,7 +639,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0, buf = fx_114_op82Trails[0]; i < 13; i++) {
                 fxm_posPathInit(&fx_114_pathTrail.path0, (u16 *)fxm_offsetTableEntry(ex->btlfx_getFileData(entry->file, FX_IFRIT_TRAIL_PATHS), (u16)i));
                 fxm_buildPathTrail(&fx_114_pathTrail.path0, buf, 0x50, fx_114_pathTrail.start8, fx_114_pathTrail.countA, fx_114_pathTrail.fadeFrom10, fx_114_pathTrail.fadeTo12, 0);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_TRAIL), 0, NULL, 0, fx_114_pathTrail.scaleE, fx_114_pathTrail.fadeC, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_FIRE_TRAIL), 0, NULL, 0, fx_114_pathTrail.scaleE, fx_114_pathTrail.fadeC, BTLFX_ABR_ADD,
                                     buf, 0);
                 buf += 0x50;
             }
@@ -890,7 +890,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 4 && frame < 0x25) {
             fxm_vecTrackGet(&fx_114_vecTrack3, frame - 4, (VECTOR *)&work->scale88);
             ex->Hi_DrawEffModel(&work->rot70, (VECTOR *)&work->pos78, (s32)&work->scale88, work->model148);
-            ex->Hi_ModifyEffModelAbr(work->model148, 1);
+            ex->Hi_ModifyEffModelAbr(work->model148, BTLFX_ABR_ADD);
             if (work->timer10E >= 0) {
                 work->color98 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer10E, 0x10);
                 ex->Hi_ModifyEffModelRGB(work->model148, work->color98, work->color98, work->color98);
@@ -898,7 +898,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             fxm_vecTrackGet(&fx_114_vecTrack4, frame - 4, (VECTOR *)&work->scaleB4);
             ex->Hi_DrawEffModel(&work->rot9C, (VECTOR *)&work->posA4, (s32)&work->scaleB4, work->model14A);
-            ex->Hi_ModifyEffModelAbr(work->model14A, 1);
+            ex->Hi_ModifyEffModelAbr(work->model14A, BTLFX_ABR_ADD);
             if (work->timer110 >= 0 || work->timer112 >= 0) {
                 if (work->timer110 >= 0) {
                     work->colorC4 = fxm_lerpRatio(-0x80, 0, 3 - work->timer110, 3);
@@ -921,7 +921,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->posD4.vz += ringOfs.vz;
                 fxm_vecTrackGet(&fx_114_vecTrack5, frame - 4, (VECTOR *)&work->scaleE4);
                 ex->Hi_DrawEffModel(&work->rotCC, (VECTOR *)&work->posD4, (s32)&work->scaleE4, work->model14C);
-                ex->Hi_ModifyEffModelAbr(work->model14C, 1);
+                ex->Hi_ModifyEffModelAbr(work->model14C, BTLFX_ABR_ADD);
                 if (work->timer114 >= 0 || work->timer116 >= 0) {
                     if (work->timer114 >= 0) {
                         work->colorC8 = fxm_lerpRatio(-0x80, 0, 6 - work->timer114, 6);

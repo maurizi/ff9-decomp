@@ -67,10 +67,10 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vy = size;
             scale.vx = size;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
-            ex->Hi_ModifyEffModelAbr(work->model24, 1);
+            ex->Hi_ModifyEffModelAbr(work->model24, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model24, -0x56, -0x56, -0x56);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28[frame & 1]);
-            ex->Hi_ModifyEffModelAbr(work->model28[frame & 1], 0xFF);
+            ex->Hi_ModifyEffModelAbr(work->model28[frame & 1], BTLFX_ABR_OPAQUE);
             ex->Hi_ModifyEffModelRGB(work->model28[frame & 1], 0x40, 0x40, 0x40);
         }
         if (frame == 0x10) {

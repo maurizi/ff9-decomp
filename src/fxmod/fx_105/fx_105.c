@@ -610,7 +610,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale1A8[1] = 0x333;
             work->scale1A8[2] = 0x333;
             if (work->timer14 >= 0x12) {
-                ex->btlfx_drawScreenTint((u32 *)env->ot, 0xFF, 0, 0, 0);
+                ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_OPAQUE, 0, 0, 0);
             }
             if (work->timer14 == 0x11) {
                 ex->Hi_DrawEffModel(&work->rot190, (VECTOR *)work->pos198, (s32)work->scale1A8, work->model180);
