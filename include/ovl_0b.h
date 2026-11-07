@@ -1315,7 +1315,7 @@ extern s32 g_btlbgScrollCount;
                                  * Evidence: [code]; [runtime] R41b (one load per battle; instrument 192 keyed by Zidane's attack SE) */
 /* btl_getSceneData indexes: the encounter's camera scripts. Evidence: [code] */
 #define BTL_SCENE_CAM_INTRO 0 /* battle start (btl_cmd intro, btlcam_playScene) */
-#define BTL_SCENE_CAM_IDLE 1 /* the resting camera (btlcam_init, btlcam_endEffect) */
+#define BTL_SCENE_CAM_IDLE 1 /* the resting camera, back after an effect camera (btlcam_endEffect, btlcam_step) */
 #define BTL_SCENE_CAM_VICTORY 2 /* victory pose (btl_update, scene with BTL_SCENE_VICTORY_BIT) */
 #define BTL_SCENE_CAM_CAST_PARTY 3 /* a party member's spell aimed at the party, outside trance (btlfx command camera) */
 #define BTL_SCENE_CAM_CAST_ENEMY 4 /* the same aimed at enemies */
