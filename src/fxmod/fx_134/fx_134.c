@@ -357,11 +357,11 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
         it->emit20 = NULL;
     } else {
         switch (it->kind0) {
-        case 0:
-        case 1:
+        case FX_DOOMSDAY_ORB_KIND_ORB:
+        case FX_DOOMSDAY_ORB_KIND_ORB_2:
             trailAlpha = 0;
             switch (it->phase2) {
-            case 0:
+            case FX_DOOMSDAY_ORB_PHASE_FLY:
                 it->rot14.vx += it->spin1C;
                 it->rot14.vy += it->spin1E;
                 old.vx = it->posC.vx;
@@ -379,13 +379,13 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
                 toCenter.vx = parent->pos8.vx - it->posC.vx;
                 toCenter.vy = parent->pos8.vy - it->posC.vy;
                 toCenter.vz = parent->pos8.vz - it->posC.vz;
-                if (frame < 8) {
+                if (frame < FX_DOOMSDAY_ORB_TRAIL_IN_FRAMES) {
                     trailAlpha = (frame << 12) >> 3;
                 } else {
                     trailAlpha = 0x1000;
                 }
                 if (toCenter.vx * toCenter.vx + toCenter.vy * toCenter.vy + toCenter.vz * toCenter.vz < fx_134_catchRadius * fx_134_catchRadius * fx_134_catchRadius) {
-                    it->phase2 = 1;
+                    it->phase2 = FX_DOOMSDAY_ORB_PHASE_CAUGHT;
                     ((s16 *)it)[-1] = -1;
                     it->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_EMBERS), (s32)&it->posC);
                     if (emitter != NULL) {
@@ -393,7 +393,7 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
                     }
                 }
                 break;
-            case 1:
+            case FX_DOOMSDAY_ORB_PHASE_CAUGHT:
                 scale.vx = scale.vy = scale.vz = fx_134_orbScales[it->vel4.pad];
                 pos.vx = it->posC.vx;
                 pos.vy = it->posC.vy;
@@ -407,19 +407,19 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
                     it->emit20->rot.vy = ang.vy;
                     it->emit20->rot.vz = ang.vz;
                 }
-                if (frame < 4) {
+                if (frame < FX_DOOMSDAY_ORB_TRAIL_OUT_FRAMES) {
                     trailAlpha = 0x1000 - ((frame << 12) >> 2);
                 }
                 it->vel4.vx = it->vel4.vx * 2 / 3;
                 it->vel4.vy = it->vel4.vy * 2 / 3;
                 it->vel4.vz = it->vel4.vz * 2 / 3;
                 env->otZ = 0x1F4;
-                if (frame < 8) {
+                if (frame < FX_DOOMSDAY_ORB_RINGS_FRAMES) {
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_FIRE_RING), &it->posC, NULL, 0x3000, frame, BTLFX_ABR_ADD,
                                       ex->math_cos(frame << 7));
                 }
                 env->otZ = 0x20;
-                if (frame < 8) {
+                if (frame < FX_DOOMSDAY_ORB_RINGS_FRAMES) {
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_WHITE_RING), &it->posC, &ang, 0x2000, frame, BTLFX_ABR_ADD,
                                       ex->math_cos(frame << 7));
                 }
@@ -435,11 +435,12 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
                 trailPos.vx -= it->vel4.vx;
                 trailPos.vy -= it->vel4.vy;
                 trailPos.vz -= it->vel4.vz;
-                for (i = 0; i < 12; i++) {
+                for (i = 0; i < FX_DOOMSDAY_ORB_TRAIL_SPRITES; i++) {
                     trailPos.vx -= it->vel4.vx;
                     trailPos.vy -= it->vel4.vy;
                     trailPos.vz -= it->vel4.vz;
-                    fxm_drawSprite3D(&trailPos, NULL, 0x600, trailAlpha, 0x1A, 0x3D06, (i & 3) << 6, (i >> 2) << 6, 0x40, 0x40, 1);
+                    fxm_drawSprite3D(&trailPos, NULL, 0x600, trailAlpha, FX_DOOMSDAY_SPRITE_TPAGE, FX_DOOMSDAY_ORB_TRAIL_CLUT, (i & 3) << 6, (i >> 2) << 6,
+                                     FX_DOOMSDAY_SPRITE_CELL, FX_DOOMSDAY_SPRITE_CELL, BTLFX_ABR_ADD);
                 }
                 env->otZ = 0;
             }
@@ -477,7 +478,7 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
                 return 1;
             }
             break;
-        case 4:
+        case FX_DOOMSDAY_ORB_KIND_DRIFT:
             it->rot14.vx += it->spin1C;
             it->rot14.vy += it->spin1E;
             it->posC.vx += it->vel4.vx;
@@ -625,7 +626,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 SVECTOR emitRot;
 
                 t = (frame << 12) / FX_DOOMSDAY_SPACE_FRAMES;
-                if (frame < 0x10) {
+                if (frame < FX_DOOMSDAY_SPACE_BOB_FRAMES) {
                     BTLFX_COPY_SVEC(&work->pos18, &fx_134_origin);
                     bobAng = frame << 6;
                     work->pos18.vy -= ex->math_sin(bobAng) * 3;
@@ -644,10 +645,10 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit7C->rot.vy = emitRot.vy;
                     work->emit7C->rot.vz = emitRot.vz;
                 }
-                if (frame < 8) {
+                if (frame < FX_DOOMSDAY_SPACE_LAYERS_FRAME) {
                     spriteAlpha = 0;
-                } else if (frame < 0xC) {
-                    spriteAlpha = (frame - 8) << 10;
+                } else if (frame < FX_DOOMSDAY_SPACE_LAYERS_FRAME + FX_DOOMSDAY_SPACE_LAYERS_FADE_FRAMES) {
+                    spriteAlpha = (frame - FX_DOOMSDAY_SPACE_LAYERS_FRAME) << 10;
                 } else {
                     spriteAlpha = 0x1000;
                 }
@@ -709,7 +710,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BACKDROP), work->frame4);
                 ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), (t >> 6) + 0xA0, (t >> 9) + 0x78,
                                   0, 1, -1);
-                fxm_drawMirrorSprite(0xFFD, (t >> 5) + 0x78, (t >> 8) + 0xA9, 0x100, 0x40, 0x80, 0x98, 0x3DC0, 0, 0xC0, 0xFF);
+                fxm_drawMirrorSprite(0xFFD, (t >> 5) + 0x78, (t >> 8) + 0xA9, FX_DOOMSDAY_MIRROR_W, FX_DOOMSDAY_MIRROR_H, 0x80, FX_DOOMSDAY_MIRROR_TPAGE,
+                                     FX_DOOMSDAY_MIRROR_CLUT, FX_DOOMSDAY_MIRROR_U, FX_DOOMSDAY_MIRROR_V, BTLFX_ABR_OPAQUE);
                 ex->btlfx_drawRippleGrid((s32)(env->ot + 8), (t >> 8) + 0x78, 1, 2, 0x78, 1, fx_134_rippleColors0, 0, 0, 0, 0);
                 gridBright = 0x93;
                 gridY = 0;
@@ -720,7 +722,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 spawnRadius = (frame << 7) + 0x2000;
                 orb = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (orb != NULL) {
-                    orbSize = frame & 3;
+                    orbSize = frame & (FX_DOOMSDAY_ORB_SIZES - 1);
                     spawnAng = frame * 0x140 + (orbSize << 5) - 0x20;
                     spawnAng = spawnAng % 3072 + 0x600;
                     orbSpeed = fx_134_orbSpeeds[orbSize] + 0x300;
@@ -795,12 +797,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot.vx = -0x400;
                 rot.vy = 0;
                 rot.vz = frame << 5;
-                for (ring2 = 0; ring2 < 4; ring2++) {
+                for (ring2 = 0; ring2 < FX_DOOMSDAY_ARCH_COLUMN_PIECES; ring2++) {
                     scale.vx = scale.vy = (ringScale * ((ex->math_sin((ring2 << 11) / 3) >> 1) + 0x800)) >> 12;
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->model70);
                     ex->Hi_ModifyEffModelRGB(work->model70, ringBright, ringBright, ringBright);
                     rot.vz += 0x400;
-                    pos.vy -= 0x800;
+                    pos.vy -= FX_DOOMSDAY_ARCH_COLUMN_STEP;
                 }
                 if (frame >= FX_DOOMSDAY_ARCH_FRAMES) {
                     work->state0 = FX_DOOMSDAY_STATE_TUNNEL;
@@ -865,7 +867,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = frame << 7;
-            for (ring3 = 0; ring3 < 4; ring3++) {
+            for (ring3 = 0; ring3 < FX_DOOMSDAY_TUNNEL_ARCH_RINGS; ring3++) {
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->model70);
                 ex->Hi_ModifyEffModelRGB(work->model70, (ex->math_sin(pulseAng3) >> 5) - 0x80, (ex->math_sin(pulseAng3) >> 5) - 0x80,
                                          (ex->math_sin(pulseAng3) >> 5) - 0x80);
@@ -884,13 +886,13 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot2.vx = -0x400;
             rot2.vy = 0;
             rot2.vz = 0xC0 - (frame << 6);
-            for (; column3 < 4; column3++) {
+            for (; column3 < FX_DOOMSDAY_ARCH_COLUMN_PIECES; column3++) {
                 scale2.vx = scale2.vy = ((columnSin * 3 / 2 + 0x1500) * ((ex->math_sin((column3 << 10) / 3) >> 1) + 0x800)) >> 12;
                 ex->Hi_DrawEffModel(&rot2, (VECTOR *)&pos2, (s32)&scale2, work->model70);
                 ex->Hi_ModifyEffModelRGB(work->model70, (ex->math_cos(columnAng) >> 5) - 0x80, (ex->math_cos(columnAng) >> 5) - 0x80,
                                          (ex->math_cos(columnAng) >> 5) - 0x80);
                 rot2.vz += 0x400;
-                pos2.vy -= 0x800;
+                pos2.vy -= FX_DOOMSDAY_ARCH_COLUMN_STEP;
             }
             ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_NEBULA), 0x120, 0x58, 0, 1, -1);
             ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_STARFIELD), 0x78, 0xA0, 0, 1, -1);
@@ -921,8 +923,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             SVECTOR rot3;
 
             t = (frame << 12) / FX_DOOMSDAY_CONE_FRAMES;
-            if (frame > 0x10) {
-                gridAng = ((frame - 0x10) << 10) / 24;
+            if (frame > FX_DOOMSDAY_CONE_GRID_PULSE_FRAME) {
+                gridAng = ((frame - FX_DOOMSDAY_CONE_GRID_PULSE_FRAME) << 10) / (FX_DOOMSDAY_CONE_FRAMES - FX_DOOMSDAY_CONE_GRID_PULSE_FRAME);
                 gridBright = (ex->math_sin(gridAng) >> 6) + 0x8D;
                 gridScale = gridAng + 0x10;
             } else {
@@ -964,9 +966,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                      (((ex->math_sin(glowAng) >> 1) + 0x800) >> 5) - 0x80);
             gridX = 0;
             work->pos24.vy += 0xB86;
-            if (frame > 0x1C) {
-                flareFrame = frame - 0x1C;
-                flareT = (flareFrame << 12) / 12;
+            if (frame > FX_DOOMSDAY_CONE_FLARE_FRAME) {
+                flareFrame = frame - FX_DOOMSDAY_CONE_FLARE_FRAME;
+                flareT = (flareFrame << 12) / (FX_DOOMSDAY_CONE_FRAMES - FX_DOOMSDAY_CONE_FLARE_FRAME);
                 pos.vx = work->pos24.vx;
                 pos.vy = work->pos24.vy;
                 pos.vz = work->pos24.vz;
@@ -989,13 +991,14 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot3.vy = 0;
             rot3.vx = 0;
             rot3.vz = frame << 5;
-            for (spark = 0; spark < 0x10; spark++) {
+            for (spark = 0; spark < FX_DOOMSDAY_CONE_SPARKS; spark++) {
                 pos3.vy -= 0x19F;
                 ex->btlfx_rand();
-                fxm_drawSprite3D(&pos3, &rot3, 0x600, sparkAlpha, 0x1A, 0x3D02, (spark & 3) << 6, (spark >> 2) << 6, 0x40, 0x40, 1);
+                fxm_drawSprite3D(&pos3, &rot3, 0x600, sparkAlpha, FX_DOOMSDAY_SPRITE_TPAGE, FX_DOOMSDAY_CONE_SPARK_CLUT, (spark & 3) << 6, (spark >> 2) << 6,
+                                 FX_DOOMSDAY_SPRITE_CELL, FX_DOOMSDAY_SPRITE_CELL, BTLFX_ABR_ADD);
             }
             env->otZ = 0;
-            cycle = frame - (frame / 5) * 5;
+            cycle = frame - (frame / FX_DOOMSDAY_RISER_PERIOD) * FX_DOOMSDAY_RISER_PERIOD;
             if (cycle == FX_DOOMSDAY_ORB_KIND_RISER) {
                 riser = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (riser != NULL) {
@@ -1015,9 +1018,10 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_BLUE_PLANET), 0xDC - t / 55, 0x78, 0, 1, -1);
             ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOMSDAY_RED_PLANET), 0x28 - scrollX, 0x28, 0, 1, -1);
             work->scroll58 += 4 + ((t * 10) >> 12);
-            fxm_drawTiledStrip(0, work->scroll58 % 320, 0xA0 - (t >> 8), 0x80, 0x80, 0x80, 0x9C, 0x3E00, 0x80, 0, 1, 0);
-            fxm_drawTiledStrip(0xFFF, -((work->scroll58 >> 1) % 160), (t >> 9) + 0x8C, 0x80, 0x80, 0x80, 0x9C,
-                          0x3E00, 0x80, 0, 0, 1);
+            fxm_drawTiledStrip(0, work->scroll58 % SCREEN_W, 0xA0 - (t >> 8), FX_DOOMSDAY_SMOKE_SIZE, FX_DOOMSDAY_SMOKE_SIZE, 0x80, FX_DOOMSDAY_SMOKE_TPAGE,
+                          FX_DOOMSDAY_SMOKE_CLUT, FX_DOOMSDAY_SMOKE_U, 0, BTLFX_ABR_ADD, 0);
+            fxm_drawTiledStrip(0xFFF, -((work->scroll58 >> 1) % (SCREEN_W / 2)), (t >> 9) + 0x8C, FX_DOOMSDAY_SMOKE_SIZE, FX_DOOMSDAY_SMOKE_SIZE, 0x80, FX_DOOMSDAY_SMOKE_TPAGE,
+                          FX_DOOMSDAY_SMOKE_CLUT, FX_DOOMSDAY_SMOKE_U, 0, BTLFX_ABR_HALF, 1);
             if (frame >= FX_DOOMSDAY_CONE_FRAMES) {
                 work->state0 = FX_DOOMSDAY_STATE_RUSH;
                 entry->frame = -1;
@@ -1093,7 +1097,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot.vx = 0x400;
                 rot.vy = 0;
                 rot.vz = frame << 7;
-                for (ring5 = 0; ring5 < 3; ring5++) {
+                for (ring5 = 0; ring5 < FX_DOOMSDAY_RUSH_ARCH_RINGS; ring5++) {
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->model70);
                     ex->Hi_ModifyEffModelRGB(work->model70, (ex->math_sin(pulseAng5) >> 5) - 0x80, (ex->math_sin(pulseAng5) >> 5) - 0x80,
                                              (ex->math_sin(pulseAng5) >> 5) - 0x80);
@@ -1118,7 +1122,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot2.vy = 0;
                 bulgeAng = t >> 2;
                 rot2.vz = ex->math_sin(bulgeAng) >> 3;
-                fxm_drawBulgeGrid24(&work->pos8, &rot2, (ex->math_sin(bulgeAng) >> 3) + 0x1000, 0x40, 0x17, 0x3D00, 0, 0x80, bulgeAng, 1);
+                fxm_drawBulgeGrid24(&work->pos8, &rot2, (ex->math_sin(bulgeAng) >> 3) + 0x1000, 0x40, FX_DOOMSDAY_BULGE_TPAGE, FX_DOOMSDAY_BULGE_CLUT,
+                                    FX_DOOMSDAY_BULGE_U, FX_DOOMSDAY_BULGE_V, bulgeAng, BTLFX_ABR_ADD);
                 if (frame >= FX_DOOMSDAY_RUSH_FRAMES) {
                     work->state0 = FX_DOOMSDAY_STATE_GATHER;
                     entry->frame = -1;
@@ -1237,7 +1242,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 from.vz = work->pos24.vz;
                 from.vy += 0x1838;
                 from.vz += 0xC1C;
-                for (boltNum6 = 0; boltNum6 < 2; boltNum6++) {
+                for (boltNum6 = 0; boltNum6 < FX_DOOMSDAY_GATHER_BOLTS; boltNum6++) {
                     boltAng6 = ex->btlfx_rand();
                     boltFade6 = ex->btlfx_randCentered(0x400) + 0xC00;
                     ((s32 *)&to)[0] = work->pos24.vx;

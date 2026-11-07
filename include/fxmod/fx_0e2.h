@@ -60,6 +60,118 @@
 #define FX_FENRIR_HEAD_TRAIL_STRIDE        0x50 /* this many bytes */
 #define FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_SLOTS  0xC  /* op84: FX_FENRIR_GREEN_WIND_TRAIL's trail buffer per unit (fx_0e2_op84Trails): slots of */
 #define FX_FENRIR_GREEN_WIND_TRAIL_TRAIL_STRIDE 0x30 /* this many bytes */
+/* deep pass: the ops' timelines (fx_0d2's names where fx_0e2's op does the same) */
+/* op80 (the summon's timeline, camera channels 1..4, 9, 10) */
+#define FX_FENRIR_CAM_SHOT_2_FRAME  0x2D  /* op80: the camera tracks' second keys start (the first at frame 0), */
+#define FX_FENRIR_CAM_SHOT_3_FRAME  0x41  /* the third, */
+#define FX_FENRIR_CAM_SHOT_4_FRAME  0x96  /* the fifth (tracks' entry 4), */
+#define FX_FENRIR_CAM_SHOT_5_FRAME  0xEF  /* the sixth, */
+#define FX_FENRIR_CAM_SHOT_6_FRAME  0x10E /* the seventh (channels 1, 2); the summon / ribbons stop following the camera points here */
+#define FX_FENRIR_SUMMON_FRAME      0x2E  /* op80: summon motion 0, RED_MOON_GLOW starts; the summon model is drawn from here */
+#define FX_FENRIR_SUMMON_FRAMES     0x83  /* for this many frames */
+#define FX_FENRIR_SUMMON_DIM_FRAMES 0x14  /* darkened for the first this many, */
+#define FX_FENRIR_SUMMON_ADD_FRAME  0x69  /* additive from this many frames in */
+#define FX_FENRIR_SPIKES_FRAMES     0x14  /* ROCK_SHARD and ROCK_SPIKES drawn from SUMMON_FRAME this long, then ROCK_SHARD_2 */
+#define FX_FENRIR_ROCKS_FRAMES      0x69  /* until this many frames in (not while the drops fall) */
+#define FX_FENRIR_RED_MOON_FRAME    0x41  /* op80: RED_MOON starts (RED_MOON_GLOW stops the frame after) */
+#define FX_FENRIR_MOTION_1_FRAME    0x97  /* op80: summon motion 1; the rock models are freed, the drops fall until DROPS_END_FRAME */
+#define FX_FENRIR_RED_MOON_STOP_FRAME 0x9B /* op80: RED_MOON stops */
+#define FX_FENRIR_MORPH_FRAME       0xA1  /* op80: the summon fades out, the wind models (WIND_BEAST -> WIND_SPINDLE, WIND_SERPENT
+                                           * -> WIND_STREAK morphs) fade in and are drawn until MORPH_END_FRAME (then freed) */
+#define FX_FENRIR_MORPH_END_FRAME   0xBD
+#define FX_FENRIR_SUMMON_FADE_FRAMES 0x10 /* fadeTimer140: the summon darkens to nothing */
+#define FX_FENRIR_WIND_FADE_IN_FRAMES 0x10 /* fadeInTimer144: the wind models brighten */
+#define FX_FENRIR_BEAST_MORPH_FRAME 8     /* MORPH_FRAME + this: WIND_BEAST starts morphing into WIND_SPINDLE, */
+#define FX_FENRIR_SERPENT_MORPH_FRAME 0xC /* + this: WIND_SERPENT into WIND_STREAK, */
+#define FX_FENRIR_WIND_MORPH_FRAMES 12    /* each over this many frames */
+#define FX_FENRIR_WIND_TRAIL_FRAME  0xA3  /* op80: FX_FENRIR_WIND_TRAIL starts (follows the ribbon origin) */
+#define FX_FENRIR_STRIPS_FRAME      0xB1  /* op80: the wind models fade out; the five GREEN_WIND_STRIPs blend along the strip tracks */
+#define FX_FENRIR_WIND_FADE_OUT_FRAMES 0xC /* fadeOutTimer148: the wind models darken */
+#define FX_FENRIR_RING_BURST_FRAME  0xB3  /* op80: GREEN_RING_BURST(_2) start at the first head */
+#define FX_FENRIR_HEAD_EMIT_FRAME   0xB5  /* op80: the heads' emitters (fx_0e2_emitBlocks1) start, stopped at STRIPS_PATH_FRAME */
+#define FX_FENRIR_STRIPS_HOLD_FRAME 0xCD  /* op80: the heads follow STRIP_PATHS */
+#define FX_FENRIR_STRIPS_PATH_FRAME 0xF0  /* op80: the strips grow along STRIP_PATHS_2 with WIND_SHELL / WIND_VORTEX heads; drops freed */
+#define FX_FENRIR_HEAD_TRAILS_FRAME 0xF8  /* op80: the heads' trail emitters (fx_0e2_emitBlocks0) start */
+#define FX_FENRIR_STRIPS_END_FRAME  0x10F
+#define FX_FENRIR_FRAMES            0x14A /* op80's length (the op ends); also the wind texture scroll's start offset (x speed) */
+#define FX_FENRIR_STRIP_KEYS_FRAME  8     /* STRIPS_FRAME + this: the strips blend between successive track keys, */
+#define FX_FENRIR_STRIP_KEYS        4     /* fx_0e2_stripTrackBlocks: track keys (the last one held) */
+#define FX_FENRIR_STRIP_FADE_IN_FRAMES 0x10 /* the strips fade in */
+#define FX_FENRIR_BALL_MORPH_FRAME  0xC   /* STRIPS_FRAME + this: the heads' WIND_BALL morphs into SPIKE_BURST, */
+#define FX_FENRIR_BALL_MORPH_FRAMES 8     /* over this many frames */
+#define FX_FENRIR_STRIP_PATH_POINTS 0x11  /* points of a strip along STRIP_PATHS / _2 (fx_0e2_stripPath0 / 1 countA) */
+#define FX_FENRIR_DROPS             3     /* fx_0e2_drops: falling pieces (fx_0e2_dropBlocks models, model150[11..13]), */
+#define FX_FENRIR_DROP_COPIES       2     /* two copies each, */
+#define FX_FENRIR_DROP_DEPTH        0x4E20 /* moving through this depth and wrapping */
+#define FX_FENRIR_SUMMON_MODELS     11    /* model150: WIND_BEAST .. WIND_STREAK, WIND_BALL, SPIKE_BURST, WIND_SHELL, WIND_VORTEX,
+                                           * ROCK_SHARD, ROCK_SPIKES, ROCK_SHARD_2, then the drops */
+/* op81 (the rock tower) */
+#define FX_FENRIR_TOWER_STAGES      3     /* fx_0e2_towerBlocks: the tower's models, model124[0..2], */
+#define FX_FENRIR_TOWER_PIECES      5     /* fx_0e2_pieceBlocks / fx_0e2_pieceTracks: pieces, model124[3..7], */
+#define FX_FENRIR_TOWER_BLOCKS      4     /* ROCK_SPIKE blocks at the camera points, model124[8..11] (block 0 unused) */
+#define FX_FENRIR_TOWER_X           (-0x18D) /* the tower (and the pieces' tracks) sit at this x, */
+#define FX_FENRIR_TOWER_Z           (-0x25E) /* z */
+#define FX_FENRIR_SMOKE_FRAME       3     /* op81: FX_FENRIR_SMOKE starts at the pieces, */
+#define FX_FENRIR_SMOKE_2_FRAME     16    /* again, */
+#define FX_FENRIR_SMOKE_3_FRAME     30    /* and at three points round the tower */
+#define FX_FENRIR_SMOKE_4_FRAME     35
+#define FX_FENRIR_SMOKE_5_FRAME     38
+#define FX_FENRIR_SMOKE_STOP_FRAME  46    /* op81: the smokes stop */
+#define FX_FENRIR_SMOKES            5     /* op81: smoke emitters (Fx0e2Work81.emit0) */
+#define FX_FENRIR_TOWER_FRAMES      0x2D  /* op81: the tower, pieces and blocks are drawn (sliced) from frame 1 this long */
+#define FX_FENRIR_TOWER_STAGE_2_FRAME 5   /* frame - 1 from which the tower's second model shows, */
+#define FX_FENRIR_TOWER_STAGE_3_FRAME 0x12 /* its third */
+#define FX_FENRIR_TOWER_OP_FRAMES   0x30  /* op81's length */
+#define FX_FENRIR_BG_VRAM_X         0x300 /* op81 frame 0: the background round the tower is rendered into this rect */
+#define FX_FENRIR_BG_VRAM_Y         0x180
+#define FX_FENRIR_BG_VRAM_W         0x80
+#define FX_FENRIR_BG_VRAM_H         0x80
+/* op82 (the whirlwind round the targets) */
+#define FX_FENRIR_WHIRL_Z           0x4B0 /* op82 / op83: the whirlwind's centre (0, 0, this) */
+#define FX_FENRIR_GLINTS_FRAME      1     /* op82: CYAN_GLINTS start (GREEN_RINGS_2 on frame 0) */
+#define FX_FENRIR_GREEN_RINGS_FRAME 6     /* op82: GREEN_RINGS start above the centre */
+#define FX_FENRIR_WIND_RING_FRAME   8     /* op82: WIND_RING / WIND_RING_2 drawn from here to WHIRL_FRAMES */
+#define FX_FENRIR_WHIRL_FADE_FRAME  0x1C  /* op82: the ribbons and rings fade out */
+#define FX_FENRIR_WHIRL_FADE_FRAMES 0x20  /* over this many frames */
+#define FX_FENRIR_WHIRL_FRAMES      60    /* op82: ribbons 0 / 1 and the rings are drawn until this frame */
+#define FX_FENRIR_SPIRAL_FRAMES     16    /* op82: ribbon 3 (five spiral copies) until this frame, ribbon 2 after it */
+#define FX_FENRIR_RIBBON_0_STRANDS  6     /* ribbon 0: strands (RIBBON_PATHS_A entries per key) */
+#define FX_FENRIR_RIBBON_1_STRANDS  3     /* ribbon 1: strands (RIBBON_PATHS_B) */
+#define FX_FENRIR_RIBBON_KEY_FRAMES 10   /* ribbons 0 / 1 blend to the next key's path set over this many frames (0x199 a frame), */
+#define FX_FENRIR_RIBBON_0_CYCLE    60    /* ribbon 0's six keys loop over this many frames, */
+#define FX_FENRIR_RIBBON_1_CYCLE    30    /* ribbon 1's three keys */
+#define FX_FENRIR_RIBBON_2_KEY_FRAMES 8   /* ribbon 2's: over this many frames, */
+#define FX_FENRIR_RIBBON_2_CYCLE    24    /* three keys */
+#define FX_FENRIR_SPIRAL_LENGTH     0x20  /* ribbons 2 / 3: edge points (ribbon 3 grows to it 2 a frame) */
+#define FX_FENRIR_CAM_KEY_SLOTS     64    /* fx_0e2_camTracks: camera key tracks (fxm_camChanAdd / fxm_camChanUpdate) */
+#define FX_FENRIR_CAM_KEY_TARGETS   3     /* camera slots a key track writes */
+#define FX_FENRIR_RIBBON_COPIES     5     /* ribbons 2 / 3: copies round the centre (0x333 apart) */
+#define FX_FENRIR_WHIRL_OP_FRAMES   0x78  /* op82's length; also the texture scrolls' start offset (x speed) */
+#define FX_FENRIR_RIBBON_TPAGE      0x97   /* fxm_drawEdgeQuads texture of ribbons 0, 2, 3: 8-bit page (0x1C0, 0x100), */
+#define FX_FENRIR_RIBBON_CLUT       0x3D80 /* CLUT (0, 0xF6), */
+#define FX_FENRIR_RIBBON_V0         0x80   /* v this .. */
+#define FX_FENRIR_RIBBON_V1         0xC0
+#define FX_FENRIR_RIBBON_1_TPAGE    0x9C   /* ribbon 1's: 8-bit page (0x300, 0x100), */
+#define FX_FENRIR_RIBBON_1_CLUT     0x3D40 /* CLUT (0, 0xF5), */
+#define FX_FENRIR_RIBBON_1_V1       0xBF   /* v RIBBON_V0 .. this */
+/* fxm_drawScrollMoveX scrolls the file's textures into the ribbons' rects (v 0x80 of their pages): op82 both, op80
+ * the first (WIND_SHELL / WIND_VORTEX heads) */
+#define FX_FENRIR_RIBBON_VRAM_X     0x1C0
+#define FX_FENRIR_RIBBON_VRAM_Y     0x180
+#define FX_FENRIR_RIBBON_VRAM_W     0x80
+#define FX_FENRIR_RIBBON_VRAM_H     0x40
+#define FX_FENRIR_RIBBON_SRC_X      0x1C0
+#define FX_FENRIR_RIBBON_SRC_Y      0x1C0
+#define FX_FENRIR_RIBBON_1_VRAM_X   0x300
+#define FX_FENRIR_RIBBON_1_SRC_Y    0x140 /* (y, w, h as RIBBON_VRAM_*, src x = VRAM_X) */
+/* op83 .. op85 (the targets) */
+#define FX_FENRIR_LIFT_FRAMES       0x40  /* op83: the targets circle the whirlwind (0x100 a frame) and rise until this frame, */
+#define FX_FENRIR_LIFT_SPEED        120   /* this much a frame */
+#define FX_FENRIR_LIFT_OP_FRAMES    0x46  /* op83's length */
+#define FX_FENRIR_DROP_HEIGHT       3000  /* op84: the units start this high above their home positions */
+#define FX_FENRIR_DROP_FRAMES       4     /* op84: and drop home in this many frames (GREEN_WIND_TRAIL and SAND_RINGS at each) */
+#define FX_FENRIR_LAND_FRAMES       0x28  /* op84: the task ends at this frame */
+#define FX_FENRIR_WHITE_FADE_FRAMES 0x10  /* op85: additive screen fade from white to nothing (the op ends) */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
@@ -108,24 +220,24 @@ void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLen
 void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 rotY);
 void fxm_drawEdgeQuads(s32 n, s32 bright, s32 tpage, s32 clut, u16 v0, u16 v1);
 typedef struct {
-    Pool6CEntry *emit0[5];
+    Pool6CEntry *emit0[FX_FENRIR_SMOKES];
     SVECTOR rot14; /* tower rotation */
     VECTOR pos1C; /* tower position */
     VECTOR scale2C; /* tower scale */
     SVECTOR rot3C; /* piece rotation */
     VECTOR pos44; /* piece position */
     VECTOR scale54; /* piece scale */
-    SVECTOR blockRot64[4]; /* block rotations */
-    VECTOR blockPos84[4]; /* block positions */
-    VECTOR blockScaleC4[4]; /* block scales */
+    SVECTOR blockRot64[FX_FENRIR_TOWER_BLOCKS]; /* block rotations */
+    VECTOR blockPos84[FX_FENRIR_TOWER_BLOCKS]; /* block positions */
+    VECTOR blockScaleC4[FX_FENRIR_TOWER_BLOCKS]; /* block scales */
     SVECTOR emitPos104[4]; /* effect positions */
-    u16 model124[12]; /* models: 3 tower stages, 5 pieces, 4 blocks */
+    u16 model124[FX_FENRIR_TOWER_STAGES + FX_FENRIR_TOWER_PIECES + FX_FENRIR_TOWER_BLOCKS]; /* models: 3 tower stages, 5 pieces, 4 blocks */
 } Fx0e2Work81; /* 0x13C */
 
-extern u16 fx_0e2_towerBlocks[3];
-extern u16 fx_0e2_pieceBlocks[5];
+extern u16 fx_0e2_towerBlocks[FX_FENRIR_TOWER_STAGES];
+extern u16 fx_0e2_pieceBlocks[FX_FENRIR_TOWER_PIECES];
 extern u32 fx_0e2_bgBuf[];
-extern SVECTOR fx_0e2_blockPos[4];
+extern SVECTOR fx_0e2_blockPos[FX_FENRIR_TOWER_BLOCKS];
 
 s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
@@ -145,7 +257,7 @@ typedef struct {
     Fx0e2Point *keys4;
 } Fx0e2Path;
 static void fxm_posPathInit(Fx0e2Path *path, u16 *data);
-extern Fx0e2Path fx_0e2_pieceTracks[5]; /* piece tracks */
+extern Fx0e2Path fx_0e2_pieceTracks[FX_FENRIR_TOWER_PIECES]; /* piece tracks */
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
 typedef struct {
@@ -239,9 +351,9 @@ typedef struct {
 
 static void fxm_rotPosPathInit(Fx0e2Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx0e2Path *path, s32 t, SVECTOR *out);
-extern Fx0e2Drop fx_0e2_drops[3];
-extern u16 fx_0e2_dropBlocks[3];
-extern u16 fx_0e2_stripTrackBlocks[4];
+extern Fx0e2Drop fx_0e2_drops[FX_FENRIR_DROPS];
+extern u16 fx_0e2_dropBlocks[FX_FENRIR_DROPS];
+extern u16 fx_0e2_stripTrackBlocks[FX_FENRIR_STRIP_KEYS];
 extern u16 fx_0e2_emitBlocks0[FX_FENRIR_HEADS];
 extern u16 fx_0e2_emitBlocks1[FX_FENRIR_HEADS];
 extern BtlTexInfo fx_0e2_texPages[];
@@ -252,8 +364,8 @@ extern Fx0e2Path fx_0e2_stripBlendPathB;
 extern s16 fx_0e2_stripBlendFade;
 extern Fx0e2Path80 fx_0e2_stripPath0;
 extern Fx0e2Path80 fx_0e2_stripPath1;
-extern Fx0e2Trail98 fx_0e2_strips[5];
-extern Fx0e2Tex1E0 fx_0e2_op80Trails0[5];
+extern Fx0e2Trail98 fx_0e2_strips[FX_FENRIR_HEADS];
+extern Fx0e2Tex1E0 fx_0e2_op80Trails0[FX_FENRIR_HEADS];
 extern u8 fx_0e2_op80Trails1[];
 
 typedef struct {
@@ -304,7 +416,7 @@ extern Fx0e2Ribbon fx_0e2_ribbon0;
 extern Fx0e2Ribbon fx_0e2_ribbon1;
 extern Fx0e2Ribbon fx_0e2_ribbon2;
 extern Fx0e2Ribbon1 fx_0e2_ribbon3;
-extern SVECTOR fx_0e2_stripHeads[5];
+extern SVECTOR fx_0e2_stripHeads[FX_FENRIR_HEADS];
 extern SVECTOR fx_0e2_emitPos0;
 extern SVECTOR fx_0e2_emitPos1;
 extern SVECTOR fx_0e2_emitPos2;
@@ -336,7 +448,7 @@ typedef struct {
     u16 stepC;
     u16 stepsE;
 } Fx0e2Track; /* 0x10 */
-extern Fx0e2Track fx_0e2_camTracks[];
+extern Fx0e2Track fx_0e2_camTracks[FX_FENRIR_CAM_KEY_SLOTS];
 #define FX_0E2_KEY_FREE (-1) /* left6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_0e2_camChanFrame[];
 static void fxm_camChanReset(void);

@@ -52,7 +52,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
     s32 i;
     s32 j;
-    s32 n = 11;
+    s32 n = FX_DEMI_SHOCK_STRAND_POINTS;
     s32 spread;
     s32 rise;
     s32 pitch;
@@ -60,43 +60,43 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x108;
+        *args = sizeof(Fx07aWork);
     } else if (mode == 1) {
         fx_07a_env = env;
-        ex->btlfx_initEffModels(fx_07a_effModels, 3);
-        for (i = 15; i >= 0; i--) {
+        ex->btlfx_initEffModels(fx_07a_effModels, FX_DEMI_SHOCK_MODEL_COUNT);
+        for (i = FX_DEMI_SHOCK_TIMERS - 1; i >= 0; i--) {
             work->timers0[i] = 0;
         }
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < FX_DEMI_SHOCK_STRANDS; i++) {
             fx_07a_strips[i].timer10C = -i;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, -1, 0x1000, 0x1000, BTLFX_ABR_ADD,
                                 (u8 *)&fx_07a_strips[i], 0);
         }
         work->pos94.vx = fx_07a_centerPos.vx = env->targets->centerX;
         work->pos94.vy = fx_07a_centerPos.vz = env->targets->centerZ;
-        work->pos94.vz = fx_07a_centerPos.vy = -0x500;
-        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_ENERGY_SHELL), 0x137,
-                                                         0xFFFF, 0, 0);
+        work->pos94.vz = fx_07a_centerPos.vy = -FX_DEMI_SHOCK_SPHERE_HEIGHT;
+        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_ENERGY_SHELL), FX_DEMI_SHOCK_SHELL_TPAGE,
+                                                         FX_DEMI_SHOCK_SHELL_CLUT, 0, 0);
         work->models40[0].rot4.vx = 0x800;
         work->models40[0].rot4.vy = 0;
         work->models40[0].rot4.vz = 0;
-        work->models40[0].scaleC.vx = 0x5C;
-        work->models40[0].scaleC.vy = 0x5C;
-        work->models40[0].scaleC.vz = 0x5C;
+        work->models40[0].scaleC.vx = FX_DEMI_SHOCK_SHELL_SCALE_0;
+        work->models40[0].scaleC.vy = FX_DEMI_SHOCK_SHELL_SCALE_0;
+        work->models40[0].scaleC.vz = FX_DEMI_SHOCK_SHELL_SCALE_0;
         work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BOWL));
         work->models40[1].rot4.vx = 0;
         work->models40[1].rot4.vy = 0;
         work->models40[1].rot4.vz = 0;
-        work->models40[1].scaleC.vx = 0x50;
-        work->models40[1].scaleC.vy = 0x50;
-        work->models40[1].scaleC.vz = 0x50;
+        work->models40[1].scaleC.vx = FX_DEMI_SHOCK_BOWL_SCALE_0;
+        work->models40[1].scaleC.vy = FX_DEMI_SHOCK_BOWL_SCALE_0;
+        work->models40[1].scaleC.vz = FX_DEMI_SHOCK_BOWL_SCALE_0;
         work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BOWL_2));
         work->models40[2].rot4.vx = 0;
         work->models40[2].rot4.vy = 0;
         work->models40[2].rot4.vz = 0;
-        work->models40[2].scaleC.vx = 0x66;
-        work->models40[2].scaleC.vy = 0x66;
-        work->models40[2].scaleC.vz = 0x66;
+        work->models40[2].scaleC.vx = FX_DEMI_SHOCK_BOWL_2_SCALE_0;
+        work->models40[2].scaleC.vy = FX_DEMI_SHOCK_BOWL_2_SCALE_0;
+        work->models40[2].scaleC.vz = FX_DEMI_SHOCK_BOWL_2_SCALE_0;
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->homePosA4[i]);
             work->delayE4[i] = ex->btlfx_rand() & 7;
@@ -115,119 +115,120 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&fx_07a_bonePos);
         switch (frame) {
         case 0:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x17E, 0x70, 0x70, fx_07a_bgOt, fx_07a_centerPos.vx, fx_07a_centerPos.vz, 0x1208);
+            ex->btlfx_drawBgOffscreen(FX_DEMI_SHOCK_BG_VRAM_X, FX_DEMI_SHOCK_BG_VRAM_Y, FX_DEMI_SHOCK_BG_VRAM_W, FX_DEMI_SHOCK_BG_VRAM_H, fx_07a_bgOt, fx_07a_centerPos.vx, fx_07a_centerPos.vz, 0x1208);
             break;
-        case 1:
-            work->timers0[9] = 1;
-            work->timers0[1] = 1;
-            work->timers0[0] = 0x24;
-            work->timers0[2] = 8;
-            work->timers0[4] = 0x10;
+        case FX_DEMI_SHOCK_START_FRAME:
+            work->timers0[FX_DEMI_SHOCK_T_BACKDROP] = 1;
+            work->timers0[FX_DEMI_SHOCK_T_SPHERE] = 1;
+            work->timers0[FX_DEMI_SHOCK_T_STRANDS] = FX_DEMI_SHOCK_STRANDS_FRAMES;
+            work->timers0[FX_DEMI_SHOCK_T_FLY] = FX_DEMI_SHOCK_FLY_FRAMES;
+            work->timers0[FX_DEMI_SHOCK_T_GROW] = FX_DEMI_SHOCK_GROW_FRAMES;
             break;
-        case 8:
-            work->timers0[10] = 1;
-            work->timers0[11] = 8;
-            work->timers0[12] = 0x20;
-            work->timers0[6] = 0x1C;
+        case FX_DEMI_SHOCK_DISC_FRAME:
+            work->timers0[FX_DEMI_SHOCK_T_DISC] = 1;
+            work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN] = FX_DEMI_SHOCK_DISC_OPEN_FRAMES;
+            work->timers0[FX_DEMI_SHOCK_T_TWIST] = FX_DEMI_SHOCK_TWIST_FRAMES;
+            work->timers0[FX_DEMI_SHOCK_T_LIFT] = FX_DEMI_SHOCK_LIFT_FRAMES;
             break;
-        case 12:
+        case FX_DEMI_SHOCK_FLASH_RING_FRAME:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_FLASH_RING), (s32)&fx_07a_centerPos);
             break;
-        case 24:
-            work->timers0[13] = 0x10;
-            work->timers0[5] = 0x10;
+        case FX_DEMI_SHOCK_SHRINK_FRAME:
+            work->timers0[FX_DEMI_SHOCK_T_DISC_CLOSE] = FX_DEMI_SHOCK_DISC_CLOSE_FRAMES;
+            work->timers0[FX_DEMI_SHOCK_T_SHRINK] = FX_DEMI_SHOCK_GROW_FRAMES;
             break;
-        case 36:
-            work->timers0[7] = 4;
+        case FX_DEMI_SHOCK_WISP_FRAME:
+            work->timers0[FX_DEMI_SHOCK_T_DROP] = FX_DEMI_SHOCK_DROP_FRAMES;
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_WISP_BURST), (s32)&fx_07a_centerPos);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 40:
-            work->timers0[10] = 0;
-            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_OPAQUE, 0xFF, 0xFF, 0xFF);
-            work->timers0[1] = 0;
+        case FX_DEMI_SHOCK_FLASH_FRAME:
+            work->timers0[FX_DEMI_SHOCK_T_DISC] = 0;
+            ex->btlfx_drawScreenTint((u32 *)env->ot, BTLFX_ABR_OPAQUE, FX_DEMI_SHOCK_FLASH_RGB);
+            work->timers0[FX_DEMI_SHOCK_T_SPHERE] = 0;
             break;
         }
         pos.vx = fx_07a_centerPos.vx;
         pos.vy = 0;
         pos.vz = fx_07a_centerPos.vz;
-        if (work->timers0[11] != 0) {
-            work->timers0[11]--;
-            fx_07a_outerBandRadius = fxm_easeLerp(0, 8, work->timers0[11], 0, 0x4A00);
-            fx_07a_discRadius = fxm_easeLerp(0, 8, work->timers0[11], 0, 0x5A00);
-            fx_07a_innerBandRadius = fxm_easeLerp(0, 8, work->timers0[11], 0, 0xB20);
-            fx_07a_uvRadiusOut = fxm_easeLerp(0, 8, work->timers0[11], 0, 0x340);
+        if (work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN]--;
+            fx_07a_outerBandRadius = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_OPEN_FRAMES, work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN], 0, FX_DEMI_SHOCK_OUTER_BAND_RADIUS);
+            fx_07a_discRadius = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_OPEN_FRAMES, work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN], 0, FX_DEMI_SHOCK_DISC_RADIUS);
+            fx_07a_innerBandRadius = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_OPEN_FRAMES, work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN], 0, FX_DEMI_SHOCK_INNER_BAND_RADIUS);
+            fx_07a_uvRadiusOut = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_OPEN_FRAMES, work->timers0[FX_DEMI_SHOCK_T_DISC_OPEN], 0, FX_DEMI_SHOCK_UV_RADIUS);
         }
-        if (work->timers0[12] != 0) {
-            work->timers0[12]--;
-            fx_07a_ringTwist[1] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0x1000);
-            fx_07a_ringTwist[2] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0xEAB);
-            fx_07a_ringTwist[3] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0xD56);
-            fx_07a_ringTwist[4] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0xC00);
-            fx_07a_uvRadiusIn = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0x340);
+        if (work->timers0[FX_DEMI_SHOCK_T_TWIST] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_TWIST]--;
+            fx_07a_ringTwist[1] = fxm_easeLerp(1, FX_DEMI_SHOCK_TWIST_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], 0, 0x1000);
+            fx_07a_ringTwist[2] = fxm_easeLerp(1, FX_DEMI_SHOCK_TWIST_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], 0, 0xEAB);
+            fx_07a_ringTwist[3] = fxm_easeLerp(1, FX_DEMI_SHOCK_TWIST_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], 0, 0xD56);
+            fx_07a_ringTwist[4] = fxm_easeLerp(1, FX_DEMI_SHOCK_TWIST_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], 0, 0xC00);
+            fx_07a_uvRadiusIn = fxm_easeLerp(1, FX_DEMI_SHOCK_TWIST_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], 0, FX_DEMI_SHOCK_UV_RADIUS);
         }
-        if (work->timers0[13] != 0) {
-            work->timers0[13]--;
-            fx_07a_outerBandRadius = fxm_easeLerp(0, 0x10, work->timers0[12], 0x4A00, 0);
-            fx_07a_innerBandRadius = fxm_easeLerp(0, 0x10, work->timers0[13], 0xB20, 0);
-            fx_07a_discRadius = fxm_easeLerp(0, 0x10, work->timers0[12], 0x5A00, 0);
+        if (work->timers0[FX_DEMI_SHOCK_T_DISC_CLOSE] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_DISC_CLOSE]--;
+            /* the outer band and the disc read T_TWIST's count (already 0 by now), not T_DISC_CLOSE's */
+            fx_07a_outerBandRadius = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_CLOSE_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], FX_DEMI_SHOCK_OUTER_BAND_RADIUS, 0);
+            fx_07a_innerBandRadius = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_CLOSE_FRAMES, work->timers0[FX_DEMI_SHOCK_T_DISC_CLOSE], FX_DEMI_SHOCK_INNER_BAND_RADIUS, 0);
+            fx_07a_discRadius = fxm_easeLerp(0, FX_DEMI_SHOCK_DISC_CLOSE_FRAMES, work->timers0[FX_DEMI_SHOCK_T_TWIST], FX_DEMI_SHOCK_DISC_RADIUS, 0);
         }
-        if (work->timers0[10] != 0) {
-            fx_07a_drawTwistDisc(&pos, 0xFFF, 0x117, -1, 0xFF);
+        if (work->timers0[FX_DEMI_SHOCK_T_DISC] != 0) {
+            fx_07a_drawTwistDisc(&pos, 0xFFF, FX_DEMI_SHOCK_DISC_TPAGE, -1, BTLFX_ABR_OPAQUE);
         }
-        if (work->timers0[2] != 0) {
-            work->timers0[2]--;
-            fxm_easeLerpSvec(0, 8, work->timers0[2], &fx_07a_bonePos, &fx_07a_centerPos, &out);
+        if (work->timers0[FX_DEMI_SHOCK_T_FLY] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_FLY]--;
+            fxm_easeLerpSvec(0, FX_DEMI_SHOCK_FLY_FRAMES, work->timers0[FX_DEMI_SHOCK_T_FLY], &fx_07a_bonePos, &fx_07a_centerPos, &out);
             work->pos94.vx = out.vx;
             work->pos94.vy = out.vy;
             work->pos94.vz = out.vz;
         }
-        if (work->timers0[4] != 0) {
-            work->timers0[4]--;
+        if (work->timers0[FX_DEMI_SHOCK_T_GROW] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_GROW]--;
             work->models40[0].scaleC.vx = work->models40[0].scaleC.vy = work->models40[0].scaleC.vz =
-                fxm_easeLerp(0, 0x10, work->timers0[4], 0x5C, 0x2A2);
+                fxm_easeLerp(0, FX_DEMI_SHOCK_GROW_FRAMES, work->timers0[FX_DEMI_SHOCK_T_GROW], FX_DEMI_SHOCK_SHELL_SCALE_0, FX_DEMI_SHOCK_SHELL_SCALE);
             work->models40[1].scaleC.vx = work->models40[1].scaleC.vy = work->models40[1].scaleC.vz =
-                fxm_easeLerp(0, 0x10, work->timers0[4], 0x50, 0x243);
+                fxm_easeLerp(0, FX_DEMI_SHOCK_GROW_FRAMES, work->timers0[FX_DEMI_SHOCK_T_GROW], FX_DEMI_SHOCK_BOWL_SCALE_0, FX_DEMI_SHOCK_BOWL_SCALE);
             work->models40[2].scaleC.vx = work->models40[2].scaleC.vy = work->models40[2].scaleC.vz =
-                fxm_easeLerp(0, 0x10, work->timers0[4], 0x66, 0x299);
+                fxm_easeLerp(0, FX_DEMI_SHOCK_GROW_FRAMES, work->timers0[FX_DEMI_SHOCK_T_GROW], FX_DEMI_SHOCK_BOWL_2_SCALE_0, FX_DEMI_SHOCK_BOWL_2_SCALE);
         }
-        if (work->timers0[5] != 0) {
-            work->timers0[5]--;
+        if (work->timers0[FX_DEMI_SHOCK_T_SHRINK] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_SHRINK]--;
             work->models40[0].scaleC.vx = work->models40[0].scaleC.vy = work->models40[0].scaleC.vz =
-                fxm_easeLerp(0, 0x10, work->timers0[5], 0x2A2, 0);
+                fxm_easeLerp(0, FX_DEMI_SHOCK_GROW_FRAMES, work->timers0[FX_DEMI_SHOCK_T_SHRINK], FX_DEMI_SHOCK_SHELL_SCALE, 0);
             work->models40[1].scaleC.vx = work->models40[1].scaleC.vy = work->models40[1].scaleC.vz =
-                fxm_easeLerp(0, 0x10, work->timers0[5], 0x243, 0);
+                fxm_easeLerp(0, FX_DEMI_SHOCK_GROW_FRAMES, work->timers0[FX_DEMI_SHOCK_T_SHRINK], FX_DEMI_SHOCK_BOWL_SCALE, 0);
             work->models40[2].scaleC.vx = work->models40[2].scaleC.vy = work->models40[2].scaleC.vz =
-                fxm_easeLerp(0, 0x10, work->timers0[5], 0x299, 0);
+                fxm_easeLerp(0, FX_DEMI_SHOCK_GROW_FRAMES, work->timers0[FX_DEMI_SHOCK_T_SHRINK], FX_DEMI_SHOCK_BOWL_2_SCALE, 0);
         }
-        if (work->timers0[6] != 0) {
-            work->timers0[6]--;
+        if (work->timers0[FX_DEMI_SHOCK_T_LIFT] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_LIFT]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (0x1C - work->timers0[6] >= work->delayE4[i]) {
+                if (FX_DEMI_SHOCK_LIFT_FRAMES - work->timers0[FX_DEMI_SHOCK_T_LIFT] >= work->delayE4[i]) {
                     pos.vx = work->homePosA4[i].vx;
                     pos.vz = work->homePosA4[i].vz;
-                    pos.vy = fxm_easeLerp(2, 0x1C - work->delayE4[i], work->timers0[6], work->homePosA4[i].vy,
-                                           work->homePosA4[i].vy - 0x200);
+                    pos.vy = fxm_easeLerp(2, FX_DEMI_SHOCK_LIFT_FRAMES - work->delayE4[i], work->timers0[FX_DEMI_SHOCK_T_LIFT], work->homePosA4[i].vy,
+                                           work->homePosA4[i].vy - FX_DEMI_SHOCK_LIFT_HEIGHT);
                     ex->btlfx_setUnitPos(i, (s16 *)&pos);
                 }
             }
         }
-        if (work->timers0[7] != 0) {
-            work->timers0[7]--;
+        if (work->timers0[FX_DEMI_SHOCK_T_DROP] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_DROP]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (work->timers0[7] != 0) {
+                if (work->timers0[FX_DEMI_SHOCK_T_DROP] != 0) {
                     pos.vx = work->homePosA4[i].vx;
                     pos.vz = work->homePosA4[i].vz;
-                    pos.vy = fxm_easeLerp(2, 4, work->timers0[7], work->homePosA4[i].vy - 0x200, work->homePosA4[i].vy);
+                    pos.vy = fxm_easeLerp(2, FX_DEMI_SHOCK_DROP_FRAMES, work->timers0[FX_DEMI_SHOCK_T_DROP], work->homePosA4[i].vy - FX_DEMI_SHOCK_LIFT_HEIGHT, work->homePosA4[i].vy);
                 } else {
                     ex->btlfx_getUnitHomePos(i, (s16 *)&pos);
                 }
                 ex->btlfx_setUnitPos(i, (s16 *)&pos);
             }
         }
-        if (work->timers0[1] != 0) {
+        if (work->timers0[FX_DEMI_SHOCK_T_SPHERE] != 0) {
             ex->btlfx_aimAngles((s16 *)&fx_07a_centerPos, (s16 *)&env->camera->eye, (s16 *)&work->models40[1].rot4);
             work->models40[0].rot4.vx = work->models40[1].rot4.vx + 0x800;
             work->models40[0].rot4.vy = work->models40[1].rot4.vy;
@@ -239,9 +240,9 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models40[0].rot4, &work->pos94, (s32)&work->models40[0].scaleC, work->models40[0].model0);
             ex->Hi_ModifyEffModelAbr(work->models40[0].model0, BTLFX_ABR_ADD);
         }
-        if (work->timers0[0] != 0) {
-            work->timers0[0]--;
-            for (i = 0; i < 5; i++) {
+        if (work->timers0[FX_DEMI_SHOCK_T_STRANDS] != 0) {
+            work->timers0[FX_DEMI_SHOCK_T_STRANDS]--;
+            for (i = 0; i < FX_DEMI_SHOCK_STRANDS; i++) {
                 tr = &fx_07a_strips[i];
                 if (tr->timer10C > 0) {
                     tr->timer10C--;
@@ -264,21 +265,21 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         cur.vz += step.vz;
                         tr->offsetY6C[j] += tr->speedYBC[j];
                     }
-                    if (tr->timer10C < 4) {
+                    if (tr->timer10C < FX_DEMI_SHOCK_STRAND_FADE_FRAMES) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, frame, 0x1000,
-                                            tr->timer10C << 10, BTLFX_ABR_ADD, (u8 *)strip, 0);
+                                            tr->timer10C * (0x1000 / FX_DEMI_SHOCK_STRAND_FADE_FRAMES), BTLFX_ABR_ADD, (u8 *)strip, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPARK_TRAIL), 0, NULL, frame, 0x1000,
                                             0x1000, BTLFX_ABR_ADD, (u8 *)strip, 0);
                     }
                 } else if (tr->timer10C < 0) {
                     tr->timer10C++;
-                } else if (work->timers0[0] >= 5) {
+                } else if (work->timers0[FX_DEMI_SHOCK_T_STRANDS] >= FX_DEMI_SHOCK_STRAND_RESPAWN_FRAMES) {
                     tr->timer10C = ex->btlfx_randRange(4, 8);
                     j = 1;
                     pitch = ex->btlfx_rand() & 0xFFF;
                     yaw = ex->btlfx_rand() & 0xFFF;
-                    rise = (ex->math_cos(pitch) * (work->models40[0].scaleC.vx + 0x80)) >> 12;
+                    rise = (ex->math_cos(pitch) * (work->models40[0].scaleC.vx + FX_DEMI_SHOCK_STRAND_REACH)) >> 12;
                     tr->endY60 = rise;
                     tr->endX5C = (ex->math_sin(yaw) * abs(rise)) >> 12;
                     tr->endZ64 = (ex->math_cos(yaw) * abs(rise)) >> 12;
@@ -294,11 +295,11 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        if (work->timers0[9] != 0) {
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BACKDROP), work->timers0[9]);
-            work->timers0[9]++;
+        if (work->timers0[FX_DEMI_SHOCK_T_BACKDROP] != 0) {
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BACKDROP), work->timers0[FX_DEMI_SHOCK_T_BACKDROP]);
+            work->timers0[FX_DEMI_SHOCK_T_BACKDROP]++;
         }
-        return frame >= 0x46;
+        return frame >= FX_DEMI_SHOCK_FRAMES;
     }
     return 0;
 }
@@ -332,8 +333,8 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     gte_ldv0(pos);
     ft4 = (POLY_FT4 *)env->prim;
     tpage |= TPAGE_ABR(abr);
-    poly = (POLY_G4 *)(ft4 + 64);
-    env->prim = (u8 *)(poly + 32);
+    poly = (POLY_G4 *)(ft4 + FX_DEMI_SHOCK_DISC_SEGMENTS * FX_DEMI_SHOCK_DISC_RINGS);
+    env->prim = (u8 *)(poly + FX_DEMI_SHOCK_DISC_SEGMENTS * 2);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(&rot, &m);
     gte_stlvnl(m.t);
@@ -343,38 +344,38 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     ang = 0;
     radiusStep = fx_07a_discRadius >> 2;
     uvStep = (fx_07a_uvRadiusOut - fx_07a_uvRadiusIn) >> 2;
-    for (; ang < 0x1000; ang += 0x100) {
+    for (; ang < 0x1000; ang += 0x1000 / FX_DEMI_SHOCK_DISC_SEGMENTS) {
         radius = 0;
         uvRadius = 0;
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < FX_DEMI_SHOCK_DISC_RINGS; j++) {
             twistAng = ang + fx_07a_ringTwist[j];
-            uv[0][0] = ((ex->math_cos(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
-            uv[0][1] = ((ex->math_sin(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
-            uv[1][0] = ((ex->math_cos(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
-            uv[1][1] = ((ex->math_sin(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
+            uv[0][0] = ((ex->math_cos(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_U;
+            uv[0][1] = ((ex->math_sin(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_V;
+            uv[1][0] = ((ex->math_cos(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_U;
+            uv[1][1] = ((ex->math_sin(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_V;
             quad[0].vx = (ex->math_cos(twistAng) * radius) >> 16;
-            quad[0].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            quad[0].vz = -((ex->math_sin(twistAng) * radius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
             twistAng += 0x100;
             quad[1].vx = (ex->math_cos(twistAng) * radius) >> 16;
-            quad[1].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            quad[1].vz = -((ex->math_sin(twistAng) * radius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
             twistAng = ang + fx_07a_ringTwist[j + 1];
             uvRadius += uvStep;
-            uv[2][0] = ((ex->math_cos(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
-            uv[2][1] = ((ex->math_sin(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
-            uv[3][0] = ((ex->math_cos(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
+            uv[2][0] = ((ex->math_cos(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_U;
+            uv[2][1] = ((ex->math_sin(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_V;
+            uv[3][0] = ((ex->math_cos(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_U;
             radius += radiusStep;
-            uv[3][1] = ((ex->math_sin(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
+            uv[3][1] = ((ex->math_sin(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + FX_DEMI_SHOCK_DISC_V;
             quad[2].vx = (ex->math_cos(twistAng) * radius) >> 16;
-            quad[2].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            quad[2].vz = -((ex->math_sin(twistAng) * radius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
             twistAng += 0x100;
             quad[3].vx = (ex->math_cos(twistAng) * radius) >> 16;
-            quad[3].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            quad[3].vz = -((ex->math_sin(twistAng) * radius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
             gte_ldv3c(quad);
             gte_rtpt();
             ft4->b0 = 0x40;
             ft4->g0 = 0x40;
             ft4->r0 = 0x40;
-            ft4->code = abr == 0xFF ? 0x2C : 0x2E;
+            ft4->code = abr == BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 : GPU_POLY_FT4 | GPU_ABE;
             *(u16 *)&ft4->u0 = *(u16 *)uv[0];
             *(u16 *)&ft4->u1 = *(u16 *)uv[1];
             *(u16 *)&ft4->u2 = *(u16 *)uv[2];
@@ -385,19 +386,19 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
             ft4->clut = clut;
             ft4->tpage = tpage;
             gte_stsxy(&ft4->x3);
-            ex->btlfx_addPrim(0x09000000, ot * 4, ft4);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), ot * 4, ft4);
             ft4++;
         }
         for (j = 0; j < 2; j++) {
             if (j != 0) {
                 quad[2].vx = (ex->math_cos(ang) * fx_07a_outerBandRadius) >> 16;
-                quad[2].vz = -((ex->math_sin(ang) * fx_07a_outerBandRadius) >> 16) - 0x20;
+                quad[2].vz = -((ex->math_sin(ang) * fx_07a_outerBandRadius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
                 quad[3].vx = (ex->math_cos(ang + 0x100) * fx_07a_outerBandRadius) >> 16;
-                quad[3].vz = -((ex->math_sin(ang + 0x100) * fx_07a_outerBandRadius) >> 16) - 0x20;
+                quad[3].vz = -((ex->math_sin(ang + 0x100) * fx_07a_outerBandRadius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
                 quad[0].vx = (ex->math_cos(ang) * fx_07a_discRadius) >> 16;
-                quad[0].vz = -((ex->math_sin(ang) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[0].vz = -((ex->math_sin(ang) * fx_07a_discRadius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
                 quad[1].vx = (ex->math_cos(ang + 0x100) * fx_07a_discRadius) >> 16;
-                quad[1].vz = -((ex->math_sin(ang + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[1].vz = -((ex->math_sin(ang + 0x100) * fx_07a_discRadius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
                 poly->b1 = 0x80;
                 poly->g1 = 0x80;
                 poly->r1 = 0x80;
@@ -412,13 +413,13 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
                 poly->r2 = 0;
             } else {
                 quad[2].vx = (ex->math_cos(ang) * fx_07a_discRadius) >> 16;
-                quad[2].vz = -((ex->math_sin(ang) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[2].vz = -((ex->math_sin(ang) * fx_07a_discRadius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
                 quad[3].vx = (ex->math_cos(ang + 0x100) * fx_07a_discRadius) >> 16;
-                quad[3].vz = -((ex->math_sin(ang + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[3].vz = -((ex->math_sin(ang + 0x100) * fx_07a_discRadius) >> 16) - FX_DEMI_SHOCK_DISC_Z;
                 quad[0].vx = (ex->math_cos(ang) * fx_07a_innerBandRadius) >> 12;
-                quad[0].vz = -((ex->math_sin(ang) * fx_07a_innerBandRadius) >> 12) - 0x20;
+                quad[0].vz = -((ex->math_sin(ang) * fx_07a_innerBandRadius) >> 12) - FX_DEMI_SHOCK_DISC_Z;
                 quad[1].vx = (ex->math_cos(ang + 0x100) * fx_07a_innerBandRadius) >> 12;
-                quad[1].vz = -((ex->math_sin(ang + 0x100) * fx_07a_innerBandRadius) >> 12) - 0x20;
+                quad[1].vz = -((ex->math_sin(ang + 0x100) * fx_07a_innerBandRadius) >> 12) - FX_DEMI_SHOCK_DISC_Z;
                 poly->b1 = 0;
                 poly->g1 = 0;
                 poly->r1 = 0;
@@ -439,9 +440,9 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
             gte_ldv0(&quad[3]);
             gte_rtps();
             gte_stsxy(&poly->x3);
-            ex->btlfx_addPrim(0x08000000, ot * 4 - 4, poly);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_G4), ot * 4 - 4, poly);
             poly++;
         }
     }
-    ex->btlfx_addPrim(0x01000000, ot * 4 - 4, ex->btlfx_allocDrMode(0, BTLFX_ABR_SUB));
+    ex->btlfx_addPrim(PRIM_TAG(DR_TPAGE), ot * 4 - 4, ex->btlfx_allocDrMode(0, BTLFX_ABR_SUB));
 }

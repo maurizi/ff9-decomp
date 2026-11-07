@@ -16,6 +16,70 @@
 #define FX_DEMI_SHOCK_BOWL       0xD /* model: gouraud hemisphere bowl (byte-identical to fx_079 entry 0xa) */
 #define FX_DEMI_SHOCK_BOWL_2     0xE /* model: second gouraud hemisphere bowl (byte-identical to fx_079 entry 0x6) */
 
+/* fx_07a choreography (docs/fxdata.md, "Choreography literals"; fx_079's names where the slot or value means the
+ * same): op80's keyframes and countdowns, the sphere over the targets, the twisted disc's rings and radii. */
+#define FX_DEMI_SHOCK_TIMERS     16 /* work->timers0: per-phase countdowns / flags, set on keyframes */
+#define FX_DEMI_SHOCK_T_STRANDS  0  /* countdown: the spark strands from the caster's bone to the sphere are drawn (and respawned) */
+#define FX_DEMI_SHOCK_T_SPHERE   1  /* flag: the shell and bowls are drawn, facing the camera */
+#define FX_DEMI_SHOCK_T_FLY      2  /* countdown: the sphere flies from the caster's bone to its place over the targets */
+#define FX_DEMI_SHOCK_T_GROW     4  /* countdown: the shell and bowls grow */
+#define FX_DEMI_SHOCK_T_SHRINK   5  /* countdown: they shrink to nothing */
+#define FX_DEMI_SHOCK_T_LIFT     6  /* countdown: the targets are lifted, each after its own delay */
+#define FX_DEMI_SHOCK_T_DROP     7  /* countdown: they are put back */
+#define FX_DEMI_SHOCK_T_BACKDROP 9  /* counter: FX_DEMI_SHOCK_BACKDROP's layer frame */
+#define FX_DEMI_SHOCK_T_DISC     10 /* flag: the twisted disc (fx_07a_drawTwistDisc) is drawn under the targets */
+#define FX_DEMI_SHOCK_T_DISC_OPEN 11 /* countdown: the disc and its bands open out */
+#define FX_DEMI_SHOCK_T_TWIST    12 /* countdown: the disc's rings twist and its texture radius grows */
+#define FX_DEMI_SHOCK_T_DISC_CLOSE 13 /* countdown: the disc and its bands close */
+#define FX_DEMI_SHOCK_START_FRAME  1   /* after the background capture (frame 0): sphere, strands, backdrop start */
+#define FX_DEMI_SHOCK_DISC_FRAME   8   /* the disc opens and twists, the targets are lifted */
+#define FX_DEMI_SHOCK_FLASH_RING_FRAME 12 /* FX_DEMI_SHOCK_FLASH_RING starts at the centre */
+#define FX_DEMI_SHOCK_SHRINK_FRAME 24  /* the sphere shrinks, the disc closes */
+#define FX_DEMI_SHOCK_WISP_FRAME   36  /* FX_DEMI_SHOCK_WISP_BURST starts, the targets are put back */
+#define FX_DEMI_SHOCK_FLASH_FRAME  40  /* white screen flash, the disc and the sphere are no longer drawn */
+#define FX_DEMI_SHOCK_FRAMES       0x46 /* op80's length (the op ends) */
+#define FX_DEMI_SHOCK_STRANDS_FRAMES 0x24 /* FX_DEMI_SHOCK_T_STRANDS' length */
+#define FX_DEMI_SHOCK_STRAND_RESPAWN_FRAMES 5 /* strands are respawned only while T_STRANDS has this many frames left */
+#define FX_DEMI_SHOCK_STRAND_FADE_FRAMES 4 /* a strand fades out over its last this many frames */
+#define FX_DEMI_SHOCK_FLY_FRAMES   8    /* FX_DEMI_SHOCK_T_FLY's length (and its lerp's n) */
+#define FX_DEMI_SHOCK_GROW_FRAMES  0x10 /* FX_DEMI_SHOCK_T_GROW / _SHRINK's length (and the lerps' n) */
+#define FX_DEMI_SHOCK_LIFT_FRAMES  0x1C /* FX_DEMI_SHOCK_T_LIFT's length; a target's lift lerp runs this minus its delay */
+#define FX_DEMI_SHOCK_DROP_FRAMES  4    /* FX_DEMI_SHOCK_T_DROP's length (and its lerp's n) */
+#define FX_DEMI_SHOCK_DISC_OPEN_FRAMES 8 /* FX_DEMI_SHOCK_T_DISC_OPEN's length (and the lerps' n) */
+#define FX_DEMI_SHOCK_TWIST_FRAMES 0x20 /* FX_DEMI_SHOCK_T_TWIST's length (and the lerps' n) */
+#define FX_DEMI_SHOCK_DISC_CLOSE_FRAMES 0x10 /* FX_DEMI_SHOCK_T_DISC_CLOSE's length (and the lerps' n) */
+#define FX_DEMI_SHOCK_LIFT_HEIGHT  0x200 /* the targets are lifted this high */
+#define FX_DEMI_SHOCK_SPHERE_HEIGHT 0x500 /* the sphere (fx_07a_centerPos) hangs this high over the targets' centre */
+#define FX_DEMI_SHOCK_SHELL_SCALE_0 0x5C  /* the models' start and full scales: FX_DEMI_SHOCK_ENERGY_SHELL */
+#define FX_DEMI_SHOCK_SHELL_SCALE   0x2A2
+#define FX_DEMI_SHOCK_BOWL_SCALE_0  0x50  /* FX_DEMI_SHOCK_BOWL */
+#define FX_DEMI_SHOCK_BOWL_SCALE    0x243
+#define FX_DEMI_SHOCK_BOWL_2_SCALE_0 0x66 /* FX_DEMI_SHOCK_BOWL_2 */
+#define FX_DEMI_SHOCK_BOWL_2_SCALE  0x299
+#define FX_DEMI_SHOCK_STRAND_REACH 0x80  /* a strand ends this far outside the shell's scale */
+#define FX_DEMI_SHOCK_MODEL_COUNT  3     /* btlfx_initEffModels slots: ENERGY_SHELL, BOWL, BOWL_2 */
+#define FX_DEMI_SHOCK_STRANDS      5     /* spark strands (fx_07a_strips), started one frame apart */
+#define FX_DEMI_SHOCK_STRAND_POINTS 11   /* points per strand (Fx07aStrip.pts4) */
+#define FX_DEMI_SHOCK_SHELL_TPAGE  0x137  /* 15-bit page (0x1C0, 0x100), abr 1 */
+#define FX_DEMI_SHOCK_SHELL_CLUT   0xFFFF /* none (15-bit page) */
+#define FX_DEMI_SHOCK_FLASH_RGB    0xFF, 0xFF, 0xFF /* opaque white screen tint on FX_DEMI_SHOCK_FLASH_FRAME */
+/* Frame 0 renders the background round the targets into this rect (btlfx_drawBgOffscreen); the disc samples it
+ * through the 15-bit page DISC_TPAGE (0x1C0, 0x100), its texture centred on (DISC_U, DISC_V). */
+#define FX_DEMI_SHOCK_BG_VRAM_X    0x1C0
+#define FX_DEMI_SHOCK_BG_VRAM_Y    0x17E
+#define FX_DEMI_SHOCK_BG_VRAM_W    0x70
+#define FX_DEMI_SHOCK_BG_VRAM_H    0x70
+#define FX_DEMI_SHOCK_DISC_TPAGE   0x117  /* 15-bit page (0x1C0, 0x100) */
+#define FX_DEMI_SHOCK_DISC_U       0x38   /* texture centre u (BG_VRAM_W / 2) */
+#define FX_DEMI_SHOCK_DISC_V       (-0x48) /* texture centre v (0xB8 as a byte) */
+#define FX_DEMI_SHOCK_DISC_RADIUS  0x5A00 /* fx_07a_discRadius when open (x 1/16 units) */
+#define FX_DEMI_SHOCK_OUTER_BAND_RADIUS 0x4A00 /* fx_07a_outerBandRadius: the white-to-clear band outside the disc */
+#define FX_DEMI_SHOCK_INNER_BAND_RADIUS 0xB20  /* fx_07a_innerBandRadius: the clear-to-white band inside it (>> 12 units) */
+#define FX_DEMI_SHOCK_UV_RADIUS    0x340  /* fx_07a_uvRadiusOut / _In when open: the sampled texture's radius */
+#define FX_DEMI_SHOCK_DISC_RINGS   4      /* textured rings from centre to rim (fx_07a_ringTwist[0..4] at their edges) */
+#define FX_DEMI_SHOCK_DISC_SEGMENTS 16    /* angular segments (0x100 each) of the disc and of its two bands */
+#define FX_DEMI_SHOCK_DISC_Z       0x20   /* the disc is drawn this far behind the centre */
+
 extern Unk800F78A4 *fx_07a_env;
 extern s32 fx_07a_discRadius;
 extern s32 fx_07a_uvRadiusIn;

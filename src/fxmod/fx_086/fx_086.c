@@ -39,11 +39,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     gt4 = (POLY_GT4 *)fx_086_env->prim;
     *(s32 *)&colDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    fx_086_env->prim = (u8 *)(ft4 + 14);
+    fx_086_env->prim = (u8 *)(ft4 + (FX_METEOR_SHEATH_SEGMENTS - 2));
     colFlat.r = colFlat.g = colFlat.b = bright;
     colLit.r = colLit.g = colLit.b = bright;
-    colFlat.code = abr != 0xFF ? 0x2E : 0x2C;
-    colDark.code = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
+    colDark.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     tpage |= TPAGE_ABR(abr);
     colLit.code = colDark.code;
     gte_rtv0tr_b();
@@ -59,7 +59,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     w1 >>= 1;
     span = dy; /* a copy: the original keeps it in its own stack slot */
     for (row = 0; row < 1; row++, rowY += dy) {
-        for (j = 0; j < 16; j++, seg++, ang += dang << 8) {
+        for (j = 0; j < FX_METEOR_SHEATH_SEGMENTS; j++, seg++, ang += dang << 8) {
             nextJ = (j + 1) << 8;
             y0 = rowY + (((j << 8) * dy) >> 12);
             y1 = rowY + ((nextJ * dy) >> 12);
@@ -95,7 +95,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 ft = 0;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
-            } else if (seg >= 15) {
+            } else if (seg >= FX_METEOR_SHEATH_SEGMENTS - 1) {
                 ft = 0;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
@@ -127,11 +127,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -151,7 +151,7 @@ static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts) {
     pt = pts;
     last = (s32 *)&pt[n];
     for (i = 0; i < n; i++, last++, pt++) {
-        *last = 0x7F7F7F7F;
+        *last = FX_METEOR_STREAK_NONE;
         rad = ex->btlfx_randRange(radius >> 2, radius >> 1);
         ang = ex->btlfx_rand() & 0xFFF;
         pt->vx = (ex->math_cos(ang) * rad) >> 12;
@@ -197,16 +197,16 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, void *rot, SV
     cur = pts;
     last = (s32 *)&cur[n];
     for (i = 0; i < n; i++, last++, cur++, prim++) {
-        live = *last != 0x7F7F7F7F;
+        live = *last != FX_METEOR_STREAK_NONE;
         gte_ldv0(cur);
         gte_rtps();
         cur->vz -= dz;
         if (dz > 0 && cur->vz < -0x100) {
             cur->vz = 0x400;
-            *last = 0x7F7F7F7F;
+            *last = FX_METEOR_STREAK_NONE;
         } else if (dz < 0 && cur->vz > 0x300) {
             cur->vz = -0x200;
-            *last = 0x7F7F7F7F;
+            *last = FX_METEOR_STREAK_NONE;
         } else {
             gte_stsxy(&prim->x0);
             gte_stszotz(&otz);
@@ -215,8 +215,8 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, void *rot, SV
                 gte_strgb(&prim->r0);
                 *(s32 *)&prim->x1 = *last;
                 *(s32 *)&prim->r1 = 0;
-                prim->code = abr != 0xFF ? 0x52 : 0x50;
-                ex->btlfx_linkPrimAbr(0x4000000, ot, prim, abr);
+                prim->code = abr != BTLFX_ABR_OPAQUE ? GPU_LINE_G2 | GPU_ABE : GPU_LINE_G2;
+                ex->btlfx_linkPrimAbr(PRIM_TAG(LINE_G2), ot, prim, abr);
             }
             *last = *(s32 *)&prim->x0;
         }
@@ -241,31 +241,31 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 glowT;
 
     if (mode == 0) {
-        *args = 0x48;
+        *args = sizeof(Fx086Work80);
     } else if (mode == 1) {
         fx_086_env = env;
-        work->state0 = 1;
+        work->state0 = FX_METEOR_STATE_SKY;
         work->frame4 = 0;
-        fxm_randDiscPoints(0x180, 0x400, fx_086_streakPts);
+        fxm_randDiscPoints(FX_METEOR_STREAKS, FX_METEOR_STREAK_RADIUS, fx_086_streakPts);
         work->unk8[0] = 0xA0;
         work->unk8[1] = 0x78;
         work->unk8[2] = 0;
         work->unk8[3] = 0x78;
         work->unk8[4] = 0xC8;
         work->unk8[5] = 0x78;
-        ex->btlfx_initEffModels(fx_086_effModels, 8);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_ROCK), 0x9A, 0x3E00, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RED_ROCK), 0x139, 0xFFFF, 0, 0x80);
-        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_DOME), 0xB9, 0x3D40, 0, 0);
-        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_DUST_RING), 0x3C, 0x3D04, 0, 0x80);
+        ex->btlfx_initEffModels(fx_086_effModels, FX_METEOR_MODEL_COUNT);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_ROCK), FX_METEOR_ROCK_TPAGE, FX_METEOR_ROCK_CLUT, 0, 0);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RED_ROCK), FX_METEOR_RED_ROCK_TPAGE, FX_METEOR_RED_ROCK_CLUT, 0, FX_METEOR_RED_ROCK_V);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_DOME), FX_METEOR_FIRE_DOME_TPAGE, FX_METEOR_FIRE_DOME_CLUT, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_DUST_RING), FX_METEOR_DUST_RING_TPAGE, FX_METEOR_DUST_RING_CLUT, 0, FX_METEOR_DUST_RING_V);
         work->model34 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_STREAK));
         work->model38 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_BOWL));
         work->model3C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RING_DISC));
-        work->model40 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_SKY_CYLINDER), 0x97, 0x3D80, 0, 0);
+        work->model40 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_SKY_CYLINDER), FX_METEOR_SKY_TPAGE, FX_METEOR_SKY_CLUT, 0, 0);
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 1: {
+        case FX_METEOR_STATE_SKY: {
         {
             SVECTOR streakDir;
             CVECTOR col;
@@ -277,13 +277,13 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 otz;
 
             pos.vx = 0;
-            travel = (frame << 11) / 49;
+            travel = (frame << 11) / FX_METEOR_SKY_FRAMES;
             pos.vz = 0x800 - travel;
             pos.vy = travel - 0x800;
-            fadeIn = (frame << 12) / 49;
-            if (frame >= 8) {
-                jitter = (frame - 8) * 2;
-                pos.vx += ex->btlfx_randCentered((frame - 8) * 3);
+            fadeIn = (frame << 12) / FX_METEOR_SKY_FRAMES;
+            if (frame >= FX_METEOR_GLOW_FRAME) {
+                jitter = (frame - FX_METEOR_GLOW_FRAME) * 2;
+                pos.vx += ex->btlfx_randCentered((frame - FX_METEOR_GLOW_FRAME) * 3);
                 pos.vy += ex->btlfx_randCentered(jitter);
                 pos.vz += ex->btlfx_randCentered(jitter);
             }
@@ -300,16 +300,17 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vx = pos.vx;
             env->camera->points[3].vy = pos.vy;
             env->camera->points[3].vz = pos.vz;
-            env->camera->points[3].vz += frame * 900 / 49 - 0x100;
-            env->camera->points[3].vy += 0x180 - frame * 900 / 49;
+            env->camera->points[3].vz += frame * 900 / FX_METEOR_SKY_FRAMES - 0x100;
+            env->camera->points[3].vy += 0x180 - frame * 900 / FX_METEOR_SKY_FRAMES;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
-            ex->btlfx_drawScrollMove(work->frame4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->frame4 * 8, FX_METEOR_SKY_VRAM_X, FX_METEOR_SKY_VRAM_Y, FX_METEOR_SKY_VRAM_W, FX_METEOR_SKY_VRAM_H,
+                                     FX_METEOR_SKY_SRC_X, FX_METEOR_SKY_SRC_Y);
             scale.vz = scale.vz * 3 / 2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model40);
             scale.vz = scale.vz * 2 / 3;
             ex->Hi_ModifyEffModelRGB(work->model40, (travel >> 5) - 0x80, (travel >> 5) - 0x80, (travel >> 5) - 0x80);
-            if (frame >= 8) {
-                glowT = ((frame - 8) << 12) / 41;
+            if (frame >= FX_METEOR_GLOW_FRAME) {
+                glowT = ((frame - FX_METEOR_GLOW_FRAME) << 12) / (FX_METEOR_SKY_FRAMES - FX_METEOR_GLOW_FRAME);
                 rot.vx = 0x200;
                 rot.vy = 0;
                 rot.vz = 0;
@@ -325,23 +326,23 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             streakDir.vx = 0x200;
             streakDir.vy = -0x400;
             streakDir.vz = 0;
-            if (frame < 0x18) {
+            if (frame < FX_METEOR_STREAKS_FAST_FRAME) {
                 otz = -0x46;
             }
-            fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, otz, &streakDir, fx_086_streakPts, &col,
-                          ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
-            if (frame == 2) {
+            fxm_drawStreakField((u32 *)(env->ot + 8), FX_METEOR_STREAKS, 0x80, otz, &streakDir, fx_086_streakPts, &col,
+                          ex->math_cos((frame << 10) / FX_METEOR_SKY_FRAMES) * 3 / 4 + 0x400, BTLFX_ABR_ADD);
+            if (frame == FX_METEOR_EMBERS_FRAME) {
                 work->emit44 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;
                 }
             }
-            if (frame >= 25) {
+            if (frame >= FX_METEOR_RED_TINT_FRAME) {
                 CVECTOR col2;
                 SVECTOR rot2;
                 VECTOR sc2;
 
-                tintT = ((frame - 24) << 12) / 25;
+                tintT = ((frame - (FX_METEOR_RED_TINT_FRAME - 1)) << 12) / (FX_METEOR_SKY_FRAMES - (FX_METEOR_RED_TINT_FRAME - 1));
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, (tintT << 6) >> 12, 0, 0);
                 col2.r = col2.g = col2.b = ((ex->math_sin(tintT >> 2) << 5) >> 12) + 0x10;
                 sc2.vx = 0x1080;
@@ -356,7 +357,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             px = 0x1B8 - (frame + 5) % 10 * 60;
             py = 0x140 - (frame + 5) % 10 * 60;
             ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_CLOUDS), px - 0x40, py + 0x78, 0, BTLFX_ABR_ADD, fadeIn);
-            if (frame >= 49) {
+            if (frame >= FX_METEOR_SKY_FRAMES) {
                 ex->btlfx_stopEmitter(work->emit44);
                 BTLFX_COPY_SVEC(&work->pos1C, &env->targets->centerX);
                 env->camera->points[3].vx = work->pos1C.vx;
@@ -365,13 +366,13 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vx += 0x1800;
                 env->camera->points[3].vx -= 0x1000;
                 ex->btlfx_startScreenFade(1, 1);
-                work->state0 = 2;
+                work->state0 = FX_METEOR_STATE_FALL;
                 entry->frame = -1;
             }
         }
             break;
         }
-        case 2: {
+        case FX_METEOR_STATE_FALL: {
         {
             SVECTOR camFrom;
             SVECTOR camTo;
@@ -397,25 +398,25 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos14.vx = pos.vx;
             work->pos14.vy = pos.vy;
             work->pos14.vz = pos.vz;
-            if (frame < 11) {
+            if (frame < FX_METEOR_CAMERA_DIVE_FRAMES + 1) {
                 camFrom.vx = pos.vx;
                 camFrom.vy = pos.vy;
                 camFrom.vz = pos.vz;
                 BTLFX_COPY_SVEC(&camTo, &work->pos1C);
                 camTo.vy -= 0x200;
-                ex->btlfx_lerpVec((s16 *)&camFrom, (s16 *)&camTo, (frame << 12) / 10, (s16 *)&camPos);
+                ex->btlfx_lerpVec((s16 *)&camFrom, (s16 *)&camTo, (frame << 12) / FX_METEOR_CAMERA_DIVE_FRAMES, (s16 *)&camPos);
                 env->camera->points[3].vx = camPos.vx;
                 env->camera->points[3].vy = camPos.vy;
                 env->camera->points[3].vz = camPos.vz;
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
-            if (frame >= 7) {
+            if (frame >= FX_METEOR_FALL_GLOW_FRAME) {
                 CVECTOR col;
                 SVECTOR rot2;
                 VECTOR sc2;
 
-                bright = ((ex->math_sin(((frame - 6) << 12) / 6 >> 2) << 6) >> 12) + 0x20;
+                bright = ((ex->math_sin(((frame - (FX_METEOR_FALL_GLOW_FRAME - 1)) << 12) / (FX_METEOR_FALL_FRAMES - (FX_METEOR_FALL_GLOW_FRAME - 1)) >> 2) << 6) >> 12) + 0x20;
                 col.r = bright;
                 col.g = bright >> 1;
                 col.b = bright >> 2;
@@ -429,30 +430,30 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             VECTOR sc;
 
             sc.vx = sc.vy = sc.vz = size / 2;
-            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          -(work->frame4 * 0x180), 0x2000, 1, 1);
-            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          -(work->frame4 * 0x180) + 0x550, 0x2000, 1, 1);
-            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          -(work->frame4 * 0x180) + 0xAA0, 0x2000, 1, 1);
-            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          work->frame4 << 9, 0x2000, 1, -1);
-            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          (work->frame4 << 9) + 0x550, 0x2000, 1, -1);
-            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          (work->frame4 << 9) + 0xAA0, 0x2000, 1, -1);
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, FX_METEOR_SHEATH_RADIUS, FX_METEOR_SHEATH_RADIUS_MID, FX_METEOR_SHEATH_WIDTH, 0x398, 0x80, FX_METEOR_SHEATH_TPAGE, FX_METEOR_SHEATH_CLUT, FX_METEOR_SHEATH_U, FX_METEOR_SHEATH_V,
+                          -(work->frame4 * 0x180), FX_METEOR_SHEATH_LENGTH, BTLFX_ABR_ADD, 1);
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, FX_METEOR_SHEATH_RADIUS, FX_METEOR_SHEATH_RADIUS_MID, FX_METEOR_SHEATH_WIDTH, 0x400, 0x80, FX_METEOR_SHEATH_TPAGE, FX_METEOR_SHEATH_CLUT, FX_METEOR_SHEATH_U, FX_METEOR_SHEATH_V,
+                          -(work->frame4 * 0x180) + 0x550, FX_METEOR_SHEATH_LENGTH, BTLFX_ABR_ADD, 1);
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, FX_METEOR_SHEATH_RADIUS, FX_METEOR_SHEATH_RADIUS_MID, FX_METEOR_SHEATH_WIDTH, 0x300, 0x80, FX_METEOR_SHEATH_TPAGE, FX_METEOR_SHEATH_CLUT, FX_METEOR_SHEATH_U, FX_METEOR_SHEATH_V,
+                          -(work->frame4 * 0x180) + 0xAA0, FX_METEOR_SHEATH_LENGTH, BTLFX_ABR_ADD, 1);
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, FX_METEOR_SHEATH_RADIUS, FX_METEOR_SHEATH_RADIUS_MID, FX_METEOR_SHEATH_WIDTH, 0x398, 0x80, FX_METEOR_SHEATH_TPAGE, FX_METEOR_SHEATH_CLUT, FX_METEOR_SHEATH_U, FX_METEOR_SHEATH_V,
+                          work->frame4 << 9, FX_METEOR_SHEATH_LENGTH, BTLFX_ABR_ADD, -1);
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, FX_METEOR_SHEATH_RADIUS, FX_METEOR_SHEATH_RADIUS_MID, FX_METEOR_SHEATH_WIDTH, 0x400, 0x80, FX_METEOR_SHEATH_TPAGE, FX_METEOR_SHEATH_CLUT, FX_METEOR_SHEATH_U, FX_METEOR_SHEATH_V,
+                          (work->frame4 << 9) + 0x550, FX_METEOR_SHEATH_LENGTH, BTLFX_ABR_ADD, -1);
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, FX_METEOR_SHEATH_RADIUS, FX_METEOR_SHEATH_RADIUS_MID, FX_METEOR_SHEATH_WIDTH, 0x300, 0x80, FX_METEOR_SHEATH_TPAGE, FX_METEOR_SHEATH_CLUT, FX_METEOR_SHEATH_U, FX_METEOR_SHEATH_V,
+                          (work->frame4 << 9) + 0xAA0, FX_METEOR_SHEATH_LENGTH, BTLFX_ABR_ADD, -1);
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
-            if (frame >= 12) {
+            if (frame >= FX_METEOR_FALL_FRAMES) {
                 SVECTOR dir;
                 SVECTOR out;
 
-                work->state0 = 3;
+                work->state0 = FX_METEOR_STATE_IMPACT;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0xC8, 0xC8, 0x64);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_METEOR_STRIKE_FLASH_RGB);
                 dir.vx = 0x4E0;
                 dir.vy = 0x800;
                 dir.vz = 0x700;
-                for (i = 0, dist = 0; i < 64; i++, dist += 0x30) {
+                for (i = 0, dist = 0; i < FX_METEOR_EMBER_SPRITES; i++, dist += 0x30) {
                     ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&dir, dist, (s16 *)&out);
                     out.vx += ex->btlfx_randCentered(0x180);
                     out.vy += ex->btlfx_randCentered(0x180);
@@ -465,7 +466,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
             break;
         }
-        case 3: {
+        case FX_METEOR_STATE_IMPACT: {
         {
             SVECTOR spritePos;
             CVECTOR col;
@@ -484,30 +485,30 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 i;
 
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x64, 0x20, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_METEOR_IMPACT_TINT_RGB);
             }
-            if (frame < 21) {
+            if (frame < FX_METEOR_SHAKE_FRAMES + 1) {
                 env->camera->points[3].vx = work->pos1C.vx;
                 env->camera->points[3].vy = work->pos1C.vy - 0x200;
                 env->camera->points[3].vz = work->pos1C.vz;
-                shake = ((0x1000 - (frame << 12) / 20) << 9) >> 12;
+                shake = ((0x1000 - (frame << 12) / FX_METEOR_SHAKE_FRAMES) << 9) >> 12;
                 env->camera->points[3].vy += ex->btlfx_randCentered(shake);
                 env->camera->points[3].vz += ex->btlfx_randCentered(shake);
             }
-            if (frame == 12) {
+            if (frame == FX_METEOR_EXPLOSION_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_EXPLOSION), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
             }
-            if (frame == 20) {
+            if (frame == FX_METEOR_GLOWING_EMBERS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_GLOWING_EMBERS), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
             }
-            if (frame < 7) {
-                burstT = (frame << 12) / 6;
+            if (frame < FX_METEOR_STREAK_FRAMES + 1) {
+                burstT = (frame << 12) / FX_METEOR_STREAK_FRAMES;
                 burstAng = burstT >> 2;
                 size = (ex->math_cos(burstAng) + 0x800) * 2;
                 bright = ex->math_cos(burstAng);
@@ -529,7 +530,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                   0x1000);
                 env->otZ = 0;
             }
-            if (frame < 8) {
+            if (frame < FX_METEOR_IMPACT_GRID_FRAMES) {
                 col.r = col.g = col.b = 0x46;
                 sc2.vx = 0x1080;
                 sc2.vy = 0x1080;
@@ -537,9 +538,9 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot2.vx = rot2.vy = rot2.vz = 0;
                 ex->btlfx_drawScreenGrid(1, 0xA0, 0x78, 0x20, 0x18, 0xA, 0xA, 5, 5, &rot2, &sc2, &col, 1, NULL);
             }
-            if (frame < 13) {
-                spriteAlpha = ex->math_cos((frame << 10) / 12);
-                for (i = 0; i < 20; i++) {
+            if (frame < FX_METEOR_EMBERS_2_FRAMES + 1) {
+                spriteAlpha = ex->math_cos((frame << 10) / FX_METEOR_EMBERS_2_FRAMES);
+                for (i = 0; i < FX_METEOR_EMBERS_2_COUNT; i++) {
                     fx_086_spritePos[i * 3].pad++;
                     BTLFX_COPY_SVEC(&spritePos, &fx_086_spritePos[i * 3]);
                     spritePos.pad = 0;
@@ -547,16 +548,16 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                           fx_086_spritePos[i * 3].pad, BTLFX_ABR_ADD, spriteAlpha);
                 }
             }
-            if (frame >= 4) {
-                elapsed = frame - 4;
+            if (frame >= FX_METEOR_BLAST_FRAME) {
+                elapsed = frame - FX_METEOR_BLAST_FRAME;
                 if (elapsed == 0) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0xFF, 0xFF, 0xFF);
-                } else if (elapsed < 24) {
-                    bright = ex->math_cos((elapsed << 10) / 24) * 0xFF / 4096;
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_METEOR_BLAST_DARKEN_RGB);
+                } else if (elapsed < FX_METEOR_BLAST_FLASH_FRAMES) {
+                    bright = ex->math_cos((elapsed << 10) / FX_METEOR_BLAST_FLASH_FRAMES) * 0xFF / 4096;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, bright, bright, bright >> 1);
                 }
                 t = elapsed << 7;
-                if (elapsed < 32) {
+                if (elapsed < FX_METEOR_DUST_FRAMES) {
                     ang = t >> 2;
                     size = ((ex->math_sin(ang) >> 1) + 0x1000) * 2 / 3;
                     bright = ex->math_cos(ang);
@@ -569,7 +570,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot.vx = 0;
                     rot.vy = ex->math_sin(ang) >> 1;
                     rot.vz = 0;
-                    if (elapsed < 3) {
+                    if (elapsed < FX_METEOR_BLAST_HOLD_FRAMES) {
                         bright = 0x1C00;
                     }
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model3C);
@@ -599,8 +600,8 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ex->Hi_ModifyEffModelRGB(work->model38, cs, cs, cs);
                     }
                 }
-                if (elapsed < 41) {
-                    t = (elapsed << 12) / 41;
+                if (elapsed < FX_METEOR_FIRE_DOME_FRAMES) {
+                    t = (elapsed << 12) / FX_METEOR_FIRE_DOME_FRAMES;
                     pulseAng = t >> 2;
                     size = ((ex->math_sin(pulseAng) >> 1) + 0x1000) * 2 / 3;
                     glow = ex->math_cos(pulseAng);
@@ -613,8 +614,9 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot.vx = 0;
                     rot.vy = ex->math_cos(pulseAng) >> 2;
                     rot.vz = 0;
-                    ex->btlfx_drawScrollMove(work->frame4 * 8, 0x240, 0x100, 0x40, 0x80, 0x300, 0x100);
-                    if (elapsed < 3) {
+                    ex->btlfx_drawScrollMove(work->frame4 * 8, FX_METEOR_FIRE_VRAM_X, FX_METEOR_FIRE_VRAM_Y, FX_METEOR_FIRE_VRAM_W, FX_METEOR_FIRE_VRAM_H,
+                                             FX_METEOR_FIRE_SRC_X, FX_METEOR_FIRE_SRC_Y);
+                    if (elapsed < FX_METEOR_BLAST_HOLD_FRAMES) {
                         glow = 0x1C00;
                     }
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model2C);
@@ -625,7 +627,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     env->otZ = 0;
                 }
             }
-            if (frame >= 50) {
+            if (frame >= FX_METEOR_IMPACT_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
