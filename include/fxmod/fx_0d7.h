@@ -15,6 +15,34 @@
 #define FX_SWDMAG_THUNDER_SWORD_GLINT   0xF /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
 #define FX_SWDMAG_THUNDER_SWORD_GLINT_2 0x10 /* rings: white gouraud ring flash at the sword, rotated */
 
+/* fx_0d7 choreography (docs/fxdata.md, "Choreography literals", names as fx_003's Thunder): the bolt pool items'
+ * lengths and look, op83's keyframes and length, the strip sizes; op84's sword-flash states. */
+#define FX_SWDMAG_THUNDER_BOLT_HEIGHT      0xC00 /* a bolt comes down from this far above its strike point */
+#define FX_SWDMAG_THUNDER_FLAT_BOLT_WIDTH  0xAA  /* line width of a flat-strip bolt at its first frame (shrinks to 0) */
+#define FX_SWDMAG_THUNDER_BOLT_WIDTH       0xF1  /* line width of a screen-space bolt at its first frame */
+#define FX_SWDMAG_THUNDER_BOLT_TAIL_FRAMES 0x10  /* pool item: after a screen-space bolt, wait for SMOKE / the flash */
+#define FX_SWDMAG_THUNDER_BOLT_TINT_RGB    0, 7, 0x20 /* additive screen tint (dark blue) as a screen-space bolt strikes */
+#define FX_SWDMAG_THUNDER_BOLT_FRAMES      6     /* pool item: a screen-space bolt shows for this many frames */
+#define FX_SWDMAG_THUNDER_FLAT_BOLT_FRAMES 4     /* pool item: a flat-strip bolt shows for this many frames (then ends) */
+#define FX_SWDMAG_THUNDER_BOLT_REACH       0x640 /* horizontal offset of a bolt's top from its strike point (+-0x80) */
+#define FX_SWDMAG_THUNDER_BOLT_COUNT       5     /* op83: bolts, on frames 0 and the four below */
+#define FX_SWDMAG_THUNDER_BOLT_2_FRAME     3
+#define FX_SWDMAG_THUNDER_BOLT_3_FRAME     5
+#define FX_SWDMAG_THUNDER_BOLT_4_FRAME     6
+#define FX_SWDMAG_THUNDER_BOLT_5_FRAME     7
+#define FX_SWDMAG_THUNDER_SCATTERED_BOLT   3     /* op83: this bolt strikes off the target's centre (+-0x190) */
+#define FX_SWDMAG_THUNDER_FRAMES           0xC   /* op83: the task ends at this frame */
+#define FX_SWDMAG_THUNDER_STRIP_POINTS  16   /* points of a bolt strip (fx_0d7_strips, fxm_drawJaggedStrip16) */
+#define FX_SWDMAG_THUNDER_BRANCH_POINTS 4    /* points of a branch (fxm_drawJaggedStrip4) */
+#define FX_SWDMAG_THUNDER_JITTER_ROWS   0x40 /* fx_0d7_jitter rows of three random offsets (along, across, angle) */
+#define FX_SWDMAG_THUNDER_BOLT_SLOTS    0xC  /* pool items (strip10 = the bolt count, 1..5) */
+#define FX_SWDMAG_THUNDER_FLASH_STATE_IN      0 /* op84: the SWORD_GLINT rings open up at the sword */
+#define FX_SWDMAG_THUNDER_FLASH_STATE_FLICKER 1 /* op84: they flicker and grow */
+#define FX_SWDMAG_THUNDER_FLASH_STATE_FADE    2 /* op84: the rotated ring turns and they fade */
+#define FX_SWDMAG_THUNDER_FLASH_IN_FRAMES      3 /* FX_SWDMAG_THUNDER_FLASH_STATE_IN's length */
+#define FX_SWDMAG_THUNDER_FLASH_FLICKER_FRAMES 9 /* FX_SWDMAG_THUNDER_FLASH_STATE_FLICKER's length */
+#define FX_SWDMAG_THUNDER_FLASH_FADE_FRAMES    9 /* FX_SWDMAG_THUNDER_FLASH_STATE_FADE's length (the op ends) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */
@@ -28,7 +56,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[16]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_SWDMAG_THUNDER_STRIP_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0d7Strip; /* 0x84 */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
