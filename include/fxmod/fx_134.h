@@ -77,6 +77,52 @@
 #define FX_DOOMSDAY_WHITE_FLASH_RGB  0xFF, 0xFF, 0xFF /* STATE_DEBRIS's end: additive white */
 #define FX_DOOMSDAY_STATE_FADE    0xA  /* the screen grid zooms back, the white fades (the op ends; the models are cleared) */
 #define FX_DOOMSDAY_FADE_FRAMES   0x20
+/* deep pass: the keyframes inside the states */
+#define FX_DOOMSDAY_SPACE_BOB_FRAMES 0x10 /* STATE_SPACE: the camera bobs up (a quarter sine) and the space layers sink in */
+#define FX_DOOMSDAY_SPACE_LAYERS_FRAME 8  /* STATE_SPACE: NEBULA / STARFIELD / SPACE_LAYER fade in from here */
+#define FX_DOOMSDAY_SPACE_LAYERS_FADE_FRAMES 4 /* over this many frames */
+#define FX_DOOMSDAY_ARCH_COLUMN_PIECES 4  /* STATE_ARCH / _TUNNEL: STAR_ARCH copies stacked into a column, */
+#define FX_DOOMSDAY_ARCH_COLUMN_STEP   0x800 /* this far apart */
+#define FX_DOOMSDAY_TUNNEL_ARCH_RINGS  4  /* STATE_TUNNEL: STAR_ARCH rings round the meteor, each 2/3 the last */
+#define FX_DOOMSDAY_CONE_GRID_PULSE_FRAME 0x10 /* STATE_CONE: the screen grid pulses after this frame */
+#define FX_DOOMSDAY_CONE_FLARE_FRAME   0x1C /* STATE_CONE: LIGHT_CONE flares after this frame */
+#define FX_DOOMSDAY_CONE_SPARKS        0x10 /* STATE_CONE: CONE_SPARK sprites stacked up the cone */
+#define FX_DOOMSDAY_RISER_PERIOD       5    /* STATE_CONE: a riser pool item on frame % this == ORB_KIND_RISER */
+#define FX_DOOMSDAY_GATHER_BOLTS       2    /* STATE_GATHER: purple streaks (fx_134_bolts[0..1]) from above down to the meteor */
+#define FX_DOOMSDAY_RUSH_ARCH_RINGS    3    /* STATE_RUSH: STAR_ARCH rings round the meteor, each 3/4 the last */
+#define FX_DOOMSDAY_ORB_KIND_ORB    0  /* Fx134Orb.kind0 (frame & 1 in STATE_METEOR): a meteor orb flying at the meteor, */
+#define FX_DOOMSDAY_ORB_KIND_ORB_2  1  /* drawn alike */
+#define FX_DOOMSDAY_ORB_KIND_DRIFT  4  /* a METEOR rock drifting and slowing (never spawned in this module) */
+#define FX_DOOMSDAY_ORB_PHASE_FLY    0 /* Fx134Orb.phase2: an orb flies with a sprite trail until inside fx_134_catchRadius, */
+#define FX_DOOMSDAY_ORB_PHASE_CAUGHT 1 /* then EMBERS start on it, it slows and FIRE_RING / WHITE_RING burst (until STATE_ARCH) */
+#define FX_DOOMSDAY_ORB_TRAIL_IN_FRAMES   8 /* ORB_PHASE_FLY: the trail fades in */
+#define FX_DOOMSDAY_ORB_TRAIL_OUT_FRAMES  4 /* ORB_PHASE_CAUGHT: it fades out */
+#define FX_DOOMSDAY_ORB_RINGS_FRAMES      8 /* ORB_PHASE_CAUGHT: the ring burst */
+#define FX_DOOMSDAY_ORB_TRAIL_SPRITES    12 /* sprites behind an orb, one velocity step apart (cells of a 4-wide 64 x 64 grid) */
+#define FX_DOOMSDAY_ORB_SIZES 4 /* STATE_METEOR: orb size index (fx_134_orbScales / fx_134_orbSpeeds) = frame % this */
+/* fxm_drawSprite3D textures: 4-bit page (0x280, 0x100), 64 x 64 cells, two CLUTs */
+#define FX_DOOMSDAY_SPRITE_TPAGE     0x1A
+#define FX_DOOMSDAY_ORB_TRAIL_CLUT   0x3D06 /* CLUT (0x60, 0xF4) */
+#define FX_DOOMSDAY_CONE_SPARK_CLUT  0x3D02 /* CLUT (0x20, 0xF4) */
+#define FX_DOOMSDAY_SPRITE_CELL      0x40   /* cell size (u / v step, width, height) */
+/* STATE_METEOR: a mirrored sprite strip from the METEOR page (fxm_drawMirrorSprite) (look pending) */
+#define FX_DOOMSDAY_MIRROR_TPAGE 0x98   /* 8-bit page (0x200, 0x100) */
+#define FX_DOOMSDAY_MIRROR_CLUT  0x3DC0 /* CLUT (0, 0xF7) */
+#define FX_DOOMSDAY_MIRROR_U     0
+#define FX_DOOMSDAY_MIRROR_V     0xC0
+#define FX_DOOMSDAY_MIRROR_W     0x100
+#define FX_DOOMSDAY_MIRROR_H     0x40
+/* STATE_CONE: two smoke strips scroll across the screen (fxm_drawTiledStrip), LIGHT_CONE's texture (the page word
+ * without abr: the helper adds its abr argument) */
+#define FX_DOOMSDAY_SMOKE_TPAGE  0x9C   /* 8-bit page (0x300, 0x100) */
+#define FX_DOOMSDAY_SMOKE_CLUT   0x3E00 /* CLUT (0, 0xF8) */
+#define FX_DOOMSDAY_SMOKE_U      0x80
+#define FX_DOOMSDAY_SMOKE_SIZE   0x80   /* strip tile width and height */
+/* STATE_RUSH: fxm_drawBulgeGrid24 samples the streamed TUNNEL rect (STAR_TUNNEL page, v 0x80) */
+#define FX_DOOMSDAY_BULGE_TPAGE  0x17   /* 4-bit page (0x1C0, 0x100) */
+#define FX_DOOMSDAY_BULGE_CLUT   0x3D00 /* CLUT (0, 0xF4) */
+#define FX_DOOMSDAY_BULGE_U      0
+#define FX_DOOMSDAY_BULGE_V      0x80
 #define FX_DOOMSDAY_POOL_SLOTS    0x31 /* op80 pool items (Fx134Orb): */
 #define FX_DOOMSDAY_ORB_KIND_RISER  2  /* Fx134Orb.kind0: a STAR_ARCH copy rising from the cone (STATE_CONE, every 5th frame), */
 #define FX_DOOMSDAY_RISER_FRAMES  24
@@ -189,7 +235,7 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
 
 extern SVECTOR fx_134_origin; /* caster position */
 extern CVECTOR fx_134_rippleColors0[];
-extern s16 fx_134_orbSpeeds[4];
+extern s16 fx_134_orbSpeeds[FX_DOOMSDAY_ORB_SIZES];
 extern CVECTOR fx_134_rippleColors1[];
 extern CVECTOR fx_134_rippleColors2[2];
 extern Fx134Bolt fx_134_bolts[FX_DOOMSDAY_BOLTS];
