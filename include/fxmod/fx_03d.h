@@ -15,6 +15,21 @@
 #define FX_LUNA_FLAME_RING     0x16 /* 'so' model: flat ring with an orange flame texture, registered in op82 */
 #define FX_LUNA_FLAME_BOWL     0x17 /* 'so' model: shallow bowl with an orange flame-streak texture, registered in op82 */
 
+/* fx_03d choreography (docs/fxdata.md, "Choreography literals"): op80's length; op81's keyframes and length; op82's flame models
+ * (grow, spread, fades) and length. */
+#define FX_LUNA_FRAMES           0x28 /* op80: the task ends at this frame */
+#define FX_LUNA_GOLD_RINGS_FRAME 0x10 /* op81: FX_LUNA_GOLD_RINGS start */
+#define FX_LUNA_CONES_FRAME      0x28 /* op81: FX_LUNA_MAGENTA_RING and FX_LUNA_LIGHT_CONES start */
+#define FX_LUNA_RINGS_FRAMES     0x3C /* op81: the task ends at this frame */
+#define FX_LUNA_RED_TRAIL_TRAIL_SLOTS  9    /* FX_LUNA_RED_TRAIL's trail buffer fx_03d_trails: slots of */
+#define FX_LUNA_RED_TRAIL_TRAIL_STRIDE 0x88 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_LUNA_MODEL_COUNT      2    /* btlfx_initEffModels slots: FLAME_BOWL, FLAME_RING */
+#define FX_LUNA_GROW_FRAMES      0xF  /* op82: the flame bowl and ring grow (scale 0 -> 0x1800) over this many frames, then */
+#define FX_LUNA_SPREAD_FRAMES    0x19 /* spread wider over this many; they are drawn until GROW + SPREAD */
+#define FX_LUNA_FADE_FRAMES      0xF  /* op82: the models fade in (from frame 0) / out over this many frames */
+#define FX_LUNA_FADE_OUT_FRAME   0x19 /* op82: the fade-out starts */
+#define FX_LUNA_FLAMES_FRAMES    0x3C /* op82: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

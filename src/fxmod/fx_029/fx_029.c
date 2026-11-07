@@ -6,13 +6,13 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx029Work);
     } else if (mode == 1) {
         work->hold0 = 0;
         fx_029_env = env;
         ((s32 *)&work->pos8)[0] = ((s32 *)&env->targets->centerX)[0];
         zWord = ((s32 *)&env->targets->centerX)[1];
-        work->pos8.vy -= 0xFA;
+        work->pos8.vy -= FX_WHITE_WIND_HEIGHT;
         ((s32 *)&work->pos8)[1] = zWord;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WHITE_WIND_GLOW), (s32)&work->pos8);
         if (work->emit4 != NULL) {
@@ -20,7 +20,7 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->hold0 == 0 && frame >= 0x3C) {
+        if (work->hold0 == 0 && frame >= FX_WHITE_WIND_FRAMES) {
             return 1;
         }
     }

@@ -12,6 +12,11 @@
 #define FX_GLOWING_EYES_SMOKE        0x4 /* emitter: grey smoke wisps */
 #define FX_GLOWING_EYES_SWIRL        0x5 /* emitter: pale green swirling vortex */
 
+/* fx_032 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_GLOWING_EYES_SPARKS_FRAME 4    /* op80: the spark dots and glow rings start at the caster's two eye bones, following them from the next frame */
+#define FX_GLOWING_EYES_SMOKE_FRAME  0x10 /* op80: FX_GLOWING_EYES_SMOKE and FX_GLOWING_EYES_SWIRL start at the target */
+#define FX_GLOWING_EYES_FRAMES       0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     SVECTOR pos0; /* target body position */
     SVECTOR pos8;

@@ -10,7 +10,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx02fWork);
     } else if (mode == 1) {
         fx_02f_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
@@ -24,8 +24,8 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_FLAME_STREAK), (s32)&work->pos8);
         if (work->emit20 != NULL) {
             work->emit20->trails = (s32)fx_02f_trails;
-            work->emit20->trailSlots = 0x40;
-            work->emit20->trailStride = 0x60;
+            work->emit20->trailSlots = FX_FLAME_FLAME_STREAK_TRAIL_SLOTS;
+            work->emit20->trailStride = FX_FLAME_FLAME_STREAK_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
@@ -50,7 +50,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit20->rot.vy = work->aim0.vy;
             work->emit20->rot.vz = work->aim0.vz;
         }
-        if (frame == 0x10) {
+        if (frame == FX_FLAME_BURST_FRAME) {
             for (i = 0; i < env->targets->targetCount; i++) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLAME_FLAME_BURST), (s32)&fx_02f_targetPos[i]);
                 if (emitter != NULL) {
@@ -58,7 +58,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x30;
+        return frame >= FX_FLAME_FRAMES;
     }
     return 0;
 }

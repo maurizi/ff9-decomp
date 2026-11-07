@@ -5,7 +5,7 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx02eWork);
     } else if (mode == 1) {
         fx_02e_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos10);
@@ -20,7 +20,7 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x24) {
+        if (frame == FX_MAGIC_BREAK_RUNE_RING_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_BREAK_RUNE_RING), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_BREAK_VIOLET_WAVES), (s32)&work->pos18);
             if (work->emit8 != NULL) {
@@ -30,7 +30,7 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (frame >= 0x24) {
+        if (frame >= FX_MAGIC_BREAK_RUNE_RING_FRAME) {
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos18, (s16 *)&work->aim20);
             if (work->emit8 != NULL) {
                 if (work->emit8->state == BTLFX_EMIT_DONE) {
@@ -53,7 +53,7 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x46;
+        return frame >= FX_MAGIC_BREAK_FRAMES;
     }
     return 0;
 }

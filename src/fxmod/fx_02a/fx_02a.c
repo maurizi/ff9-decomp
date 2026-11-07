@@ -6,7 +6,7 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx02aWork);
     } else if (mode == 1) {
         fx_02a_env = env;
         work->hold0 = 0;
@@ -19,7 +19,7 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-            if (frame == 8) {
+            if (frame == FX_SILENCE_GLYPH_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_GLYPH), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
@@ -29,10 +29,10 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame >= 8) {
+            if (frame >= FX_SILENCE_GLYPH_FRAME) {
                 ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SILENCE_NEBULA_TEXTURE), frame);
             }
-            if (frame >= 0x28) {
+            if (frame >= FX_SILENCE_FRAMES) {
                 return 1;
             }
         }

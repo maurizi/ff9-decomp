@@ -6,12 +6,12 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
 
     if (mode == 0) {
-        *args = 0x6C;
+        *args = sizeof(Fx030Work);
     } else if (mode == 1) {
         fx_030_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);
         work->pos8.vx = env->targets->centerX;
-        work->pos8.vz = env->targets->centerZ + 0x1F4;
+        work->pos8.vz = env->targets->centerZ + FX_POLLEN_AIM_DEPTH;
         work->pos8.vy = 0;
         ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->pos8, (s16 *)&work->aim10);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos0, (s16 *)&work->aim18);
@@ -44,13 +44,13 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit28->rot.vy = work->aim10.vy;
             work->emit28->rot.vz = work->aim10.vz;
         }
-        if (frame == 6) {
+        if (frame == FX_POLLEN_DUST_PUFF_FRAME) {
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&work->pos2C[i]);
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POLLEN_DUST_PUFF), (s32)&work->pos2C[i]);
             }
         }
-        return frame >= 0x32;
+        return frame >= FX_POLLEN_FRAMES;
     }
     return 0;
 }

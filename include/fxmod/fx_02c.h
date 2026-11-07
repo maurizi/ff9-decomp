@@ -9,6 +9,11 @@
 #define FX_BAD_BREATH_GAS_CLOUD 0x7 /* emitter: yellow-grey and purple gas clouds + green / pink glows */
 #define FX_BAD_BREATH_GAS_BURST 0x8 /* emitter: yellow-grey and purple gas clouds, glows, green gas burst */
 
+/* fx_02c choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe, length and aim point. */
+#define FX_BAD_BREATH_GAS_BURST_FRAME 8    /* op80: FX_BAD_BREATH_GAS_BURST starts at pos10 */
+#define FX_BAD_BREATH_FRAMES          0x46 /* op80: the task ends at this frame */
+#define FX_BAD_BREATH_AIM_HEIGHT      0xC8 /* pos10, where the gas cloud is aimed and the burst starts: this far above the targets' centre */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

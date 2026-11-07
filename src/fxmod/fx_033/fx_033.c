@@ -6,13 +6,13 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     s32 ratio = 0;
 
     switch (curve) {
-    case 0:
+    case FX_SNORT_EASE_LINEAR:
         ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
-    case 1:
+    case FX_SNORT_EASE_SQUARED:
         ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
-    case 2:
+    case FX_SNORT_EASE_INV_SQUARED:
         ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
@@ -26,7 +26,7 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 dz;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx033Work);
     } else if (mode == 1) {
         work->timer0 = 0;
         fx_033_env = env;
@@ -37,8 +37,8 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_aimAngles((s16 *)&work->pos4, (s16 *)&work->posC, (s16 *)&work->aim24);
         if (work->emit2C != NULL) {
             work->emit2C->trails = (s32)fx_033_trails;
-            work->emit2C->trailSlots = 0x2E;
-            work->emit2C->trailStride = 0x4C;
+            work->emit2C->trailSlots = FX_SNORT_SMOKE_STREAKS_TRAIL_SLOTS;
+            work->emit2C->trailStride = FX_SNORT_SMOKE_STREAKS_TRAIL_STRIDE;
         }
     } else {
         frame = entry->frame;
@@ -52,19 +52,19 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit2C->rot.vz = work->aim24.vz;
             }
         }
-        if (frame == 0x18) {
+        if (frame == FX_SNORT_KNOCKBACK_FRAME) {
             work->timer0 = frame;
         }
         if (work->timer0 != 0) {
             work->timer0--;
-            dist = fxm_easeLerp(1, 0x18, work->timer0, 0, 0x2000);
+            dist = fxm_easeLerp(FX_SNORT_EASE_SQUARED, FX_SNORT_KNOCKBACK_FRAMES, work->timer0, 0, FX_SNORT_PUSH_DIST);
             work->pos1C.vx = work->pos14.vx + ((ex->math_sin(work->aim24.vy) * dist) >> 12);
             dz = ex->math_cos(work->aim24.vy) * dist;
             work->pos1C.vy = work->pos14.vy - (dist >> 6);
             work->pos1C.vz = work->pos14.vz + (dz >> 12);
             ex->btlfx_setUnitPos(0, (s16 *)&work->pos1C);
         }
-        return frame >= 0x32;
+        return frame >= FX_SNORT_FRAMES;
     }
     return 0;
 }

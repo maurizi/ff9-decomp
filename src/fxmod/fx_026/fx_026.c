@@ -122,7 +122,7 @@ static s32 fx_026_op80PoolTask(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk801
         rot.vy = 0;
         rot.vz = it->spin2;
         it->spin2 += 0x20;
-        if (frame == 4) {
+        if (frame == FX_SHIVA_ICICLE_SHOW_FRAME) {
             it->posC.vx = pos.vx;
             it->posC.vy = pos.vy;
             it->posC.vz = pos.vz;
@@ -137,7 +137,7 @@ static s32 fx_026_op80PoolTask(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk801
             }
             ex->btlfx_moveEmitterTo((s32)it->emit8, (s32)&trackPos);
         }
-        if (frame >= 4) {
+        if (frame >= FX_SHIVA_ICICLE_SHOW_FRAME) {
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model68);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C);
         }
@@ -159,16 +159,16 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        init->workSize = 0x70;
-        init->elemSize = 0x14;
+        init->workSize = sizeof(Fx026Work80);
+        init->elemSize = sizeof(Fx026Item);
         init->elemFn = (s32)fx_026_op80PoolTask;
-        init->poolCount = 6;
+        init->poolCount = FX_SHIVA_ICICLE_COUNT;
     } else {
     if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_SHIVA_STATE_INTRO;
         work->frame4 = 0;
         fx_026_env = env;
-        ex->btlfx_initEffModels(fx_026_effModels, 0x20);
+        ex->btlfx_initEffModels(fx_026_effModels, FX_SHIVA_MODEL_COUNT);
         work->rot58.vy = 0x800;
         work->scale4C.vx = 0x1000;
         work->scale4C.vy = 0x1000;
@@ -189,7 +189,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     frame = entry->frame;
     ringScale = 0;
     switch (work->state0) {
-    case 0:
+    case FX_SHIVA_STATE_INTRO:
         if (frame == 0) {
             emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_CHUNKS_2), (s32)&work->pos10);
             if (emitter != NULL) {
@@ -204,19 +204,19 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter->otZ = 0x40;
             }
         }
-        if (frame >= 40) {
-            work->state0 = 1;
+        if (frame >= FX_SHIVA_INTRO_FRAMES) {
+            work->state0 = FX_SHIVA_STATE_ENTER;
             entry->frame = -1;
             ex->Hi_SetSummonMotion(((Fx026Summon *)env->loader)->summon54->motion180, ((Fx026Summon *)env->loader)->model60);
             ex->Hi_SetSummonMotFrame(((Fx026Summon *)env->loader)->model60, 0);
             ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->loader)->model60, 0, 0);
         }
         break;
-    case 1:
+    case FX_SHIVA_STATE_ENTER:
         work->pos40.vx = env->camera->points[2].vx;
         work->pos40.vy = env->camera->points[2].vy;
         work->pos40.vz = env->camera->points[2].vz;
-        if (frame >= 2) {
+        if (frame >= FX_SHIVA_SUMMON_SHOW_FRAME) {
             ex->Hi_DrawSummonModel(&work->rot58, (VECTOR *)&work->pos40, (s32)&work->scale4C,
                                    ((Fx026Summon *)env->loader)->model60, 0);
             ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->model60, 0, (u16 *)&work->pos28);
@@ -228,30 +228,30 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vx = trackPos.vx;
         env->camera->points[2].vy = trackPos.vy;
         env->camera->points[2].vz = trackPos.vz;
-        if (frame == 38) {
+        if (frame == FX_SHIVA_GLOW_DOMES_FRAME) {
             emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_GLOW_DOMES), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
-        if (frame == 42) {
+        if (frame == FX_SHIVA_GLOW_DOMES_2_FRAME) {
             emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_GLOW_DOMES_2), (s32)&work->pos28);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
-        if (frame >= 66) {
-            work->state0 = 2;
+        if (frame >= FX_SHIVA_ENTER_FRAMES) {
+            work->state0 = FX_SHIVA_STATE_CHARGE;
             entry->frame = -1;
             fx_026_op80Model = work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICICLE), 0);
             work->model6C = fx_026_op80Model2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICICLE_2), 1);
         }
         break;
-    case 2:
+    case FX_SHIVA_STATE_CHARGE:
         work->pos40.vx = env->camera->points[2].vx;
         work->pos40.vy = env->camera->points[2].vy;
         work->pos40.vz = env->camera->points[2].vz;
-        t = (frame << 12) / 50;
+        t = (frame << 12) / FX_SHIVA_CHARGE_FRAMES;
         ex->Hi_DrawSummonModel(&work->rot58, (VECTOR *)&work->pos40, (s32)&work->scale4C,
                                ((Fx026Summon *)env->loader)->model60, 0);
         ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->model60, 0, (u16 *)&work->pos28);
@@ -270,19 +270,19 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter->otZ = 0x40;
             }
         }
-        if (frame == 29) {
+        if (frame == FX_SHIVA_ICE_BURST_FRAME) {
             emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_BURST), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
-        if (frame == 32) {
+        if (frame == FX_SHIVA_TEX_ANIM_FRAME) {
             ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->loader)->model60, 1, 0);
         }
         ringAlpha = t;
         ringScale = (ringAlpha >> 1) + 0x800;
-        if (frame >= 50) {
-            work->state0 = 3;
+        if (frame >= FX_SHIVA_CHARGE_FRAMES) {
+            work->state0 = FX_SHIVA_STATE_ICICLES;
             entry->frame = -1;
             ex->btlfx_initParticleSystem();
             ex->btlfx_poolClear(entry->pool);
@@ -292,17 +292,17 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         break;
-    case 3:
+    case FX_SHIVA_STATE_ICICLES:
         if (frame == 0) {
             emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_CUBES), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = 0x40;
             }
         }
-        if (frame >= 4 && frame < 10) {
+        if (frame >= FX_SHIVA_ICICLES_FRAME && frame < FX_SHIVA_ICICLES_FRAME + FX_SHIVA_ICICLE_COUNT) {
             it = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (it != NULL) {
-                it->track4 = frame - 4;
+                it->track4 = frame - FX_SHIVA_ICICLES_FRAME;
                 it->spin2 = ex->btlfx_rand();
             }
         }
@@ -323,7 +323,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = trackPos.vy;
         env->camera->points[2].vz = trackPos.vz;
         ringScale = ringAlpha;
-        if (frame >= 29) {
+        if (frame >= FX_SHIVA_ICICLES_FRAMES) {
             ex->btlfx_poolClear(entry->pool);
             return 1;
         }
@@ -365,17 +365,17 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         it->unk8 = 0;
     } else {
     switch (it->kind4) {
-    case 0:
+    case FX_SHIVA_STREAK_KIND_1:
         track = (u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_STREAK_PATH);
-        halfWidth = 0x46;
+        halfWidth = FX_SHIVA_STREAK_WIDTH;
         strip = &fx_026_strips0[it->strip2];
         t = frame * 2;
         track += ((s32 *)track)[it->strip2];
-        strip->count2 = 0x1F;
-        strip->lastSlot0 = 0x1F;
+        strip->count2 = FX_SHIVA_STREAK_POINTS - 1;
+        strip->lastSlot0 = FX_SHIVA_STREAK_POINTS - 1;
         strip->head1 = 0;
         pt = strip->pts4;
-        for (i = 0; i < 32; i++, pt++, t--) {
+        for (i = 0; i < FX_SHIVA_STREAK_POINTS; i++, pt++, t--) {
             if (t >= 0) {
                 fxm_keyGetVec((Fx026Track *)track, t, &keyPos);
                 if (i == 0) {
@@ -394,28 +394,28 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
             }
         }
         fade = 0x1000;
-        if (frame >= 16) {
-            fade = ex->math_cos(((frame - 16) << 10) >> 4);
+        if (frame >= FX_SHIVA_STREAK_FADE_FRAME) {
+            fade = ex->math_cos(((frame - FX_SHIVA_STREAK_FADE_FRAME) << 10) >> 4);
         }
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
-        if (frame >= 32) {
+        if (frame >= FX_SHIVA_STREAK_FRAMES) {
             return 1;
         }
         break;
-    case 1:
+    case FX_SHIVA_STREAK_KIND_2:
         track = (u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_STREAK_PATH_2);
-        halfWidth = 0x46;
+        halfWidth = FX_SHIVA_STREAK_WIDTH;
         strip = &fx_026_strips1[it->strip2];
         t = frame * 4;
         track += ((s32 *)track)[it->strip2];
-        strip->count2 = 0x1F;
-        strip->lastSlot0 = 0x1F;
+        strip->count2 = FX_SHIVA_STREAK_POINTS - 1;
+        strip->lastSlot0 = FX_SHIVA_STREAK_POINTS - 1;
         strip->head1 = 0;
         pt = strip->pts4;
-        if (t > 32) {
-            t = 32;
+        if (t > FX_SHIVA_STREAK_POINTS) {
+            t = FX_SHIVA_STREAK_POINTS;
         }
-        for (i = 0; i < 32; i++, pt++, t--) {
+        for (i = 0; i < FX_SHIVA_STREAK_POINTS; i++, pt++, t--) {
             if (t >= 0) {
                 fxm_keyGetVec((Fx026Track *)track, t, &keyPos);
                 if (i == 0) {
@@ -434,34 +434,34 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
             }
         }
         fade = 0x1000;
-        if (frame >= 8) {
-            fade = ex->math_cos(((frame - 8) << 10) >> 4);
+        if (frame >= FX_SHIVA_STREAK_2_FADE_FRAME) {
+            fade = ex->math_cos(((frame - FX_SHIVA_STREAK_2_FADE_FRAME) << 10) >> 4);
         }
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK_2), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
-        if (frame >= 24) {
+        if (frame >= FX_SHIVA_STREAK_2_FRAMES) {
             return 1;
         }
         break;
-    case 2:
+    case FX_SHIVA_STREAK_KIND_3:
         data = (u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_STREAK_PATH_2);
-        halfWidth = 0x58;
-        track = data + ((s32 *)data)[it->strip2 + 6];
-        data += ((s32 *)data)[it->strip2 + 12];
-        if (frame < 10) {
+        halfWidth = FX_SHIVA_STREAK_3_WIDTH;
+        track = data + ((s32 *)data)[it->strip2 + FX_SHIVA_STREAKS];
+        data += ((s32 *)data)[it->strip2 + 2 * FX_SHIVA_STREAKS];
+        if (frame < FX_SHIVA_STREAK_3_MORPH_FRAME) {
             blend = 0;
         } else {
-            blend = 0x1000 - ex->math_cos(((frame - 10) << 10) / 30);
+            blend = 0x1000 - ex->math_cos(((frame - FX_SHIVA_STREAK_3_MORPH_FRAME) << 10) / FX_SHIVA_STREAK_3_MORPH_FRAMES);
         }
         t = frame * 4;
         strip = (Fx026Strip32 *)&fx_026_strips2[it->strip2];
-        strip->count2 = 0x27;
-        strip->lastSlot0 = 0x27;
+        strip->count2 = FX_SHIVA_STREAK_3_POINTS - 1;
+        strip->lastSlot0 = FX_SHIVA_STREAK_3_POINTS - 1;
         strip->head1 = 0;
         pt = strip->pts4;
-        if (t > 40) {
-            t = 40;
+        if (t > FX_SHIVA_STREAK_3_POINTS) {
+            t = FX_SHIVA_STREAK_3_POINTS;
         }
-        for (i = 0; i < 40; i++, pt++, t--) {
+        for (i = 0; i < FX_SHIVA_STREAK_3_POINTS; i++, pt++, t--) {
             if (t >= 0) {
                 fxm_keyGetVec((Fx026Track *)track, t, &keyPos);
                 fxm_keyGetVec((Fx026Track *)data, t, &morphPos);
@@ -482,11 +482,11 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
             }
         }
         fade = 0x1000;
-        if (frame >= 24) {
-            fade = ex->math_cos(((frame - 24) << 10) >> 4);
+        if (frame >= FX_SHIVA_STREAK_3_FADE_FRAME) {
+            fade = ex->math_cos(((frame - FX_SHIVA_STREAK_3_FADE_FRAME) << 10) >> 4);
         }
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_STREAK_3), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
-        if (frame >= 40) {
+        if (frame >= FX_SHIVA_STREAK_3_FRAMES) {
             return 1;
         }
         break;
@@ -508,10 +508,10 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 bright;
 
     if (mode == 0) {
-        init->workSize = 0x14;
-        init->elemSize = 0xC;
+        init->workSize = sizeof(Fx026Work82);
+        init->elemSize = sizeof(Fx026Item82);
         init->elemFn = (s32)fx_026_op82PoolTask;
-        init->poolCount = 0x18;
+        init->poolCount = FX_SHIVA_STREAK_POOL_COUNT;
     } else if (mode == 1) {
         work->pos8.vx = 0;
         work->pos8.vz = -2500;
@@ -525,29 +525,29 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->unk0 == 0) {
-            if (frame == 13) {
-                for (i = 0; i < 6; i++) {
+            if (frame == FX_SHIVA_STREAKS_FRAME) {
+                for (i = 0; i < FX_SHIVA_STREAKS; i++) {
                     it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (it != NULL) {
-                        it->kind4 = 0;
+                        it->kind4 = FX_SHIVA_STREAK_KIND_1;
                         it->strip2 = i;
                     }
                 }
             }
-            if (frame == 13) {
+            if (frame == FX_SHIVA_STREAKS_FRAME) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_SHARD_BURST), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
             }
-            if (frame >= 39 && frame < 92) {
-                if (frame == 39) {
+            if (frame >= FX_SHIVA_VORTEX_FRAME && frame < FX_SHIVA_VORTEX_FRAME + FX_SHIVA_VORTEX_FRAMES) {
+                if (frame == FX_SHIVA_VORTEX_FRAME) {
                     work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_VORTEX), 1);
                 }
                 rot.vz = 0;
                 rot.vx = 0;
                 rot.vy = frame * 16;
-                t = ((frame - 39) << 12) / 53 >> 2;
+                t = ((frame - FX_SHIVA_VORTEX_FRAME) << 12) / FX_SHIVA_VORTEX_FRAMES >> 2;
                 scale.vx = scale.vz = 0x2000 - ex->math_cos(t);
                 scale.vy = 0x1800;
                 bright = ex->math_cos(t);
@@ -556,9 +556,10 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vz = work->pos8.vz;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model10);
                 ex->Hi_ModifyEffModelRGB(work->model10, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
-                fxm_drawScrollMoveX(1000 - frame * 2, 0x200, 0x1C0, 0x80, 0x40, 0x200, 0x180);
+                fxm_drawScrollMoveX(1000 - frame * 2, FX_SHIVA_VORTEX_VRAM_X, FX_SHIVA_VORTEX_VRAM_Y, FX_SHIVA_VORTEX_VRAM_W,
+                                FX_SHIVA_VORTEX_VRAM_H, FX_SHIVA_VORTEX_SRC_X, FX_SHIVA_VORTEX_SRC_Y);
             }
-            if (frame == 39) {
+            if (frame == FX_SHIVA_VORTEX_FRAME) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_SHATTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
@@ -567,24 +568,24 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
-                for (i = 0; i < 6; i++) {
+                for (i = 0; i < FX_SHIVA_STREAKS; i++) {
                     it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (it != NULL) {
-                        it->kind4 = 1;
+                        it->kind4 = FX_SHIVA_STREAK_KIND_2;
                         it->strip2 = i;
                     }
                 }
             }
-            if (frame == 39) {
-                for (i = 0; i < 6; i++) {
+            if (frame == FX_SHIVA_VORTEX_FRAME) {
+                for (i = 0; i < FX_SHIVA_STREAKS; i++) {
                     it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (it != NULL) {
-                        it->kind4 = 2;
+                        it->kind4 = FX_SHIVA_STREAK_KIND_3;
                         it->strip2 = i;
                     }
                 }
             }
-            if (frame >= 100) {
+            if (frame >= FX_SHIVA_VORTEX_OP_FRAMES) {
                 return 1;
             }
         }
@@ -613,7 +614,7 @@ static s32 fxm_shatterAddModel(s32 slot, s32 model) {
     s32 n;
     s32 k;
 
-    n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / 24;
+    n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / sizeof(Fx026Tri);
     ex->Hi_SplitMdlVertex(model, -1, (s32)tri);
     set->lastTris10 = tri;
     set->lastCount4 = n;
@@ -775,11 +776,11 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
     s32 shatter;
 
     if (mode == 1) {
-        it->state0 = 0;
+        it->state0 = FX_SHIVA_PIECE_STATE_FLY;
         it->pad4[1] = 0;
-    } else if (it->piece2 < 6) {
+    } else if (it->piece2 < FX_SHIVA_PIECE_COUNT) {
         switch (it->state0) {
-        case 0:
+        case FX_SHIVA_PIECE_STATE_FLY:
             fxm_keyGetVec((Fx026Track *)ex->btlfx_getFileData(entry->file, fx_026_pieceTrackBlocks[it->piece2]), frame, &keyPos);
             keyPos.vx += work->pos8.vx;
             keyPos.vy += work->pos8.vy;
@@ -795,10 +796,10 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, fx_026_op80Model2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, fx_026_op80Model);
-            if (frame >= 3) {
-                it->state0 = 1;
+            if (frame >= FX_SHIVA_PIECE_FLY_FRAMES) {
+                it->state0 = FX_SHIVA_PIECE_STATE_STAND;
                 ((s16 *)it)[-1] = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SHIVA_PIECE_TINT_RGB);
                 it->posC.vx = fx_026_pieceOffsets[it->piece2].vx;
                 it->posC.vy = fx_026_pieceOffsets[it->piece2].vy;
                 it->posC.vz = fx_026_pieceOffsets[it->piece2].vz;
@@ -812,17 +813,17 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
                 }
             }
             return 0;
-        case 1:
+        case FX_SHIVA_PIECE_STATE_STAND:
             if (frame + (it->piece2 - 5) <= 0) {
                 model = work->pieceModels18[it->piece2][0];
                 model2 = -1;
             } else {
-                if (frame < 16) {
+                if (frame < FX_SHIVA_PIECE_FORM_FRAMES) {
                     model = work->pieceModels18[it->piece2][fx_026_pieceStages[frame]];
                 } else {
-                    model = work->pieceModels18[it->piece2][2];
+                    model = work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1];
                 }
-                if (frame < 16) {
+                if (frame < FX_SHIVA_PIECE_FORM_FRAMES) {
                     model2 = -1;
                 } else {
                     model2 = work->model6C[it->piece2];
@@ -841,21 +842,21 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, model2);
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, model);
-            if (it->piece2 < 5) {
+            if (it->piece2 < FX_SHIVA_PIECE_COUNT - 1) {
                 shatter = fx_026_shatterNow;
             } else {
                 shatter = fx_026_shatterNow5;
             }
             if (shatter != 0) {
-                it->state0 = 2;
+                it->state0 = FX_SHIVA_PIECE_STATE_SHATTER;
                 ((s16 *)it)[-1] = -1;
-                fxm_shatterInit(it->piece2, 0x14, (Fx026Shatter *)((u8 *)env->workBuf + fx_026_shatterBufs[it->piece2].setOfs0),
+                fxm_shatterInit(it->piece2, FX_SHIVA_PIECE_SHARD_LIFE, (Fx026Shatter *)((u8 *)env->workBuf + fx_026_shatterBufs[it->piece2].setOfs0),
                               (Fx026Tri *)((u8 *)env->workBuf + fx_026_shatterBufs[it->piece2].trisOfs4));
-                fxm_shatterAddModel(it->piece2, work->pieceModels18[it->piece2][2]);
+                fxm_shatterAddModel(it->piece2, work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1]);
                 return 0;
             }
             break;
-        case 2:
+        case FX_SHIVA_PIECE_STATE_SHATTER:
             pos.vx = work->pos8.vx;
             pos.vy = work->pos8.vy;
             pos.vz = work->pos8.vz;
@@ -865,27 +866,27 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->pieceModels18[it->piece2][2]);
-            if (frame >= 14) {
-                fade = 0x1000 - ((frame - 14) << 12) / 6;
-                ex->Hi_ModifyEffModelAbr(work->pieceModels18[it->piece2][2], 1);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1]);
+            if (frame >= FX_SHIVA_PIECE_FADE_FRAME) {
+                fade = 0x1000 - ((frame - FX_SHIVA_PIECE_FADE_FRAME) << 12) / FX_SHIVA_PIECE_FADE_FRAMES;
+                ex->Hi_ModifyEffModelAbr(work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1], BTLFX_ABR_ADD);
                 bright = (fade / 2 >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->pieceModels18[it->piece2][2], bright, bright, bright);
+                ex->Hi_ModifyEffModelRGB(work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1], bright, bright, bright);
             } else {
-                ex->Hi_ModifyEffModelAbr(work->pieceModels18[it->piece2][2], 1);
+                ex->Hi_ModifyEffModelAbr(work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1], BTLFX_ABR_ADD);
                 bright = -0x40;
-                ex->Hi_ModifyEffModelRGB(work->pieceModels18[it->piece2][2], bright, bright, bright);
+                ex->Hi_ModifyEffModelRGB(work->pieceModels18[it->piece2][FX_SHIVA_PIECE_STAGES - 1], bright, bright, bright);
             }
             fxm_shatterRelease(it->piece2);
             fxm_shatterUpdate(it->piece2);
-            if (frame >= 20) {
+            if (frame >= FX_SHIVA_PIECE_FADE_FRAME + FX_SHIVA_PIECE_FADE_FRAMES) {
                 return 1;
             }
             break;
         }
     } else {
     switch (it->state0) {
-    case 0:
+    case FX_SHIVA_CORE_STATE_STAND:
         pos.vx = work->pos8.vx;
         pos.vy = work->pos8.vy;
         pos.vz = work->pos8.vz;
@@ -895,20 +896,20 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
         rot.vx = 0;
         rot.vy = 0;
         rot.vz = 0;
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C[6]);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C[FX_SHIVA_PIECE_CORE]);
         if (frame < 8) {
-            ex->Hi_ModifyEffModelRGB(work->model6C[6], ((frame << 12) >> 9) - 0x80, ((frame << 12) >> 9) - 0x80,
+            ex->Hi_ModifyEffModelRGB(work->model6C[FX_SHIVA_PIECE_CORE], ((frame << 12) >> 9) - 0x80, ((frame << 12) >> 9) - 0x80,
                                      ((frame << 12) >> 9) - 0x80);
         }
         if (fx_026_shatterNow6 != 0) {
-            it->state0 = 1;
+            it->state0 = FX_SHIVA_CORE_STATE_SHATTER;
             ((s16 *)it)[-1] = -1;
-            fxm_shatterInit(it->piece2, 0x57, fx_026_shatterBuf6, fx_026_shatterTris6);
-            fxm_shatterAddModel(it->piece2, work->model6C[6]);
+            fxm_shatterInit(it->piece2, FX_SHIVA_CORE_SHARD_LIFE, fx_026_shatterBuf6, fx_026_shatterTris6);
+            fxm_shatterAddModel(it->piece2, work->model6C[FX_SHIVA_PIECE_CORE]);
             return 0;
         }
         break;
-    case 1:
+    case FX_SHIVA_CORE_STATE_SHATTER:
         pos.vx = work->pos8.vx;
         pos.vy = work->pos8.vy;
         pos.vz = work->pos8.vz;
@@ -918,15 +919,15 @@ static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk8
         rot.vx = 0;
         rot.vy = 0;
         rot.vz = 0;
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C[6]);
-        if (frame >= 55) {
-            ex->Hi_ModifyEffModelRGB(work->model6C[6], ((0x1000 - (((frame - 55) << 12) >> 5)) >> 5) - 0x80,
-                                     ((0x1000 - (((frame - 55) << 12) >> 5)) >> 5) - 0x80,
-                                     ((0x1000 - (((frame - 55) << 12) >> 5)) >> 5) - 0x80);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C[FX_SHIVA_PIECE_CORE]);
+        if (frame >= FX_SHIVA_CORE_FADE_FRAME) {
+            ex->Hi_ModifyEffModelRGB(work->model6C[FX_SHIVA_PIECE_CORE], ((0x1000 - (((frame - FX_SHIVA_CORE_FADE_FRAME) << 12) >> 5)) >> 5) - 0x80,
+                                     ((0x1000 - (((frame - FX_SHIVA_CORE_FADE_FRAME) << 12) >> 5)) >> 5) - 0x80,
+                                     ((0x1000 - (((frame - FX_SHIVA_CORE_FADE_FRAME) << 12) >> 5)) >> 5) - 0x80);
         }
-        fxm_shatterRelease(6);
-        fxm_shatterUpdate(6);
-        if (frame >= 87) {
+        fxm_shatterRelease(FX_SHIVA_PIECE_CORE);
+        fxm_shatterUpdate(FX_SHIVA_PIECE_CORE);
+        if (frame >= FX_SHIVA_CORE_FRAMES) {
             return 1;
         }
         break;
@@ -947,20 +948,20 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 tint;
 
     if (mode == 0) {
-        init->workSize = 0x88;
-        init->elemSize = 0x14;
+        init->workSize = sizeof(Fx026Work81);
+        init->elemSize = sizeof(Fx026Item81);
         init->elemFn = (s32)fx_026_op81PoolTask;
-        init->poolCount = 0x4A;
+        init->poolCount = FX_SHIVA_BARRIER_POOL_COUNT;
     } else if (mode == 1) {
         fx_026_env = env;
-        work->state0 = 0;
+        work->state0 = FX_SHIVA_BARRIER_STATE_BUILD;
         work->frame4 = 0;
-        for (i = 0; i < 6; i++) {
-            for (j = 0; j < 3; j++) {
+        for (i = 0; i < FX_SHIVA_PIECE_COUNT; i++) {
+            for (j = 0; j < FX_SHIVA_PIECE_STAGES; j++) {
                 work->pieceModels18[i][j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_026_pieceModelBlocks[i][j]), 0);
             }
         }
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < FX_SHIVA_PIECE_COUNT + 1; i++) {
             work->model6C[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_026_op81ModelBlocks[i]), 1);
         }
         work->pos8.vx = fx_026_op81Pos.vx;
@@ -973,7 +974,7 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         state = work->state0;
         frame = entry->frame;
         switch (state) {
-        case 0:
+        case FX_SHIVA_BARRIER_STATE_BUILD:
             if (frame < 10 && (frame & 1)) {
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
@@ -983,32 +984,32 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 5) {
                 it2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it2 != NULL) {
-                    it2->piece2 = 6;
+                    it2->piece2 = FX_SHIVA_PIECE_CORE;
                 }
             }
             if (frame == 4) {
                 it2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it2 != NULL) {
-                    it2->piece2 = 5;
+                    it2->piece2 = FX_SHIVA_PIECE_COUNT - 1;
                 }
             }
-            if (frame >= 16) {
-                work->state0 = 1;
+            if (frame >= FX_SHIVA_BUILD_FRAMES) {
+                work->state0 = FX_SHIVA_BARRIER_STATE_SHATTER;
                 entry->frame = -1;
-                fx_026_shatterLine = 0x400;
+                fx_026_shatterLine = FX_SHIVA_SHATTER_LINE_Y;
             }
             break;
-        case 1:
-            if (frame == 20) {
+        case FX_SHIVA_BARRIER_STATE_SHATTER:
+            if (frame == FX_SHIVA_SHATTER_FRAME) {
                 fx_026_shatterNow = 1;
                 fx_026_shatterNow6 = 1;
             } else {
-                fx_026_shatterLine = 0x400 - (frame << 7);
+                fx_026_shatterLine = FX_SHIVA_SHATTER_LINE_Y - (frame << 7);
             }
-            if (frame == 24) {
+            if (frame == FX_SHIVA_SHATTER_5_FRAME) {
                 fx_026_shatterNow5 = 1;
             }
-            if (frame == 20) {
+            if (frame == FX_SHIVA_SHATTER_FRAME) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_DEBRIS_2), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
@@ -1020,46 +1021,48 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_BLUE_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_026_trails;
-                    emitter->trailSlots = 0xC;
-                    emitter->trailStride = 0x4C;
+                    emitter->trailSlots = FX_SHIVA_BLUE_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_SHIVA_BLUE_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame == 18) {
+            if (frame == FX_SHIVA_CYAN_RING_FRAME) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_CYAN_RING), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame == 32) {
+            if (frame == FX_SHIVA_STAR_GLINTS_FRAME) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_STAR_GLINTS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame == 44) {
+            if (frame == FX_SHIVA_ICE_CHUNKS_FRAME) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIVA_ICE_CHUNKS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame == 19) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0x80);
+            if (frame == FX_SHIVA_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_SHIVA_DARKEN_RGB);
             }
-            if (frame == 20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
+            if (frame == FX_SHIVA_SHATTER_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SHIVA_FLASH_RGB);
             }
-            if (frame >= 20 && frame < 36) {
-                tint = 0x80 - (((frame - 20) << 7) >> 4);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, tint >> 2, tint);
+            if (frame >= FX_SHIVA_SHATTER_FRAME && frame < FX_SHIVA_SHATTER_FRAME + FX_SHIVA_FLASH_FADE_FRAMES) {
+                tint = FX_SHIVA_FLASH_LEVEL - (((frame - FX_SHIVA_SHATTER_FRAME) << 7) >> 4);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, tint >> 2, tint);
             }
-            ex->btlfx_drawScrollMove(frame * 2, 0x2C0, 0x180, 0x40, 0x80, 0x2C0, 0x100);
-            if (frame >= 126) {
+            ex->btlfx_drawScrollMove(frame * 2, FX_SHIVA_BARRIER_VRAM_X, FX_SHIVA_BARRIER_VRAM_Y, FX_SHIVA_BARRIER_VRAM_W,
+                                      FX_SHIVA_BARRIER_VRAM_H, FX_SHIVA_BARRIER_SRC_X, FX_SHIVA_BARRIER_SRC_Y);
+            if (frame >= FX_SHIVA_SHATTER_OP_FRAMES) {
                 return 1;
             }
             break;
         }
-        ex->btlfx_drawScrollMove(frame, 0x280, 0x100, 0x40, 0x80, 0x280, 0x180);
+        ex->btlfx_drawScrollMove(frame, FX_SHIVA_ICICLE_2_VRAM_X, FX_SHIVA_ICICLE_2_VRAM_Y, FX_SHIVA_ICICLE_2_VRAM_W,
+                                  FX_SHIVA_ICICLE_2_VRAM_H, FX_SHIVA_ICICLE_2_SRC_X, FX_SHIVA_ICICLE_2_SRC_Y);
         work->frame4++;
     }
     return 0;
@@ -1070,7 +1073,7 @@ s32 fx_026_op87(s32 mode, Fx026Work87 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx026Work87);
     } else if (mode == 1) {
         work->path0 = *args;
         fx_026_env = env;

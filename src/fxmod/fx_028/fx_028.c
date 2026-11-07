@@ -5,7 +5,7 @@ s32 fx_028_op80(s32 mode, Fx028Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx028Work);
     } else if (mode == 1) {
         fx_028_env = env;
         env->camera->paused = 0;
@@ -25,13 +25,13 @@ s32 fx_028_op80(s32 mode, Fx028Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 6:
+        case FX_ELIXIR_SPARKLE_RINGS_FRAME:
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ELIXIR_SPARKLE_RINGS), (s32)&work->pos18);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
             break;
-        case 12:
+        case FX_ELIXIR_GREEN_GLOW_FRAME:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ELIXIR_GREEN_GLOW), (s32)&work->pos18);
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ELIXIR_BUBBLES), (s32)&work->pos18);
             if (work->emit10 != NULL) {
@@ -42,7 +42,7 @@ s32 fx_028_op80(s32 mode, Fx028Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        return frame >= 0x3C;
+        return frame >= FX_ELIXIR_FRAMES;
     }
     return 0;
 }

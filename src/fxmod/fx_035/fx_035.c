@@ -5,7 +5,7 @@ s32 fx_035_op80(s32 mode, Fx035Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x24;
+        *args = sizeof(Fx035Work);
     } else if (mode == 1) {
         fx_035_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos14);
@@ -20,14 +20,14 @@ s32 fx_035_op80(s32 mode, Fx035Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x14) {
+        if (frame == FX_DEVILS_CANDLE_FLAME_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEVILS_CANDLE_FLAME), (s32)&work->pos1C);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEVILS_CANDLE_FIRE), (s32)&work->pos1C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_DEVILS_CANDLE_FRAMES;
     }
     return 0;
 }

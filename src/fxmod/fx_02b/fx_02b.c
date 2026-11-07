@@ -14,7 +14,7 @@ s32 fx_02b_op80(s32 mode, Fx02bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     MATRIX boneMat;
 
     if (mode == 0) {
-        *args = 0x50;
+        *args = sizeof(Fx02bWork80);
     } else if (mode == 1) {
         fx_02b_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos14);
@@ -22,12 +22,12 @@ s32 fx_02b_op80(s32 mode, Fx02bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos34.vx = work->pos14.vx;
         work->pos34.vy = work->pos14.vy;
         work->pos34.vz = work->pos14.vz;
-        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot1C, 0x7D0, (s16 *)&work->pos34);
-        work->pos34.vy = -0xC8;
+        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot1C, FX_AERIAL_SLASH_GUST_REACH, (s16 *)&work->pos34);
+        work->pos34.vy = -FX_AERIAL_SLASH_GUST_HEIGHT;
         ex->btlfx_getUnitBoneMatrix(0x10, 0x1F, (BtlBone *)&u.m);
-        ex->btlfx_matrixPointAhead(&u.m, 0x0, (s32)&work->pos24);
+        ex->btlfx_matrixPointAhead(&u.m, FX_AERIAL_SLASH_BLADE_REACH, (s32)&work->pos24);
         ex->btlfx_getUnitBoneMatrix(0x10, 0x2D, (BtlBone *)&boneMat);
-        ex->btlfx_matrixPointAhead(&boneMat, 0x0, (s32)&work->pos2C);
+        ex->btlfx_matrixPointAhead(&boneMat, FX_AERIAL_SLASH_BLADE_REACH, (s32)&work->pos2C);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_CRESCENT), (s32)&work->pos24);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_CRESCENT_2), (s32)&work->pos2C);
         if (work->emit0 != NULL) {
@@ -41,19 +41,19 @@ s32 fx_02b_op80(s32 mode, Fx02bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 11:
-            work->tint4C = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->tint4C, work->tint4C, 0x80);
+        case FX_AERIAL_SLASH_FLASH_FRAME + 1:
+            work->tint4C = FX_AERIAL_SLASH_FLASH_LEVEL;
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, work->tint4C, work->tint4C, FX_AERIAL_SLASH_FLASH_LEVEL);
             break;
-        case 10:
-            work->tint4C = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->tint4C, work->tint4C, 0x80);
+        case FX_AERIAL_SLASH_FLASH_FRAME:
+            work->tint4C = FX_AERIAL_SLASH_FLASH_LEVEL;
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, work->tint4C, work->tint4C, FX_AERIAL_SLASH_FLASH_LEVEL);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_WIND_RINGS), (s32)&work->pos34);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_DUST_RING), (s32)&work->pos34);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_BLUE_GUST), (s32)&work->pos34);
             break;
         }
-        if (frame >= 0xD) {
+        if (frame >= FX_AERIAL_SLASH_GRID_FRAME) {
             s32 gridScale = (frame << 7) + 0x980;
 
             u.d.scale.vx = gridScale;
@@ -87,7 +87,7 @@ s32 fx_02b_op80(s32 mode, Fx02bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->rot.vz = work->aim44.vz;
             }
         }
-        return frame >= 0x28;
+        return frame >= FX_AERIAL_SLASH_FRAMES;
     }
     return 0;
 }
@@ -97,7 +97,7 @@ s32 fx_02b_op81(s32 mode, Fx02bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx02bWork81);
     } else if (mode == 1) {
         s32 target = *args;
 
@@ -118,7 +118,7 @@ s32 fx_02b_op81(s32 mode, Fx02bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame == 1) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
-        return frame >= 0x28;
+        return frame >= FX_AERIAL_SLASH_DUST_FRAMES;
     }
     return 0;
 }
