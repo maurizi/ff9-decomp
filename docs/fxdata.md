@@ -446,8 +446,8 @@ total 18,228 → 17,695.
   (`btlfx_drawRings(..., 0x7000, ...)`), colour-channel masks (`& 0x1F`), shade clamps.
 - Frame-relative shifts (`t = frame << 10` = a 4-frame ramp) where the matching length is a separate compare:
   the compare gets the name, the shift stays (a division would change the code).
-- abr arguments (1 = additive, 2 = subtractive) are the noise values 1 / 2 the survey skips; generic
-  `BTLFX_ABR_*` names in btlfx_mod.h would cover every module at once if wanted.
+- abr arguments (1 = additive, 2 = subtractive) are the noise values 1 / 2 the survey skips. Since the
+  all-module pass (below) every literal one is a `BTLFX_ABR_*` name (ovl_0b.h).
 - Values the code does not tie to one meaning: Firaga's column height (0x960 in fx_007, but 0xB86 / 0xA28 in
   fx_048's two branches), the branch start `% 14` / `% 13` (one less than the last point index pair, not
   provably derived), drawRings' fixed data frame (`..., 4, 1, ...`).
@@ -462,3 +462,97 @@ goes quickly once a module's data names exist; reading the choreography took abo
 module and a few minutes for its twin (same names, the value diff). That is roughly 60-90 hours for the other
 360 modules, the summons (several groups, longer state machines) taking a third of it; in parallel slices
 like the effect-data naming (8 x ~45 modules) a few sessions each.
+
+## Choreography (all modules)
+
+After the pilot, the remaining 360 modules were named in eight slices, then the biggest state machines got
+deep passes that read them one state at a time. The scheme is the pilot's ([Scheme](#scheme)): defines in a
+`/* fx_XXX choreography */` block after the module's effect-data names, the spell's game-name prefix, a comment
+saying what the code does with the value, derived numbers written as expressions of the names, and twins
+(one / all targets, short / long summons, Sword Magic) sharing names with their own values. Later additions to the
+scheme: `Hi_Register*Model` texture args as `FX_<SPELL>_<MODEL>_TPAGE / _CLUT / _U / _V` (fxdata.py's `lit()`
+resolves them, so the renders stay textured), countdown-slot indices `FX_<SPELL>_T_<PHASE>` for the modules that
+keep their phases in `timers[N]` arrays, and names carried over between twins by token alignment.
+
+Two passes over all 380 modules: every literal abr argument (of the draw exports btlfx_drawScreenTint /
+drawRings / drawParticles / drawTrail / drawSprite(s) / drawSpriteAtOt / drawAnimQuads / drawRippleGrid /
+addPrimAbr / linkPrimAbr / Hi_Modify*ModelAbr, and of the modules' own helpers whose parameter is `abr`) is a
+`BTLFX_ABR_*` name, and every literal unit selector passed to the btlfx unit exports (getUnitPos / BodyPos /
+BonePos / BoneMatrix / HomePos / Rot / Scale, setUnit*, addRadiusSixth, fadeUnitById, getWeaponPos, isEnemyUnit,
+clearUnitStatus, resetIdleMotion's second argument, btl_getUnit, ...) or to the modules' unit helpers
+(fxm_turnUnitBy / fxm_moveUnitArc / fxm_startUnitMotion, ...) is a `BTLFX_UNIT_*` name (ovl_0b.h; 0x10 caster,
+0x11 partner). Target index 0 (the first target) stays a plain 0; no other selector value occurs as a literal.
+
+**Totals**: `tools/literal_survey.py --bin fxmod` actionable literals (compare / mask / case / arg / assign)
+18,228 before the pilot → 17,695 after it → **8,762** now (720 / 361 / 76 / 4,465 / 3,140).
+
+| doc | modules | what it covers | actionable literals (fxlits) |
+|---|---|---|---|
+| [fxchoreo_s0.md](fxchoreo_s0.md) | fx_001 .. fx_05f (70) | spells and early abilities, Shiva | 1,379 → 599 |
+| [fxchoreo_s1.md](fxchoreo_s1.md) | fx_060 .. fx_0b0 (58) | status spells, Demi, Meteor, Flare, the Cura / Curaga twins | 1,826 → 1,120 |
+| [fxchoreo_s2.md](fxchoreo_s2.md) | fx_0b1 .. fx_0d8 (39) | Carbuncle, Leviathan, Atomos, Ramuh, Fenrir, Phoenix, Sword Magic fx_0d4 .. 0d8 | 2,330 → 1,391 |
+| [fxchoreo_s3.md](fxchoreo_s3.md) | fx_0d9 .. fx_0f2 (28) | Sword Magic twins, Rebirth Flame, Fenrir 2nd, Bahamut, Doom, Roulette | 2,329 → 1,568 |
+| [fxchoreo_s4.md](fxchoreo_s4.md) | fx_0f3 .. fx_128 (48) | late abilities, Madeen, Odin, Ifrit, Throw, items, enemy skills | 1,980 → 1,244 |
+| [fxchoreo_s5.md](fxchoreo_s5.md) | fx_129 .. fx_187 (36) | Earthquake, Doomsday, Lucky Seven, Ark's nine groups, Ultima; first abr / caster passes | 2,412 → 1,336 |
+| [fxchoreo_s6.md](fxchoreo_s6.md) | fx_188 .. fx_1be (48) | short summons, sword skills, enemy Death sequences | 2,558 → 1,774 |
+| [fxchoreo_s7.md](fxchoreo_s7.md) | fx_1bf_0 .. fx_1fe (30) | short Ark / Carbuncle / Fenrir / Phoenix, Dragon's Crest, Six Dragons, Trance, late enemy skills | 2,155 → 1,243 |
+| [fxchoreo_deep_a.md](fxchoreo_deep_a.md) | fx_07a, 07d, 086, 134, 0e2, 105 | Demi Shock, Flare, Meteor, Doomsday, Fenrir 2nd, Odin | 1,345 → 730 |
+| [fxchoreo_deep_b.md](fxchoreo_deep_b.md) | fx_114, 0fb_0/1, 0e3_0/1 | Ifrit, Madeen, Bahamut (long forms) | 1,150 → 712 |
+| [fxchoreo_deep_c.md](fxchoreo_deep_c.md) | fx_17d_0, 3 .. 8 | Ark (long form) | 653 → 428 |
+| [fxchoreo_deep_d.md](fxchoreo_deep_d.md) | fx_195, 1bd, 1be, 1a2, 1b3 | Mega Flare, Flames of Hell, Worm Hole, Moonlight Slash, Death1 | 911 → 497 |
+| [fxchoreo_deep_e.md](fxchoreo_deep_e.md) | fx_1a8 | Zantetsuken (short Odin) | 100 → 27 |
+
+What stays numeric is the pilot's list ([What stays numeric, and why](#what-stays-numeric-and-why)): otZ biases,
+random spreads, fixed-point / angle math and easing, one-off scales and offsets, bone ids, sound entries,
+camera-key track numbers, screen-grid / ripple-grid geometry and scroll speeds.
+
+### Open questions (all choreography docs)
+
+**VRAM rects not confirmed** (which model samples the rect; an fxdata `--vram` look or an emulator VRAM dump
+would settle each):
+
+- fx_026 Shiva `BARRIER_VRAM_*`: the barrier pieces sampling op81's second scroll is by elimination (s0).
+- fx_03a Earthquake `BG_VRAM_*`: which draw samples drawBgOffscreen's (0x1C0, 0x100) 0x100 x 0x100 target (s0).
+- fx_038 Comet `SHOCK_RING_U` -0x40 on a 15-bit page: which texel column the ring reads (s0); fx_04f Reflect's
+  star / panel pages against the two render targets, inferred from the pages (s0).
+- fx_0b8 Atomos `LAVA_2_*` 0x18 x 0x60 (s2); fx_0e1_0 Rebirth Flame `BAND` (0x2A0, 0x180), summon-data model (s3);
+  Doomsday's STARS rect, source the common page (s3); Stellar Circle 5's third rect (0x280, 0x100), presumably
+  CLOUD_DOME (s4); Earth Shake's smoke rect and every Ark scroll rect ('so' models without a literal tpage; s5,
+  deep C).
+- **Mega Flare / Bahamut scroll rect vs cylinder v**: fx_0e3_1's (0x340, 0x100, 0x20, 0xC0) and fx_195's (0x200,
+  0x100, 0x20, 0xC0) lie in the cylinder's 4-bit page but cover v 0 .. 0xBF while the cylinder samples from v 0xC0
+  (deep B, deep D). Also fx_0fb_1 Madeen's two rects (0x360, 0x180) and (0x2A0, 0x180) (deep B).
+
+**Keyframes and meanings that need the emulator** (a trace of the op, Hi_SetSummonMotFrame or a screenshot):
+
+- Countdown / flag slots: fx_0b8 Atomos `work->flags0[]` (about 60 literals, s2); fx_1f2 Grand Cross timer4 ..
+  timer58 and the keys that only set them (0x4F, 0x8F, 0xCF, 0x13F, 0x19F, 0x1A7; s7).
+- Summon state machines: fx_0e2 / fx_0e3_0 / fx_0e3_1 frame keys (s3, partly done in deep A / B); fx_0fb_1 Madeen's
+  25 held rocks (`kk %= 7` rows); fx_114 Ifrit's `countA >= 10 ? 9` trail clamp (deep B); fx_134 Doomsday's orb
+  sub-phases, STATE_METEOR spawn timing and the mirror strip (s5, deep A); fx_1cc Sealion's keys in states 0 .. 6
+  and its pool task, fx_1fd Fenrir short's op82 ribbon path keys (s7); the six partial modules of slice 6.
+- Ark: fx_17d_0 pieces 16 .. 18 (hidden at STATE_ARK 0x28) and piece 16's scale track; fx_17d_3
+  `VOLLEY_3_FRAMES` as motion 5's freeze frame; bone 0x21 `FX_ARK_MUZZLE_BONE`; fx_17d_6 `BOLT_RUSH_FRAME`
+  against op80's STATE_BURST; fx_17d_7's ring shrink (28) vs op length (0x1E); the bolt / branch trail tables
+  (deep C, s5).
+- Bones: Odin's 0x3E / 0x43 / 0x4C / 0x5C / 0x60 (fx_105 debris spirals, deep A); whether fx_0ed Roulette's
+  RIBBON_BONE 9 is the scythe (s3).
+- Death1 fx_1b3: the split models' texture lists (tpages 0x8A .. 0x8F) and caster pages, never rendered (deep D).
+- Unnamed arguments: `btlfx_registerEffectModel`'s second argument in every module (deep E); whether fx_126's
+  0xFF there is an abr (s4); fx_1fa's LOAD file ids (s7).
+
+**Possible original-game bugs** (commented at the site, code unchanged):
+
+- **Demi Shock disc close** (fx_07a): T_DISC_CLOSE lerps the outer band and disc radius on `timers0[T_TWIST]`,
+  already 0, so both snap shut on the first close frame; only the inner band shrinks over the 16 frames (deep A).
+- **Odin wind fade-in unreachable** (fx_105): timer24's `>= 0x31` fade-in branch never runs, since the count starts
+  at FX_ODIN_WIND_FRAMES 0x30; the streaks start at full brightness (deep A).
+- **Odin light band darkens** (fx_105): the "light band" is drawn subtractive (abr 2) with white at the bottom, so
+  it darkens the bottom of the screen (deep A).
+- **Zantetsuken bounce ignores target height** (fx_1a8): BLAST sets the blade's `pos40.vy` outright, bouncing round
+  world y 0; **flame ribbons over-dark**: their brightness ramp is 12 frames but they draw for 16, so on frames
+  13 .. 15 the RGB offset goes below -0x80 (deep E).
+- **Zantetsuken crystal shards show the captured background** (fx_1a8): drawBgOffscreen writes the battle background
+  into exactly the rect where the file uploads the cloud picture the SKY_CRYSTAL models sample (deep E).
+- **Worm Hole grid fade** (fx_1be): T_GRID_OUT is loaded at 0x2C but only counts while the grids draw (from 0x40),
+  so the grids fade out over their first 16 frames, overriding the fade-in, then show at full brightness (deep D).
