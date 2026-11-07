@@ -45,10 +45,45 @@
 #define FX_ARK_SCROLL_SRC_X  0x180
 #define FX_ARK_SCROLL_SRC_Y  0x180
 
+/* fx_17d_4 choreography, deep pass (docs/fxchoreo_deep_c.md): the keys inside op80's states, the strand and
+ * particle geometry of the blast */
+#define FX_ARK_SCROLL_SPEED       24   /* SCROLL texels a frame (CHARGE, HOLD, SWIRL) */
+#define FX_ARK_BOWL_SCROLL_SPEED  3    /* STATE_BOWL: SCROLL runs backwards this slowly */
+#define FX_ARK_SWIRL_RINGS        4    /* STATE_SWIRL: SWIRL_DOME drawn as nested rings, each spinning faster */
+#define FX_ARK_FLASH_FRAME        0x10 /* STATE_SWIRL: the white flash rises after this frame, */
+#define FX_ARK_FLASH_PEAK         0xF0 /* to this (at the state's last frame), */
+#define FX_ARK_FLASH_STEP         (FX_ARK_FLASH_PEAK / (FX_ARK_SWIRL_FRAMES - FX_ARK_FLASH_FRAME))
+#define FX_ARK_FLASH_FADE_FRAMES  0xC  /* and fades over STATE_BOWL's first frames */
+#define FX_ARK_FLASH_FADE_STEP    (FX_ARK_FLASH_PEAK / FX_ARK_FLASH_FADE_FRAMES)
+#define FX_ARK_BOWL_TURN_FRAMES   0x20 /* STATE_BOWL: the summon turns (rot60.vy, a sine quarter) over these frames */
+#define FX_ARK_BOWL_SWIRL_FRAMES  0x28 /* STATE_BOWL: SWIRL_DOME's rings widen and fade out over these frames */
+#define FX_ARK_BOWL_SWIRL_RINGS   3
+#define FX_ARK_MUZZLE_BONE        0x21 /* the summon bone the beam starts at (STATE_BEAM: RED_RING, BEAM_LINE, MAGENTA_RING, camera point 2) */
+#define FX_ARK_BEAM_DRIFT_FRAME   0xA  /* STATE_BEAM: camera point 2 eases away from here to the state's end */
+#define FX_ARK_RED_RING_FADE_FRAMES 8  /* STATE_BEAM: RED_RING fades in (0x200 a frame) */
+#define FX_ARK_BEAM_LINE_FRAME    6    /* STATE_BEAM: BEAM_LINE fades in from here to the state's end */
+#define FX_ARK_BEAM_LINE_HEIGHT   0x1000 /* BEAM_LINE runs this far up from the ring (BEAM, BEAM_2, BLAST, the strand tips) */
+#define FX_ARK_BEAM_LINE_WIDTH    0x20 /* BEAM_2 / BLAST (growing in BLAST); BEAM draws it at 0x18 */
+#define FX_ARK_TIP_LINE_WIDTH     0x32 /* fx_17d_4_drawStrands: the line flashed at a strand's newest point */
+#define FX_ARK_RED_RING_SCALE     0xAAA /* BEAM_2 / BLAST */
+#define FX_ARK_FLASH_RING_FRAMES  0x10 /* STATE_BLAST: RED_FLASH_RING bursts (a sine quarter of size, cosine fade) */
+#define FX_ARK_STRANDS_FRAMES     0x1E /* STATE_BLAST: the strands grow one point a frame until here; the big RED_FLASH_RING fades in, */
+#define FX_ARK_STRANDS_FADE_FRAME 0x26 /* the particle patterns spread (PATTERN_STEP points a frame) until here, then all fade out */
+#define FX_ARK_PATTERN_STEP       3
+#define FX_ARK_STRANDS            18   /* fx_17d_4_drawStrands: strands per layer (fx_17d_4_strandInfo / strandTrails) */
+#define FX_ARK_STRAND_LAYERS      3
+#define FX_ARK_PATTERN_LISTS      3    /* fxm_drawPatternParticles: point lists (fx_17d_4_pointFileIds), */
+#define FX_ARK_PATTERN_POINTS     20   /* of this many points */
+#define FX_ARK_ORBIT_ARCS         3    /* and a circle of ARCS * ARC_POINTS particles at ORBIT_RADIUS, revealed with the lists */
+#define FX_ARK_ARC_POINTS         27
+#define FX_ARK_ORBIT_RADIUS       1600
+#define FX_ARK_PARTICLE_KINDS     8    /* fx_17d_4_particleFileIds: 8 for the patterns (i & 7), then the offset particles' */
+#define FX_ARK_OFFSET_PARTICLES   3    /* fxm_drawOffsetParticles3 (fx_17d_4_particleOffsets) */
+
 extern Unk800F78A4 *fx_17d_4_env;
-extern s16 fx_17d_4_particleFileIds[16];
-extern SVECTOR fx_17d_4_particleOffsets[3];
-extern s16 fx_17d_4_pointFileIds[3];
+extern s16 fx_17d_4_particleFileIds[FX_ARK_PARTICLE_KINDS * 2]; /* the offset particles read 3 of the second half */
+extern SVECTOR fx_17d_4_particleOffsets[FX_ARK_OFFSET_PARTICLES];
+extern s16 fx_17d_4_pointFileIds[FX_ARK_PATTERN_LISTS];
 
 typedef struct {
     s16 x, y, z;
@@ -67,8 +102,8 @@ typedef struct {
 extern Fx17d4Line fx_17d_4_lineTrail;
 static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth);
 
-extern s16 fx_17d_4_strandInfo[18 * 4]; /* per strand: file, start, stride, width */
-extern Fx17d4Line *fx_17d_4_strandTrails[18];
+extern s16 fx_17d_4_strandInfo[FX_ARK_STRANDS * 4]; /* per strand: file, start, stride, width */
+extern Fx17d4Line *fx_17d_4_strandTrails[FX_ARK_STRANDS];
 void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
 
 typedef struct {

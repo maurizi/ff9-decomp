@@ -39,8 +39,8 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
     data = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_STRAND_POINTS);
     w = (w * 3) >> 1;
     do {
-        for (j = 0; j < 18; j++) {
-            cnt = *(u16 *)(data + ((j + layer * 18) << 2));
+        for (j = 0; j < FX_ARK_STRANDS; j++) {
+            cnt = *(u16 *)(data + ((j + layer * FX_ARK_STRANDS) << 2));
             pts = (s16 *)(data + cnt);
             cnt = pts[1];
             tr = fx_17d_4_strandTrails[j];
@@ -68,8 +68,8 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
                     if (startFrame == n && flag) {
                         BTLFX_COPY_SVEC(&lineTo, dst);
                         BTLFX_COPY_SVEC(&lineFrom, dst);
-                        lineFrom.vy -= 0x1000;
-                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineFrom, &lineTo, 0, 0x800, BTLFX_ABR_ADD, 0x32);
+                        lineFrom.vy -= FX_ARK_BEAM_LINE_HEIGHT;
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &lineFrom, &lineTo, 0, 0x800, BTLFX_ABR_ADD, FX_ARK_TIP_LINE_WIDTH);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
@@ -79,7 +79,7 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
                                 BTLFX_ABR_ADD, (u8 *)tr, fade);
         }
         layer++;
-    } while (layer < 3);
+    } while (layer < FX_ARK_STRAND_LAYERS);
 }
 
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot) {
@@ -95,31 +95,31 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     rot.vx = 0x400;
     rot.vy = 0;
     rot.pad = 1;
-    for (; k < 3; k++) {
+    for (; k < FX_ARK_PATTERN_LISTS; k++) {
         pt = (Fx17d4Pt *)ex->btlfx_getFileData(entry->file, fx_17d_4_pointFileIds[k]);
         pt = (Fx17d4Pt *)((u8 *)pt + 4);
-        for (i = 0; i < 20; i++, pt++) {
+        for (i = 0; i < FX_ARK_PATTERN_POINTS; i++, pt++) {
             if (i < n) {
                 pos.vx = from->vx + pt->x * 2;
                 pos.vy = from->vy + pt->y * 2;
                 pos.vz = from->vz + pt->z * 2;
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i & 7]), &pos, &rot, 0x3000,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i & (FX_ARK_PARTICLE_KINDS - 1)]), &pos, &rot, 0x3000,
                                         0, BTLFX_ABR_ADD, ot, 0, 0);
             }
         }
     }
-    for (k = 0; k < 3; k++) {
-        for (i = 0; i < 27; i++) {
-            if (i <= n * 27 / 20) {
-                orbitAng = ((i + k * 27) << 12) / 81;
-                pos.vx = from->vx + ((ex->math_cos(orbitAng) * 1600) >> 12);
+    for (k = 0; k < FX_ARK_ORBIT_ARCS; k++) {
+        for (i = 0; i < FX_ARK_ARC_POINTS; i++) {
+            if (i <= n * FX_ARK_ARC_POINTS / FX_ARK_PATTERN_POINTS) {
+                orbitAng = ((i + k * FX_ARK_ARC_POINTS) << 12) / (FX_ARK_ORBIT_ARCS * FX_ARK_ARC_POINTS);
+                pos.vx = from->vx + ((ex->math_cos(orbitAng) * FX_ARK_ORBIT_RADIUS) >> 12);
                 pos.vy = from->vy;
-                pos.vz = from->vz + ((ex->math_sin(orbitAng) * 1600) >> 12);
+                pos.vz = from->vz + ((ex->math_sin(orbitAng) * FX_ARK_ORBIT_RADIUS) >> 12);
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i & 7]), &pos, &rot, 0x1800,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i & (FX_ARK_PARTICLE_KINDS - 1)]), &pos, &rot, 0x1800,
                                         0, BTLFX_ABR_ADD, ot, 0, 0);
             }
         }
@@ -143,10 +143,10 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
         pos.vz = from->vz + ofs->vz * 2;
         ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
         rot.vz = -ang.vy;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i + 8]), &pos, &rot, 0x2AF8, 0, BTLFX_ABR_ADD, ot, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i + FX_ARK_PARTICLE_KINDS]), &pos, &rot, 0x2AF8, 0, BTLFX_ABR_ADD, ot, 0, 0);
         ofs++;
         i++;
-    } while (i < 3);
+    } while (i < FX_ARK_OFFSET_PARTICLES);
 }
 
 INCLUDE_RODATA("asm/us/fx_17d_4/nonmatchings/fx_17d_4", fx_17d_4_headerPtr);
@@ -247,7 +247,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         frame = entry->frame;
         switch (work->state0) {
         case FX_ARK_STATE_CHARGE:
-            ramp = (frame << 12) / 20;
+            ramp = (frame << 12) / FX_ARK_CHARGE_FRAMES;
             ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             work->pos48.vy += ex->math_cos(ramp >> 2) >> 4;
             work->scale54.vx = work->scale54.vy = work->scale54.vz = ex->math_cos(ramp >> 2) + 0x800;
@@ -267,7 +267,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = frame * 24;
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model74);
-            ex->btlfx_drawScrollMove(frame * 24, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
             if (frame >= FX_ARK_CHARGE_FRAMES) {
                 work->state0 = FX_ARK_STATE_HOLD;
                 entry->frame = -1;
@@ -296,7 +296,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos48.vy -= 0xC;
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->pos48, (s32)&work->scale54, SUMMON(env)->model60, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
-            ex->btlfx_drawScrollMove(frame * 24, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
             if (frame >= FX_ARK_HOLD_FRAMES) {
                 work->state0 = FX_ARK_STATE_SWIRL;
                 entry->frame = -1;
@@ -316,7 +316,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case FX_ARK_STATE_SWIRL:
             work->scale54.vx = work->scale54.vy = work->scale54.vz = 0x1000;
-            phase = (frame << 12) / 20;
+            phase = (frame << 12) / FX_ARK_SWIRL_FRAMES;
             bobAng = phase >> 2;
             work->pos48.vy -= (ex->math_cos(bobAng) * 10) >> 12;
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->pos48, (s32)&work->scale54, SUMMON(env)->model60, 0);
@@ -326,7 +326,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pos.vx = work->pos48.vx;
             pos.vy = work->pos48.vy;
             pos.vz = work->pos48.vz;
-            for (ramp = 0, spinStep = 0x20; ramp < 4; ramp++, spinStep += 0x10) {
+            for (ramp = 0, spinStep = 0x20; ramp < FX_ARK_SWIRL_RINGS; ramp++, spinStep += 0x10) {
                 s32 yaw;
 
                 rot.vx = 0;
@@ -340,10 +340,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                          (ex->math_sin(phase >> 2) >> 5) - 0x80);
                 yaw = 0;
             }
-            ex->btlfx_drawScrollMove(frame * 24, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
-            if (frame > 0x10) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, (frame - 0x10) * 0x3C, (frame - 0x10) * 0x3C,
-                                         (frame - 0x10) * 0x3C);
+            ex->btlfx_drawScrollMove(frame * FX_ARK_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            if (frame > FX_ARK_FLASH_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, (frame - FX_ARK_FLASH_FRAME) * FX_ARK_FLASH_STEP,
+                                         (frame - FX_ARK_FLASH_FRAME) * FX_ARK_FLASH_STEP, (frame - FX_ARK_FLASH_FRAME) * FX_ARK_FLASH_STEP);
             }
             if (frame >= FX_ARK_SWIRL_FRAMES) {
                 work->state0 = FX_ARK_STATE_BOWL;
@@ -363,7 +363,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case FX_ARK_STATE_BOWL:
             grow = frame << 6;
-            if (frame < 0x20) {
+            if (frame < FX_ARK_BOWL_TURN_FRAMES) {
                 work->rot60.vy = (ex->math_sin((frame << 10) >> 5) - 0x1000) >> 3;
             }
             work->scale54.vx = work->scale54.vy = work->scale54.vz = 0x1000;
@@ -391,15 +391,15 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model6C);
             ex->Hi_ModifyEffModelRGB(work->model6C, (ex->math_cos(grow >> 2) >> 5) - 0x80, (ex->math_cos(grow >> 2) >> 5) - 0x80,
                                      (ex->math_cos(grow >> 2) >> 5) - 0x80);
-            if (frame < 0x28) {
-                fadeT = (frame << 12) / 40;
+            if (frame < FX_ARK_BOWL_SWIRL_FRAMES) {
+                fadeT = (frame << 12) / FX_ARK_BOWL_SWIRL_FRAMES;
                 sc.vy = fadeT / 3 + 0x1000;
                 ringBase = fadeT + 0x1000;
                 pos.vx = work->pos48.vx;
                 pos.vy = work->pos48.vy;
                 ringBright = ((0x1000 - fadeT) >> 5) - 0x80;
                 pos.vz = work->pos48.vz;
-                for (ring = 0, spinStep3 = 0x20; ring < 3; ring++, spinStep3 += 0x10) {
+                for (ring = 0, spinStep3 = 0x20; ring < FX_ARK_BOWL_SWIRL_RINGS; ring++, spinStep3 += 0x10) {
                     s32 yaw;
 
                     rot.vx = 0;
@@ -414,10 +414,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     yaw = 0;
                 }
             }
-            ex->btlfx_drawScrollMove(0x2710 - frame * 3, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
-            if (frame < 0xC) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0xF0 - frame * 0x14, 0xF0 - frame * 0x14,
-                                         0xF0 - frame * 0x14);
+            ex->btlfx_drawScrollMove(0x2710 - frame * FX_ARK_BOWL_SCROLL_SPEED, FX_ARK_SCROLL_VRAM_X, FX_ARK_SCROLL_VRAM_Y, FX_ARK_SCROLL_VRAM_W, FX_ARK_SCROLL_VRAM_H, FX_ARK_SCROLL_SRC_X, FX_ARK_SCROLL_SRC_Y);
+            if (frame < FX_ARK_FLASH_FADE_FRAMES) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_ARK_FLASH_PEAK - frame * FX_ARK_FLASH_FADE_STEP,
+                                         FX_ARK_FLASH_PEAK - frame * FX_ARK_FLASH_FADE_STEP, FX_ARK_FLASH_PEAK - frame * FX_ARK_FLASH_FADE_STEP);
             }
             work->pos20.vy += 8;
             env->camera->points[3].vx = work->pos20.vx;
@@ -427,7 +427,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->state0 = FX_ARK_STATE_BEAM;
                 ex->btlfx_initParticleSystem();
                 entry->frame = -1;
-                ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0x21, (u16 *)&work->pos20);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->model60, FX_ARK_MUZZLE_BONE, (u16 *)&work->pos20);
                 work->pos20.vx += 0x40;
                 work->pos20.vy -= 0x5A;
                 work->pos20.vz -= 0x40;
@@ -441,7 +441,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case FX_ARK_STATE_BEAM:
-            bobT = (frame << 12) / 20;
+            bobT = (frame << 12) / FX_ARK_BEAM_FRAMES;
             work->scale54.vx = work->scale54.vy = work->scale54.vz = 0x1000;
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->pos48, (s32)&work->scale54, SUMMON(env)->model60, 0);
             work->rot34.vy += 2;
@@ -455,15 +455,15 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = frame;
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model74);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0x21, (u16 *)&work->pos20);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, FX_ARK_MUZZLE_BONE, (u16 *)&work->pos20);
             work->pos20.vx += 0x40;
             work->pos20.vy -= 0x5A;
             work->pos20.vz -= 0x40;
             work->pos10.vx = work->pos20.vx;
             work->pos10.vy = work->pos20.vy;
             work->pos10.vz = work->pos20.vz;
-            if (frame >= 0xA) {
-                ease = 0x1000 - ex->math_cos(((frame - 0xA) << 10) / 10);
+            if (frame >= FX_ARK_BEAM_DRIFT_FRAME) {
+                ease = 0x1000 - ex->math_cos(((frame - FX_ARK_BEAM_DRIFT_FRAME) << 10) / (FX_ARK_BEAM_FRAMES - FX_ARK_BEAM_DRIFT_FRAME));
                 drift = ease * 0x258;
                 ease = drift >> 12;
                 work->pos20.vy += drift >> 13;
@@ -480,12 +480,12 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             env->otZ = 0x10;
             ringAlpha = 0x1000;
-            if (frame < 8) {
+            if (frame < FX_ARK_RED_RING_FADE_FRAMES) {
                 ringAlpha = frame << 9;
             }
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &work->pos10, NULL, 0x1000, 0, BTLFX_ABR_ADD, ringAlpha);
-            if (frame >= 6) {
-                lineFade = ((frame - 6) << 12) / 14;
+            if (frame >= FX_ARK_BEAM_LINE_FRAME) {
+                lineFade = ((frame - FX_ARK_BEAM_LINE_FRAME) << 12) / (FX_ARK_BEAM_FRAMES - FX_ARK_BEAM_LINE_FRAME);
             } else {
                 lineFade = 0;
             }
@@ -511,7 +511,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case FX_ARK_STATE_BEAM_2:
             env->otZ = 0x10;
-            phase = (frame << 12) / 24;
+            phase = (frame << 12) / FX_ARK_BEAM_2_FRAMES;
             orbitAng = ex->math_cos(phase >> 1) >> 1;
             orbitRadius = ex->math_cos(phase >> 2) >> 1;
             orbitX = (ex->math_cos(orbitAng) * orbitRadius) >> 12;
@@ -520,10 +520,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ringPos.vy = work->pos8.vy;
             ringPos.vz = work->pos8.vz + orbitZ;
             lineTop.vx = ringPos.vx;
-            lineTop.vy = work->pos8.vy - 0x1000;
+            lineTop.vy = work->pos8.vy - FX_ARK_BEAM_LINE_HEIGHT;
             lineTop.vz = ringPos.vz;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, 0xAAA, 0, BTLFX_ABR_ADD, phase);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &lineTop, frame, phase, BTLFX_ABR_ADD, 0x20);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &ringPos, NULL, FX_ARK_RED_RING_SCALE, 0, BTLFX_ABR_ADD, phase);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &ringPos, &lineTop, frame, phase, BTLFX_ABR_ADD, FX_ARK_BEAM_LINE_WIDTH);
             env->otZ = 0;
             if (frame >= FX_ARK_BEAM_2_FRAMES) {
                 work->state0 = FX_ARK_STATE_BLAST;
@@ -535,35 +535,35 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             basePos.vy = work->pos8.vy;
             basePos.vz = work->pos8.vz;
             baseTop.vx = basePos.vx;
-            baseTop.vy = work->pos8.vy - 0x1000;
+            baseTop.vy = work->pos8.vy - FX_ARK_BEAM_LINE_HEIGHT;
             baseTop.vz = basePos.vz;
             env->otZ = 0x10;
-            ramp = (frame << 12) / 51;
+            ramp = (frame << 12) / FX_ARK_BLAST_FRAMES;
             fadeOut = 0x1000 - ramp;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &basePos, NULL, 0xAAA, 0, BTLFX_ABR_ADD, fadeOut);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &basePos, NULL, FX_ARK_RED_RING_SCALE, 0, BTLFX_ABR_ADD, fadeOut);
             fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_BEAM_LINE), &basePos, &baseTop, frame, fadeOut, BTLFX_ABR_ADD,
-                          (ramp >> 7) + 0x20);
+                          (ramp >> 7) + FX_ARK_BEAM_LINE_WIDTH);
             env->otZ = 0;
             flatRot.vx = 0x400;
             flatRot.vz = 0;
             flatRot.vy = 0;
             flatRot.pad = 1;
-            if (frame < 0x10) {
+            if (frame < FX_ARK_FLASH_RING_FRAMES) {
                 flashAng = (frame << 12) >> 6;
                 flashScale = ex->math_sin(flashAng) * 5;
                 flashAlpha = ex->math_cos(flashAng);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &basePos, &flatRot, flashScale, 0, BTLFX_ABR_ADD, flashAlpha);
             }
-            if (frame >= 0x1E) {
-                alpha = (frame - 0x1E) << 9;
+            if (frame >= FX_ARK_STRANDS_FRAMES) {
+                alpha = (frame - FX_ARK_STRANDS_FRAMES) << 9;
                 if (alpha > 0x1000) {
                     alpha = 0x1000;
                 }
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_FLASH_RING), &basePos, &flatRot, 0x5000, 0, BTLFX_ABR_ADD, alpha);
             }
             flag = 0;
-            if (frame < 0x26) {
-                if (frame < 0x1E) {
+            if (frame < FX_ARK_STRANDS_FADE_FRAME) {
+                if (frame < FX_ARK_STRANDS_FRAMES) {
                     strandWidth = 0x20;
                     strandFrame = frame;
                     strandCue = 0x1000;
@@ -573,12 +573,12 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     particleAlpha = 0;
                     alpha = 0;
                 } else {
-                    outT = (frame - 0x1E) << 9;
-                    strandFrame = 0x1D;
+                    outT = (frame - FX_ARK_STRANDS_FRAMES) << 9;
+                    strandFrame = FX_ARK_STRANDS_FRAMES - 1;
                     strandWidth = 0x27;
                     strandCue = 0x1000;
                     strandFade = 0;
-                    patternFrame = (frame - 0x1E) * 3;
+                    patternFrame = (frame - FX_ARK_STRANDS_FRAMES) * FX_ARK_PATTERN_STEP;
                     particleAlpha = 0x1000;
                     if (outT >= 0x800) {
                         alpha = (outT - 0x800) * 2;
@@ -589,11 +589,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             } else {
                 strandFade = 1;
-                strandFrame = 0x1D;
-                outT = ((frame - 0x26) << 12) / 13;
+                strandFrame = FX_ARK_STRANDS_FRAMES - 1;
+                outT = ((frame - FX_ARK_STRANDS_FADE_FRAME) << 12) / (FX_ARK_BLAST_FRAMES - FX_ARK_STRANDS_FADE_FRAME);
                 strandWidth = (outT >> 3) + 0x40;
                 strandCue = 0x1000 - outT * 2 / 3;
-                patternFrame = 0x15;
+                patternFrame = (FX_ARK_STRANDS_FADE_FRAME - 1 - FX_ARK_STRANDS_FRAMES) * FX_ARK_PATTERN_STEP;
                 alpha = strandCue;
                 particleAlpha = alpha;
             }
