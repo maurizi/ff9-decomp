@@ -26,7 +26,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx18aWork80);
     } else if (mode == 1) {
         work->state0 = 0;
         fx_18a_env = env;
@@ -36,13 +36,13 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_18a_op80Done = 0;
         ex->btlfx_initEffModels(fx_18a_effModels, 1);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_AURA_CYLINDER), 0xB7, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_AURA_CYLINDER), FX_TRANSFORM_AURA_TPAGE, FX_TRANSFORM_AURA_CLUT, FX_TRANSFORM_AURA_U, FX_TRANSFORM_AURA_V);
     } else {
         glow = 0;
         state = work->state0;
         frame = entry->frame;
         switch (state) {
-        case 0:
+        case FX_TRANSFORM_STATE_SWELL:
             t = frame << 8;
             swellAng = t >> 2;
             ringSize = (ex->math_sin(swellAng) * 0x1400) >> 12;
@@ -58,8 +58,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vx = sc.vz = 0x200;
             sc.vy = ex->math_sin(swellAng) / 5;
             glow = t;
-            if (frame >= 0x10) {
-                work->state0 = 1;
+            if (frame >= FX_TRANSFORM_SWELL_FRAMES) {
+                work->state0 = FX_TRANSFORM_STATE_PULSE;
                 entry->frame = -1;
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TRANSFORM_RED_SWEEP), (s32)&work->pos14);
                 if (work->emit8 != NULL) {
@@ -68,8 +68,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->frame1C = 0;
             }
             break;
-        case 1:
-            t = ((++work->frame1C % 10) << 12) / 10;
+        case FX_TRANSFORM_STATE_PULSE:
+            t = ((++work->frame1C % FX_TRANSFORM_PULSE_FRAMES) << 12) / FX_TRANSFORM_PULSE_FRAMES;
             pulseSize = (ex->math_sin(t) >> 4) + 0x1400;
             env->otZ = 0x100;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, pulseSize, 0, BTLFX_ABR_ADD, 0x1000);
@@ -86,8 +86,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
                 work->emit8 = NULL;
             }
-            if (frame >= 0xB && t == 0) {
-                work->state0 = 2;
+            if (frame >= FX_TRANSFORM_PULSE_MIN_FRAMES && t == 0) {
+                work->state0 = FX_TRANSFORM_STATE_TRANSFORM;
                 entry->frame = -1;
                 env->camera->paused = 0;
                 ex->btlfx_fadeUnitById(0x10, -1);
@@ -109,25 +109,25 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 2:
+        case FX_TRANSFORM_STATE_TRANSFORM:
             ang.vx = 0;
             ang.vy = 0;
             ang.vz = 0;
-            t = (frame << 12) / 180;
+            t = (frame << 12) / FX_TRANSFORM_FRAMES;
             col.r = col.g = col.b = (((0x1000 - t) << 6) >> 12) - 0x74;
-            if (frame < 0x8C) {
+            if (frame < FX_TRANSFORM_BURST_FRAME) {
                 scale.vx = scale.vy = scale.vz = (ex->math_cos(t >> 2) >> 3) + 0x1000;
             } else {
-                scale.vx = scale.vy = scale.vz = (ex->math_cos(((frame - 0x8C) << 10) / 40) >> 2) + 0x1000;
+                scale.vx = scale.vy = scale.vz = (ex->math_cos(((frame - FX_TRANSFORM_BURST_FRAME) << 10) / (FX_TRANSFORM_FRAMES - FX_TRANSFORM_BURST_FRAME)) >> 2) + 0x1000;
             }
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &ang, &scale, &col, 0, 0);
-            if (frame >= 0x8C) {
+            if (frame >= FX_TRANSFORM_BURST_FRAME) {
                 rot2.vx = 0x400;
                 rot2.pad = 1;
                 rot2.vz = 0;
                 rot2.vy = 0;
                 env->otZ = 0x20;
-                burstT = ((frame - 0x8C) << 12) / 40;
+                burstT = ((frame - FX_TRANSFORM_BURST_FRAME) << 12) / (FX_TRANSFORM_FRAMES - FX_TRANSFORM_BURST_FRAME);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RING), &work->pos14, &rot2,
                                   ex->math_sin(burstT >> 2) * 5, 0, BTLFX_ABR_ADD, ex->math_cos(burstT >> 2));
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RING), &work->pos14, &rot2,
@@ -145,16 +145,16 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ringGrow = t + 0x1400;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS_2), &work->pos14, NULL, ringGrow, 0, BTLFX_ABR_ADD, fade);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL, 0x1000, 0, BTLFX_ABR_ADD, fade);
-            if (frame < 6) {
-                flashAng = (frame << 10) / 6;
+            if (frame < FX_TRANSFORM_FLASH_FRAMES) {
+                flashAng = (frame << 10) / FX_TRANSFORM_FLASH_FRAMES;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_BLUE_RING), &work->pos14, NULL,
                                   ex->math_sin(flashAng) * 2, 0, BTLFX_ABR_ADD, ex->math_cos(flashAng));
             }
             env->otZ = 0;
-            if (frame == 0x1E) {
+            if (frame == FX_TRANSFORM_CUE_FRAME) {
                 ex->btlfx_signalScriptCue();
             }
-            if (frame < 4) {
+            if (frame < FX_TRANSFORM_TINT_FRAMES) {
                 tintBase = ex->math_cos(frame << 8) * 0xFF;
                 fade = tintBase >> 12;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, fade, tintBase >> 14, tintBase >> 13);
@@ -164,13 +164,13 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.pad = 1;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_RINGS), &work->posC, &rot, ringGrow, 0, BTLFX_ABR_ADD, fade);
-            if (frame < 0x16) {
-                shrinkAng = (frame << 12) / 22 >> 2;
+            if (frame < FX_TRANSFORM_SHRINK_FRAMES) {
+                shrinkAng = (frame << 12) / FX_TRANSFORM_SHRINK_FRAMES >> 2;
                 glow = ex->math_cos(shrinkAng);
                 sc.vx = sc.vz = (ex->math_sin(shrinkAng) >> 2) + 0x174;
                 sc.vy = ex->math_cos(shrinkAng) / 4;
             }
-            if (frame >= 0xB4) {
+            if (frame >= FX_TRANSFORM_FRAMES) {
                 fx_18a_op80Done = 1;
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -191,7 +191,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model24);
             ex->Hi_ModifyEffModelRGB(work->model24, (glow >> 5) - 0x80, (glow >> 5) - 0x80, (glow >> 5) - 0x80);
         }
-        ex->btlfx_drawScrollMove(work->frame4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
+        ex->btlfx_drawScrollMove(work->frame4 * 4, FX_TRANSFORM_AURA_VRAM_X, FX_TRANSFORM_AURA_VRAM_Y, FX_TRANSFORM_AURA_VRAM_W, FX_TRANSFORM_AURA_VRAM_H, FX_TRANSFORM_AURA_SRC_X, FX_TRANSFORM_AURA_SRC_Y);
         work->frame4++;
     }
     return 0;
@@ -206,18 +206,18 @@ static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *spark, Unk800F78A4 *env, Un
     if (mode == 1) {
         spark->drag12 = ex->btlfx_randCentered(0x200) + 0xE00;
     } else {
-        fade = 0x1000 - (frame << 12) / 12;
+        fade = 0x1000 - (frame << 12) / FX_TRANSFORM_SPARK_FRAMES;
         pt = spark->point18;
         zero[0] = 0;
         zero[1] = 0;
         pt->pad = 0x1A;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)spark, 0, (SVECTOR *)zero, pt);
         if (spark->index16 == 0) {
-            TRAIL(spark)->lastSlot0 = TRAIL(spark)->count2 = 0xE;
+            TRAIL(spark)->lastSlot0 = TRAIL(spark)->count2 = FX_TRANSFORM_TRAIL_POINTS - 1;
             TRAIL(spark)->head1 = 0;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TRANSFORM_VIOLET_TRAIL), 0, NULL, 5, 0x1000, fade, BTLFX_ABR_ADD, (u8 *)spark->point18 - 4, 0);
         }
-        if (frame >= 0xC) {
+        if (frame >= FX_TRANSFORM_SPARK_FRAMES) {
             return 1;
         }
     }
@@ -230,17 +230,17 @@ void fx_18a_resetTrails(void) {
 
 void fx_18a_spawnTrail(Fx18aInst *inst, SVECTOR *origin, s32 reach, SVECTOR *from, SVECTOR *to) {
     Fx18aTrail *trail = &fx_18a_trails[fx_18a_nextTrail];
-    SVECTOR *pt = &trail->points4[14];
+    SVECTOR *pt = &trail->points4[FX_TRANSFORM_TRAIL_POINTS - 1];
     BtlfxExports *ex = BTLFX_EXPORTS(fx_18a_env);
     SVECTOR dir;
     Fx18aSpark *spark;
     s32 i;
     s32 t;
 
-    trail->lastSlot0 = trail->count2 = 0xE;
+    trail->lastSlot0 = trail->count2 = FX_TRANSFORM_TRAIL_POINTS - 1;
     trail->head1 = 0;
-    for (i = 0; i < 15; i++, pt--) {
-        t = 0x1000 - (i << 12) / 14;
+    for (i = 0; i < FX_TRANSFORM_TRAIL_POINTS; i++, pt--) {
+        t = 0x1000 - (i << 12) / (FX_TRANSFORM_TRAIL_POINTS - 1);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&dir);
         dir.vx += ex->btlfx_randCentered(0x20);
         dir.vy += ex->btlfx_randCentered(0x20);
@@ -248,7 +248,7 @@ void fx_18a_spawnTrail(Fx18aInst *inst, SVECTOR *origin, s32 reach, SVECTOR *fro
         spark = ex->btlfx_poolSpawn(inst->pool10);
         if (spark != NULL) {
             spark->slot14 = fx_18a_nextTrail;
-            spark->index16 = 0xE - i;
+            spark->index16 = FX_TRANSFORM_TRAIL_POINTS - 1 - i;
             spark->point18 = pt;
             spark->pos0 = pt->vx << 12;
             spark->pos4 = pt->vy << 12;
@@ -261,7 +261,7 @@ void fx_18a_spawnTrail(Fx18aInst *inst, SVECTOR *origin, s32 reach, SVECTOR *fro
             spark->vel10 = ((pt->vz - origin->vz) >> 4) + ex->btlfx_randCentered(0x20);
         }
     }
-    fx_18a_nextTrail = (fx_18a_nextTrail + 1) % 12;
+    fx_18a_nextTrail = (fx_18a_nextTrail + 1) % FX_TRANSFORM_TRAILS;
 }
 
 s32 fx_18a_op82(s32 mode, Fx18aWork82 *work, Unk800F78A4 *env, Fx18aInst *inst, EffInit *init) {
@@ -271,10 +271,10 @@ s32 fx_18a_op82(s32 mode, Fx18aWork82 *work, Unk800F78A4 *env, Fx18aInst *inst, 
     s32 active;
 
     if (mode == 0) {
-        init->workSize = 0x10;
-        init->elemSize = 0x1C;
+        init->workSize = sizeof(Fx18aWork82);
+        init->elemSize = sizeof(Fx18aSpark);
         init->elemFn = (s32)fx_18a_op82PoolTask;
-        init->poolCount = 0xB4;
+        init->poolCount = FX_TRANSFORM_SPARKS;
     } else if (mode == 1) {
         fx_18a_env = env;
         fx_18a_resetTrails();
@@ -284,7 +284,7 @@ s32 fx_18a_op82(s32 mode, Fx18aWork82 *work, Unk800F78A4 *env, Fx18aInst *inst, 
         work->rot8.vz = 0;
     } else {
         frame = inst->frame0;
-        active = frame < 0xE6;
+        active = frame < FX_TRANSFORM_TRAILS_FRAMES;
         if (active) {
             BTLFX_COPY_SVEC(&from, &work->rot8);
             work->rot8.vx += 0x300 + (ex->btlfx_rand() & 0x7F);
