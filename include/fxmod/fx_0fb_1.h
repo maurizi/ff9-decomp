@@ -38,7 +38,7 @@
 #define FX_MADEEN_RAINBOW_BANDS    0x90 /* summon data entry 16: textured model, curved red-green-blue stripe (rainbow) bands */
 
 /* fx_0fb_1 choreography (docs/fxdata.md, "Choreography literals"): the mechanical names (op sizes, the rock pool,
- * model slots and textures, GPU words); op80's seven states and their keys are still numeric. Shared names with
+ * model slots and textures, GPU words; op80's seven states and their keys: deep pass below). Shared names with
  * group 0 (fx_0fb_0), own values. */
 #define FX_MADEEN_ROCK_COUNT        0x30  /* op80's pool: rocks (Fx0fb1Rock) */
 #define FX_MADEEN_MODEL_SLOTS       0x1F  /* btlfx_initEffModels slots */
@@ -59,6 +59,74 @@
 #define FX_MADEEN_MODEL_V           0
 #define FX_MADEEN_MODEL_V2          0x80   /* v of the second half (RAINBOW_ARCH, Y_FRAME, LOOP_RIBBON, BLUE_SWIRL_DISC) */
 #define FX_MADEEN_RETURN_FRAMES     0x10  /* op82: the units turn back home after this many frames */
+
+/* fx_0fb_1 deep pass: op80's states (Madeen's second half: the rainbow bands, the sphere, the arches, the beam),
+ * their keys, the rock tasks and the cylinder helper. */
+#define FX_MADEEN_STATE_BANDS       0     /* op80 state: RAINBOW_BANDS fly at the camera, rocks stream past (one a frame) */
+#define FX_MADEEN_STATE_MORPH       1     /* the bands morph into RAINBOW_SPHERE_2, the screen brightens; the held rocks and enemies dim */
+#define FX_MADEEN_STATE_APPEAR      2     /* Madeen on LEAF_MOUND, RAINBOW_SPHERE shrinking, BLUE_RINGS */
+#define FX_MADEEN_STATE_ARCHES      3     /* Madeen fades, the sphere shrinks away, RAINBOW_ARCHes open, VIOLET_RINGS, LENS_FLARES */
+#define FX_MADEEN_STATE_BURST       4     /* the camera drops to the target, rings burst; white, then darkened */
+#define FX_MADEEN_STATE_BEAM        5     /* the rainbow beam cylinder, Y_FRAME, LOOP_RIBBON, the glow ring and trails, sparks */
+#define FX_MADEEN_STATE_END         6     /* BLUE_RINGS and the white tint fade (op80 ends) */
+#define FX_MADEEN_BANDS_FRAMES      0x1C
+#define FX_MADEEN_MORPH_FRAMES      22
+#define FX_MADEEN_MORPH_FRAME       5     /* MORPH: the morph to RAINBOW_SPHERE_2 starts (a quarter sine to the end) */
+#define FX_MADEEN_MORPH_FLASH_FRAME 0x13  /* MORPH: the white flash grows from here (4-frame ramp) */
+#define FX_MADEEN_APPEAR_FRAMES     24
+#define FX_MADEEN_APPEAR_SHOW_FRAME 4     /* APPEAR: Madeen and the mound drawn from here; the flash fades before it (4-frame ramp) */
+#define FX_MADEEN_ARCHES_FRAMES     37
+#define FX_MADEEN_SHRINK_FRAME      0xF   /* ARCHES: RAINBOW_SPHERE shrinks from here, */
+#define FX_MADEEN_SHRINK_FRAMES     8     /* over this many frames; BLUE_RINGS_2 fades over RINGS_2_FRAMES from the same frame */
+#define FX_MADEEN_RINGS_2_FRAMES    6
+#define FX_MADEEN_VIOLET_RINGS_FRAME 0x11 /* ARCHES: VIOLET_RINGS swell from here to the end */
+#define FX_MADEEN_ARCHES_FRAME      0x15  /* ARCHES: the RAINBOW_ARCHes grow and LENS_FLARES run from here to the end */
+#define FX_MADEEN_ARCHES            4     /* RAINBOW_ARCH copies (rotC4) */
+#define FX_MADEEN_VIOLET_GLOW_FRAME 0x18  /* ARCHES: VIOLET_GLOW starts */
+#define FX_MADEEN_WHITE_OUT_FRAME   0x22  /* ARCHES: the screen whitens from here to the end */
+#define FX_MADEEN_BURST_FRAMES      10
+#define FX_MADEEN_SPHERE_FADE_FRAMES 0x10 /* BURST: RAINBOW_SPHERE's last flash fades over this many frames (cut short by the state's end) */
+#define FX_MADEEN_BURST_FADE_FRAMES 6     /* BURST: the white fades, */
+#define FX_MADEEN_DARKEN_FRAME      7     /* then the screen darkens from here to the end */
+#define FX_MADEEN_BEAM_FRAMES       0x40
+#define FX_MADEEN_BEAM_FLASH_FRAMES 6     /* BEAM: violet flash at frame 0, darken at 1, the blue tint fades to this frame */
+#define FX_MADEEN_SPIN_FRAMES       0x20  /* BEAM: RAINBOW_RINGS and Y_FRAME drawn (fading) until this frame */
+#define FX_MADEEN_ORBIT_GROW_FRAMES 0x18  /* BEAM: the glow ring and the trails widen, LENS_FLARES_2 fade, until this frame */
+#define FX_MADEEN_GLOW_RING_COUNT   0x80  /* BEAM: WHITE_GLOW particles around the beam */
+#define FX_MADEEN_RING_TRAILS       2     /* BEAM: TRAIL strips orbiting the beam (fx_0fb_1_strips) */
+#define FX_MADEEN_RING_TRAIL_POINTS 0x40  /* points per strip (Fx0fb1Ring) */
+#define FX_MADEEN_SPARKS_FRAME      8     /* BEAM: sparks (FX_0FB_1_SPARK tasks) spawn from here, */
+#define FX_MADEEN_SPARKS_PER_FRAME  3
+#define FX_MADEEN_END_GLOW_FRAME    0x38  /* BEAM: VIOLET_GLOW starts; the screen grid zooms after it */
+#define FX_MADEEN_END_FRAMES        0x10
+#define FX_MADEEN_HELD_ROCKS        0x19  /* MORPH: rocks placed around the sphere (fx_0fb_1_rockOffsets), every other one big */
+#define FX_MADEEN_BIG_ROCK_SCALE    0x199 /* rock task: BIG / PASS model scale */
+#define FX_MADEEN_SMALL_ROCK_SCALE  0xCC  /* SMALL / SHARD model scale */
+#define FX_MADEEN_ROCK_STATE_FLY    0     /* rock task: flies (unless held) until it passes the sphere */
+#define FX_MADEEN_ROCK_STATE_BURST  1     /* bursts: ROCK_BURST(_2), BLUE_SPECKS, rings and a BLUE_SWIRL_DISC flash */
+#define FX_MADEEN_SHARDS            3     /* a BIG rock's burst: shards, spread evenly around */
+#define FX_MADEEN_BIG_RINGS_FRAMES  10    /* burst: BLUE_RINGS_3 of a BIG rock */
+#define FX_MADEEN_SMALL_RINGS_FRAMES 6    /* of a SMALL rock */
+#define FX_MADEEN_PALE_RINGS_FRAMES 3     /* burst: PALE_RINGS */
+#define FX_MADEEN_SWIRL_FLASH_FRAMES 8    /* burst: the BLUE_SWIRL_DISC flash */
+#define FX_MADEEN_SHARD_FRAMES      0xD   /* shard task's length */
+#define FX_MADEEN_SPARK_FRAMES      0x11  /* spark task's length */
+#define FX_MADEEN_BEAM_TPAGE        0x1B   /* fxm_drawTexCylinder texture of the beam: 4-bit page (0x2C0, 0x100), abr 0 */
+#define FX_MADEEN_BEAM_CLUT         0x3E80 /* CLUT at (0x0, 0xFA) */
+#define FX_MADEEN_BEAM_U            0
+#define FX_MADEEN_BEAM_V            0
+#define FX_MADEEN_BEAM_RADIUS       0x1C00
+#define FX_MADEEN_BEAM_VRAM_X       0x2C0 /* btlfx_drawScrollMove rect: the beam page's 0x80 x 0x80 4-bit texels */
+#define FX_MADEEN_BEAM_VRAM_Y       0x100
+#define FX_MADEEN_BEAM_VRAM_W       0x20
+#define FX_MADEEN_BEAM_VRAM_H       0x80
+#define FX_MADEEN_BEAM_SRC_X        0x360 /* from this source */
+#define FX_MADEEN_BEAM_SRC_Y        0x100
+#define FX_MADEEN_CYL_ROWS          20    /* fxm_drawTexCylinder: quad rings along the axis */
+#define FX_MADEEN_CYL_COLS          16    /* quads per ring */
+#define FX_MADEEN_DROP_STATE_FALL   0     /* op82: the unit bobs and spins, then is put back home */
+#define FX_MADEEN_DROP_STATE_LAND   1     /* WHITE_RINGS at its feet */
+#define FX_MADEEN_LAND_RING_FRAMES  7
 
 typedef struct {
     s32 state0; /* state */
@@ -162,13 +230,13 @@ typedef struct {
     s32 modelB8;
     s32 modelBC;
     s32 modelC0;
-    SVECTOR rotC4[4];
+    SVECTOR rotC4[FX_MADEEN_ARCHES];
     Pool6CEntry *emitE4;
 } Fx0fb1Op80Work; /* 0xE8 */
 
 typedef struct {
     u8 pad0[4]; /* ring header (lastSlot0, head1, count2; btlfx_drawTrail) */
-    SVECTOR pts4[0x40]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_MADEEN_RING_TRAIL_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     u8 pad204[8];
 } Fx0fb1Ring; /* 0x20C */
 
@@ -188,6 +256,6 @@ extern SVECTOR fx_0fb_1_origin;
 extern u8 fx_0fb_1_gradient[];
 extern s16 fx_0fb_1_modelBlocks[2];
 extern s16 fx_0fb_1_rockOffsets[];
-extern Fx0fb1Ring fx_0fb_1_strips[2];
+extern Fx0fb1Ring fx_0fb_1_strips[FX_MADEEN_RING_TRAILS];
 
 #endif
