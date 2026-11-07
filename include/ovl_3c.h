@@ -123,6 +123,9 @@ enum { SHOP_ST_NONE, SHOP_ST_LIST, SHOP_ST_QUANTITY };
 /* s_shopIcons entries (shop_drawStatIcon): 0-4 per equip slot, then the comparison arrows */
 #define SHOP_ICON_UP   5
 #define SHOP_ICON_DOWN 6
+#define EQUIP_SLOT_HEAD 1 /* Character.equip order (ff9.h): shop_sumArmorStat shows magic defence for it, */
+#define EQUIP_SLOT_ARM 2  /* evade, */
+#define EQUIP_SLOT_BODY 3 /* defence */
 #define EQUIP_SLOT_ACCESSORY 4 /* item_getEquipSlot: 0 weapon, 1-3 armor, 4 accessory (no stat shown) */
 
 /* Shop state (s_shop). */

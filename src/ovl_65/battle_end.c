@@ -918,7 +918,7 @@ u8 rewards_willLearn(Character *chr, s32 ap) {
     eq = chr->equip;
     ch = chr->info.b.id;
     memset(s_rewardsAbilityItems, 0, sizeof(s_rewardsAbilityItems));
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         if (eq[i] != ITEM_NONE) {
             item = &g_itemTable[eq[i]];
             for (j = 0; j < (s32)ARRAY_COUNT(item->abilities); j++) {

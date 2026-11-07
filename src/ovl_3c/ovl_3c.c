@@ -53,10 +53,10 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
     Unk8006D328 *bonus;
 
     memset(sum, result, sizeof(sum));
-    for (i = 1; i < 5; i++) {
+    for (i = EQUIP_SLOT_HEAD; i < EQUIP_SLOT_COUNT; i++) {
         if (equip[i] != ITEM_NONE) {
             if (equip[i] < ITEM_FIRST_USABLE) {
-                j = equip[i] - 0x58;
+                j = equip[i] - ITEM_FIRST_ARMOR;
                 bonus = &g_armorStatBonus[j];
                 sum[0] += bonus->defense;
                 sum[1] += bonus->evade;
@@ -66,16 +66,16 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
         }
     }
     switch (stat) {
-    case 1:
+    case EQUIP_SLOT_HEAD:
         result = sum[2];
         break;
-    case 2:
+    case EQUIP_SLOT_ARM:
         result = sum[1];
         break;
-    case 3:
+    case EQUIP_SLOT_BODY:
         result = sum[0];
         break;
-    case 4:
+    case EQUIP_SLOT_ACCESSORY:
         result = 0;
         break;
     }
