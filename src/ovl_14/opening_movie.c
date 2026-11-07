@@ -40,7 +40,7 @@ s32 opening_movieThenTitle(void) {
             g_movieFlagQueue[0][i] = MOVIE_PLAYING;
             g_gameState->vsyncMode = 4;
             DrawSync(0);
-            MBG_init(1, &mbgWork);
+            MBG_init(MBG_INIT_ONE_BUF, &mbgWork);
             mbg_setRgb24(1);
             mbg_setEndCallback(opening_movieOnEnd);
             g_movieLastFrame = g_mbgFrame;

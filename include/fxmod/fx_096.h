@@ -18,7 +18,7 @@
 /* fx_096 choreography (docs/fxdata.md, "Choreography literals"): op80's length; op81's keyframes, the crystal's
  * assembly and the shard's growth. */
 #define FX_FROST_GLINTS_FRAMES   0x50  /* op80 (FX_FROST_ICE_GLINTS)'s length */
-#define FX_FROST_POLY_KINDS      8     /* Hi_GetMdlVertexPtr polygon kinds (even: quads, odd: triangles) */
+#define FX_FROST_POLY_KINDS BTL_MESH_PRIM_COUNT /* Hi_GetMdlVertexPtr polygon kinds (even: quads, odd: triangles) */
 #define FX_FROST_CRYSTAL_VERT_WORDS 0xA28 /* u16 words of FX_FROST_ICE_CRYSTAL's split vertices (fx_096_verts, fx_096_restVerts) */
 #define FX_FROST_ASSEMBLE_FRAMES 6     /* op81: the crystal's polygons fly together (explode factor counts down to 0) while it spins */
 #define FX_FROST_SHARD_FRAME     7     /* FX_FROST_SNOW_BURST starts and FX_FROST_ICE_SHARD grows */

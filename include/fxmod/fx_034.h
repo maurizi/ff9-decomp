@@ -21,7 +21,7 @@
 #define FX_COLD_BREATH_FRAMES          60 /* op80: the task ends at this frame */
 #define FX_COLD_BREATH_CRYSTAL_DIST    0x320 /* the crystal stands this far behind the target (seen from the caster) */
 #define FX_COLD_BREATH_MODEL_COUNT     2  /* btlfx_initEffModels slots: ICE_CRYSTAL, ICE_CRYSTAL_2 */
-#define FX_COLD_BREATH_PRIM_KINDS      8  /* Hi_GetMdlVertexPtr primitive kinds: even = quads (4 vertices), odd = triangles */
+#define FX_COLD_BREATH_PRIM_KINDS BTL_MESH_PRIM_COUNT  /* Hi_GetMdlVertexPtr primitive kinds: even = quads (4 vertices), odd = triangles */
 #define FX_COLD_BREATH_ICE_CHUNKS_TRAIL_SLOTS  0x28 /* FX_COLD_BREATH_ICE_CHUNKS' trail buffer fx_034_trails: slots of */
 #define FX_COLD_BREATH_ICE_CHUNKS_TRAIL_STRIDE 0x30 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
 /* FX_COLD_BREATH_ICE_CRYSTAL: 8-bit page (0x240, 0x100), clut (0, 0xF6). */

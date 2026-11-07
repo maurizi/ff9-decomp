@@ -2769,7 +2769,7 @@ s32 fldbg_updateFollowOverlays(void) {
         bg = g_fieldBgData;
         objs = (BgOverlay *)((u8 *)bg + bg->overlayOffset);
         mode = g_gameState->mode;
-        if (mode == 5) {
+        if (mode == GS_MODE_FIELD_LIKE) {
             player = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
         } else if (mode == GS_MODE_FIELD) {
             player = evt_getPlayer();
@@ -3331,7 +3331,7 @@ s32 fldbg_followPlayer(void) {
         return 0;
     }
     mode = g_gameState->mode;
-    if (mode == 5) {
+    if (mode == GS_MODE_FIELD_LIKE) {
         player = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
     } else if (mode == GS_MODE_FIELD) {
         player = evt_getPlayer();
@@ -3622,7 +3622,7 @@ s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode) {
         return 0;
     }
     mode = g_gameState->mode;
-    if (mode == 5) {
+    if (mode == GS_MODE_FIELD_LIKE) {
         player = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
     } else {
         player = NULL;

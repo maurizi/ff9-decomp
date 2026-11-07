@@ -50,6 +50,7 @@ typedef struct {
 #define BTL_MESH_PRIM_G3  5
 #define BTL_MESH_PRIM_F4  6
 #define BTL_MESH_PRIM_F3  7
+#define BTL_MESH_PRIM_COUNT 8 /* even kinds quads (4 vertices), odd ones triangles */
 
 /* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */
 typedef struct {

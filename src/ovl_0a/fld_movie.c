@@ -1220,7 +1220,7 @@ void fld_movieUpdate(void) {
             akao_sendCmdE4(0);
             akao_sendCmdE2();
             DrawSync(0);
-            MBG_init(1, &g_gameState->gameData->ctx.field->area->scene->movieWork);
+            MBG_init(MBG_INIT_ONE_BUF, &g_gameState->gameData->ctx.field->area->scene->movieWork);
             mbg_setRgb24(g_gameState->gameData->ctx.field->area->scene->movieRgb24);
             mbg_setEndCallback(fld_movieStop);
             g_fieldMovieLastFrame = g_mbgFrame;
@@ -1579,7 +1579,7 @@ void fld_togglePause(void) {
         }
         setlen(&g_fieldPauseDim, PRIM_LEN(TILE));
         g_fieldPauseDim.code = GPU_TILE | GPU_ABE;
-        setRGB0(&g_fieldPauseDim, 0x60, 0x60, 0x60);
+        setRGB0(&g_fieldPauseDim, UI_PAUSE_DIM, UI_PAUSE_DIM, UI_PAUSE_DIM);
         setWH(&g_fieldPauseDim, SCREEN_W, SCREEN_H);
         setXY0(&g_fieldPauseDim, 0, 0);
         setlen(&g_fieldPauseTPage, PRIM_LEN(DR_TPAGE));

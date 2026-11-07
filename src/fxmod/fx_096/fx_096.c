@@ -25,18 +25,18 @@ void fx_096_explodePolys(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *
     s32 scaled;
 
     switch (kind) {
-    case 0:
-    case 2:
-    case 4:
-    case 6:
+    case BTL_MESH_PRIM_FT4:
+    case BTL_MESH_PRIM_GT4:
+    case BTL_MESH_PRIM_G4:
+    case BTL_MESH_PRIM_F4:
         do {
             nv = 4;
         } while (0); /* loop notes: changes the register allocation of nv */
         break;
-    case 1:
-    case 3:
-    case 5:
-    case 7:
+    case BTL_MESH_PRIM_FT3:
+    case BTL_MESH_PRIM_GT3:
+    case BTL_MESH_PRIM_G3:
+    case BTL_MESH_PRIM_F3:
     default:
         nv = 3;
         break;
@@ -93,16 +93,16 @@ void fx_096_calcPolyCenters(u32 kind, s32 count, SVECTOR *verts, Fx096Vec3 *cent
     s32 j;
 
     switch (kind) {
-    case 0:
-    case 2:
-    case 4:
-    case 6:
+    case BTL_MESH_PRIM_FT4:
+    case BTL_MESH_PRIM_GT4:
+    case BTL_MESH_PRIM_G4:
+    case BTL_MESH_PRIM_F4:
         nv = 4;
         break;
-    case 1:
-    case 3:
-    case 5:
-    case 7:
+    case BTL_MESH_PRIM_FT3:
+    case BTL_MESH_PRIM_GT3:
+    case BTL_MESH_PRIM_G3:
+    case BTL_MESH_PRIM_F3:
     default:
         nv = 3;
         break;

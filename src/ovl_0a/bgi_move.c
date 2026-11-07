@@ -42,7 +42,7 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *actor, BgiTriangle *tri, s32 edge
     }
     if ((mask = (nb->flags >> 8) & g_fieldBgi.maskFilter) & (BGI_MASK_NO_PLAYER | BGI_MASK_NO_OTHERS)) {
         mode = g_gameState->mode;
-        if (mode == 5) {
+        if (mode == GS_MODE_FIELD_LIKE) {
             player = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
         } else if (mode == GS_MODE_FIELD) {
             player = evt_getPlayer();
@@ -656,7 +656,7 @@ BgiActor *bgi_findPlayerActor(s32 *outIndex) {
 
     *outIndex = 0;
     mode = g_gameState->mode;
-    if (mode == 5) {
+    if (mode == GS_MODE_FIELD_LIKE) {
         player = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
     } else if (mode == GS_MODE_FIELD) {
         player = evt_getPlayer();
@@ -930,7 +930,7 @@ s16 bgi_getHeight(s16 x, s16 z) {
     GameData *gd;
 
     if (g_fieldBgi.header == NULL) {
-        if (g_gameState->mode == 5) {
+        if (g_gameState->mode == GS_MODE_FIELD_LIKE) {
             gd = g_gameState->gameData;
             return ((EvtObject *)gd->npcModels[gd->ctx.field->playerObj].actor)->pos.vy;
         }

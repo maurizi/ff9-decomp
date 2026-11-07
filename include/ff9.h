@@ -1089,6 +1089,9 @@ extern s8 g_mbgIsBackground; /* mbg_getStatus reports MBG_STATUS_BACKGROUND when
 #define MBG_STATUS_RGB24 0x4 /* g_mbgRgb24: the movie decodes to 24-bit colour */
 #define MBG_STATUS_BACKGROUND 0x8 /* g_mbgIsBackground == 1: the movie is a field background */
 #define MBG_STATUS_PAUSED 0x10 /* g_mbgPaused */
+/* ovl_64 MBG_init modes and the work buffers they carve (g_mbgPlayer.mdecIn0..mdecOut1). Evidence: [code] */
+#define MBG_INIT_ONE_BUF 1 /* all in buf[0]: MDEC in x2, CD ring, audio, MDEC out x2 (field, opening, blackjack) */
+#define MBG_INIT_TWO_BUFS 2 /* buf[0]: MDEC in x2, MDEC out x2; buf[1]: CD ring, audio */
 extern s32 g_menuOnClose;
 extern u8 g_menuFadeInOnClose;
 extern u8 g_menuFadeOutOnClose;
@@ -2772,6 +2775,8 @@ typedef struct {
 #define UI_SPRITE_TIMER_COLON 0xEA
 #define UI_SPRITE_PAUSE 0xEB /* the word "PAUSE" ([runtime] R44), which fld_togglePause (ovl_0a, g_fieldPauseSprite) and
                              * wm_togglePause (ovl_0c, g_worldPauseSprite) centre on screen */
+#define UI_PAUSE_DIM 0x60 /* each of r, g, b of the full-screen tile subtracted (abr 2) over the paused game, under
+                          * UI_SPRITE_PAUSE: field fld_togglePause, world wm_togglePause, battle (btl_main.c) */
 /* event countdown timer box (timer_draw): "mm:ss" (EvtTimer.remaining counts frames, timer_getSeconds) in
  * UI_SPRITE_TIMER_DIGITS; x offsets from g_timerRect.x */
 #define TIMER_X             4    /* g_timerRect.x once shown */

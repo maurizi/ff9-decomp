@@ -1423,7 +1423,7 @@ void wm_togglePause(void) {
         ui_buildSprite((SCREEN_W - g_uiSprites[UI_SPRITE_PAUSE].w) / 2, (WM_SCREEN_H - g_uiSprites[UI_SPRITE_PAUSE].h) / 2, &g_worldPauseOT, UI_SPRITE_PAUSE, 0, spriteW, g_worldPauseSprite);
         setlen(&g_worldPauseTile, PRIM_LEN(TILE));
         g_worldPauseTile.code = GPU_TILE | GPU_ABE;
-        setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
+        setRGB0(&g_worldPauseTile, UI_PAUSE_DIM, UI_PAUSE_DIM, UI_PAUSE_DIM);
         setXY0(&g_worldPauseTile, 0, 0);
         setWH(&g_worldPauseTile, SCREEN_W, WM_SCREEN_H);
         setlen(&g_worldPauseTpage, PRIM_LEN(DR_TPAGE));

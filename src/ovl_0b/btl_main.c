@@ -69,14 +69,14 @@ void btl_updatePause(void) {
             if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
                 text_buildSmall(0x66, 0x6D, g_btlPauseOt, "Disc Cover Open", TEXT_PAL_YELLOW, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
-                ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, g_btlPauseSprite);
+                ui_buildSprite((SCREEN_W - g_uiSprites[UI_SPRITE_PAUSE].w) / 2, (0xDA - g_uiSprites[UI_SPRITE_PAUSE].h) / 2, g_btlPauseOt, UI_SPRITE_PAUSE, 0, &w, g_btlPauseSprite);
             }
             setlen(&g_btlPauseDimTile, PRIM_LEN(TILE));
             g_btlPauseDimTile.code = GPU_TILE | GPU_ABE;
-            g_btlPauseDimTile.r0 = 0x60;
-            g_btlPauseDimTile.g0 = 0x60;
-            g_btlPauseDimTile.b0 = 0x60;
-            g_btlPauseDimTile.w = 0x140;
+            g_btlPauseDimTile.r0 = UI_PAUSE_DIM;
+            g_btlPauseDimTile.g0 = UI_PAUSE_DIM;
+            g_btlPauseDimTile.b0 = UI_PAUSE_DIM;
+            g_btlPauseDimTile.w = SCREEN_W;
             g_btlPauseDimTile.h = 0xDA;
             g_btlPauseDimTile.x0 = 0;
             g_btlPauseDimTile.y0 = 0;

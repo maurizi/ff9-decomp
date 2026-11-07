@@ -23,16 +23,16 @@ void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *verts) {
     s32 m;
 
     switch (kind) {
-    case 0:
-    case 2:
-    case 4:
-    case 6:
+    case BTL_MESH_PRIM_FT4:
+    case BTL_MESH_PRIM_GT4:
+    case BTL_MESH_PRIM_G4:
+    case BTL_MESH_PRIM_F4:
         vertsPerPrim = 4;
         break;
-    case 1:
-    case 3:
-    case 5:
-    case 7:
+    case BTL_MESH_PRIM_FT3:
+    case BTL_MESH_PRIM_GT3:
+    case BTL_MESH_PRIM_G3:
+    case BTL_MESH_PRIM_F3:
         vertsPerPrim = 3;
         break;
     default:
@@ -92,16 +92,16 @@ void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *verts) {
     s32 m;
 
     switch (kind) {
-    case 0:
-    case 2:
-    case 4:
-    case 6:
+    case BTL_MESH_PRIM_FT4:
+    case BTL_MESH_PRIM_GT4:
+    case BTL_MESH_PRIM_G4:
+    case BTL_MESH_PRIM_F4:
         vertsPerPrim = 4;
         break;
-    case 1:
-    case 3:
-    case 5:
-    case 7:
+    case BTL_MESH_PRIM_FT3:
+    case BTL_MESH_PRIM_GT3:
+    case BTL_MESH_PRIM_G3:
+    case BTL_MESH_PRIM_F3:
     default:
         vertsPerPrim = 3;
         break;

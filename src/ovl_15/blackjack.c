@@ -31,7 +31,7 @@ s32 ending_playMovie(s32 list, s32 entry) {
             g_movieFlagQueue[0][i] = MOVIE_PLAYING;
             g_gameState->vsyncMode = 4;
             DrawSync(0);
-            MBG_init(1, &mbgWork);
+            MBG_init(MBG_INIT_ONE_BUF, &mbgWork);
             mbg_setRgb24(1);
             mbg_setEndCallback(ending_movieOnEnd);
             mbg_play(list, entry);

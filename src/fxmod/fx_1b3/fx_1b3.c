@@ -861,10 +861,10 @@ void fx_1b3_splitModel(Fx1b3Split *sp) {
         piece = sp->pieces48[i];
         vert = sp->verts28[i];
         switch (i) {
-        case 0:
-        case 2:
-        case 4:
-        case 6:
+        case BTL_MESH_PRIM_FT4:
+        case BTL_MESH_PRIM_GT4:
+        case BTL_MESH_PRIM_G4:
+        case BTL_MESH_PRIM_F4:
             for (j = 0; j < sp->count8[i]; j++) {
                 piece->timer6 = -1;
                 piece->posX10 = vert[0].vx;
@@ -886,10 +886,10 @@ void fx_1b3_splitModel(Fx1b3Split *sp) {
                 vert += 4;
             }
             break;
-        case 1:
-        case 3:
-        case 5:
-        case 7:
+        case BTL_MESH_PRIM_FT3:
+        case BTL_MESH_PRIM_GT3:
+        case BTL_MESH_PRIM_G3:
+        case BTL_MESH_PRIM_F3:
             for (j = 0; j < sp->count8[i]; j++) {
                 piece->timer6 = -1;
                 piece->posX10 = vert[0].vx;

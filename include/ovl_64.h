@@ -94,9 +94,7 @@ typedef struct {
 #define MBG_SLICE_W_24 0x18
 #define MBG_FRAME_TRIES 1000 /* mbg_streamGetFrame polls before giving up on a frame */
 #define MBG_MDEC_IN_WORDS 0x4000 /* a frame whose run-level data (DecDCTBufSize) needs more is dropped */
-/* MBG_init modes and the work buffers they carve (g_mbgPlayer.mdecIn0..mdecOut1). Evidence: [code] */
-#define MBG_INIT_ONE_BUF 1 /* all in buf[0]: MDEC in x2, CD ring, audio, MDEC out x2 (field, opening, blackjack) */
-#define MBG_INIT_TWO_BUFS 2 /* buf[0]: MDEC in x2, MDEC out x2; buf[1]: CD ring, audio */
+/* MBG_init modes (MBG_INIT_*): ff9.h */
 #define MBG_MDEC_IN_SIZE (MBG_MDEC_IN_WORDS * 4) /* one run-level input buffer */
 #define MBG_MDEC_OUT_SIZE (MBG_SLICE_W_24 * 240 * 2) /* one decoded 16-pixel slice at 24 bits, 240 lines */
 #define MBG_RING_SLOT_SECTORS 8 /* mbg_streamSetRing: sectors per frame slot */

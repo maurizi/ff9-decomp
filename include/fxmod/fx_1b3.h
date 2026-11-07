@@ -56,7 +56,7 @@
 #define FX_DEATH1_ARCS_LIMBS    1    /* along fx_1b3_trailBones1, */
 #define FX_DEATH1_ARCS_LIMBS_2  2    /* along fx_1b3_trailBones2, */
 #define FX_DEATH1_ARCS_RINGS    3    /* rings round two bones */
-#define FX_DEATH1_SPLIT_GROUPS  8    /* Fx1b3Split: primitive groups (even: quads, odd: triangles) */
+#define FX_DEATH1_SPLIT_GROUPS BTL_MESH_PRIM_COUNT /* Fx1b3Split: primitive groups (even: quads, odd: triangles) */
 #define FX_DEATH1_BREAK_SWEEP_X 0    /* fx_1b3_splitTrigger.mode0: pieces within radius (x, z) fly +x, */
 #define FX_DEATH1_BREAK_SWEEP_Z 1    /* fly -z, */
 #define FX_DEATH1_BREAK_LEVEL   2    /* pieces within radius in y fly away from the point, */
