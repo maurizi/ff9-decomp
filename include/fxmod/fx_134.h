@@ -36,12 +36,95 @@
 #define FX_DOOMSDAY_BACKDROP_2    0x30 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DOOMSDAY_BACKDROP_3    0x31 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 
+/* fx_134 choreography (docs/fxdata.md, "Choreography literals"): op80's states (work->state0; the frame restarts at
+ * each) and their lengths, keyframes and tints, the pool items, the model textures, the scrolling star textures and
+ * the primitive helpers' words. States 7..0xA and the helpers are the ones Sword Magic Doomsday (fx_0e0) copies;
+ * they share its names (FX_SWDMAG_DOOMSDAY_*). */
+#define FX_DOOMSDAY_STATE_SPACE   0    /* space layers (NEBULA, STARFIELD, SPACE_LAYER) slide in, GREEN_GLOW and RED_RING */
+#define FX_DOOMSDAY_SPACE_FRAMES  0x28
+#define FX_DOOMSDAY_RED_RING_FRAME 8   /* STATE_SPACE: RED_RING (subtractive) from here */
+#define FX_DOOMSDAY_GLOW_FRAME    0x18 /* STATE_SPACE: GREEN_GLOW starts */
+#define FX_DOOMSDAY_STATE_METEOR  1    /* BIG_METEOR crosses the planets, meteor orbs (pool) fly into it */
+#define FX_DOOMSDAY_METEOR_FRAMES 0x40
+#define FX_DOOMSDAY_FLASH_FRAME   0x3E /* STATE_METEOR: two frames of additive flash, */
+#define FX_DOOMSDAY_FLASH_RGB     0x46, 0x46, 0x46
+#define FX_DOOMSDAY_FLASH_2_RGB   0x80, 0x80, 0x80
+#define FX_DOOMSDAY_STATE_ARCH    2    /* BIG_METEOR_2 and STAR_ARCH copies; flashes on its first two frames */
+#define FX_DOOMSDAY_ARCH_FRAMES   6
+#define FX_DOOMSDAY_ARCH_FLASH_RGB   0xC0, 0xC0, 0xC0 /* frame 0 */
+#define FX_DOOMSDAY_ARCH_FLASH_2_RGB 0x60, 0x60, 0x60 /* frame 1 */
+#define FX_DOOMSDAY_STATE_TUNNEL  3    /* STAR_TUNNEL and RED_DOME round the meteor, STAR_ARCH columns */
+#define FX_DOOMSDAY_TUNNEL_FRAMES 0x18
+#define FX_DOOMSDAY_STATE_CONE    4    /* LIGHT_CONE, EMBERS_2 / FLAME_BURST, star-arch risers (pool), the planets scroll */
+#define FX_DOOMSDAY_CONE_FRAMES   0x28
+#define FX_DOOMSDAY_STATE_RUSH    5    /* the tunnel texture streams, purple streak bolts */
+#define FX_DOOMSDAY_RUSH_FRAMES   0x17
+#define FX_DOOMSDAY_STATE_GATHER  6    /* the meteor comes down, STAR_ARCH and LIGHT_CONE flare after GATHER_FLARE_FRAME */
+#define FX_DOOMSDAY_GATHER_FRAMES 0x38 /* (its ramps are over 56 frames) */
+#define FX_DOOMSDAY_GATHER_FLARE_FRAME 0x28
+#define FX_DOOMSDAY_STATE_IMPACT  7    /* a ripple grid over the screen, LILAC_RING / BLUE_RING, the screen whitens */
+#define FX_DOOMSDAY_IMPACT_FRAMES 0x10 /* at its end PEBBLES start */
+#define FX_DOOMSDAY_IMPACT_WHITE_FRAME 8 /* STATE_IMPACT: the screen turns white (additive) after this frame */
+#define FX_DOOMSDAY_IMPACT_TINT_RGB 0x58, 0, 0 /* STATE_IMPACT: additive red (GATHER ramps up to it) */
+#define FX_DOOMSDAY_STATE_DEBRIS  8    /* white screen, ROCK_DEBRIS and debris pool items flying */
+#define FX_DOOMSDAY_DEBRIS_FRAMES 0x20
+#define FX_DOOMSDAY_ROCK_DEBRIS_2_FRAME 4  /* STATE_DEBRIS: ROCK_DEBRIS starts on frame 1 and again here */
+#define FX_DOOMSDAY_DEBRIS_SPAWN_FRAME  0xA /* STATE_DEBRIS: DEBRIS_PER_FRAME pool items per frame from here */
+#define FX_DOOMSDAY_DEBRIS_PER_FRAME    3
+#define FX_DOOMSDAY_DEBRIS_FLASH_FRAME  0x1A /* STATE_DEBRIS: an additive white flash grows from here to its end */
+#define FX_DOOMSDAY_DEBRIS_WHITE_RGB 0xFF, 0xFF, 0xC8 /* STATE_DEBRIS: opaque cream-white fill at the back of the OT */
+#define FX_DOOMSDAY_DEBRIS_TINT_RGB  0x40, 0, 0       /* STATE_DEBRIS: additive red */
+#define FX_DOOMSDAY_WHITE_FLASH_RGB  0xFF, 0xFF, 0xFF /* STATE_DEBRIS's end: additive white */
+#define FX_DOOMSDAY_STATE_FADE    0xA  /* the screen grid zooms back, the white fades (the op ends; the models are cleared) */
+#define FX_DOOMSDAY_FADE_FRAMES   0x20
+#define FX_DOOMSDAY_POOL_SLOTS    0x31 /* op80 pool items (Fx134Orb): */
+#define FX_DOOMSDAY_ORB_KIND_RISER  2  /* Fx134Orb.kind0: a STAR_ARCH copy rising from the cone (STATE_CONE, every 5th frame), */
+#define FX_DOOMSDAY_RISER_FRAMES  24
+#define FX_DOOMSDAY_ORB_KIND_DEBRIS 3  /* a METEOR rock flying, spinning and shrinking (STATE_DEBRIS) */
+#define FX_DOOMSDAY_DEBRIS_ROCK_FRAMES 16
+#define FX_DOOMSDAY_MODEL_COUNT   8    /* btlfx_initEffModels slots (7 registered) */
+#define FX_DOOMSDAY_METEOR_TPAGE  0x98   /* 8-bit page (0x200, 0x100), rock texture */
+#define FX_DOOMSDAY_METEOR_CLUT   0x3D80 /* CLUT (0, 0xF6) */
+#define FX_DOOMSDAY_METEOR_U      0
+#define FX_DOOMSDAY_METEOR_V      0
+#define FX_DOOMSDAY_BIG_METEOR_TPAGE 0x118  /* BIG_METEOR and BIG_METEOR_2: 15-bit page (0x200, 0x100) */
+#define FX_DOOMSDAY_BIG_METEOR_CLUT  0xFFFF /* (no CLUT) */
+#define FX_DOOMSDAY_BIG_METEOR_U     0x40
+#define FX_DOOMSDAY_BIG_METEOR_V     0
+#define FX_DOOMSDAY_STAR_TUNNEL_TPAGE 0x37  /* STAR_TUNNEL and STAR_ARCH: 4-bit page (0x1C0, 0x100), additive, starfield */
+#define FX_DOOMSDAY_STAR_TUNNEL_CLUT  0x3D07 /* CLUT (0x70, 0xF4) */
+#define FX_DOOMSDAY_STAR_TUNNEL_U     0
+#define FX_DOOMSDAY_STAR_TUNNEL_V     0
+#define FX_DOOMSDAY_LIGHT_CONE_TPAGE  0xBC  /* 8-bit page (0x300, 0x100), additive, smoke texture */
+#define FX_DOOMSDAY_LIGHT_CONE_CLUT   0x3E00 /* CLUT (0, 0xF8) */
+#define FX_DOOMSDAY_LIGHT_CONE_U      0x80
+#define FX_DOOMSDAY_LIGHT_CONE_V      0
+#define FX_DOOMSDAY_METEOR_TRAIL_TRAIL_SLOTS  0x40 /* METEOR_TRAIL's trail buffer fx_134_op80Trails: slots of */
+#define FX_DOOMSDAY_METEOR_TRAIL_TRAIL_STRIDE 0xCC /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* Scrolling textures in the STAR_TUNNEL page: STATE_RUSH streams (SRC_X, SRC_Y) 0x14 a frame into the TUNNEL rect (v 0x80);
+ * states 3..7 scroll the common effect page's stars into the STARS rect (u 0x80). */
+#define FX_DOOMSDAY_TUNNEL_VRAM_X 0x1C0
+#define FX_DOOMSDAY_TUNNEL_VRAM_Y 0x180
+#define FX_DOOMSDAY_TUNNEL_VRAM_W 0x18
+#define FX_DOOMSDAY_TUNNEL_VRAM_H 0x60
+#define FX_DOOMSDAY_TUNNEL_SRC_X  0x320
+#define FX_DOOMSDAY_TUNNEL_SRC_Y  0x100
+#define FX_DOOMSDAY_STARS_VRAM_X  0x1E0
+#define FX_DOOMSDAY_STARS_VRAM_Y  0x100
+#define FX_DOOMSDAY_STARS_VRAM_W  0x20
+#define FX_DOOMSDAY_STARS_VRAM_H  0x80
+#define FX_DOOMSDAY_STARS_SRC_X   0x300
+#define FX_DOOMSDAY_STARS_SRC_Y   0x100
+#define FX_DOOMSDAY_BOLTS         3    /* STATE_RUSH: fx_134_bolts (purple streaks) */
+#define FX_DOOMSDAY_TRAIL_POINTS  25   /* points of a purple streak strip (fxm_drawOffsetTrail) */
+#define FX_DOOMSDAY_BULGE_GRID    24   /* fxm_drawBulgeGrid24: quads per side */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pos4[25];
+    SVECTOR pos4[FX_DOOMSDAY_TRAIL_POINTS];
 } Fx134Bolt;
 
 extern Unk800F78A4 *fx_134_env;
@@ -109,7 +192,7 @@ extern CVECTOR fx_134_rippleColors0[];
 extern s16 fx_134_orbSpeeds[4];
 extern CVECTOR fx_134_rippleColors1[];
 extern CVECTOR fx_134_rippleColors2[2];
-extern Fx134Bolt fx_134_bolts[];
+extern Fx134Bolt fx_134_bolts[FX_DOOMSDAY_BOLTS];
 extern BtlModelBuf fx_134_effModels[];
 extern u8 fx_134_op80Trails[];
 
