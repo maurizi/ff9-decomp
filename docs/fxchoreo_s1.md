@@ -37,7 +37,7 @@ choreography block. Every step was checked with `make verify` (20 binaries + 380
 | fx_08c | `FX_BERSERK_` | 12 | 8 | 6 |
 | fx_08d | `FX_CURA_` | 14 | 2 | 9 |
 | fx_08e | `FX_CURAGA_` | 34 | 6 | 21 |
-| fx_08f | `_` | 96 | 96 | 0 |
+| fx_08f | `FX_METEOR_` | 96 | 72 | 25 |
 | fx_090 | `FX_CURAGA_` | 35 | 8 | 20 |
 | fx_091 | `FX_ENTICE_FRAMES_` | 4 | 2 | 1 |
 | fx_092 | `FX_HYPNOTIZE_` | 9 | 5 | 5 |
@@ -46,7 +46,7 @@ choreography block. Every step was checked with `make verify` (20 binaries + 380
 | fx_095 | `FX_STOP_` | 54 | 26 | 30 |
 | fx_096 | `FX_FROST_` | 41 | 18 | 13 |
 | fx_099 | `FX_BREAK_` | 18 | 11 | 11 |
-| fx_09a | `_` | 67 | 67 | 0 |
+| fx_09a | `FX_LV5_DEATH_` | 67 | 41 | 23 |
 | fx_09b | `FX_` | 23 | 11 | 11 |
 | fx_09c | `FX_GNOLL_ATTACK_` | 26 | 21 | 5 |
 | fx_09d | `FX_BLIND_` | 5 | 2 | 3 |
@@ -69,11 +69,11 @@ choreography block. Every step was checked with `make verify` (20 binaries + 380
 | fx_0ae | `FX_VENOM_BREATH_` | 9 | 4 | 5 |
 | fx_0af | `FX_ZOMBIE_BREATH_` | 11 | 4 | 5 |
 | fx_0b0 | `FX_LEAF_SWIRL_` | 31 | 13 | 11 |
-| total | | 1826 | 1170 | 576 |
+| total | | 1826 | 1120 | 624 |
 
-53 of the slice's 58 modules are done: 1826 → 1170 actionable literals
-(656 named), 576 defines. Not done (no choreography block yet; their abr
-arguments are named): fx_07a, fx_07d, fx_086, fx_08f, fx_09a.
+55 of the slice's 58 modules are done: 1826 → 1120 actionable literals
+(706 named), 624 defines. Not done (no choreography block yet; their abr
+arguments are named): fx_07a, fx_07d, fx_086.
 
 ## What was named
 

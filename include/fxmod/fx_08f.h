@@ -25,6 +25,36 @@
 #define FX_METEOR_EXPLOSION      0x1B /* emitter: green and orange explosion frames */
 #define FX_METEOR_SMOKE_TRAIL    0x1C /* trail: grey smoke strip */
 
+/* fx_08f choreography (docs/fxdata.md, "Choreography literals"): op80's states and lengths, the model textures and
+ * the sky scroll rect. */
+#define FX_METEOR_STATE_SKY  1    /* op80: the sky cylinder and clouds, the meteor rock falling in from afar */
+#define FX_METEOR_STATE_FALL 2    /* the meteor approaches and strikes: dust ring, explosion, embers */
+#define FX_METEOR_STATE_FADE 3    /* the smoke trail drifts off, then the op ends */
+#define FX_METEOR_SKY_FRAMES  0x31 /* FX_METEOR_STATE_SKY's length (and its (frame << N) / 49 ramps) */
+#define FX_METEOR_FALL_FRAMES 0x18 /* FX_METEOR_STATE_FALL's length */
+#define FX_METEOR_FADE_FRAMES 6    /* FX_METEOR_STATE_FADE's length (the (frame << 12) / N ramp) */
+#define FX_METEOR_MODEL_COUNT 8    /* btlfx_initEffModels slots: ROCK, RED_ROCK, FIRE_DOME, DUST_RING, STREAK, BOWL, RING_DISC, SKY_CYLINDER */
+#define FX_METEOR_ROCK_TPAGE      0x9A   /* 8-bit page (0x280, 0x100) */
+#define FX_METEOR_ROCK_CLUT       0x3E00 /* CLUT (0, 0xF8) */
+#define FX_METEOR_RED_ROCK_TPAGE  0x139  /* 15-bit page (0x240, 0x100), abr 1 */
+#define FX_METEOR_RED_ROCK_CLUT   0xFFFF /* none (15-bit page) */
+#define FX_METEOR_RED_ROCK_V      0x80
+#define FX_METEOR_FIRE_DOME_TPAGE 0xB9   /* 8-bit page (0x240, 0x100), abr 1 */
+#define FX_METEOR_FIRE_DOME_CLUT  0x3D40 /* CLUT (0, 0xF5) */
+#define FX_METEOR_DUST_RING_TPAGE 0x3C   /* 4-bit page (0x300, 0x100), abr 1 */
+#define FX_METEOR_DUST_RING_CLUT  0x3D04 /* CLUT (0x40, 0xF4) */
+#define FX_METEOR_DUST_RING_V     0x80
+/* FX_METEOR_SKY_CYLINDER samples (SKY_TPAGE, u / v 0) the rect each frame's btlfx_drawScrollMove fills from
+ * (SRC_X, SRC_Y), scrolled by 8 lines a frame */
+#define FX_METEOR_SKY_TPAGE  0x97   /* 8-bit page (0x1C0, 0x100) */
+#define FX_METEOR_SKY_CLUT   0x3D80 /* CLUT (0, 0xF6) */
+#define FX_METEOR_SKY_VRAM_X 0x1C0
+#define FX_METEOR_SKY_VRAM_Y 0x100
+#define FX_METEOR_SKY_VRAM_W 0x40
+#define FX_METEOR_SKY_VRAM_H 0x80
+#define FX_METEOR_SKY_SRC_X  0x200
+#define FX_METEOR_SKY_SRC_Y  0x100
+
 #define gte_stszotz(r0) __asm__ volatile( \
     "mfc2\t$12, $19;" \
     "nop;" \

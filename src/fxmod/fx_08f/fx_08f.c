@@ -122,7 +122,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx08fWork80);
     } else if (mode == 1) {
         fx_08f_env = env;
-        work->state0 = 1;
+        work->state0 = FX_METEOR_STATE_SKY;
         work->frame4 = 0;
         fxm_randDiscPoints(0x180, 0x400, fx_08f_streakPts);
         work->unk8[0] = 0xA0;
@@ -131,25 +131,25 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8[3] = 0x78;
         work->unk8[4] = 0xC8;
         work->unk8[5] = 0x78;
-        ex->btlfx_initEffModels(fx_08f_effModels, 8);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_ROCK), 0x9A, 0x3E00, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RED_ROCK), 0x139, 0xFFFF, 0, 0x80);
-        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_DOME), 0xB9, 0x3D40, 0, 0);
-        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_DUST_RING), 0x3C, 0x3D04, 0, 0x80);
+        ex->btlfx_initEffModels(fx_08f_effModels, FX_METEOR_MODEL_COUNT);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_ROCK), FX_METEOR_ROCK_TPAGE, FX_METEOR_ROCK_CLUT, 0, 0);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RED_ROCK), FX_METEOR_RED_ROCK_TPAGE, FX_METEOR_RED_ROCK_CLUT, 0, FX_METEOR_RED_ROCK_V);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_DOME), FX_METEOR_FIRE_DOME_TPAGE, FX_METEOR_FIRE_DOME_CLUT, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_DUST_RING), FX_METEOR_DUST_RING_TPAGE, FX_METEOR_DUST_RING_CLUT, 0, FX_METEOR_DUST_RING_V);
         work->model34 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_STREAK));
         work->model38 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_BOWL));
         work->model3C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RING_DISC));
-        work->model40 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_SKY_CYLINDER), 0x97, 0x3D80, 0, 0);
+        work->model40 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_SKY_CYLINDER), FX_METEOR_SKY_TPAGE, FX_METEOR_SKY_CLUT, 0, 0);
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 1:
-            level = (frame << 11) / 49;
+        case FX_METEOR_STATE_SKY:
+            level = (frame << 11) / FX_METEOR_SKY_FRAMES;
             near = frame < 8;
             pos.vx = 0;
             pos.vz = 0x800 - level;
             pos.vy = level - 0x800;
-            fadeIn = (frame << 12) / 49;
+            fadeIn = (frame << 12) / FX_METEOR_SKY_FRAMES;
             if (!near) {
                 shake = frame - 8;
                 pos.vx += ex->btlfx_randCentered(shake * 3);
@@ -175,7 +175,8 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             camY = (u16)env->camera->points[3].vy + 0x180;
             env->camera->points[3].vy = camY - camShift;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
-            ex->btlfx_drawScrollMove(work->frame4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->frame4 * 8, FX_METEOR_SKY_VRAM_X, FX_METEOR_SKY_VRAM_Y, FX_METEOR_SKY_VRAM_W, FX_METEOR_SKY_VRAM_H, FX_METEOR_SKY_SRC_X,
+                                     FX_METEOR_SKY_SRC_Y);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model40);
             ex->Hi_ModifyEffModelRGB(work->model40, (level >> 5) - 0x80, (level >> 5) - 0x80, (level >> 5) - 0x80);
             if (!near) {
@@ -199,7 +200,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 otz = -0x46;
             }
             fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, otz, &rot2, fx_08f_streakPts, &streakCol,
-                          ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
+                          ex->math_cos((frame << 10) / FX_METEOR_SKY_FRAMES) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS), (s32)&work->pos14);
                 work->emit44 = emitter;
@@ -218,7 +219,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             spriteX = 0x1B8 - spriteOfs;
             spriteY = 0x140 - spriteOfs;
             ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_CLOUDS), spriteX - 0x40, spriteY + 0x78, 0, BTLFX_ABR_ADD, fadeIn);
-            if (frame >= 0x31) {
+            if (frame >= FX_METEOR_SKY_FRAMES) {
                 ex->btlfx_stopEmitter(work->emit44);
                 work->camPos1C.vx = 0;
                 work->camPos1C.vy = -0x140;
@@ -229,11 +230,11 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vx += 0x1800;
                 env->camera->points[3].vx -= 0x1000;
                 ex->btlfx_startScreenFade(1, 1);
-                work->state0 = 2;
+                work->state0 = FX_METEOR_STATE_FALL;
                 entry->frame = -1;
             }
             break;
-        case 2:
+        case FX_METEOR_STATE_FALL:
             approach = (frame << 12) / 26;
             dist = (0x1000 - approach) * 3 / 2;
             pos.vz = work->camPos1C.vx + dist;
@@ -300,18 +301,18 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS_2), &work->pos14, NULL, 0x3000, spriteFrame,
                                       BTLFX_ABR_ADD, spriteAlpha);
             }
-            if (frame >= 0x18) {
-                work->state0 = 3;
+            if (frame >= FX_METEOR_FALL_FRAMES) {
+                work->state0 = FX_METEOR_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 3:
-            t = (frame << 12) / 6;
+        case FX_METEOR_STATE_FADE:
+            t = (frame << 12) / FX_METEOR_FADE_FRAMES;
             work->pos14.vz -= 0x40;
             work->pos14.vy += 0x40;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_SMOKE_TRAIL), (s32)&work->pos14, NULL, 0,
                                 ex->math_cos(t >> 2), (0x1000 - t) / 2, BTLFX_ABR_ADD, fx_08f_trail, 0);
-            if (frame >= 6) {
+            if (frame >= FX_METEOR_FADE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
