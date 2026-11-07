@@ -17,6 +17,22 @@
 #define FX_REBIRTH_FLAME_STAR_FLARES 0x6 /* emitter: orange star flares + glowing dots */
 #define FX_REBIRTH_FLAME_ORANGE_STREAKS 0x7 /* emitter: two fans, thin orange-white rising streaks */
 
+/* fx_0e1_1 choreography (docs/fxdata.md, "Choreography literals"): op80's states, their lengths, keyframes and
+ * fades. */
+#define FX_REBIRTH_FLAME_STATE_FLARE 0 /* op80: LENS_FLARES, BACKDROP, the screen whitens */
+#define FX_REBIRTH_FLAME_STATE_RISE  1 /* the camera rises with RED_SPARKS / STAR_FLARES, ripple grid; ends once they faded */
+#define FX_REBIRTH_FLAME_FLARES_FRAMES 0x14 /* STATE_FLARE: the LENS_FLARES sprite line fades over this many frames */
+#define FX_REBIRTH_FLAME_WHITE_FRAME   0x24 /* STATE_FLARE: an additive white flash grows from this frame */
+#define FX_REBIRTH_FLAME_WHITE_FRAMES  16   /* over this many */
+#define FX_REBIRTH_FLAME_FLARE_FRAMES  0x34 /* STATE_FLARE's length */
+#define FX_REBIRTH_FLAME_CAM_HEIGHT    0x800 /* STATE_RISE: the camera point starts this far above fx_0e1_1_camPos */
+#define FX_REBIRTH_FLAME_STARS_HEIGHT  0x300 /* STAR_FLARES start this far above it */
+#define FX_REBIRTH_FLAME_SWAY          0x200 /* STATE_RISE: camera sway amplitude, shrinking by 8 per frame */
+#define FX_REBIRTH_FLAME_FADE_FRAME    0x35  /* STATE_RISE: the particles fade out from here once the party reload is done */
+#define FX_REBIRTH_FLAME_RISE_FRAMES   0x41  /* STATE_RISE: the camera rises for this many frames */
+#define FX_REBIRTH_FLAME_UNWHITE_FRAMES 0x18 /* STATE_RISE: the white flash fades over this many frames */
+#define FX_REBIRTH_FLAME_RIPPLE_FRAMES  0x20 /* STATE_RISE: the ripple grid draws for this many frames */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame */

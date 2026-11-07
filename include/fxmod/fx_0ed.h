@@ -20,6 +20,38 @@
 #define FX_ROULETTE_SOUL_ORBS 0x11 /* emitter: blue bubbles */
 #define FX_ROULETTE_BLUE_TRAIL_2 0x1D /* emitter: spiralling blue light-beam trail */
 
+/* fx_0ed choreography (docs/fxdata.md, "Choreography literals"): op80's reaper states, their lengths, keyframes and
+ * screen tints, the trail buffers and ribbons; op81's roulette over the units. */
+#define FX_ROULETTE_STATE_RISE   0 /* op80: the reaper (summon model) rises behind the unit, SOUL_ORBS / BLUE_TRAIL_2 */
+#define FX_ROULETTE_STATE_POSE   1 /* it holds motion frame 0 */
+#define FX_ROULETTE_STATE_SWING  2 /* the swing (motion played back), the scythe ribbons, the hit, SMOKE_TEXTURE */
+#define FX_ROULETTE_STATE_VANISH 3 /* the reaper narrows and fades (the op ends) */
+#define FX_ROULETTE_RISE_FRAMES   0x18 /* STATE_RISE's length */
+#define FX_ROULETTE_POSE_FRAMES   8    /* STATE_POSE's length */
+#define FX_ROULETTE_RIBBON_FRAMES 0x18 /* STATE_SWING: the ribbons show at full strength until this frame */
+#define FX_ROULETTE_HIT_FRAME     0x1F /* STATE_SWING: the hit emitter (fx_0ed_facingBlocks, by unit / camera facing) */
+#define FX_ROULETTE_DARKEN_FRAME  0x20 /* STATE_SWING: subtractive DARKEN tint */
+#define FX_ROULETTE_TINT_FRAME    0x21 /* STATE_SWING: additive TINT, GREEN_ORB / RED_RINGS */
+#define FX_ROULETTE_TRAIL_FRAME   0x26 /* STATE_SWING: FX_ROULETTE_BLUE_TRAIL */
+#define FX_ROULETTE_SWING_FRAMES  0x29 /* STATE_SWING's length; STATE_VANISH plays the motion back from this frame */
+#define FX_ROULETTE_VANISH_FRAMES 8    /* STATE_VANISH's length */
+#define FX_ROULETTE_DARKEN_RGB    0xFF, 0xFF, 0    /* subtractive screen tint (the screen turns blue) */
+#define FX_ROULETTE_TINT_RGB      0xDC, 0, 0x20    /* additive (crimson) */
+#define FX_ROULETTE_RIBBON_BONE     9  /* summon model bone the two ribbons follow (fxm_getSummonBonePoint) */
+#define FX_ROULETTE_RIBBON_SEGMENTS 17 /* fx_0ed_ribbon0 / ribbon1 history steps */
+#define FX_ROULETTE_BLUE_TRAIL_2_TRAIL_SLOTS  0x18 /* FX_ROULETTE_BLUE_TRAIL_2's trail buffer fx_0ed_op80Trails0: slots of */
+#define FX_ROULETTE_BLUE_TRAIL_2_TRAIL_STRIDE 0x3C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_ROULETTE_BLUE_TRAIL_TRAIL_SLOTS    0x18 /* FX_ROULETTE_BLUE_TRAIL's trail buffer fx_0ed_op80Trails1: slots of */
+#define FX_ROULETTE_BLUE_TRAIL_TRAIL_STRIDE   0x44 /* this many bytes */
+#define FX_ROULETTE_PICK_STATE_NEXT 0 /* op81: the pointer moves to the next unit (btlfx_nextUnitPos), the camera follows */
+#define FX_ROULETTE_PICK_STATE_MARK 1 /* op81: TARGET_RING on it for endFrame4 frames */
+#define FX_ROULETTE_PICK_STATE_DONE 2 /* op81: sets signal 0 and ends */
+#define FX_ROULETTE_PICK_FIRST_FRAMES 0xA  /* op81: the first unit is marked this long, each next one a frame less */
+#define FX_ROULETTE_PICK_STEPS        0x10 /* op81: after this many steps it stops on the chosen unit; the screen grid brightens over them */
+#define FX_ROULETTE_GRID_BRIGHT       100  /* op81: the screen grid's full brightness */
+#define FX_ROULETTE_CAM_DISTANCE      0x640 /* op81: the camera sits this far from the unit along z, */
+#define FX_ROULETTE_CAM_HEIGHT        0x200 /* this high */
+
 typedef struct {
     s32 state0; /* state */
     s32 endFrame4; /* end frame of the current target */
@@ -72,8 +104,8 @@ extern SVECTOR fx_0ed_ribbonPt2;
 extern u8 fx_0ed_op80Trails0[];
 extern Unk80100DC054 fx_0ed_summonModel;
 extern u8 fx_0ed_op80Trails1[];
-extern Fx0edSeg fx_0ed_ribbon0[17];
-extern Fx0edSeg fx_0ed_ribbon1[17];
+extern Fx0edSeg fx_0ed_ribbon0[FX_ROULETTE_RIBBON_SEGMENTS];
+extern Fx0edSeg fx_0ed_ribbon1[FX_ROULETTE_RIBBON_SEGMENTS];
 extern BtlModelBuf fx_0ed_effModels[];
 
 #endif

@@ -54,8 +54,8 @@ static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *co
     }
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    colA.cd = abr != 0xFF ? 0x3A : 0x38;
-    colB.cd = abr != 0xFF ? 0x3A : 0x38;
+    colA.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_G4 | GPU_ABE : GPU_POLY_G4;
+    colB.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_G4 | GPU_ABE : GPU_POLY_G4;
     for (i = 0; i < n; i++, buf++, prim++) {
         gte_ldv3c(buf);
         fadeNear = 0x1000 - (i << 12) / n;
@@ -68,7 +68,7 @@ static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *co
             gte_stszotz(&otz);
             gte_ldv0(&buf[1].b8);
             gte_rtps();
-            ex->btlfx_addPrimAbr(0x8000000, otz, prim, abr);
+            ex->btlfx_addPrimAbr(PRIM_TAG(POLY_G4), otz, prim, abr);
             gte_stsxy(&prim->x3);
             gte_DpqColorFar_nst(&colA, fadeNear);
             gte_strgb(&prim->r0);
@@ -118,9 +118,9 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR *sv;
 
     if (mode == 0) {
-        *args = 0x40;
+        *args = sizeof(Fx0edWork80);
     } else if (mode == 1) {
-        work->state0 = 0;
+        work->state0 = FX_ROULETTE_STATE_RISE;
         work->frame4 = 0;
         fx_0ed_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -169,8 +169,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         amp = 0;
         switch (state) {
-        case 0:
-            ratio = (frame << 12) / 24;
+        case FX_ROULETTE_STATE_RISE:
+            ratio = (frame << 12) / FX_ROULETTE_RISE_FRAMES;
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ROULETTE_SOUL_ORBS), (s32)&work->pos18);
                 if (emitter != NULL) {
@@ -179,8 +179,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ROULETTE_BLUE_TRAIL_2), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0ed_op80Trails0;
-                    emitter->trailSlots = 0x18;
-                    emitter->trailStride = 0x3C;
+                    emitter->trailSlots = FX_ROULETTE_BLUE_TRAIL_2_TRAIL_SLOTS;
+                    emitter->trailStride = FX_ROULETTE_BLUE_TRAIL_2_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
             }
@@ -197,25 +197,25 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->model28, (((ratio >> 1) + 0x800) >> 5) - 0x80, (((ratio >> 1) + 0x800) >> 5) - 0x80,
                                          (((ratio >> 1) + 0x800) >> 5) - 0x80);
             }
-            if (frame >= 0x18) {
-                work->state0 = 1;
+            if (frame >= FX_ROULETTE_RISE_FRAMES) {
+                work->state0 = FX_ROULETTE_STATE_POSE;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_ROULETTE_STATE_POSE:
             pos.vx = work->pos18.vx;
             pos.vy = work->pos18.vy;
             pos.vz = work->pos18.vz;
             ratio = ((Fx0edSummon *)env->loader)->summonModel60;
             ex->Hi_SetSummonMotFrame(ratio, 0);
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx0edSummon *)env->loader)->summonModel60, 1);
-            if (frame >= 8) {
-                work->state0 = 2;
+            if (frame >= FX_ROULETTE_POSE_FRAMES) {
+                work->state0 = FX_ROULETTE_STATE_SWING;
                 entry->frame = -1;
                 ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->loader)->summonModel60, 0);
             }
             break;
-        case 2:
+        case FX_ROULETTE_STATE_SWING:
             t = frame << 12;
             /* Dead store: only its sign word survives. */
             amp = t / 30;
@@ -225,15 +225,15 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx0edSummon *)env->loader)->summonModel60, 1);
             if (frame == 0) {
                 amp = -1;
-            } else if (frame < 0x18) {
+            } else if (frame < FX_ROULETTE_RIBBON_FRAMES) {
                 amp = t / 24;
             } else {
                 amp = 0x1000;
             }
-            if (frame == 0x20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
+            if (frame == FX_ROULETTE_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, FX_ROULETTE_DARKEN_RGB);
             }
-            if (frame == 0x1F) {
+            if (frame == FX_ROULETTE_HIT_FRAME) {
                 s32 ang;
 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file,
@@ -244,8 +244,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame == 0x21) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
+            if (frame == FX_ROULETTE_TINT_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_ROULETTE_TINT_RGB);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ROULETTE_GREEN_ORB), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
@@ -255,45 +255,45 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame == 0x26) {
+            if (frame == FX_ROULETTE_TRAIL_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ROULETTE_BLUE_TRAIL), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0ed_op80Trails1;
-                    emitter->trailSlots = 0x18;
-                    emitter->trailStride = 0x44;
+                    emitter->trailSlots = FX_ROULETTE_BLUE_TRAIL_TRAIL_SLOTS;
+                    emitter->trailStride = FX_ROULETTE_BLUE_TRAIL_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ROULETTE_SMOKE), (s32)&work->pos18);
             }
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_SMOKE_TEXTURE), frame);
-            if (frame >= 0x29) {
-                work->state0 = 3;
+            if (frame >= FX_ROULETTE_SWING_FRAMES) {
+                work->state0 = FX_ROULETTE_STATE_VANISH;
                 entry->frame = -1;
             }
             break;
-        case 3:
+        case FX_ROULETTE_STATE_VANISH:
             ratio = frame << 9;
             phase = ratio >> 2;
             work->scale34[0] = work->scale34[2] = ((0x1000 - ex->math_sin(phase)) * 0x1000) >> 12;
             pos.vx = work->pos18.vx;
             pos.vy = work->pos18.vy;
             pos.vz = work->pos18.vz;
-            ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->loader)->summonModel60, 0x29 - frame);
+            ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->loader)->summonModel60, FX_ROULETTE_SWING_FRAMES - frame);
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx0edSummon *)env->loader)->summonModel60, 1);
             amp = ex->math_cos(phase);
             ex->Hi_ModifySummonModelRGB(((Fx0edSummon *)env->loader)->summonModel60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
                                         (amp >> 5) - 0x80);
-            if (frame >= 8) {
-                work->state0 = 3;
+            if (frame >= FX_ROULETTE_VANISH_FRAMES) {
+                work->state0 = FX_ROULETTE_STATE_VANISH;
                 ex->btlfx_clearEffModels();
                 return 1;
             }
             break;
         }
         if (amp != 0) {
-            fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, 9, &fx_0ed_ribbonPt0, &ptA);
-            fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, 9, &fx_0ed_ribbonPt1, &ptB);
-            fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, 9, &fx_0ed_ribbonPt2, &ptC);
+            fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, FX_ROULETTE_RIBBON_BONE, &fx_0ed_ribbonPt0, &ptA);
+            fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, FX_ROULETTE_RIBBON_BONE, &fx_0ed_ribbonPt1, &ptB);
+            fxm_getSummonBonePoint(((Fx0edSummon *)env->loader)->summonModel60, FX_ROULETTE_RIBBON_BONE, &fx_0ed_ribbonPt2, &ptC);
             if (amp < 0) {
                 fxm_drawRibbonTrail(&ptA, &ptB, 0x3F8, &fx_0ed_ribbonRgb0, &fx_0ed_ribbonRgb1, 0, fx_0ed_ribbon0, 1);
                 fxm_drawRibbonTrail(&ptB, &ptC, 0x3F8, &fx_0ed_ribbonRgb1, &fx_0ed_ribbonRgb2, 0, fx_0ed_ribbon1, 1);
@@ -307,14 +307,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     SVECTOR *sv2;
 
                     sv = (SVECTOR *)fx_0ed_ribbon0;
-                    for (i = 0, ofs = 8; i < 17; ofs += 16, i++) {
+                    for (i = 0, ofs = 8; i < FX_ROULETTE_RIBBON_SEGMENTS; ofs += 16, i++) {
                         sv[i * 2].vy -= sv[i * 2].vy >> 6;
                         ((SVECTOR *)(ofs + (s32)sv))->vy -= ((SVECTOR *)(ofs + (s32)sv))->vy >> 4;
                     }
                     sv2 = (SVECTOR *)fx_0ed_ribbon1;
                     i = 0;
                     ofs2 = 8;
-                    for (; i < 17; ofs2 += 16, i++) {
+                    for (; i < FX_ROULETTE_RIBBON_SEGMENTS; ofs2 += 16, i++) {
                         sv2[i * 2].vy -= sv2[i * 2].vy >> 4;
                         ((SVECTOR *)(ofs2 + (s32)sv2))->vy -= ((SVECTOR *)(ofs2 + (s32)sv2))->vy >> 3;
                     }
@@ -340,10 +340,10 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 gridBright;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx0edWork81);
     } else if (mode == 1) {
-        work->endFrame4 = 0xA;
-        work->state0 = 0;
+        work->endFrame4 = FX_ROULETTE_PICK_FIRST_FRAMES;
+        work->state0 = FX_ROULETTE_PICK_STATE_NEXT;
         work->unitC = (BtlUnit *)-1;
         work->frame8 = 0;
         fx_0ed_env = env;
@@ -352,7 +352,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         gridBright = 0;
         switch (work->state0) {
-        case 0:
+        case FX_ROULETTE_PICK_STATE_NEXT:
             do {
                 status = ex->btlfx_nextUnitPos(0, (s16 *)&work->pos10, &work->unitC, &isParty);
                 if (status == -2) {
@@ -366,42 +366,42 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             u.v.vy = work->pos10.vy;
             u.v.vz = work->pos10.vz;
             if (u.v.vz < 0) {
-                u.v.vz += 0x640;
+                u.v.vz += FX_ROULETTE_CAM_DISTANCE;
             } else {
-                u.v.vz -= 0x640;
+                u.v.vz -= FX_ROULETTE_CAM_DISTANCE;
             }
-            u.v.vy -= 0x200;
+            u.v.vy -= FX_ROULETTE_CAM_HEIGHT;
             env->camera->points[1].vx = u.v.vx;
             env->camera->points[1].vy = u.v.vy;
             env->camera->points[1].vz = u.v.vz;
             ex->btlfx_playFileSound(3, entry->file, -1);
-            if (++work->frame8 >= 0x10 && status == 1) {
-                work->state0 = 2;
+            if (++work->frame8 >= FX_ROULETTE_PICK_STEPS && status == 1) {
+                work->state0 = FX_ROULETTE_PICK_STATE_DONE;
             } else {
-                work->state0 = 1;
+                work->state0 = FX_ROULETTE_PICK_STATE_MARK;
                 entry->frame = -1;
             }
-            if (work->frame8 < 0x10) {
-                gridBright = work->frame8 * 100 / 16;
+            if (work->frame8 < FX_ROULETTE_PICK_STEPS) {
+                gridBright = work->frame8 * FX_ROULETTE_GRID_BRIGHT / FX_ROULETTE_PICK_STEPS;
             } else {
-                gridBright = 100;
+                gridBright = FX_ROULETTE_GRID_BRIGHT;
             }
             break;
-        case 1:
+        case FX_ROULETTE_PICK_STATE_MARK:
             env->otZ = 0x80;
             ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_TARGET_RING), &work->pos10, 0, 0xFF, -1);
             env->otZ = 0;
-            if (work->frame8 < 0x10) {
-                gridBright = work->frame8 * 100 / 16;
+            if (work->frame8 < FX_ROULETTE_PICK_STEPS) {
+                gridBright = work->frame8 * FX_ROULETTE_GRID_BRIGHT / FX_ROULETTE_PICK_STEPS;
             } else {
-                gridBright = 100;
+                gridBright = FX_ROULETTE_GRID_BRIGHT;
             }
             if (frame >= work->endFrame4) {
-                work->state0 = 0;
+                work->state0 = FX_ROULETTE_PICK_STATE_NEXT;
                 work->endFrame4--;
             }
             break;
-        case 2:
+        case FX_ROULETTE_PICK_STATE_DONE:
             env->state->signals[0] = 1;
             env->camera->paused = 0;
             return 1;
