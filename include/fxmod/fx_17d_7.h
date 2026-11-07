@@ -13,7 +13,10 @@
 #define FX_ARK_VIOLET_RING   0x7 /* emitter: white-cream-violet and white-purple-blue gouraud rings */
 #define FX_ARK_GOLD_GLOW     0xA /* emitter: golden glow flash */
 #define FX_ARK_ORANGE_RING   0xD /* emitter: two fans (not rendered) + white-orange gouraud rings */
+#define FX_ARK_BRANCH_TRAIL  0xE /* table: trail strip of op83's bolt branches (fxm_drawJaggedTrailBranch's file; look pending) */
+#define FX_ARK_BOLT_TRAIL    0xF /* table: trail strip of op83's BOLT_STRIKE bolts (fxm_drawArcTrail's file; look pending) */
 #define FX_ARK_PEACH_RING    0x11 /* rings: white-peach-mauve gouraud rings (byte-identical to fx_17d_6 entry 0xB, fx_1bf_1 entry 0xC) */
+#define FX_ARK_RING_BOLT_TRAIL 0x13 /* table: trail strip of op83's BOLT_RING bolts (fxm_drawArcTrail's file; look pending) */
 #define FX_ARK_ORANGE_BEAM 0x8C /* summon data: 'so' model, long orange gouraud beam */
 #define FX_ARK_TEAL_RING 0x8E /* summon data: 'so' model, flat ring with a dark teal texture */
 #define FX_ARK_FLAME_TEX_RING 0x8F /* summon data: 'so' model, flat ring with an orange flame texture */
@@ -78,6 +81,38 @@
 #define FX_ARK_BOLT_RING_FRAMES      4
 #define FX_ARK_NOISE_ROWS    64   /* fx_17d_7_noise rows (three random offsets each) */
 
+/* fx_17d_7 choreography, deep pass (docs/fxchoreo_deep_c.md): keys inside op80's states, the rocks, op83's bolts */
+#define FX_ARK_DOME_SCALE         0x1800 /* SMOKE_BOWL / TEAL_RING's scale (scale44) */
+#define FX_ARK_INTRO_TINT_FRAMES  18   /* STATE_SMOKE: an orange flash fades over these frames */
+#define FX_ARK_PALE_RING_FRAME    6    /* STATE_RINGS: ORANGE_BEAM widens until here; then PALE_RING, a red darkening, FIRE_CONE */
+#define FX_ARK_BURST_DARKEN_RGB   0xFF, 0x80, 0x80 /* (subtractive) */
+#define FX_ARK_SCROLL_SPEED       12   /* SCROLL texels a frame (RINGS, BLAST's pillar) */
+#define FX_ARK_SCROLL_2_SPEED     8    /* SCROLL_2's (SCROLL_3 / _4 speed up over STATE_BLAST) */
+#define FX_ARK_BEAM_LENGTH        0x800 /* ORANGE_BEAM's z scale (RINGS, BLAST) */
+#define FX_ARK_BOLT_HEIGHT        0xDAC /* op83's bolts run between the ground point and this far above it */
+#define FX_ARK_PILLAR_FRAMES      5    /* STATE_BLAST: FIRE_CONE rises as a pillar (flickering tint on frames 1 and 3); then */
+#define FX_ARK_PILLAR_FLICKER_RGB 0x80, 0x60, 0x10
+#define FX_ARK_BLAST_DARKEN_RGB   0x80, 0x80, 0x80 /* a subtractive tint, ROCK_DEBRIS_2, LIGHT_STREAKS and GOLD_GLOW start */
+#define FX_ARK_GOLD_FLARE_FRAMES  16   /* STATE_BLAST: GOLD_RING flares and a gold tint fades for these frames after the pillar */
+#define FX_ARK_CLOUDS_FRAME       6    /* STATE_BLAST: FLAME_TEX_RING, the BLUE_CLOUD_RING / GREY_TORUS / FIRE_ARC clouds grow from here; */
+#define FX_ARK_SHAKE_FRAMES       8    /* camera point 3 shakes for these frames from CLOUDS_FRAME */
+#define FX_ARK_PEACH_RING_FRAME   35   /* STATE_BLAST: PEACH_RING widens and the camera rumbles from here to the state's end */
+#define FX_ARK_PEACH_RING_SCALE   0xAAA /* PEACH_RING's starting scale */
+#define FX_ARK_ROCK_DEBRIS_FRAME  41   /* STATE_BLAST: ROCK_DEBRIS starts */
+#define FX_ARK_WHITEOUT_FRAME     58   /* STATE_BLAST: ORANGE_RING starts and the screen whitens to the state's end */
+#define FX_ARK_ROW_ROCKS          24   /* STATE_ROCKS frame 0: a row of rocks (fx_17d_7_rockOffsetsX), released front to back */
+#define FX_ARK_ROCK_MODELS        3    /* ROCK, ROCK_2, ROCK_3 (Fx17d7Rock.index20 into model84..8C) */
+#define FX_ARK_BOULDER_FRAME      40   /* STATE_ROCKS: two boulders fly up */
+#define FX_ARK_BOULDER_SCALE      0x4000
+#define FX_ARK_ROCKS_FADE_FRAME   41   /* STATE_ROCKS: rubble (every other frame) and a white screen until here, then it fades */
+#define FX_ARK_BOLT_JITTER_FRAMES 3    /* a bolt's noise row moves for its first frames, then it holds still */
+#define FX_ARK_BOLT_POINTS        17   /* points of a bolt's trail (Fx17d7Trail17); the branch leaves at a random point < 15, */
+#define FX_ARK_BRANCH_POINTS      5    /* with this many (Fx17d7Trail5) */
+#define FX_ARK_BOLT_STRIKE_WIDTH  0x4E /* Fx17d7Bolt.width15 of a BOLT_STRIKE bolt */
+#define FX_ARK_BOLT_RING_WIDTH    0x3E /* of a BOLT_RING bolt (minus the op frame) */
+#define FX_ARK_BOLT_RING_RADIUS   0xD48 /* BOLT_RING: the ring's radius, shrinking to 0 over SHRINK_FRAMES */
+#define FX_ARK_BOLT_RING_SHRINK_FRAMES 28
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
@@ -94,7 +129,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR points4[17];
+    SVECTOR points4[FX_ARK_BOLT_POINTS];
 } Fx17d7Trail17; /* 0x8C */
 
 typedef struct {
@@ -102,7 +137,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR points4[5];
+    SVECTOR points4[FX_ARK_BRANCH_POINTS];
 } Fx17d7Trail5; /* 0x2C */
 
 typedef struct {
@@ -118,8 +153,8 @@ typedef struct {
     s32 *noise18; /* noise */
 } Fx17d7Bolt;
 
-extern Fx17d7Trail17 fx_17d_7_boltTrails[];
-extern Fx17d7Trail5 fx_17d_7_branchTrails[];
+extern Fx17d7Trail17 fx_17d_7_boltTrails[FX_ARK_BOLT_POOL];
+extern Fx17d7Trail5 fx_17d_7_branchTrails[FX_ARK_BOLT_POOL];
 
 typedef struct {
     s32 frame0; /* frame */
@@ -204,6 +239,6 @@ typedef struct {
 
 extern BtlModelBuf fx_17d_7_effModels[];
 extern SVECTOR fx_17d_7_basePos;
-extern s16 fx_17d_7_rockOffsetsX[];
+extern s16 fx_17d_7_rockOffsetsX[FX_ARK_ROW_ROCKS];
 
 #endif
