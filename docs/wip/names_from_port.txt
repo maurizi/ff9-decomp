@@ -11679,3 +11679,6 @@ CHOCO_WM_PICTURE_Y WM_CHOCOGRAPH_PICTURE_Y  # [runtime] R44
 WM_NOCACHE_RIVER_GORGE_X WM_NOCACHE_RIVER_BRIDGE_X  # [runtime] R45: a natural stone bridge (also _Z, _R)
 TEXANIM_LAST_FRAME_NONE TEXANIM_FORCE_UPLOAD  # [code] R46 integration: ovl_0a's name for ff9.h's TexAnim.lastFrame sentinel; one name everywhere
 # moved (R46 integration): STORY_GARNET_HAIRCUT 10300 ovl_0a.h -> ff9.h (also main chr_calcAppearance)
+# moved (R46 integration): MBG_INIT_ONE_BUF / MBG_INIT_TWO_BUFS ovl_64.h -> ff9.h (MBG_init call sites in ovl_0a, ovl_14, ovl_15)
+# new (R46 integration): UI_PAUSE_DIM 0x60 (ff9.h; pause tiles of field/world/battle), BTL_MESH_PRIM_COUNT 8 (ovl_0b.h; fxmod FX_COLD_BREATH_PRIM_KINDS, FX_FROST_POLY_KINDS, FX_DEATH1_SPLIT_GROUPS alias it)
+# changed (R46 integration): fld/wm sound pan-volume depth clamp ONE/0xFFF -> OT_LEN/OT_LAST (the depth is sz/4 + otBias, an OT index)
