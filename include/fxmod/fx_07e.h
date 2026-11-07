@@ -13,6 +13,36 @@
 #define FX_SLOW_BACKDROP   0xA /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SLOW_CRESCENT   0xC /* model: one quad textured with a blue-white crescent */
 
+/* fx_07e choreography (docs/fxdata.md, "Choreography literals"): op80's crescent ring (pool particles) and its
+ * states; op81's clock face and twisted screen. */
+#define FX_SLOW_CRESCENTS        11    /* op80's pool: FX_SLOW_CRESCENT copies round the target, one per pool entry */
+#define FX_SLOW_STATE_SPAWN      0     /* op80: one crescent spawned per frame */
+#define FX_SLOW_STATE_SHRINK     1     /* the ring closes in */
+#define FX_SLOW_STATE_FADE       2     /* the crescents fade, then the op ends */
+#define FX_SLOW_SHRINK_FRAMES    22    /* FX_SLOW_STATE_SHRINK's length (the (frame << 12) / N ramp) */
+#define FX_SLOW_FADE_FRAMES      17    /* FX_SLOW_STATE_FADE's length */
+#define FX_SLOW_RING_RADIUS      0x2EE /* the ring's start radius (and the radius at scale 1) */
+#define FX_SLOW_RING_RADIUS_END  0x20  /* and end radius */
+#define FX_SLOW_CRESCENT_STATE_APPEAR 0 /* a crescent brightens in */
+#define FX_SLOW_CRESCENT_STATE_HOLD   1 /* until the ring has closed (shrinkDone24) */
+#define FX_SLOW_CRESCENT_STATE_FADE   2 /* then fades out and the particle ends */
+#define FX_SLOW_CRESCENT_APPEAR_FRAMES 8  /* FX_SLOW_CRESCENT_STATE_APPEAR's length (the ramp is frame << 9) */
+#define FX_SLOW_CRESCENT_FADE_FRAMES  16  /* FX_SLOW_CRESCENT_STATE_FADE's length (the ramp is frame << 8) */
+#define FX_SLOW_MODEL_COUNT      1     /* btlfx_initEffModels slots: FX_SLOW_CRESCENT */
+#define FX_SLOW_CRESCENT_TPAGE   0xBB   /* 8-bit page (0x2C0, 0x100), abr 1 */
+#define FX_SLOW_CRESCENT_CLUT    0x3E40 /* CLUT (0, 0xF9) */
+#define FX_SLOW_CRESCENT_V       0x80
+#define FX_SLOW_OP81_STATE_SHOW  0     /* op81: the clock face and ring fade in */
+#define FX_SLOW_OP81_STATE_TWIST 1     /* the screen round the target twists (fxm_drawRadialScreenGrid) */
+#define FX_SLOW_OP81_STATE_FADE  2     /* everything untwists and fades, then the op ends */
+#define FX_SLOW_SHOW_FRAMES      12    /* FX_SLOW_OP81_STATE_SHOW's length (the (frame << 12) / N ramp) */
+#define FX_SLOW_TWIST_FRAMES     16    /* FX_SLOW_OP81_STATE_TWIST's length (the ramp is frame << 8) */
+#define FX_SLOW_UNTWIST_FRAMES   12    /* FX_SLOW_OP81_STATE_FADE's length (the (frame << 12) / N ramp) */
+#define FX_SLOW_GRAB_SIZE        0x7A  /* the screen square copied to VRAM_BTLFX_SCRATCH (+ 0x80 down) and drawn twisted */
+#define FX_SLOW_GRID_SEGMENTS    0x10  /* the twisted grid's segments round */
+#define FX_SLOW_GRID_RINGS       6     /* its rings */
+#define FX_SLOW_GRID_RING_STEP   0xA   /* the radius step between rings */
+
 typedef struct {
     s32 state0; /* state */
     s32 spawnCount4; /* spawned */

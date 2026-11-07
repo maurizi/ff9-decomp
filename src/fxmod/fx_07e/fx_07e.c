@@ -138,7 +138,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
                 *(s32 *)&prim->x2 = *(s32 *)&inPrev;
                 *(s32 *)&prim->x3 = *(s32 *)&outPrev;
                 if (ot < 0x1000) {
-                    addPrimLenIn(&env->ot[ot], prim, 0xC000000);
+                    addPrimLenIn(&env->ot[ot], prim, PRIM_TAG(POLY_GT4));
                 }
                 prim++;
             }
@@ -176,7 +176,7 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     s32 (*fn)(SVECTOR *, VECTOR *, s32, s32);
 
     if (mode == 1) {
-        part->state4 = 0;
+        part->state4 = FX_SLOW_CRESCENT_STATE_APPEAR;
         return 0;
     }
     tmp = work->ringRot14.vz;
@@ -195,35 +195,35 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     tmp += 0x400;
     rot.vz = tmp;
     switch (part->state4) {
-    case 0:
+    case FX_SLOW_CRESCENT_STATE_APPEAR:
         tmp = frame << 9;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
         ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
         ex->Hi_ModifyEffModelRGB(work->model28, (tmp >> 5) - 0x80, (tmp >> 5) - 0x80, (tmp >> 5) - 0x80);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_GLOWS), &out, NULL, 0x1400, frame, BTLFX_ABR_ADD, 0x1000, 0, 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_WAVE), &out, NULL, 0x1400, frame, BTLFX_ABR_ADD, 0x1000, 0, 0);
-        if (frame >= 8) {
-            part->state4 = 1;
+        if (frame >= FX_SLOW_CRESCENT_APPEAR_FRAMES) {
+            part->state4 = FX_SLOW_CRESCENT_STATE_HOLD;
             ((s16 *)part)[-1] = -1;
         }
         break;
-    case 1:
+    case FX_SLOW_CRESCENT_STATE_HOLD:
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
         ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
         ex->Hi_ModifyEffModelRGB(work->model28, 0, 0, 0);
         if (work->shrinkDone24 != 0) {
-            part->state4 = 2;
+            part->state4 = FX_SLOW_CRESCENT_STATE_FADE;
             ((s16 *)part)[-1] = -1;
         }
         break;
-    case 2:
+    case FX_SLOW_CRESCENT_STATE_FADE:
         tmp = frame << 8;
         fade = ex->math_cos(tmp >> 2);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
         ex->Hi_ModifyEffModelAbr(work->model28, BTLFX_ABR_ADD);
         tint = (fade >> 5) - 0x80;
         ex->Hi_ModifyEffModelRGB(work->model28, tint, tint, tint);
-        if (frame >= 16) {
+        if (frame >= FX_SLOW_CRESCENT_FADE_FRAMES) {
             return 1;
         }
         break;
@@ -242,14 +242,14 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)args)->workSize = sizeof(Fx07eWork80);
         ((EffInit *)args)->elemSize = sizeof(Fx07ePart);
         ((EffInit *)args)->elemFn = (s32)fx_07e_op80PoolTask;
-        ((EffInit *)args)->poolCount = 0xB;
+        ((EffInit *)args)->poolCount = FX_SLOW_CRESCENTS;
     } else if (mode == 1) {
         fx_07e_env = env;
         args = (s32 *)*args;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        work->radius1C = 0x2EE;
+        work->radius1C = FX_SLOW_RING_RADIUS;
         work->spawnCount4 = 0;
-        work->state0 = 0;
+        work->state0 = FX_SLOW_STATE_SPAWN;
         work->frame8 = 0;
         work->shrinkDone24 = 0;
         work->scale20 = 0x8000;
@@ -262,40 +262,40 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->ringRot14.vy = 0;
         } while (0);
         work->ringRot14.vz = 0;
-        ex->btlfx_initEffModels(fx_07e_effModels, 1);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SLOW_CRESCENT), 0xBB, 0x3E40, 0,
-                                                 0x80);
+        ex->btlfx_initEffModels(fx_07e_effModels, FX_SLOW_MODEL_COUNT);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SLOW_CRESCENT), FX_SLOW_CRESCENT_TPAGE, FX_SLOW_CRESCENT_CLUT, 0,
+                                                 FX_SLOW_CRESCENT_V);
     } else {
         frame = entry->frame;
         work->ringRot14.vz += 0x18;
         work->ringRot14.vy = work->frame8 * 0x14;
         work->ringRot14.vx -= 0xC;
         switch (work->state0) {
-        case 0:
-            t = (work->spawnCount4 << 12) / 11;
+        case FX_SLOW_STATE_SPAWN:
+            t = (work->spawnCount4 << 12) / FX_SLOW_CRESCENTS;
             part = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (part != NULL) {
                 part->index8 = work->spawnCount4;
                 part->angle0 = t;
             }
-            if (++work->spawnCount4 >= 11) {
-                work->state0 = 1;
+            if (++work->spawnCount4 >= FX_SLOW_CRESCENTS) {
+                work->state0 = FX_SLOW_STATE_SHRINK;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 22;
-            radius = 0x2EE - ((t * 0x2CE) >> 12);
+        case FX_SLOW_STATE_SHRINK:
+            t = (frame << 12) / FX_SLOW_SHRINK_FRAMES;
+            radius = FX_SLOW_RING_RADIUS - ((t * (FX_SLOW_RING_RADIUS - FX_SLOW_RING_RADIUS_END)) >> 12);
             work->radius1C = radius;
-            work->scale20 = ((((radius << 12) / 750) << 15) >> 12);
-            if (frame >= 22) {
-                work->state0 = 2;
+            work->scale20 = ((((radius << 12) / FX_SLOW_RING_RADIUS) << 15) >> 12);
+            if (frame >= FX_SLOW_SHRINK_FRAMES) {
+                work->state0 = FX_SLOW_STATE_FADE;
                 entry->frame = -1;
                 work->shrinkDone24 = 1;
             }
             break;
-        case 2:
-            if (frame >= 17) {
+        case FX_SLOW_STATE_FADE:
+            if (frame >= FX_SLOW_FADE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -339,7 +339,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_07e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         work->otZ8 = ex->btlfx_addRadiusSixth(0, 0x20);
-        work->state0 = 0;
+        work->state0 = FX_SLOW_OP81_STATE_SHOW;
     } else {
         frame = entry->frame;
         gte_SetRotMatrix(env->viewMatrix);
@@ -349,42 +349,42 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         gte_rtps();
         gte_stsxy(&xy);
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 12;
+        case FX_SLOW_OP81_STATE_SHOW:
+            t = (frame << 12) / FX_SLOW_SHOW_FRAMES;
             env->otZ = work->otZ8;
             alpha = ex->math_sin(t >> 2);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, 0x2000, 0, BTLFX_ABR_ADD, alpha, 0, 0);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, BTLFX_ABR_SUB, alpha);
             env->otZ = 0;
-            if (frame >= 12) {
-                work->state0 = 1;
+            if (frame >= FX_SLOW_SHOW_FRAMES) {
+                work->state0 = FX_SLOW_OP81_STATE_TWIST;
                 entry->frame = -1;
             }
             break;
-        case 1:
+        case FX_SLOW_OP81_STATE_TWIST:
             grabRect.x = VRAM_BTLFX_SCRATCH_X;
             grabRect.y = VRAM_BTLFX_SCRATCH_Y + 0x80;
-            grabRect.w = 0x7A;
-            grabRect.h = 0x7A;
+            grabRect.w = FX_SLOW_GRAB_SIZE;
+            grabRect.h = FX_SLOW_GRAB_SIZE;
             t = frame << 8;
-            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &grabRect, fx_07e_op81GridVertex);
+            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, FX_SLOW_GRID_SEGMENTS, FX_SLOW_GRID_RINGS, FX_SLOW_GRID_RING_STEP, 0x80, 0x80, &grabRect, fx_07e_op81GridVertex);
             fx_07e_twist = ex->math_sin(t >> 2) >> 1;
             env->otZ = work->otZ8;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, 0x2000, 0, BTLFX_ABR_ADD, 0x1000, 0, 0);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, BTLFX_ABR_SUB, 0x1000);
             env->otZ = 0;
-            if (frame >= 16) {
-                work->state0 = 2;
+            if (frame >= FX_SLOW_TWIST_FRAMES) {
+                work->state0 = FX_SLOW_OP81_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 2:
+        case FX_SLOW_OP81_STATE_FADE:
             fadeRect.x = VRAM_BTLFX_SCRATCH_X;
             fadeRect.y = VRAM_BTLFX_SCRATCH_Y + 0x80;
-            fadeRect.w = 0x7A;
-            fadeRect.h = 0x7A;
-            t = (frame << 12) / 12;
-            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &fadeRect, fx_07e_op81GridVertex);
+            fadeRect.w = FX_SLOW_GRAB_SIZE;
+            fadeRect.h = FX_SLOW_GRAB_SIZE;
+            t = (frame << 12) / FX_SLOW_UNTWIST_FRAMES;
+            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, FX_SLOW_GRID_SEGMENTS, FX_SLOW_GRID_RINGS, FX_SLOW_GRID_RING_STEP, 0x80, 0x80, &fadeRect, fx_07e_op81GridVertex);
             ang = t >> 2;
             fx_07e_twist = ex->math_cos(ang) >> 1;
             env->otZ = work->otZ8;
@@ -393,7 +393,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_CLOCK_FACE), pos, NULL, size * 2, 0, BTLFX_ABR_ADD, alpha, 0, 0);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, size * 2, 0, BTLFX_ABR_SUB, alpha);
             env->otZ = 0;
-            if (frame >= 12) {
+            if (frame >= FX_SLOW_UNTWIST_FRAMES) {
                 return 1;
             }
             break;
