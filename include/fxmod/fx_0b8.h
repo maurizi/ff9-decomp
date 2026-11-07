@@ -43,6 +43,67 @@
 #define FX_ATOMOS_WHITE_DROP_3    0x8D /* summon data entry 13: textured model, slim white teardrop */
 #define FX_ATOMOS_WHITE_DROP_4    0x8E /* summon data entry 14: textured model, wide white teardrop */
 
+/* fx_0b8 choreography (docs/fxdata.md, "Choreography literals"): op80's emitter keyframes and length, the model
+ * textures (Hi_RegisterTexEffModel), the VRAM rects the scrolling textures fill (checked against the models' tpage),
+ * the GPU words of the module's primitives. op80's other timings live in work->flags0[] slots (not named here). */
+#define FX_ATOMOS_MODEL_COUNT          0x20 /* op80: btlfx_initEffModels slots */
+#define FX_ATOMOS_FAINT_GLOW_FRAME     4    /* op80: FX_ATOMOS_FAINT_GLOW starts */
+#define FX_ATOMOS_VORTEX_FRAME         0x20 /* op80: FX_ATOMOS_VORTEX_SPARKLES starts */
+#define FX_ATOMOS_BLAST_FRAME          0x34 /* op80: the two FX_ATOMOS_BLAST_RINGS and FX_ATOMOS_BLUE_SPECKS start */
+#define FX_ATOMOS_SPECKS_2_FRAME       0x8C /* op80: FX_ATOMOS_BLUE_SPECKS_2 start */
+#define FX_ATOMOS_STREAKS_FRAME        0xAE /* op80: FX_ATOMOS_ORANGE_STREAKS and FX_ATOMOS_VIOLET_RING start */
+#define FX_ATOMOS_DEBRIS_FRAME         0xBC /* op80: FX_ATOMOS_ROCK_DEBRIS starts */
+#define FX_ATOMOS_FRAMES               0x134 /* op80: the task ends at this frame */
+#define FX_ATOMOS_VORTEX_SPARKLES_TRAIL_SLOTS  0x28 /* FX_ATOMOS_VORTEX_SPARKLES' trail buffer fx_0b8_trails: slots of */
+#define FX_ATOMOS_VORTEX_SPARKLES_TRAIL_STRIDE 0x5C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_ATOMOS_CLOUD_DISC_TPAGE   0xB6   /* 8-bit page (0x180, 0x100) */
+#define FX_ATOMOS_CLOUD_DISC_CLUT    0x3D40 /* CLUT (0, 0xF5) */
+#define FX_ATOMOS_CLOUD_DISC_U       0
+#define FX_ATOMOS_CLOUD_DISC_V       0
+#define FX_ATOMOS_SPHERE_TPAGE       0x17C  /* SPHERE and the WHITE_DROPs: 15-bit page (0x300, 0x100) */
+#define FX_ATOMOS_SPHERE_CLUT        (-1)   /* (no CLUT) */
+#define FX_ATOMOS_SPHERE_U           0x10
+#define FX_ATOMOS_SPHERE_V           0x80
+#define FX_ATOMOS_PURPLE_DOME_TPAGE  0x3A   /* PURPLE_DOME and CLOUD_FUNNEL: 4-bit page (0x280, 0x100) */
+#define FX_ATOMOS_PURPLE_DOME_CLUT   0x3D01 /* CLUT (0x10, 0xF4) */
+#define FX_ATOMOS_PURPLE_DOME_U      0
+#define FX_ATOMOS_PURPLE_DOME_V      0
+#define FX_ATOMOS_ORANGE_RING_TPAGE  0xBB   /* 8-bit page (0x2C0, 0x100) */
+#define FX_ATOMOS_ORANGE_RING_CLUT   0x3DC0 /* CLUT (0, 0xF7) */
+#define FX_ATOMOS_ORANGE_RING_U      0
+#define FX_ATOMOS_ORANGE_RING_V      0
+/* Scrolling textures: each btlfx_drawScrollMove copies the file's texture from (SRC_X, SRC_Y) into the rect a model
+ * samples: CLOUD_DISC (tpage 0xB6), LAVA_CRATER (tpage 0x17 = 4-bit page (0x1C0, 0x100)), PURPLE_DOME / CLOUD_FUNNEL
+ * (tpage 0x3A), ORANGE_RING (tpage 0xBB); LAVA_2 is a smaller rect of LAVA_CRATER's page from the texture below it
+ * (look pending). */
+#define FX_ATOMOS_CLOUD_VRAM_X 0x180
+#define FX_ATOMOS_CLOUD_VRAM_Y 0x100
+#define FX_ATOMOS_CLOUD_VRAM_W 0x40
+#define FX_ATOMOS_CLOUD_VRAM_H 0x80
+#define FX_ATOMOS_CLOUD_SRC_X  0x180
+#define FX_ATOMOS_CLOUD_SRC_Y  0x180
+#define FX_ATOMOS_LAVA_VRAM_X  0x1C0
+#define FX_ATOMOS_LAVA_VRAM_Y  0x100
+#define FX_ATOMOS_LAVA_VRAM_W  0x20
+#define FX_ATOMOS_LAVA_VRAM_H  0x80
+#define FX_ATOMOS_LAVA_SRC_X   0x1E0
+#define FX_ATOMOS_LAVA_SRC_Y   0x100
+#define FX_ATOMOS_LAVA_2_VRAM_W 0x18
+#define FX_ATOMOS_LAVA_2_VRAM_H 0x60
+#define FX_ATOMOS_LAVA_2_SRC_Y  0x180
+#define FX_ATOMOS_DOME_VRAM_X  0x280
+#define FX_ATOMOS_DOME_VRAM_Y  0x100
+#define FX_ATOMOS_DOME_VRAM_W  0x20
+#define FX_ATOMOS_DOME_VRAM_H  0x80
+#define FX_ATOMOS_DOME_SRC_X   0x2A0
+#define FX_ATOMOS_DOME_SRC_Y   0x100
+#define FX_ATOMOS_RING_VRAM_X  0x2C0
+#define FX_ATOMOS_RING_VRAM_Y  0x100
+#define FX_ATOMOS_RING_VRAM_W  0x38
+#define FX_ATOMOS_RING_VRAM_H  0x70
+#define FX_ATOMOS_RING_SRC_X   0x2C0
+#define FX_ATOMOS_RING_SRC_Y   0x170
+
 typedef struct {
     u8 u;
     u8 v;

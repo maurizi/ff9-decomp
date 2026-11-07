@@ -54,10 +54,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 hi;
 
     if (mode == 0) {
-        *args = 0x1EC;
+        *args = sizeof(Fx0b8Work80);
     } else if (mode == 1) {
         fx_0b8_env = env;
-        ex->btlfx_initEffModels(fx_0b8_effModels, 0x20);
+        ex->btlfx_initEffModels(fx_0b8_effModels, FX_ATOMOS_MODEL_COUNT);
         for (i = 0x27, flag = &work->flags0[0x27]; i >= 0; i--, flag--) {
             *flag = 0;
         }
@@ -124,8 +124,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot2C.vx = 0;
             work->rot2C.vy = 0;
             work->rot2C.vz = 0;
-            work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_DISC), 0xB6, 0x3D40, 0, 0);
-            work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_DISC), 0xB6, 0x3D40, 0, 0);
+            work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_DISC), FX_ATOMOS_CLOUD_DISC_TPAGE, FX_ATOMOS_CLOUD_DISC_CLUT,
+                                                       FX_ATOMOS_CLOUD_DISC_U, FX_ATOMOS_CLOUD_DISC_V);
+            work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_DISC), FX_ATOMOS_CLOUD_DISC_TPAGE, FX_ATOMOS_CLOUD_DISC_CLUT,
+                                                       FX_ATOMOS_CLOUD_DISC_U, FX_ATOMOS_CLOUD_DISC_V);
             work->rot5C.vx = -0x400;
             work->rot5C.vy = 0x500;
             work->rot64.vy = 0x300;
@@ -157,11 +159,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scaleD8.vx = 0x1000;
             work->scaleD8.vy = 0x1000;
             work->scaleD8.vz = 0x1000;
-            work->model128 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPHERE), 0x17C, -1, 0x10, 0x80);
-            work->model12C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_4), 0x17C, -1, 0x10, 0x80);
-            work->model130 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_2), 0x17C, -1, 0x10, 0x80);
-            work->model134 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_3), 0x17C, -1, 0x10, 0x80);
-            work->model138 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP), 0x17C, -1, 0x10, 0x80);
+            work->model128 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPHERE), FX_ATOMOS_SPHERE_TPAGE, FX_ATOMOS_SPHERE_CLUT, FX_ATOMOS_SPHERE_U, FX_ATOMOS_SPHERE_V);
+            work->model12C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_4), FX_ATOMOS_SPHERE_TPAGE, FX_ATOMOS_SPHERE_CLUT, FX_ATOMOS_SPHERE_U, FX_ATOMOS_SPHERE_V);
+            work->model130 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_2), FX_ATOMOS_SPHERE_TPAGE, FX_ATOMOS_SPHERE_CLUT, FX_ATOMOS_SPHERE_U, FX_ATOMOS_SPHERE_V);
+            work->model134 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP_3), FX_ATOMOS_SPHERE_TPAGE, FX_ATOMOS_SPHERE_CLUT, FX_ATOMOS_SPHERE_U, FX_ATOMOS_SPHERE_V);
+            work->model138 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_WHITE_DROP), FX_ATOMOS_SPHERE_TPAGE, FX_ATOMOS_SPHERE_CLUT, FX_ATOMOS_SPHERE_U, FX_ATOMOS_SPHERE_V);
             work->scale14C.vx = 0;
             work->scale14C.vy = 0;
             work->scale14C.vz = 0;
@@ -219,10 +221,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot5C.vx = 0x400;
             work->rot5C.vy = 0;
             work->rot5C.vz = 0;
-            work->model180 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_PURPLE_DOME), 0x3A, 0x3D01, 0, 0);
+            work->model180 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_PURPLE_DOME), FX_ATOMOS_PURPLE_DOME_TPAGE, FX_ATOMOS_PURPLE_DOME_CLUT, FX_ATOMOS_PURPLE_DOME_U, FX_ATOMOS_PURPLE_DOME_V);
             work->model170 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_RING_FUNNEL));
-            work->model16C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_FUNNEL), 0x3A, 0x3D01, 0, 0);
-            work->model17C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_RING), 0xBB, 0x3DC0, 0, 0);
+            work->model16C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_CLOUD_FUNNEL), FX_ATOMOS_PURPLE_DOME_TPAGE, FX_ATOMOS_PURPLE_DOME_CLUT, FX_ATOMOS_PURPLE_DOME_U, FX_ATOMOS_PURPLE_DOME_V);
+            work->model17C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_RING), FX_ATOMOS_ORANGE_RING_TPAGE, FX_ATOMOS_ORANGE_RING_CLUT, FX_ATOMOS_ORANGE_RING_U, FX_ATOMOS_ORANGE_RING_V);
             break;
         }
         switch (frame) {
@@ -234,22 +236,22 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[9] = 1;
             work->flags0[0x12] = 0x30;
             break;
-        case 4:
+        case FX_ATOMOS_FAINT_GLOW_FRAME:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_FAINT_GLOW), (s32)&work->posC4);
             break;
-        case 0x20:
+        case FX_ATOMOS_VORTEX_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_SPARKLES), (s32)&work->pos1DC);
             if (emitter != NULL) {
                 emitter->trails = (s32)fx_0b8_trails;
-                emitter->trailSlots = 0x28;
-                emitter->trailStride = 0x5C;
+                emitter->trailSlots = FX_ATOMOS_VORTEX_SPARKLES_TRAIL_SLOTS;
+                emitter->trailStride = FX_ATOMOS_VORTEX_SPARKLES_TRAIL_STRIDE;
             }
             break;
         case 0x28:
             work->flags0[0xA] = 1;
             work->flags0[0xB] = 8;
             break;
-        case 0x34:
+        case FX_ATOMOS_BLAST_FRAME:
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_BLAST_RINGS), (s32)&work->pos1CC);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
@@ -300,7 +302,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[4] = 0x10;
             work->flags0[3] = 1;
             break;
-        case 0x8C:
+        case FX_ATOMOS_SPECKS_2_FRAME:
             work->flags0[0xA] = 1;
             work->flags0[0x22] = 1;
             work->flags0[0x23] = 0x30;
@@ -316,7 +318,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_0b8_gridShift = 4;
             work->flags0[0xD] = 8;
             break;
-        case 0xAE:
+        case FX_ATOMOS_STREAKS_FRAME:
             work->emit184 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_STREAKS), (s32)&work->pos188);
             work->emit190 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_VIOLET_RING), (s32)&work->pos194);
             if (work->emit184 != NULL) {
@@ -331,7 +333,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[0x24] = 0x10;
             work->flags0[0x1B] = 0x30;
             break;
-        case 0xBC:
+        case FX_ATOMOS_DEBRIS_FRAME:
             work->emit1B0 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ROCK_DEBRIS), (s32)&work->pos1A8);
             if (emitter != NULL) {
                 emitter->file->m.module.update = fx_0b8_op80ParticleMotion;
@@ -413,7 +415,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rot2C, &work->pos44, (s32)&work->scale34, work->model28);
             ex->Hi_DrawEffModel(&work->rot5C, &work->pos6C, (s32)&work->scale8C, work->model54);
             ex->Hi_DrawEffModel(&work->rot64, &work->pos7C, (s32)&work->scale8C, work->model58);
-            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, FX_ATOMOS_CLOUD_VRAM_X, FX_ATOMOS_CLOUD_VRAM_Y, FX_ATOMOS_CLOUD_VRAM_W,
+                                     FX_ATOMOS_CLOUD_VRAM_H, FX_ATOMOS_CLOUD_SRC_X, FX_ATOMOS_CLOUD_SRC_Y);
         }
         if (work->flags0[0x1F] != 0) {
             ex->Hi_DrawEffModel(&work->rot5C, &work->pos6C, (s32)&work->scale8C, work->model54);
@@ -698,19 +701,24 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->scroll1E4 += work->scrollSpeed1E8;
         if (work->flags0[5] != 0) {
-            ex->btlfx_drawScrollMove(frame * 0x10, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, FX_ATOMOS_LAVA_VRAM_X, FX_ATOMOS_LAVA_VRAM_Y, FX_ATOMOS_LAVA_VRAM_W, FX_ATOMOS_LAVA_VRAM_H,
+                                     FX_ATOMOS_LAVA_SRC_X, FX_ATOMOS_LAVA_SRC_Y);
         }
         if (work->flags0[6] != 0) {
-            ex->btlfx_drawScrollMove(0x2710 - frame * 0x10, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 0x10, FX_ATOMOS_LAVA_VRAM_X, FX_ATOMOS_LAVA_VRAM_Y, FX_ATOMOS_LAVA_VRAM_W, FX_ATOMOS_LAVA_VRAM_H,
+                                     FX_ATOMOS_LAVA_SRC_X, FX_ATOMOS_LAVA_SRC_Y);
         }
         if (work->flags0[0x22] != 0) {
-            ex->btlfx_drawScrollMove(0x2710 - work->scroll1E4, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - work->scroll1E4, FX_ATOMOS_DOME_VRAM_X, FX_ATOMOS_DOME_VRAM_Y, FX_ATOMOS_DOME_VRAM_W, FX_ATOMOS_DOME_VRAM_H,
+                                     FX_ATOMOS_DOME_SRC_X, FX_ATOMOS_DOME_SRC_Y);
         }
         if (work->flags0[0x13] != 0) {
-            ex->btlfx_drawScrollMove(work->scroll1E4, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
+            ex->btlfx_drawScrollMove(work->scroll1E4, FX_ATOMOS_RING_VRAM_X, FX_ATOMOS_RING_VRAM_Y, FX_ATOMOS_RING_VRAM_W, FX_ATOMOS_RING_VRAM_H,
+                                     FX_ATOMOS_RING_SRC_X, FX_ATOMOS_RING_SRC_Y);
         }
         if (work->flags0[0x16] != 0) {
-            ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x18, 0x60, 0x1C0, 0x180);
+            ex->btlfx_drawScrollMove(frame * 8, FX_ATOMOS_LAVA_VRAM_X, FX_ATOMOS_LAVA_VRAM_Y, FX_ATOMOS_LAVA_2_VRAM_W, FX_ATOMOS_LAVA_2_VRAM_H,
+                                     FX_ATOMOS_LAVA_VRAM_X, FX_ATOMOS_LAVA_2_SRC_Y);
         }
         if (work->flags0[7] != 0) {
             work->flags0[7]--;
@@ -729,7 +737,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang2.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &ang2, &scale, &col, 1, NULL);
         }
-        return frame >= 0x134;
+        return frame >= FX_ATOMOS_FRAMES;
     }
     return 0;
 }
@@ -796,7 +804,7 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
             quad[1].vx = quad[3].vx = i * 0x1400 - 0x1400;
             gte_ldv3c(quad);
             gte_rtpt();
-            poly->code = (abr != 0xFF) ? 0x3E : 0x3C;
+            poly->code = (abr != BTLFX_ABR_OPAQUE) ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
             poly->r0 = poly->r1 = col0.r;
             poly->g0 = poly->g1 = col0.g;
             poly->b0 = poly->b1 = col0.b;
@@ -813,7 +821,7 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
             poly->clut = clut;
             poly->tpage = tpage;
             gte_stsxy(&poly->x3);
-            ex->btlfx_addPrim(0x0C000000, 0, poly);
+            ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), 0, poly);
             poly++;
         }
     }
@@ -843,8 +851,8 @@ void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpag
     for (i = 0; i < 3; gt4++, i++, poly++) {
         gt4->clut = clut;
         gt4->tpage = tpage;
-        gt4->code = (abr != 0xFF) ? 0x3E : 0x3C;
-        poly->code = (abr != 0xFF) ? 0x2A : 0x28;
+        gt4->code = (abr != BTLFX_ABR_OPAQUE) ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
+        poly->code = (abr != BTLFX_ABR_OPAQUE) ? GPU_POLY_F4 | GPU_ABE : GPU_POLY_F4;
         gt4->r0 = gt4->r1 = gt4->g0 = gt4->g1 = gt4->b0 = gt4->b1 = c0;
         poly->r0 = poly->g0 = poly->b0 = gt4->r2 = gt4->r3 = gt4->g2 = gt4->g3 = gt4->b2 = gt4->b3 = c1;
         *(u16 *)&gt4->u0 = *(u16 *)&uv0;
@@ -856,8 +864,8 @@ void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpag
         gt4->y0 = gt4->y1 = y;
         poly->y0 = poly->y1 = gt4->y2 = gt4->y3 = y + h;
         poly->y2 = poly->y3 = gt4->y2 + 0x130;
-        ex->btlfx_addPrim(0x0C000000, ot * 4, gt4);
-        ex->btlfx_addPrim(0x05000000, ot * 4, poly);
+        ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), ot * 4, gt4);
+        ex->btlfx_addPrim(PRIM_TAG(POLY_F4), ot * 4, poly);
     }
 }
 
@@ -879,7 +887,7 @@ void fx_0b8_drawScreenGradient(s32 ot) {
     poly->x0 = poly->x2 = 0;
     poly->y0 = poly->y1 = 0;
     poly->y2 = poly->y3 = 240;
-    ex->btlfx_addPrim(0x08000000, ot * 4, poly);
+    ex->btlfx_addPrim(PRIM_TAG(POLY_G4), ot * 4, poly);
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
