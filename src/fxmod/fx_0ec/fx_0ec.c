@@ -7,14 +7,14 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
     u8 *data;
 
     if (mode != 1) {
-        t = (frame << 12) / 6;
+        t = (frame << 12) / FX_DOOM_HALO_FRAMES;
         rot.vx = 0x400;
         rot.vy = 0;
         rot.vz = 0;
         rot.pad = 1;
         data = (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOM_VIOLET_HALO);
-        ex->btlfx_drawParticles(data, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
-        if (frame >= 6) {
+        ex->btlfx_drawParticles(data, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, BTLFX_ABR_ADD, 0x1000 - t, 0, 0);
+        if (frame >= FX_DOOM_HALO_FRAMES) {
             return 1;
         }
     }
@@ -60,7 +60,7 @@ static void fxm_shatterModel(s32 model, SVECTOR *center) {
 
     ex->Hi_SplitMdlVertex(model, -1, (s32)tri);
     shard = fx_0ec_shatterShards;
-    for (i = 0; i < 0x70; shard++) {
+    for (i = 0; i < FX_DOOM_SHATTER_TRIS; shard++) {
         shard->age18 = 0;
         shard->pos0.vx = ((tri->verts0[0].vx + triCopy->verts0[1].vx + triCopy->verts0[2].vx) / 3) << 12;
         shard->pos0.vy = ((triCopy->verts0[0].vy + triCopy->verts0[1].vy + triCopy->verts0[2].vy) / 3) << 12;
@@ -107,7 +107,7 @@ void fxm_shatterModelUpdate(void) {
     bias[1] = 0;
     ex = BTLFX_EXPORTS(fx_0ec_env);
     sc.vx = sc.vy = sc.vz = 0xF80;
-    for (i = 0; i < 0x70; i++, shard++, tri++) {
+    for (i = 0; i < FX_DOOM_SHATTER_TRIS; i++, shard++, tri++) {
         if (shard->age18 >= 0) {
             if (shard->age18 < shard->delayOrTri1A) {
                 shard->age18++;
@@ -120,7 +120,7 @@ void fxm_shatterModelUpdate(void) {
                     loc[j].vy = tri->verts0[j].vy - center.vy;
                     loc[j].vz = tri->verts0[j].vz - center.vz;
                 }
-                if (shard->age18 >= 8) {
+                if (shard->age18 >= FX_DOOM_SHATTER_FLY_AGE) {
                     ex->btlfx_stepModuleParticle((Pool6CEntry *)shard, -10, (SVECTOR *)bias, &out);
                     if (shard->velC.vy < 0 && shard->pos0.vy < 0) {
                         shard->velC.vy = -(shard->velC.vy >> 1);
@@ -130,7 +130,7 @@ void fxm_shatterModelUpdate(void) {
                         }
                     }
                 }
-                if (shard->age18 == ex->btlfx_rand() % 3 + 4 || shard->age18 >= 8) {
+                if (shard->age18 == ex->btlfx_rand() % 3 + 4 || shard->age18 >= FX_DOOM_SHATTER_FLY_AGE) {
                     rot.vx = shard->spinX14;
                     rot.vy = shard->spinY16;
                     rot.vz = 0;
@@ -140,7 +140,7 @@ void fxm_shatterModelUpdate(void) {
                     rot.vz = 0;
                 }
                 ex->math_rotMatrixYXZ(&rot, &m);
-                if (shard->age18 >= 8) {
+                if (shard->age18 >= FX_DOOM_SHATTER_FLY_AGE) {
                     ex->ScaleMatrix(&m, &sc);
                 }
                 m.t[0] = shard->pos0.vx >> 12;
@@ -156,7 +156,7 @@ void fxm_shatterModelUpdate(void) {
                     tri->verts0[j].vy = world.vy;
                     tri->verts0[j].vz = world.vz;
                 }
-                if (++shard->age18 >= 0x47) {
+                if (++shard->age18 >= FX_DOOM_SHATTER_LIFE) {
                 kill:
                     shard->age18 = -1;
                     tri->verts0[2].vz = 0;
@@ -185,7 +185,7 @@ s32 fxm_splitModelInit(u8 *buf) {
     fx_0ec_split.triCount2 = 0;
     fx_0ec_split.next10 = buf;
     fx_0ec_split.trisC = buf;
-    for (i = 0; i < 300; i++) {
+    for (i = 0; i < FX_DOOM_SPLIT_SHARDS; i++) {
         shard->age18 = -1;
         shard++;
     }
@@ -219,7 +219,7 @@ Fx0ecShard *fxm_splitFreeShard(void) {
     Fx0ecShard *shard = fx_0ec_splitShards;
     s32 i;
 
-    for (i = 0; i < 300; i++) {
+    for (i = 0; i < FX_DOOM_SPLIT_SHARDS; i++) {
         if (shard->age18 < 0) {
             return shard;
         }
@@ -290,7 +290,7 @@ void fxm_splitUpdate(void) {
     bias[1] = 0;
     ex = BTLFX_EXPORTS(fx_0ec_env);
     sc.vx = sc.vy = sc.vz = 0xEC0;
-    for (i = 0; i < 300; i++, shard++) {
+    for (i = 0; i < FX_DOOM_SPLIT_SHARDS; i++, shard++) {
         if (shard->age18 >= 0) {
             tri = (Fx0ecTri *)split->trisC + shard->delayOrTri1A;
             center.vx = shard->pos0.vx >> 12;
@@ -324,7 +324,7 @@ void fxm_splitUpdate(void) {
                 tri->verts0[j].vy = world.vy;
                 tri->verts0[j].vz = world.vz;
             }
-            if (++shard->age18 >= 0x20) {
+            if (++shard->age18 >= FX_DOOM_SPLIT_LIFE) {
             kill:
                 shard->age18 = -1;
                 tri->verts0[2].vz = 0;
@@ -363,10 +363,10 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 unitScale;
 
     if (mode == 0) {
-        init->workSize = 0x64;
-        init->elemSize = 8;
+        init->workSize = sizeof(Fx0ecWork80);
+        init->elemSize = sizeof(SVECTOR);
         init->elemFn = (s32)fx_0ec_op80PoolTask;
-        init->poolCount = 0x80;
+        init->poolCount = FX_DOOM_HALO_SLOTS;
     } else if (mode == 1) {
         fx_0ec_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -397,32 +397,32 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = sv.vy;
         env->camera->points[2].vz = sv.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        ex->btlfx_initEffModels(fx_0ec_effModels, 9);
-        work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_FRAME), 0x97, 0x3D40,
-                                                      0x80, 0x80);
-        work->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_PANEL), 0x97, 0x3D40,
-                                                      0x80, 0x80);
-        work->model40[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_REAPER_PICTURE), 0xB7,
-                                                         0x3DC0, 0, 0x80);
-        work->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_REAPER_PICTURE_2), 0x97, 0x3DC0,
-                                                      0, 0x80);
-        work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_LATTICE), 0x39, 0x3D01,
-                                                      0, 0);
-        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_SWIRL_SHELL), 0x119,
-                                                      0xFFFF, 0, 0x90);
+        ex->btlfx_initEffModels(fx_0ec_effModels, FX_DOOM_MODEL_COUNT);
+        work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_FRAME), FX_DOOM_GOLD_FRAME_TPAGE, FX_DOOM_GOLD_FRAME_CLUT,
+                                                      FX_DOOM_GOLD_FRAME_U, FX_DOOM_GOLD_FRAME_V);
+        work->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_PANEL), FX_DOOM_GOLD_PANEL_TPAGE, FX_DOOM_GOLD_PANEL_CLUT,
+                                                      FX_DOOM_GOLD_PANEL_U, FX_DOOM_GOLD_PANEL_V);
+        work->model40[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_REAPER_PICTURE), FX_DOOM_REAPER_PICTURE_TPAGE,
+                                                         FX_DOOM_REAPER_PICTURE_CLUT, FX_DOOM_REAPER_PICTURE_U, FX_DOOM_REAPER_PICTURE_V);
+        work->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_REAPER_PICTURE_2), FX_DOOM_REAPER_PICTURE_2_TPAGE, FX_DOOM_REAPER_PICTURE_2_CLUT,
+                                                      FX_DOOM_REAPER_PICTURE_2_U, FX_DOOM_REAPER_PICTURE_2_V);
+        work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_LATTICE), FX_DOOM_GOLD_LATTICE_TPAGE, FX_DOOM_GOLD_LATTICE_CLUT,
+                                                      FX_DOOM_GOLD_LATTICE_U, FX_DOOM_GOLD_LATTICE_V);
+        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_SWIRL_SHELL), FX_DOOM_SWIRL_SHELL_TPAGE,
+                                                      FX_DOOM_SWIRL_SHELL_CLUT, FX_DOOM_SWIRL_SHELL_U, FX_DOOM_SWIRL_SHELL_V);
         work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOURAUD_SHELL));
         dispX = env->dispEnv->disp.x;
         if (dispX < 0x100) {
-            otherX = dispX + 0x140;
+            otherX = dispX + SCREEN_W;
         } else {
-            otherX = dispX - 0x140;
+            otherX = dispX - SCREEN_W;
         }
         tp0 = getTPage(2, 0, dispX, env->dispEnv->disp.y);
         tp1 = getTPage(2, 0, otherX, env->dispEnv->disp.y);
         work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GLOW_SHELL), tp0 | TPAGE_ABR_ADD,
-                                                         0xFFFF, 0x40, 0);
+                                                         FX_DOOM_GLOW_SHELL_CLUT, FX_DOOM_GLOW_SHELL_U, FX_DOOM_GLOW_SHELL_V);
         work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GLOW_SHELL), tp1 | TPAGE_ABR_ADD,
-                                                         0xFFFF, 0x40, 0);
+                                                         FX_DOOM_GLOW_SHELL_CLUT, FX_DOOM_GLOW_SHELL_U, FX_DOOM_GLOW_SHELL_V);
         fx_0ec_task = (Fx0ecWork *)entry; /* the shard callbacks spawn into entry->pool */
         unitScale = (ex->btlfx_getUnitRadius(0) << 12) / 390;
         if (unitScale < 0x1400) {
@@ -440,17 +440,17 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
-        work->state0 = 0;
+        work->state0 = FX_DOOM_STATE_RISE;
         work->frame4 = 0;
     } else {
     frame = entry->frame;
     switch (work->state0) {
-    case 0:
+    case FX_DOOM_STATE_RISE:
         sc.vx = sc.vy = sc.vz = work->scale5C;
         rot.vx = work->rot10.vx;
         rot.vy = work->rot10.vy;
         rot.vz = work->rot10.vz;
-        t = (frame << 12) / 22;
+        t = (frame << 12) / FX_DOOM_RISE_FRAMES;
         rot.vy += (0x1000 - t) >> 1;
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
@@ -481,12 +481,12 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_SetEffModelSlice(work->model54, rise);
         ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->model54);
         ex->Hi_ModifyEffModelRGB(work->model54, -0x60, -0x60, -0x60);
-        if (frame >= 22) {
-            work->state0 = 1;
+        if (frame >= FX_DOOM_RISE_FRAMES) {
+            work->state0 = FX_DOOM_STATE_GLOW;
             entry->frame = -1;
         }
         break;
-    case 1:
+    case FX_DOOM_STATE_GLOW:
         sc.vx = sc.vy = sc.vz = work->scale5C;
         rot.vx = work->rot10.vx;
         rot.vy = work->rot10.vy;
@@ -494,7 +494,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
         pos.vz = work->pos18.vz;
-        t = (frame << 12) / 20;
+        t = (frame << 12) / FX_DOOM_GLOW_FRAMES;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model38);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model3C);
         ex->Hi_SetEffModelOffset(work->model58, 0x28);
@@ -507,12 +507,12 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[flicker1]);
         ex->Hi_ModifyEffModelRGB(work->model40[flicker1], ((0x1000 - t / 2) >> 5) - 0x80, ((0x1000 - t / 2) >> 5) - 0x80,
                                  ((0x1000 - t / 2) >> 5) - 0x80);
-        if (frame >= 20) {
-            work->state0 = 2;
+        if (frame >= FX_DOOM_GLOW_FRAMES) {
+            work->state0 = FX_DOOM_STATE_PICTURE;
             entry->frame = -1;
         }
         break;
-    case 2:
+    case FX_DOOM_STATE_PICTURE:
         sc.vx = sc.vy = sc.vz = work->scale5C;
         rot.vx = work->rot10.vx;
         rot.vy = work->rot10.vy;
@@ -520,12 +520,12 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
         pos.vz = work->pos18.vz;
-        t = (frame << 12) / 30;
+        t = (frame << 12) / FX_DOOM_PICTURE_FRAMES;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model38);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model3C);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[0]);
-        if (frame < 8) {
-            ex->Hi_ModifyEffModelAbr(work->model40[0], 1);
+        if (frame < FX_DOOM_PICTURE_FADE_FRAMES) {
+            ex->Hi_ModifyEffModelAbr(work->model40[0], BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model40[0], ((frame << 9) >> 5) - 0x80, ((frame << 9) >> 5) - 0x80,
                                      ((frame << 9) >> 5) - 0x80);
         }
@@ -539,13 +539,13 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->model54, ((0x1000 - ex->math_sin(ang)) >> 5) - 0x80,
                                      ((0x1000 - ex->math_sin(ang)) >> 5) - 0x80, ((0x1000 - ex->math_sin(ang)) >> 5) - 0x80);
         }
-        if (frame < 16) {
+        if (frame < FX_DOOM_SHELL_FADE_FRAMES) {
             flicker2 = (work->frame4 & 1) + 1;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[flicker2]);
             ex->Hi_ModifyEffModelRGB(work->model40[flicker2], ((0x1000 - (frame << 8)) >> 6) - 0x80,
                                      ((0x1000 - (frame << 8)) >> 6) - 0x80, ((0x1000 - (frame << 8)) >> 6) - 0x80);
         }
-        if (frame == 20) {
+        if (frame == FX_DOOM_RED_RING_FRAME) {
             for (i = 0; i < 2; i++) {
                 /* two sets keep cse2 from folding data + 4 into the first read (the original reads all three
                  * through v1); the register is pinned because local-alloc otherwise ties v to the call's v0 */
@@ -575,10 +575,10 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (frame >= 30) {
-            work->state0 = 3;
+        if (frame >= FX_DOOM_PICTURE_FRAMES) {
+            work->state0 = FX_DOOM_STATE_SHATTER;
             entry->frame = -1;
-            ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 100, 100, 0);
+            ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_SUB, FX_DOOM_DARKEN_RGB);
             fxm_splitModelInit(fx_0ec_splitBuf);
             fxm_splitModelAdd(work->model38);
             fxm_splitModelAdd(work->model3C);
@@ -588,12 +588,12 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_shatterModel(work->model4C, center);
         }
         break;
-    case 3:
-        if (frame == 8) {
-            ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xC8, 0, 0);
+    case FX_DOOM_STATE_SHATTER:
+        if (frame == FX_DOOM_FLASH_FRAME) {
+            ex->btlfx_drawScreenTint((u32 *)env->ot + 2, BTLFX_ABR_ADD, FX_DOOM_RED_FLASH_RGB);
         }
-        if (frame >= 8) {
-            if (frame == 8) {
+        if (frame >= FX_DOOM_FLASH_FRAME) {
+            if (frame == FX_DOOM_FLASH_FRAME) {
                 work->pos20.vx = work->pos18.vx;
                 work->pos20.vy = work->pos18.vy;
                 work->pos20.vz = work->pos18.vz;
@@ -646,20 +646,20 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         {
             s32 bright;
 
-            if (frame < 8) {
+            if (frame < FX_DOOM_FLASH_FRAME) {
                 bright = (frame << 8) + 0x800;
             } else {
                 bright = 0x1000;
             }
             ex->Hi_ModifyEffModelRGB(work->model4C, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
         }
-        if (frame < 47) {
-            fxm_splitRelease(1000 - (((0x1000 - ex->math_cos((frame << 10) / 47)) * 1000) >> 12), &sv);
+        if (frame < FX_DOOM_RELEASE_FRAMES) {
+            fxm_splitRelease(1000 - (((0x1000 - ex->math_cos((frame << 10) / FX_DOOM_RELEASE_FRAMES)) * 1000) >> 12), &sv);
         }
         fxm_splitUpdate();
         fxm_shatterModelUpdate();
-        if (frame >= 71) {
-            work->state0 = 3;
+        if (frame >= FX_DOOM_SHATTER_FRAMES) {
+            work->state0 = FX_DOOM_STATE_SHATTER;
             entry->frame = -1;
             ex->btlfx_clearEffModels();
             return 1;
