@@ -9,6 +9,10 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_MINUS_STRIKE_SLASH_ARC 0x4 /* emitter: blue slash arc, blue sparkle sprites, pale yellow ring, fan */
 
+/* fx_0bd choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths. */
+#define FX_MINUS_STRIKE_FRAMES        0x1E /* op80: the task ends at this frame */
+#define FX_MINUS_STRIKE_CAMERA_FRAMES 0xC  /* op81: the camera looks at unit 0x10 (btlfx_getUnitPos) until this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */

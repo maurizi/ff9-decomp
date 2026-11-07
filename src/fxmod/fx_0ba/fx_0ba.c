@@ -34,7 +34,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 width, s32 r, s32 g, s32 
         }
         prim->y0 = prim->y1 = (i >> 1) * 0x78;
         prim->y2 = prim->y3 = prim->y0 + 0x78;
-        ex->btlfx_linkPrimAbr(0x08000000, ot, prim, tpage);
+        ex->btlfx_linkPrimAbr(PRIM_TAG(POLY_G4), ot, prim, tpage);
     }
 }
 
@@ -65,7 +65,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0ba_env = env;
-        ex->btlfx_initEffModels(fx_0ba_effModels0, 6);
+        ex->btlfx_initEffModels(fx_0ba_effModels0, FX_RAMUH_MODEL_COUNT);
         work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_PLANE), 0);
         work->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_THIN_ROD), 0);
         work->summonPos48.vx = 0;
@@ -105,9 +105,9 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         state = work->state0;
         frame = entry->frame;
         switch (state) {
-        case 0:
-            if (frame < 6) {
-                bright = (frame << 12) / 6;
+        case FX_RAMUH_SUMMON_STATE_APPEAR:
+            if (frame < FX_RAMUH_APPEAR_FADE_FRAMES) {
+                bright = (frame << 12) / FX_RAMUH_APPEAR_FADE_FRAMES;
             } else {
                 bright = 0x1000;
             }
@@ -117,16 +117,18 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (tint != 0) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x100), 1, tint, tint, tint >> 1);
             }
-            ex->btlfx_drawScrollMove(work->frame4 * 3, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
-            ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x170, 0x38, 0x70, 0x280, 0x100);
-            if (frame >= 0x20) {
-                work->state0 = 1;
+            ex->btlfx_drawScrollMove(work->frame4 * 3, FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 3, FX_RAMUH_CLOUD_2_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_2_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
+            if (frame >= FX_RAMUH_APPEAR_FRAMES) {
+                work->state0 = FX_RAMUH_SUMMON_STATE_STORM;
                 entry->frame = -1;
                 ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->summon54->motion180, ((Fx0baSummon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->model60, 0);
             }
             break;
-        case 1:
+        case FX_RAMUH_SUMMON_STATE_STORM:
             pos.vx = work->summonPos48.vx;
             pos.vy = work->summonPos48.vy;
             pos.vz = work->summonPos48.vz;
@@ -158,20 +160,20 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (tint2 != 0) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 0xC8), 1, tint2, tint2, tint2 / 3);
             }
-            if (frame == 0xC) {
+            if (frame == FX_RAMUH_STORM_1_FRAME) {
                 ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->loader)->model60, 1);
                 ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->loader)->model60, 2);
             }
-            if (frame == 0x18) {
+            if (frame == FX_RAMUH_STORM_2_FRAME) {
                 ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->loader)->model60, 1);
                 ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->loader)->model60, 2);
             }
-            if (frame == 0x3B) {
+            if (frame == FX_RAMUH_STORM_MOTION_FRAME) {
                 ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->summon54->motion184, ((Fx0baSummon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->model60, 0);
             }
-            if (frame >= 0x3C) {
-                if (frame == 0x3C) {
+            if (frame >= FX_RAMUH_STORM_CLOUD_FRAME) {
+                if (frame == FX_RAMUH_STORM_CLOUD_FRAME) {
                     work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_DISC), 1);
                     work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CLOUD_RING), 1);
                     work->pos10.vx = work->summonPos48.vx;
@@ -216,14 +218,18 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->otZ = 0;
                 summonRgb = ((fade * 3 / 4 + 0x400) >> 5) - 0x80;
                 ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->loader)->model60, summonRgb, summonRgb, summonRgb);
-                ex->btlfx_drawScrollMove(10000 - work->frame4 * 7, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
-                ex->btlfx_drawScrollMove(10000 - work->frame4 * 7, 0x280, 0x170, 0x38, 0x70, 0x280, 0x100);
+                ex->btlfx_drawScrollMove(10000 - work->frame4 * 7, FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
+                ex->btlfx_drawScrollMove(10000 - work->frame4 * 7, FX_RAMUH_CLOUD_2_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_2_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
             } else {
-                ex->btlfx_drawScrollMove(work->frame4 * 3, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
-                ex->btlfx_drawScrollMove(work->frame4 * 3, 0x280, 0x170, 0x38, 0x70, 0x280, 0x100);
+                ex->btlfx_drawScrollMove(work->frame4 * 3, FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
+                ex->btlfx_drawScrollMove(work->frame4 * 3, FX_RAMUH_CLOUD_2_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_2_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
             }
-            if (frame >= 0x5F) {
-                work->state0 = 2;
+            if (frame >= FX_RAMUH_STORM_FRAMES) {
+                work->state0 = FX_RAMUH_SUMMON_STATE_COLUMN;
                 entry->frame = -1;
                 fx_0ba_orbPos.vz = 0;
                 fx_0ba_orbPos.vy = 0;
@@ -242,7 +248,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAPPED_COLUMN), 1);
             }
             break;
-        case 2:
+        case FX_RAMUH_SUMMON_STATE_COLUMN:
             pos.vx = work->summonPos48.vx;
             pos.vy = work->summonPos48.vy;
             pos.vz = work->summonPos48.vz;
@@ -253,7 +259,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->summonPos48.vy -= 0x1000;
             ex->Hi_DrawEffModel(&work->rot68, (VECTOR *)&work->summonPos48, (s32)(VECTOR *)&work->scale70, work->model80);
             work->summonPos48.vy += 0x1000;
-            if (frame == 0x14) {
+            if (frame == FX_RAMUH_COLUMN_FRAME) {
                 ex->Hi_GetSummonBonePos(((Fx0baSummon *)env->loader)->model60, 0x2F, (u16 *)&mpos);
                 work->pos28.vx = ((SVECTOR *)&mpos)->vx;
                 work->pos28.vy = ((SVECTOR *)&mpos)->vy;
@@ -266,18 +272,21 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->scale34.vx = 0x1000;
                 ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->loader)->model60, 0);
             }
-            if (frame >= 0x14) {
+            if (frame >= FX_RAMUH_COLUMN_FRAME) {
                 work->pos28.vy += 0xAE;
                 work->pos28.vz += 0x96;
                 ex->Hi_DrawEffModel(&work->rot40, (VECTOR *)&work->pos28, (s32)&work->scale34, work->model8C);
                 ex->Hi_DrawEffModel(&work->rot40, (VECTOR *)&work->pos28, (s32)&work->scale34, work->model90);
                 modelRgb = ((((frame - 0x16) * 0x180) + 0x400) >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model90, modelRgb, modelRgb, modelRgb);
-                ex->btlfx_drawScrollMove(work->frame4 * 5, 0x160, 0x100, 0x20, 0x80, 0x140, 0x100);
+                ex->btlfx_drawScrollMove(work->frame4 * 5, FX_RAMUH_COLUMN_VRAM_X, FX_RAMUH_COLUMN_VRAM_Y, FX_RAMUH_COLUMN_VRAM_W, FX_RAMUH_COLUMN_VRAM_H,
+                                     FX_RAMUH_COLUMN_SRC_X, FX_RAMUH_COLUMN_SRC_Y);
             }
-            ex->btlfx_drawScrollMove(work->frame4 * 3, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
-            ex->btlfx_drawScrollMove(work->frame4 * 3, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
-            if (frame >= 0x1E) {
+            ex->btlfx_drawScrollMove(work->frame4 * 3, FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
+            ex->btlfx_drawScrollMove(work->frame4 * 3, FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_VRAM_Y, FX_RAMUH_CLOUD_VRAM_W, FX_RAMUH_CLOUD_VRAM_H,
+                                     FX_RAMUH_CLOUD_VRAM_X, FX_RAMUH_CLOUD_SRC_Y);
+            if (frame >= FX_RAMUH_COLUMN_FRAMES) {
                 work->state0 = state;
                 fx_0ba_summonDone = 1;
                 return 1;
@@ -393,12 +402,12 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
     s32 spE8;
 
     if (mode == 0) {
-        *args = 0x84;
+        *args = sizeof(Fx0baPWork81);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
         fx_0ba_env = env;
-        ex->btlfx_initEffModels(fx_0ba_effModels1, 5);
+        ex->btlfx_initEffModels(fx_0ba_effModels1, FX_RAMUH_BOLT_MODEL_COUNT);
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ELECTRIC_BOWL), 1);
         work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_GREEN_DOME), 0);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_THIN_ROD), 0);
@@ -425,7 +434,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
         arr60[0] = arr60[1] = arr60[2] = 0;
         trailAmp = 0;
         switch (work->state0) {
-        case 0: {
+        case FX_RAMUH_STATE_GATHER: {
             key = (Fx0baPKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MOTION_KEYS) + (frame * 12 + 4));
             work->pos48[0] = key->x + work->pos8.vx;
             work->pos48[1] = key->y + work->pos8.vy;
@@ -436,7 +445,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             work->scale54[0] = 0x2000;
             work->scale54[1] = 0x2000;
             work->scale54[2] = 0x2000;
-            if (frame >= 7) {
+            if (frame >= FX_RAMUH_GLOW_FRAME) {
                 SVECTOR rot;
 
                 ex->btlfx_rangeProgress(frame, 7, 8, 0, 0x1000, &spE8);
@@ -452,16 +461,16 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 glowGrowXZ = ex->math_sin(spE8 >> 2);
                 glowGrowY = ex->math_sin(spE8 >> 2) >> 2;
             } else {
-                glowBright = (ex->math_cos((frame << 10) / 7) >> 1) + 0x800;
+                glowBright = (ex->math_cos((frame << 10) / FX_RAMUH_GLOW_FRAME) >> 1) + 0x800;
             }
-            if (frame >= 15) {
-                work->state0 = 1;
+            if (frame >= FX_RAMUH_GATHER_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_CHARGE;
                 entry->frame = -1;
             }
         } break;
-        case 1:
+        case FX_RAMUH_STATE_CHARGE:
             alpha = 0x1000;
-            t = (frame << 12) / 9;
+            t = (frame << 12) / FX_RAMUH_CHARGE_FRAMES;
             base = ((0x1000 - ex->math_cos(t >> 2)) << 5) >> 12;
             type = (t >> 3) + 0xE00;
             if (frame < 4) {
@@ -475,16 +484,16 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame == 3) {
                 ex->btlfx_startFadeBackground(1, 6);
             }
-            if (frame >= 9) {
-                work->state0 = 2;
+            if (frame >= FX_RAMUH_CHARGE_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_STRIKE;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, FX_RAMUH_CHARGE_END_RGB);
                 ex->btlfx_startFadeBackground(-1, 2);
                 work->emit6C = NULL;
             }
             break;
-        case 2:
-            t = (frame << 12) / 51;
+        case FX_RAMUH_STATE_STRIKE:
+            t = (frame << 12) / FX_RAMUH_STRIKE_FRAMES;
             if (frame == 0) {
                 ex->btlfx_startFadeBackground(-1, 1);
             }
@@ -495,11 +504,11 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 fadeTint = 0xFF - frame * 0xFF / 4;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, fadeTint >> 2, fadeTint, fadeTint);
             }
-            if (frame >= 16 && frame < 22) {
-                if (frame == 16) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0);
+            if (frame >= FX_RAMUH_FLASH_FRAME && frame < FX_RAMUH_FLASH_FRAME + FX_RAMUH_FLASH_FRAMES) {
+                if (frame == FX_RAMUH_FLASH_FRAME) {
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, FX_RAMUH_FLASH_RGB);
                 }
-                flashTint = 0xFF - (frame - 16) * 0xFF / 6;
+                flashTint = 0xFF - (frame - FX_RAMUH_FLASH_FRAME) * 0xFF / FX_RAMUH_FLASH_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0, flashTint >> 2, flashTint);
             }
             trailAlpha = 0x1000;
@@ -588,14 +597,14 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_RING), &work->pos10, NULL, (ringT >> 2) + 0x2800, 0, 1,
                                   ex->math_sin(ringT >> 1));
             }
-            if (frame == 20) {
+            if (frame == FX_RAMUH_GLOW_RINGS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_GLOW_RINGS), (s32)&work->pos10);
                 work->emit6C = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }
             }
-            if (frame == 14) {
+            if (frame == FX_RAMUH_SPARK_BURST_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_SPARK_BURST), (s32)&work->pos8);
                 work->emit68 = emitter;
                 if (emitter != NULL) {
@@ -631,11 +640,11 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ch = 2;
                 cw = 4;
             }
-            if (frame == 22) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0x20);
+            if (frame == FX_RAMUH_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_RAMUH_DARKEN_RGB);
             }
-            if (frame >= 23 && frame < 26) {
-                yellowTint = 0x80 - ((frame - 23) << 6);
+            if (frame >= FX_RAMUH_YELLOW_FRAME && frame < FX_RAMUH_YELLOW_FRAME + FX_RAMUH_YELLOW_FRAMES) {
+                yellowTint = 0x80 - ((frame - FX_RAMUH_YELLOW_FRAME) << 6);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, yellowTint, yellowTint, yellowTint >> 3);
             }
             if (frame == 24) {
@@ -644,20 +653,20 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame == 25) {
                 ex->btlfx_startFadeBackground(0, 5);
             }
-            if (frame == 29) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x64, 0xFF);
+            if (frame == FX_RAMUH_BLUE_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_RAMUH_BLUE_RGB);
             }
             if (frame == 41) {
                 ex->btlfx_startFadeBackground(1, 8);
             }
-            if (frame == 33) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x40, 0x40, 0);
+            if (frame == FX_RAMUH_DARKEN_2_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_RAMUH_DARKEN_2_RGB);
             }
-            if (frame == 34) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x40, 0x40, 0x40);
+            if (frame == FX_RAMUH_GREY_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_RAMUH_GREY_RGB);
             }
-            if (frame >= 41) {
-                skyTint = (frame - 41) * 0xFF / 10;
+            if (frame >= FX_RAMUH_SKY_FRAME) {
+                skyTint = (frame - FX_RAMUH_SKY_FRAME) * 0xFF / FX_RAMUH_SKY_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, skyTint >> 2, skyTint >> 1, skyTint);
             }
             if (frame >= 43) {
@@ -677,8 +686,8 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                     work->emit6C->alpha = (0x1000 - (t >> 2)) * 3 / 4;
                 }
             }
-            if (frame >= 51) {
-                work->state0 = 3;
+            if (frame >= FX_RAMUH_STRIKE_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_TAIL;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_SPARKS), (s32)&work->pos10);
@@ -687,15 +696,15 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 }
             }
             break;
-        case 3: {
-            t = (frame << 12) / 20;
+        case FX_RAMUH_STATE_TAIL: {
+            t = (frame << 12) / FX_RAMUH_TAIL_FRAMES;
             if (frame < 12) {
                 bandBlue = 0xFF - (frame << 5) / 12;
                 fxm_drawCenterBand(env->ot + 2, 1, fx_0ba_bandWidths[frame], 0xC8 - frame * 0xC8 / 12, 0xC8 - frame * 0xC8 / 12,
                               bandBlue);
             }
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_RAMUH_TAIL_RGB);
             }
             if (work->emit68 != NULL && frame < 10) {
                 fadeT = (frame << 12) / 10;
@@ -743,8 +752,8 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             work->scale54[1] = key->ry * 2;
             work->scale54[2] = key->rz * 2;
             work->rot60.vx = work->rot60.vy = work->rot60.vz = 0;
-            if (frame >= 20) {
-                work->state0 = 3;
+            if (frame >= FX_RAMUH_TAIL_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_TAIL;
                 entry->frame = -1;
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -773,7 +782,8 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)&sc, work->model7C);
                 glowRgb = (glowBright >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model7C, glowRgb, glowRgb, glowRgb);
-                ex->btlfx_drawScrollMove(work->frame4 * 5, 0x160, 0x100, 0x20, 0x80, 0x140, 0x100);
+                ex->btlfx_drawScrollMove(work->frame4 * 5, FX_RAMUH_COLUMN_VRAM_X, FX_RAMUH_COLUMN_VRAM_Y, FX_RAMUH_COLUMN_VRAM_W, FX_RAMUH_COLUMN_VRAM_H,
+                                     FX_RAMUH_COLUMN_SRC_X, FX_RAMUH_COLUMN_SRC_Y);
             }
             if (flashBright != 0) {
                 ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)work->scale54, work->model80);
@@ -1103,7 +1113,7 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)args)->workSize = sizeof(Fx0baWork83);
         ((EffInit *)args)->elemSize = sizeof(Fx0baBolt);
         ((EffInit *)args)->elemFn = (s32)fx_0ba_op83PoolTask;
-        ((EffInit *)args)->poolCount = 0x20;
+        ((EffInit *)args)->poolCount = FX_RAMUH_BOLT_SLOTS;
     } else if (mode == 1) {
         kind = *args;
         fx_0ba_env = env;
@@ -1354,7 +1364,7 @@ s32 fx_0ba_op85(s32 mode, Fx0baWork85 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)args)->workSize = sizeof(Fx0baWork85);
         ((EffInit *)args)->elemSize = sizeof(Fx0baPart);
         ((EffInit *)args)->elemFn = (s32)fx_0ba_op85PoolTask;
-        ((EffInit *)args)->poolCount = 0x55;
+        ((EffInit *)args)->poolCount = FX_RAMUH_PART_SLOTS;
     } else if (mode == 1) {
         fx_0ba_env = env;
         fxm_arcTrailReset();

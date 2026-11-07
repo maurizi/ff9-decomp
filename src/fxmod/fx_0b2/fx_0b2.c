@@ -13,10 +13,10 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
     pt = trail->pts4;
-    trail->lastSlot0 = trail->count2 = 0x18;
+    trail->lastSlot0 = trail->count2 = FX_TWISTER_STREAK_POINTS - 1;
     trail->head1 = 0;
     do {
-        t = 0x1000 - (i << 12) / 24;
+        t = 0x1000 - (i << 12) / (FX_TWISTER_STREAK_POINTS - 1);
         t += ex->btlfx_randCentered(0x100);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = ex->btlfx_randCentered(0xA0);
@@ -27,7 +27,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
-    } while (i < 25);
+    } while (i < FX_TWISTER_STREAK_POINTS);
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_WIND_STREAK), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
@@ -67,12 +67,12 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
     gte_ldv0(pos);
     gt4 = (POLY_GT4 *)fx_0b2_env->prim;
     *(s32 *)&darkCol = 0;
-    ft4 = (POLY_FT4 *)((u8 *)gt4 + segs * 0x68);
-    fx_0b2_env->prim = (u8 *)ft4 + segs * 0xC8;
+    ft4 = (POLY_FT4 *)((u8 *)gt4 + segs * 2 * sizeof(POLY_GT4));
+    fx_0b2_env->prim = (u8 *)ft4 + segs * (FX_TWISTER_FUNNEL_ROWS - 2) * sizeof(POLY_FT4);
     flatCol.r = flatCol.g = flatCol.b = bright;
     edgeCol.r = edgeCol.g = edgeCol.b = bright;
-    flatCol.code = abr != 0xFF ? 0x2E : 0x2C;
-    darkCol.code = abr != 0xFF ? 0x3E : 0x3C;
+    flatCol.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
+    darkCol.code = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     tpage |= TPAGE_ABR(abr);
     edgeCol.code = darkCol.code;
     gte_rtv0tr_b();
@@ -85,17 +85,17 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
     ang = 0;
     /* row * drift, (row + 1) * drift, row + 1 and the two heights are loop-reduced into five stack temporaries;
      * zNext/zRow are set here (not at their use) so their lifetime makes them worth reducing. */
-    for (row = 0; row < 7; row++) {
+    for (row = 0; row < FX_TWISTER_FUNNEL_ROWS; row++) {
         zRow = row * 0x90;
         zNext = (row + 1) * 0x90;
         ang += twist;
         driftAng += driftStep;
-        radRow = ex->btlfx_lerp(radius0, radius1, (row << 12) / 7);
-        radNext = ex->btlfx_lerp(radius0, radius1, ((row + 1) << 12) / 7);
+        radRow = ex->btlfx_lerp(radius0, radius1, (row << 12) / FX_TWISTER_FUNNEL_ROWS);
+        radNext = ex->btlfx_lerp(radius0, radius1, ((row + 1) << 12) / FX_TWISTER_FUNNEL_ROWS);
         for (j = 0; j < segs; j++) {
             ang += twist;
-            x = (ex->math_cos(driftAng + driftStep) * ((row + 1) * drift / 7)) >> 12;
-            y = (ex->math_sin(driftAng + driftStep) * ((row + 1) * drift / 7)) >> 12;
+            x = (ex->math_cos(driftAng + driftStep) * ((row + 1) * drift / FX_TWISTER_FUNNEL_ROWS)) >> 12;
+            y = (ex->math_sin(driftAng + driftStep) * ((row + 1) * drift / FX_TWISTER_FUNNEL_ROWS)) >> 12;
             quad[0].vx = x + ((ex->math_cos(ang) * radNext) >> 12);
             quad[0].vy = y + ((ex->math_sin(ang) * radNext) >> 12);
             segAng = 0x1000 / segs;
@@ -105,8 +105,8 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
             quad[0].vz = quad[1].vz = zNext;
             ang -= twist;
             nextAngBot = ang + segAng; /* a new variable keeps (plus ang segAng) in that operand order */
-            x = (ex->math_cos(driftAng) * (row * drift / 7)) >> 12;
-            y = (ex->math_sin(driftAng) * (row * drift / 7)) >> 12;
+            x = (ex->math_cos(driftAng) * (row * drift / FX_TWISTER_FUNNEL_ROWS)) >> 12;
+            y = (ex->math_sin(driftAng) * (row * drift / FX_TWISTER_FUNNEL_ROWS)) >> 12;
             quad[2].vx = x + ((ex->math_cos(ang) * radRow) >> 12);
             quad[2].vy = y + ((ex->math_sin(ang) * radRow) >> 12);
             quad[3].vx = x + ((ex->math_cos(nextAngBot) * radRow) >> 12);
@@ -133,7 +133,7 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
                 ft = 0;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&edgeCol;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&darkCol;
-            } else if (row >= 6) {
+            } else if (row >= FX_TWISTER_FUNNEL_ROWS - 1) {
                 ft = 0;
                 *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&edgeCol;
                 *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&darkCol;
@@ -165,11 +165,11 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -192,9 +192,9 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 one = 1; /* a variable, not a literal: the original reloads it for `mode == 1` and `return 1` */
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0b2Work);
     } else if (mode == one) {
-        work->state0 = 0;
+        work->state0 = FX_TWISTER_STATE_GROW;
         work->frame4 = 0;
         fx_0b2_env = env;
         ((s32 *)&work->center8)[0] = ((s32 *)&env->targets->centerX)[0];
@@ -204,9 +204,9 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot18.vz = 0;
     } else {
         alpha = 0x1000;
-        orbitRadius = work->frame4 * 0x300 / 72;
+        orbitRadius = work->frame4 * 0x300 / FX_TWISTER_FRAMES;
         frame = entry->frame;
-        orbitAng = alpha - ex->math_cos(work->frame4 * 1500 / 72);
+        orbitAng = alpha - ex->math_cos(work->frame4 * 1500 / FX_TWISTER_FRAMES);
         work->pos10.vx = work->center8.vx + ((ex->math_cos(orbitAng) * orbitRadius) >> 12);
         work->pos10.vz = work->center8.vz + ((ex->math_sin(orbitAng) * orbitRadius) >> 12);
         work->pos10.vy = work->center8.vy;
@@ -221,17 +221,17 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             orbitAng = 1;
         }
         switch (state) {
-        case 0: {
+        case FX_TWISTER_STATE_GROW: {
             SVECTOR rot;
             s32 drift;
             s32 t;
 
             scale.vz = 0x2000;
-            alpha = (frame << 12) / 12;
+            alpha = (frame << 12) / FX_TWISTER_GROW_FRAMES;
             scale.vy = alpha;
             scale.vx = alpha;
             drift = alpha >> 6;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, drift,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V, drift,
                           work->frame4 * 0xC8, 0x190, 0xC8, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
@@ -243,25 +243,25 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = 0x2000;
             t = alpha >> 2;
             scale.vz = ex->math_sin(t) * 2;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, alpha >> 5, 0x1A,
-                          0x3D01, 0, 0, drift, work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, alpha >> 5, FX_TWISTER_INNER_TPAGE,
+                          FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, drift, work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, drift, 0x17, 0x3D03, 0,
-                          0x70, drift, work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
-            if (frame >= 12) {
-                work->state0 = 1;
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, drift, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U,
+                          FX_TWISTER_OUTER_V, drift, work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
+            if (frame >= FX_TWISTER_GROW_FRAMES) {
+                work->state0 = FX_TWISTER_STATE_WIDEN;
                 entry->frame = -1;
             }
             break;
         }
-        case 1: {
+        case FX_TWISTER_STATE_WIDEN: {
             SVECTOR rot;
             s32 radius;
 
             scale.vz = 0x2000;
-            t = (frame << 12) / 12;
+            t = (frame << 12) / FX_TWISTER_WIDEN_FRAMES;
             scale.vx = scale.vy = t + 0x1000;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, (t >> 5) + 0x40,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V, (t >> 5) + 0x40,
                           work->frame4 * 0xC8, 0x190, 0xC8, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
@@ -271,15 +271,15 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                               t / 2 + 0x800, 0, 0);
             scale.vz = scale.vx = scale.vy = 0x2000;
             radius = 0x1C8 - (t >> 5);
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, radius, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, (t >> 5) + 0x40, work->frame4 * 0xC8,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, radius, 0x280, 0x80, FX_TWISTER_INNER_TPAGE, FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, (t >> 5) + 0x40, work->frame4 * 0xC8,
                           0x190, 0x80, 1, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, radius, 0x280, 0x40, 0x17, 0x3D03, 0, 0x70, (t >> 5) + 0x40,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, radius, 0x280, 0x40, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U, FX_TWISTER_OUTER_V, (t >> 5) + 0x40,
                           work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
-            if (frame >= 12) {
+            if (frame >= FX_TWISTER_WIDEN_FRAMES) {
                 Pool6CEntry *emitter;
 
-                work->state0 = 2;
+                work->state0 = FX_TWISTER_STATE_SPIN;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TWISTER_DUST_CLOUDS), (s32)&work->pos10);
                 if (emitter != NULL) {
@@ -288,7 +288,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        case 2: {
+        case FX_TWISTER_STATE_SPIN: {
             SVECTOR rot;
             s32 size;
             s32 drift;
@@ -297,7 +297,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             size = (t >> 1) + 0x2000;
             scale.vx = scale.vy = scale.vz = size;
             drift = (t >> 5) + 0xC0;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, drift,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V, drift,
                           work->frame4 * 0xC8, 0x190, (t >> 5) + 0xA0, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
@@ -305,25 +305,25 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.pad = 1;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, alpha, 0, 0);
             scale.vx = scale.vy = scale.vz = size;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, drift,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, FX_TWISTER_INNER_TPAGE, FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, drift,
                           work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x40, 0x17, 0x3D03, 0, 0x70, drift,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x40, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U, FX_TWISTER_OUTER_V, drift,
                           work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
-            if (frame >= 0x20) {
-                work->state0 = 3;
+            if (frame >= FX_TWISTER_SPIN_FRAMES) {
+                work->state0 = FX_TWISTER_STATE_FADE;
                 entry->frame = -1;
             }
             break;
         }
-        case 3: {
+        case FX_TWISTER_STATE_FADE: {
             SVECTOR rot;
             s32 fadeAng;
 
             scale.vx = scale.vy = scale.vz = 0x2800;
             t = frame << 8;
             fadeAng = t >> 2;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x88, 0x180, ex->math_cos(fadeAng) >> 5, 0x11A, 0xFFFF, 0x10, 0x90,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x88, 0x180, ex->math_cos(fadeAng) >> 5, FX_TWISTER_CORE_TPAGE, FX_TWISTER_CORE_CLUT, FX_TWISTER_CORE_U, FX_TWISTER_CORE_V,
                           0x140, work->frame4 * 0xC8, 0x190, 0x120, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
@@ -332,13 +332,13 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_TWISTER_VORTEX), &work->pos10, &rot, 0x6000, 0, 1, 0x1000 - t, 0,
                               0);
             scale.vx = scale.vy = scale.vz = 0x2800;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 5, 0x1A, 0x3D01, 0, 0, 0x140,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 5, FX_TWISTER_INNER_TPAGE, FX_TWISTER_INNER_CLUT, FX_TWISTER_INNER_U, FX_TWISTER_INNER_V, 0x140,
                           work->frame4 * 0xC8, 0x190, 0x80, 1, 8);
             alpha -= t;
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 6, 0x17, 0x3D03, 0, 0x70,
+            fx_0b2_drawFunnel(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(fadeAng) >> 6, FX_TWISTER_OUTER_TPAGE, FX_TWISTER_OUTER_CLUT, FX_TWISTER_OUTER_U, FX_TWISTER_OUTER_V,
                           0x140, work->frame4 * 0xC8, 0x190, 0x40, 1, 8);
-            if (frame >= 0x10) {
+            if (frame >= FX_TWISTER_FADE_FRAMES) {
                 return one;
             }
             break;
@@ -346,8 +346,10 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         work->rot18.vz += -0x10 - work->frame4 * 2;
         ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TWISTER_BACKDROP), work->frame4);
-        ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, 0x1C0, 0x170, 0x1C, 0x70, 0x1DC, 0x170);
-        ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, 0x280, 0x100, 0x1C, 0x70, 0x29C, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->frame4 * 8, FX_TWISTER_OUTER_VRAM_X, FX_TWISTER_OUTER_VRAM_Y, FX_TWISTER_OUTER_VRAM_W,
+                             FX_TWISTER_OUTER_VRAM_H, FX_TWISTER_OUTER_SRC_X, FX_TWISTER_OUTER_SRC_Y);
+        ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, FX_TWISTER_INNER_VRAM_X, FX_TWISTER_INNER_VRAM_Y, FX_TWISTER_INNER_VRAM_W,
+                             FX_TWISTER_INNER_VRAM_H, FX_TWISTER_INNER_SRC_X, FX_TWISTER_INNER_SRC_Y);
         i = 0;
         if (alpha != 0) {
             SVECTOR from;
@@ -375,7 +377,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 fxm_drawOffsetTrail(entry, trail, &from, &to, 0x100, 0x180, trailAng, 0x100, 0, fade, (ex->btlfx_rand() & 0xF) + 0xF);
                 trail++;
                 ang += 0x300 + (ex->btlfx_rand() & 0x3FF);
-            } while (i < 3);
+            } while (i < FX_TWISTER_STREAKS);
         }
         work->frame4++;
     }

@@ -10,7 +10,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx0d5Work80);
     } else if (mode == 1) {
         work->state0 = 0;
         fx_0d5_env = env;
@@ -24,12 +24,12 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (work->state0) {
         case 0:
-            if (frame < 0x2C) {
-                t = (frame << 12) / 44;
-                if (frame < 0x17) {
+            if (frame < FX_SWDMAG_FIRA_GROUND_RING_FRAMES) {
+                t = (frame << 12) / FX_SWDMAG_FIRA_GROUND_RING_FRAMES;
+                if (frame < FX_SWDMAG_FIRA_RING_PULSE_FRAME) {
                     ringScale = ex->math_sin(frame << 6) / 4 + 0x800;
                 } else {
-                    ringScale = ex->math_sin(((frame - 0x17) << 10) / 21) * 2 / 3 + 0xC00;
+                    ringScale = ex->math_sin(((frame - FX_SWDMAG_FIRA_RING_PULSE_FRAME) << 10) / (FX_SWDMAG_FIRA_GROUND_RING_FRAMES - FX_SWDMAG_FIRA_RING_PULSE_FRAME)) * 2 / 3 + 0xC00;
                 }
                 rot.vx = 0x400;
                 rot.vz = 0;
@@ -38,19 +38,19 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_GROUND_RING), &work->pos4, &rot, ringScale * 2 / 3, 0xC, 1,
                                   ex->math_sin(t >> 1));
             }
-            if (frame == 5) {
+            if (frame == FX_SWDMAG_FIRA_SMOKE_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SMOKE), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame == 0x12) {
+            if (frame == FX_SWDMAG_FIRA_FLAME_SWIRL_FRAME) {
                 trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_FLAME_SWIRL), (s32)&work->pos4);
                 if (trailEmitter != NULL) {
                     trailEmitter->otZ = 0x80;
                     trailEmitter->trails = (s32)fx_0d5_trails;
-                    trailEmitter->trailSlots = 0x15;
-                    trailEmitter->trailStride = 0xAC;
+                    trailEmitter->trailSlots = FX_SWDMAG_FIRA_FLAME_SWIRL_TRAIL_SLOTS;
+                    trailEmitter->trailStride = FX_SWDMAG_FIRA_FLAME_SWIRL_TRAIL_STRIDE;
                 }
                 trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_FLAME_BURST_2), (s32)&work->posC);
                 if (trailEmitter != NULL) {
@@ -58,13 +58,13 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_HEAT_RING), (s32)&work->pos4);
             }
-            if (frame == 0x17) {
+            if (frame == FX_SWDMAG_FIRA_SMOKE_2_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_FIRA_SMOKE_2), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame >= 0x32) {
+            if (frame >= FX_SWDMAG_FIRA_FRAMES) {
                 return 1;
             }
             break;
@@ -87,10 +87,10 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0d5Work84);
     } else if (mode == 1) {
         fx_0d5_env = env;
-        work->state0 = 0;
+        work->state0 = FX_SWDMAG_FIRA_FLASH_STATE_IN;
         work->frame4 = 0;
     } else {
         alpha = 0;
@@ -100,38 +100,38 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
-        case 0:
+        case FX_SWDMAG_FIRA_FLASH_STATE_IN:
             ry = 0x200;
-            alpha = (frame << 12) / 3;
+            alpha = (frame << 12) / FX_SWDMAG_FIRA_FLASH_IN_FRAMES;
             t = ex->math_sin(alpha >> 2);
             scale0 = t >> 1;
             scale1 = ((0x1000 - alpha) >> 1) + 0x800;
-            if (frame >= 3) {
-                work->state0 = 1;
+            if (frame >= FX_SWDMAG_FIRA_FLASH_IN_FRAMES) {
+                work->state0 = FX_SWDMAG_FIRA_FLASH_STATE_FLICKER;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_FIRA_FLASH_STATE_FLICKER:
+            t = (frame << 12) / FX_SWDMAG_FIRA_FLASH_FLICKER_FRAMES;
             flicker = (frame & 1) << 8;
             scale1 = flicker + 0x1000;
             grow = (t >> 1) + 0x800;
             alpha = flicker + grow;
             ry = (t >> 3) + 0x200;
             scale0 = scale1;
-            if (frame >= 9) {
-                work->state0 = 2;
+            if (frame >= FX_SWDMAG_FIRA_FLASH_FLICKER_FRAMES) {
+                work->state0 = FX_SWDMAG_FIRA_FLASH_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 2:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_FIRA_FLASH_STATE_FADE:
+            t = (frame << 12) / FX_SWDMAG_FIRA_FLASH_FADE_FRAMES;
             ang = t >> 2;
             ry = 0x400 - ang;
             alpha = ex->math_cos(ang);
             scale0 = ex->math_sin(ang) + 0x1000;
             scale1 = ex->math_sin(ang) * 3 / 2 + 0x1000;
-            if (frame >= 9) {
+            if (frame >= FX_SWDMAG_FIRA_FLASH_FADE_FRAMES) {
                 return 1;
             }
             break;

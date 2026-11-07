@@ -5,7 +5,7 @@ s32 fx_0d0_op80(s32 mode, Fx0d0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x20;
+        *args = sizeof(Fx0d0Work);
     } else if (mode == 1) {
         fx_0d0_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos10);
@@ -20,13 +20,13 @@ s32 fx_0d0_op80(s32 mode, Fx0d0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x24) {
+        if (frame == FX_POWER_BREAK_STREAK_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POWER_BREAK_RED_SWIRL), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POWER_BREAK_LIGHT_STREAK), (s32)&work->pos18);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_0d0_trails;
-                work->emitC->trailSlots = 8;
-                work->emitC->trailStride = 0x60;
+                work->emitC->trailSlots = FX_POWER_BREAK_LIGHT_STREAK_TRAIL_SLOTS;
+                work->emitC->trailStride = FX_POWER_BREAK_LIGHT_STREAK_TRAIL_STRIDE;
             }
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
@@ -35,7 +35,7 @@ s32 fx_0d0_op80(s32 mode, Fx0d0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
-        return frame >= 0x46;
+        return frame >= FX_POWER_BREAK_FRAMES;
     }
     return 0;
 }

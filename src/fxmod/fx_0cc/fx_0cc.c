@@ -17,10 +17,10 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
         }
     } else {
         switch (part->state0) {
-        case 0:
+        case FX_METEORITE_STATE_FALL:
             BTLFX_COPY_SVEC(&pos, &part->pos10);
-            t = (frame << 12) / 20;
-            pos.vy -= 0x1000;
+            t = (frame << 12) / FX_METEORITE_FALL_FRAMES;
+            pos.vy -= FX_METEORITE_FALL_HEIGHT;
             pos.vy += t;
             pos.vz = pos.vz + ((0x1000 - t) >> 1);
             BTLFX_COPY_SVEC(&part->pos4, &pos);
@@ -35,17 +35,17 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             env->otZ = 0x80;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_RED_GLOW), &part->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
             env->otZ = 0;
-            if (frame >= 0x14) {
-                part->state0 = 1;
+            if (frame >= FX_METEORITE_FALL_FRAMES) {
+                part->state0 = FX_METEORITE_STATE_IMPACT;
                 ((s16 *)part)[-1] = -1;
                 if (part->emitC != NULL) {
                     part->emitC->frame = part->emitC->tail->anim.duration;
                 }
                 part->pos4.vy = 0;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_METEORITE_IMPACT_TINT_RGB);
             }
             break;
-        case 1:
+        case FX_METEORITE_STATE_IMPACT:
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = frame << 5;
@@ -54,7 +54,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             pos.vy -= frame * 4;
             env->otZ = 0x10;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_SMOKE), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
-            if (frame < 0x10) {
+            if (frame < FX_METEORITE_FLASH_FRAMES) {
                 env->otZ = 0x64;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEORITE_IMPACT_RING), &pos, NULL, -1, frame, 1, -1);
                 env->otZ = 0;
@@ -62,7 +62,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
                                   -1, 0, 0);
             }
             env->otZ = 0;
-            if (frame >= 0x18) {
+            if (frame >= FX_METEORITE_IMPACT_FRAMES) {
                 return 1;
             }
             break;
@@ -77,10 +77,10 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        ((EffInit *)args)->workSize = 0x14;
-        ((EffInit *)args)->elemSize = 0x18;
+        ((EffInit *)args)->workSize = sizeof(Fx0ccWork);
+        ((EffInit *)args)->elemSize = sizeof(Fx0ccPart);
         ((EffInit *)args)->elemFn = (s32)fx_0cc_op80PoolTask;
-        ((EffInit *)args)->poolCount = 0xB;
+        ((EffInit *)args)->poolCount = FX_METEORITE_SLOTS;
     } else if (mode == 1) {
         work->state0 = 0;
         work->spawnCountC = 0;
@@ -94,7 +94,7 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame & 1) {
-                if (work->spawnCountC < 10) {
+                if (work->spawnCountC < FX_METEORITE_ROCKS) {
                     work->spawnCountC++;
                     part = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (part != NULL) {
@@ -104,8 +104,8 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
             }
-            if (work->spawnCountC >= 10) {
-                if (frame >= 0x29) {
+            if (work->spawnCountC >= FX_METEORITE_ROCKS) {
+                if (frame >= FX_METEORITE_FRAMES) {
                     ex->btlfx_clearEffModels();
                 }
                 return 1;

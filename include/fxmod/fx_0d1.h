@@ -13,6 +13,11 @@
 #define FX_MENTAL_BREAK_ENERGY_ORB 0xD /* emitter: pink energy orb particle */
 #define FX_MENTAL_BREAK_SPARKLES   0xE /* emitter: pink star sparkle sprites, fan */
 
+/* fx_0d1 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes and length. */
+#define FX_MENTAL_BREAK_GLOW_FRAME  0x24 /* op80: FX_MENTAL_BREAK_PINK_GLOW starts at the caster */
+#define FX_MENTAL_BREAK_CROSS_FRAME 0x38 /* op80: FX_MENTAL_BREAK_GLOW_CROSS and FX_MENTAL_BREAK_RINGS start */
+#define FX_MENTAL_BREAK_FRAMES      0x50 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

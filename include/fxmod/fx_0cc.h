@@ -15,6 +15,19 @@
 #define FX_METEORITE_IMPACT_FLASH  0xC /* particles: white radial flash at the impact */
 #define FX_METEORITE_ROCK          0xF /* 'so' model: dark brown rock (polyhedron), drawn spinning down */
 
+/* fx_0cc choreography (docs/fxdata.md, "Choreography literals"): the rock pool items' states and lengths, op80's
+ * spawning. */
+#define FX_METEORITE_STATE_FALL   0 /* pool item: FX_METEORITE_ROCK spins down with FX_METEORITE_RED_GLOW */
+#define FX_METEORITE_STATE_IMPACT 1 /* pool item: IMPACT_SMOKE, IMPACT_RING and IMPACT_FLASH */
+#define FX_METEORITE_FALL_FRAMES   20     /* FX_METEORITE_STATE_FALL's length */
+#define FX_METEORITE_FALL_HEIGHT   0x1000 /* a rock falls from this high */
+#define FX_METEORITE_IMPACT_TINT_RGB 0x20, 0, 0 /* additive screen tint (dark red) as a rock lands */
+#define FX_METEORITE_FLASH_FRAMES  0x10   /* FX_METEORITE_STATE_IMPACT: IMPACT_RING and IMPACT_FLASH are drawn this long */
+#define FX_METEORITE_IMPACT_FRAMES 0x18   /* FX_METEORITE_STATE_IMPACT's length (the item ends) */
+#define FX_METEORITE_SLOTS         0xB    /* pool items */
+#define FX_METEORITE_ROCKS         10     /* op80: rocks, one every other frame */
+#define FX_METEORITE_FRAMES        0x29   /* op80: from this frame the models are cleared when it ends */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* position */

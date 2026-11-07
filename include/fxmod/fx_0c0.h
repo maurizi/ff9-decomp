@@ -13,6 +13,10 @@
 #define FX_SHOCK_FLAME_RING 0xB /* emitter: ring textured with blue flames */
 #define FX_SHOCK_SPARKLES   0xD /* emitter: blue sparkle sprites, fan */
 
+/* fx_0c0 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_SHOCK_FLAME_RING_FRAME 0x24 /* op80: FX_SHOCK_FLAME_RING and FX_SHOCK_SPARKLES_2 start at the caster */
+#define FX_SHOCK_FRAMES           0x46 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

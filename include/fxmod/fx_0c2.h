@@ -13,6 +13,19 @@
 #define FX_NO_MERCY_BLUE_RING    0xC /* emitter: white / dark blue / cyan gouraud ring, fans (byte-identical to fx_0c1 entry 0x7) */
 #define FX_NO_MERCY_DUST_PLUME   0xD /* emitter: rising tan dust column and blue smoke (same call site as fx_0c1 entry 0xb) */
 
+/* fx_0c2 choreography (docs/fxdata.md, "Choreography literals", names as fx_0c1's No Mercy): the ops' keyframes,
+ * lengths and the flash path. */
+#define FX_NO_MERCY_BONE         0x17  /* unit 0x10's bone FX_NO_MERCY_BLUE_RING and the flash path start from */
+#define FX_NO_MERCY_RING_FRAMES  0x28  /* op80 (FX_NO_MERCY_BLUE_RING): the task ends at this frame */
+#define FX_NO_MERCY_DASH_FRAME   4     /* op81: FX_NO_MERCY_DUST_PLUME and FX_NO_MERCY_FLASH_BURST start */
+#define FX_NO_MERCY_DUST_REACH   0x12C /* op81: FX_NO_MERCY_DUST_PLUME starts this far in front of unit 0x10 */
+#define FX_NO_MERCY_FLASH_PATH_FRAMES 9 /* FX_NO_MERCY_FLASH_BURST's particles move from the bone to the target in this many frames */
+#define FX_NO_MERCY_IMPACT_FRAME 0xD   /* op81: FX_NO_MERCY_IMPACT_BURST starts at the target (and its sounds) */
+#define FX_NO_MERCY_DASH_SOUND_FRAME 5 /* op81: the dash sounds */
+#define FX_NO_MERCY_FRAMES       0x14  /* op81: sets BTLFX_SIG_WAIT and ends at this frame */
+#define FX_NO_MERCY_TURN_FRAMES  0xF   /* op82: unit 0x10 turns by work->turn0 over this many frames */
+#define FX_NO_MERCY_FACE_FRAMES  4     /* op83: unit 0x10 turns to face the target over this many frames */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* unit 0x10 bone 0x17 position */

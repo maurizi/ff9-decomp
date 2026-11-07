@@ -108,7 +108,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0b3_env = env;
-        ex->btlfx_initEffModels(fx_0b3_effModels, 0x10);
+        ex->btlfx_initEffModels(fx_0b3_effModels, FX_LEVIATHAN_MODEL_COUNT);
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_SURFACE), 1);
         work->morphScale34.vx = 0x1800;
         work->morphScale34.vy = 0x1800;
@@ -135,14 +135,14 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 12;
             /* Dead store: only its sign word (t >> 31) survives, shared with t / 20 below. */
             bright = t / 30;
-            if (frame < 20) {
+            if (frame < FX_LEVIATHAN_WISP_FRAME) {
                 bright = t / 20;
             } else {
                 bright = 0x1000;
             }
             ex->Hi_DrawEffModel(&work->rot60, (VECTOR *)&work->modelPos48, (s32)&work->modelScale54, work->model6C);
             ex->Hi_ModifyEffModelRGB(work->model6C, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
-            if (frame == 20) {
+            if (frame == FX_LEVIATHAN_WISP_FRAME) {
                 for (i = 0; i < 6; i++) {
                     fx_0b3_morphModels[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_0b3_morphBlocks[i]), 0);
                 }
@@ -153,7 +153,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit68->otZ = 0x80;
                 }
             }
-            if (frame >= 20) {
+            if (frame >= FX_LEVIATHAN_WISP_FRAME) {
                 fxm_keyGetVec((Fx0b3Track *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_MORPH_POS_KEYS), frame, &pos);
                 work->morphPos28.vx = pos.vx;
                 work->morphPos28.vy = pos.vy;
@@ -185,22 +185,23 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 ex->Hi_DrawMorphEffModel(&work->rot40, (VECTOR *)&work->morphPos28, (s32)&work->morphScale34,
                                          fx_0b3_morphModels[work->morphFrame70], fx_0b3_morphModels[nextFrame], work->morphWeight74);
-                if (frame < 8) {
+                if (frame < FX_LEVIATHAN_SURFACE_FADE_FRAMES) {
                     rgb = ((frame << 12) >> 8) - 0x80;
                     ex->Hi_ModifyEffModelRGB(fx_0b3_morphModels[work->morphFrame70], rgb, rgb, rgb);
                 }
             }
-            if (frame >= 0x33) {
-                tint = (frame - 0x33) * 0xFF / 8;
+            if (frame >= FX_LEVIATHAN_WHITE_IN_FRAME) {
+                tint = (frame - FX_LEVIATHAN_WHITE_IN_FRAME) * 0xFF / (FX_LEVIATHAN_SURFACE_FRAMES - FX_LEVIATHAN_WHITE_IN_FRAME);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, tint, tint, tint);
             }
-            if (frame >= 0x3B) {
+            if (frame >= FX_LEVIATHAN_SURFACE_FRAMES) {
                 ex->Hi_FreeEffModel(work->model6C);
                 ex->btlfx_stopEmitter(work->emit68);
                 return 1;
             }
         }
-        ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+        ex->btlfx_drawScrollMove(frame * 8, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y);
         work->frame4++;
     }
     return 0;
@@ -260,7 +261,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         if (work->state0 == 0) {
             ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->modelPos60, (s32)&work->modelScale6C, fx_0b3_seaModel);
-            if (frame >= 0x2B) {
+            if (frame >= FX_LEVIATHAN_SUMMON_FRAME) {
                 fxm_keyGetVec3((u8 *)ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_SUMMON_KEYS), frame, &summonPos, &work->rot58, &summonScale);
                 work->pos40.vx = summonPos.vx;
                 work->pos40.vy = summonPos.vy;
@@ -271,8 +272,8 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawSummonModel(&work->rot58, (VECTOR *)&work->pos40, (s32)&work->scale4C,
                                        ((Fx0b3Summon *)env->loader)->model60, 1);
             }
-            if (frame < 8) {
-                tint = 0xFF - frame * 0xFF / 8;
+            if (frame < FX_LEVIATHAN_WHITE_OUT_FRAMES) {
+                tint = 0xFF - frame * 0xFF / FX_LEVIATHAN_WHITE_OUT_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, tint, tint, tint);
             }
             if (frame == 0) {
@@ -313,7 +314,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit80->rot.vz = rot.vz;
                 }
             }
-            if (frame >= 0x25) {
+            if (frame >= FX_LEVIATHAN_PARTS_FRAME) {
                 for (i = 0; i < 4; i++) {
                     if (frame >= fx_0b3_partStart[i]) {
                         rot.vz = 0;
@@ -329,9 +330,10 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->model88[i]);
                     }
                 }
-                ex->btlfx_drawScrollMove(frame * 14, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+                ex->btlfx_drawScrollMove(frame * 14, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_VRAM_Y);
             }
-            if (frame == 0x21) {
+            if (frame == FX_LEVIATHAN_DROPS_FRAME) {
                 work->pos28.vx = 0xD5C;
                 work->pos28.vy = 0;
                 work->pos28.vz = 0x3797;
@@ -340,7 +342,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x80;
                 }
             }
-            if (frame == 0x26) {
+            if (frame == FX_LEVIATHAN_DROPS_2_FRAME) {
                 work->pos30.vy = -0x3000;
                 work->pos30.vx = 0;
                 work->pos30.vz = 0x483;
@@ -357,8 +359,9 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit84->otZ = 0x100;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 16, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
-            if (frame >= 0x36) {
+            ex->btlfx_drawScrollMove(frame * 16, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y);
+            if (frame >= FX_LEVIATHAN_RISE_FRAMES) {
                 ex->btlfx_stopEmitter(work->emit80);
                 ex->btlfx_stopEmitter(work->emit84);
                 return 1;
@@ -426,7 +429,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion184, ((Fx0b3Summon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 6);
-            } else if (frame == 0x42) {
+            } else if (frame == FX_LEVIATHAN_DIVE_MOTION_FRAME) {
                 ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion188, ((Fx0b3Summon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 0);
             }
@@ -489,7 +492,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->Hi_ModifyEffModelRGB(work->model78[3], (modelFade >> 5) - 0x80, (modelFade >> 5) - 0x80, (modelFade >> 5) - 0x80);
                 }
             }
-            if (frame == 9) {
+            if (frame == FX_LEVIATHAN_SPLASH_FRAME) {
                 work->pos18.vx = 0;
                 work->pos18.vy = -0x1DB;
                 work->pos18.vz = 0;
@@ -502,21 +505,21 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame == 0x19) {
+            if (frame == FX_LEVIATHAN_BUBBLES_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_BUBBLES), (s32)&work->pos18);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame == 0x2C) {
+            if (frame == FX_LEVIATHAN_STREAK_FRAME) {
                 work->pos20.vx = 0;
                 work->pos20.vy = -0x258;
                 work->pos20.vz = 0;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_STREAK), (s32)&work->pos20);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b3_trails;
-                    emitter->trailSlots = 0xF0;
-                    emitter->trailStride = 0x1C;
+                    emitter->trailSlots = FX_LEVIATHAN_WATER_STREAK_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEVIATHAN_WATER_STREAK_TRAIL_STRIDE;
                     emitter->otZ = 0x40;
                 }
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_RAINBOW_RING), (s32)&work->pos18);
@@ -524,9 +527,11 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x40;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
-            ex->btlfx_drawScrollMove(frame * 14, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-            if (frame >= 0x77) {
+            ex->btlfx_drawScrollMove(frame * 8, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y);
+            ex->btlfx_drawScrollMove(frame * 14, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_VRAM_Y);
+            if (frame >= FX_LEVIATHAN_DIVE_FRAMES) {
                 work->state0 = 1;
                 return 1;
             }
@@ -578,14 +583,14 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 b
     tpage |= TPAGE_ABR_ADD;
     poly = (POLY_G4 *)(gt4 + 20);
     env->prim = (u8 *)(poly + 20);
-    colFlat.cd = 0x2C;
-    colDark.cd = 0x3E;
-    colLit.cd = 0x3E;
+    colFlat.cd = GPU_POLY_FT4;
+    colDark.cd = GPU_POLY_GT4 | GPU_ABE;
+    colLit.cd = GPU_POLY_GT4 | GPU_ABE;
     colFoam.r = colFoam.g = colFoam.b = 0xFF;
     colFlat.r = colFlat.g = colFlat.b = bright;
     colLit.r = colLit.g = colLit.b = bright;
-    colFoamDark.cd = 0x3A;
-    colFoam.cd = 0x3A;
+    colFoamDark.cd = GPU_POLY_G4 | GPU_ABE;
+    colFoam.cd = GPU_POLY_G4 | GPU_ABE;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, (VECTOR *)scale);
@@ -688,12 +693,12 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 b
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
-                    ex->btlfx_addPrimAbr(0x08000000, otz, poly, 2);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
+                    ex->btlfx_addPrimAbr(PRIM_TAG(POLY_G4), otz, poly, BTLFX_ABR_SUB);
                     gte_stsxy(&gt4->x3);
                     *(s32 *)&poly->x3 = *(s32 *)&gt4->x3;
                     gt4++;
@@ -816,7 +821,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     scale3.vy = ((ex->math_sin((((frame - 0x53) << 12) / 21) >> 2) * 3) >> 2) + 0x400;
                 }
-                fxm_drawWaveWall(&pt, &rot3, &scale3, 0x80, 0x17, 0x3D07, 0, 0x100, 0x400, 0x2BC, t * 3 / 2,
+                fxm_drawWaveWall(&pt, &rot3, &scale3, 0x80, FX_LEVIATHAN_WATER_TPAGE, FX_LEVIATHAN_WATER_CLUT, 0, 0x100, 0x400, 0x2BC, t * 3 / 2,
                               0x100, 0x400, t >> 1, 0x80);
                 env->otZ = 0x80;
                 for (i = 0; i < 20; i++) {
@@ -839,14 +844,16 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_STREAK_2), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_0b3_trails2;
-                    emitter->trailSlots = 0x30;
-                    emitter->trailStride = 0x1C;
+                    emitter->trailSlots = FX_LEVIATHAN_WATER_STREAK_2_TRAIL_SLOTS;
+                    emitter->trailStride = FX_LEVIATHAN_WATER_STREAK_2_TRAIL_STRIDE;
                     emitter->otZ = 0x100;
                 }
             }
-            ex->btlfx_drawScrollMove(frame * 16, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
-            ex->btlfx_drawScrollMove(frame * 12, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-            if (frame >= 0x68) {
+            ex->btlfx_drawScrollMove(frame * 16, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_TOP_VRAM_Y);
+            ex->btlfx_drawScrollMove(frame * 12, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_VRAM_Y);
+            if (frame >= FX_LEVIATHAN_WALL_FRAMES) {
                 work->state0 = 1;
                 ex->btlfx_initParticleSystem();
                 return 1;
@@ -920,11 +927,11 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 br
     colLit.r = colLit.g = colLit.b = bright;
     colShadeFlat.r = colShadeFlat.g = colShadeFlat.b = brightShade;
     colShadeLit.r = colShadeLit.g = colShadeLit.b = brightShade;
-    colFlat.cd = abr != 0xFF ? 0x2E : 0x2C;
-    colDark.cd = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
+    colDark.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     colLit.cd = colDark.cd;
-    colShadeFlat.cd = abr != 0xFF ? 0x2A : 0x28;
-    colShadeDark.cd = abr != 0xFF ? 0x3A : 0x38;
+    colShadeFlat.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_F4 | GPU_ABE : GPU_POLY_F4;
+    colShadeDark.cd = abr != BTLFX_ABR_OPAQUE ? GPU_POLY_G4 | GPU_ABE : GPU_POLY_G4;
     tpage |= TPAGE_ABR(abr);
     colShadeLit.cd = colShadeDark.cd;
     gte_rtv0tr_b();
@@ -1047,15 +1054,15 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 br
                 gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, otz, ft4);
-                    ex->btlfx_addPrimAbr(0x05000000, otz, f4, 2);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_FT4), otz, ft4);
+                    ex->btlfx_addPrimAbr(PRIM_TAG(POLY_F4), otz, f4, BTLFX_ABR_SUB);
                     gte_stsxy(&ft4->x3);
                     *(s32 *)&f4->x3 = *(s32 *)&ft4->x3;
                     ft4++;
                     f4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
-                    ex->btlfx_addPrimAbr(0x08000000, otz, g4, 2);
+                    ex->btlfx_addPrim(PRIM_TAG(POLY_GT4), otz, gt4);
+                    ex->btlfx_addPrimAbr(PRIM_TAG(POLY_G4), otz, g4, BTLFX_ABR_SUB);
                     gte_stsxy(&gt4->x3);
                     *(s32 *)&g4->x3 = *(s32 *)&gt4->x3;
                     gt4++;
@@ -1116,7 +1123,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = sizeof(Fx0b3Work85);
     } else if (mode == 1) {
         work->rot40.vy = 0x800;
-        work->state0 = 0;
+        work->state0 = FX_LEVIATHAN_STATE_WAVE;
         work->frame4 = 0;
         work->rot40.vx = 0;
         work->rot40.vz = 0;
@@ -1133,9 +1140,9 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            t = (frame << 12) / 81;
-            if (frame == 0x12) {
+        case FX_LEVIATHAN_STATE_WAVE:
+            t = (frame << 12) / FX_LEVIATHAN_WAVE_FRAMES;
+            if (frame == FX_LEVIATHAN_DROPS_3_FRAME) {
                 work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LEVIATHAN_WATER_DROPS_2), (s32)&work->pos10);
                 if (work->emit68 != NULL) {
                     work->emit68->tail->shape = -1;
@@ -1189,7 +1196,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     env->otZ = -0x80;
                 }
-                fxm_drawWaterSheet(&sheetPos, &sheetRot, &sheetScale, bright0, bright1, 0x17, 0x3D07, 0, 0x80, 0x7D0, sheetT * phaseMul, -0x140, ampZ,
+                fxm_drawWaterSheet(&sheetPos, &sheetRot, &sheetScale, bright0, bright1, FX_LEVIATHAN_WATER_TPAGE, FX_LEVIATHAN_WATER_CLUT, FX_LEVIATHAN_WATER_U, FX_LEVIATHAN_WATER_V, 0x7D0, sheetT * phaseMul, -0x140, ampZ,
                               ex->math_cos(sheetT >> 2) + 0x400, 0x100);
                 scaleAdd = (t * 3) >> 3;
                 env->otZ = 0x7C;
@@ -1219,7 +1226,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawSummonModel(&work->rot40, (VECTOR *)&work->summonPos28, (s32)&work->summonScale34,
                                        ((Fx0b3Summon *)env->loader)->model60, 1);
             }
-            if (frame == 0x32) {
+            if (frame == FX_LEVIATHAN_IMPACT_3_FRAME) {
                 p1.vx = env->camera->points[0].vx;
                 p1.vy = env->camera->points[0].vy;
                 p1.vz = env->camera->points[0].vz;
@@ -1234,20 +1241,20 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     emitter->otZ = 0x40;
                 }
             }
-            if (frame >= 0x2B) {
+            if (frame >= FX_LEVIATHAN_IMPACT_FRAME) {
                 fadeAng = ((frame - 0x2B) << 10) / 38;
                 ex->math_cos(fadeAng);
                 ex->math_cos(fadeAng);
                 ex->btlfx_drawRippleGrid((s32)(env->ot + 2), -0x20, 0x10, 3, 0x50, 1, &fx_0b3_rippleColor, 0x18, frame << 8, 0x186,
                                   0x100);
-                if (frame == 0x2B) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 0, 0x20, 0xAA, 0xFF);
+                if (frame == FX_LEVIATHAN_IMPACT_FRAME) {
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_HALF, FX_LEVIATHAN_IMPACT_TINT_RGB);
                 }
-                if (frame == 0x2D || frame == 0x32) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 0, 0, 0x64, 0xFF);
+                if (frame == FX_LEVIATHAN_IMPACT_2_FRAME || frame == FX_LEVIATHAN_IMPACT_3_FRAME) {
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_HALF, FX_LEVIATHAN_IMPACT_2_TINT_RGB);
                 }
             }
-            if (frame >= 0x2B) {
+            if (frame >= FX_LEVIATHAN_IMPACT_FRAME) {
                 gridFrame = frame - 0x2B;
                 p2.vx = 0;
                 p2.vy = 0;
@@ -1257,9 +1264,10 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vy = scale.vx = 0x1400 - (gridFrame << 10) / 38;
                 ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &p2, &scale, (CVECTOR *)&p1, 0, NULL);
             }
-            fxm_drawScrollMoveX(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-            if (frame >= 0x51) {
-                work->state0 = 1;
+            fxm_drawScrollMoveX(frame * 3, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_VRAM_Y);
+            if (frame >= FX_LEVIATHAN_WAVE_FRAMES) {
+                work->state0 = FX_LEVIATHAN_STATE_CALM;
                 work->camPos18.vx = 0;
                 work->camPos18.vy = -0x64;
                 work->camPos18.vz = 0;
@@ -1274,8 +1282,8 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 24;
+        case FX_LEVIATHAN_STATE_CALM:
+            t = (frame << 12) / FX_LEVIATHAN_CALM_FRAMES;
             ang = t >> 2;
             work->camPos18.vy -= (ex->math_cos(ang) * 0x18) >> 12;
             env->camera->points[3].vx = work->camPos18.vx;
@@ -1291,10 +1299,11 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             calmScale.vx = 0x1000;
             calmScale.vz = 0;
             bright = ex->math_cos(ang) >> 5;
-            fxm_drawWaterSheet(&calmPos, &calmRot, &calmScale, bright, bright, 0x17, 0x3D07, 0, 0x80, (ex->math_cos(ang) >> 3) + 0x300, ang, 0x100, 0, 0,
+            fxm_drawWaterSheet(&calmPos, &calmRot, &calmScale, bright, bright, FX_LEVIATHAN_WATER_TPAGE, FX_LEVIATHAN_WATER_CLUT, FX_LEVIATHAN_WATER_U, FX_LEVIATHAN_WATER_V, (ex->math_cos(ang) >> 3) + 0x300, ang, 0x100, 0, 0,
                           0);
-            fxm_drawScrollMoveX(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-            if (frame >= 0x18) {
+            fxm_drawScrollMoveX(frame * 3, FX_LEVIATHAN_WATER_VRAM_X, FX_LEVIATHAN_WATER_VRAM_Y, FX_LEVIATHAN_WATER_VRAM_W, FX_LEVIATHAN_WATER_VRAM_H,
+                                 FX_LEVIATHAN_WATER_SRC_X, FX_LEVIATHAN_WATER_VRAM_Y);
+            if (frame >= FX_LEVIATHAN_CALM_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -1326,7 +1335,7 @@ s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-    } else if (entry->frame >= 0x2E) {
+    } else if (entry->frame >= FX_LEVIATHAN_OP86_FRAMES) {
         return 1;
     }
     return 0;

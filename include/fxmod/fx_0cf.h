@@ -9,6 +9,11 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_STOCK_BREAK_SLASH_ARC 0x1 /* emitter: blue slash arc, fans */
 
+/* fx_0cf choreography (docs/fxdata.md, "Choreography literals"): the ops' lengths and the leap. */
+#define FX_STOCK_BREAK_FRAMES      0x28  /* op80 (FX_STOCK_BREAK_SLASH_ARC): the task ends at this frame */
+#define FX_STOCK_BREAK_LEAP_FRAMES 0xC   /* op81: unit 0x10 moves (fxm_moveUnitArc) to its landing point in this many frames */
+#define FX_STOCK_BREAK_LEAP_REACH  0x320 /* op81: the landing point is this far past the targets' centre, seen from unit 0x10 */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* position: env->targets->centerX..Z */
@@ -20,6 +25,7 @@ typedef struct {
     SVECTOR pos10; /* pos18 moved 0x320 along rot8 */
     SVECTOR pos18; /* position: env->targets->centerX..Z */
     SVECTOR pos20; /* start position */
+    u8 pad28[8]; /* unused: op81 asks for 0x30 bytes */
 } Fx0cfWork81;
 
 extern Unk800F78A4 *fx_0cf_env;

@@ -14,6 +14,14 @@
 #define FX_SCREECH_SOUND_RINGS 0xB /* emitter: textured rings, the pale expanding sound-wave rings over the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 #define FX_SCREECH_LILAC_RING  0xC /* emitter: lilac glow ring particle */
 
+/* fx_0ce choreography (docs/fxdata.md, "Choreography literals"): op80's states, their lengths and the trail buffer. */
+#define FX_SCREECH_STATE_WAVES  0 /* PURPLE_MIST, SOUND_RINGS and TRAIL run from unit 0x10's bone */
+#define FX_SCREECH_STATE_BLADES 1 /* FX_SCREECH_BLADE_RING drawn twice (subtractive and additive), spinning up */
+#define FX_SCREECH_WAVES_FRAMES  6    /* FX_SCREECH_STATE_WAVES' length; then FX_SCREECH_LILAC_RING starts at the caster */
+#define FX_SCREECH_BLADES_FRAMES 0x14 /* FX_SCREECH_STATE_BLADES' length (the op ends) */
+#define FX_SCREECH_TRAIL_TRAIL_SLOTS  0x15 /* FX_SCREECH_TRAIL's trail buffer fx_0ce_trails: slots of */
+#define FX_SCREECH_TRAIL_TRAIL_STRIDE 0x34 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */

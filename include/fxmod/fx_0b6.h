@@ -12,6 +12,9 @@
 #define FX_SCORCH_FLAME_STREAKS 0x2 /* emitter: two fans of white-yellow to red flame streaks fading out */
 #define FX_SCORCH_HEAT_RING   0x7 /* emitter: white-pink gouraud rings */
 
+/* fx_0b6 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_SCORCH_FRAMES 0x42 /* op80: the task ends at this frame */
+
 typedef struct {
     SVECTOR pos0;
 } Fx0b6Work;

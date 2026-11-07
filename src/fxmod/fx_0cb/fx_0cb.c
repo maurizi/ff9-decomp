@@ -35,12 +35,12 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
 
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + segs * rings);
-    level = 0xFF;
+    level = BTLFX_ABR_OPAQUE;
     ex = BTLFX_EXPORTS(env);
     if (src == NULL) {
-        level = 1;
+        level = BTLFX_ABR_ADD;
     }
-    colIn.cd = level != 0xFF ? 0x3E : 0x3C;
+    colIn.cd = level != BTLFX_ABR_OPAQUE ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
     if (src != NULL) {
         tpLo = getTPage(2, 0, src->x, src->y);
         tpHi = getTPage(2, 0, src->x + 0x80, src->y);
@@ -93,8 +93,8 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
             if (outUv.vx < 0) {
                 outUv.vx = 0;
             }
-            if (outUv.vx >= 0x140) {
-                outUv.vx = 0x13F;
+            if (outUv.vx >= SCREEN_W) {
+                outUv.vx = SCREEN_W - 1;
             }
             if (outUv.vy < 0) {
                 outUv.vy = 0;
@@ -137,8 +137,8 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
                 *(s32 *)&prim->x1 = *(s32 *)&outPos;
                 *(s32 *)&prim->x2 = *(s32 *)&inPrev;
                 *(s32 *)&prim->x3 = *(s32 *)&outPrev;
-                if (ot < 0x1000) {
-                    addPrimLenIn(&env->ot[ot], prim, 0xC000000);
+                if (ot < OT_LEN) {
+                    addPrimLenIn(&env->ot[ot], prim, PRIM_TAG(POLY_GT4));
                 }
                 prim++;
             }
@@ -154,7 +154,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
             *(s32 *)&outUvPrev = *(s32 *)&outUv;
         }
     }
-    if (src != NULL && ot < 0x1000) {
+    if (src != NULL && ot < OT_LEN) {
         addPrimLenIn(&env->ot[ot], move, 0x5000000);
     }
 }
@@ -189,10 +189,10 @@ static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk8010
         pulse *= 3;
         s = p->scale2;
         scale.vx = scale.vy = scale.vz = ((s * pulse) >> 13) + (s >> 1);
-        if (frame < 3) {
-            bright = ((frame + 1) << 12) / 3;
+        if (frame < FX_LIGHT_FLARE_BURST_IN_FRAMES) {
+            bright = ((frame + 1) << 12) / FX_LIGHT_FLARE_BURST_IN_FRAMES;
         } else {
-            bright = ex->math_cos(((frame - 3) << 10) / 5);
+            bright = ex->math_cos(((frame - FX_LIGHT_FLARE_BURST_IN_FRAMES) << 10) / (FX_LIGHT_FLARE_BURST_FRAMES - FX_LIGHT_FLARE_BURST_IN_FRAMES));
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
         s = bright >> 5;
@@ -202,7 +202,7 @@ static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk8010
         s = bright >> 6;
         s -= 0x80;
         ex->Hi_ModifyEffModelRGB(work->model24, s, s, s);
-        if (frame >= 8) {
+        if (frame >= FX_LIGHT_FLARE_BURST_FRAMES) {
             return 1;
         }
     }
@@ -228,7 +228,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ((EffInit *)args)->workSize = sizeof(Fx0cbWork);
         ((EffInit *)args)->elemSize = sizeof(Fx0cbPart);
         ((EffInit *)args)->elemFn = (s32)fx_0cb_op80PoolTask;
-        ((EffInit *)args)->poolCount = 6;
+        ((EffInit *)args)->poolCount = FX_LIGHT_FLARE_SLOTS;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -238,23 +238,24 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos14.vx = work->posC.vx;
         work->pos14.vy = work->posC.vy;
         work->pos14.vz = work->posC.vz;
-        ex->btlfx_initEffModels(fx_0cb_effModels, 3);
+        ex->btlfx_initEffModels(fx_0cb_effModels, FX_LIGHT_FLARE_MODEL_COUNT);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_FIREBALL), 1);
         work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_RED_HALO), 1);
     } else {
         frame = entry->frame;
         if (work->state0 == 0) {
-            t = (frame << 12) / 50;
+            t = (frame << 12) / FX_LIGHT_FLARE_FRAMES;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0x40, 0x40);
-            } else if (frame < 7) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, FX_LIGHT_FLARE_DARKEN_RGB);
+            } else if (frame < FX_LIGHT_FLARE_FLASH_FRAMES) {
                 tint = 0x78 - (frame - 1) * 0x14;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
             }
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_BACKDROP), work->frame4);
-            ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
-            if (frame < 0x20) {
-                if (frame == frame / 3 * 3) {
+            ex->btlfx_drawScrollMove(frame * 8, FX_LIGHT_FLARE_FIREBALL_VRAM_X, FX_LIGHT_FLARE_FIREBALL_VRAM_Y, FX_LIGHT_FLARE_FIREBALL_VRAM_W,
+                                     FX_LIGHT_FLARE_FIREBALL_VRAM_H, FX_LIGHT_FLARE_FIREBALL_SRC_X, FX_LIGHT_FLARE_FIREBALL_SRC_Y);
+            if (frame < FX_LIGHT_FLARE_SPAWN_FRAMES) {
+                if (frame == frame / FX_LIGHT_FLARE_SPAWN_GAP * FX_LIGHT_FLARE_SPAWN_GAP) {
                     grow = frame << 7;
                     radius = (grow >> 4) + 0x100;
                     sc = 0xAAA - (grow >> 1);
@@ -297,7 +298,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.pad = 1;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LIGHT_FLARE_GLOW_RING), &work->posC, &rot, t / 2 + 0x555, 0, 1, alpha);
             env->otZ = 0;
-            if (frame >= 0x32) {
+            if (frame >= FX_LIGHT_FLARE_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

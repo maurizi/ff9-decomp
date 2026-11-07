@@ -15,6 +15,23 @@
 #define FX_JEWEL_BACKDROP     0x6 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_JEWEL_GLOW_RING    0x10 /* emitter: white-cyan gouraud ring, fans */
 
+/* fx_0c9 choreography (docs/fxdata.md, "Choreography literals"): the ops' keyframes and lengths, the gem's flight,
+ * size and texture, the trail buffer. */
+#define FX_JEWEL_FRAMES          0x28 /* op80 (GEM_SPARKLES, COMET_STREAKS): the task ends at this frame */
+#define FX_JEWEL_GEM_FRAME       0xA  /* op81: FX_JEWEL_GEM, FX_JEWEL_ORE_GLINT and FX_JEWEL_BACKDROP start (elapsed = frame - this) */
+#define FX_JEWEL_GLOW_RING_FRAME 0x1A /* op81: FX_JEWEL_GLOW_RING starts where the gem is */
+#define FX_JEWEL_FLIGHT_FRAMES   0x11 /* op81: the gem (and ORE_GLINT's particles) arc from the caster to unit 0x10 this long */
+#define FX_JEWEL_GEM_SCALE       0x1B /* op81: the gem's start scale, */
+#define FX_JEWEL_GROW_FRAMES     0xC  /* growing by 1 a frame this long, */
+#define FX_JEWEL_SHRINK_FRAME    0x2E /* shrinking by 8 a frame from this elapsed frame on */
+#define FX_JEWEL_GEM_FRAMES      0x50 /* op81: the task ends at this frame */
+#define FX_JEWEL_GEM_TPAGE       0x117 /* FX_JEWEL_GEM's texture (Hi_RegisterTexEffModel): 15-bit page (0x1C0, 0x100) */
+#define FX_JEWEL_GEM_CLUT        0     /* (no CLUT) */
+#define FX_JEWEL_GEM_U           0
+#define FX_JEWEL_GEM_V           0xC0
+#define FX_JEWEL_ORE_GLINT_TRAIL_SLOTS  0x12 /* FX_JEWEL_ORE_GLINT's trail buffer fx_0c9_trails: slots of */
+#define FX_JEWEL_ORE_GLINT_TRAIL_STRIDE 0xB0 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

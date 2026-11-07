@@ -29,6 +29,61 @@
 #define FX_SWDMAG_FIRAGA_FLAME_RIBBON_2 0x1D /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x18) */
 #define FX_SWDMAG_FIRAGA_FLAME_RIBBON_3 0x1E /* 'so' model: twisted flame ribbon with a fire texture (byte-identical to fx_007 entry 0x19) */
 
+/* fx_0d6 choreography (docs/fxdata.md, "Choreography literals", names as fx_048's Firaga, which op80 twins from
+ * state FLASH on): op80's states, their lengths and keyframes, the flame column, the VRAM rects of the pillar's
+ * flame texture and the floor glow frames; op84's sword-flash states. */
+#define FX_SWDMAG_FIRAGA_STATE_FLASH  1 /* red screen flash, FX_SWDMAG_FIRAGA_GLOW and the sparks (the op starts here) */
+#define FX_SWDMAG_FIRAGA_STATE_PILLAR 2 /* FLAME_PILLAR, PILLAR_RING and the coiled flame column */
+#define FX_SWDMAG_FIRAGA_STATE_TAIL   3 /* draws nothing, waits for the emitters */
+#define FX_SWDMAG_FIRAGA_FLASH_FRAMES        8    /* FX_SWDMAG_FIRAGA_STATE_FLASH's length */
+#define FX_SWDMAG_FIRAGA_SPARKS_FRAME        4    /* STATE_FLASH: FX_SWDMAG_FIRAGA_EMBERS, GOLD_SPARKS and GOLD_SPARKS_2 start */
+#define FX_SWDMAG_FIRAGA_PILLAR_FRAMES       0x2E /* FX_SWDMAG_FIRAGA_STATE_PILLAR's length */
+#define FX_SWDMAG_FIRAGA_WHITE_FLASH_FRAMES  4    /* STATE_PILLAR: additive white screen flash */
+#define FX_SWDMAG_FIRAGA_RED_TINT_FRAMES     0x20 /* STATE_PILLAR: flickering opaque red screen tint */
+#define FX_SWDMAG_FIRAGA_FLAME_BURST_2_FRAME 2    /* STATE_PILLAR: FX_SWDMAG_FIRAGA_FLAME_BURST_2 starts */
+#define FX_SWDMAG_FIRAGA_RED_HAZE_FRAME      3    /* STATE_PILLAR: FX_SWDMAG_FIRAGA_RED_HAZE and EMBER_CONE start */
+#define FX_SWDMAG_FIRAGA_SMOKE_BURST_FRAME   0xE  /* STATE_PILLAR: FX_SWDMAG_FIRAGA_SMOKE_BURST starts */
+#define FX_SWDMAG_FIRAGA_PILLAR_RING_FRAMES  0x1D /* STATE_PILLAR: PILLAR_RING and FLAME_PILLAR are drawn */
+#define FX_SWDMAG_FIRAGA_COLUMN_FRAMES       0x24 /* STATE_PILLAR: the FLAME_RIBBON_n column is drawn */
+#define FX_SWDMAG_FIRAGA_COLUMN_GROW_FRAMES  0x10 /* the column's radius grows, then swells for the rest of COLUMN_FRAMES */
+#define FX_SWDMAG_FIRAGA_COLUMN_RISE_FRAMES  6    /* the column rises to its full height */
+#define FX_SWDMAG_FIRAGA_COLUMN_RADIUS       0x2BC /* the column's base radius (segment x / z scale) */
+#define FX_SWDMAG_FIRAGA_COLUMN_SEGMENTS     18   /* ribbon pieces coiled up the column (FLAME_RIBBON_0..3 in turn) */
+#define FX_SWDMAG_FIRAGA_COLUMN_SPARKS       3    /* at most this many FX_SWDMAG_FIRAGA_COLUMN_SPARK rings per frame */
+#define FX_SWDMAG_FIRAGA_TAIL_FRAMES         0x10 /* FX_SWDMAG_FIRAGA_STATE_TAIL's length (the op ends) */
+#define FX_SWDMAG_FIRAGA_MODEL_COUNT         6    /* btlfx_initEffModels slots: 4 ribbons, FLAME_PILLAR, FLAME_DISC */
+#define FX_SWDMAG_FIRAGA_EMBER_TRAIL_SLOTS   0x12 /* FX_SWDMAG_FIRAGA_EMBER_TRAIL's trail buffer fx_0d6_trails: slots of */
+#define FX_SWDMAG_FIRAGA_EMBER_TRAIL_STRIDE  0x24 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+/* FLAME_PILLAR and FLAME_DISC's texture (Hi_RegisterTexEffModel): FLAME_PILLAR samples the rect the file fills with a
+ * "ring_1 dummy" placeholder; while the pillar shows, btlfx_drawScrollMove copies the file's flame texture from
+ * (SRC_X, SRC_Y) into it, scrolled by the spin. */
+#define FX_SWDMAG_FIRAGA_FLAME_PILLAR_TPAGE  0x37   /* 4-bit page (0x1C0, 0x100) */
+#define FX_SWDMAG_FIRAGA_FLAME_PILLAR_CLUT   0x3D06 /* CLUT (0x60, 0xF4) */
+#define FX_SWDMAG_FIRAGA_FLAME_PILLAR_U      0x80
+#define FX_SWDMAG_FIRAGA_FLAME_PILLAR_V      0x80
+#define FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_X 0x1E0
+#define FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_Y 0x180
+#define FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_W 0x20
+#define FX_SWDMAG_FIRAGA_PILLAR_FLAME_VRAM_H 0x80
+#define FX_SWDMAG_FIRAGA_PILLAR_FLAME_SRC_X  0x1E0
+#define FX_SWDMAG_FIRAGA_PILLAR_FLAME_SRC_Y  0x100
+/* The floor glow (states FLASH and PILLAR): a gouraud grid flat at the target whose vertex colours are a 16x16 frame
+ * of the file's dark-red glow animation, read back with StoreImage: 8 frames in 2 columns at
+ * (0x1C0 + X, 0x100 + Y) of the 15-bit page TPAGE. */
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_TPAGE    0x117 /* 15-bit page (0x1C0, 0x100) */
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_X        0
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_Y        0x30
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_COLS     2    /* frames per row */
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_FRAME_MASK 7  /* frame34 & mask: 8 frames */
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_CELL     0x100 /* grid cell size */
+#define FX_SWDMAG_FIRAGA_FLOOR_GLOW_GRID     0x10 /* grid cells (and frame texels) per side */
+#define FX_SWDMAG_FIRAGA_FLASH_STATE_IN      0 /* op84: SWORD_GLINT and SWORD_FLASH open up at the sword */
+#define FX_SWDMAG_FIRAGA_FLASH_STATE_FLICKER 1 /* op84: they flicker and grow */
+#define FX_SWDMAG_FIRAGA_FLASH_STATE_FADE    2 /* op84: SWORD_FLASH turns and they fade */
+#define FX_SWDMAG_FIRAGA_FLASH_IN_FRAMES      3 /* FX_SWDMAG_FIRAGA_FLASH_STATE_IN's length */
+#define FX_SWDMAG_FIRAGA_FLASH_FLICKER_FRAMES 9 /* FX_SWDMAG_FIRAGA_FLASH_STATE_FLICKER's length */
+#define FX_SWDMAG_FIRAGA_FLASH_FADE_FRAMES    9 /* FX_SWDMAG_FIRAGA_FLASH_STATE_FADE's length (the op ends) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */

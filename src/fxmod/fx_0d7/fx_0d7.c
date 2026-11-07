@@ -12,11 +12,11 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d7Strip *strip, s3
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
-    strip->count2 = 0xF;
-    strip->lastSlot0 = 0xF;
+    strip->count2 = FX_SWDMAG_THUNDER_STRIP_POINTS - 1;
+    strip->lastSlot0 = FX_SWDMAG_THUNDER_STRIP_POINTS - 1;
     strip->head1 = 0;
-    for (i = 0; i < 16; i++) {
-        t = 0x1000 - (i << 12) / 15;
+    for (i = 0; i < FX_SWDMAG_THUNDER_STRIP_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_SWDMAG_THUNDER_STRIP_POINTS - 1);
         t += *tbl++;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *tbl++;
@@ -48,11 +48,11 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
-    strip->count2 = 3;
-    strip->lastSlot0 = 3;
+    strip->count2 = FX_SWDMAG_THUNDER_BRANCH_POINTS - 1;
+    strip->lastSlot0 = FX_SWDMAG_THUNDER_BRANCH_POINTS - 1;
     strip->head1 = 0;
-    for (i = 0; i < 4; i++) {
-        t = 0x1000 - (i << 12) / 3;
+    for (i = 0; i < FX_SWDMAG_THUNDER_BRANCH_POINTS; i++) {
+        t = 0x1000 - (i << 12) / (FX_SWDMAG_THUNDER_BRANCH_POINTS - 1);
         t += *tbl++ / 2;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *tbl++ / 2;
@@ -99,12 +99,12 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
     switch (it->state11) {
     case 0:
         if (it->kind14 < FX_0D7_STRIP_FLAT) {
-            t = (frame << 12) / 6;
+            t = (frame << 12) / FX_SWDMAG_THUNDER_BOLT_FRAMES;
             fade = ex->math_cos(t >> 2);
             strip = &fx_0d7_strips[it->strip10];
             br = (Fx0d7Strip *)&fx_0d7_branches[it->strip10];
             fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame * 0x9B, 0x186, frame, fade,
-                          ((0x1000 - t) * 0xF1) >> 12, it->kind14);
+                          ((0x1000 - t) * FX_SWDMAG_THUNDER_BOLT_WIDTH) >> 12, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, fade, (0x1000 - t) >> 6, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18 + 3, it->branchAt13, fade, (0x1000 - t) >> 6, it->kind14);
             if (frame == 0) {
@@ -115,7 +115,7 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
                 env->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDER_IMPACT_RING), &it->pos0, NULL, 0x1400, 4, 1, 0x1000);
                 env->otZ = 0;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, FX_SWDMAG_THUNDER_BOLT_TINT_RGB);
             }
             if (frame == 1) {
                 it->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDER_SMOKE), (s32)&it->pos0);
@@ -123,7 +123,7 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
                     it->emit20->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
-            if (frame >= 6) {
+            if (frame >= FX_SWDMAG_THUNDER_BOLT_FRAMES) {
                 it->state11 = 1;
                 ((s16 *)it)[-1] = -1;
             }
@@ -133,16 +133,16 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
             strip = &fx_0d7_strips[it->strip10];
             br = (Fx0d7Strip *)&fx_0d7_branches[it->strip10];
             fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame << 7, 0x186, frame, fade,
-                          ((0x1000 - t) * 0xAA) >> 12, it->kind14);
+                          ((0x1000 - t) * FX_SWDMAG_THUNDER_FLAT_BOLT_WIDTH) >> 12, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, fade, (0x1000 - t) >> 6, it->kind14);
             fxm_drawJaggedBranch4(entry, strip, br, it->jitter18 + 3, it->branchAt13, fade, (0x1000 - t) >> 6, it->kind14);
-            if (frame >= 4) {
+            if (frame >= FX_SWDMAG_THUNDER_FLAT_BOLT_FRAMES) {
                 return 1;
             }
         }
         break;
     case 1:
-        if (frame >= 0x10) {
+        if (frame >= FX_SWDMAG_THUNDER_BOLT_TAIL_FRAMES) {
             return 1;
         }
         break;
@@ -162,16 +162,16 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR tip;
 
     if (mode == 0) {
-        init->workSize = 0x10;
-        init->elemSize = 0x24;
+        init->workSize = sizeof(Fx0d7Work);
+        init->elemSize = sizeof(Fx0d7Bolt);
         init->elemFn = (s32)fx_0d7_op83PoolTask;
-        init->poolCount = 0xC;
+        init->poolCount = FX_SWDMAG_THUNDER_BOLT_SLOTS;
     } else if (mode == 1) {
         fx_0d7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->jitter8 = fx_0d7_jitter;
         jit = fx_0d7_jitter;
-        for (i = 0; i < 0x40; i++) {
+        for (i = 0; i < FX_SWDMAG_THUNDER_JITTER_ROWS; i++) {
             *jit++ = ex->btlfx_randCentered(0x100);
             *jit++ = ex->btlfx_randCentered(0x180);
             *jit++ = ex->btlfx_randCentered(0xC0);
@@ -179,11 +179,12 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->boltCountC = 0;
     } else {
         frame = entry->frame;
-        if (frame == 0 || frame == 3 || frame == 5 || frame == 6 || frame == 7) {
-            if (work->boltCountC < 5) {
+        if (frame == 0 || frame == FX_SWDMAG_THUNDER_BOLT_2_FRAME || frame == FX_SWDMAG_THUNDER_BOLT_3_FRAME || frame == FX_SWDMAG_THUNDER_BOLT_4_FRAME ||
+            frame == FX_SWDMAG_THUNDER_BOLT_5_FRAME) {
+            if (work->boltCountC < FX_SWDMAG_THUNDER_BOLT_COUNT) {
                 work->boltCountC++;
                 BTLFX_COPY_SVEC(&root, &work->pos0);
-                if (work->boltCountC == 3) {
+                if (work->boltCountC == FX_SWDMAG_THUNDER_SCATTERED_BOLT) {
                     root.vx += ex->btlfx_randCentered(0x190);
                     root.vy += ex->btlfx_randCentered(0x190);
                     root.vz += ex->btlfx_randCentered(0x190);
@@ -192,8 +193,8 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (it != NULL) {
                     BTLFX_COPY_SVEC(&it->pos0, &root);
                     BTLFX_COPY_SVEC(&tip, &root);
-                    tip.vy -= 0xC00;
-                    radius = ex->btlfx_randCentered(0x100) + 0x640;
+                    tip.vy -= FX_SWDMAG_THUNDER_BOLT_HEIGHT;
+                    radius = ex->btlfx_randCentered(0x100) + FX_SWDMAG_THUNDER_BOLT_REACH;
                     ang = (work->boltCountC << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                     tip.vx += (ex->math_cos(ang) * radius) >> 12;
                     tip.vz += (ex->math_sin(ang) * radius) >> 12;
@@ -203,14 +204,14 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->branchAt12 = ex->btlfx_rand() % 14;
                     it->branchAt13 = ex->btlfx_rand() % 14;
                     if ((work->boltCountC - 1) & 1) {
-                        it->kind14 = 2;
+                        it->kind14 = FX_0D7_STRIP_FLAT;
                     } else {
                         it->kind14 = ex->btlfx_rand() & 1;
                     }
                 }
             }
         }
-        if (frame >= 0xC) {
+        if (frame >= FX_SWDMAG_THUNDER_FRAMES) {
             return 1;
         }
     }
@@ -231,10 +232,10 @@ s32 fx_0d7_op84(s32 mode, Fx0d7Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0d7Work84);
     } else if (mode == 1) {
         fx_0d7_env = env;
-        work->state0 = 0;
+        work->state0 = FX_SWDMAG_THUNDER_FLASH_STATE_IN;
         work->frame4 = 0;
     } else {
         alpha = 0;
@@ -244,38 +245,38 @@ s32 fx_0d7_op84(s32 mode, Fx0d7Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
-        case 0:
+        case FX_SWDMAG_THUNDER_FLASH_STATE_IN:
             ry = 0x200;
-            alpha = (frame << 12) / 3;
+            alpha = (frame << 12) / FX_SWDMAG_THUNDER_FLASH_IN_FRAMES;
             t = ex->math_sin(alpha >> 2);
             scale0 = t >> 1;
             scale1 = ((0x1000 - alpha) >> 1) + 0x800;
-            if (frame >= 3) {
-                work->state0 = 1;
+            if (frame >= FX_SWDMAG_THUNDER_FLASH_IN_FRAMES) {
+                work->state0 = FX_SWDMAG_THUNDER_FLASH_STATE_FLICKER;
                 entry->frame = -1;
             }
             break;
-        case 1:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_THUNDER_FLASH_STATE_FLICKER:
+            t = (frame << 12) / FX_SWDMAG_THUNDER_FLASH_FLICKER_FRAMES;
             flicker = (frame & 1) << 8;
             scale1 = flicker + 0x1000;
             grow = (t >> 1) + 0x800;
             alpha = flicker + grow;
             ry = (t >> 3) + 0x200;
             scale0 = scale1;
-            if (frame >= 9) {
-                work->state0 = 2;
+            if (frame >= FX_SWDMAG_THUNDER_FLASH_FLICKER_FRAMES) {
+                work->state0 = FX_SWDMAG_THUNDER_FLASH_STATE_FADE;
                 entry->frame = -1;
             }
             break;
-        case 2:
-            t = (frame << 12) / 9;
+        case FX_SWDMAG_THUNDER_FLASH_STATE_FADE:
+            t = (frame << 12) / FX_SWDMAG_THUNDER_FLASH_FADE_FRAMES;
             ang = t >> 2;
             ry = 0x400 - ang;
             alpha = ex->math_cos(ang);
             scale0 = ex->math_sin(ang) + 0x1000;
             scale1 = ex->math_sin(ang) * 3 / 2 + 0x1000;
-            if (frame >= 9) {
+            if (frame >= FX_SWDMAG_THUNDER_FLASH_FADE_FRAMES) {
                 return 1;
             }
             break;

@@ -46,6 +46,55 @@
 #define FX_LEVIATHAN_FOAM_STRIP         0x8E /* summon data entry 14: 'so' model, long strip with a white foam texture */
 #define FX_LEVIATHAN_BLUE_FLASH         0x8F /* summon data entry 15: 'so' model, small quad with a blue light flash */
 
+/* fx_0b3 choreography (docs/fxdata.md, "Choreography literals"): the ops' keyframes, fades and lengths (op80 the
+ * water surface, op81 the summon rising, op83 the dive, op84 the wave wall, op85 the tidal wave, op86), the water
+ * texture and the VRAM rects its scroll fills, the GPU words of the water primitives. */
+#define FX_LEVIATHAN_MODEL_COUNT        0x10 /* op80: btlfx_initEffModels slots */
+#define FX_LEVIATHAN_WISP_FRAME         20   /* op80: WATER_SURFACE rises until here, then FX_LEVIATHAN_WATER_WISP starts */
+#define FX_LEVIATHAN_SURFACE_FADE_FRAMES 8   /* op80: the morph model brightens over this many frames */
+#define FX_LEVIATHAN_WHITE_IN_FRAME     0x33 /* op80: additive white fade-in from here, */
+#define FX_LEVIATHAN_SURFACE_FRAMES     0x3B /* op80: to the task's end at this frame */
+#define FX_LEVIATHAN_PARTS_FRAME        0x25 /* op81: the summon's parts (fx_0b3_partStart) are drawn from here */
+#define FX_LEVIATHAN_SUMMON_FRAME       0x2B /* op81: the summon follows SUMMON_KEYS from here */
+#define FX_LEVIATHAN_WHITE_OUT_FRAMES   8    /* op81: the white fades out over this many frames */
+#define FX_LEVIATHAN_DROPS_FRAME        0x21 /* op81: the first FX_LEVIATHAN_WATER_DROPS start, */
+#define FX_LEVIATHAN_DROPS_2_FRAME      0x26 /* the second */
+#define FX_LEVIATHAN_RISE_FRAMES        0x36 /* op81: the task ends at this frame */
+#define FX_LEVIATHAN_SPLASH_FRAME       9    /* op83: FX_LEVIATHAN_BLUE_RING and FX_LEVIATHAN_WATER_SPLASH start */
+#define FX_LEVIATHAN_BUBBLES_FRAME      0x19 /* op83: FX_LEVIATHAN_BUBBLES start */
+#define FX_LEVIATHAN_STREAK_FRAME       0x2C /* op83: FX_LEVIATHAN_WATER_STREAK and FX_LEVIATHAN_RAINBOW_RING start */
+#define FX_LEVIATHAN_DIVE_MOTION_FRAME  0x42 /* op83: the summon's next motion */
+#define FX_LEVIATHAN_DIVE_FRAMES        0x77 /* op83: the task ends at this frame */
+#define FX_LEVIATHAN_WALL_FRAMES        0x68 /* op84: the task ends at this frame */
+#define FX_LEVIATHAN_STATE_WAVE 0 /* op85: the tidal wave (water sheets, ripples, tints) */
+#define FX_LEVIATHAN_STATE_CALM 1 /* op85: the calm water sheet */
+#define FX_LEVIATHAN_WAVE_FRAMES        0x51 /* FX_LEVIATHAN_STATE_WAVE's length */
+#define FX_LEVIATHAN_DROPS_3_FRAME      0x12 /*   FX_LEVIATHAN_WATER_DROPS_2 start */
+#define FX_LEVIATHAN_IMPACT_FRAME       0x2B /*   the ripple grid from here; a half-transparent blue screen tint */
+#define FX_LEVIATHAN_IMPACT_TINT_RGB    0x20, 0xAA, 0xFF
+#define FX_LEVIATHAN_IMPACT_2_FRAME     0x2D /*   two more blue tints, */
+#define FX_LEVIATHAN_IMPACT_3_FRAME     0x32 /*   (here FX_LEVIATHAN_WATER_SPLASH_2 starts too) */
+#define FX_LEVIATHAN_IMPACT_2_TINT_RGB  0, 0x64, 0xFF
+#define FX_LEVIATHAN_CALM_FRAMES        0x18 /* FX_LEVIATHAN_STATE_CALM's length (the op ends) */
+#define FX_LEVIATHAN_OP86_FRAMES        0x2E /* op86: the task ends at this frame */
+#define FX_LEVIATHAN_WATER_STREAK_TRAIL_SLOTS    0xF0 /* FX_LEVIATHAN_WATER_STREAK's trail buffer: slots of */
+#define FX_LEVIATHAN_WATER_STREAK_TRAIL_STRIDE   0x1C /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+#define FX_LEVIATHAN_WATER_STREAK_2_TRAIL_SLOTS  0x30 /* FX_LEVIATHAN_WATER_STREAK_2's trail buffer: slots of */
+#define FX_LEVIATHAN_WATER_STREAK_2_TRAIL_STRIDE 0x1C /* this many bytes */
+/* The water texture: 4-bit page (0x1C0, 0x100) (tpage 0x17), WATER_SURFACE / SEA sampling v 0 (TOP), WATER_COLUMN,
+ * WATER_SPOUT, the wave wall and the water sheets v 0x80 (WATER_TPAGE / CLUT / U / V); btlfx_drawScrollMove copies the
+ * file's texture from SRC_X beside each half into it, scrolled. */
+#define FX_LEVIATHAN_WATER_TPAGE  0x17
+#define FX_LEVIATHAN_WATER_CLUT   0x3D07 /* CLUT (0x70, 0xF4) */
+#define FX_LEVIATHAN_WATER_U      0
+#define FX_LEVIATHAN_WATER_V      0x80
+#define FX_LEVIATHAN_WATER_VRAM_X     0x1C0
+#define FX_LEVIATHAN_WATER_TOP_VRAM_Y 0x100
+#define FX_LEVIATHAN_WATER_VRAM_Y     0x180
+#define FX_LEVIATHAN_WATER_VRAM_W     0x20
+#define FX_LEVIATHAN_WATER_VRAM_H     0x80
+#define FX_LEVIATHAN_WATER_SRC_X      0x1E0
+
 typedef struct {
     SVECTOR emitPos0[8]; /* enemy positions */
     s32 unitCount40; /* unit count */

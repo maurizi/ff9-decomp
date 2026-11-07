@@ -21,6 +21,38 @@
 #define FX_SWDMAG_THUNDARA_SWORD_GLINT   0x1E /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
 #define FX_SWDMAG_THUNDARA_SWORD_GLINT_2 0x1F /* rings: white gouraud ring flash at the sword, rotated */
 
+/* fx_0d8 choreography (docs/fxdata.md, "Choreography literals", names as fx_005's Thundara): the bolt pool items'
+ * lengths and look, op83's bolt schedule, keyframes and length, the strip sizes; op84's sword-flash states. */
+#define FX_SWDMAG_THUNDARA_BOLT_FRAMES      8    /* pool item: a screen-space bolt shows for this many frames */
+#define FX_SWDMAG_THUNDARA_FLAT_BOLT_FRAMES 6    /* pool item: a flat-strip bolt shows for this many frames */
+#define FX_SWDMAG_THUNDARA_BOLT_TAIL_FRAMES 6    /* pool item: then waits this long for SPARK_DOTS */
+#define FX_SWDMAG_THUNDARA_BOLT_WIDTH       0xFB /* line width of a screen-space bolt at its first frame (+ width15) */
+#define FX_SWDMAG_THUNDARA_FLAT_BOLT_WIDTH  0xAA /* line width of a flat-strip bolt at its first frame */
+#define FX_SWDMAG_THUNDARA_BOLT_TINT_RGB    0, 0xC, 0x46 /* additive screen tint (blue) with every other bolt's impact flash */
+#define FX_SWDMAG_THUNDARA_BOLT_HEIGHT      0xC00 /* a bolt comes down from this far above its strike point */
+#define FX_SWDMAG_THUNDARA_BOLT_REACH       0x640 /* horizontal offset of a strike bolt's top (+-0x80; scattered bolts 3/8) */
+#define FX_SWDMAG_THUNDARA_SCHEDULE_FRAMES  16   /* op83: frames covered by fx_0d8_spawnKinds */
+#define FX_0D8_BOLT_FLAT   1 /* fx_0d8_spawnKinds: scattered vertical bolt, flat strip */
+#define FX_0D8_BOLT_STRIKE 2 /* from the target point, slanted, longer, screen-space strip */
+#define FX_0D8_BOLT_PAIR   3 /* two short bolts */
+#define FX_SWDMAG_THUNDARA_PAIR_BOLTS       2    /* bolts of an FX_0D8_BOLT_PAIR */
+#define FX_SWDMAG_THUNDARA_DARKEN_FRAME     15   /* op83: one frame of subtractive grey screen tint */
+#define FX_SWDMAG_THUNDARA_DARKEN_RGB       0x40, 0x40, 0x40
+#define FX_SWDMAG_THUNDARA_FLASH_FRAME      16   /* op83: additive blue-white screen flash, fading over */
+#define FX_SWDMAG_THUNDARA_FLASH_FRAMES     3    /* this many frames */
+#define FX_SWDMAG_THUNDARA_ORB_FRAME        20   /* op83: IMPACT_RING and ORB_EMITTER start */
+#define FX_SWDMAG_THUNDARA_FRAMES           0x30 /* op83: the task ends at this frame */
+#define FX_SWDMAG_THUNDARA_STRIP_POINTS  16   /* points of a bolt strip (fx_0d8_strips, fxm_drawJaggedStrip16) */
+#define FX_SWDMAG_THUNDARA_BRANCH_POINTS 4    /* points of a branch (fxm_drawJaggedStrip4) */
+#define FX_SWDMAG_THUNDARA_JITTER_ROWS   0x40 /* fx_0d8_jitter rows of three random offsets (along, across, angle) */
+#define FX_SWDMAG_THUNDARA_BOLT_SLOTS    0xC  /* pool items and fx_0d8_strips / fx_0d8_branches entries; strip10 = bolt count % slots */
+#define FX_SWDMAG_THUNDARA_FLASH_STATE_IN      0 /* op84: the SWORD_GLINT rings open up at the sword */
+#define FX_SWDMAG_THUNDARA_FLASH_STATE_FLICKER 1 /* op84: they flicker and grow */
+#define FX_SWDMAG_THUNDARA_FLASH_STATE_FADE    2 /* op84: the rotated ring turns and they fade */
+#define FX_SWDMAG_THUNDARA_FLASH_IN_FRAMES      3 /* FX_SWDMAG_THUNDARA_FLASH_STATE_IN's length */
+#define FX_SWDMAG_THUNDARA_FLASH_FLICKER_FRAMES 9 /* FX_SWDMAG_THUNDARA_FLASH_STATE_FLICKER's length */
+#define FX_SWDMAG_THUNDARA_FLASH_FADE_FRAMES    9 /* FX_SWDMAG_THUNDARA_FLASH_STATE_FADE's length (the op ends) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */
@@ -55,7 +87,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR pts4[16]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
+    SVECTOR pts4[FX_SWDMAG_THUNDARA_STRIP_POINTS]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0d8Strip; /* 0x84 */
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
@@ -83,7 +115,7 @@ typedef struct {
     s32 boltCount14; /* bolts spawned */
 } Fx0d8Work83; /* 0x18 */
 
-extern s16 fx_0d8_spawnKinds[16]; /* bolt kind per frame */
+extern s16 fx_0d8_spawnKinds[FX_SWDMAG_THUNDARA_SCHEDULE_FRAMES]; /* per frame: 0 none or an FX_0D8_BOLT_* */
 extern s32 fx_0d8_jitter[];
 s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

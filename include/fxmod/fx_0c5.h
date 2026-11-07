@@ -10,6 +10,10 @@
 #define FX_AURA_SWIRL       0x7 /* emitter: yellow / white / lilac swirl particles, blue star flash, sparkles, fans */
 #define FX_AURA_CRESCENT_SWOOSHES 0x8 /* emitter: three orbiting fans, blue / pink / green crescent swooshes */
 
+/* fx_0c5 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_AURA_SWIRL_FRAME 0x12 /* op80: FX_AURA_SWIRL starts */
+#define FX_AURA_FRAMES      0x32 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
