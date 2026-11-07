@@ -21,6 +21,38 @@
 #define FX_FENRIR_MORPH_CURVE      0x1A /* table: value path (fx_0d2_morphCurve2) (byte-identical to fx_0d2 entry 0x19) */
 #define FX_FENRIR_MORPH_CURVE_2    0x1B /* table: alternative value path (fx_0d2_morphCurve2) (byte-identical to fx_0d2 entry 0x1A) */
 
+/* fx_1fc choreography (docs/fxdata.md, "Choreography literals"): the short form's ops with Fenrir's (fx_0d2) names:
+ * op80 the camera, op81 / op82 one-frame waits, op83 the shattered ground and the white-out (fx_0d2's op83, a
+ * frame longer here), op84 the units' drop; and the counts of their pieces. */
+#define FX_FENRIR_MODEL_COUNT     0x20 /* op80: btlfx_initEffModels slots */
+#define FX_FENRIR_CAMERA_FRAMES   0x78 /* op80 (the three camera key tracks): the task ends at this frame */
+#define FX_FENRIR_CAM_CHANNELS    4    /* fxm_camChanReset: frame counters per channel set (fxm_camChanUpdate's ch) */
+#define FX_FENRIR_BG_VRAM_X       0x240 /* op80: btlfx_drawBgOffscreen renders the battle background into this VRAM rect */
+#define FX_FENRIR_BG_VRAM_Y       0x100 /*   (fx_0d2 uses x 0x2C0) */
+#define FX_FENRIR_BG_VRAM_W       0x80
+#define FX_FENRIR_BG_VRAM_H       0x80
+#define FX_FENRIR_CAM_KEY_SLOTS   64   /* fx_1fc_camChans: camera key tracks (fxm_camChanAdd / fxm_camChanUpdate) */
+#define FX_FENRIR_DEBRIS_FRAME    3    /* op83: FX_FENRIR_DUST_DEBRIS starts (turned to rot128 until DEBRIS_STOP_FRAME) */
+#define FX_FENRIR_BLUE_RINGS_FRAME 12  /* op83: FX_FENRIR_BLUE_RINGS start at the targets' average position */
+#define FX_FENRIR_WHITE_IN_FRAME  22   /* op83: the additive white screen fade-in starts */
+#define FX_FENRIR_DEBRIS_STOP_FRAME 38 /* op83: FX_FENRIR_DUST_DEBRIS stops */
+#define FX_FENRIR_WHITE_OUT_FRAME 42   /* op83: the units get their scales back, the white fades out */
+#define FX_FENRIR_WHITE_FADE_FRAMES 0x10 /* op83: each white fade (fxm_tintScreenLerp) takes this many frames */
+#define FX_FENRIR_WHITE_RGB       0xFF, 0xFF, 0xFF /* op83: additive screen tint held between the fades */
+#define FX_FENRIR_GROUND_SLICE_FRAMES 0x18 /* op83: fx_1fc_sliceModel follows SLICE_PATH_2 from frame 1 this long */
+#define FX_FENRIR_MORPH_FRAMES    0x28 /* op83: the ground morph models are drawn from frame 1 this long, */
+#define FX_FENRIR_MORPH_2_FRAME   4    /* morphing 1 -> 2 on MORPH_CURVE, from this frame 2 -> 3 on MORPH_CURVE_2 */
+#define FX_FENRIR_MORPH_MODELS    3    /* op83: ground morph models (fx_1fc_morphBlocks, model136[1..3]) */
+#define FX_FENRIR_PIECE_MODELS    5    /* op83: rock piece models (fx_1fc_pieceModels, model136[4..8]) */
+#define FX_FENRIR_PIECES          10   /* op83: rock pieces flying along fx_1fc_piecePaths (the models in turn) */
+#define FX_FENRIR_PIECES_FRAME    1    /* op83: the pieces fly from this frame */
+#define FX_FENRIR_PIECES_FRAMES   0x18 /* for this many frames */
+#define FX_FENRIR_UNIT_PATH_FRAMES 0x1C /* op83: the units follow UNIT_OFFSET_PATH / UNIT_SCALE_PATH this long */
+#define FX_FENRIR_GROUND_FRAMES   0x3D /* op83: the task ends at this frame */
+#define FX_FENRIR_DROP_HEIGHT     0xBB8 /* op84: the units start this high above their home positions */
+#define FX_FENRIR_DROP_FRAMES     4    /* op84: and drop home in this many frames (FX_FENRIR_DUST_CLOUD at each) */
+#define FX_FENRIR_LAND_FRAMES     0x28 /* op84: the task ends at this frame */
+
 typedef struct {
     s16 x, y, z;
 } Fx1fcKey6;
