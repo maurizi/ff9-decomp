@@ -5,23 +5,23 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlBone bone;
 
     if (mode == 0) {
-        *args = 0xC;
+        *args = sizeof(Fx0c2Work80);
     } else if (mode == 1) {
         fx_0c2_env = env;
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x17, &bone);
+        ex->btlfx_getUnitBoneMatrix(0x10, FX_NO_MERCY_BONE, &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_BLUE_RING), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_NO_MERCY_RING_FRAMES;
     }
     return 0;
 }
 
 static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    BTLFX_EXPORTS(fx_0c2_env)->btlfx_lerpVec((s16 *)&fx_0c2_pathFrom, (s16 *)&fx_0c2_pathTo, (frame << 12) / 9, (s16 *)pos);
+    BTLFX_EXPORTS(fx_0c2_env)->btlfx_lerpVec((s16 *)&fx_0c2_pathFrom, (s16 *)&fx_0c2_pathTo, (frame << 12) / FX_NO_MERCY_FLASH_PATH_FRAMES, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -37,7 +37,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x50;
+        *args = sizeof(Fx0c2Work81);
     } else if (mode == 1) {
         s32 unit = *args;
         work->unit4C = unit;
@@ -47,20 +47,20 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
-        fxm_startUnitMotion(0x10, 0x1C);
+        fxm_startUnitMotion(0x10, BTL_MOTION_CAST_END);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         ex->btlfx_getUnitBodyPos(work->unit4C, 0, (s16 *)&work->pos1C);
         ex->btlfx_getUnitRot(work->unit4C, (s16 *)&work->rot24);
     } else {
         frame = entry->frame;
-        if (frame == 4) {
-            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos34);
+        if (frame == FX_NO_MERCY_DASH_FRAME) {
+            ex->btlfx_getUnitBonePos(0x10, FX_NO_MERCY_BONE, (u16 *)&work->pos34);
             fx_0c2_pathFrom.vx = work->pos34.vx;
             fx_0c2_pathFrom.vy = work->pos34.vy;
             fx_0c2_pathFrom.vz = work->pos34.vz;
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-            ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&work->rot14, 0x12C, (s16 *)&work->pos2C);
+            ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&work->rot14, FX_NO_MERCY_DUST_REACH, (s16 *)&work->pos2C);
             ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos1C, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&ang, 0, (s16 *)&fx_0c2_pathTo);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_DUST_PLUME), (s32)&work->pos2C);
@@ -76,25 +76,25 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot3C.vy = work->rot44.vy;
             work->rot3C.vz = work->rot44.vz;
         }
-        if (frame == 0xD) {
+        if (frame == FX_NO_MERCY_IMPACT_FRAME) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_NO_MERCY_IMPACT_BURST), (s32)&work->pos1C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(work->unit4C, 0x80);
             }
         }
         switch (frame) {
-        case 5:
+        case FX_NO_MERCY_DASH_SOUND_FRAME:
             ex->btlfx_playFileSound(7, entry->file, -1);
             ex->btlfx_playFileSound(8, entry->file, -1);
             ex->btlfx_playFileSound(9, entry->file, -1);
             break;
-        case 0xD:
+        case FX_NO_MERCY_IMPACT_FRAME:
             ex->btlfx_playFileSound(0xE, entry->file, -1);
             ex->btlfx_playFileSound(0xF, entry->file, -1);
             ex->btlfx_playFileSound(0x10, entry->file, -1);
             break;
         }
-        if (frame >= 4) {
+        if (frame >= FX_NO_MERCY_DASH_FRAME) {
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;
@@ -117,9 +117,9 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (fxm_isMotionDone(0x10)) {
-            fxm_startUnitMotion(0x10, 9);
+            fxm_startUnitMotion(0x10, BTL_MOTION_READY);
         }
-        if (frame >= 0x14) {
+        if (frame >= FX_NO_MERCY_FRAMES) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -131,7 +131,7 @@ s32 fx_0c2_op82(s32 mode, Fx0c2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx0c2Work82);
     } else if (mode == 1) {
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
@@ -139,7 +139,7 @@ s32 fx_0c2_op82(s32 mode, Fx0c2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
-        return fxm_turnUnitBy(0x10, frame, 0xF, &work->pos8, &work->turn0) != 0;
+        return fxm_turnUnitBy(0x10, frame, FX_NO_MERCY_TURN_FRAMES, &work->pos8, &work->turn0) != 0;
     }
     return 0;
 }
@@ -149,7 +149,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x14;
+        *args = sizeof(Fx0c2Work83);
     } else if (mode == 1) {
         s32 unit = *args;
         work->unit10 = unit;
@@ -160,7 +160,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(unit, (s16 *)&work->pos8);
     } else {
         frame = entry->frame;
-        return fxm_turnUnitToward(0x10, work->unit10, frame, 4, 0, 1, &work->turn0) != 0;
+        return fxm_turnUnitToward(0x10, work->unit10, frame, FX_NO_MERCY_FACE_FRAMES, 0, 1, &work->turn0) != 0;
     }
     return 0;
 }

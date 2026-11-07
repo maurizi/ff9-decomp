@@ -11,7 +11,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 scaleY;
 
     if (mode == 0) {
-        *args = 0x30;
+        *args = sizeof(Fx0ceWork);
     } else if (mode == 1) {
         fx_0ce_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -35,16 +35,16 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->emit2C != NULL) {
             work->emit2C->trails = (s32)fx_0ce_trails;
-            work->emit2C->trailSlots = 0x15;
-            work->emit2C->trailStride = 0x34;
+            work->emit2C->trailSlots = FX_SCREECH_TRAIL_TRAIL_SLOTS;
+            work->emit2C->trailStride = FX_SCREECH_TRAIL_TRAIL_STRIDE;
         }
         work->state0 = work->frame4 = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {
-        case 0:
-            if (frame >= 6) {
-                work->state0 = 1;
+        case FX_SCREECH_STATE_WAVES:
+            if (frame >= FX_SCREECH_WAVES_FRAMES) {
+                work->state0 = FX_SCREECH_STATE_BLADES;
                 entry->frame = -1;
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCREECH_LILAC_RING), (s32)&work->pos10);
                 if (emitter != NULL) {
@@ -52,13 +52,13 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             break;
-        case 1:
+        case FX_SCREECH_STATE_BLADES:
             mpos[0] = work->pos8.vx;
             mpos[1] = work->pos8.vy;
             mpos[2] = work->pos8.vz;
             rot.vx = rot.vz = 0;
             rot.vy = frame * 0x84;
-            t = (frame << 12) / 20;
+            t = (frame << 12) / FX_SCREECH_BLADES_FRAMES;
             if (t < 0x400) {
                 scaleY = ex->math_sin(t);
             } else {
@@ -68,7 +68,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale[0] = scale[2] = 0x1A00;
             scale[1] = scaleY;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
-            ex->Hi_ModifyEffModelAbr(work->model20, 2);
+            ex->Hi_ModifyEffModelAbr(work->model20, BTLFX_ABR_SUB);
             ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) / 3 >> 5) - 0x80);
             rot.vy = -frame * 0x80;
@@ -77,10 +77,10 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale[0] = scale[2] = 0x2400;
             scale[1] = scaleY;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
-            ex->Hi_ModifyEffModelAbr(work->model20, 1);
+            ex->Hi_ModifyEffModelAbr(work->model20, BTLFX_ABR_ADD);
             ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) / 2 >> 5) - 0x80);
-            if (frame >= 0x14) {
+            if (frame >= FX_SCREECH_BLADES_FRAMES) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }
