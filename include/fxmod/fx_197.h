@@ -47,7 +47,7 @@
 #define FX_SHIVA_SHATTER_5_FRAME 0x18 /* piece 5 shatters */
 #define FX_SHIVA_STAR_GLINTS_FRAME 0x20 /* FX_SHIVA_STAR_GLINTS start */
 #define FX_SHIVA_ICE_CHUNKS_FRAME 0x2C /* FX_SHIVA_ICE_CHUNKS start */
-#define FX_SHIVA_FLASH_FADE_FRAMES 0x24 /* the blue flash fades over this many frames ((frame - SHATTER_FRAME) << 7 >> 4) */
+#define FX_SHIVA_FLASH_FADE_FRAMES 16 /* the blue flash fades over this many frames ((frame - SHATTER_FRAME) << 7 >> 4) */
 #define FX_SHIVA_DARKEN_RGB 0x80, 0x80, 0x80 /* subtractive screen tint */
 #define FX_SHIVA_FLASH_RGB 0, 0x80, 0xFF /* additive screen tint (blue) */
 #define FX_SHIVA_FLASH_LEVEL 0x80 /* the fading flash's blue (green = blue / 4) */

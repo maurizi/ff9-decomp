@@ -553,7 +553,7 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_SHIVA_FLASH_RGB);
                 fx_197_overlayOn = 0;
             }
-            if (frame >= FX_SHIVA_SHATTER_FRAME && frame < FX_SHIVA_FLASH_FADE_FRAMES) {
+            if (frame >= FX_SHIVA_SHATTER_FRAME && frame < FX_SHIVA_SHATTER_FRAME + FX_SHIVA_FLASH_FADE_FRAMES) {
                 tint = FX_SHIVA_FLASH_LEVEL - (((frame - FX_SHIVA_SHATTER_FRAME) << 7) >> 4);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0, tint >> 2, tint);
             }

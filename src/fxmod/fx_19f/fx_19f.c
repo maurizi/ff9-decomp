@@ -34,7 +34,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 width, s32 r, s32 g, s32 
         }
         prim->y0 = prim->y1 = (i >> 1) * 0x78;
         prim->y2 = prim->y3 = prim->y0 + 0x78;
-        ex->btlfx_linkPrimAbr(0x08000000, ot, prim, tpage);
+        ex->btlfx_linkPrimAbr(PRIM_TAG(POLY_G4), ot, prim, tpage);
     }
 }
 
@@ -142,12 +142,12 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 introT;
 
     if (mode == 0) {
-        *args = 0x84;
+        *args = sizeof(Fx19fWork81);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
         fx_19f_env = env;
-        ex->btlfx_initEffModels(fx_19f_effModels, 5);
+        ex->btlfx_initEffModels(fx_19f_effModels, FX_RAMUH_BOLT_MODEL_COUNT);
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ELECTRIC_BOWL), 1);
         work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_GREEN_DOME), 0);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_THIN_ROD), 0);
@@ -174,7 +174,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         waveAlpha[0] = waveAlpha[1] = waveAlpha[2] = 0;
         arcAmp = 0;
         switch (work->state0) {
-        case 0: {
+        case FX_RAMUH_STATE_GATHER: {
             key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MOTION_KEYS) + (frame * 12 + 4));
             work->pos48[0] = key->x + work->pos8.vx;
             work->pos48[1] = key->y + work->pos8.vy;
@@ -185,7 +185,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale54[0] = 0x2000;
             work->scale54[1] = 0x2000;
             work->scale54[2] = 0x2000;
-            if (frame >= 7) {
+            if (frame >= FX_RAMUH_GLOW_FRAME) {
                 SVECTOR rot;
 
                 ex->btlfx_rangeProgress(frame, 7, 8, 0, 0x1000, &introT);
@@ -201,16 +201,16 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 glowGrow = ex->math_sin(introT >> 2);
                 glowGrowY = ex->math_sin(introT >> 2) >> 2;
             } else {
-                glowBright = (ex->math_cos((frame << 10) / 7) >> 1) + 0x800;
+                glowBright = (ex->math_cos((frame << 10) / FX_RAMUH_GLOW_FRAME) >> 1) + 0x800;
             }
-            if (frame >= 15) {
-                work->state0 = 1;
+            if (frame >= FX_RAMUH_GATHER_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_CHARGE;
                 entry->frame = -1;
             }
         } break;
-        case 1:
+        case FX_RAMUH_STATE_CHARGE:
             alpha = 0x1000;
-            t = (frame << 12) / 9;
+            t = (frame << 12) / FX_RAMUH_CHARGE_FRAMES;
             headKey = ((0x1000 - ex->math_cos(t >> 2)) << 5) >> 12;
             stripScale = (t >> 3) + 0xE00;
             if (frame < 4) {
@@ -224,16 +224,16 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 3) {
                 ex->btlfx_startFadeBackground(1, 6);
             }
-            if (frame >= 9) {
-                work->state0 = 2;
+            if (frame >= FX_RAMUH_CHARGE_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_STRIKE;
                 entry->frame = -1;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_SUB, FX_RAMUH_CHARGE_END_RGB);
                 ex->btlfx_startFadeBackground(-1, 2);
                 work->emit6C = NULL;
             }
             break;
-        case 2:
-            t = (frame << 12) / 43;
+        case FX_RAMUH_STATE_STRIKE:
+            t = (frame << 12) / FX_RAMUH_STRIKE_FRAMES;
             if (frame == 0) {
                 ex->btlfx_startFadeBackground(-1, 1);
             }
@@ -244,11 +244,11 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fadeTint = 0xFF - frame * 0xFF / 4;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, fadeTint >> 2, fadeTint, fadeTint);
             }
-            if (frame >= 16 && frame < 22) {
-                if (frame == 16) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0x80, 0x80, 0);
+            if (frame >= FX_RAMUH_FLASH_FRAME && frame < FX_RAMUH_FLASH_FRAME + FX_RAMUH_FLASH_FRAMES) {
+                if (frame == FX_RAMUH_FLASH_FRAME) {
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, FX_RAMUH_FLASH_RGB);
                 }
-                blueFade = 0xFF - (frame - 16) * 0xFF / 6;
+                blueFade = 0xFF - (frame - FX_RAMUH_FLASH_FRAME) * 0xFF / FX_RAMUH_FLASH_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, 0, blueFade >> 2, blueFade);
             }
             arcAlpha = 0x1000;
@@ -337,14 +337,14 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_RING), &work->pos10, NULL, (ringT >> 2) + 0x2800, 0, BTLFX_ABR_ADD,
                                   ex->math_sin(ringT >> 1));
             }
-            if (frame == 20) {
+            if (frame == FX_RAMUH_GLOW_RINGS_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_GLOW_RINGS), (s32)&work->pos10);
                 work->emit6C = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }
             }
-            if (frame == 14) {
+            if (frame == FX_RAMUH_SPARK_BURST_FRAME) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_SPARK_BURST), (s32)&work->pos8);
                 work->emit68 = emitter;
                 if (emitter != NULL) {
@@ -380,11 +380,11 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 gridRows = 2;
                 gridCols = 4;
             }
-            if (frame == 22) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0x80, 0x80, 0x20);
+            if (frame == FX_RAMUH_DARKEN_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_RAMUH_DARKEN_RGB);
             }
-            if (frame >= 23 && frame < 26) {
-                yellowTint = 0x80 - ((frame - 23) << 6);
+            if (frame >= FX_RAMUH_YELLOW_FRAME && frame < FX_RAMUH_YELLOW_FRAME + FX_RAMUH_YELLOW_FRAMES) {
+                yellowTint = 0x80 - ((frame - FX_RAMUH_YELLOW_FRAME) << 6);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, yellowTint, yellowTint, yellowTint >> 3);
             }
             if (frame == 24) {
@@ -393,20 +393,20 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 25) {
                 ex->btlfx_startFadeBackground(0, 5);
             }
-            if (frame == 29) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x20, 0x64, 0xFF);
+            if (frame == FX_RAMUH_BLUE_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_RAMUH_BLUE_RGB);
             }
             if (frame == 36) {
                 ex->btlfx_startFadeBackground(1, 7);
             }
-            if (frame == 33) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, 0x40, 0x40, 0);
+            if (frame == FX_RAMUH_DARKEN_2_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_SUB, FX_RAMUH_DARKEN_2_RGB);
             }
-            if (frame == 34) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x40, 0x40, 0x40);
+            if (frame == FX_RAMUH_GREY_FRAME) {
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_RAMUH_GREY_RGB);
             }
-            if (frame >= 33) {
-                whiteout = (frame - 33) * 0xFF / 10;
+            if (frame >= FX_RAMUH_SKY_FRAME) {
+                whiteout = (frame - FX_RAMUH_SKY_FRAME) * 0xFF / FX_RAMUH_SKY_FRAMES;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), BTLFX_ABR_ADD, whiteout >> 2, whiteout >> 1, whiteout);
             }
             if (frame >= 35) {
@@ -426,8 +426,8 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit6C->alpha = (0x1000 - (t >> 2)) * 3 / 4;
                 }
             }
-            if (frame >= 43) {
-                work->state0 = 3;
+            if (frame >= FX_RAMUH_STRIKE_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_TAIL;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BOLT_SPARKS), (s32)&work->pos10);
@@ -436,15 +436,15 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             break;
-        case 3: {
-            t = (frame << 12) / 20;
+        case FX_RAMUH_STATE_TAIL: {
+            t = (frame << 12) / FX_RAMUH_TAIL_FRAMES;
             if (frame < 12) {
                 bandBlue = 0xFF - (frame << 5) / 12;
                 fxm_drawCenterBand(env->ot + 2, 1, fx_19f_bandWidths[frame], 0xC8 - frame * 0xC8 / 12, 0xC8 - frame * 0xC8 / 12,
                               bandBlue);
             }
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, 0x20, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), BTLFX_ABR_ADD, FX_RAMUH_TAIL_RGB);
             }
             if (work->emit68 != NULL && frame < 10) {
                 emitFadeT = (frame << 12) / 10;
@@ -492,8 +492,8 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scale54[1] = key->ry * 2;
             work->scale54[2] = key->rz * 2;
             work->rot60.vx = work->rot60.vy = work->rot60.vz = 0;
-            if (frame >= 20) {
-                work->state0 = 3;
+            if (frame >= FX_RAMUH_TAIL_FRAMES) {
+                work->state0 = FX_RAMUH_STATE_TAIL;
                 entry->frame = -1;
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -522,7 +522,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)&sc, work->model7C);
                 glowRgb = (glowBright >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model7C, glowRgb, glowRgb, glowRgb);
-                ex->btlfx_drawScrollMove(work->frame4 * 5, 0x260, 0x100, 0x20, 0x80, 0x240, 0x100);
+                ex->btlfx_drawScrollMove(work->frame4 * 5, FX_RAMUH_COLUMN_VRAM_X, FX_RAMUH_COLUMN_VRAM_Y, FX_RAMUH_COLUMN_VRAM_W, FX_RAMUH_COLUMN_VRAM_H, FX_RAMUH_COLUMN_SRC_X, FX_RAMUH_COLUMN_SRC_Y);
             }
             if (coreBright != 0) {
                 ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)work->scale54, work->model80);
@@ -791,10 +791,10 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
     s32 jitter;
 
     if (mode == 0) {
-        init->workSize = 0xC;
-        init->elemSize = 0x1C;
+        init->workSize = sizeof(Fx19fWork83);
+        init->elemSize = sizeof(Fx19fBolt);
         init->elemFn = (s32)fx_19f_op83PoolTask;
-        init->poolCount = 0x20;
+        init->poolCount = FX_RAMUH_BOLT_SLOTS;
     } else if (mode == 1) {
         i = init->workSize;
         fx_19f_env = env;

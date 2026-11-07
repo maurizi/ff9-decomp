@@ -26,15 +26,15 @@
 #define FX_LEVIATHAN_OP86_FRAMES 0x2E /* op86: the task ends at this frame */
 /* The water texture: 4-bit page (0x1C0, 0x100) (tpage 0x17), the water sheets sampling v 0x80 (WATER_TPAGE / CLUT /
  * U / V); fxm_drawScrollMoveX copies the file's texture from SRC_X beside it into it, scrolled. */
-#define FX_LEVIATHAN_WATER_TPAGE 0x17 
+#define FX_LEVIATHAN_WATER_TPAGE 0x17
 #define FX_LEVIATHAN_WATER_CLUT 0x3D04 /* CLUT (0x40, 0xF4) */
-#define FX_LEVIATHAN_WATER_U 0 
-#define FX_LEVIATHAN_WATER_V 0x80 
-#define FX_LEVIATHAN_WATER_VRAM_X 0x1C0 
-#define FX_LEVIATHAN_WATER_VRAM_Y 0x180 
-#define FX_LEVIATHAN_WATER_VRAM_W 0x20 
-#define FX_LEVIATHAN_WATER_VRAM_H 0x80 
-#define FX_LEVIATHAN_WATER_SRC_X 0x1E0 
+#define FX_LEVIATHAN_WATER_U 0
+#define FX_LEVIATHAN_WATER_V 0x80
+#define FX_LEVIATHAN_WATER_VRAM_X 0x1C0
+#define FX_LEVIATHAN_WATER_VRAM_Y 0x180
+#define FX_LEVIATHAN_WATER_VRAM_W 0x20
+#define FX_LEVIATHAN_WATER_VRAM_H 0x80
+#define FX_LEVIATHAN_WATER_SRC_X 0x1E0
 
 typedef struct {
     s16 unk0; /* not read by the module */
