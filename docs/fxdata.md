@@ -365,3 +365,100 @@ Effort for the other modules: the tool run is about 3 s per file; naming took on
 the C call order per module (about 10 minutes for a one-target module, a few for its all-targets twin with
 the byte-identical/call-order carry-over), so roughly 40-60 hours for the remaining 360 modules, summons
 (several groups, 0x80+ data) being the slow part.
+
+## Choreography literals (pilot)
+
+The effect modules' other numbers (18,228 actionable literals in `tools/literal_survey.py --bin fxmod`: compare /
+mask / case / arg / assign) are mostly the effect's choreography: how long a task or phase runs, on which frame it
+starts the next emitter, which VRAM rect it scrolls, how big a piece is. The pilot names the ones whose meaning
+the code proves, in the same 20 modules, grounded in the data names above. `tools/fxlits.py` counts them per
+module (`--pilot`, `--all`, `fx_006 --list`, same classifier as literal_survey).
+
+### Scheme
+
+Defines go in the module header, in a block after the effect-data names (`/* fx_XXX choreography ... */`), with
+the spell prefix and a comment that says what the code does with the value:
+
+| kind | form | proof in the code |
+|---|---|---|
+| task / phase length | `FX_<SPELL>_<PIECE>_FRAMES` | `if (frame >= N) { state = next; entry->frame = -1; }`, `frame < N` around a draw, the `(frame << 12) / N` ramp of the same phase (the define replaces both, so they visibly agree) |
+| keyframe | `FX_<SPELL>_<EVENT>_FRAME` | `frame == N` that starts an emitter (`FX_FIRA_SMOKE_2_FRAME`), switches a morph or a sub-phase (`FX_FIRA_RING_PULSE_FRAME`) |
+| state values | `FX_<SPELL>_STATE_<PHASE>` | the op's `switch (work->stateN)` labels and assignments, named by what the case draws |
+| op modes | `FX_<SPELL>_BOLTS_<KIND>` | a `switch` on the op's init argument (Thundaga op83) |
+| pool / work sizes | `sizeof(FxXXXWork)`, `sizeof(FxXXXItem)` | `*args = N` (mode 0) and `init->workSize` / `elemSize`; where the struct was short the header gains an `unused` pad (fx_004 work, the Thunder / Thundara / Thundaga bolts) |
+| counts | `_COUNT`, `_SLOTS`, `_POINTS`, `_SEGMENTS` | `init->poolCount`, loop bounds, `% N` into the same array, `btlfx_initEffModels` slots, array sizes in the header (`pts4[FX_THUNDAGA_STRIP_POINTS]`) |
+| trail buffers | `FX_<SPELL>_<EMITTER>_TRAIL_SLOTS` / `_TRAIL_STRIDE` | `emitter->trailSlots` / `trailStride` of the emitter whose data index names it |
+| VRAM rects | `FX_<SPELL>_<TEX>_VRAM_X/Y/W/H`, `_SRC_X/Y` | `btlfx_drawScrollMove` args, checked against the model's tpage + u/v and the file's upload (`fxdata.py` vram: the destination holds a "dummy" placeholder, the source the texture) |
+| texel frames | `FX_FIRAGA_FLOOR_GLOW_TPAGE/X/Y/COLS/GRID` | `fxm_drawTexelQuads`' StoreImage rect (2x4 frames of 16x16 texels in the 15-bit page) |
+| sizes | `_SCALE`, `_HEIGHT`, `_REACH`, `_RADIUS`, `_WIDTH` | a scale or offset used for one named piece in several places (`FX_BLIZZARD_ICE_SCALE`, all-targets twins' `pos.vy -= FX_BLIZZARA_ICE_HEIGHT`) |
+| screen tints | `FX_<SPELL>_<WHAT>_RGB` = `r, g, b` | the three constant colour args of `btlfx_drawScreenTint` (`FX_BLIZZARD_FREEZE_TINT_RGB 0, 0x20, 0x46`); `DARKEN` for the subtractive ones (abr 2) |
+| GPU words | `GPU_POLY_G4 | GPU_ABE`, `PRIM_TAG(POLY_GT4)`, `BTLFX_ABR_OPAQUE` | the existing psyq.h / ovl_0b.h names, in the modules' own primitive helpers |
+
+Derived numbers are written as expressions of the names when the code computes them that way (constant-folded,
+byte-identical): `/ (FX_FIRA_GROUND_RING_FRAMES - FX_FIRA_RING_PULSE_FRAME)` for Fira's 21,
+`0x1000 / (FX_CURE_STAR_FLARES_FRAMES - FX_CURE_STAR_FLARES_FADE_FRAME)` for Cure's fade step 0x155,
+`FX_THUNDAGA_CHARGE_FRAMES - 1` for the darken frame. One-target and all-targets modules use the same names with
+their own values (`FX_BLIZZARD_ICE_SCALE` 0xC00 / 0xE00, `FX_THUNDER_BOLT_COUNT` 5 / 0x18).
+
+Examples (old → new):
+
+- fx_006 `if (frame >= 0x10) { work->state0 = 3; ...` → `if (frame >= FX_BLIZZARD_GLEAM_FRAMES) { work->state0 = FX_BLIZZARD_STATE_SHATTER;`
+- fx_006 `morph = 0x1000 - ((frame - 2) << 12) / 14` → `... ((frame - FX_BLIZZARD_CRACK_FRAMES) << 12) / FX_BLIZZARD_SHARDS_FRAMES`
+- fx_004 `btlfx_drawScrollMove(scroll30, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100)` → `FX_BLIZZARA_REFLECTION_VRAM_X, ..._Y, ..._W, ..._H, FX_BLIZZARA_REFLECTION_SRC_X, ..._SRC_Y`
+- fx_007 `pillarOn = frame < 0x1D` / `(frame << 12) / 29` → `FX_FIRAGA_PILLAR_RING_FRAMES`; `i < 18` → `FX_FIRAGA_COLUMN_SEGMENTS`
+- fx_003 `frame == 3 || frame == 5 ...`, `boltCountC < 5` → `FX_THUNDER_BOLT_2_FRAME ...`, `FX_THUNDER_BOLT_COUNT`; `it->kind14 = 2` → `FX_003_STRIP_FLAT`
+- fx_005 `drawScreenTint(ot, 2, 0x40, 0x40, 0x40)` on `frame == 0xF` → `FX_THUNDARA_DARKEN_RGB` on `FX_THUNDARA_DARKEN_FRAME`
+- fx_018 `case 2:` of op83's kind switch → `case FX_THUNDAGA_BOLTS_CHAIN:`; `/ 31` (three places) → `FX_THUNDAGA_CHAIN_BOLTS_FRAMES`
+- fx_097 `pieceIdx = 10` → `FX_BLIZZAGA_CRYSTAL_PIECES + FX_BLIZZAGA_SHARD_PIECES`; `prim + 14 * 14` → `FX_BLIZZAGA_BULGE_GRID * FX_BLIZZAGA_BULGE_GRID`
+- fx_008 `*args = 0x18` → `sizeof(Fx008Work)`; `trailSlots = 0xB` → `FX_CURE_SPARKLE_SWIRL_TRAIL_SLOTS`
+
+### Counts (actionable literals, `tools/fxlits.py --pilot`)
+
+| spell | one target | before | after | all targets | before | after |
+|---|---|---|---|---|---|---|
+| Fire | fx_000 | 4 | 2 | fx_046 | 4 | 2 |
+| Fira | fx_002 | 18 | 8 | fx_047 | 11 | 5 |
+| Firaga | fx_007 | 91 | 52 | fx_048 | 93 | 53 |
+| Blizzard | fx_006 | 53 | 29 | fx_03e | 52 | 28 |
+| Blizzara | fx_004 | 53 | 36 | fx_04d | 55 | 37 |
+| Blizzaga | fx_097 | 174 | 106 | fx_098 | 175 | 105 |
+| Thunder | fx_003 | 53 | 31 | fx_042 | 38 | 21 |
+| Thundara | fx_005 | 63 | 39 | fx_049 | 63 | 36 |
+| Thundaga | fx_018 | 125 | 69 | fx_085 | 118 | 63 |
+| Cure | fx_008 | 9 | 1 | fx_009 | 4 | 0 |
+
+1,256 → 723 (533 named, 42%; 439 defines over the 20 headers, twins counted separately); literal_survey's fxmod
+total 18,228 → 17,695.
+
+### What stays numeric, and why
+
+- **Texture args of `Hi_RegisterTexEffModel`** (tpage, CLUT, u, v: 108 of the remaining 723): `tools/fxdata.py`
+  reads these call args as integer literals (`lit()`) to texture the model renders, so names there would blank
+  the renders. A follow-up that lets fxdata.py resolve the module header's defines (and `getTPage`/`getClut`)
+  would allow `FX_<SPELL>_<MODEL>_TPAGE` / `_CLUT`; the bulge grid's (`FX_BLIZZAGA_BULGE_TPAGE`), which fxdata
+  does not read, is named already.
+- **OT depth biases** (`emitter->otZ = 0x80`, `btlfx_addRadiusSixth(0, 0x20)`, `env->otZ = 0x200`: 130):
+  draw-order tuning per emitter, no meaning beyond "in front of / behind"; a name would only restate the number.
+- **Random spreads** (`btlfx_randCentered(0x190)`, `rand() % 50`, jitter `& 0x1F`: ~95) and the zig-zag
+  amplitudes / angle steps of the lightning strips.
+- **Fixed-point and angle math**: `0x1000` ramps, `>> 12`, `- 0x80` (offset from the neutral 0x80 colour),
+  `rot.vx = 0x400` (90 degrees), easing coefficients, ring / particle scales that appear once
+  (`btlfx_drawRings(..., 0x7000, ...)`), colour-channel masks (`& 0x1F`), shade clamps.
+- Frame-relative shifts (`t = frame << 10` = a 4-frame ramp) where the matching length is a separate compare:
+  the compare gets the name, the shift stays (a division would change the code).
+- abr arguments (1 = additive, 2 = subtractive) are the noise values 1 / 2 the survey skips; generic
+  `BTLFX_ABR_*` names in btlfx_mod.h would cover every module at once if wanted.
+- Values the code does not tie to one meaning: Firaga's column height (0x960 in fx_007, but 0xB86 / 0xA28 in
+  fx_048's two branches), the branch start `% 14` / `% 13` (one less than the last point index pair, not
+  provably derived), drawRings' fixed data frame (`..., 4, 1, ...`).
+
+### Estimate for all 380 modules
+
+The pilot is 5,877 of the modules' 83,673 C lines (7%) and 1,256 of the 18,228 literals (6.9%). At the same
+42%, about 7,500 literals would get names. The rest splits roughly as here: a tenth depth biases, a twelfth model
+texture args (nameable after the fxdata.py change, another ~1,500), random spreads and math. Effort: the
+mechanical part (sizeof, PRIM_TAG / GPU codes, trail slots, state enums, the `frame >= N` / `/ N` pairs, tints)
+goes quickly once a module's data names exist; reading the choreography took about 15-30 minutes per one-target
+module and a few minutes for its twin (same names, the value diff). That is roughly 60-90 hours for the other
+360 modules, the summons (several groups, longer state machines) taking a third of it; in parallel slices
+like the effect-data naming (8 x ~45 modules) a few sessions each.
