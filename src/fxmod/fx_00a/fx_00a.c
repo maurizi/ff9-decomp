@@ -6,7 +6,7 @@ s32 fx_00a_op80(s32 mode, Fx00aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x28;
+        *args = sizeof(Fx00aWork);
     } else if (mode == 1) {
         fx_00a_env = env;
         work->hold0 = 0;
@@ -21,7 +21,7 @@ s32 fx_00a_op80(s32 mode, Fx00aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
-            if (frame >= 0x28) {
+            if (frame >= FX_VENOM_POWDER_FRAMES) {
                 return 1;
             }
         }

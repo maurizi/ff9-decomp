@@ -8,7 +8,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR fallPos;
 
     if (mode == 0) {
-        *args = 0x3C;
+        *args = sizeof(Fx023Work);
     } else if (mode == 1) {
         fx_023_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos14);
@@ -21,23 +21,23 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 5:
-            work->rise34 = 0x1E;
+        case FX_PSYCHOKINESIS_LIFT_FRAME:
+            work->rise34 = FX_PSYCHOKINESIS_LIFT_FRAMES;
             work->pos24.vx = work->pos1C.vx;
             work->pos24.vy = work->pos1C.vy;
             work->pos24.vz = work->pos1C.vz;
             work->target2C.vx = work->pos1C.vx;
             work->target2C.vy = work->pos1C.vy;
             work->target2C.vz = work->pos1C.vz;
-            work->target2C.vy = -1000;
+            work->target2C.vy = -FX_PSYCHOKINESIS_LIFT_HEIGHT;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_GLYPH_ORBS), (s32)&work->pos24);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RINGS), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
-        case 40:
-            work->fall36 = 3;
+        case FX_PSYCHOKINESIS_DROP_FRAME:
+            work->fall36 = FX_PSYCHOKINESIS_DROP_FRAMES;
             work->held38 = 0;
             work->target2C.vy = work->pos1C.vy;
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_WHITE_RINGS_2), (s32)&work->pos14);
@@ -45,7 +45,8 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->rise34 >= 0) {
             ex->btlfx_getUnitPos(0, (s16 *)&risePos);
-            risePos.vy = fxm_lerpRatio(work->pos1C.vy, -1000, 0x1E - work->rise34, 0x1E);
+            risePos.vy = fxm_lerpRatio(work->pos1C.vy, -FX_PSYCHOKINESIS_LIFT_HEIGHT, FX_PSYCHOKINESIS_LIFT_FRAMES - work->rise34,
+                                       FX_PSYCHOKINESIS_LIFT_FRAMES);
             ex->btlfx_setUnitPos(0, (s16 *)&risePos);
             if (--work->rise34 == 0) {
                 work->held38 = 1;
@@ -53,7 +54,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->held38 != 0) {
             ex->btlfx_getUnitPos(0, (s16 *)&holdPos);
-            holdPos.vy = -1000;
+            holdPos.vy = -FX_PSYCHOKINESIS_LIFT_HEIGHT;
             ex->btlfx_setUnitPos(0, (s16 *)&holdPos);
         }
         if (work->fall36 >= 0) {
@@ -61,7 +62,8 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);
             work->pos1C.vx = fallPos.vx;
             work->pos1C.vz = fallPos.vz;
-            fallPos.vy = fxm_lerpRatio(-1000, work->pos1C.vy, 3 - work->fall36, 3);
+            fallPos.vy = fxm_lerpRatio(-FX_PSYCHOKINESIS_LIFT_HEIGHT, work->pos1C.vy, FX_PSYCHOKINESIS_DROP_FRAMES - work->fall36,
+                                       FX_PSYCHOKINESIS_DROP_FRAMES);
             ex->btlfx_setUnitPos(0, (s16 *)&fallPos);
             if (--work->fall36 == 0) {
                 ex->btlfx_setUnitPos(0, (s16 *)&work->pos14);
@@ -72,12 +74,12 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PSYCHOKINESIS_LIGHT_RAYS), (s32)&work->pos14);
                 if (work->emit10 != NULL) {
                     work->emit10->trails = (s32)fx_023_trails;
-                    work->emit10->trailSlots = 0x3C;
-                    work->emit10->trailStride = 0x18;
+                    work->emit10->trailSlots = FX_PSYCHOKINESIS_LIGHT_RAYS_TRAIL_SLOTS;
+                    work->emit10->trailStride = FX_PSYCHOKINESIS_LIGHT_RAYS_TRAIL_STRIDE;
                 }
             }
         }
-        if (frame >= 5 && work->emit0 != NULL) {
+        if (frame >= FX_PSYCHOKINESIS_LIFT_FRAME && work->emit0 != NULL) {
             if (work->emit0->state == BTLFX_EMIT_DONE) {
                 work->emit0 = NULL;
             }
@@ -85,7 +87,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->target = (s32)&work->target2C;
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_PSYCHOKINESIS_FRAMES;
     }
     return 0;
 }

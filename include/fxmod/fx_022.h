@@ -8,6 +8,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_TENTACLE_GONE_BUBBLES 0x1 /* emitter: iridescent soap bubbles */
 
+/* fx_022 choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_TENTACLE_GONE_FRAMES 0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

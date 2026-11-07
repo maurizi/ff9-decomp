@@ -13,6 +13,11 @@
 #define FX_01F_RED_GLOW_2  0xC /* emitter: dark red glow with a white spot (orbiting) */
 #define FX_01F_BURST_TEXTURE 0xD /* layer table: render-to-texture (btlfx_drawLayerTexture), drawn from the start; skipping it changes the red / white burst rays round the target; runtime (docs/runtime-findings.md effect-data pass 2, medium) */
 
+/* fx_01f choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe, length and height. */
+#define FX_01F_WHITE_FLASH_FRAME 0x18 /* op80: FX_01F_WHITE_FLASH, FX_01F_RED_GLOW and FX_01F_PINK_RINGS start */
+#define FX_01F_FRAMES            0x3C /* op80: the task ends at this frame (FX_01F_BURST_TEXTURE is rendered until then) */
+#define FX_01F_HEIGHT            0x180 /* the emitters' position (pos4) above the targets' centre */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4;

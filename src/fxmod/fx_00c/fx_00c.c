@@ -4,7 +4,7 @@ s32 fx_00c_op80(s32 mode, Fx00cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx00cWork);
     } else if (mode == 1) {
         fx_00c_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -15,7 +15,7 @@ s32 fx_00c_op80(s32 mode, Fx00cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
-        return entry->frame >= 0x28;
+        return entry->frame >= FX_PANACEA_FRAMES;
     }
     return 0;
 }

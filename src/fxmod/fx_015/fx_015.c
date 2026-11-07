@@ -5,32 +5,32 @@ s32 fx_015_op80(s32 mode, Fx015Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x18;
+        *args = sizeof(Fx015Work);
     } else if (mode == 1) {
         fx_015_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->pos8.vx = work->pos10.vx;
         work->pos8.vy = work->pos10.vy;
         work->pos8.vz = work->pos10.vz;
-        work->pos8.vy -= 0x190;
+        work->pos8.vy -= FX_POISON_SMOKE_HEIGHT;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POISON_PURPLE_SMOKE), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_015_trails;
-            work->emit0->trailSlots = 0x1E;
-            work->emit0->trailStride = 0x30;
+            work->emit0->trailSlots = FX_POISON_PURPLE_SMOKE_TRAIL_SLOTS;
+            work->emit0->trailStride = FX_POISON_PURPLE_SMOKE_TRAIL_STRIDE;
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
-        if (frame == 0x19) {
+        if (frame == FX_POISON_TOXIC_BURST_FRAME) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_POISON_TOXIC_BURST), (s32)&work->pos10);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        return frame >= 0x46;
+        return frame >= FX_POISON_FRAMES;
     }
     return 0;
 }

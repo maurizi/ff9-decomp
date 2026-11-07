@@ -6,7 +6,7 @@ s32 fx_00b_op80(s32 mode, Fx00bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x10;
+        *args = sizeof(Fx00bWork);
     } else if (mode == 1) {
         fx_00b_env = env;
         work->hold0 = 0;
@@ -20,7 +20,7 @@ s32 fx_00b_op80(s32 mode, Fx00bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->hold0 == 0) {
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ESUNA_ORB_TEXTURE), frame);
-            if (frame >= 0x28) {
+            if (frame >= FX_ESUNA_FRAMES) {
                 return 1;
             }
         }

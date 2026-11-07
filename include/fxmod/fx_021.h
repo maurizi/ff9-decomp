@@ -8,6 +8,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_OPEN_BOOK_DUST_PUFF 0x1 /* emitter: white-grey dust puffs */
 
+/* fx_021 choreography (docs/fxdata.md, "Choreography literals"): op80's length (the work is the puff position). */
+#define FX_OPEN_BOOK_FRAMES 0x46 /* op80: the task ends at this frame */
+
 extern Unk800F78A4 *fx_021_env;
 
 #endif

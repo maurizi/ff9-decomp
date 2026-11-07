@@ -11,6 +11,15 @@
 #define FX_BERSERK_FIRE_RINGS 0xA /* emitter: dark red-orange-yellow gouraud rings */
 #define FX_BERSERK_RED_FLASH  0xB /* emitter: white star flash, red star flash, violet circle */
 
+/* fx_00e choreography (docs/fxdata.md, "Choreography literals"): op80's length and the cone's texture. */
+#define FX_BERSERK_FRAMES      0x20 /* op80: the cone is drawn (growing) until this frame, then the task ends */
+#define FX_BERSERK_MODEL_COUNT 2    /* btlfx_initEffModels slots (only FX_BERSERK_CONE is registered) */
+/* FX_BERSERK_CONE samples the flames FX_BERSERK_FLAME_TEXTURE renders each frame: 15-bit page (0x200, 0x100),
+ * abr 1, no clut, v 0x80 = VRAM (0x200, 0x180). */
+#define FX_BERSERK_CONE_TPAGE  0x138
+#define FX_BERSERK_CONE_CLUT   0xFFFF
+#define FX_BERSERK_CONE_V      0x80
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     s32 frame4; /* background frame */

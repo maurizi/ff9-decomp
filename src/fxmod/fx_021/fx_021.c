@@ -6,7 +6,7 @@ s32 fx_021_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     s32 heightArg;
 
     if (mode == 0) {
-        *args = 8;
+        *args = sizeof(SVECTOR);
     } else if (mode == 1) {
         fx_021_env = env;
         ex->btlfx_getUnitArgBonePos(0, 1, (u16 *)work);
@@ -21,7 +21,7 @@ s32 fx_021_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
-        return entry->frame >= 0x46;
+        return entry->frame >= FX_OPEN_BOOK_FRAMES;
     }
     return 0;
 }

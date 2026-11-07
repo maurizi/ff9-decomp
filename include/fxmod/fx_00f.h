@@ -11,6 +11,12 @@
 #define FX_FULL_LIFE_WINGS        0x9 /* emitter: white angel-wing sprites */
 #define FX_FULL_LIFE_HALO_RINGS   0xA /* emitter: white-lilac gouraud rings, leaf-shaped halo outline */
 
+/* fx_00f choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_FULL_LIFE_WINGS_FRAME 6    /* op80: FX_FULL_LIFE_WINGS and FX_FULL_LIFE_DARK_RINGS start */
+#define FX_FULL_LIFE_FRAMES      0x28 /* op80: the task ends at this frame */
+#define FX_FULL_LIFE_LIGHT_TRAILS_TRAIL_SLOTS  0x14 /* FX_FULL_LIFE_LIGHT_TRAILS' trail buffer fx_00f_trails: slots of */
+#define FX_FULL_LIFE_LIGHT_TRAILS_TRAIL_STRIDE 0x34 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target body position */

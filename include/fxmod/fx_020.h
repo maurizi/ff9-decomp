@@ -9,6 +9,12 @@
 #define FX_REGEN_GLINTS      0x2 /* emitter: fan + blue glint, teal-white ring, blue / green star glints */
 #define FX_REGEN_LIGHT_TRAIL 0x8 /* emitter: white-blue light trail + faint sparkle sprites */
 
+/* fx_020 choreography (docs/fxdata.md, "Choreography literals"): op80's keyframe and length. */
+#define FX_REGEN_GLINTS_FRAME 0x14 /* op80: FX_REGEN_GLINTS start (turned to fx_020_emitRot from then on) */
+#define FX_REGEN_FRAMES       0x32 /* op80: the task ends at this frame */
+#define FX_REGEN_LIGHT_TRAIL_TRAIL_SLOTS  0x14 /* FX_REGEN_LIGHT_TRAIL's trail buffer fx_020_trails: slots of */
+#define FX_REGEN_LIGHT_TRAIL_TRAIL_STRIDE 0x90 /* this many bytes (Pool6CEntry trailSlots / trailStride) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

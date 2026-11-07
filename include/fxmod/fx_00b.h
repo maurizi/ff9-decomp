@@ -9,6 +9,9 @@
 #define FX_ESUNA_ORB_TEXTURE  0x7 /* layer table: render-to-texture (btlfx_drawLayerTexture): 6 layers into VRAM (0x1C0,0x160) 32x32, a glossy green-to-pink orb sampled by the glow puffs round the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_ESUNA_LIGHT_SHOWER 0x8 /* emitter: rainbow halo + blue ripple, falling golden streaks with white glints, lens flare */
 
+/* fx_00b choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_ESUNA_FRAMES 0x28 /* op80: the task ends at this frame (FX_ESUNA_ORB_TEXTURE is drawn until then) */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target body position */

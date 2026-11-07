@@ -13,6 +13,17 @@
 #define FX_AERIAL_SLASH_WIND_RINGS    0xB /* emitter: ring with a violet sparkle-curtain texture + pink-white gouraud rings */
 #define FX_AERIAL_SLASH_DUST_RING     0xC /* emitter: ring with a grey dust texture */
 
+/* fx_01d choreography (docs/fxdata.md, "Choreography literals"): op80's keyframes, flash and length, the gust's target point;
+ * op81's length. */
+#define FX_AERIAL_SLASH_FLASH_FRAME 10   /* op80: additive white flash (this frame and the next); the wind rings, dust ring and blue gust start */
+#define FX_AERIAL_SLASH_FLASH_LEVEL 0x80 /* the flash's screen tint (r = g = b) */
+#define FX_AERIAL_SLASH_GRID_FRAME  0xD  /* op80: the screen grid (btlfx_drawScreenGrid) is drawn, growing, from here */
+#define FX_AERIAL_SLASH_FRAMES      0x28 /* op80: the task ends at this frame */
+#define FX_AERIAL_SLASH_GUST_REACH  0x5DC /* pos34, where the crescents fly and the gust starts: this far in front of the caster, */
+#define FX_AERIAL_SLASH_GUST_HEIGHT 0xC8  /* this high */
+#define FX_AERIAL_SLASH_BLADE_REACH 0x190 /* the two crescents start this far along the caster's bones 7 and 15 */
+#define FX_AERIAL_SLASH_DUST_FRAMES 0x28 /* op81: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

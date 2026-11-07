@@ -8,6 +8,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_VENOM_POWDER_VENOM_SPLASH 0x2 /* emitter: purple powder / venom blobs + droplet splash (byte-identical to fx_0ae entry 0x2, same render) */
 
+/* fx_00a choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_VENOM_POWDER_FRAMES 0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     u8 pad4[0xC];

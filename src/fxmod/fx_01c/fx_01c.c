@@ -5,7 +5,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        *args = 0x2C;
+        *args = sizeof(Fx01cWork);
     } else if (mode == 1) {
         fx_01c_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
@@ -28,16 +28,16 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         switch (frame) {
-        case 30:
+        case FX_AQUA_BREATH_WAVE_FRAME:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_WAVE_RING), (s32)&work->pos14);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_BUBBLES), (s32)&work->pos14);
             if (work->emitC != NULL) {
                 work->emitC->trails = (s32)fx_01c_trails;
-                work->emitC->trailSlots = 8;
-                work->emitC->trailStride = 0x90;
+                work->emitC->trailSlots = FX_AQUA_BREATH_BUBBLES_TRAIL_SLOTS;
+                work->emitC->trailStride = FX_AQUA_BREATH_BUBBLES_TRAIL_STRIDE;
             }
             break;
-        case 50:
+        case FX_AQUA_BREATH_DROPS_FRAME:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AQUA_BREATH_WATER_DROPS), (s32)&work->pos1C);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = 0x80;
@@ -54,7 +54,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->rot.vz = work->aim24.vz;
             }
         }
-        if (frame >= 0x1E) {
+        if (frame >= FX_AQUA_BREATH_WAVE_FRAME) {
             if (work->emit8 != NULL) {
                 if (work->emit8->state == BTLFX_EMIT_DONE) {
                     work->emit8 = NULL;
@@ -76,7 +76,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        return frame >= 0x50;
+        return frame >= FX_AQUA_BREATH_FRAMES;
     }
     return 0;
 }

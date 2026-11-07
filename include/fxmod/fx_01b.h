@@ -11,6 +11,9 @@
 #define FX_FLOAT_CLOUD_2    0x3 /* emitter: white cloud puffs (the second cloud emitter, same cloud texture); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_FLOAT_CLOUD_TEXTURE 0x4 /* layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x200,0x180) 128x128, a white cloud sampled by the cloud burst; runtime (docs/runtime-findings.md effect-data pass) */
 
+/* fx_01b choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_FLOAT_FRAMES 0x3C /* op80: the task ends at this frame (FX_FLOAT_CLOUD_TEXTURE is rendered until then) */
+
 typedef struct {
     s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target position */

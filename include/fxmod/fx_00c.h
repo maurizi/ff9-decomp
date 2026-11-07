@@ -9,6 +9,9 @@
 #define FX_PANACEA_GREEN_RINGS 0x7 /* emitter: yellow-green and white-violet gouraud rings */
 #define FX_PANACEA_SPARKLES    0x8 /* emitter: green star glint, teal glow orb, golden sparkle sprites */
 
+/* fx_00c choreography (docs/fxdata.md, "Choreography literals"): op80's length. */
+#define FX_PANACEA_FRAMES 0x28 /* op80: the task ends at this frame */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
